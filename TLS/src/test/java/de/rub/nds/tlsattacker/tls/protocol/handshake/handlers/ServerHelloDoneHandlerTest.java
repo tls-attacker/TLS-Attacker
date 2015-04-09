@@ -17,26 +17,31 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ *
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class ClientHelloHandlerTest {
-
-    ClientHelloHandler handler;
-
-    public ClientHelloHandlerTest() {
-	handler = new ClientHelloHandler(new TlsContext());
+public class ServerHelloDoneHandlerTest {
+    
+    public ServerHelloDoneHandlerTest() {
     }
 
     /**
-     * Test of prepareMessageAction method, of class ClientHelloHandler.
+     * Test of prepareMessageAction method, of class ServerHelloDoneHandler.
      */
     @Test
-    public void testPrepareMessage() {
-	// TODO Florian
+    public void testPrepareMessageAction() {
     }
+
+    /**
+     * Test of parseMessageAction method, of class ServerHelloDoneHandler.
+     */
+    @Test
+    public void testParseMessageAction() {
+        // TODO Florian
+    }
+    
 }
