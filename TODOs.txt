@@ -1,0 +1,55 @@
+Add automatic handling for eap tls libs in maven. For now, it has to be installed with:
+mvn install:install-file -Dfile=lib/jnetpcap-1.3.0/jnetpcap.jar -DgroupId=org.jnetpcap -DartifactId=jnetpcap -Dversion=1.3.0 -Dpackaging=jar
+
+TLS 1.0, 1.1, 1.3
+
+Server side processing
+
+DTLS
+
+Writing tests for message handlers (and other stuff)
+
+Certificate forgery and modifiable certificates:
+- for both client and server CertificateMessage handling
+
+CertificateRequest message parsing
+
+TLS renegotiation, session resumption
+
+RC4
+
+AES-GCM and AES-CCM:
+- https://tools.ietf.org/html/rfc5288
+- https://tools.ietf.org/html/rfc6655
+- includes handling new Java parameter specs
+- new hash functions for tls prf generation
+
+Supplemental Data handshake message support:
+- http://tools.ietf.org/html/rfc4680
+- Add handling of a new handshake message
+- possibly add wrapped encryption (needs a bit redesign)
+
+TLS User Mapping Extension:
+- http://tools.ietf.org/html/rfc4681
+- based on supplemental data
+
+Transport Layer Security (TLS) Authorization Extensions:
+- http://tools.ietf.org/html/rfc5878
+- based on supplemental data
+- hey there is SAML :)
+
+Encrypt-then-MAC for Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS):
+- http://tools.ietf.org/html/rfc7366
+- implement extension
+- implement specific handling of renegotiation
+
+Application-Layer Protocol Negotiation Extension:
+- https://tools.ietf.org/html/rfc7301
+- include protocol name used on the tls layer (e.g. spdy)
+- implement abbreviated handshakes
+
+Fuzzing:
+- padding
+- length
+- kleine Untergruppen (crypto-fuzzing)
+- asn.1 fuzzing
