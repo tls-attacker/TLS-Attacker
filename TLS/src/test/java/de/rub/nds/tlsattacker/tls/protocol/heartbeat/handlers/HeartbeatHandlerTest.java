@@ -15,28 +15,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
+package de.rub.nds.tlsattacker.tls.protocol.heartbeat.handlers;
 
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ *
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class ClientHelloHandlerTest {
-
-    ClientHelloHandler handler;
-
-    public ClientHelloHandlerTest() {
-	handler = new ClientHelloHandler(new TlsContext());
+public class HeartbeatHandlerTest {
+    
+    public HeartbeatHandlerTest() {
     }
 
     /**
-     * Test of prepareMessageAction method, of class ClientHelloHandler.
+     * Test of prepareMessageAction method, of class HeartbeatHandler.
      */
     @Test
-    public void testPrepareMessage() {
-	// TODO Florian
+    public void testPrepareMessageAction() {
+        // todo Florian
+        
     }
+
+    /**
+     * Test of parseMessageAction method, of class HeartbeatHandler.
+     */
+    @Test
+    public void testParseMessageAction() {
+    }
+    
 }

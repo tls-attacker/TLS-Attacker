@@ -19,24 +19,33 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ *
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class ClientHelloHandlerTest {
-
-    ClientHelloHandler handler;
-
-    public ClientHelloHandlerTest() {
-	handler = new ClientHelloHandler(new TlsContext());
+public class CertificateRequestHandlerTest {
+    
+    private CertificateRequestHandler handler;
+    
+    public CertificateRequestHandlerTest() {
+        handler = new CertificateRequestHandler(new TlsContext());
     }
 
     /**
-     * Test of prepareMessageAction method, of class ClientHelloHandler.
+     * Test of prepareMessageAction method, of class CertificateRequestHandler.
      */
     @Test
-    public void testPrepareMessage() {
-	// TODO Florian
+    public void testPrepareMessageAction() {
     }
+
+    /**
+     * Test of parseMessageAction method, of class CertificateRequestHandler.
+     */
+    @Test
+    public void testParseMessageAction() {
+        // todo Florian
+    }
+    
 }
