@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath ${packageClassName} elliptic_test -connect localhost:54433 -named_curve SECP192R1 -public_point_base_x 0x9d42769dfdbe113a851bb6b01b1a515d893b5adbc1f61329 -public_point_base_y 0x74749ac0967a8ff4cc54d93187602dd67eb3d22970aca2ca -premaster_secret 0x9d42769dfdbe113a851bb6b01b1a515d893b5adbc1f61329 -cipher TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName} elliptic_test -connect localhost:54433 -named_curve SECP192R1 -public_point_base_x 0x9d42769dfdbe113a851bb6b01b1a515d893b5adbc1f61329 -public_point_base_y 0x74749ac0967a8ff4cc54d93187602dd67eb3d22970aca2ca -premaster_secret 0x9d42769dfdbe113a851bb6b01b1a515d893b5adbc1f61329 -cipher TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</exec.args>
+                <exec.executable>java</exec.executable>
+                <jpda.listen>true</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-classpath %classpath ${packageClassName} elliptic_test -connect localhost:54433 -named_curve SECP192R1 -public_point_base_x 0x9d42769dfdbe113a851bb6b01b1a515d893b5adbc1f61329 -public_point_base_y 0x74749ac0967a8ff4cc54d93187602dd67eb3d22970aca2ca -premaster_secret 0x9d42769dfdbe113a851bb6b01b1a515d893b5adbc1f61329 -cipher TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
+    </actions>

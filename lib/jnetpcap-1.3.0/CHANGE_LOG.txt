@@ -1,0 +1,452 @@
+################################################################################
+#
+#    Copyright (C) 2007-2010 Sly Technologies, Inc.
+#
+#    This program is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU General Public License
+#    as published by the Free Software Foundation; either version 2
+#    of the License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+################################################################################
+
+                              jNetPcap Package
+                                 Change Log
+                                 
+== Release 1.3.0  (2011-04-01) ==
+
+* Fixes
+
+    - Fixed Bug#3240888	- WinPcapSendQueue throws BufferUnderflow exception
+
+    - Fixed Bug#3226590	- Flow API not working
+    
+    - Fixed Bug#3226577	- Constant Pcap.LOOP_INFINATE miss-spelled
+    
+    - Fixed Bug#3220271	- AbstractMessageHeader parser fails
+    
+    - Fixed Bug#3220200 - NullPtr exception in multi-threaded pcap capture
+    
+* No further changes. Code is production ready.
+
+== Release 1.3.b4  (2010-12-15) ==
+
+* Fixes
+
+	- Memory swings - Object finalization is replaced with java Reference 
+	               cleanup. Memory is now managed through Reference and 
+	               ReferenceQueue mechanism. 
+	              
+	
+	- Various performance optimizations in JMemory and JBuffer class. Optimized
+	               memory allocation path in JMemoryPool for certain object
+	               types.  
+	               
+	- Fixed boundary check in Checksum calculation with truncated jumbo
+	               Ethernet frames.
+	               
+	- Fixed an issue when an JMemory based object tried to peer to itself.
+	
+	- Fixed JMemory resize issue.
+	
+	- Fixed Bug#3108615 - Ethernet FCS - FCS calculation and various Ethernet 
+	               header APIs that check for presence of FCS field, allow 
+	               verification, calculation and setting of new FCS value.
+	
+	
+* Added
+
+	- Added a new  management class named DisposableGC which runs in 
+	               a background system thread and schedules native memory 
+	               cleanup. 
+	               
+	- Added several system properties (nio.mx, nio.ms, nio.blocksize) which 
+	               affect native memory allocation, limits and DisposableGC 
+	               behavior.
+
+	- PcapPacket.peerAndScan - convenience method peering header and buffer
+	               to a PcapPacket object. Implements certain optimizations
+	               to perform the task faster.
+	               
+	               
+* Changes
+
+    - Changed the format of the debug output for 
+                   PcapPacket.State.toDebugString() method. The output produced
+                   is more tabular with a table heading on top.	      
+                   
+    - Removed no longer used classes and directories from source such as
+                   tests/beta1.5, JReference class, JMemory.references field         
+	               
+* Non-code changes
+
+    - Added complete MANIFEST to jnetpcap.jar file, which describes version
+                   information of the jNetPcap library being used.
+
+    - Changed the native and java library files names to not include full
+                   version information. The versioning is now fully accomplished
+                   through the use of jnetpcap root distribution directory
+                   instead. This allows easier switching between different
+                   versions of jNetPcap.
+
+	- Updated file headers which reflects the proper copyright and license
+	               agreement (LGPL v3)
+	               
+	- Updated all javadoc comments and tags for all classes 
+	
+== Release 1.3.b3  (2010-10-01) ==
+
+* Fixes
+
+  - Bug#3078703 - JMemory.transferTo(ByteBuffer) (array version)
+  
+  - Bug#3078704 - Debug message coming from Tcp header when options are parsed
+  
+* Removed
+
+  - org.jnetpcap.package.dissect - left over and unusable package intended for 
+                  the native dissector feature which has been removed from 1.3
+                  release
+                  
+  - SipHandler interface - left over from analyzer feature that has been
+                  removed from 1.3 release
+                  
+* Modifications/Updates
+
+  - org.jnetpcap.protocol.voip - updated javadocs, cleaned up warnings on all
+                  the classes in this package
+  
+== Release 1.3.b2  (2010-09-26) ==
+
+* Fixes
+
+  - Bug#3062026	- Scanner.reloadAll() in JPacket.scan()
+
+  - Bug#3062029	- Memory leak in native scanner reloadAll() tables
+
+  - Bug#3062031	- @Bind method with multiple same headers, gets wrong header
+
+  - Bug#3062035	- AnnotatedMethod doesn't open up method access perm
+
+  - Bug#3062037	- Checksum.pseudoUDP coredumps on invalid headers
+
+  - Bug#3062050	- Main scanner loop processes 0 length headers
+
+  - Bug#3062053	- @Deprecated JPacket.getScanner method
+
+  - Bug#3065968 - Missing sendPacket(JBuffer) implementation
+
+  - Bug#3066662 - UDP header missing setter methods
+
+  - Bug#3066959 - VLAN definition incorrectly assumes 802.1d as next header
+
+  - Bug#2353774 - Tcp header incomplete - missing tcp options
+
+  - Bug#3067088 - Ip4.Timestamp incorrectly initialized
+
+  - Bug#3067096 - JPacket.toString() exceptions consume all output in progress
+
+  - Bug#2933449	- SIP PRACK Message dosn't recognized
+
+  - Bug#3018072	- Wrong scanning Sdp headers in Linux
+
+
+== Release 1.3 final (2010-08-24) ==
+
+* No code changes (b1 code thoroughly tested and deployed for several months)
+
+* Various build script changes
+  
+  - Added x86_64 builds
+
+== Release 1.3.b1 (2010-04-05) ==
+
+* Fixes
+
+  - Bug#2981951 - Intermittent crashes in scanner
+
+  - Bug#2978441 - JRegistry.addBinding(JBinding) not working
+  
+  - Bug#2890736 - reopened bug ConcurrentModificationException in JMemoryPool
+  
+  - Bug#2906021 - Ethernet trailer end up in last header payload
+  
+  - Bug#2908252 - JFormatter invalid state after exception during format output
+  
+  - Bug#2908513 - exception thrown by Checksum for truncated or recursive ICMP 
+                  headers.
+    
+* Added
+
+  - Added testcase for Bug#2899902 ( buffer underflow on 64-bit systems)
+                                 
+== Release 1.3.a1 (2009-11-06) ==
+
+* Fixes
+
+  - Bug#2890773 - PcapPacketHandler invalid PcapHeader peer
+  
+  - Bug#2890736 - JMemoryPool concurrent mod exception
+  
+  - Bug#2890094 - JPacket.toHexdump doesn't work on unintialized packets
+  
+  - Bug#2878768 - JMemoryPacket(int) constructor doesn't work
+  
+  - Bug#2857282 - Ip4.destination(byte[]) setter uses incorrect offset
+  
+  - Bug#2897714 - invalid (char *) to (int) conversion in packet_protocol.cpp
+
+* Added
+
+  - Feature#2848659 - Add frame counter reset on JScanner
+  
+== No Official 1.2 stable release ==
+
+* Notes
+
+  - Release 1.2 branch was deprecated and replaced with stable 1.3 branch
+
+== Release 1.2.rc5 (2009-3-18) ==
+
+* Fixes
+
+  - #2688877 - reported that debian package is missing .so soft link to .so.rc4 
+               main lib file. Will add that link in post-install to debian 
+               package control file
+  
+  - #2648427 - PcapDumper.dump() core-dumps. A patch is available upon request. 
+  
+  - #2557009 - LLC header problem  
+  
+* Added
+
+  - Pcap.loop() and Pcap.dispatch() variation to allow the user to supply 
+    JScanner. This allows JScanner internal buffer size to be changed by the 
+    user
+    
+  - Added JPacket.setMemoryPool(). This allows the user to change the default 
+    allocation block size of JMemoryPool for packets that are copied via the 
+    constructor and transferTo() methods
+    
+  - Added analyzer support for Tcp/Ip family of protocols. This includes Ip 
+    fragment reassembly, tcp segment sequencing and reassembly as well
+    
+  - Added Http and Html as CORE jnetpcap protocols supported by native scanner
+  
+* Changed
+
+  - Moved org.jnetpcap.packet.header package to new org.jnetpcap.protocol 
+    package. Protocols are grouped into families of protocols, which are stored
+    under appropriate protocol suite sub-packages.  
+  
+
+== Release 1.2.rc4 (2009-1-4) ==
+
+* Fixes
+
+  - #2469209 - Ip6 CORE protocol missing scanner 
+  
+  - #2469205 - Unchecked exceptions consumed in dispatch handlers 
+  
+  - #2469198 - PcapPacket.transferStateAndDataFrom(PcapPacket) not working 
+  
+* Added
+
+  - JConfig class for managing configuration through properties
+  
+  - Activated java's logging system for logging messages
+  
+  - Address resolvers - resolve addresses and numbers to human labels such as
+    ip addresses to hostnames
+  
+* Changes
+
+  - Renamed annotation interface @FieldRuntime to @Dynamic
+  
+* TODO
+
+  - Mapped fields for protocols such as Http and SIP
+  
+                                 
+== Release 1.2.rc3 (2008-12-22) ==
+
+* Update to 1.2.rc2
+
+* Fixes
+
+  - #2458371 - Serious memory leak in JMemory
+  
+  - #2458376 - Invalid class name for an exception being thrown from JNI code
+  
+* Added
+
+  - Protocol to protocol binding and registration
+  
+  - Protocol header annotations; makes protocol definitions much cleaner and 
+    easier to write
+    
+  - Protocols/java directory with some - new non core protocols being released;
+    Http and Html headers are included
+    
+  - Added several static methods to JMemory class which report on native memory
+    usage for jNetPcap library; since native memory is not reported in any JRE
+    statictics, the user can rely on these JMemory methods for monitoring
+    native memory usage
+    
+  - Added several getter methods to JBuffer class that retrieve UTF8 strings in
+    raw buffers
+    
+* Changes
+
+  - Main JNI scanner LOOP has been slightly rewritten to take advantage of
+    JHeaderScanner java objects, their bidnings and user written scanners
+    
+* TODO
+    
+  - JField class still needs more cleanup; JFieldRuntime needs to be removed
+    completely
+    
+  - Formatting styles for field values need to be redone; currently too limited
+    in functionality
+    
+  - Add exception hooks; exception hooks rewrite exceptions being thrown to
+    include a lot more debug information that is useful when debugging a 
+    protocol
+   
+== Release 1.2.rc2 (2008-12-06) ==
+
+* Update to 1.2.rc1 released on 2008-11-24
+
+* Fixed
+
+  - Fixed PcapPacket and JPacket class APIs
+
+  - Fixed various memory related issues found with JMemory
+
+* Added
+
+  - Added sub-header capabilities to JHeader and formatters
+
+  - Added all Ip options to Ip4 header definition
+
+  - Added all missing ICMP sub-header types
+  
+* Known Issues
+
+  - TCP header definition is missing its optional sub-headers
+  
+  - Java binding overrides are implemented but still not fully tested
+  
+  - Numerous javadoc typos and blank type comments
+                              
+== Release 1.2 (2008-11-24) ==
+
+* Feature release
+
+* Added
+
+  - #2292402 - Packet decoding framework
+  
+  - #2292455 - Memory management  
+  
+  - #2292464 - Add a function to acquire network interface MAC address
+  
+  - #2292515 - Simplify capturing packets in multi-threaded environment  
+  
+  - #2321006 - Deprecate: PcapHandler  
+  
+  - #2321014 - Deprecate: PcapPktHdr  
+  
+  - #2321017 - Deprecate: PcapInteger
+  
+  - #2321024 - Deprecate: certain loop, dispatch functions  
+
+* Bugs
+
+  - #2219738 - WinPcap.sendQueue ignores its parameter.  
+               WinPcapSendQueue(int size) constructor was ignoring size 
+               parameter and using a constant.
+    
+  - #2219729 - Memory leak in Pcap.loop().
+               Memory leak in Pcap.loop method. Local JNI references were 
+               accumulating causing out of memory errors in Pcap.loop when it 
+               was set to loop forever.
+                                 
+== Release 1.1 (2008-06-19) ==
+
+* Maintenance release
+
+* Provides packages for: Fedora Core 8 (Linux), Debian 4 (Linux), Win32 (WinXP/Vista)
+
+* NO BUG FIXES - no bugs reported from the time of previous release
+                                 
+== Release 1.0 (2007-12-21) ==
+
+* First production release
+
+* Bug #1855589 - Win32 isInjectSupported returned incorrect value 
+
+== Release 1.0b4 (2007-08-21) ==
+
+* Linux support
+
+* Bug #1776380 - PcapBpfProgram exceptions on linux platform
+
+* Added
+
+  - Pcap.inject, Pcap.isSendPacketSupported, Pcap.isInjectPacketSupported,
+    Pcap.lookupDev, Pcap.lookupNet
+                                 
+== Release 1.0b3 ==
+
+* No bugs found or reported since previous release
+
+* Additions to org.jnetpcap package
+  
+  - All core 'libpcap' functions
+    
+  - PcapClosedException, PcapExtensionNotAvailableException exceptions
+
+* Addtions of and to jnetpcap.org.winpcap package - WinPcap extensions
+  
+    + Nearly all WinPcap based functions, very few exceptions
+
+* Removed "commons-logging" dependency. Static initializers throw appropriate 
+  exceptions directly during initialization failure.
+
+== Release 1.0b2 ==
+
+* Bug #1767744  - PcapHandler object ptr error in loop() and dispatch()
+                  This is a critical bug, where PcapHandler objects clobers the
+                  parent Pcap object data after invocation through loop() or
+                  dispatch() method.
+                 
+* Add a number of int constants to Pcap.java class to represent various return
+  codes, flags, and mode settings. Each constant has detailed explanation of
+  its usage and where it is be applicable.
+  
+* openLive() method will now also return "warning" messages in errbuf, even if
+  result code from the OK was 0, meaning no error had occured, as per pcap 
+  specification.
+  
+* Possible issue uncovered, but not fixed in this release.
+
+  - setting the snaplen value on openLinve() call does not seem to cause a 
+    return of a truncated packet buffer from next(), nextEx(), dispatch() or 
+    loop(). The buffer always contains the entire packet. Significant
+    debugging effort does not point to a bug in jNetPcap software but in
+    underlying WinPcap library. This could be in issue with particular Network
+    Interface Card in use. The issue is still under investigation, but the fix 
+    to critical bug #1767744 can not be delayed.
+    
+== Release 1.0b1 ==
+
+* Initial release

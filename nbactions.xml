@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <actionName>CUSTOM-format</actionName>
+        <displayName>format</displayName>
+        <goals>
+            <goal>initialize</goal>
+            <goal>java-formatter:format</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-license</actionName>
+        <displayName>license</displayName>
+        <goals>
+            <goal>initialize</goal>
+            <goal>license:format</goal>
+        </goals>
+    </action>
+</actions>
