@@ -17,6 +17,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.heartbeat.handlers;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,7 +29,13 @@ import static org.junit.Assert.*;
  */
 public class HeartbeatHandlerTest {
     
+    HeartbeatHandler heartbeatHandler;
+    
     public HeartbeatHandlerTest() {
+        TlsContext context = new TlsContext();        
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        context.setProtocolVersion(ProtocolVersion.TLS12);
+        heartbeatHandler = new HeartbeatHandler(context);
     }
 
     /**
@@ -34,8 +43,21 @@ public class HeartbeatHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        // todo Florian
+        heartbeatHandler.initializeProtocolMessage();
+        byte[] result = heartbeatHandler.prepareMessageAction();
         
+        //Check maximum message length ("MUST NOT exceed 2^14")
+        assertTrue(result.length <= 16384);
+        //Check minimum message length
+        assertTrue(result.length >= 19);
+        //Make sure message is a request
+        assertEquals(result[0], 0x01);
+        //Check size of payload_length
+        int payload_length = result[1];
+        payload_length = (payload_length << 8) ^ result[2];
+        assertTrue(payload_length < 16365);
+        //Make sure message is long enough according to it's payload length
+        assertTrue(result.length >= (payload_length + 19));
     }
 
     /**
