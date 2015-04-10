@@ -172,7 +172,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * @return newly initialized protocol message used by this handler
      */
-    public ProtocolMessage getProtocolMessage() {
+    public Message getProtocolMessage() {
 	return this.protocolMessage;
     }
 

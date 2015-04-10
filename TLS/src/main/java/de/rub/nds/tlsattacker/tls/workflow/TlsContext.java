@@ -129,6 +129,7 @@ public class TlsContext {
 
     public TlsContext() {
 	ecContext = new TlsECContext();
+	protocolVersion = ProtocolVersion.TLS12;
 	try {
 	    digest = new TlsMessageDigest(this.protocolVersion);
 	} catch (NoSuchAlgorithmException ex) {
