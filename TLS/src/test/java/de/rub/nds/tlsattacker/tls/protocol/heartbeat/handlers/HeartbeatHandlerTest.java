@@ -20,12 +20,17 @@ package de.rub.nds.tlsattacker.tls.protocol.heartbeat.handlers;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.protocol.heartbeat.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
 public class HeartbeatHandlerTest {
     
@@ -44,20 +49,31 @@ public class HeartbeatHandlerTest {
     @Test
     public void testPrepareMessageAction() {
         heartbeatHandler.initializeProtocolMessage();
-        byte[] result = heartbeatHandler.prepareMessageAction();
         
-        //Check maximum message length ("MUST NOT exceed 2^14")
-        assertTrue(result.length <= 16384);
-        //Check minimum message length
-        assertTrue(result.length >= 19);
-        //Make sure message is a request
-        assertEquals(result[0], 0x01);
-        //Check size of payload_length
-        int payload_length = result[1];
-        payload_length = (payload_length << 8) ^ result[2];
-        assertTrue(payload_length < 16365);
-        //Make sure message is long enough according to it's payload length
-        assertTrue(result.length >= (payload_length + 19));
+        byte[] result = heartbeatHandler.prepareMessageAction();
+        int payload_length = ArrayConverter.bytesToInt(Arrays.copyOfRange(result, 1, 2));
+        
+        assertNotNull("Confirm prepareMessageAction didn't return 'NULL'.",
+                result);
+        assertEquals("Confirm message is a request.",
+                HeartbeatMessageType.HEARTBEAT_REQUEST.getValue(),
+                result[0]);
+        assertTrue("Confirm message is not bigger than the max. message size"
+                + "according to the limits set by HeartbeatHandler class.",
+                result.length <= HeartbeatHandler.MAX_PADDING_LENGTH 
+                               + HeartbeatHandler.MAX_PAYLOAD_LENGTH + 3);
+        assertTrue("Confirm message meets the minimum message size according "
+                + "to the limits set by HeatbeatHandler class.", 
+                result.length >= HeartbeatHandler.MIN_PADDING_LENGTH + 3);
+        assertTrue("Confirm payload length is at least 0 byte.", payload_length >= 0);
+        assertTrue("Confirm payload length meets the limit set by HeatbeatHandler class",
+                payload_length <= HeartbeatHandler.MAX_PAYLOAD_LENGTH);
+        assertTrue("Confirm padding meets the minumum padding length set by "
+                + "HeatbeatHandler class", result.length - (payload_length + 3) >= 
+                        HeartbeatHandler.MIN_PADDING_LENGTH);
+        assertTrue("Confirm padding length doesn't exceed it's max. length "
+                + "according to the limits set by HeatbeatHandler class",
+                result.length - (payload_length + 3) <= HeartbeatHandler.MAX_PADDING_LENGTH);
     }
 
     /**
