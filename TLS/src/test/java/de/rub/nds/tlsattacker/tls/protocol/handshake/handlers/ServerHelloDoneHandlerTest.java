@@ -17,16 +17,23 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
+import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Florian Pfützenreuter - florian.pfuetzenreuter@rub.de
  */
 public class ServerHelloDoneHandlerTest {
     
+    private ServerHelloDoneHandler handler;
+    
     public ServerHelloDoneHandlerTest() {
+        handler = new ServerHelloDoneHandler(new TlsContext());
     }
 
     /**
@@ -41,7 +48,19 @@ public class ServerHelloDoneHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-        // TODO Florian
+        byte[] serverHelloDoneMsg = {0x0e, 0x00, 0x00, 0x00};
+        handler.initializeProtocolMessage();
+        
+        int endPointer = handler.parseMessage(serverHelloDoneMsg, 0);
+        ServerHelloDoneMessage message = (ServerHelloDoneMessage) handler.getProtocolMessage();
+        
+        assertEquals("Confirm expected message type: \"ServerHelloDone\"",
+                HandshakeMessageType.SERVER_HELLO_DONE,
+                message.getHandshakeMessageType());
+        assertEquals("Confirm expected message length of \"0\"", new Integer(0),
+                message.getLength().getValue());
+        assertEquals("Confirm the correct value of endPointer representing the "
+                + "actual number of message bytes", serverHelloDoneMsg.length, endPointer);
     }
     
 }
