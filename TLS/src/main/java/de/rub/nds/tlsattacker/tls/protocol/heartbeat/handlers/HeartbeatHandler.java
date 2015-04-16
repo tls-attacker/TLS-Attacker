@@ -35,17 +35,17 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
     /**
      * max payload length used in our application (not set by the spec)
      */
-    private static final int MAX_PAYLOAD_LENGTH = 256;
+    static final int MAX_PAYLOAD_LENGTH = 256;
 
     /**
      * according to the specification, the min padding length is 16
      */
-    private static final int MIN_PADDING_LENGTH = 16;
+    static final int MIN_PADDING_LENGTH = 16;
 
     /**
      * max padding length used in our application (not set by the spec)
      */
-    private static final int MAX_PADDING_LENGTH = 256;
+    static final int MAX_PADDING_LENGTH = 256;
 
     private static HeartbeatHandler instance;
 
