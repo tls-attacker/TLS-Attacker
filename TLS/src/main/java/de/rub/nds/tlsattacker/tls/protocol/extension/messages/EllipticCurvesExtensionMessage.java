@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.EllipticCurvesExtensionHandler;
@@ -31,8 +32,10 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     private List<NamedCurve> supportedCurvesConfig;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> supportedCurvesLength;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> supportedCurves;
 
     public EllipticCurvesExtensionMessage() {

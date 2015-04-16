@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 
@@ -27,9 +28,16 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageT
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class CertificateVerifyMessage extends HandshakeMessage {
-    /** signature length */
+
+    /**
+     * signature length
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> signatureLength;
-    /** signature */
+    /**
+     * signature
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     ModifiableVariable<byte[]> signature;
 
     public CertificateVerifyMessage() {

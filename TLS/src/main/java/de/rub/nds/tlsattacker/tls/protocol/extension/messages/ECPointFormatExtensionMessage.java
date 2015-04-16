@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ECPointFormatExtensionHandler;
@@ -33,8 +34,10 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
 
     private List<ECPointFormat> pointFormatsConfig;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> pointFormatsLength;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> pointFormats;
 
     public ECPointFormatExtensionMessage() {

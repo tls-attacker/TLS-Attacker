@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
@@ -30,6 +31,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
 
     private HeartbeatMode heartbeatModeConfig;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> heartbeatMode;
 
     public HeartbeatExtensionMessage() {

@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
@@ -63,6 +64,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      * it is executed to initialize specific variables.
      */
     private boolean goingToBeSent = true;
+    /**
+     * resulting message
+     */
+    @ModifiableVariableProperty
+    protected ModifiableVariable<byte[]> completeResultingMessage;
 
     @Override
     public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
@@ -120,6 +126,19 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 	List<Field> fields = getAllModifiableVariableFields();
 	int randomField = RandomHelper.getRandom().nextInt(fields.size());
 	return fields.get(randomField);
+    }
+
+    public ModifiableVariable<byte[]> getCompleteResultingMessage() {
+	return completeResultingMessage;
+    }
+
+    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
+	this.completeResultingMessage = completeResultingMessage;
+    }
+
+    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
+	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
+		completeResultingMessage);
     }
 
 }

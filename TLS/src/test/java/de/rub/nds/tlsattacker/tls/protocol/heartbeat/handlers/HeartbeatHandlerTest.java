@@ -28,19 +28,19 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
 public class HeartbeatHandlerTest {
-    
+
     HeartbeatHandler heartbeatHandler;
-    
+
     public HeartbeatHandlerTest() {
-        TlsContext context = new TlsContext();        
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.setProtocolVersion(ProtocolVersion.TLS12);
-        heartbeatHandler = new HeartbeatHandler(context);
+	TlsContext context = new TlsContext();
+	context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+	context.setProtocolVersion(ProtocolVersion.TLS12);
+	heartbeatHandler = new HeartbeatHandler(context);
     }
 
     /**
@@ -48,32 +48,27 @@ public class HeartbeatHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        heartbeatHandler.initializeProtocolMessage();
-        
-        byte[] result = heartbeatHandler.prepareMessageAction();
-        int payload_length = ArrayConverter.bytesToInt(Arrays.copyOfRange(result, 1, 2));
-        
-        assertNotNull("Confirm prepareMessageAction didn't return 'NULL'.",
-                result);
-        assertEquals("Confirm message is a request.",
-                HeartbeatMessageType.HEARTBEAT_REQUEST.getValue(),
-                result[0]);
-        assertTrue("Confirm message is not bigger than the max. message size"
-                + "according to the limits set by HeartbeatHandler class.",
-                result.length <= HeartbeatHandler.MAX_PADDING_LENGTH 
-                               + HeartbeatHandler.MAX_PAYLOAD_LENGTH + 3);
-        assertTrue("Confirm message meets the minimum message size according "
-                + "to the limits set by HeatbeatHandler class.", 
-                result.length >= HeartbeatHandler.MIN_PADDING_LENGTH + 3);
-        assertTrue("Confirm payload length is at least 0 byte.", payload_length >= 0);
-        assertTrue("Confirm payload length meets the limit set by HeatbeatHandler class",
-                payload_length <= HeartbeatHandler.MAX_PAYLOAD_LENGTH);
-        assertTrue("Confirm padding meets the minumum padding length set by "
-                + "HeatbeatHandler class", result.length - (payload_length + 3) >= 
-                        HeartbeatHandler.MIN_PADDING_LENGTH);
-        assertTrue("Confirm padding length doesn't exceed it's max. length "
-                + "according to the limits set by HeatbeatHandler class",
-                result.length - (payload_length + 3) <= HeartbeatHandler.MAX_PADDING_LENGTH);
+	heartbeatHandler.initializeProtocolMessage();
+
+	byte[] result = heartbeatHandler.prepareMessageAction();
+	int payload_length = ArrayConverter.bytesToInt(Arrays.copyOfRange(result, 1, 2));
+
+	assertNotNull("Confirm prepareMessageAction didn't return 'NULL'.", result);
+	assertEquals("Confirm message is a request.", HeartbeatMessageType.HEARTBEAT_REQUEST.getValue(), result[0]);
+	assertTrue("Confirm message is not bigger than the max. message size"
+		+ "according to the limits set by HeartbeatHandler class.",
+		result.length <= HeartbeatHandler.MAX_PADDING_LENGTH + HeartbeatHandler.MAX_PAYLOAD_LENGTH + 3);
+	assertTrue("Confirm message meets the minimum message size according "
+		+ "to the limits set by HeatbeatHandler class.",
+		result.length >= HeartbeatHandler.MIN_PADDING_LENGTH + 3);
+	assertTrue("Confirm payload length is at least 0 byte.", payload_length >= 0);
+	assertTrue("Confirm payload length meets the limit set by HeatbeatHandler class",
+		payload_length <= HeartbeatHandler.MAX_PAYLOAD_LENGTH);
+	assertTrue("Confirm padding meets the minumum padding length set by " + "HeatbeatHandler class", result.length
+		- (payload_length + 3) >= HeartbeatHandler.MIN_PADDING_LENGTH);
+	assertTrue("Confirm padding length doesn't exceed it's max. length "
+		+ "according to the limits set by HeatbeatHandler class",
+		result.length - (payload_length + 3) <= HeartbeatHandler.MAX_PADDING_LENGTH);
     }
 
     /**
@@ -82,5 +77,5 @@ public class HeartbeatHandlerTest {
     @Test
     public void testParseMessageAction() {
     }
-    
+
 }

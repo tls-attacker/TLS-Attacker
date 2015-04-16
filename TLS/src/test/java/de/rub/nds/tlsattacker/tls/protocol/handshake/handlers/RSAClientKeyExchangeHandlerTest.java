@@ -21,16 +21,17 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class RSAClientKeyExchangeHandlerTest {
-    
+
     public RSAClientKeyExchangeHandlerTest() {
     }
 
     /**
-     * Test of prepareMessageAction method, of class RSAClientKeyExchangeHandler.
+     * Test of prepareMessageAction method, of class
+     * RSAClientKeyExchangeHandler.
      */
     @Test
     public void testPrepareMessageAction() {
@@ -42,5 +43,5 @@ public class RSAClientKeyExchangeHandlerTest {
     @Test
     public void testParseMessageAction() {
     }
-    
+
 }

@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.application.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -31,11 +32,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class ApplicationMessage extends ProtocolMessage {
 
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> data;
-    /**
-     * resulting message
-     */
-    private ModifiableVariable<byte[]> completeResultingMessage;
 
     public ApplicationMessage() {
 	this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
@@ -74,18 +72,4 @@ public class ApplicationMessage extends ProtocolMessage {
 	sb.append("\nApplication Data:");
 	return sb.toString();
     }
-
-    public ModifiableVariable getCompleteResultingMessage() {
-	return completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
-	this.completeResultingMessage = completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-		completeResultingMessage);
-    }
-
 }

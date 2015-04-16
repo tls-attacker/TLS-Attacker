@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -27,6 +28,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class FinishedMessage extends HandshakeMessage {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     ModifiableVariable<byte[]> verifyData;
 
     public FinishedMessage() {

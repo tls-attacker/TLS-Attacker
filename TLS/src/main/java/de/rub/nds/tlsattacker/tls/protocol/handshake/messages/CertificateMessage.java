@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import org.bouncycastle.jce.provider.X509CertificateObject;
@@ -30,6 +31,7 @@ public class CertificateMessage extends HandshakeMessage {
     /**
      * certificates length
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> certificatesLength;
 
     // List<ModifiableVariable<Integer>> certificateLengths;

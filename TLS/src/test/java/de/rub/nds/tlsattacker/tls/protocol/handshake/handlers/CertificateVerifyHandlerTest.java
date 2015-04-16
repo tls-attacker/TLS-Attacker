@@ -21,11 +21,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class CertificateVerifyHandlerTest {
-    
+
     public CertificateVerifyHandlerTest() {
     }
 
@@ -42,5 +42,5 @@ public class CertificateVerifyHandlerTest {
     @Test
     public void testParseMessageAction() {
     }
-    
+
 }

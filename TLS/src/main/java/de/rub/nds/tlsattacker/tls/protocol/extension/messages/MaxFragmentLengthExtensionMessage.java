@@ -18,18 +18,25 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.MaxFragmentLengthExtensionHandler;
 
 /**
+ * Maximum Fragment Length Extension described in rfc3546
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 
     private MaxFragmentLength maxFragmentLengthConfig;
 
+    /**
+     * Maximum fragment length value described in rfc3546
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> maxFragmentLength;
 
     public MaxFragmentLengthExtensionMessage() {

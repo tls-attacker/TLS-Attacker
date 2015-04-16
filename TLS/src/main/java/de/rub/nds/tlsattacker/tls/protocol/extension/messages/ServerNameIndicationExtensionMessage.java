@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.NameType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
@@ -35,12 +36,16 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     private String serverNameConfig;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> serverNameListLength;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<Byte> serverNameType;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> serverNameLength;
 
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> serverName;
 
     public ServerNameIndicationExtensionMessage() {

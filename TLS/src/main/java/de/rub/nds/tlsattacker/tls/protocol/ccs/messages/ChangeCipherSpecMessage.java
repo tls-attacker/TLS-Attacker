@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.ccs.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -31,11 +32,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class ChangeCipherSpecMessage extends ProtocolMessage {
 
+    @ModifiableVariableProperty
     ModifiableVariable<Byte> ccsProtocolType;
-    /**
-     * resulting message
-     */
-    private ModifiableVariable<byte[]> completeResultingMessage;
 
     public ChangeCipherSpecMessage() {
 	this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
@@ -74,18 +72,5 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 	sb.append("\nChangeCipherSpec message:").append("\n  CCS Protocol Message: ")
 		.append(String.format("%02X ", ccsProtocolType.getValue()));
 	return sb.toString();
-    }
-
-    public ModifiableVariable getCompleteResultingMessage() {
-	return completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
-	this.completeResultingMessage = completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-		completeResultingMessage);
     }
 }

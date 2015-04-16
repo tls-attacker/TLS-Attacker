@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.alert.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
@@ -35,16 +36,14 @@ public class AlertMessage extends ProtocolMessage {
     /**
      * alert level
      */
+    @ModifiableVariableProperty
     ModifiableVariable<Byte> level;
 
     /**
      * alert description
      */
+    @ModifiableVariableProperty
     ModifiableVariable<Byte> description;
-    /**
-     * resulting message
-     */
-    private ModifiableVariable<byte[]> completeResultingMessage;
 
     public AlertMessage() {
 	this.protocolMessageType = ProtocolMessageType.ALERT;
@@ -88,18 +87,5 @@ public class AlertMessage extends ProtocolMessage {
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
 	return new AlertHandler(tlsContext);
-    }
-
-    public ModifiableVariable getCompleteResultingMessage() {
-	return completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
-	this.completeResultingMessage = completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-		completeResultingMessage);
     }
 }

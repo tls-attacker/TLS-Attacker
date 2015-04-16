@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 
 /**
@@ -25,7 +26,11 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageT
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ClientKeyExchangeMessage extends HandshakeMessage {
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     ModifiableVariable<byte[]> masterSecret;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     ModifiableVariable<byte[]> premasterSecret;
 
     public ClientKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {

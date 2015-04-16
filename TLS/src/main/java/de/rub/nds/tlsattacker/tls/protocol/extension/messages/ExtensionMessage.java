@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
@@ -33,10 +34,13 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
 
     ExtensionType extensionTypeConstant;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> extensionType;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> extensionLength;
 
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> extensionBytes;
 
     public ModifiableVariable<byte[]> getExtensionType() {

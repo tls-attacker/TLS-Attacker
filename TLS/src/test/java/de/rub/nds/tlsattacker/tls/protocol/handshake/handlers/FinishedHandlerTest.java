@@ -21,11 +21,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class FinishedHandlerTest {
-    
+
     public FinishedHandlerTest() {
     }
 
@@ -42,5 +42,5 @@ public class FinishedHandlerTest {
     @Test
     public void testParseMessageAction() {
     }
-    
+
 }

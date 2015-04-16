@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -31,17 +32,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class HeartbeatMessage extends ProtocolMessage {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<Byte> heartbeatMessageType;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> payloadLength;
 
+    @ModifiableVariableProperty()
     ModifiableVariable<byte[]> payload;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
     ModifiableVariable<byte[]> padding;
-    /**
-     * resulting message
-     */
-    private ModifiableVariable<byte[]> completeResultingMessage;
 
     public HeartbeatMessage() {
 	this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
@@ -124,19 +125,6 @@ public class HeartbeatMessage extends ProtocolMessage {
 	StringBuilder sb = new StringBuilder();
 	sb.append("\nHeartbeat message:");
 	return sb.toString();
-    }
-
-    public ModifiableVariable getCompleteResultingMessage() {
-	return completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
-	this.completeResultingMessage = completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-		completeResultingMessage);
     }
 
 }
