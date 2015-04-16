@@ -30,16 +30,16 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @author Florian Pfützenreuter - florian.pfuetzenreuter@rub.de
  */
 public class CertificateRequestHandlerTest {
-    
+
     private CertificateRequestHandler handler;
-    
+
     public CertificateRequestHandlerTest() {
-        handler = new CertificateRequestHandler(new TlsContext());
+	handler = new CertificateRequestHandler(new TlsContext());
     }
 
     /**
@@ -54,37 +54,27 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-        handler.initializeProtocolMessage();
-        
-        byte[] inputBytes = {
-                HandshakeMessageType.CERTIFICATE_REQUEST.getValue(),
-                0x00, 0x00, 0x07,
-                0x01, ClientCertificateType.RSA_SIGN.getValue(),
-                0x00, 0x02};        
-        byte[] sigHashAlg = new SignatureAndHashAlgorithm
-                (SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getValue();        
-        inputBytes = ArrayConverter.concatenate
-                (inputBytes, sigHashAlg, new byte[]{0x00, 0x00});        
-        int endPointer = handler.parseMessageAction(inputBytes, 0);
-        CertificateRequestMessage message =
-                (CertificateRequestMessage) handler.getProtocolMessage();
-        
-        assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
-        assertEquals("Confirm actual message length", endPointer, 12);
-        assertEquals("Confirm message type", 
-                HandshakeMessageType.CERTIFICATE_REQUEST,
-                message.getHandshakeMessageType());
-        assertTrue("Confirm certificate type count",
-                message.getClientCertificateTypesCount().getValue() == 1);
-        assertEquals("Confirm certificate type",
-                ClientCertificateType.RSA_SIGN.getValue(),
-                message.getClientCertificateTypes().getValue()[0]);
-        assertTrue("Confirm SignatureAndHashAlgorithm count",
-                message.getSignatureHashAlgorithmsLength().getValue() == 2);
-        assertArrayEquals("Confirm SignatureAndHashAlgorithm type", 
-                sigHashAlg, message.getSignatureHashAlgorithms().getValue());
-        assertTrue("Confirm DistinguishedName is empty",
-                message.getDistinguishedNamesLength().getValue() == 0);
+	handler.initializeProtocolMessage();
+
+	byte[] inputBytes = { HandshakeMessageType.CERTIFICATE_REQUEST.getValue(), 0x00, 0x00, 0x07, 0x01,
+		ClientCertificateType.RSA_SIGN.getValue(), 0x00, 0x02 };
+	byte[] sigHashAlg = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getValue();
+	inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x00 });
+	int endPointer = handler.parseMessageAction(inputBytes, 0);
+	CertificateRequestMessage message = (CertificateRequestMessage) handler.getProtocolMessage();
+
+	assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
+	assertEquals("Confirm actual message length", endPointer, 12);
+	assertEquals("Confirm message type", HandshakeMessageType.CERTIFICATE_REQUEST,
+		message.getHandshakeMessageType());
+	assertTrue("Confirm certificate type count", message.getClientCertificateTypesCount().getValue() == 1);
+	assertEquals("Confirm certificate type", ClientCertificateType.RSA_SIGN.getValue(), message
+		.getClientCertificateTypes().getValue()[0]);
+	assertTrue("Confirm SignatureAndHashAlgorithm count",
+		message.getSignatureHashAlgorithmsLength().getValue() == 2);
+	assertArrayEquals("Confirm SignatureAndHashAlgorithm type", sigHashAlg, message.getSignatureHashAlgorithms()
+		.getValue());
+	assertTrue("Confirm DistinguishedName is empty", message.getDistinguishedNamesLength().getValue() == 0);
     }
-    
+
 }

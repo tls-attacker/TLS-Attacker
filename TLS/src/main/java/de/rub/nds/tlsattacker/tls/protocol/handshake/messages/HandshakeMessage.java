@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -35,16 +36,14 @@ public class HandshakeMessage extends ProtocolMessage {
     /**
      * handshake type
      */
+    @ModifiableVariableProperty
     ModifiableVariable<Byte> type;
 
     /**
      * length of the included handshake message (for example ClientHello)
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> length;
-    /**
-     * resulting message
-     */
-    private ModifiableVariable<byte[]> completeResultingMessage;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
 	this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
@@ -94,16 +93,4 @@ public class HandshakeMessage extends ProtocolMessage {
 	return pmh;
     }
 
-    public ModifiableVariable<byte[]> getCompleteResultingMessage() {
-	return completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
-	this.completeResultingMessage = completeResultingMessage;
-    }
-
-    public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-		completeResultingMessage);
-    }
 }

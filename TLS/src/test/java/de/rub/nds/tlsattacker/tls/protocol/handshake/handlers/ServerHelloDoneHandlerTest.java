@@ -24,16 +24,16 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @author Florian Pfützenreuter - florian.pfuetzenreuter@rub.de
  */
 public class ServerHelloDoneHandlerTest {
-    
+
     private ServerHelloDoneHandler handler;
-    
+
     public ServerHelloDoneHandlerTest() {
-        handler = new ServerHelloDoneHandler(new TlsContext());
+	handler = new ServerHelloDoneHandler(new TlsContext());
     }
 
     /**
@@ -48,20 +48,18 @@ public class ServerHelloDoneHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-        byte[] serverHelloDoneMsg = {0x0e, 0x00, 0x00, 0x00};
-        handler.initializeProtocolMessage();
-        
-        int endPointer = handler.parseMessage(serverHelloDoneMsg, 0);
-        ServerHelloDoneMessage message = (ServerHelloDoneMessage) handler.getProtocolMessage();
-        
-        assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
-        assertEquals("Confirm expected message type: \"ServerHelloDone\"",
-                HandshakeMessageType.SERVER_HELLO_DONE,
-                message.getHandshakeMessageType());
-        assertEquals("Confirm expected message length of \"0\"", new Integer(0),
-                message.getLength().getValue());
-        assertEquals("Confirm the correct value of endPointer representing the "
-                + "actual number of message bytes", serverHelloDoneMsg.length, endPointer);
+	byte[] serverHelloDoneMsg = { 0x0e, 0x00, 0x00, 0x00 };
+	handler.initializeProtocolMessage();
+
+	int endPointer = handler.parseMessage(serverHelloDoneMsg, 0);
+	ServerHelloDoneMessage message = (ServerHelloDoneMessage) handler.getProtocolMessage();
+
+	assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
+	assertEquals("Confirm expected message type: \"ServerHelloDone\"", HandshakeMessageType.SERVER_HELLO_DONE,
+		message.getHandshakeMessageType());
+	assertEquals("Confirm expected message length of \"0\"", new Integer(0), message.getLength().getValue());
+	assertEquals("Confirm the correct value of endPointer representing the " + "actual number of message bytes",
+		serverHelloDoneMsg.length, endPointer);
     }
-    
+
 }

@@ -19,6 +19,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ECCurveType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -32,12 +33,16 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<Byte> curveType;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> namedCurve;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> publicKeyLength;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableVariable<byte[]> publicKey;
 
     public ECDHEServerKeyExchangeMessage() {

@@ -3,21 +3,22 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.record.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,46 +39,54 @@ public class Record extends ModifiableVariableHolder {
      * total length of the protocol message (handshake, alert..) included in the
      * record layer
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> length;
 
     /**
      * Content type
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<Byte> contentType;
 
     /**
      * Record Layer Protocol Version
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> protocolVersion;
 
     /**
      * protocol message bytes transported in the record
      */
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> protocolMessageBytes;
 
     /**
      * MAC (message authentication code) for the record (if needed)
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     ModifiableVariable<byte[]> mac;
 
     /**
      * Padding
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
     ModifiableVariable<byte[]> padding;
 
     /**
      * Padding length
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> paddingLength;
 
     /**
      * encrypted protocol message bytes (if encryption activated)
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     ModifiableVariable<byte[]> encryptedProtocolMessageBytes;
 
     /**
      * It is possible to define a sleep [in milliseconds] after the protocol
-     * message was sent. TODO: handle this or move it to the record?
+     * message was sent.
      */
     private int sleepAfterMessageSent;
 

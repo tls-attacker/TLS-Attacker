@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
@@ -32,8 +33,10 @@ import java.util.Date;
  */
 public class ServerHelloMessage extends HelloMessage {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> selectedCipherSuite;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<Byte> selectedCompressionMethod;
 
     public ServerHelloMessage() {

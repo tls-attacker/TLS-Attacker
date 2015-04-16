@@ -3,22 +3,23 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import java.math.BigInteger;
@@ -28,17 +29,35 @@ import java.math.BigInteger;
  */
 public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    /** DH modulus */
+    /**
+     * DH modulus
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableVariable<BigInteger> p;
-    /** DH generator */
+    /**
+     * DH generator
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableVariable<BigInteger> g;
-    /** server's public key */
+    /**
+     * server's public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableVariable<BigInteger> y;
-    /** client's private key */
+    /**
+     * client's private key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
     ModifiableVariable<BigInteger> x;
-    /** Length of the serialized public key */
+    /**
+     * Length of the serialized public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> serializedPublicKeyLength;
-    /** serialized public key */
+    /**
+     * serialized public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableVariable<byte[]> serializedPublicKey;
 
     public DHClientKeyExchangeMessage() {

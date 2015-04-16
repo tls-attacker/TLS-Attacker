@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
@@ -59,18 +60,22 @@ public class ClientHelloMessage extends HelloMessage {
     /**
      * compression length
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> compressionLength;
     /**
      * cipher suite byte length
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> cipherSuiteLength;
     /**
      * array of supported ciphersuites
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> cipherSuites;
     /**
      * array of supported compressions
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> compressions;
 
     public ClientHelloMessage() {

@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ECPointFormatExtensionMessage;
@@ -43,22 +44,27 @@ abstract class HelloMessage extends HandshakeMessage {
     /**
      * protocol version in the client and server hello
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableVariable<byte[]> protocolVersion;
     /**
      * unix time
      */
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> unixTime;
     /**
      * random
      */
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> random;
     /**
      * length of the session id length field indicating the session id length
      */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableVariable<Integer> sessionIdLength;
     /**
      * session id
      */
+    @ModifiableVariableProperty
     ModifiableVariable<byte[]> sessionId;
     /**
      * List of extensions
