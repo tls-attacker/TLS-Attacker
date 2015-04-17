@@ -1,16 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
+ *
+ * Copyright (C) 2015 Juraj Somorovsky
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.fuzzer.impl;
 
 import de.rub.nds.tlsattacker.fuzzer.config.FuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.utils.FuzzingHelper;
 import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -26,6 +41,7 @@ import java.util.Calendar;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.x509.Certificate;
 
 /**
  * 
@@ -52,7 +68,7 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
 	Calendar cal = Calendar.getInstance();
-	String folder = dateFormat.format(cal.getTime());
+	String folder = "/tmp/" + dateFormat.format(cal.getTime());
 
 	File f = new File(folder);
 	boolean created = f.mkdir();
@@ -68,6 +84,12 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 	    }
 	    long step = 0;
 
+	    Certificate certificate = executeValidWorkflow();
+	    if (certificate == null) {
+		LOGGER.error("No server certificate was fetched. Was the handshake executed correctly? Execute the program again.");
+		return;
+	    }
+
 	    while (true) {
 
 		TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
@@ -75,6 +97,7 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 		WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
 			tlsContext);
 		WorkflowTrace workflow = tlsContext.getWorkflowTrace();
+		tlsContext.setServerCertificate(certificate);
 
 		if (FuzzingHelper.executeFuzzingUnit(config.getDuplicateMessagePercentage())) {
 		    FuzzingHelper.duplicateRandomProtocolMessage(workflow, tlsContext.getMyConnectionEnd());
@@ -85,8 +108,8 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 		}
 
 		if (FuzzingHelper.executeFuzzingUnit(config.getModifyVariablePercentage())) {
-		    FuzzingHelper.executeRandomModifiableVariableModification(workflow,
-			    tlsContext.getMyConnectionEnd(), config.getModifiedVariablePattern());
+		    FuzzingHelper.executeRandomModifiableVariableModification(workflow, ConnectionEnd.CLIENT,
+			    config.getModifiableVariableTypes(), config.getModifiableVariableFormats());
 		}
 
 		if (FuzzingHelper.executeFuzzingUnit(config.getNotSendingMessagePercantage())) {
@@ -98,6 +121,7 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 		    workflowExecutor.executeWorkflow();
 		} catch (Exception ex) {
 		    LOGGER.debug(ex);
+		    ex.printStackTrace();
 		} finally {
 		    transportHandler.closeConnection();
 		    step++;
@@ -128,6 +152,21 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 	} catch (IOException | JAXBException ex) {
 	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
 	}
+    }
+
+    private Certificate executeValidWorkflow() {
+	ConfigHandler configHandler = new ClientConfigHandler();
+	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (Exception e) {
+	    LOGGER.debug(e);
+	    transportHandler.closeConnection();
+	}
+
+	return tlsContext.getServerCertificate();
     }
 
 }

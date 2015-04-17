@@ -1,1 +1,1 @@
-/home/juraj/NetBeansProjects/openssl-1.0.1f/apps/openssl s_server -accept 51624 -key /home/juraj/svn/repos_misc/builder-tasks/TLS-Attacker/resources/privkey1024.pem -cert /home/juraj/svn/repos_misc/builder-tasks/TLS-Attacker/resources/server-cert1024.pem -debug
+../../openssl-1.0.1f/apps/openssl s_server -accept 51624 -key ../resources/privkey1024.pem -cert ../resources/server-cert1024.pem

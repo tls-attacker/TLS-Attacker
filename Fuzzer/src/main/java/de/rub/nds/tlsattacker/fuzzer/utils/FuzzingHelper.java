@@ -18,12 +18,14 @@
 package de.rub.nds.tlsattacker.fuzzer.utils;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ModificationException;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.messages.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
@@ -78,6 +80,34 @@ public class FuzzingHelper {
 	    }
 	}
 	LOGGER.debug("Executing random variable modification on field {} in {}", f, holder);
+	executeModifiableVariableModification(holder, f);
+    }
+
+    /**
+     * Picks a random workflow message, picks a random variable and executes a
+     * modification.
+     * 
+     * @param workflow
+     * @param connectionEnd
+     * @param allowedTypes
+     * @param allowedFormats
+     */
+    public static void executeRandomModifiableVariableModification(WorkflowTrace workflow, ConnectionEnd connectionEnd,
+	    List<ModifiableVariableProperty.Type> allowedTypes, List<ModifiableVariableProperty.Format> allowedFormats) {
+	Field f = null;
+	ModifiableVariableHolder holder = null;
+	while (f == null) {
+	    holder = getRandomModifiableVariableHolder(workflow, connectionEnd);
+	    Field randomField = holder.getRandomModifiableVariableField();
+	    ModifiableVariableProperty property = randomField.getAnnotation(ModifiableVariableProperty.class);
+	    if (property != null) {
+		if ((allowedTypes == null || allowedTypes.contains(property.type()))
+			&& (allowedFormats == null || allowedFormats.contains(property.format()))) {
+		    f = randomField;
+		}
+	    }
+	}
+	LOGGER.debug("Executing random variable modification on field {}", f);
 	executeModifiableVariableModification(holder, f);
     }
 
@@ -187,7 +217,7 @@ public class FuzzingHelper {
 		r.setMaxRecordLengthConfig(random.nextInt(50));
 		pm.addRecord(r);
 		recordsNumber--;
-		LOGGER.debug("Adding a new record to {}", pm.getProtocolMessageType());
+		LOGGER.debug("Adding a new record to {}", pm.getClass());
 	    }
 	}
     }
@@ -235,7 +265,7 @@ public class FuzzingHelper {
 	    }
 	}
 	protocolMessages.add(insertPosition, pm);
-	LOGGER.debug("Duplicating {}", pm.getProtocolMessageType());
+	LOGGER.debug("Duplicating {} \n  and inserting it at position {}", pm.getClass(), insertPosition);
     }
 
     public static ProtocolMessage getRandomProtocolMessage(WorkflowTrace trace, ConnectionEnd messageIssuer) {

@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author dev
+ * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModificationApprovalTest {
 
