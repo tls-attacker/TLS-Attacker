@@ -36,7 +36,7 @@ public class CipherSuiteFilter {
     public static void filterCipherSuites(List<CipherSuite> cipherSuites) {
 	KeyExchangeAlgorithm algorithm = KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cipherSuites.get(0));
 	boolean ephemeral = cipherSuites.get(0).isEphemeral();
-	for (int i = 1; i < cipherSuites.size(); i++) {
+	for (int i = cipherSuites.size() - 1; i > 0; i--) {
 	    CipherSuite cs = cipherSuites.get(i);
 	    if (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs) != algorithm || cs.isEphemeral() != ephemeral) {
 		cipherSuites.remove(i);

@@ -94,7 +94,7 @@ public class RecordHandler {
 	    byte[] ctArray = { record.getContentType().getValue() };
 	    byte[] pv = record.getProtocolVersion().getValue();
 	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), ByteLength.RECORD_LENGTH);
-	    if (recordCipher == null) {
+	    if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
 		byte[] pm = record.getProtocolMessageBytes().getValue();
 		result = ArrayConverter.concatenate(result, ctArray, pv, rl, pm);
 	    } else {

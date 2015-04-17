@@ -123,6 +123,8 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 	    nextPointer = currentPointer + signatureLength;
 	    protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
+	    protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
+
 	    return nextPointer;
 	} catch (IOException ex) {
 	    ex.printStackTrace();

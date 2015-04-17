@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
@@ -59,6 +60,7 @@ public class ClientHelloTest {
 		ModifiableVariable.class);
 	m = context.createMarshaller();
 	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	m.setAdapter(new ByteArrayAdapter());
     }
 
     @BeforeClass

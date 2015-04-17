@@ -1,1 +1,1 @@
-/home/juraj/NetBeansProjects/gnutls-3.1.23/install/bin/gnutls-serv --http --x509keyfile /home/juraj/svn/repos_misc/builder-tasks/TLS-Attacker/resources/privkey1024.pem --x509certfile /home/juraj/svn/repos_misc/builder-tasks/TLS-Attacker/resources/server-cert1024.pem -p 51624 -a -b
+../../gnutls-3.1.23/install/bin/gnutls-serv --http --x509keyfile ../resources/privkey1024.pem --x509certfile ../resources/server-cert1024.pem -p 51624 -a -b

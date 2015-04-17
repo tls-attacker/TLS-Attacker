@@ -19,11 +19,15 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
+import java.io.Serializable;
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class SignatureAndHashAlgorithm {
+public class SignatureAndHashAlgorithm implements Serializable {
 
     private SignatureAlgorithm signatureAlgorithm;
 
@@ -55,8 +59,13 @@ public class SignatureAndHashAlgorithm {
 	return new SignatureAndHashAlgorithm(value);
     }
 
+    @XmlJavaTypeAdapter(HexBinaryAdapter.class)
     public byte[] getValue() {
 	return value;
+    }
+
+    public void setValue(byte[] value) {
+	this.value = value;
     }
 
     public SignatureAlgorithm getSignatureAlgorithm() {

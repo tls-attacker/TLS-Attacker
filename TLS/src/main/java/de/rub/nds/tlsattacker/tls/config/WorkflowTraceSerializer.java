@@ -67,7 +67,7 @@ public final class WorkflowTraceSerializer {
      * @throws IOException
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
-	JAXBContext context = getJAXBContext();
+	context = getJAXBContext();
 	Marshaller m = context.createMarshaller();
 	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
@@ -83,7 +83,7 @@ public final class WorkflowTraceSerializer {
      * @throws IOException
      */
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException {
-	JAXBContext context = getJAXBContext();
+	context = getJAXBContext();
 	Unmarshaller m = context.createUnmarshaller();
 
 	WorkflowTrace wt = (WorkflowTrace) m.unmarshal(inputStream);
