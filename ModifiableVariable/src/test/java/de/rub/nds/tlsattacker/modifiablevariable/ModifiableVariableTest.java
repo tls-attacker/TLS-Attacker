@@ -3,20 +3,23 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.modifiablevariable;
 
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import org.junit.Test;
@@ -29,7 +32,7 @@ public class ModifiableVariableTest {
 
     @Test
     public void testRandomBigIntegerModification() {
-	ModifiableVariable<BigInteger> bigInteger = ModifiableVariableFactory.createBigIntegerModifiableVariable();
+	ModifiableBigInteger bigInteger = ModifiableVariableFactory.createBigIntegerModifiableVariable();
 	bigInteger.setOriginalValue(BigInteger.ZERO);
 	bigInteger.createRandomModificationAtRuntime();
 	System.out.println("Randomly modified big integer: " + bigInteger.getValue());
@@ -38,7 +41,7 @@ public class ModifiableVariableTest {
 
     @Test
     public void testRandomIntegerModification() {
-	ModifiableVariable<Integer> integer = ModifiableVariableFactory.createIntegerModifiableVariable();
+	ModifiableInteger integer = ModifiableVariableFactory.createIntegerModifiableVariable();
 	integer.setOriginalValue(0);
 	integer.createRandomModificationAtRuntime();
 	System.out.println("Randomly modified integer: " + integer.getValue());
@@ -47,7 +50,7 @@ public class ModifiableVariableTest {
 
     @Test
     public void testRandomByteArrayModification() {
-	ModifiableVariable<byte[]> array = ModifiableVariableFactory.createByteArrayModifiableVariable();
+	ModifiableByteArray array = ModifiableVariableFactory.createByteArrayModifiableVariable();
 	array.setOriginalValue(new byte[] { 0, 1, 2 });
 	array.createRandomModificationAtRuntime();
 	System.out.println("Randomly modified byte array: " + ArrayConverter.bytesToHexString(array.getValue()));

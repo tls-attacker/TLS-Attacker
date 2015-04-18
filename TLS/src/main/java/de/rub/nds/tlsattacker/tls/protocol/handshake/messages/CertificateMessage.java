@@ -17,8 +17,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import org.bouncycastle.jce.provider.X509CertificateObject;
@@ -32,9 +33,9 @@ public class CertificateMessage extends HandshakeMessage {
      * certificates length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> certificatesLength;
+    ModifiableInteger certificatesLength;
 
-    // List<ModifiableVariable<Integer>> certificateLengths;
+    // List<ModifiableInteger> certificateLengths;
     //
     // List<Certificate> certificates;
     /**
@@ -51,19 +52,16 @@ public class CertificateMessage extends HandshakeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Integer> getCertificatesLength() {
+    public ModifiableInteger getCertificatesLength() {
 	return certificatesLength;
     }
 
-    public void setCertificatesLength(ModifiableVariable<Integer> certificatesLength) {
+    public void setCertificatesLength(ModifiableInteger certificatesLength) {
 	this.certificatesLength = certificatesLength;
     }
 
     public void setCertificatesLength(int length) {
-	if (this.certificatesLength == null) {
-	    this.certificatesLength = new ModifiableVariable<>();
-	}
-	this.certificatesLength.setOriginalValue(length);
+	this.certificatesLength = ModifiableVariableFactory.safelySetValue(certificatesLength, length);
     }
 
     public X509CertificateObject getX509CertificateObject() {
@@ -74,11 +72,11 @@ public class CertificateMessage extends HandshakeMessage {
 	this.x509CertificateObject = x509CertificateObject;
     }
 
-    // public List<ModifiableVariable<Integer>> getCertificateLengths() {
+    // public List<ModifiableInteger> getCertificateLengths() {
     // return certificateLengths;
     // }
     //
-    // public void setCertificateLengths(List<ModifiableVariable<Integer>>
+    // public void setCertificateLengths(List<ModifiableInteger>
     // certificateLengths) {
     // this.certificateLengths = certificateLengths;
     // }
@@ -87,7 +85,7 @@ public class CertificateMessage extends HandshakeMessage {
     // if (this.certificateLengths == null) {
     // this.certificateLengths = new LinkedList<>();
     // }
-    // ModifiableVariable<Integer> mv = new ModifiableVariable<>();
+    // ModifiableInteger mv = new ModifiableVariable<>();
     // mv.setOriginalValue(length);
     // this.certificateLengths.add(mv);
     // }

@@ -3,17 +3,17 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.modifiablevariable.filter;
 
@@ -21,14 +21,22 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author juraj
- * @param <E>
+ * Filters modification executions for specific accesses, starting with 1.
+ * 
+ * For example, if one defines accessNumbers = {1,3} and executes four times
+ * getValue() function on a modifiable variable, the modification is executed
+ * only during the second and fourth getValue() method invocation.
+ * 
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
-public class AccessModificationFilter<E> extends ModificationFilter<E> {
+public class AccessModificationFilter extends ModificationFilter {
 
     private int accessCounter;
 
+    /**
+     * accesses when the modification will be filtered (will not be executed)
+     */
     private int[] accessNumbers;
 
     public AccessModificationFilter() {
@@ -41,7 +49,7 @@ public class AccessModificationFilter<E> extends ModificationFilter<E> {
     }
 
     @Override
-    public boolean filterModification(E originalValue, E modifiedValue) {
+    public boolean filterModification() {
 	boolean filter = contains(accessNumbers, accessCounter);
 	accessCounter++;
 	return filter;

@@ -3,22 +3,24 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
@@ -61,22 +63,22 @@ public class ClientHelloMessage extends HelloMessage {
      * compression length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> compressionLength;
+    ModifiableInteger compressionLength;
     /**
      * cipher suite byte length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> cipherSuiteLength;
+    ModifiableInteger cipherSuiteLength;
     /**
      * array of supported ciphersuites
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> cipherSuites;
+    ModifiableByteArray cipherSuites;
     /**
      * array of supported compressions
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> compressions;
+    ModifiableByteArray compressions;
 
     public ClientHelloMessage() {
 	super(HandshakeMessageType.CLIENT_HELLO);
@@ -88,64 +90,52 @@ public class ClientHelloMessage extends HelloMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Integer> getCompressionLength() {
+    public ModifiableInteger getCompressionLength() {
 	return compressionLength;
     }
 
-    public ModifiableVariable<Integer> getCipherSuiteLength() {
+    public ModifiableInteger getCipherSuiteLength() {
 	return cipherSuiteLength;
     }
 
-    public ModifiableVariable<byte[]> getCipherSuites() {
+    public ModifiableByteArray getCipherSuites() {
 	return cipherSuites;
     }
 
-    public ModifiableVariable<byte[]> getCompressions() {
+    public ModifiableByteArray getCompressions() {
 	return compressions;
     }
 
-    public void setCompressionLength(ModifiableVariable<Integer> compressionLength) {
+    public void setCompressionLength(ModifiableInteger compressionLength) {
 	this.compressionLength = compressionLength;
     }
 
-    public void setCipherSuiteLength(ModifiableVariable<Integer> cipherSuiteLength) {
+    public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
 	this.cipherSuiteLength = cipherSuiteLength;
     }
 
-    public void setCipherSuites(ModifiableVariable<byte[]> cipherSuites) {
+    public void setCipherSuites(ModifiableByteArray cipherSuites) {
 	this.cipherSuites = cipherSuites;
     }
 
-    public void setCompressions(ModifiableVariable<byte[]> compressions) {
+    public void setCompressions(ModifiableByteArray compressions) {
 	this.compressions = compressions;
     }
 
     public void setCompressionLength(int compressionLength) {
-	if (this.compressionLength == null) {
-	    this.compressionLength = new ModifiableVariable<>();
-	}
-	this.compressionLength.setOriginalValue(compressionLength);
+	this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-	if (this.cipherSuiteLength == null) {
-	    this.cipherSuiteLength = new ModifiableVariable<>();
-	}
-	this.cipherSuiteLength.setOriginalValue(cipherSuiteLength);
+	this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public void setCipherSuites(byte[] array) {
-	if (this.cipherSuites == null) {
-	    this.cipherSuites = new ModifiableVariable<>();
-	}
-	this.cipherSuites.setOriginalValue(array);
+	this.cipherSuites = ModifiableVariableFactory.safelySetValue(cipherSuites, array);
     }
 
     public void setCompressions(byte[] array) {
-	if (this.compressions == null) {
-	    this.compressions = new ModifiableVariable<>();
-	}
-	this.compressions.setOriginalValue(array);
+	this.compressions = ModifiableVariableFactory.safelySetValue(compressions, array);
     }
 
     public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {

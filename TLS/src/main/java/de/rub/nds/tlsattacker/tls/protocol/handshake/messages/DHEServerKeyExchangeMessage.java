@@ -17,9 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
@@ -36,32 +37,32 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      * DH modulus length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> pLength;
+    ModifiableInteger pLength;
     /**
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> p;
+    ModifiableBigInteger p;
     /**
      * DH generator length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> gLength;
+    ModifiableInteger gLength;
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> g;
+    ModifiableBigInteger g;
     /**
      * public key length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> publicKeyLength;
+    ModifiableInteger publicKeyLength;
     /**
      * public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> publicKey;
+    ModifiableBigInteger publicKey;
 
     public DHEServerKeyExchangeMessage() {
 	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
@@ -73,11 +74,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Integer> getpLength() {
+    public ModifiableInteger getpLength() {
 	return pLength;
     }
 
-    public void setpLength(ModifiableVariable<Integer> pLength) {
+    public void setpLength(ModifiableInteger pLength) {
 	this.pLength = pLength;
     }
 
@@ -85,11 +86,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.pLength = ModifiableVariableFactory.safelySetValue(this.pLength, pLength);
     }
 
-    public ModifiableVariable<BigInteger> getP() {
+    public ModifiableBigInteger getP() {
 	return p;
     }
 
-    public void setP(ModifiableVariable<BigInteger> p) {
+    public void setP(ModifiableBigInteger p) {
 	this.p = p;
     }
 
@@ -97,11 +98,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
     }
 
-    public ModifiableVariable<Integer> getgLength() {
+    public ModifiableInteger getgLength() {
 	return gLength;
     }
 
-    public void setgLength(ModifiableVariable<Integer> gLength) {
+    public void setgLength(ModifiableInteger gLength) {
 	this.gLength = gLength;
     }
 
@@ -109,11 +110,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.gLength = ModifiableVariableFactory.safelySetValue(this.gLength, gLength);
     }
 
-    public ModifiableVariable<BigInteger> getG() {
+    public ModifiableBigInteger getG() {
 	return g;
     }
 
-    public void setG(ModifiableVariable<BigInteger> g) {
+    public void setG(ModifiableBigInteger g) {
 	this.g = g;
     }
 
@@ -121,11 +122,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
-    public ModifiableVariable<BigInteger> getPublicKey() {
+    public ModifiableBigInteger getPublicKey() {
 	return publicKey;
     }
 
-    public void setPublicKey(ModifiableVariable<BigInteger> publicKey) {
+    public void setPublicKey(ModifiableBigInteger publicKey) {
 	this.publicKey = publicKey;
     }
 
@@ -133,11 +134,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 
-    public ModifiableVariable<Integer> getPublicKeyLength() {
+    public ModifiableInteger getPublicKeyLength() {
 	return publicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableVariable<Integer> publicKeyLength) {
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
 	this.publicKeyLength = publicKeyLength;
     }
 

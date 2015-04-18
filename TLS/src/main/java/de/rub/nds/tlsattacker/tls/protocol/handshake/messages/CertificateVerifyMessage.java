@@ -17,9 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 
@@ -33,12 +34,12 @@ public class CertificateVerifyMessage extends HandshakeMessage {
      * signature length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> signatureLength;
+    ModifiableInteger signatureLength;
     /**
      * signature
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    ModifiableVariable<byte[]> signature;
+    ModifiableByteArray signature;
 
     public CertificateVerifyMessage() {
 	super(HandshakeMessageType.CERTIFICATE_VERIFY);
@@ -50,11 +51,11 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Integer> getSignatureLength() {
+    public ModifiableInteger getSignatureLength() {
 	return signatureLength;
     }
 
-    public void setSignatureLength(ModifiableVariable<Integer> signatureLength) {
+    public void setSignatureLength(ModifiableInteger signatureLength) {
 	this.signatureLength = signatureLength;
     }
 
@@ -62,11 +63,11 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 	this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
     }
 
-    public ModifiableVariable<byte[]> getSignature() {
+    public ModifiableByteArray getSignature() {
 	return signature;
     }
 
-    public void setSignature(ModifiableVariable<byte[]> signature) {
+    public void setSignature(ModifiableByteArray signature) {
 	this.signature = signature;
     }
 

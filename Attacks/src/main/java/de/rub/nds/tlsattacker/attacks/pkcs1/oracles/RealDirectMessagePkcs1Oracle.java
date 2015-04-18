@@ -1,7 +1,7 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -69,7 +69,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new AlertMessage(ConnectionEnd.SERVER));
 
-	ModifiableVariable<byte[]> pms = new ModifiableVariable<>();
+	ModifiableByteArray pms = new ModifiableByteArray();
 	pms.setModification(ByteArrayModificationFactory.explicitValue(msg));
 	cke.setEncryptedPremasterSecret(pms);
 

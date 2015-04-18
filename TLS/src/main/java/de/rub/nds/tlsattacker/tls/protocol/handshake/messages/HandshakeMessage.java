@@ -17,9 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -37,32 +38,32 @@ public class HandshakeMessage extends ProtocolMessage {
      * handshake type
      */
     @ModifiableVariableProperty
-    ModifiableVariable<Byte> type;
+    ModifiableByte type;
 
     /**
      * length of the included handshake message (for example ClientHello)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> length;
+    ModifiableInteger length;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
 	this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
 	this.handshakeMessageType = handshakeMessageType;
     }
 
-    public ModifiableVariable<Byte> getType() {
+    public ModifiableByte getType() {
 	return type;
     }
 
-    public ModifiableVariable<Integer> getLength() {
+    public ModifiableInteger getLength() {
 	return length;
     }
 
-    public void setType(ModifiableVariable<Byte> type) {
+    public void setType(ModifiableByte type) {
 	this.type = type;
     }
 
-    public void setLength(ModifiableVariable<Integer> length) {
+    public void setLength(ModifiableInteger length) {
 	this.length = length;
     }
 

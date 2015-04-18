@@ -19,12 +19,16 @@ package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
 import static de.rub.nds.tlsattacker.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "xor", "startPosition", "modificationFilter", "postModification" })
 public class ByteArrayXorModification extends VariableModification<byte[]> {
 
     private byte[] xor;
@@ -37,6 +41,7 @@ public class ByteArrayXorModification extends VariableModification<byte[]> {
 
     public ByteArrayXorModification(byte[] xor, int startPosition) {
 	this.xor = xor;
+	this.startPosition = startPosition;
     }
 
     @Override
@@ -60,6 +65,7 @@ public class ByteArrayXorModification extends VariableModification<byte[]> {
 	return result;
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getXor() {
 	return xor;
     }

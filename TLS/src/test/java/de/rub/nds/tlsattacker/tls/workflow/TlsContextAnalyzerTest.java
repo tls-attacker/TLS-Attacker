@@ -17,9 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -74,7 +75,7 @@ public class TlsContextAnalyzerTest {
 
 	ApplicationMessage am = (ApplicationMessage) context.getWorkflowTrace().getFirstProtocolMessage(
 		ProtocolMessageType.APPLICATION_DATA);
-	ModifiableVariable<byte[]> data = new ModifiableVariable<>();
+	ModifiableByteArray data = new ModifiableByteArray();
 	data.setModification(ByteArrayModificationFactory.explicitValue(new byte[0]));
 	am.setData(data);
 
@@ -171,7 +172,7 @@ public class TlsContextAnalyzerTest {
 
 	ApplicationMessage am = (ApplicationMessage) context.getWorkflowTrace().getFirstProtocolMessage(
 		ProtocolMessageType.APPLICATION_DATA);
-	ModifiableVariable<byte[]> data = new ModifiableVariable<>();
+	ModifiableByteArray data = new ModifiableByteArray();
 	data.setModification(ByteArrayModificationFactory.explicitValue(new byte[0]));
 	am.setData(data);
 
@@ -227,7 +228,7 @@ public class TlsContextAnalyzerTest {
 	ch.setCipherSuiteLength(2);
 	assertFalse("This ClientHello message contains no modification",
 		TlsContextAnalyzer.containsModifiableVariableModification(ch));
-	ModifiableVariable<Integer> length = new ModifiableVariable<>();
+	ModifiableInteger length = new ModifiableInteger();
 	length.setModification(IntegerModificationFactory.add(1));
 	ch.setCipherSuiteLength(length);
 	assertTrue("This ClientHello message contains a modification in the CipherSuite Length variable",

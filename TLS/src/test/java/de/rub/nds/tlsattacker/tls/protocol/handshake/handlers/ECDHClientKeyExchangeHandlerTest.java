@@ -17,8 +17,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -71,10 +71,10 @@ public class ECDHClientKeyExchangeHandlerTest {
 	handler.initializeProtocolMessage();
 
 	ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) handler.getProtocolMessage();
-	ModifiableVariable<BigInteger> mvx = new ModifiableVariable<>();
+	ModifiableBigInteger mvx = new ModifiableBigInteger();
 	mvx.setModification(BigIntegerModificationFactory.explicitValue(testBaseX));
 	message.setPublicKeyBaseX(mvx);
-	ModifiableVariable<BigInteger> mvy = new ModifiableVariable<>();
+	ModifiableBigInteger mvy = new ModifiableBigInteger();
 	mvy.setModification(BigIntegerModificationFactory.explicitValue(testBaseY));
 	message.setPublicKeyBaseY(mvy);
 

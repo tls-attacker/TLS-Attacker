@@ -17,7 +17,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.math.BigInteger;
@@ -26,11 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author dev
+ * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Christian Mainka <christian.mainka@rub.de>
  */
 public class OperationConcartenationTest {
 
-    private ModifiableVariable<BigInteger> start;
+    private ModifiableBigInteger start;
 
     private BigInteger expectedResult, result;
 
@@ -39,7 +39,7 @@ public class OperationConcartenationTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableVariable<BigInteger>();
+	start = new ModifiableBigInteger();
 	start.setOriginalValue(BigInteger.TEN);
     }
 

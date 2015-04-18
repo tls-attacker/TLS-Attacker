@@ -22,11 +22,13 @@ import static de.rub.nds.tlsattacker.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "count", "startPosition", "modificationFilter", "postModification" })
 public class ByteArrayDeleteModification extends VariableModification<byte[]> {
 
     private int count;

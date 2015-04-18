@@ -17,9 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.SignatureAndHashAlgorithmsExtensionHandler;
@@ -34,16 +35,16 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmsConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> signatureAndHashAlgorithmsLength;
+    ModifiableInteger signatureAndHashAlgorithmsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> signatureAndHashAlgorithms;
+    ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
 	this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
     }
 
-    public ModifiableVariable<Integer> getSignatureAndHashAlgorithmsLength() {
+    public ModifiableInteger getSignatureAndHashAlgorithmsLength() {
 	return signatureAndHashAlgorithmsLength;
     }
 
@@ -52,7 +53,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
 		this.signatureAndHashAlgorithmsLength, length);
     }
 
-    public ModifiableVariable<byte[]> getSignatureAndHashAlgorithms() {
+    public ModifiableByteArray getSignatureAndHashAlgorithms() {
 	return signatureAndHashAlgorithms;
     }
 
@@ -61,11 +62,11 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
 		array);
     }
 
-    public void setSignatureAndHashAlgorithmsLength(ModifiableVariable<Integer> signatureAndHashAlgorithmsLength) {
+    public void setSignatureAndHashAlgorithmsLength(ModifiableInteger signatureAndHashAlgorithmsLength) {
 	this.signatureAndHashAlgorithmsLength = signatureAndHashAlgorithmsLength;
     }
 
-    public void setSignatureAndHashAlgorithms(ModifiableVariable<byte[]> signatureAndHashAlgorithms) {
+    public void setSignatureAndHashAlgorithms(ModifiableByteArray signatureAndHashAlgorithms) {
 	this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
     }
 

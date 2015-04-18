@@ -20,11 +20,13 @@ package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "summand", "modificationFilter", "postModification" })
 public class BigIntegerAddModification extends VariableModification<BigInteger> {
 
     private BigInteger summand;

@@ -23,9 +23,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "xor", "modificationFilter", "postModification" })
 public class BigIntegerXorModification extends VariableModification<BigInteger> {
 
     private BigInteger xor;

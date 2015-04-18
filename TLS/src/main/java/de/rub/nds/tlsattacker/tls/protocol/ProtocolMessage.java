@@ -17,9 +17,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
@@ -68,7 +68,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      * resulting message
      */
     @ModifiableVariableProperty
-    protected ModifiableVariable<byte[]> completeResultingMessage;
+    protected ModifiableByteArray completeResultingMessage;
 
     @Override
     public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
@@ -128,11 +128,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 	return fields.get(randomField);
     }
 
-    public ModifiableVariable<byte[]> getCompleteResultingMessage() {
+    public ModifiableByteArray getCompleteResultingMessage() {
 	return completeResultingMessage;
     }
 
-    public void setCompleteResultingMessage(ModifiableVariable<byte[]> completeResultingMessage) {
+    public void setCompleteResultingMessage(ModifiableByteArray completeResultingMessage) {
 	this.completeResultingMessage = completeResultingMessage;
     }
 

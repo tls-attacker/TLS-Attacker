@@ -17,7 +17,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -28,7 +27,7 @@ import org.junit.Test;
  */
 public class IntegerModificationTest {
 
-    private ModifiableVariable<Integer> start;
+    private ModifiableInteger start;
 
     private Integer expectedResult, result;
 
@@ -37,7 +36,7 @@ public class IntegerModificationTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableVariable<>();
+	start = new ModifiableInteger();
 	start.setOriginalValue(10);
 	expectedResult = null;
 	result = null;

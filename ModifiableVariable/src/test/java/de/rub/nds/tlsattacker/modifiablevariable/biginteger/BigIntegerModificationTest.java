@@ -17,7 +17,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
@@ -25,11 +24,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author dev
+ * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class BigIntegerModificationTest {
 
-    private ModifiableVariable<BigInteger> start;
+    private ModifiableBigInteger start;
 
     private BigInteger expectedResult, result;
 
@@ -38,7 +37,7 @@ public class BigIntegerModificationTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableVariable<>();
+	start = new ModifiableBigInteger();
 	start.setOriginalValue(BigInteger.TEN);
 	expectedResult = null;
 	result = null;

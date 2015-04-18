@@ -18,7 +18,10 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ECPointFormatExtensionHandler;
@@ -35,42 +38,36 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
     private List<ECPointFormat> pointFormatsConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> pointFormatsLength;
+    ModifiableInteger pointFormatsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> pointFormats;
+    ModifiableByteArray pointFormats;
 
     public ECPointFormatExtensionMessage() {
 	this.extensionTypeConstant = ExtensionType.EC_POINT_FORMATS;
     }
 
-    public ModifiableVariable<byte[]> getPointFormats() {
+    public ModifiableByteArray getPointFormats() {
 	return pointFormats;
     }
 
     public void setPointFormats(byte[] array) {
-	if (this.pointFormats == null) {
-	    this.pointFormats = new ModifiableVariable<>();
-	}
-	this.pointFormats.setOriginalValue(array);
+	this.pointFormats = ModifiableVariableFactory.safelySetValue(pointFormats, array);
     }
 
-    public ModifiableVariable<Integer> getPointFormatsLength() {
+    public ModifiableInteger getPointFormatsLength() {
 	return pointFormatsLength;
     }
 
     public void setPointFormatsLength(int length) {
-	if (this.pointFormatsLength == null) {
-	    this.pointFormatsLength = new ModifiableVariable<>();
-	}
-	this.pointFormatsLength.setOriginalValue(length);
+	this.pointFormatsLength = ModifiableVariableFactory.safelySetValue(pointFormatsLength, length);
     }
 
-    public void setPointFormatsLength(ModifiableVariable<Integer> pointFormatsLength) {
+    public void setPointFormatsLength(ModifiableInteger pointFormatsLength) {
 	this.pointFormatsLength = pointFormatsLength;
     }
 
-    public void setPointFormats(ModifiableVariable<byte[]> pointFormats) {
+    public void setPointFormats(ModifiableByteArray pointFormats) {
 	this.pointFormats = pointFormats;
     }
 

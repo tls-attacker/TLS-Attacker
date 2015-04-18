@@ -17,8 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.EllipticCurvesExtensionHandler;
@@ -33,45 +35,36 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
     private List<NamedCurve> supportedCurvesConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> supportedCurvesLength;
+    ModifiableInteger supportedCurvesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> supportedCurves;
+    ModifiableByteArray supportedCurves;
 
     public EllipticCurvesExtensionMessage() {
 	this.extensionTypeConstant = ExtensionType.ELLIPTIC_CURVES;
     }
 
-    public ModifiableVariable<Integer> getSupportedCurvesLength() {
+    public ModifiableInteger getSupportedCurvesLength() {
 	return supportedCurvesLength;
     }
 
     public void setSupportedCurvesLength(int length) {
-	if (this.supportedCurvesLength == null) {
-	    this.supportedCurvesLength = new ModifiableVariable<>();
-	}
-	this.supportedCurvesLength.setOriginalValue(length);
+	this.supportedCurvesLength = ModifiableVariableFactory.safelySetValue(supportedCurvesLength, length);
     }
 
-    public ModifiableVariable<byte[]> getSupportedCurves() {
+    public ModifiableByteArray getSupportedCurves() {
 	return supportedCurves;
     }
 
     public void setSupportedCurves(byte[] array) {
-	if (this.supportedCurves == null) {
-	    this.supportedCurves = new ModifiableVariable<>();
-	}
-	supportedCurves.setOriginalValue(array);
+	supportedCurves = ModifiableVariableFactory.safelySetValue(supportedCurves, array);
     }
 
-    public void setSupportedCurvesLength(ModifiableVariable<Integer> supportedCurvesLength) {
+    public void setSupportedCurvesLength(ModifiableInteger supportedCurvesLength) {
 	this.supportedCurvesLength = supportedCurvesLength;
     }
 
-    public void setSupportedCurves(ModifiableVariable<byte[]> supportedCurves) {
-	if (this.supportedCurves == null) {
-	    this.supportedCurves = new ModifiableVariable<>();
-	}
+    public void setSupportedCurves(ModifiableByteArray supportedCurves) {
 	this.supportedCurves = supportedCurves;
     }
 

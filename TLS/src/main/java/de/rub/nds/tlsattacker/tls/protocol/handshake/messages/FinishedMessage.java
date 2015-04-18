@@ -18,7 +18,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -29,7 +31,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public class FinishedMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    ModifiableVariable<byte[]> verifyData;
+    ModifiableByteArray verifyData;
 
     public FinishedMessage() {
 	super(HandshakeMessageType.FINISHED);
@@ -40,19 +42,16 @@ public class FinishedMessage extends HandshakeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<byte[]> getVerifyData() {
+    public ModifiableByteArray getVerifyData() {
 	return verifyData;
     }
 
-    public void setVerifyData(ModifiableVariable<byte[]> verifyData) {
+    public void setVerifyData(ModifiableByteArray verifyData) {
 	this.verifyData = verifyData;
     }
 
     public void setVerifyData(byte[] value) {
-	if (this.verifyData == null) {
-	    this.verifyData = new ModifiableVariable<>();
-	}
-	this.verifyData.setOriginalValue(value);
+	this.verifyData = ModifiableVariableFactory.safelySetValue(this.verifyData, value);
     }
 
     @Override

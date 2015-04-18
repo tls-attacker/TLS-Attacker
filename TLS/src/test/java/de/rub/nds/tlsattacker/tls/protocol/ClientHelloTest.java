@@ -83,7 +83,7 @@ public class ClientHelloTest {
     public void simpleSerialization() throws JAXBException {
 	ClientHelloMessage cl = new ClientHelloMessage();
 	cl.setCipherSuiteLength(3);
-	// cl.setCipherSuiteLength(new ModifiableVariable<Integer>());
+	// cl.setCipherSuiteLength(new ModifiableInteger());
 	cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
 	m.marshal(cl, writer);
 

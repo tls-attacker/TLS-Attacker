@@ -17,9 +17,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.ccs.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -33,7 +33,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty
-    ModifiableVariable<Byte> ccsProtocolType;
+    ModifiableByte ccsProtocolType;
 
     public ChangeCipherSpecMessage() {
 	this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
@@ -44,19 +44,16 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Byte> getCcsProtocolType() {
+    public ModifiableByte getCcsProtocolType() {
 	return ccsProtocolType;
     }
 
-    public void setCcsProtocolType(ModifiableVariable<Byte> ccsProtocolType) {
+    public void setCcsProtocolType(ModifiableByte ccsProtocolType) {
 	this.ccsProtocolType = ccsProtocolType;
     }
 
     public void setCcsProtocolType(byte value) {
-	if (this.ccsProtocolType == null) {
-	    this.ccsProtocolType = new ModifiableVariable<>();
-	}
-	this.ccsProtocolType.setOriginalValue(value);
+	this.ccsProtocolType = ModifiableVariableFactory.safelySetValue(ccsProtocolType, value);
     }
 
     @Override
