@@ -17,9 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -33,22 +34,22 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public class CertificateRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    ModifiableVariable<Integer> clientCertificateTypesCount;
+    ModifiableInteger clientCertificateTypesCount;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> clientCertificateTypes;
+    ModifiableByteArray clientCertificateTypes;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> signatureHashAlgorithmsLength;
+    ModifiableInteger signatureHashAlgorithmsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> signatureHashAlgorithms;
+    ModifiableByteArray signatureHashAlgorithms;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> distinguishedNamesLength;
+    ModifiableInteger distinguishedNamesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> distinguishedNames;
+    ModifiableByteArray distinguishedNames;
 
     public CertificateRequestMessage() {
 	super(HandshakeMessageType.CERTIFICATE_REQUEST);
@@ -60,11 +61,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Integer> getClientCertificateTypesCount() {
+    public ModifiableInteger getClientCertificateTypesCount() {
 	return clientCertificateTypesCount;
     }
 
-    public void setClientCertificateTypesCount(ModifiableVariable<Integer> clientCertificateTypesCount) {
+    public void setClientCertificateTypesCount(ModifiableInteger clientCertificateTypesCount) {
 	this.clientCertificateTypesCount = clientCertificateTypesCount;
     }
 
@@ -73,11 +74,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
 		clientCertificateTypesCount);
     }
 
-    public ModifiableVariable<byte[]> getClientCertificateTypes() {
+    public ModifiableByteArray getClientCertificateTypes() {
 	return clientCertificateTypes;
     }
 
-    public void setClientCertificateTypes(ModifiableVariable<byte[]> clientCertificateTypes) {
+    public void setClientCertificateTypes(ModifiableByteArray clientCertificateTypes) {
 	this.clientCertificateTypes = clientCertificateTypes;
     }
 
@@ -86,11 +87,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
 		clientCertificateTypes);
     }
 
-    public ModifiableVariable<Integer> getSignatureHashAlgorithmsLength() {
+    public ModifiableInteger getSignatureHashAlgorithmsLength() {
 	return signatureHashAlgorithmsLength;
     }
 
-    public void setSignatureHashAlgorithmsLength(ModifiableVariable<Integer> signatureHashAlgorithmsLength) {
+    public void setSignatureHashAlgorithmsLength(ModifiableInteger signatureHashAlgorithmsLength) {
 	this.signatureHashAlgorithmsLength = signatureHashAlgorithmsLength;
     }
 
@@ -99,11 +100,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
 		this.signatureHashAlgorithmsLength, signatureHashAlgorithmsLength);
     }
 
-    public ModifiableVariable<byte[]> getSignatureHashAlgorithms() {
+    public ModifiableByteArray getSignatureHashAlgorithms() {
 	return signatureHashAlgorithms;
     }
 
-    public void setSignatureHashAlgorithms(ModifiableVariable<byte[]> signatureHashAlgorithms) {
+    public void setSignatureHashAlgorithms(ModifiableByteArray signatureHashAlgorithms) {
 	this.signatureHashAlgorithms = signatureHashAlgorithms;
     }
 
@@ -112,11 +113,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
 		signatureHashAlgorithms);
     }
 
-    public ModifiableVariable<Integer> getDistinguishedNamesLength() {
+    public ModifiableInteger getDistinguishedNamesLength() {
 	return distinguishedNamesLength;
     }
 
-    public void setDistinguishedNamesLength(ModifiableVariable<Integer> distinguishedNamesLength) {
+    public void setDistinguishedNamesLength(ModifiableInteger distinguishedNamesLength) {
 	this.distinguishedNamesLength = distinguishedNamesLength;
     }
 
@@ -125,11 +126,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
 		distinguishedNamesLength);
     }
 
-    public ModifiableVariable<byte[]> getDistinguishedNames() {
+    public ModifiableByteArray getDistinguishedNames() {
 	return distinguishedNames;
     }
 
-    public void setDistinguishedNames(ModifiableVariable<byte[]> distinguishedNames) {
+    public void setDistinguishedNames(ModifiableByteArray distinguishedNames) {
 	this.distinguishedNames = distinguishedNames;
     }
 

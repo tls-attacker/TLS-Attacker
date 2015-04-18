@@ -26,10 +26,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * modified value. This can be achieved using a ModificationFilter object.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @param <E>
  */
 @XmlSeeAlso({ AccessModificationFilter.class })
-public abstract class ModificationFilter<E> {
+public abstract class ModificationFilter {
 
-    public abstract boolean filterModification(E originalValue, E modifiedValue);
+    public abstract boolean filterModification();
 }

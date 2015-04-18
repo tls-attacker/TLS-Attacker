@@ -19,9 +19,9 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
@@ -57,7 +57,7 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-	ModifiableVariable<byte[]> padding = new ModifiableVariable<>();
+	ModifiableByteArray padding = new ModifiableByteArray();
 	// we xor just the first byte in the padding
 	// if the padding was {0x02, 0x02, 0x02}, it becomes {0x03, 0x02, 0x02}
 	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);

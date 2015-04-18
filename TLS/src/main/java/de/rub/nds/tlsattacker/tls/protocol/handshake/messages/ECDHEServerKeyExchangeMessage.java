@@ -17,9 +17,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ECCurveType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -34,16 +36,16 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<Byte> curveType;
+    ModifiableByte curveType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> namedCurve;
+    ModifiableByteArray namedCurve;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> publicKeyLength;
+    ModifiableInteger publicKeyLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<byte[]> publicKey;
+    ModifiableByteArray publicKey;
 
     public ECDHEServerKeyExchangeMessage() {
 	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
@@ -55,11 +57,11 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Byte> getCurveType() {
+    public ModifiableByte getCurveType() {
 	return curveType;
     }
 
-    public void setCurveType(ModifiableVariable<Byte> curveType) {
+    public void setCurveType(ModifiableByte curveType) {
 	this.curveType = curveType;
     }
 
@@ -67,11 +69,11 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.curveType = ModifiableVariableFactory.safelySetValue(this.curveType, curveType);
     }
 
-    public ModifiableVariable<byte[]> getNamedCurve() {
+    public ModifiableByteArray getNamedCurve() {
 	return namedCurve;
     }
 
-    public void setNamedCurve(ModifiableVariable<byte[]> namedCurve) {
+    public void setNamedCurve(ModifiableByteArray namedCurve) {
 	this.namedCurve = namedCurve;
     }
 
@@ -79,11 +81,11 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
     }
 
-    public ModifiableVariable<Integer> getPublicKeyLength() {
+    public ModifiableInteger getPublicKeyLength() {
 	return publicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableVariable<Integer> publicKeyLength) {
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
 	this.publicKeyLength = publicKeyLength;
     }
 
@@ -91,11 +93,11 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
     }
 
-    public ModifiableVariable<byte[]> getPublicKey() {
+    public ModifiableByteArray getPublicKey() {
 	return publicKey;
     }
 
-    public void setPublicKey(ModifiableVariable<byte[]> publicKey) {
+    public void setPublicKey(ModifiableByteArray publicKey) {
 	this.publicKey = publicKey;
     }
 

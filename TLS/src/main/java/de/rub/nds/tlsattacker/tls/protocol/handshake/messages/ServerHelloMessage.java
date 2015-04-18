@@ -17,8 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
@@ -34,10 +36,10 @@ import java.util.Date;
 public class ServerHelloMessage extends HelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> selectedCipherSuite;
+    ModifiableByteArray selectedCipherSuite;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<Byte> selectedCompressionMethod;
+    ModifiableByte selectedCompressionMethod;
 
     public ServerHelloMessage() {
 	super(HandshakeMessageType.SERVER_HELLO);
@@ -49,34 +51,29 @@ public class ServerHelloMessage extends HelloMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<byte[]> getSelectedCipherSuite() {
+    public ModifiableByteArray getSelectedCipherSuite() {
 	return selectedCipherSuite;
     }
 
-    public void setSelectedCipherSuite(ModifiableVariable<byte[]> selectedCipherSuite) {
+    public void setSelectedCipherSuite(ModifiableByteArray selectedCipherSuite) {
 	this.selectedCipherSuite = selectedCipherSuite;
     }
 
     public void setSelectedCipherSuite(byte[] value) {
-	if (this.selectedCipherSuite == null) {
-	    this.selectedCipherSuite = new ModifiableVariable<>();
-	}
-	this.selectedCipherSuite.setOriginalValue(value);
+	this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
     }
 
-    public ModifiableVariable<Byte> getSelectedCompressionMethod() {
+    public ModifiableByte getSelectedCompressionMethod() {
 	return selectedCompressionMethod;
     }
 
-    public void setSelectedCompressionMethod(ModifiableVariable<Byte> selectedCompressionMethod) {
+    public void setSelectedCompressionMethod(ModifiableByte selectedCompressionMethod) {
 	this.selectedCompressionMethod = selectedCompressionMethod;
     }
 
     public void setSelectedCompressionMethod(byte value) {
-	if (this.selectedCompressionMethod == null) {
-	    this.selectedCompressionMethod = new ModifiableVariable<>();
-	}
-	this.selectedCompressionMethod.setOriginalValue(value);
+	this.selectedCompressionMethod = ModifiableVariableFactory
+		.safelySetValue(this.selectedCompressionMethod, value);
     }
 
     @Override

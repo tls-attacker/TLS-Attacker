@@ -84,14 +84,14 @@ public class Test {
 	RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) tlsContext.getWorkflowTrace()
 		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
 
-	byte[] explicitPMS = new byte[128];
-	explicitPMS[0] = 1;
-	ModifiableVariable<byte[]> pms = new ModifiableVariable<>();
-	pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
-	message.setEncryptedPremasterSecret(pms);
-
-	workflowExecutor.executeWorkflow();
-
-	transportHandler.closeConnection();
+	// byte[] explicitPMS = new byte[128];
+	// explicitPMS[0] = 1;
+	// ModifiableByteArray pms = new ModifiableVariable<>();
+	// pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
+	// message.setEncryptedPremasterSecret(pms);
+	//
+	// workflowExecutor.executeWorkflow();
+	//
+	// transportHandler.closeConnection();
     }
 }

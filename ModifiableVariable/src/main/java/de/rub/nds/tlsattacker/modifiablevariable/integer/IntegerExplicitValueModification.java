@@ -19,11 +19,13 @@ package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "explicitValue", "modificationFilter", "postModification" })
 public class IntegerExplicitValueModification extends VariableModification<Integer> {
 
     private Integer explicitValue;

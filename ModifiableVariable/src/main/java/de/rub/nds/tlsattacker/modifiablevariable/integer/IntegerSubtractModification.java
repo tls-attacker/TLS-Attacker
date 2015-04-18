@@ -19,11 +19,13 @@ package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "subtrahend", "modificationFilter", "postModification" })
 public class IntegerSubtractModification extends VariableModification<Integer> {
 
     private Integer subtrahend;

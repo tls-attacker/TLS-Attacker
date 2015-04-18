@@ -19,8 +19,8 @@ package de.rub.nds.tlsattacker.modifiablevariable.filter;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class ModificationApprovalTest {
 
-    private ModifiableVariable<BigInteger> start;
+    private ModifiableBigInteger start;
 
     private ModificationFilter filter;
 
@@ -42,7 +42,7 @@ public class ModificationApprovalTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableVariable<>();
+	start = new ModifiableBigInteger();
 	start.setOriginalValue(BigInteger.TEN);
 	int[] filtered = { 1, 3 };
 	filter = ModificationFilterFactory.access(filtered);

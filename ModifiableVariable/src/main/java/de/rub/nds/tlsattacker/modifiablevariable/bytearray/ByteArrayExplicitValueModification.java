@@ -17,14 +17,17 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
-import static de.rub.nds.tlsattacker.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "explicitValue", "modificationFilter", "postModification" })
 public class ByteArrayExplicitValueModification extends VariableModification<byte[]> {
 
     private byte[] explicitValue;
@@ -42,6 +45,7 @@ public class ByteArrayExplicitValueModification extends VariableModification<byt
 	return explicitValue.clone();
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getExplicitValue() {
 	return explicitValue;
     }

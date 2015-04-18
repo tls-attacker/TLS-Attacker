@@ -17,9 +17,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import java.math.BigInteger;
@@ -33,32 +35,32 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> p;
+    ModifiableBigInteger p;
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> g;
+    ModifiableBigInteger g;
     /**
      * server's public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> y;
+    ModifiableBigInteger y;
     /**
      * client's private key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    ModifiableVariable<BigInteger> x;
+    ModifiableBigInteger x;
     /**
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> serializedPublicKeyLength;
+    ModifiableInteger serializedPublicKeyLength;
     /**
      * serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<byte[]> serializedPublicKey;
+    ModifiableByteArray serializedPublicKey;
 
     public DHClientKeyExchangeMessage() {
 	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
@@ -70,11 +72,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<BigInteger> getP() {
+    public ModifiableBigInteger getP() {
 	return p;
     }
 
-    public void setP(ModifiableVariable<BigInteger> p) {
+    public void setP(ModifiableBigInteger p) {
 	this.p = p;
     }
 
@@ -82,11 +84,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
     }
 
-    public ModifiableVariable<BigInteger> getG() {
+    public ModifiableBigInteger getG() {
 	return g;
     }
 
-    public void setG(ModifiableVariable<BigInteger> g) {
+    public void setG(ModifiableBigInteger g) {
 	this.g = g;
     }
 
@@ -94,11 +96,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
-    public ModifiableVariable<BigInteger> getY() {
+    public ModifiableBigInteger getY() {
 	return y;
     }
 
-    public void setY(ModifiableVariable<BigInteger> y) {
+    public void setY(ModifiableBigInteger y) {
 	this.y = y;
     }
 
@@ -106,11 +108,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.y = ModifiableVariableFactory.safelySetValue(this.y, y);
     }
 
-    public ModifiableVariable<BigInteger> getX() {
+    public ModifiableBigInteger getX() {
 	return x;
     }
 
-    public void setX(ModifiableVariable<BigInteger> x) {
+    public void setX(ModifiableBigInteger x) {
 	this.x = x;
     }
 
@@ -118,11 +120,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.x = ModifiableVariableFactory.safelySetValue(this.x, x);
     }
 
-    public ModifiableVariable<Integer> getSerializedPublicKeyLength() {
+    public ModifiableInteger getSerializedPublicKeyLength() {
 	return serializedPublicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(ModifiableVariable<Integer> serializedPublicKeyLength) {
+    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
 	this.serializedPublicKeyLength = serializedPublicKeyLength;
     }
 
@@ -131,11 +133,11 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 		publicKeyLength);
     }
 
-    public ModifiableVariable<byte[]> getSerializedPublicKey() {
+    public ModifiableByteArray getSerializedPublicKey() {
 	return serializedPublicKey;
     }
 
-    public void setSerializedPublicKey(ModifiableVariable<byte[]> serializedPublicKey) {
+    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
 	this.serializedPublicKey = serializedPublicKey;
     }
 

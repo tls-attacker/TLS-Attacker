@@ -18,7 +18,10 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ECPointFormatExtensionMessage;
@@ -45,27 +48,27 @@ abstract class HelloMessage extends HandshakeMessage {
      * protocol version in the client and server hello
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> protocolVersion;
+    ModifiableByteArray protocolVersion;
     /**
      * unix time
      */
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> unixTime;
+    ModifiableByteArray unixTime;
     /**
      * random
      */
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> random;
+    ModifiableByteArray random;
     /**
      * length of the session id length field indicating the session id length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> sessionIdLength;
+    ModifiableInteger sessionIdLength;
     /**
      * session id
      */
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> sessionId;
+    ModifiableByteArray sessionId;
     /**
      * List of extensions
      */
@@ -75,79 +78,64 @@ abstract class HelloMessage extends HandshakeMessage {
 	super(handshakeMessageType);
     }
 
-    public ModifiableVariable<byte[]> getRandom() {
+    public ModifiableByteArray getRandom() {
 	return random;
     }
 
-    public ModifiableVariable<byte[]> getSessionId() {
+    public ModifiableByteArray getSessionId() {
 	return sessionId;
     }
 
-    public ModifiableVariable<byte[]> getUnixTime() {
+    public ModifiableByteArray getUnixTime() {
 	return unixTime;
     }
 
-    public ModifiableVariable<byte[]> getProtocolVersion() {
+    public ModifiableByteArray getProtocolVersion() {
 	return protocolVersion;
     }
 
-    public ModifiableVariable<Integer> getSessionIdLength() {
+    public ModifiableInteger getSessionIdLength() {
 	return sessionIdLength;
     }
 
-    public void setProtocolVersion(ModifiableVariable<byte[]> protocolVersion) {
+    public void setProtocolVersion(ModifiableByteArray protocolVersion) {
 	this.protocolVersion = protocolVersion;
     }
 
-    public void setUnixTime(ModifiableVariable<byte[]> unixTime) {
+    public void setUnixTime(ModifiableByteArray unixTime) {
 	this.unixTime = unixTime;
     }
 
-    public void setRandom(ModifiableVariable<byte[]> random) {
+    public void setRandom(ModifiableByteArray random) {
 	this.random = random;
     }
 
-    public void setSessionIdLength(ModifiableVariable<Integer> sessionIdLength) {
+    public void setSessionIdLength(ModifiableInteger sessionIdLength) {
 	this.sessionIdLength = sessionIdLength;
     }
 
-    public void setSessionId(ModifiableVariable<byte[]> sessionId) {
+    public void setSessionId(ModifiableByteArray sessionId) {
 	this.sessionId = sessionId;
     }
 
     public void setRandom(byte[] random) {
-	if (this.random == null) {
-	    this.random = new ModifiableVariable<>();
-	}
-	this.random.setOriginalValue(random);
+	this.random = ModifiableVariableFactory.safelySetValue(this.random, random);
     }
 
     public void setSessionId(byte[] sessionId) {
-	if (this.sessionId == null) {
-	    this.sessionId = new ModifiableVariable<>();
-	}
-	this.sessionId.setOriginalValue(sessionId);
+	this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
     }
 
     public void setUnixTime(byte[] unixTime) {
-	if (this.unixTime == null) {
-	    this.unixTime = new ModifiableVariable<>();
-	}
-	this.unixTime.setOriginalValue(unixTime);
+	this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
     }
 
     public void setSessionIdLength(int sessionIdLength) {
-	if (this.sessionIdLength == null) {
-	    this.sessionIdLength = new ModifiableVariable<>();
-	}
-	this.sessionIdLength.setOriginalValue(sessionIdLength);
+	this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIdLength);
     }
 
     public void setProtocolVersion(byte[] array) {
-	if (this.protocolVersion == null) {
-	    this.protocolVersion = new ModifiableVariable<>();
-	}
-	this.protocolVersion.setOriginalValue(array);
+	this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
     @XmlElementWrapper

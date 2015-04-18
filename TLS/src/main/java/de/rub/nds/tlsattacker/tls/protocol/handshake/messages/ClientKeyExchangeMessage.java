@@ -17,8 +17,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 
 /**
@@ -28,39 +29,33 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageT
 public class ClientKeyExchangeMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    ModifiableVariable<byte[]> masterSecret;
+    ModifiableByteArray masterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    ModifiableVariable<byte[]> premasterSecret;
+    ModifiableByteArray premasterSecret;
 
     public ClientKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
 	super(handshakeMessageType);
     }
 
-    public ModifiableVariable<byte[]> getMasterSecret() {
+    public ModifiableByteArray getMasterSecret() {
 	return masterSecret;
     }
 
     public void setMasterSecret(byte[] value) {
-	if (this.masterSecret == null) {
-	    this.masterSecret = new ModifiableVariable<>();
-	}
-	this.masterSecret.setOriginalValue(value);
+	this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, value);
     }
 
-    public ModifiableVariable<byte[]> getPremasterSecret() {
+    public ModifiableByteArray getPremasterSecret() {
 	return premasterSecret;
     }
 
-    public void setPremasterSecret(ModifiableVariable<byte[]> premasterSecret) {
+    public void setPremasterSecret(ModifiableByteArray premasterSecret) {
 	this.premasterSecret = premasterSecret;
     }
 
     public void setPremasterSecret(byte[] premasterSecret) {
-	if (this.premasterSecret == null) {
-	    this.premasterSecret = new ModifiableVariable<>();
-	}
-	this.premasterSecret.setOriginalValue(premasterSecret);
+	this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, premasterSecret);
     }
 
 }

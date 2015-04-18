@@ -17,9 +17,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -33,16 +35,16 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class HeartbeatMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<Byte> heartbeatMessageType;
+    ModifiableByte heartbeatMessageType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> payloadLength;
+    ModifiableInteger payloadLength;
 
     @ModifiableVariableProperty()
-    ModifiableVariable<byte[]> payload;
+    ModifiableByteArray payload;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableVariable<byte[]> padding;
+    ModifiableByteArray padding;
 
     public HeartbeatMessage() {
 	this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
@@ -53,64 +55,53 @@ public class HeartbeatMessage extends ProtocolMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Byte> getHeartbeatMessageType() {
+    public ModifiableByte getHeartbeatMessageType() {
 	return heartbeatMessageType;
     }
 
-    public void setHeartbeatMessageType(ModifiableVariable<Byte> heartbeatMessageType) {
+    public void setHeartbeatMessageType(ModifiableByte heartbeatMessageType) {
 	this.heartbeatMessageType = heartbeatMessageType;
     }
 
     public void setHeartbeatMessageType(byte heartbeatMessageType) {
-	if (this.heartbeatMessageType == null) {
-	    this.heartbeatMessageType = new ModifiableVariable<>();
-	}
-	this.heartbeatMessageType.setOriginalValue(heartbeatMessageType);
+	this.heartbeatMessageType = ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType,
+		heartbeatMessageType);
     }
 
-    public ModifiableVariable<Integer> getPayloadLength() {
+    public ModifiableInteger getPayloadLength() {
 	return payloadLength;
     }
 
-    public void setPayloadLength(ModifiableVariable<Integer> payloadLength) {
+    public void setPayloadLength(ModifiableInteger payloadLength) {
 	this.payloadLength = payloadLength;
     }
 
     public void setPayloadLength(int payloadLength) {
-	if (this.payloadLength == null) {
-	    this.payloadLength = new ModifiableVariable<>();
-	}
-	this.payloadLength.setOriginalValue(payloadLength);
+	this.payloadLength = ModifiableVariableFactory.safelySetValue(this.payloadLength, payloadLength);
     }
 
-    public ModifiableVariable<byte[]> getPayload() {
+    public ModifiableByteArray getPayload() {
 	return payload;
     }
 
-    public void setPayload(ModifiableVariable<byte[]> payload) {
+    public void setPayload(ModifiableByteArray payload) {
 	this.payload = payload;
     }
 
     public void setPayload(byte[] payload) {
-	if (this.payload == null) {
-	    this.payload = new ModifiableVariable<>();
-	}
-	this.payload.setOriginalValue(payload);
+	this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public ModifiableVariable<byte[]> getPadding() {
+    public ModifiableByteArray getPadding() {
 	return padding;
     }
 
-    public void setPadding(ModifiableVariable<byte[]> padding) {
+    public void setPadding(ModifiableByteArray padding) {
 	this.padding = padding;
     }
 
     public void setPadding(byte[] padding) {
-	if (this.padding == null) {
-	    this.padding = new ModifiableVariable<>();
-	}
-	this.padding.setOriginalValue(padding);
+	this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
     @Override

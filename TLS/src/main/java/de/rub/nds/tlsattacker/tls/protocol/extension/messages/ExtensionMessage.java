@@ -17,8 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
@@ -35,56 +37,47 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
     ExtensionType extensionTypeConstant;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> extensionType;
+    ModifiableByteArray extensionType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> extensionLength;
+    ModifiableInteger extensionLength;
 
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> extensionBytes;
+    ModifiableByteArray extensionBytes;
 
-    public ModifiableVariable<byte[]> getExtensionType() {
+    public ModifiableByteArray getExtensionType() {
 	return extensionType;
     }
 
-    public ModifiableVariable<Integer> getExtensionLength() {
+    public ModifiableInteger getExtensionLength() {
 	return extensionLength;
     }
 
-    public ModifiableVariable<byte[]> getExtensionBytes() {
+    public ModifiableByteArray getExtensionBytes() {
 	return extensionBytes;
     }
 
     public void setExtensionType(byte[] array) {
-	if (this.extensionType == null) {
-	    this.extensionType = new ModifiableVariable<>();
-	}
-	this.extensionType.setOriginalValue(array);
+	this.extensionType = ModifiableVariableFactory.safelySetValue(extensionType, array);
     }
 
     public void setExtensionLength(int length) {
-	if (this.extensionLength == null) {
-	    this.extensionLength = new ModifiableVariable<>();
-	}
-	this.extensionLength.setOriginalValue(length);
+	this.extensionLength = ModifiableVariableFactory.safelySetValue(extensionLength, length);
     }
 
     public void setExtensionBytes(byte[] data) {
-	if (this.extensionBytes == null) {
-	    this.extensionBytes = new ModifiableVariable<>();
-	}
-	this.extensionBytes.setOriginalValue(data);
+	this.extensionBytes = ModifiableVariableFactory.safelySetValue(extensionBytes, data);
     }
 
-    public void setExtensionType(ModifiableVariable<byte[]> extensionType) {
+    public void setExtensionType(ModifiableByteArray extensionType) {
 	this.extensionType = extensionType;
     }
 
-    public void setExtensionLength(ModifiableVariable<Integer> extensionLength) {
+    public void setExtensionLength(ModifiableInteger extensionLength) {
 	this.extensionLength = extensionLength;
     }
 
-    public void setExtensionBytes(ModifiableVariable<byte[]> extensionBytes) {
+    public void setExtensionBytes(ModifiableByteArray extensionBytes) {
 	this.extensionBytes = extensionBytes;
     }
 

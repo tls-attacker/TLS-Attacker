@@ -18,7 +18,10 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 
@@ -28,13 +31,13 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageT
 public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> encryptedPremasterSecretLength;
+    ModifiableInteger encryptedPremasterSecretLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    ModifiableVariable<byte[]> encryptedPremasterSecret;
+    ModifiableByteArray encryptedPremasterSecret;
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    ModifiableVariable<byte[]> plainPaddedPremasterSecret;
+    ModifiableByteArray plainPaddedPremasterSecret;
 
     public RSAClientKeyExchangeMessage() {
 	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
@@ -46,52 +49,45 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Integer> getEncryptedPremasterSecretLength() {
+    public ModifiableInteger getEncryptedPremasterSecretLength() {
 	return encryptedPremasterSecretLength;
     }
 
-    public void setEncryptedPremasterSecretLength(ModifiableVariable<Integer> encryptedPremasterSecretLength) {
+    public void setEncryptedPremasterSecretLength(ModifiableInteger encryptedPremasterSecretLength) {
 	this.encryptedPremasterSecretLength = encryptedPremasterSecretLength;
     }
 
     public void setEncryptedPremasterSecretLength(int length) {
-	if (this.encryptedPremasterSecretLength == null) {
-	    this.encryptedPremasterSecretLength = new ModifiableVariable<>();
-	}
-	this.encryptedPremasterSecretLength.setOriginalValue(length);
+	this.encryptedPremasterSecretLength = ModifiableVariableFactory.safelySetValue(
+		this.encryptedPremasterSecretLength, length);
     }
 
-    public ModifiableVariable<byte[]> getEncryptedPremasterSecret() {
+    public ModifiableByteArray getEncryptedPremasterSecret() {
 	return encryptedPremasterSecret;
     }
 
-    public void setEncryptedPremasterSecret(ModifiableVariable<byte[]> encryptedPremasterSecret) {
+    public void setEncryptedPremasterSecret(ModifiableByteArray encryptedPremasterSecret) {
 	this.encryptedPremasterSecret = encryptedPremasterSecret;
     }
 
     public void setEncryptedPremasterSecret(byte[] value) {
-	if (this.encryptedPremasterSecret == null) {
-	    this.encryptedPremasterSecret = new ModifiableVariable<>();
-	}
-	this.encryptedPremasterSecret.setOriginalValue(value);
+	this.encryptedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.encryptedPremasterSecret, value);
     }
 
-    public ModifiableVariable<byte[]> getPlainPaddedPremasterSecret() {
+    public ModifiableByteArray getPlainPaddedPremasterSecret() {
 	return plainPaddedPremasterSecret;
     }
 
-    public void setPlainPaddedPremasterSecret(ModifiableVariable<byte[]> plainPaddedPremasterSecret) {
+    public void setPlainPaddedPremasterSecret(ModifiableByteArray plainPaddedPremasterSecret) {
 	this.plainPaddedPremasterSecret = plainPaddedPremasterSecret;
     }
 
     public void setPlainPaddedPremasterSecret(byte[] value) {
-	if (this.plainPaddedPremasterSecret == null) {
-	    this.plainPaddedPremasterSecret = new ModifiableVariable<>();
-	}
-	this.plainPaddedPremasterSecret.setOriginalValue(value);
+	this.plainPaddedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret,
+		value);
     }
 
-    public void setMasterSecret(ModifiableVariable<byte[]> masterSecret) {
+    public void setMasterSecret(ModifiableByteArray masterSecret) {
 	this.masterSecret = masterSecret;
     }
 

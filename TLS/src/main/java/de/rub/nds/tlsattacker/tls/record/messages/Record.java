@@ -17,8 +17,11 @@
  */
 package de.rub.nds.tlsattacker.tls.record.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,49 +43,49 @@ public class Record extends ModifiableVariableHolder {
      * record layer
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> length;
+    ModifiableInteger length;
 
     /**
      * Content type
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<Byte> contentType;
+    ModifiableByte contentType;
 
     /**
      * Record Layer Protocol Version
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> protocolVersion;
+    ModifiableByteArray protocolVersion;
 
     /**
      * protocol message bytes transported in the record
      */
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> protocolMessageBytes;
+    ModifiableByteArray protocolMessageBytes;
 
     /**
      * MAC (message authentication code) for the record (if needed)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    ModifiableVariable<byte[]> mac;
+    ModifiableByteArray mac;
 
     /**
      * Padding
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableVariable<byte[]> padding;
+    ModifiableByteArray padding;
 
     /**
      * Padding length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> paddingLength;
+    ModifiableInteger paddingLength;
 
     /**
      * encrypted protocol message bytes (if encryption activated)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    ModifiableVariable<byte[]> encryptedProtocolMessageBytes;
+    ModifiableByteArray encryptedProtocolMessageBytes;
 
     /**
      * It is possible to define a sleep [in milliseconds] after the protocol
@@ -90,159 +93,103 @@ public class Record extends ModifiableVariableHolder {
      */
     private int sleepAfterMessageSent;
 
-    public ModifiableVariable<Integer> getLength() {
+    public ModifiableInteger getLength() {
 	return length;
     }
 
-    public ModifiableVariable<Byte> getContentType() {
+    public ModifiableByte getContentType() {
 	return contentType;
     }
 
-    public ModifiableVariable<byte[]> getProtocolVersion() {
+    public ModifiableByteArray getProtocolVersion() {
 	return protocolVersion;
     }
 
-    public ModifiableVariable<byte[]> getMac() {
+    public ModifiableByteArray getMac() {
 	return mac;
     }
 
-    public ModifiableVariable<byte[]> getPadding() {
+    public ModifiableByteArray getPadding() {
 	return padding;
     }
 
-    public ModifiableVariable<byte[]> getProtocolMessageBytes() {
+    public ModifiableByteArray getProtocolMessageBytes() {
 	return protocolMessageBytes;
     }
 
-    public void setProtocolMessageBytes(ModifiableVariable<byte[]> protocolMessageBytes) {
+    public void setProtocolMessageBytes(ModifiableByteArray protocolMessageBytes) {
 	this.protocolMessageBytes = protocolMessageBytes;
     }
 
-    public void setLength(ModifiableVariable<Integer> length) {
+    public void setLength(ModifiableInteger length) {
 	this.length = length;
     }
 
-    public void setContentType(ModifiableVariable<Byte> contentType) {
+    public void setContentType(ModifiableByte contentType) {
 	this.contentType = contentType;
     }
 
-    public void setProtocolVersion(ModifiableVariable<byte[]> protocolVersion) {
+    public void setProtocolVersion(ModifiableByteArray protocolVersion) {
 	this.protocolVersion = protocolVersion;
     }
 
     public void setLength(int length) {
-	if (this.length == null) {
-	    this.length = new ModifiableVariable<>();
-	}
-	this.length.setOriginalValue(length);
+	this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
     public void setContentType(byte contentType) {
-	if (this.contentType == null) {
-	    this.contentType = new ModifiableVariable<>();
-	}
-	this.contentType.setOriginalValue(contentType);
+	this.contentType = ModifiableVariableFactory.safelySetValue(this.contentType, contentType);
     }
 
     public void setProtocolVersion(byte[] array) {
-	if (this.protocolVersion == null) {
-	    this.protocolVersion = new ModifiableVariable<>();
-	}
-	this.protocolVersion.setOriginalValue(array);
+	this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
     public void setMac(byte[] mac) {
-	if (this.mac == null) {
-	    this.mac = new ModifiableVariable<>();
-	}
-	this.mac.setOriginalValue(mac);
+	this.mac = ModifiableVariableFactory.safelySetValue(this.mac, mac);
     }
 
     public void setPadding(byte[] padding) {
-	if (this.padding == null) {
-	    this.padding = new ModifiableVariable<>();
-	}
-	this.padding.setOriginalValue(padding);
+	this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
-    public void setPadding(ModifiableVariable<byte[]> padding) {
+    public void setPadding(ModifiableByteArray padding) {
 	this.padding = padding;
     }
 
-    public void setMac(ModifiableVariable<byte[]> mac) {
+    public void setMac(ModifiableByteArray mac) {
 	this.mac = mac;
     }
 
     public void setProtocolMessageBytes(byte[] bytes) {
-	if (this.protocolMessageBytes == null) {
-	    this.protocolMessageBytes = new ModifiableVariable<>();
-	}
-	this.protocolMessageBytes.setOriginalValue(bytes);
+	this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
     }
 
-    public ModifiableVariable<Integer> getPaddingLength() {
+    public ModifiableInteger getPaddingLength() {
 	return paddingLength;
     }
 
-    public void setPaddingLength(ModifiableVariable<Integer> paddingLength) {
+    public void setPaddingLength(ModifiableInteger paddingLength) {
 	this.paddingLength = paddingLength;
     }
 
     public void setPaddingLength(int paddingLength) {
-	if (this.paddingLength == null) {
-	    this.paddingLength = new ModifiableVariable<>();
-	}
-	this.paddingLength.setOriginalValue(paddingLength);
+	this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
     }
 
-    public ModifiableVariable<byte[]> getEncryptedProtocolMessageBytes() {
+    public ModifiableByteArray getEncryptedProtocolMessageBytes() {
 	return encryptedProtocolMessageBytes;
     }
 
-    public void setEncryptedProtocolMessageBytes(ModifiableVariable<byte[]> encryptedProtocolMessageBytes) {
+    public void setEncryptedProtocolMessageBytes(ModifiableByteArray encryptedProtocolMessageBytes) {
 	this.encryptedProtocolMessageBytes = encryptedProtocolMessageBytes;
     }
 
     public void setEncryptedProtocolMessageBytes(byte[] value) {
-	if (this.encryptedProtocolMessageBytes == null) {
-	    this.encryptedProtocolMessageBytes = new ModifiableVariable<>();
-	}
-	this.encryptedProtocolMessageBytes.setOriginalValue(value);
+	this.encryptedProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(
+		this.encryptedProtocolMessageBytes, value);
     }
 
-    // public byte[] getBytes() {
-    // byte[] ct = new byte[contentType.getValue()];
-    // byte[] ret = ArrayConverter.concatenate(ct,
-    // this.protocolVersion.getValue(),
-    // ArrayConverter.intToBytes(this.length.getValue(), 2));
-    //
-    // for (HandshakeMessage pm : protocolMessages) {
-    // ret = ArrayConverter.concatenate(ret);
-    // }
-    //
-    // return ret;
-    // }
-    //
-    // final void initializeModifiableVariableList() {
-    // Class c = this.getClass();
-    // try {
-    // while (c != Object.class) {
-    // for (Field f : c.getDeclaredFields()) {
-    // if (f.getType().equals(ModifiableVariable.class)) {
-    // variables.put(f.getName(), (ModifiableVariable) f.get(this));
-    // }
-    // }
-    // c = c.getSuperclass();
-    // }
-    // } catch (IllegalAccessException | IllegalArgumentException |
-    // SecurityException e) {
-    // LOGGER.info("Cannot create map of modifiable variables", e);
-    // }
-    // }
-    //
-    // public Map<String, ModifiableVariable> getVariables() {
-    // return variables;
-    // }
     public Integer getMaxRecordLengthConfig() {
 	return maxRecordLengthConfig;
     }

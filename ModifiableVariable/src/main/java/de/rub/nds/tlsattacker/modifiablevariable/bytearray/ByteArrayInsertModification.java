@@ -19,13 +19,17 @@ package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
+@XmlType(propOrder = { "bytesToInsert", "startPosition", "modificationFilter", "postModification" })
 public class ByteArrayInsertModification extends VariableModification<byte[]> {
 
     private byte[] bytesToInsert;
@@ -38,6 +42,7 @@ public class ByteArrayInsertModification extends VariableModification<byte[]> {
 
     public ByteArrayInsertModification(byte[] bytesToInsert, int startPosition) {
 	this.bytesToInsert = bytesToInsert;
+	this.startPosition = startPosition;
     }
 
     @Override
@@ -56,6 +61,7 @@ public class ByteArrayInsertModification extends VariableModification<byte[]> {
 	return ArrayConverter.concatenate(ret1, bytesToInsert, ret3);
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getBytesToInsert() {
 	return bytesToInsert;
     }

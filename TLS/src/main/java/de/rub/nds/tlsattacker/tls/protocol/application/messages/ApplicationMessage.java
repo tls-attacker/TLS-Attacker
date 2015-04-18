@@ -17,9 +17,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.application.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -33,7 +32,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class ApplicationMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> data;
+    ModifiableByteArray data;
 
     public ApplicationMessage() {
 	this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
@@ -44,17 +43,17 @@ public class ApplicationMessage extends ProtocolMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<byte[]> getData() {
+    public ModifiableByteArray getData() {
 	return data;
     }
 
-    public void setData(ModifiableVariable<byte[]> data) {
+    public void setData(ModifiableByteArray data) {
 	this.data = data;
     }
 
     public void setData(byte[] data) {
 	if (this.data == null) {
-	    this.data = new ModifiableVariable<>();
+	    this.data = new ModifiableByteArray();
 	}
 	this.data.setOriginalValue(data);
     }

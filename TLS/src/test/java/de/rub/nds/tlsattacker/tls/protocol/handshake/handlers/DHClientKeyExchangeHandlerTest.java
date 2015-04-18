@@ -17,8 +17,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -67,7 +67,7 @@ public class DHClientKeyExchangeHandlerTest {
 	handler.initializeProtocolMessage();
 
 	DHClientKeyExchangeMessage message = (DHClientKeyExchangeMessage) handler.getProtocolMessage();
-	ModifiableVariable<BigInteger> y = new ModifiableVariable<>();
+	ModifiableBigInteger y = new ModifiableBigInteger();
 	y.setModification(BigIntegerModificationFactory.explicitValue(publicKey));
 	message.setY(y);
 

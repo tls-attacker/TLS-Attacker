@@ -17,7 +17,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.singlebyte;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -30,7 +29,7 @@ import org.junit.Test;
  */
 public class ByteModificationTest {
 
-    private ModifiableVariable<Byte> start;
+    private ModifiableByte start;
 
     private Byte expectedResult, result;
 
@@ -39,7 +38,7 @@ public class ByteModificationTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableVariable<>();
+	start = new ModifiableByte();
 	start.setOriginalValue(new Byte("10"));
 	expectedResult = null;
 	result = null;

@@ -24,8 +24,6 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayInputStream;

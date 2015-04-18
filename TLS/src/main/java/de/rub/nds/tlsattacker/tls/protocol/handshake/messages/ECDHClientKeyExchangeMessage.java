@@ -17,9 +17,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import java.math.BigInteger;
@@ -33,32 +36,32 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      * EC public key x coordinate
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> publicKeyBaseX;
+    ModifiableBigInteger publicKeyBaseX;
     /**
      * EC public key y coordinate
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<BigInteger> publicKeyBaseY;
+    ModifiableBigInteger publicKeyBaseY;
     /**
      * EC point format of the encoded EC point
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<Byte> ecPointFormat;
+    ModifiableByte ecPointFormat;
     /**
      * Encoded EC point (without EC point format)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableVariable<byte[]> ecPointEncoded;
+    ModifiableByteArray ecPointEncoded;
     /**
      * Supported EC point formats (can be used to trigger compression)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> supportedPointFormats;
+    ModifiableByteArray supportedPointFormats;
     /**
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> publicKeyLength;
+    ModifiableInteger publicKeyLength;
 
     public ECDHClientKeyExchangeMessage() {
 	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
@@ -70,11 +73,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<BigInteger> getPublicKeyBaseX() {
+    public ModifiableBigInteger getPublicKeyBaseX() {
 	return publicKeyBaseX;
     }
 
-    public void setPublicKeyBaseX(ModifiableVariable<BigInteger> publicKeyBaseX) {
+    public void setPublicKeyBaseX(ModifiableBigInteger publicKeyBaseX) {
 	this.publicKeyBaseX = publicKeyBaseX;
     }
 
@@ -82,11 +85,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.publicKeyBaseX = ModifiableVariableFactory.safelySetValue(this.publicKeyBaseX, ecPointBaseX);
     }
 
-    public ModifiableVariable<BigInteger> getPublicKeyBaseY() {
+    public ModifiableBigInteger getPublicKeyBaseY() {
 	return publicKeyBaseY;
     }
 
-    public void setPublicKeyBaseY(ModifiableVariable<BigInteger> publicKeyBaseY) {
+    public void setPublicKeyBaseY(ModifiableBigInteger publicKeyBaseY) {
 	this.publicKeyBaseY = publicKeyBaseY;
     }
 
@@ -94,11 +97,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.publicKeyBaseY = ModifiableVariableFactory.safelySetValue(this.publicKeyBaseY, ecPointBaseY);
     }
 
-    public ModifiableVariable<Byte> getEcPointFormat() {
+    public ModifiableByte getEcPointFormat() {
 	return ecPointFormat;
     }
 
-    public void setEcPointFormat(ModifiableVariable<Byte> ecPointFormat) {
+    public void setEcPointFormat(ModifiableByte ecPointFormat) {
 	this.ecPointFormat = ecPointFormat;
     }
 
@@ -106,11 +109,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.ecPointFormat = ModifiableVariableFactory.safelySetValue(this.ecPointFormat, ecPointFormat);
     }
 
-    public ModifiableVariable<byte[]> getEcPointEncoded() {
+    public ModifiableByteArray getEcPointEncoded() {
 	return ecPointEncoded;
     }
 
-    public void setEcPointEncoded(ModifiableVariable<byte[]> ecPointEncoded) {
+    public void setEcPointEncoded(ModifiableByteArray ecPointEncoded) {
 	this.ecPointEncoded = ecPointEncoded;
     }
 
@@ -118,11 +121,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 	this.ecPointEncoded = ModifiableVariableFactory.safelySetValue(this.ecPointEncoded, ecPointEncoded);
     }
 
-    public ModifiableVariable<byte[]> getSupportedPointFormats() {
+    public ModifiableByteArray getSupportedPointFormats() {
 	return supportedPointFormats;
     }
 
-    public void setSupportedPointFormats(ModifiableVariable<byte[]> supportedPointFormats) {
+    public void setSupportedPointFormats(ModifiableByteArray supportedPointFormats) {
 	this.supportedPointFormats = supportedPointFormats;
     }
 
@@ -131,11 +134,11 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 		supportedPointFormats);
     }
 
-    public ModifiableVariable<Integer> getPublicKeyLength() {
+    public ModifiableInteger getPublicKeyLength() {
 	return publicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableVariable<Integer> publicKeyLength) {
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
 	this.publicKeyLength = publicKeyLength;
     }
 

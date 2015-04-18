@@ -18,7 +18,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
@@ -32,25 +34,22 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     private HeartbeatMode heartbeatModeConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<byte[]> heartbeatMode;
+    ModifiableByteArray heartbeatMode;
 
     public HeartbeatExtensionMessage() {
 	this.extensionTypeConstant = ExtensionType.HEARTBEAT;
     }
 
-    public ModifiableVariable<byte[]> getHeartbeatMode() {
+    public ModifiableByteArray getHeartbeatMode() {
 	return heartbeatMode;
     }
 
-    public void setHeartbeatMode(ModifiableVariable<byte[]> heartbeatMode) {
+    public void setHeartbeatMode(ModifiableByteArray heartbeatMode) {
 	this.heartbeatMode = heartbeatMode;
     }
 
     public void setHeartbeatMode(byte[] heartbeatMode) {
-	if (this.heartbeatMode == null) {
-	    this.heartbeatMode = new ModifiableVariable<>();
-	}
-	this.heartbeatMode.setOriginalValue(heartbeatMode);
+	this.heartbeatMode = ModifiableVariableFactory.safelySetValue(this.heartbeatMode, heartbeatMode);
     }
 
     public HeartbeatMode getHeartbeatModeConfig() {

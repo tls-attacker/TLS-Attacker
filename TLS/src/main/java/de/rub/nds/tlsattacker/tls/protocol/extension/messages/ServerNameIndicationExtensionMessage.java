@@ -17,8 +17,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.NameType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
@@ -37,16 +40,16 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     private String serverNameConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> serverNameListLength;
+    ModifiableInteger serverNameListLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableVariable<Byte> serverNameType;
+    ModifiableByte serverNameType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableVariable<Integer> serverNameLength;
+    ModifiableInteger serverNameLength;
 
     @ModifiableVariableProperty
-    ModifiableVariable<byte[]> serverName;
+    ModifiableByteArray serverName;
 
     public ServerNameIndicationExtensionMessage() {
 	this.extensionTypeConstant = ExtensionType.SERVER_NAME_INDICATION;
@@ -60,64 +63,52 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 	this.nameTypeConfig = nameTypeConfig;
     }
 
-    public ModifiableVariable<Integer> getServerNameListLength() {
+    public ModifiableInteger getServerNameListLength() {
 	return serverNameListLength;
     }
 
-    public void setServerNameListLength(ModifiableVariable<Integer> serverNameListLength) {
+    public void setServerNameListLength(ModifiableInteger serverNameListLength) {
 	this.serverNameListLength = serverNameListLength;
     }
 
     public void setServerNameListLength(int length) {
-	if (this.serverNameListLength == null) {
-	    this.serverNameListLength = new ModifiableVariable<>();
-	}
-	this.serverNameListLength.setOriginalValue(length);
+	this.serverNameListLength = ModifiableVariableFactory.safelySetValue(serverNameListLength, length);
     }
 
-    public ModifiableVariable<Byte> getServerNameType() {
+    public ModifiableByte getServerNameType() {
 	return serverNameType;
     }
 
-    public void setServerNameType(ModifiableVariable<Byte> serverNameType) {
+    public void setServerNameType(ModifiableByte serverNameType) {
 	this.serverNameType = serverNameType;
     }
 
     public void setServerNameType(byte serverNameType) {
-	if (this.serverNameType == null) {
-	    this.serverNameType = new ModifiableVariable<>();
-	}
-	this.serverNameType.setOriginalValue(serverNameType);
+	this.serverNameType = ModifiableVariableFactory.safelySetValue(this.serverNameType, serverNameType);
     }
 
-    public ModifiableVariable<Integer> getServerNameLength() {
+    public ModifiableInteger getServerNameLength() {
 	return serverNameLength;
     }
 
-    public void setServerNameLength(ModifiableVariable<Integer> serverNameLength) {
+    public void setServerNameLength(ModifiableInteger serverNameLength) {
 	this.serverNameLength = serverNameLength;
     }
 
     public void setServerNameLength(int serverNameLength) {
-	if (this.serverNameLength == null) {
-	    this.serverNameLength = new ModifiableVariable<>();
-	}
-	this.serverNameLength.setOriginalValue(serverNameLength);
+	this.serverNameLength = ModifiableVariableFactory.safelySetValue(this.serverNameLength, serverNameLength);
     }
 
-    public ModifiableVariable<byte[]> getServerName() {
+    public ModifiableByteArray getServerName() {
 	return serverName;
     }
 
-    public void setServerName(ModifiableVariable<byte[]> serverName) {
+    public void setServerName(ModifiableByteArray serverName) {
 	this.serverName = serverName;
     }
 
     public void setServerName(byte[] serverName) {
-	if (this.serverName == null) {
-	    this.serverName = new ModifiableVariable<>();
-	}
-	this.serverName.setOriginalValue(serverName);
+	this.serverName = ModifiableVariableFactory.safelySetValue(this.serverName, serverName);
     }
 
     public String getServerNameConfig() {

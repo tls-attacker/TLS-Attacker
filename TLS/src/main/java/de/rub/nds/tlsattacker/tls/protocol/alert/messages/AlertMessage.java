@@ -17,9 +17,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.alert.messages;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
@@ -36,14 +35,14 @@ public class AlertMessage extends ProtocolMessage {
     /**
      * alert level
      */
-    @ModifiableVariableProperty
-    ModifiableVariable<Byte> level;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    ModifiableByte level;
 
     /**
      * alert description
      */
-    @ModifiableVariableProperty
-    ModifiableVariable<Byte> description;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    ModifiableByte description;
 
     public AlertMessage() {
 	this.protocolMessageType = ProtocolMessageType.ALERT;
@@ -54,24 +53,24 @@ public class AlertMessage extends ProtocolMessage {
 	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableVariable<Byte> getLevel() {
+    public ModifiableByte getLevel() {
 	return level;
     }
 
     public void setLevel(byte level) {
 	if (this.level == null) {
-	    this.level = new ModifiableVariable<>();
+	    this.level = new ModifiableByte();
 	}
 	this.level.setOriginalValue(level);
     }
 
-    public ModifiableVariable<Byte> getDescription() {
+    public ModifiableByte getDescription() {
 	return description;
     }
 
     public void setDescription(byte description) {
 	if (this.description == null) {
-	    this.description = new ModifiableVariable<>();
+	    this.description = new ModifiableByte();
 	}
 	this.description.setOriginalValue(description);
     }

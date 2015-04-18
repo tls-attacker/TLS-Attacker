@@ -17,10 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -60,7 +60,7 @@ public class WorkflowTraceSerializerTest {
 	int random = RandomHelper.getRandom().nextInt(pms.size());
 	List<Record> records = new LinkedList<>();
 	Record r = new Record();
-	ModifiableVariable<Integer> mv = ModifiableVariableFactory.createIntegerModifiableVariable();
+	ModifiableInteger mv = ModifiableVariableFactory.createIntegerModifiableVariable();
 	VariableModification<Integer> iam = IntegerModificationFactory.createRandomModification();
 	iam.setPostModification(IntegerModificationFactory.explicitValue(random));
 	mv.setModification(iam);

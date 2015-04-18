@@ -38,14 +38,17 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author dev
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Christian Mainka - christian.mainka@rub.de
  * @param <E>
  */
 @XmlRootElement
+@XmlTransient
 @XmlSeeAlso({ AccessModificationFilter.class, BigIntegerAddModification.class,
 	BigIntegerExplicitValueModification.class, BigIntegerSubtractModification.class,
 	BigIntegerXorModification.class, IntegerAddModification.class, IntegerExplicitValueModification.class,
@@ -67,7 +70,7 @@ public abstract class VariableModification<E> {
      * on given rules. ModificationFilter is responsible for validating if the
      * modification can be executed.
      */
-    private ModificationFilter<E> modificationFilter = null;
+    private ModificationFilter modificationFilter = null;
 
     /**
      * Get the value of postModification
@@ -95,7 +98,7 @@ public abstract class VariableModification<E> {
 	if (postModification != null) {
 	    modifiedValue = postModification.modify(modifiedValue);
 	}
-	if ((modificationFilter == null) || (modificationFilter.filterModification(input, modifiedValue) == false)) {
+	if ((modificationFilter == null) || (modificationFilter.filterModification() == false)) {
 	    debug(modifiedValue);
 	    return modifiedValue;
 	} else {
@@ -131,11 +134,11 @@ public abstract class VariableModification<E> {
 	}
     }
 
-    public ModificationFilter<E> getModificationFilter() {
+    public ModificationFilter getModificationFilter() {
 	return modificationFilter;
     }
 
-    public void setModificationFilter(ModificationFilter<E> modificationFilter) {
+    public void setModificationFilter(ModificationFilter modificationFilter) {
 	this.modificationFilter = modificationFilter;
     }
 }

@@ -17,9 +17,11 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import java.math.BigInteger;
-import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -30,49 +32,49 @@ public class ModifiableVariableFactory {
 
     }
 
-    public static ModifiableVariable<BigInteger> createBigIntegerModifiableVariable() {
-	return new ModifiableVariable<>(BigInteger.class);
+    public static ModifiableBigInteger createBigIntegerModifiableVariable() {
+	return new ModifiableBigInteger();
     }
 
-    public static ModifiableVariable<Integer> createIntegerModifiableVariable() {
-	return new ModifiableVariable<>(Integer.class);
+    public static ModifiableInteger createIntegerModifiableVariable() {
+	return new ModifiableInteger();
     }
 
-    public static ModifiableVariable<Byte> createByteModifiableVariable() {
-	return new ModifiableVariable<>(Byte.class);
+    public static ModifiableByte createByteModifiableVariable() {
+	return new ModifiableByte();
     }
 
-    public static ModifiableVariable<byte[]> createByteArrayModifiableVariable() {
-	return new ModifiableVariable<>(byte[].class);
+    public static ModifiableByteArray createByteArrayModifiableVariable() {
+	return new ModifiableByteArray();
     }
 
-    public static ModifiableVariable<BigInteger> safelySetValue(ModifiableVariable<BigInteger> mv, BigInteger value) {
+    public static ModifiableBigInteger safelySetValue(ModifiableBigInteger mv, BigInteger value) {
 	if (mv == null) {
-	    mv = new ModifiableVariable<>();
+	    mv = new ModifiableBigInteger();
 	}
 	mv.setOriginalValue(value);
 	return mv;
     }
 
-    public static ModifiableVariable<Integer> safelySetValue(ModifiableVariable<Integer> mv, Integer value) {
+    public static ModifiableInteger safelySetValue(ModifiableInteger mv, Integer value) {
 	if (mv == null) {
-	    mv = new ModifiableVariable<>();
+	    mv = new ModifiableInteger();
 	}
 	mv.setOriginalValue(value);
 	return mv;
     }
 
-    public static ModifiableVariable<Byte> safelySetValue(ModifiableVariable<Byte> mv, Byte value) {
+    public static ModifiableByte safelySetValue(ModifiableByte mv, Byte value) {
 	if (mv == null) {
-	    mv = new ModifiableVariable<>();
+	    mv = new ModifiableByte();
 	}
 	mv.setOriginalValue(value);
 	return mv;
     }
 
-    public static ModifiableVariable<byte[]> safelySetValue(ModifiableVariable<byte[]> mv, byte[] value) {
+    public static ModifiableByteArray safelySetValue(ModifiableByteArray mv, byte[] value) {
 	if (mv == null) {
-	    mv = new ModifiableVariable<>();
+	    mv = new ModifiableByteArray();
 	}
 	mv.setOriginalValue(value);
 	return mv;
