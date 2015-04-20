@@ -34,6 +34,7 @@ public class FinishedHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
+        // todo
     }
 
     /**
@@ -41,6 +42,7 @@ public class FinishedHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
+        // todo
     }
 
 }
