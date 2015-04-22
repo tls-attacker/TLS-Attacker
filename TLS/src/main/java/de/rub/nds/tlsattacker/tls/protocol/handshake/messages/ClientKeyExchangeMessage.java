@@ -42,6 +42,10 @@ public class ClientKeyExchangeMessage extends HandshakeMessage {
 	return masterSecret;
     }
 
+    public void setMasterSecret(ModifiableByteArray masterSecret) {
+	this.masterSecret = masterSecret;
+    }
+
     public void setMasterSecret(byte[] value) {
 	this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, value);
     }

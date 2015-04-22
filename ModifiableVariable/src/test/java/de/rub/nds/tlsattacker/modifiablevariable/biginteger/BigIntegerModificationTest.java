@@ -98,4 +98,18 @@ public class BigIntegerModificationTest {
 	assertNotSame(expectedResult, result);
 	assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
+
+    /**
+     * Test of add method, of class BigIntegerModificationFactory.
+     */
+    @Test
+    public void testIsOriginalValueModified() {
+	assertFalse(start.isOriginalValueModified());
+	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ZERO);
+	start.setModification(modifier);
+	assertFalse(start.isOriginalValueModified());
+	modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
+	start.setModification(modifier);
+	assertTrue(start.isOriginalValueModified());
+    }
 }

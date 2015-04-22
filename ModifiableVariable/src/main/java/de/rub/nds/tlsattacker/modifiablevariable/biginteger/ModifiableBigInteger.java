@@ -31,4 +31,9 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
     public void setOriginalValue(BigInteger value) {
 	this.originalValue = value;
     }
+
+    @Override
+    public boolean isOriginalValueModified() {
+	return originalValue != null && (originalValue.compareTo(getValue()) != 0);
+    }
 }

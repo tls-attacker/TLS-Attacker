@@ -35,7 +35,7 @@ public class RSAClientKeyExchangeHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        // todo
+	// todo
     }
 
     /**
@@ -43,7 +43,7 @@ public class RSAClientKeyExchangeHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-        // todo
+	// todo
     }
 
 }

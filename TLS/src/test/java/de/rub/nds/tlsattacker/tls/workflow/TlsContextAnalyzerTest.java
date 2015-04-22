@@ -76,7 +76,8 @@ public class TlsContextAnalyzerTest {
 	ApplicationMessage am = (ApplicationMessage) context.getWorkflowTrace().getFirstProtocolMessage(
 		ProtocolMessageType.APPLICATION_DATA);
 	ModifiableByteArray data = new ModifiableByteArray();
-	data.setModification(ByteArrayModificationFactory.explicitValue(new byte[0]));
+	data.setOriginalValue(new byte[0]);
+	data.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1 }));
 	am.setData(data);
 
 	assertEquals("There is no alert after modification.", TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
@@ -173,6 +174,7 @@ public class TlsContextAnalyzerTest {
 	ApplicationMessage am = (ApplicationMessage) context.getWorkflowTrace().getFirstProtocolMessage(
 		ProtocolMessageType.APPLICATION_DATA);
 	ModifiableByteArray data = new ModifiableByteArray();
+	data.setOriginalValue(new byte[] { 1 });
 	data.setModification(ByteArrayModificationFactory.explicitValue(new byte[0]));
 	am.setData(data);
 
@@ -229,6 +231,7 @@ public class TlsContextAnalyzerTest {
 	assertFalse("This ClientHello message contains no modification",
 		TlsContextAnalyzer.containsModifiableVariableModification(ch));
 	ModifiableInteger length = new ModifiableInteger();
+	length.setOriginalValue(2);
 	length.setModification(IntegerModificationFactory.add(1));
 	ch.setCipherSuiteLength(length);
 	assertTrue("This ClientHello message contains a modification in the CipherSuite Length variable",

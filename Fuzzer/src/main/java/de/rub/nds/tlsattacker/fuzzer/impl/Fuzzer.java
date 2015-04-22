@@ -135,12 +135,17 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 		    return;
 		}
 
-		if (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)
-			|| TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)
-			|| TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext)) {
-		    // ||
-		    // TlsContextAnalyzer.containsAlertAfterMissingMessage(tlsContext)
-		    // == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT) {
+		// if
+		// (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)
+		// ||
+		// TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)
+		// ||
+		// TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext))
+		// {
+		// ||
+		// TlsContextAnalyzer.containsAlertAfterMissingMessage(tlsContext)
+		// == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT) {
+		if (TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)) {
 		    FileOutputStream fos = new FileOutputStream(folder + "/" + Long.toString(step) + ".xml");
 		    WorkflowTraceSerializer.write(fos, workflow);
 		}
