@@ -3,17 +3,17 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.fuzzer.utils;
 
@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.messages.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
@@ -34,7 +33,9 @@ import de.rub.nds.tlsattacker.tls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
@@ -132,19 +133,23 @@ public class FuzzingHelper {
      */
     public static void executeModifiableVariableModification(ModifiableVariableHolder object, Field field) {
 	try {
-	    Type type = field.getGenericType();
-	    ParameterizedType pType = (ParameterizedType) type;
-	    String typeString = ((Class) pType.getActualTypeArguments()[0]).getSimpleName();
-	    LOGGER.debug("Modifying field {} of type {} from the following class: {} ", field.getName(), typeString,
-		    object.getClass().getSimpleName());
+	    // Type type = field.getGenericType();
+	    // ParameterizedType pType = (ParameterizedType) type;
+	    // String typeString = ((Class)
+	    // pType.getActualTypeArguments()[0]).getSimpleName();
+	    // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
+	    // field.getName(), typeString,
+	    // object.getClass().getSimpleName());
 	    field.setAccessible(true);
 	    ModifiableVariable mv = (ModifiableVariable) field.get(object);
 	    if (mv == null) {
-		mv = new ModifiableVariable((Class) pType.getActualTypeArguments()[0]);
+		mv = (ModifiableVariable) field.getType().getDeclaredConstructors()[0].newInstance();
 	    }
 	    mv.createRandomModificationAtRuntime();
+	    LOGGER.info("Modifying field {} of type {} from the following class: {} ", field.getName(),
+		    field.getType(), object.getClass().getSimpleName());
 	    field.set(object, mv);
-	} catch (IllegalAccessException | IllegalArgumentException ex) {
+	} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
 	    throw new ModificationException(ex.getLocalizedMessage(), ex);
 	}
     }
