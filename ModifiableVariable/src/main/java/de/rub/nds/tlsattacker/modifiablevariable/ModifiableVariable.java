@@ -76,4 +76,6 @@ public abstract class ModifiableVariable<E> {
     public void createRandomModificationAtRuntime() {
 	createRandomModification = true;
     }
+
+    public abstract boolean isOriginalValueModified();
 }

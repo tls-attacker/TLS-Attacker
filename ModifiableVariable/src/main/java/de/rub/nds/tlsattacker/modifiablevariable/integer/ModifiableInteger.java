@@ -30,4 +30,9 @@ public class ModifiableInteger extends ModifiableVariable<Integer> implements Se
     public void setOriginalValue(Integer originalValue) {
 	this.originalValue = originalValue;
     }
+
+    @Override
+    public boolean isOriginalValueModified() {
+	return originalValue != null && originalValue.compareTo(getValue()) != 0;
+    }
 }

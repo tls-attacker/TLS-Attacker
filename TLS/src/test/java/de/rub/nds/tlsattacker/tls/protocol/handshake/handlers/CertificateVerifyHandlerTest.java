@@ -34,7 +34,7 @@ public class CertificateVerifyHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        // todo
+	// todo
     }
 
     /**
@@ -42,7 +42,7 @@ public class CertificateVerifyHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-        // todo
+	// todo
     }
 
 }

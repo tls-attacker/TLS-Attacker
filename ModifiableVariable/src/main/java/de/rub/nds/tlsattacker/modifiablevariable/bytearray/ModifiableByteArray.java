@@ -4,6 +4,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.io.Serializable;
+import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
@@ -32,5 +33,10 @@ public class ModifiableByteArray extends ModifiableVariable<byte[]> implements S
 
     public void setOriginalValue(byte[] value) {
 	this.originalValue = value;
+    }
+
+    @Override
+    public boolean isOriginalValueModified() {
+	return originalValue != null && !Arrays.equals(originalValue, getValue());
     }
 }

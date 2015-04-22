@@ -48,30 +48,25 @@ public class ClientHelloHandlerTest {
     @Test
     public void testPrepareMessage() {
 	handler.initializeProtocolMessage();
-        
-        ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage(); 
-        
-        List<CipherSuite> cipherSuites = new ArrayList();
-        cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
-        message.setSupportedCipherSuites(cipherSuites);
-        
-        List<CompressionMethod> compressionMethods = new ArrayList();
-        compressionMethods.add(CompressionMethod.NULL);
-        message.setSupportedCompressionMethods(compressionMethods);      
-        
-        byte[] returned = handler.prepareMessageAction();
-        byte[] expected = ArrayConverter.concatenate(
-                new byte[]{HandshakeMessageType.CLIENT_HELLO.getValue()},
-                new byte[]{0x00, 0x00, 0x29},
-                ProtocolVersion.TLS12.getValue(),
-                message.getUnixTime().getValue(),
-                message.getRandom().getValue(),
-                new byte[]{0x00, 0x00, 0x02},
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(),
-                new byte[]{0x01, CompressionMethod.NULL.getValue()});
-        
-        assertNotNull("Confirm function didn't return 'NULL'", returned); 
-        assertArrayEquals("Confirm returned message equals the expected message",
-                expected, returned);
+
+	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
+
+	List<CipherSuite> cipherSuites = new ArrayList();
+	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
+	message.setSupportedCipherSuites(cipherSuites);
+
+	List<CompressionMethod> compressionMethods = new ArrayList();
+	compressionMethods.add(CompressionMethod.NULL);
+	message.setSupportedCompressionMethods(compressionMethods);
+
+	byte[] returned = handler.prepareMessageAction();
+	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
+		new byte[] { 0x00, 0x00, 0x29 }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
+		message.getRandom().getValue(), new byte[] { 0x00, 0x00, 0x02 },
+		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(),
+		new byte[] { 0x01, CompressionMethod.NULL.getValue() });
+
+	assertNotNull("Confirm function didn't return 'NULL'", returned);
+	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 }

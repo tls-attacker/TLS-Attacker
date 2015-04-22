@@ -3,20 +3,23 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -24,44 +27,47 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de> todo write tests here
  */
 public class ModifiableByteArrayTest {
 
-    // private final byte[] originalValue;
-    //
-    // private final byte[] modification1;
-    //
-    // private final byte[] modification2;
+    private ModifiableByteArray start;
 
-    // private static Logger LOGGER =
-    // LogManager.getLogger(ModifiableByteArray.class);
-    //
-    // public ModifiableByteArrayTest() {
-    // originalValue = new byte[]{(byte) 0, (byte) 1, (byte) 2, (byte) 3,
-    // (byte) 4, (byte) 5, (byte) 6};
-    // modification1 = new byte[]{(byte) 2, (byte) 3};
-    // modification2 = new byte[]{(byte) 2, (byte) 1, (byte) 0, (byte) 1,
-    // (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6};
-    // }
-    //
-    // /**
-    // * Test of setValue method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testSetValue() {
-    // LOGGER.info("setValue");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // byte[] test = originalValue.clone();
-    // instance.setValue(test);
-    // assertArrayEquals(originalValue, instance.getValue());
-    // test[0] = (byte) 5;
-    // assertFalse(test[0] == instance.getValue()[0]);
-    //
-    // }
-    //
+    private byte[] expectedResult, result;
+
+    private byte[] originalValue;
+
+    private byte[] modification1;
+
+    private byte[] modification2;
+
+    private static Logger LOGGER = LogManager.getLogger(ModifiableByteArray.class);
+
+    @Before
+    public void setUp() {
+	originalValue = new byte[] { (byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6 };
+	modification1 = new byte[] { (byte) 2, (byte) 3 };
+	modification2 = new byte[] { (byte) 2, (byte) 1, (byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5,
+		(byte) 6 };
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+    }
+
+    /**
+     * Test of setValue method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testSetValue() {
+	LOGGER.info("setValue");
+	ModifiableByteArray instance = new ModifiableByteArray();
+	byte[] test = originalValue.clone();
+	instance.setOriginalValue(test);
+	assertArrayEquals(originalValue, instance.getValue());
+    }
+
     // /**
     // * Test of setExplicitValue method, of class ModifiableByteArray.
     // */
@@ -288,4 +294,17 @@ public class ModifiableByteArrayTest {
     // assertNotNull(e);
     // }
 
+    /**
+     * Test of add method, of class BigIntegerModificationFactory.
+     */
+    @Test
+    public void testIsOriginalValueModified() {
+	assertFalse(start.isOriginalValueModified());
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] {}, 0);
+	start.setModification(modifier);
+	assertFalse(start.isOriginalValueModified());
+	modifier = modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
+	start.setModification(modifier);
+	assertTrue(start.isOriginalValueModified());
+    }
 }

@@ -304,7 +304,7 @@ public final class TlsContextAnalyzer {
 	try {
 	    field.setAccessible(true);
 	    ModifiableVariable mv = (ModifiableVariable) field.get(object);
-	    return (mv != null && mv.getModification() != null);
+	    return (mv != null && mv.getModification() != null && mv.isOriginalValueModified());
 	} catch (IllegalAccessException | IllegalArgumentException ex) {
 	    throw new ModificationException(ex.getLocalizedMessage(), ex);
 	}

@@ -30,4 +30,9 @@ public class ModifiableByte extends ModifiableVariable<Byte> implements Serializ
     public void setOriginalValue(Byte originalValue) {
 	this.originalValue = originalValue;
     }
+
+    @Override
+    public boolean isOriginalValueModified() {
+	return originalValue != null && originalValue.compareTo(getValue()) != 0;
+    }
 }
