@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ${packageClassName} -loglevel warning  fuzzer -connect localhost:51624 -server_command_file ../resources/command-openssl -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL</exec.args>
+                <exec.args>-classpath %classpath ${packageClassName} fuzzer -connect localhost:51626 -server_command_file ../resources/command-polarssl -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PADDING,PUBLIC_KEY,CERTIFICATE -keystore ../resources/keystore-1024.jks -password password -max_transport_response_wait 300 -alias 1024_rsa</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -24,7 +24,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName} -loglevel warning  fuzzer -connect localhost:51624 -server_command_file ../resources/command-openssl -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName} fuzzer -connect localhost:51626 -server_command_file ../resources/command-polarssl -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PADDING,PUBLIC_KEY,CERTIFICATE -keystore ../resources/keystore-1024.jks -password password -max_transport_response_wait 300 -alias 1024_rsa</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -39,7 +39,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath ${packageClassName} -loglevel warning  fuzzer -connect localhost:51624 -server_command_file ../resources/command-openssl -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL</exec.args>
+                <exec.args>-classpath %classpath ${packageClassName} fuzzer -connect localhost:51626 -server_command_file ../resources/command-polarssl -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PADDING,PUBLIC_KEY,CERTIFICATE -keystore ../resources/keystore-1024.jks -password password -max_transport_response_wait 300 -alias 1024_rsa</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

@@ -67,7 +67,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     /**
      * resulting message
      */
-    @ModifiableVariableProperty
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
     @Override

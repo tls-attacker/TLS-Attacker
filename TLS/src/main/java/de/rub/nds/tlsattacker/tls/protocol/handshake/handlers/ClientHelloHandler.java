@@ -80,7 +80,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	int compressionMethodLength = protocolMessage.getCompressions().getValue().length;
 	protocolMessage.setCompressionLength(compressionMethodLength);
 
-	byte[] result = ArrayConverter.concatenate(tlsContext.getProtocolVersion().getValue(), protocolMessage
+	byte[] result = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(), protocolMessage
 		.getUnixTime().getValue(), protocolMessage.getRandom().getValue(), ArrayConverter.intToBytes(
 		protocolMessage.getSessionIdLength().getValue(), 1), protocolMessage.getSessionId().getValue(),
 		ArrayConverter.intToBytes(protocolMessage.getCipherSuiteLength().getValue(),

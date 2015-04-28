@@ -71,7 +71,7 @@ public abstract class CommandConfig {
     @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma. ", converter = NamedCurveConverter.class)
     protected List<NamedCurve> namedCurves;
 
-    @Parameter(names = "-servername", description = "Servername for HostName TLS extension.")
+    @Parameter(names = "-server_name", description = "Servername for HostName TLS extension.")
     protected String serverName;
 
     @Parameter(names = "-timeout", description = "Timeout for socket connection")

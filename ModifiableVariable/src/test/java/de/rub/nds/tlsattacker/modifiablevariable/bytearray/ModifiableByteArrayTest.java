@@ -18,11 +18,7 @@
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.math.BigInteger;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -303,8 +299,11 @@ public class ModifiableByteArrayTest {
 	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] {}, 0);
 	start.setModification(modifier);
 	assertFalse(start.isOriginalValueModified());
-	modifier = modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
+	modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
 	start.setModification(modifier);
 	assertTrue(start.isOriginalValueModified());
+	modifier = ByteArrayModificationFactory.xor(new byte[] { 0, 0 }, originalValue.length - 2);
+	start.setModification(modifier);
+	assertFalse(start.isOriginalValueModified());
     }
 }

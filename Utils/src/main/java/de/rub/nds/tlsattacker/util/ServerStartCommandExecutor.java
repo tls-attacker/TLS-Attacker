@@ -23,12 +23,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @version 0.1
  */
 public final class ServerStartCommandExecutor {
+
+    private static Logger LOGGER = LogManager.getLogger(ServerStartCommandExecutor.class);
 
     /**
      * Command.
@@ -74,6 +78,8 @@ public final class ServerStartCommandExecutor {
 
 	error.start();
 	output.start();
+
+	LOGGER.debug("Server successfully started.");
     }
 
     public List<String> getServerOutput() {
@@ -112,6 +118,13 @@ public final class ServerStartCommandExecutor {
 	    return false;
 	}
 	return true;
+    }
+
+    /**
+     * Kills the server subprocess using the process destroy function.
+     */
+    public void terminateServer() {
+	process.destroy();
     }
 
     private class CommandLineFetcher extends Thread {

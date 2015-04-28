@@ -1,0 +1,1 @@
+/usr/lib/jvm/jdk1.8.0_40/bin/java -jar ../TLS-Server/target/TLS-Server-1.0-SNAPSHOT-jar-with-dependencies.jar ../resources/ec256.jks password TLS 54433
