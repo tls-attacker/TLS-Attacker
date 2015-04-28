@@ -2,6 +2,7 @@ package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.io.Serializable;
 import java.util.Arrays;

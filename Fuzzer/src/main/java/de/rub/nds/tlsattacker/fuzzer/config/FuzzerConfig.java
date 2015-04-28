@@ -3,28 +3,29 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyFormatConverter;
+import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyTypeConverter;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.config.CipherSuiteFilter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -47,23 +48,29 @@ public class FuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100)", validateWith = PercentageValidator.class)
     Integer modifyVariablePercentage = 50;
 
-    // @Parameter(names = "-modified_variable_pattern", description =
-    // "Pattern for modifiable variables that are going to be modified randomly (e.g., defining length consideres only variables with length in name inside")
-    // String modifiedVariablePattern;
-    @Parameter(names = "-modified_variable_types", description = "Type of modifiable variables that are going to be modified randomly (e.g., defining LENGTH consideres only length variables)")
+    @Parameter(names = "-modified_variable_whitelist", description = "Pattern for modifiable variables that are going to be modified randomly (e.g., defining *length consideres only variables ending with length")
+    String modifiedVariableWhitelist;
+
+    @Parameter(names = "-modified_variable_blacklist", description = "Pattern for modifiable variables that are NOT going to be modified randomly (e.g., defining *length consideres variables ending with length are out of modification scope.")
+    String modifiedVariableBlacklist;
+
+    @Parameter(names = "-modified_variable_types", description = "Type of modifiable variables that are going to be modified randomly (e.g., defining LENGTH consideres only length variables)", converter = PropertyTypeConverter.class)
     List<ModifiableVariableProperty.Type> modifiableVariableTypes;
 
-    @Parameter(names = "-modified_variable_formats", description = "Format of modifiable variables that are going to be modified randomly (e.g., defining ASN1 consideres only variables with ASN.1 formats)")
+    @Parameter(names = "-modified_variable_formats", description = "Format of modifiable variables that are going to be modified randomly (e.g., defining ASN1 consideres only variables with ASN.1 formats)", converter = PropertyFormatConverter.class)
     List<ModifiableVariableProperty.Format> modifiableVariableFormats;
 
     @Parameter(names = "-duplicate_message", description = "Probability of a random message duplication", validateWith = PercentageValidator.class)
-    Integer duplicateMessagePercentage = 15;
+    Integer duplicateMessagePercentage = 30;
 
     @Parameter(names = "-not_sending_message", description = "Probability of a random message being not sent to the peer", validateWith = PercentageValidator.class)
-    Integer notSendingMessagePercantage = 15;
+    Integer notSendingMessagePercantage = 40;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
-    Integer addRecordPercentage = 50;
+    Integer addRecordPercentage = 40;
+
+    @Parameter(names = "-interrupt", description = "Interrupts scan after first finding resulting in an invalid workflow.")
+    boolean interruptAfterFirstFinding;
 
     public FuzzerConfig() {
 	cipherSuites.clear();
@@ -109,13 +116,13 @@ public class FuzzerConfig extends ClientCommandConfig {
     }
 
     // public String getModifiedVariablePattern() {
-    // return modifiedVariablePattern;
+    // return modifiedVariableWhitelist;
     // }
     //
-    // public void setModifiedVariablePattern(String modifiedVariablePattern) {
-    // this.modifiedVariablePattern = modifiedVariablePattern;
+    // public void setModifiedVariablePattern(String modifiedVariableWhitelist)
+    // {
+    // this.modifiedVariableWhitelist = modifiedVariableWhitelist;
     // }
-
     public List<ModifiableVariableProperty.Type> getModifiableVariableTypes() {
 	return modifiableVariableTypes;
     }
@@ -154,6 +161,30 @@ public class FuzzerConfig extends ClientCommandConfig {
 
     public void setAddRecordPercentage(Integer addRecordPercentage) {
 	this.addRecordPercentage = addRecordPercentage;
+    }
+
+    public boolean isInterruptAfterFirstFinding() {
+	return interruptAfterFirstFinding;
+    }
+
+    public void setInterruptAfterFirstFinding(boolean interruptAfterFirstFinding) {
+	this.interruptAfterFirstFinding = interruptAfterFirstFinding;
+    }
+
+    public String getModifiedVariableWhitelist() {
+	return modifiedVariableWhitelist;
+    }
+
+    public void setModifiedVariableWhitelist(String modifiedVariableWhitelist) {
+	this.modifiedVariableWhitelist = modifiedVariableWhitelist;
+    }
+
+    public String getModifiedVariableBlacklist() {
+	return modifiedVariableBlacklist;
+    }
+
+    public void setModifiedVariableBlacklist(String modifiedVariableBlacklist) {
+	this.modifiedVariableBlacklist = modifiedVariableBlacklist;
     }
 
 }

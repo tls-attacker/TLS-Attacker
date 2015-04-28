@@ -1,1 +1,1 @@
-../../polarssl-1.3.9/programs/ssl/ssl_server
+../../../servers/mbedtls-1.3.10/programs/ssl/ssl_server2 server_port=51626 auth_mode=required key_file=../resources/privkey1024.pem crt_file=../resources/server-cert1024.pem

@@ -3,25 +3,27 @@
  *
  * Copyright (C) 2015 Juraj Somorovsky
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -41,7 +43,11 @@ public class CertificateMessage extends HandshakeMessage {
     /**
      * Certificate for pretty printing etc.
      */
+    @XmlTransient
     X509CertificateObject x509CertificateObject;
+
+    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.CERTIFICATE)
+    ModifiableByteArray x509CertificateBytes;
 
     public CertificateMessage() {
 	super(HandshakeMessageType.CERTIFICATE);
@@ -70,6 +76,18 @@ public class CertificateMessage extends HandshakeMessage {
 
     public void setX509CertificateObject(X509CertificateObject x509CertificateObject) {
 	this.x509CertificateObject = x509CertificateObject;
+    }
+
+    public ModifiableByteArray getX509CertificateBytes() {
+	return x509CertificateBytes;
+    }
+
+    public void setX509CertificateBytes(ModifiableByteArray x509CertificateBytes) {
+	this.x509CertificateBytes = x509CertificateBytes;
+    }
+
+    public void setX509CertificateBytes(byte[] array) {
+	this.x509CertificateBytes = ModifiableVariableFactory.safelySetValue(x509CertificateBytes, array);
     }
 
     // public List<ModifiableInteger> getCertificateLengths() {
@@ -104,7 +122,6 @@ public class CertificateMessage extends HandshakeMessage {
     // }
     // this.certificates.add(cert);
     // }
-
     @Override
     public String toString() {
 	StringBuilder sb = new StringBuilder(super.toString());

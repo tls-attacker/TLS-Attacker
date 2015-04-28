@@ -92,9 +92,12 @@ public class FuzzingHelper {
      * @param connectionEnd
      * @param allowedTypes
      * @param allowedFormats
+     * @param whitelistRegex
+     * @param blacklistRegex
      */
     public static void executeRandomModifiableVariableModification(WorkflowTrace workflow, ConnectionEnd connectionEnd,
-	    List<ModifiableVariableProperty.Type> allowedTypes, List<ModifiableVariableProperty.Format> allowedFormats) {
+	    List<ModifiableVariableProperty.Type> allowedTypes, List<ModifiableVariableProperty.Format> allowedFormats,
+	    String whitelistRegex, String blacklistRegex) {
 	Field f = null;
 	ModifiableVariableHolder holder = null;
 	while (f == null) {
@@ -103,7 +106,9 @@ public class FuzzingHelper {
 	    ModifiableVariableProperty property = randomField.getAnnotation(ModifiableVariableProperty.class);
 	    if (property != null) {
 		if ((allowedTypes == null || allowedTypes.contains(property.type()))
-			&& (allowedFormats == null || allowedFormats.contains(property.format()))) {
+			&& (allowedFormats == null || allowedFormats.contains(property.format()))
+			&& (whitelistRegex == null || randomField.getName().matches(whitelistRegex))
+			&& (blacklistRegex == null || !randomField.getName().matches(blacklistRegex))) {
 		    f = randomField;
 		}
 	    }

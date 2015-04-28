@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.fuzzer.impl;
 
 import de.rub.nds.tlsattacker.fuzzer.config.FuzzerConfig;
+import de.rub.nds.tlsattacker.fuzzer.utils.CertificateHelper;
 import de.rub.nds.tlsattacker.fuzzer.utils.FuzzingHelper;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
@@ -25,7 +26,6 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -51,6 +51,8 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
 
     public static Logger LOGGER = LogManager.getLogger(Fuzzer.class);
 
+    private boolean startingTlsServer;
+
     public Fuzzer(FuzzerConfig config) {
 	super(config);
     }
@@ -58,120 +60,139 @@ public class Fuzzer extends Attacker<FuzzerConfig> {
     @Override
     public void executeAttack(ConfigHandler configHandler) {
 
-	String serverCommand;
+	String serverCommand = null;
 	if (config.getServerCommand() != null) {
 	    serverCommand = config.getServerCommand();
-	} else {
+	    startingTlsServer = true;
+	} else if (config.getServerCommandFile() != null) {
 	    serverCommand = config.getServerCommandFile();
+	    startingTlsServer = true;
 	}
-	ServerStartCommandExecutor sce = new ServerStartCommandExecutor(serverCommand);
 
-	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-	Calendar cal = Calendar.getInstance();
-	String folder = "/tmp/" + dateFormat.format(cal.getTime());
-
-	File f = new File(folder);
-	boolean created = f.mkdir();
-	if (!created) {
-	    throw new ConfigurationException("Unable to create a log folder " + folder);
-	}
+	String folder = initializeLogFolder();
 
 	try {
-	    sce.startServer();
-	    try {
-		Thread.sleep(2000);
-	    } catch (InterruptedException ex) {
+	    ServerStartCommandExecutor sce = null;
+	    if (startingTlsServer) {
+		sce = startTestServer(serverCommand);
 	    }
-	    long step = 0;
 
-	    Certificate certificate = executeValidWorkflow();
+	    Certificate certificate = CertificateHelper.fetchCertificate(config);
 	    if (certificate == null) {
 		LOGGER.error("No server certificate was fetched. Was the handshake executed correctly? Execute the program again.");
-		return;
+	    } else {
+		startFuzzing(configHandler, certificate, sce, folder);
 	    }
 
-	    while (true) {
-
-		TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-		TlsContext tlsContext = configHandler.initializeTlsContext(config);
-		WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
-			tlsContext);
-		WorkflowTrace workflow = tlsContext.getWorkflowTrace();
-		tlsContext.setServerCertificate(certificate);
-
-		if (FuzzingHelper.executeFuzzingUnit(config.getDuplicateMessagePercentage())) {
-		    FuzzingHelper.duplicateRandomProtocolMessage(workflow, tlsContext.getMyConnectionEnd());
-		}
-
-		if (FuzzingHelper.executeFuzzingUnit(config.getAddRecordPercentage())) {
-		    FuzzingHelper.addRecordsAtRandom(workflow, tlsContext.getMyConnectionEnd());
-		}
-
-		if (FuzzingHelper.executeFuzzingUnit(config.getModifyVariablePercentage())) {
-		    FuzzingHelper.executeRandomModifiableVariableModification(workflow, ConnectionEnd.CLIENT,
-			    config.getModifiableVariableTypes(), config.getModifiableVariableFormats());
-		}
-
-		if (FuzzingHelper.executeFuzzingUnit(config.getNotSendingMessagePercantage())) {
-		    FuzzingHelper.getRandomProtocolMessage(workflow, tlsContext.getMyConnectionEnd()).setGoingToBeSent(
-			    false);
-		}
-
-		try {
-		    workflowExecutor.executeWorkflow();
-		} catch (Exception ex) {
-		    LOGGER.debug(ex);
-		    ex.printStackTrace();
-		} finally {
-		    transportHandler.closeConnection();
-		    step++;
-		}
-
-		if (sce.isServerTerminated()) {
-		    System.out.println(sce.getServerOutputString());
-		    System.out.println(sce.getServerErrorOutputString());
-		    FileOutputStream fos = new FileOutputStream(folder + "/" + Long.toString(step) + ".xml");
-		    WorkflowTraceSerializer.write(fos, workflow);
-		    return;
-		}
-
-		// if
-		// (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)
-		// ||
-		// TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)
-		// ||
-		// TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext))
-		// {
-		// ||
-		// TlsContextAnalyzer.containsAlertAfterMissingMessage(tlsContext)
-		// == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT) {
-		if (TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)) {
-		    FileOutputStream fos = new FileOutputStream(folder + "/" + Long.toString(step) + ".xml");
-		    WorkflowTraceSerializer.write(fos, workflow);
-		}
-
-		// ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		// WorkflowTraceSerializer.write(bos, workflow);
-		// System.out.println(new String(bos.toByteArray()));
+	    if (startingTlsServer && !sce.isServerTerminated()) {
+		sce.terminateServer();
+		LOGGER.info(sce.getServerOutputString());
+		LOGGER.info(sce.getServerErrorOutputString());
 	    }
+
 	} catch (IOException | JAXBException ex) {
 	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
 	}
     }
 
-    private Certificate executeValidWorkflow() {
-	ConfigHandler configHandler = new ClientConfigHandler();
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-	try {
-	    workflowExecutor.executeWorkflow();
-	} catch (Exception e) {
-	    LOGGER.debug(e);
-	    transportHandler.closeConnection();
-	}
+    private void startFuzzing(ConfigHandler configHandler, Certificate certificate, ServerStartCommandExecutor sce,
+	    String folder) throws ConfigurationException, JAXBException, IOException {
+	long step = 0;
+	while (true) {
+	    TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	    TlsContext tlsContext = configHandler.initializeTlsContext(config);
+	    WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+	    WorkflowTrace workflow = tlsContext.getWorkflowTrace();
+	    tlsContext.setServerCertificate(certificate);
 
-	return tlsContext.getServerCertificate();
+	    while (FuzzingHelper.executeFuzzingUnit(config.getDuplicateMessagePercentage())) {
+		FuzzingHelper.duplicateRandomProtocolMessage(workflow, tlsContext.getMyConnectionEnd());
+	    }
+	    while (FuzzingHelper.executeFuzzingUnit(config.getAddRecordPercentage())) {
+		FuzzingHelper.addRecordsAtRandom(workflow, tlsContext.getMyConnectionEnd());
+	    }
+	    while (FuzzingHelper.executeFuzzingUnit(config.getModifyVariablePercentage())) {
+		FuzzingHelper.executeRandomModifiableVariableModification(workflow, ConnectionEnd.CLIENT,
+			config.getModifiableVariableTypes(), config.getModifiableVariableFormats(),
+			config.getModifiedVariableWhitelist(), config.getModifiedVariableBlacklist());
+	    }
+	    while (FuzzingHelper.executeFuzzingUnit(config.getNotSendingMessagePercantage())) {
+		FuzzingHelper.getRandomProtocolMessage(workflow, tlsContext.getMyConnectionEnd()).setGoingToBeSent(
+			false);
+	    }
+	    try {
+		workflowExecutor.executeWorkflow();
+	    } catch (Exception ex) {
+		LOGGER.debug(ex);
+		ex.printStackTrace();
+	    } finally {
+		transportHandler.closeConnection();
+		step++;
+	    }
+	    if (startingTlsServer && sce.isServerTerminated()) {
+		FileOutputStream fos = new FileOutputStream(folder + "/" + Long.toString(step) + ".xml");
+		WorkflowTraceSerializer.write(fos, workflow);
+		return;
+	    }
+	    if (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)
+		    || TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext)
+		    // ||
+		    // TlsContextAnalyzer.containsAlertAfterMissingMessage(tlsContext)
+		    // == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT
+		    || TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)) {
+		String fileNameBasic = createFileName(folder, step, tlsContext);
+		FileOutputStream fos = new FileOutputStream(fileNameBasic + ".xml");
+		WorkflowTraceSerializer.write(fos, workflow);
+
+		if (CertificateHelper.containsModifiedCertificate(tlsContext)) {
+		    String fileName = fileNameBasic + "-cert.info";
+		    CertificateHelper.writeModifiedCertInfoToFile(tlsContext, fileName);
+		}
+
+		if (config.isInterruptAfterFirstFinding()) {
+		    return;
+		}
+	    }
+
+	    // ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    // WorkflowTraceSerializer.write(bos, workflow);
+	    // System.out.println(new String(bos.toByteArray()));
+	}
     }
 
+    private String createFileName(String folder, long step, TlsContext tlsContext) {
+	String fileNameBasic = folder + "/" + Long.toString(step);
+	if (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)) {
+	    fileNameBasic += "-missing";
+	}
+	if (TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext)) {
+	    fileNameBasic += "-unexpected";
+	}
+	if (TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)) {
+	    fileNameBasic += "-fullmod";
+	}
+	return fileNameBasic;
+    }
+
+    private ServerStartCommandExecutor startTestServer(String serverCommand) throws IOException {
+	ServerStartCommandExecutor sce = new ServerStartCommandExecutor(serverCommand);
+	sce.startServer();
+	try {
+	    Thread.sleep(2000);
+	} catch (InterruptedException ex) {
+	}
+	return sce;
+    }
+
+    private String initializeLogFolder() throws ConfigurationException {
+	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+	Calendar cal = Calendar.getInstance();
+	String folder = "/tmp/" + dateFormat.format(cal.getTime());
+	File f = new File(folder);
+	boolean created = f.mkdir();
+	if (!created) {
+	    throw new ConfigurationException("Unable to create a log folder " + folder);
+	}
+	return folder;
+    }
 }

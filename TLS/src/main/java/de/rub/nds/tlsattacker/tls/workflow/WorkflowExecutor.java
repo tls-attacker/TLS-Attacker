@@ -18,6 +18,7 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -172,8 +173,9 @@ public abstract class WorkflowExecutor {
 		    }
 		}
 	    }
-	} catch (WorkflowExecutionException | IOException e) {
+	} catch (WorkflowExecutionException | CryptoException | IOException e) {
 	    e.printStackTrace();
+	    protocolMessagePointer--;
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
 	} finally {
 	    // remove all unused protocol messages

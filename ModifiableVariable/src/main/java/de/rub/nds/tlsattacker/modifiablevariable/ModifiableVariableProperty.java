@@ -27,6 +27,9 @@ public @interface ModifiableVariableProperty {
 	PUBLIC_KEY,
 	PRIVATE_KEY,
 	KEY_MATERIAL,
+	CERTIFICATE,
+	/** plain protocol message, always in a decrypted state */
+	PLAIN_PROTOCOL_MESSAGE,
 	NONE
     }
 

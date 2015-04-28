@@ -55,7 +55,13 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	try {
 	    // todo try to find a better solution for converting sun -> bc
 	    // certificates
-	    byte[] certBytes = tlsContext.getKeyStore().getCertificate(tlsContext.getAlias()).getEncoded();
+	    String alias = tlsContext.getAlias();
+	    java.security.cert.Certificate sunCert = tlsContext.getKeyStore().getCertificate(alias);
+	    if (alias == null || sunCert == null) {
+		throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
+			+ "certificate alias and key? (Current alias: " + alias + ")");
+	    }
+	    byte[] certBytes = sunCert.getEncoded();
 
 	    ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
 	    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
@@ -77,16 +83,17 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 
 	    ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
 	    tlsCerts.encode(tlsCertBos);
-	    byte[] tlsCertArray = tlsCertBos.toByteArray();
+	    protocolMessage.setX509CertificateBytes(tlsCertBos.toByteArray());
 
 	    // byte[] x509CertBytes = x509CertObject.getEncoded();
-	    protocolMessage.setCertificatesLength(tlsCertArray.length - HandshakeByteLength.CERTIFICATES_LENGTH);
+	    protocolMessage.setCertificatesLength(protocolMessage.getX509CertificateBytes().getValue().length
+		    - HandshakeByteLength.CERTIFICATES_LENGTH);
 	    // protocolMessage.setLength(protocolMessage.getCertificatesLength().getValue()
 	    // + HandshakeByteLength.CERTIFICATES_LENGTH);
 	    // BC implicitly includes the certificates length of all the
 	    // certificates, so we only need to set the protocol message length
-	    protocolMessage.setLength(tlsCertArray.length);
-	    byte[] result = tlsCertArray;
+	    protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
+	    byte[] result = protocolMessage.getX509CertificateBytes().getValue();
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
 		    + protocolMessage.getLength().getValue();
