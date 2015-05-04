@@ -41,16 +41,18 @@ public class SplitTLS {
 
 	// i = (sslraw.length >> 10) + 1;
 	i = (sslraw.length / fragmentsize) + 1;
-	clientresponse = new byte[i][fragmentsize];
+	clientresponse = new byte[i][];
 
 	for (int y = 0; y < i; y++) {
 
 	    if (y < (i - 1)) {
 
+		clientresponse[y] = new byte[fragmentsize];
 		System.arraycopy(sslraw, y * fragmentsize, clientresponse[y], 0, fragmentsize);
 
 	    } else {
 
+		clientresponse[y] = new byte[sslraw.length - (y * fragmentsize)];
 		System.arraycopy(sslraw, y * fragmentsize, clientresponse[y], 0, sslraw.length - (y * fragmentsize));
 
 	    }
