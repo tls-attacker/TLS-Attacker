@@ -51,7 +51,7 @@ public class HeartbeatHandlerTest {
 	heartbeatHandler.initializeProtocolMessage();
 
 	byte[] result = heartbeatHandler.prepareMessageAction();
-	int payload_length = ArrayConverter.bytesToInt(Arrays.copyOfRange(result, 1, 2));
+	int payload_length = ArrayConverter.bytesToInt(Arrays.copyOfRange(result, 1, 3));
 
 	assertNotNull("Confirm prepareMessageAction didn't return 'NULL'.", result);
 	assertEquals("Confirm message is a request.", HeartbeatMessageType.HEARTBEAT_REQUEST.getValue(), result[0]);

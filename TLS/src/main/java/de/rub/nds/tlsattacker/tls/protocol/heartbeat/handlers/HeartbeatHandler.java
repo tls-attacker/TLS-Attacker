@@ -47,8 +47,6 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
      */
     static final int MAX_PADDING_LENGTH = 256;
 
-    private static HeartbeatHandler instance;
-
     public HeartbeatHandler(TlsContext tlsContext) {
 	super(tlsContext);
 	correctProtocolMessageClass = HeartbeatMessage.class;
