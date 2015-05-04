@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.lang.reflect.Field;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -48,6 +49,17 @@ public abstract class ConfigHandler {
 	    loggerConfig.setLevel(config.getLogLevel());
 	    ctx.updateLoggers();
 	}
+
+	// remove stupid Oracle JDK security restriction (otherwise, it is not
+	// possible to use strong crypto with Oracle JDK)
+	try {
+	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+	    field.setAccessible(true);
+	    field.set(null, java.lang.Boolean.FALSE);
+	} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException
+		| SecurityException ex) {
+	    throw new ConfigurationException("Not possible to use unrestricted policy in Oracle JDK", ex);
+	}
     }
 
     public boolean printHelpForCommand(JCommander jc, CommandConfig config) {
@@ -69,6 +81,5 @@ public abstract class ConfigHandler {
     // pc.setTlsContext(tlsContext);
     // return pc;
     // }
-
     public abstract WorkflowExecutor initializeWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext);
 }

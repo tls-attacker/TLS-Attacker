@@ -17,7 +17,7 @@
         <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
         <de-markiewb-netbeans-plugins-eclipse-formatter.preserveBreakPoints>true</de-markiewb-netbeans-plugins-eclipse-formatter.preserveBreakPoints>
         <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile>JavaConventionsEclipse</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>/home/juraj/svn/repos_misc/builder-tasks/TLS-Attacker/maven-eclipse-codestyle.xml</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>${project.basedir}/maven-eclipse-codestyle.xml</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>
         <de-markiewb-netbeans-plugins-eclipse-formatter.showNotifications>true</de-markiewb-netbeans-plugins-eclipse-formatter.showNotifications>
         <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>true</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>
         <de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>false</de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>
