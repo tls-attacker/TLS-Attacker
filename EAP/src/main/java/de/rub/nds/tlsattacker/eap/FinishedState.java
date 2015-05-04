@@ -20,7 +20,7 @@ package de.rub.nds.tlsattacker.eap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class FragEndState implements EapState {
+public class FinishedState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FragEndState.class);
 
@@ -34,7 +34,7 @@ public class FragEndState implements EapState {
 
     byte[] data = {};
 
-    public FragEndState(EapolMachine eapolMachine, int id) {
+    public FinishedState(EapolMachine eapolMachine, int id) {
 
 	this.eapolMachine = eapolMachine;
 	this.id = id;
@@ -43,18 +43,17 @@ public class FragEndState implements EapState {
 
     @Override
     public void send() {
-	// TODO Auto-generated method stub
+
+	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSFRAGACK", id);
+
+	LOGGER.debug("send(): {}", eapolMachine.getState());
+
+	nic.sendFrame(eapstart.getFrame());
 
     }
 
     @Override
     public void sendTLS(byte[] tlspacket) {
-
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSFRAG", id, tlspacket);
-
-	LOGGER.debug("sendTLS(): {}", eapolMachine.getState());
-
-	nic.sendFrame(eapstart.getFrame());
 
     }
 
@@ -64,31 +63,20 @@ public class FragEndState implements EapState {
 	data = nic.receiveFrame();
 	id = (int) data[19]; // Get ID
 
-	LOGGER.debug("receive() TLS-FLAG: {}", Byte.toString(data[23]));
-
-	/*
-	 * if (data[23] == (byte) 0xc0) { eapolMachine.setState(new
-	 * FragStartState(eapolMachine, id)); } else { eapolMachine.setState(new
-	 * FragState(eapolMachine, id)); }
-	 * 
-	 * LOGGER.debug("change State to: {}", eapolMachine.getState());
-	 */
+	if (data[18] == 0x03) {
+	    eapolMachine.setState(new SuccessState(eapolMachine, id));
+	} else
 
 	if (data[18] == 0x04) {
 	    eapolMachine.setState(new FailureState(eapolMachine, id));
-	} else if (data[28] == (byte) 0x14) {
-	    // Change Chipher Spec vom Server empfangen?
-	    LOGGER.debug("receive() TLS Content Type: {}", Byte.toString(data[28]));
-	    eapolMachine.setState(new FinishedState(eapolMachine, id));
-	    LOGGER.debug("change State to: {}", eapolMachine.getState());
-
 	}
+
 	return data;
     }
 
     @Override
     public String getState() {
-	return "FragEndState";
+	return "FinishedState";
 
     }
 

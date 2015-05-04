@@ -44,6 +44,8 @@ public class EapTlsFactory extends EapFactory {
 		return new FragStart(new Eap8021X((byte) 0x01), id, tlspacket);
 	    case "EAPTLSFRAG":
 		return new Frag(new Eap8021X((byte) 0x01), id, tlspacket);
+	    case "EAPTLSFRAGEND":
+		return new FragEnd(new Eap8021X((byte) 0x01), id, tlspacket);
 	}
 
 	return null;
