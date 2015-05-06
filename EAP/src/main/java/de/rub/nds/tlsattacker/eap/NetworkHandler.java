@@ -161,7 +161,7 @@ public class NetworkHandler {
 		// PcapPacket permanent = new PcapPacket(packet);
 
 		// IF EAPOL Request Frame?
-		if ((rcvframe[12] == -120) && (rcvframe[13] == -114) && (rcvframe[18] == 1 || rcvframe[18] == 4)) {
+		if ((rcvframe[12] == -120) && (rcvframe[13] == -114) && (rcvframe[18] == 1 || rcvframe[18] == 3 || rcvframe[18] == 4)) {
 		    // Put in Queue
 		    // queue.offer(permanent);
 		    // Leave the Loop
