@@ -82,6 +82,12 @@ public class FragEndState implements EapState {
 	    eapolMachine.setState(new FinishedState(eapolMachine, id));
 	    LOGGER.debug("change State to: {}", eapolMachine.getState());
 
+	} else if (data[28] == (byte) 0x15) {
+	    // Eine AlertMessage vom Server empfangen?
+	    LOGGER.debug("receive() TLS Content Type: {}", Byte.toString(data[28]));
+	    eapolMachine.setState(new AlertState(eapolMachine, id));
+	    LOGGER.debug("change State to: {}", eapolMachine.getState());
+
 	}
 	return data;
     }
