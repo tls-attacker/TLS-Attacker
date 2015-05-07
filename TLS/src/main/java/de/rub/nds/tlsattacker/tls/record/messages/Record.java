@@ -23,15 +23,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Record extends ModifiableVariableHolder {
-
-    private static final Logger LOGGER = LogManager.getLogger(Record.class);
 
     /**
      * maximum length configuration for this record
