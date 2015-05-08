@@ -19,7 +19,6 @@ package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -28,11 +27,6 @@ import java.lang.reflect.InvocationTargetException;
  * @param <Message>
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
-
-    /**
-     * workflow trace
-     */
-    protected final WorkflowTrace workflowTrace;
 
     /**
      * tls context
@@ -60,7 +54,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
 	if (tlsContext == null) {
 	    throw new ConfigurationException("TLS Context is not configured yet");
 	}
-	workflowTrace = tlsContext.getWorkflowTrace();
     }
 
     /**
