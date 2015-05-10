@@ -31,7 +31,7 @@ public class AlertState implements EapState {
 
 	nic.closeCon();
 	LOGGER.info("Alert, Connection refused");
-	System.exit(0);
+	// System.exit(0);
 
     }
 

@@ -31,7 +31,7 @@ public class SuccessState implements EapState {
 
 	nic.closeCon();
 	LOGGER.info("Success, Connection permit!");
-	System.exit(0);
+	// System.exit(0);
 
     }
 
