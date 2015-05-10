@@ -154,7 +154,20 @@ class EAPTLSTransportHandler implements TransportHandler {
     @Override
     public byte[] fetchData() throws IOException {
 
-	while (true) {
+	boolean loop = true;
+        
+        //Workaround zum auslesen des CCS und der Finished Message
+	if (eapolMachine.getState() == "FinishedState") {
+	    LOGGER.debug("fetchData() send Frame: {}", eapolMachine.getState());
+	    eapolMachine.send();
+	    //LOGGER.debug("Size tlsraw: {}", ArrayConverter.bytesToHexString(tlsraw));
+	    System.arraycopy(tlsraw, tlsraw.length - 75, test, 0, 75);
+	    //LOGGER.debug("Size tlsraw: {}", ArrayConverter.bytesToHexString(test));
+	    tlsraw = test;
+	    loop = false;
+	}
+
+	while (loop == true) {
 
 	    // Code wird nur ausgeführt wenn Server Hello fragmentiert ist
 	    if (countpackets != 0) {
@@ -176,6 +189,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 	}
 
 	return tlsraw;
+
     }
 
     @Override

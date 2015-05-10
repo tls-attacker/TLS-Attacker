@@ -31,7 +31,7 @@ public class FailureState implements EapState {
 
 	nic.closeCon();
 	LOGGER.info("Failure, Connection refused");
-	System.exit(0);
+	// System.exit(0);
 
     }
 
