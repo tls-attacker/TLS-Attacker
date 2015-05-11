@@ -36,10 +36,9 @@ public class SplitTLS {
 
     public byte[][] split(byte[] sslraw) {
 
-	int i, fragmentsize = 1400;
+	int i, fragmentsize = 1024;
 	this.sslraw = sslraw;
 
-	// i = (sslraw.length >> 10) + 1;
 	i = (sslraw.length / fragmentsize) + 1;
 	clientresponse = new byte[i][];
 
