@@ -62,12 +62,6 @@ class EAPTLSTransportHandler implements TransportHandler {
 	    eapolMachine.send();
 	    LOGGER.debug("initialize() receive Frame: {}", eapolMachine.getState());
 	    test = eapolMachine.receive();
-
-	    /*
-	     * for (int i = 0; i < test.length; i++) { System.out.print(test[i]
-	     * + " "); } System.out.println();
-	     */
-
 	    if (test[22] == 0x0d && test[23] == 0x20) {
 		break;
 	    }
@@ -78,6 +72,9 @@ class EAPTLSTransportHandler implements TransportHandler {
     public void sendData(byte[] data) throws IOException {
 
 	SplitTLS fragment = SplitTLS.getInstance();
+	countpackets = 0;
+	y = 0;
+
 	if (data.length > 1024) {
 	    eapolMachine.setState(new FragState(eapolMachine, eapolMachine.getID(), 0));
 	    fragment.split(data);
@@ -90,7 +87,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 	    LOGGER.debug("sendData() send TLS-Frame: {}", eapolMachine.getState());
 	    LOGGER.debug("sendData() send Fragment: {}", y);
 
-	    if (eapolMachine.getState() == "HelloState") {
+	    if ("HelloState".equals(eapolMachine.getState())) {
 		eapolMachine.sendTLS(data);
 
 		// Empfängt gleich das erste Server-Paket nach dem das letzte
@@ -103,7 +100,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 
 	    } else
 
-	    if ((eapolMachine.getState() == "FragState" || eapolMachine.getState() == "HelloState")
+	    if (("FragState".equals(eapolMachine.getState()) || "HelloState".equals(eapolMachine.getState()))
 		    && countpackets != 0) {
 		eapolMachine.sendTLS(fragment.getFragment(y));
 		y++;
@@ -116,7 +113,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 		// und fügt es dem tlsraw Container hinzu
 		tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
 
-	    } else if (eapolMachine.getState() == "FragEndState" && countpackets != 0 && (countpackets - y != 0)) {
+	    } else if ("FragEndState".equals(eapolMachine.getState()) && countpackets != 0 && (countpackets - y != 0)) {
 		eapolMachine.sendTLS(fragment.getFragment(y));
 		y++;
 
@@ -128,18 +125,15 @@ class EAPTLSTransportHandler implements TransportHandler {
 		// und fügt es dem tlsraw Container hinzu
 		tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
 
+	    } else if ("FinishedState".equals(eapolMachine.getState())) {
+		eapolMachine.sendTLS(data);
+		test = eapolMachine.receive();
+		break;
+
 	    } else {
 		eapolMachine.sendTLS(data);
-		/*
-		 * eapolMachine.sendTLS(fragment.getFragment(y)); y++;
-		 */
 
 	    }
-
-	    /*
-	     * for (int i = 0; i < test.length; i++) { System.out.print(test[i]
-	     * + " "); } System.out.println();
-	     */
 
 	    LOGGER.debug("Fragments: {}", Integer.toString(y));
 
@@ -154,17 +148,28 @@ class EAPTLSTransportHandler implements TransportHandler {
     @Override
     public byte[] fetchData() throws IOException {
 
+	int i;
 	boolean loop = true;
-        
-        //Workaround zum auslesen des CCS und der Finished Message
-	if (eapolMachine.getState() == "FinishedState") {
+	byte[] finished = new byte[0];
+
+	if ("FinishedState".equals(eapolMachine.getState())) {
 	    LOGGER.debug("fetchData() send Frame: {}", eapolMachine.getState());
 	    eapolMachine.send();
-	    //LOGGER.debug("Size tlsraw: {}", ArrayConverter.bytesToHexString(tlsraw));
-	    System.arraycopy(tlsraw, tlsraw.length - 75, test, 0, 75);
-	    //LOGGER.debug("Size tlsraw: {}", ArrayConverter.bytesToHexString(test));
-	    tlsraw = test;
+
+	    for (i = 0; i < tlsraw.length; i++) {
+                //Suchen nach der CCS Nachricht im Vektor
+		if (tlsraw[i] == (byte) 0x14 && tlsraw[i + 1] == (byte) 0x03 && tlsraw[i + 2] == (byte) 0x03
+			&& tlsraw[i + 3] == (byte) 0x00 && tlsraw[i + 4] == (byte) 0x01 && tlsraw[i + 5] == (byte) 0x01) {
+		    finished = new byte[tlsraw.length - i];
+		    break;
+		}
+	    }
+
+	    System.arraycopy(tlsraw, i, finished, 0, tlsraw.length - i);
+	    LOGGER.debug("Size tlsraw: {}", ArrayConverter.bytesToHexString(finished));
+
 	    loop = false;
+	    return finished;
 	}
 
 	while (loop == true) {
