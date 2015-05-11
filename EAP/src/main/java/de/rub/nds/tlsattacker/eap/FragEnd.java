@@ -56,10 +56,7 @@ public class FragEnd extends EAPResponseDecorator {
 	frame[5] = (byte) (super.eaplength); // Length
 	frame[6] = 0x0d; // Type
 	frame[7] = (byte) 0x00; // EAP-Flag
-	// frame[8] = (byte) (super.tlslength >>> 24); // TLS-Length
-	// frame[9] = (byte) (super.tlslength >>> 16); // TLS-Length
-	// frame[10] = (byte) (super.tlslength >>> 8); // TLS-Length
-	// frame[11] = (byte) (super.tlslength); // TLS-Length
+
     }
 
 }

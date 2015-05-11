@@ -55,6 +55,12 @@ public class FinishedState implements EapState {
     @Override
     public void sendTLS(byte[] tlspacket) {
 
+	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSCH", id, tlspacket);
+
+	LOGGER.debug("sendTLS(): {}", eapolMachine.getState());
+
+	nic.sendFrame(eapstart.getFrame());
+
     }
 
     @Override
