@@ -169,6 +169,10 @@ public class RecordHandler {
 	int dataPointer = 0;
 	while (dataPointer != rawRecordData.length) {
 	    ProtocolMessageType contentType = ProtocolMessageType.getContentType(rawRecordData[dataPointer]);
+            if(contentType == null ) {
+                throw new WorkflowExecutionException("Could not identify valid protocol message type for the current "
+                        + "record. The value in the record was: " + rawRecordData[dataPointer]);
+            }
 	    Record record = new Record();
 	    record.setContentType(contentType.getValue());
 	    byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
@@ -177,12 +181,13 @@ public class RecordHandler {
 	    int length = ArrayConverter.bytesToInt(byteLength);
 	    record.setLength(length);
 	    int lastByte = dataPointer + 5 + length;
-	    byte[] plainMessageBytes = Arrays.copyOfRange(rawRecordData, dataPointer + 5, lastByte);
+	    byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 5, lastByte);
+            LOGGER.debug("Raw protocol bytes from the current record:  {}", ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
 	    if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
 		    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
-		record.setEncryptedProtocolMessageBytes(plainMessageBytes);
-		byte[] paddedData = recordCipher.decrypt(plainMessageBytes);
+		record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
+		byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);
 		LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(paddedData));
 		int paddingLength = paddedData[paddedData.length - 1];
 		record.setPaddingLength(paddingLength);
@@ -193,10 +198,10 @@ public class RecordHandler {
 		byte[] mac = Arrays.copyOfRange(unpaddedData, (unpaddedData.length - recordCipher.getMacLength()),
 			unpaddedData.length);
 		record.setMac(mac);
-		plainMessageBytes = Arrays.copyOf(unpaddedData, (unpaddedData.length - recordCipher.getMacLength()));
+		rawBytesFromCurrentRecord = Arrays.copyOf(unpaddedData, (unpaddedData.length - recordCipher.getMacLength()));
 	    }
 
-	    record.setProtocolMessageBytes(plainMessageBytes);
+	    record.setProtocolMessageBytes(rawBytesFromCurrentRecord);
 	    records.add(record);
 	    dataPointer = lastByte;
 
