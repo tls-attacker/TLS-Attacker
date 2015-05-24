@@ -33,9 +33,13 @@ public class MangerAttackServerTest {
 
 	Security.addProvider(new BouncyCastleProvider());
 
+	ClientCommandConfig config = new ClientCommandConfig();
+	config.setConnect(CONNECT);
 	List<CipherSuite> ciphersuites = new LinkedList<>();
 	ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-	RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(CONNECT, ciphersuites);
+	config.setCipherSuites(ciphersuites);
+
+	RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
 
 	byte[] plainBytes = new byte[PREMASTER_SECRET_LENGTH];
 
@@ -43,9 +47,6 @@ public class MangerAttackServerTest {
 	cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 	byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-	ClientCommandConfig config = new ClientCommandConfig();
-	config.setConnect(CONNECT);
-	config.setCipherSuites(ciphersuites);
 	config.setMaxTransportResponseWait(50);
 	Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
 
