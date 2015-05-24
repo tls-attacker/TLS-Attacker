@@ -2,12 +2,14 @@ package de.rub.nds.tlsattacker.attacks;
 
 import de.rub.nds.tlsattacker.tls.Attacker;
 import com.beust.jcommander.JCommander;
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackTest;
@@ -36,6 +38,8 @@ public class Main {
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);
 
+	BleichenbacherTestCommandConfig bleichenbacherTest = new BleichenbacherTestCommandConfig();
+	jc.addCommand(BleichenbacherTestCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 	EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig();
 	jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
 	EllipticCurveAttackTestCommandConfig ellipticTest = new EllipticCurveAttackTestCommandConfig();
@@ -58,6 +62,9 @@ public class Main {
 
 	Attacker attacker;
 	switch (jc.getParsedCommand()) {
+	    case BleichenbacherTestCommandConfig.ATTACK_COMMAND:
+		attacker = new BleichenbacherAttackTest(bleichenbacherTest);
+		break;
 	    case EarlyCCSCommandConfig.ATTACK_COMMAND:
 		attacker = new EarlyCCSAttack(earlyCCS);
 		break;

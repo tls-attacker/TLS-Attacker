@@ -47,18 +47,30 @@ public class CertificateFetcher {
     }
 
     public static PublicKey fetchServerPublicKey(String connect, List<CipherSuite> cipherSuites) {
-	X509CertificateObject cert = fetchServerCertificate(connect, cipherSuites);
+	ClientCommandConfig config = new ClientCommandConfig();
+	config.setConnect(connect);
+	config.setCipherSuites(cipherSuites);
+	X509CertificateObject cert = fetchServerCertificate(config);
 	return cert.getPublicKey();
     }
 
     public static X509CertificateObject fetchServerCertificate(String connect, List<CipherSuite> cipherSuites) {
 	ClientCommandConfig config = new ClientCommandConfig();
+	config.setConnect(connect);
+	config.setCipherSuites(cipherSuites);
+	return fetchServerCertificate(config);
+    }
+
+    public static PublicKey fetchServerPublicKey(ClientCommandConfig config) {
+	X509CertificateObject cert = fetchServerCertificate(config);
+	return cert.getPublicKey();
+    }
+
+    public static X509CertificateObject fetchServerCertificate(ClientCommandConfig config) {
 	ConfigHandler configHandler = new ClientConfigHandler();
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
 	TlsContext context = configHandler.initializeTlsContext(config);
 
-	config.setConnect(connect);
-	config.setCipherSuites(cipherSuites);
 	context.setProtocolVersion(config.getProtocolVersion());
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
