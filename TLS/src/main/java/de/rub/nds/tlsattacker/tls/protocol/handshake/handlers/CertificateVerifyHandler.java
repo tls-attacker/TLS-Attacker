@@ -32,6 +32,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.interfaces.ECPrivateKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,14 +62,28 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	try {
 	    // todo add support for algorithms beyond rsa
 	    Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
-	    RSAPrivateCrtKey privKey = (RSAPrivateCrtKey) key;
+	    System.out.println(key.getAlgorithm());
+	    Signature instance = null;
+	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = null;
+	    switch (key.getAlgorithm()) {
+		case "RSA":
+		    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
+		    selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForRSA().get(0);
+		    instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+		    instance.initSign(rsaKey);
+		    break;
+		case "EC":
+		    ECPrivateKey ecKey = (ECPrivateKey) key;
+		    selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(0);
+		    instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+		    instance.initSign(ecKey);
+		    break;
+		default:
+		    throw new ConfigurationException("Algorithm " + key.getAlgorithm() + " not supported yet.");
+	    }
 
-	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = tlsContext
-		    .getSupportedSignatureAndHashAlgorithmsForRSA().get(0);
 	    LOGGER.debug("Selected SignatureAndHashAlgorithm for CertificateVerify message: {}",
 		    selectedSignatureHashAlgo.getJavaName());
-	    Signature instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
-	    instance.initSign(privKey);
 	    instance.update(rawHandshakeBytes);
 	    byte[] signature = instance.sign();
 

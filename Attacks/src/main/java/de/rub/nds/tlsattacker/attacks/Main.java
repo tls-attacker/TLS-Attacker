@@ -7,11 +7,13 @@ import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -44,6 +46,8 @@ public class Main {
 	jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
 	PoodleCommandConfig poodle = new PoodleCommandConfig();
 	jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
+	WinshockCommandConfig winshock = new WinshockCommandConfig();
+	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
 
 	jc.parse(args);
 
@@ -68,6 +72,9 @@ public class Main {
 		break;
 	    case PoodleCommandConfig.ATTACK_COMMAND:
 		attacker = new PoodleAttack(poodle);
+		break;
+	    case WinshockCommandConfig.ATTACK_COMMAND:
+		attacker = new WinshockAttack(winshock);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");

@@ -169,10 +169,10 @@ public class RecordHandler {
 	int dataPointer = 0;
 	while (dataPointer != rawRecordData.length) {
 	    ProtocolMessageType contentType = ProtocolMessageType.getContentType(rawRecordData[dataPointer]);
-            if(contentType == null ) {
-                throw new WorkflowExecutionException("Could not identify valid protocol message type for the current "
-                        + "record. The value in the record was: " + rawRecordData[dataPointer]);
-            }
+	    if (contentType == null) {
+		throw new WorkflowExecutionException("Could not identify valid protocol message type for the current "
+			+ "record. The value in the record was: " + rawRecordData[dataPointer]);
+	    }
 	    Record record = new Record();
 	    record.setContentType(contentType.getValue());
 	    byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
@@ -182,7 +182,8 @@ public class RecordHandler {
 	    record.setLength(length);
 	    int lastByte = dataPointer + 5 + length;
 	    byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 5, lastByte);
-            LOGGER.debug("Raw protocol bytes from the current record:  {}", ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
+	    LOGGER.debug("Raw protocol bytes from the current record:  {}",
+		    ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
 	    if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
 		    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
@@ -198,7 +199,8 @@ public class RecordHandler {
 		byte[] mac = Arrays.copyOfRange(unpaddedData, (unpaddedData.length - recordCipher.getMacLength()),
 			unpaddedData.length);
 		record.setMac(mac);
-		rawBytesFromCurrentRecord = Arrays.copyOf(unpaddedData, (unpaddedData.length - recordCipher.getMacLength()));
+		rawBytesFromCurrentRecord = Arrays.copyOf(unpaddedData,
+			(unpaddedData.length - recordCipher.getMacLength()));
 	    }
 
 	    record.setProtocolMessageBytes(rawBytesFromCurrentRecord);

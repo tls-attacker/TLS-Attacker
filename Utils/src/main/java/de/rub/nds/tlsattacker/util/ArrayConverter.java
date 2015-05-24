@@ -236,6 +236,24 @@ public class ArrayConverter {
     }
 
     /**
+     * Takes a BigInteger value and returns its byte array representation, if
+     * necessary the sign byte is removed.
+     * 
+     * @param value
+     * @return
+     */
+    public static byte[] bigIntegerToByteArray(BigInteger value) {
+	byte[] result = value.toByteArray();
+
+	if (result[0] == 0x0) {
+	    byte[] tmp = new byte[result.length - 1];
+	    System.arraycopy(result, 1, tmp, 0, tmp.length);
+	    result = tmp;
+	}
+	return result;
+    }
+
+    /**
      * Converts a list of BigIntegers to an array
      * 
      * @param list

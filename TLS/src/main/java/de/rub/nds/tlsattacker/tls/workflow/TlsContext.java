@@ -307,6 +307,16 @@ public class TlsContext {
 	return rsaAlgorithms;
     }
 
+    public LinkedList<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithmsForEC() {
+	LinkedList<SignatureAndHashAlgorithm> ecAlgorithms = new LinkedList<>();
+	for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
+	    if (alg.getSignatureAlgorithm() == SignatureAlgorithm.ECDSA) {
+		ecAlgorithms.add(alg);
+	    }
+	}
+	return ecAlgorithms;
+    }
+
     public void setSupportedSignatureAndHashAlgorithms(
 	    LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
 	this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;

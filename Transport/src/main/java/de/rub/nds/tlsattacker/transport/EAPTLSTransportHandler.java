@@ -157,7 +157,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 	    eapolMachine.send();
 
 	    for (i = 0; i < tlsraw.length; i++) {
-                //Suchen nach der CCS Nachricht im Vektor
+		// Suchen nach der CCS Nachricht im Vektor
 		if (tlsraw[i] == (byte) 0x14 && tlsraw[i + 1] == (byte) 0x03 && tlsraw[i + 2] == (byte) 0x03
 			&& tlsraw[i + 3] == (byte) 0x00 && tlsraw[i + 4] == (byte) 0x01 && tlsraw[i + 5] == (byte) 0x01) {
 		    finished = new byte[tlsraw.length - i];
