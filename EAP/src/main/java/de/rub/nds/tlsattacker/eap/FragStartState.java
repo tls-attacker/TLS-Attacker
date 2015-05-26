@@ -17,6 +17,8 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+
 public class FragStartState implements EapState {
 
     EapolMachine eapolMachine;
@@ -26,6 +28,8 @@ public class FragStartState implements EapState {
     EapFactory eaptlsfactory = new EapTlsFactory();
 
     NetworkHandler nic = NetworkHandler.getInstance();
+
+    EAPFrame eapstart;
 
     byte[] data = {};
 
@@ -39,7 +43,7 @@ public class FragStartState implements EapState {
     @Override
     public void send() {
 
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSFRAGACK", id);
+	eapstart = eaptlsfactory.createFrame("EAPTLSFRAGACK", id);
 	nic.sendFrame(eapstart.getFrame());
 
     }
@@ -47,7 +51,7 @@ public class FragStartState implements EapState {
     @Override
     public void sendTLS(byte[] tlspacket) {
 
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSFRAG", id, tlspacket);
+	eapstart = eaptlsfactory.createFrame("EAPTLSFRAG", id, tlspacket);
 	nic.sendFrame(eapstart.getFrame());
 
     }
@@ -57,14 +61,17 @@ public class FragStartState implements EapState {
 	data = nic.receiveFrame();
 	id = (int) data[19]; // Get ID
 
-	if (data[23] == (byte) 0xc0 || data[23] == (byte) 0x40 || data[23] == (byte) 0x00) {
+	if (data[23] == (byte) 0xc0 || data[23] == (byte) 0x40) {
 	    eapolMachine.setState(new FragStartState(eapolMachine, id));
+	} else if (data[23] == (byte) 0x00) {
+	    eapolMachine.setState(new FragEndState(eapolMachine, id));
 	} else {
 	    eapolMachine.setState(new FragState(eapolMachine, id, 1));
 	}
 	return data;
     }
 
+    @Override
     public String getState() {
 	return "FragStartState";
     }
