@@ -48,7 +48,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 
     byte[] test;
 
-    byte[] tlsraw = {};
+    byte[] tlsraw;
 
     int y = 0, countpackets = 0;
 
@@ -74,6 +74,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 	SplitTLS fragment = SplitTLS.getInstance();
 	countpackets = 0;
 	y = 0;
+	tlsraw = new byte[0];
 
 	if (data.length > 1024) {
 	    eapolMachine.setState(new FragState(eapolMachine, eapolMachine.getID(), 0));
@@ -86,6 +87,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 
 	    LOGGER.debug("sendData() send TLS-Frame: {}", eapolMachine.getState());
 	    LOGGER.debug("sendData() send Fragment: {}", y);
+	    LOGGER.debug("Content tlsraw: {}", ArrayConverter.bytesToHexString(tlsraw));
 
 	    if ("HelloState".equals(eapolMachine.getState())) {
 		eapolMachine.sendTLS(data);
@@ -95,6 +97,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 		LOGGER.debug("sendData() receive TLS-Frame: {}", eapolMachine.getState());
 
 		test = eapolMachine.receive();
+		LOGGER.debug("received content: {}", ArrayConverter.bytesToHexString(test));
 		// und fügt es dem tlsraw Container hinzu
 		tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
 
@@ -110,6 +113,19 @@ class EAPTLSTransportHandler implements TransportHandler {
 		LOGGER.debug("sendData() receive TLS-Frame: {}", eapolMachine.getState());
 
 		test = eapolMachine.receive();
+		LOGGER.debug("received content: {}", ArrayConverter.bytesToHexString(test));
+		// und fügt es dem tlsraw Container hinzu
+		tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
+
+	    } else if ("FragStartState".equals(eapolMachine.getState())) {
+		eapolMachine.send();
+
+		// Empfängt gleich das erste Server-Paket nach dem das letzte
+		// Client-Paket versendet worden ist
+		LOGGER.debug("sendData() receive TLS-Frame: {}", eapolMachine.getState());
+
+		test = eapolMachine.receive();
+		LOGGER.debug("received content: {}", ArrayConverter.bytesToHexString(test));
 		// und fügt es dem tlsraw Container hinzu
 		tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
 
@@ -137,8 +153,9 @@ class EAPTLSTransportHandler implements TransportHandler {
 
 	    LOGGER.debug("Fragments: {}", Integer.toString(y));
 
-	    if (countpackets == y) {
+	    if (countpackets == y && !("FragStartState".equals(eapolMachine.getState()))) {
 		LOGGER.debug("All Fragments sent: {}", Integer.toString(countpackets));
+		LOGGER.debug("Content tlsraw: {}", ArrayConverter.bytesToHexString(tlsraw));
 		break;
 	    }
 
@@ -166,7 +183,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 	    }
 
 	    System.arraycopy(tlsraw, i, finished, 0, tlsraw.length - i);
-	    LOGGER.debug("Size tlsraw: {}", ArrayConverter.bytesToHexString(finished));
+	    LOGGER.debug("Content tlsraw: {}", ArrayConverter.bytesToHexString(finished));
 
 	    loop = false;
 	    return finished;
@@ -192,7 +209,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 	    }
 
 	}
-
+	LOGGER.debug("Content tlsraw: {}", ArrayConverter.bytesToHexString(tlsraw));
 	return tlsraw;
 
     }
