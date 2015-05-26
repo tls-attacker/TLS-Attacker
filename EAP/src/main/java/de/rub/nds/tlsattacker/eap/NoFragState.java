@@ -26,13 +26,11 @@ public class NoFragState implements EapState {
 
     EapolMachine eapolMachine;
 
-    int id, count;
+    int id;
 
     EapFactory eaptlsfactory = new EapTlsFactory();
 
     NetworkHandler nic = NetworkHandler.getInstance();
-
-    SplitTLS fragment = SplitTLS.getInstance();
 
     byte[] data = {};
 
