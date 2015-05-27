@@ -76,6 +76,13 @@ class EAPTLSTransportHandler implements TransportHandler {
 	y = 0;
 	tlsraw = new byte[0];
 
+	/*
+	 * // Test suche nach Certificate Verify in data for (int i = 0; i <
+	 * data.length; i++) { // Suchen nach der Certificate Verify Nachricht
+	 * im Vektor if (data[i] == (byte) 0x0f && data[i + 1] == (byte) 0x00 &&
+	 * data[i + 2] == (byte) 0x00 && data[i + 3] == (byte) 0x29) { data[i +
+	 * 4] = (byte) 0xff; data[i + 5] = (byte) 0xff; } }
+	 */
 	if (data.length > 1024) {
 	    eapolMachine.setState(new FragState(eapolMachine, eapolMachine.getID(), 0));
 	    fragment.split(data);
@@ -141,8 +148,15 @@ class EAPTLSTransportHandler implements TransportHandler {
 		// und fügt es dem tlsraw Container hinzu
 		tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
 
+	    } else if ("NoFragState".equals(eapolMachine.getState())) {
+		eapolMachine.sendTLS(data);
+		LOGGER.debug("sendData() receive TLS-Frame: {}", eapolMachine.getState());
+		test = eapolMachine.receive();
+		break;
+
 	    } else if ("FinishedState".equals(eapolMachine.getState())) {
 		eapolMachine.sendTLS(data);
+		LOGGER.debug("sendData() receive TLS-Frame: {}", eapolMachine.getState());
 		test = eapolMachine.receive();
 		break;
 
