@@ -65,10 +65,20 @@ public class NoFragState implements EapState {
 
 	LOGGER.debug("receive() TLS-FLAG: {}", Byte.toString(data[23]));
 
-	if (data[23] == (byte) 0x80) {
-	    eapolMachine.setState(new NoFragState(eapolMachine, id));
-	} else if (data[18] == 0x04) {
+	if (data[18] == 0x04) {
 	    eapolMachine.setState(new FailureState(eapolMachine, id));
+	} else if (data[28] == (byte) 0x14) {
+	    // Change Chipher Spec vom Server empfangen?
+	    LOGGER.debug("receive() TLS Content Type: {}", Byte.toString(data[28]));
+	    eapolMachine.setState(new FinishedState(eapolMachine, id));
+
+	} else if (data[28] == (byte) 0x15) {
+	    // Eine AlertMessage vom Server empfangen?
+	    LOGGER.debug("receive() TLS Content Type: {}", Byte.toString(data[28]));
+	    eapolMachine.setState(new AlertState(eapolMachine, id));
+
+	} else if (data[23] == (byte) 0x80) {
+	    eapolMachine.setState(new NoFragState(eapolMachine, id));
 	} else {
 	    eapolMachine.setState(new FragState(eapolMachine, id));
 	}
