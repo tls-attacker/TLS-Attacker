@@ -23,6 +23,7 @@ package de.rub.nds.tlsattacker.transport;
 public enum TransportHandlerType {
 
     SIMPLE,
-    EAP_TLS
+    EAP_TLS,
+    UDP
 
 }
