@@ -74,9 +74,12 @@ public class UDPTransportHandler implements TransportHandler {
 	so.setSoTimeout(maxResponseWait);
 	localAddress = so.getLocalAddress();
 	localPort = so.getLocalPort();
-	LOGGER.debug("Socket bound to \"" + localAddress.getCanonicalHostName() + localPort
-		+ "\". Specified remote host and port: \"" + this.remoteAddress.getCanonicalHostName()
-		+ this.remotePort + "\".");
+	LOGGER.debug("Socket bound to \""
+                + localAddress.getCanonicalHostName()
+                + ":" + localPort
+		+ "\". Specified remote host and port: \""
+                + this.remoteAddress.getCanonicalHostName()
+		+ ":" + this.remotePort + "\".");
     }
 
     @Override
@@ -107,11 +110,15 @@ public class UDPTransportHandler implements TransportHandler {
 
     public void setMaxResponseWait(int maxResponseWait) {
 	this.maxResponseWait = maxResponseWait;
-	try {
-	    so.setSoTimeout(this.maxResponseWait);
-	} catch (SocketException e) {
-	    LOGGER.debug("Failed to set socket timeout. Exception:\n" + e.getMessage());
-	}
+        if (so != null)
+        {
+            try {
+                so.setSoTimeout(this.maxResponseWait);
+            } catch (SocketException e) {
+                LOGGER.debug("Failed to set socket timeout. Exception:\n"
+                        + e.getMessage());
+            }
+        }
     }
 
     public int getMTU() {
