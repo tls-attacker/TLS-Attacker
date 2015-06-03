@@ -27,7 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * * @author Florian Pfützenreuter
+ * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
 public class UDPTransportHandler implements TransportHandler {
 
@@ -72,14 +72,13 @@ public class UDPTransportHandler implements TransportHandler {
 	this.remotePort = remotePort;
 	so = new DatagramSocket();
 	so.setSoTimeout(maxResponseWait);
+	so.connect(this.remoteAddress, this.remotePort);
 	localAddress = so.getLocalAddress();
 	localPort = so.getLocalPort();
-	LOGGER.debug("Socket bound to \""
-                + localAddress.getCanonicalHostName()
-                + ":" + localPort
-		+ "\". Specified remote host and port: \""
-                + this.remoteAddress.getCanonicalHostName()
-		+ ":" + this.remotePort + "\".");
+	LOGGER.debug("Socket bound to \"" + localAddress.getCanonicalHostName()
+                + ":" + localPort + "\". Specified remote host and port: \""
+                + this.remoteAddress.getCanonicalHostName() + ":"
+		+ this.remotePort + "\".");
     }
 
     @Override
@@ -110,18 +109,21 @@ public class UDPTransportHandler implements TransportHandler {
 
     public void setMaxResponseWait(int maxResponseWait) {
 	this.maxResponseWait = maxResponseWait;
-        if (so != null)
-        {
-            try {
-                so.setSoTimeout(this.maxResponseWait);
-            } catch (SocketException e) {
-                LOGGER.debug("Failed to set socket timeout. Exception:\n"
+	if (so != null) {
+	    try {
+		so.setSoTimeout(this.maxResponseWait);
+	    } catch (SocketException e) {
+		LOGGER.debug("Failed to set socket timeout. Exception:\n"
                         + e.getMessage());
-            }
-        }
+	    }
+	}
     }
 
     public int getMTU() {
 	return mtu;
+    }
+
+    public int getLocalPort() {
+	return localPort;
     }
 }
