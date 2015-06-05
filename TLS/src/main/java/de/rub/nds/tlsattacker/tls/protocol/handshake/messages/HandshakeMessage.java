@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -40,13 +41,10 @@ public class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     ModifiableByte type;
 
-    /**
-     * length of the included handshake message (for example ClientHello)
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger length;
+    HandshakeMessageFields handshakeMessageFields;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
+	handshakeMessageFields = new HandshakeMessageFields();
 	this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
 	this.handshakeMessageType = handshakeMessageType;
     }
@@ -56,7 +54,7 @@ public class HandshakeMessage extends ProtocolMessage {
     }
 
     public ModifiableInteger getLength() {
-	return length;
+	return handshakeMessageFields.getLength();
     }
 
     public void setType(ModifiableByte type) {
@@ -64,7 +62,7 @@ public class HandshakeMessage extends ProtocolMessage {
     }
 
     public void setLength(ModifiableInteger length) {
-	this.length = length;
+	handshakeMessageFields.setLength(length);
     }
 
     public void setType(Byte type) {
@@ -72,7 +70,7 @@ public class HandshakeMessage extends ProtocolMessage {
     }
 
     public void setLength(int length) {
-	this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+	handshakeMessageFields.setLength(length);
     }
 
     public HandshakeMessageType getHandshakeMessageType() {
@@ -83,7 +81,7 @@ public class HandshakeMessage extends ProtocolMessage {
     public String toString() {
 	StringBuilder sb = new StringBuilder();
 	sb.append("\n").append(handshakeMessageType.getName());
-	sb.append("\n  Handshake Message Length: ").append(length.getValue());
+	sb.append("\n  Handshake Message Length: ").append(handshakeMessageFields.getLength().getValue());
 	return sb.toString();
     }
 
@@ -93,5 +91,4 @@ public class HandshakeMessage extends ProtocolMessage {
 	pmh.setProtocolMessage(this);
 	return pmh;
     }
-
 }
