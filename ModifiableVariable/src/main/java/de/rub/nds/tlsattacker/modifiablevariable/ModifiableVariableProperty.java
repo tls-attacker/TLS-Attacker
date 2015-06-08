@@ -30,6 +30,7 @@ public @interface ModifiableVariableProperty {
 	CERTIFICATE,
 	/** plain protocol message, always in a decrypted state */
 	PLAIN_PROTOCOL_MESSAGE,
+        COOKIE,
 	NONE
     }
 
