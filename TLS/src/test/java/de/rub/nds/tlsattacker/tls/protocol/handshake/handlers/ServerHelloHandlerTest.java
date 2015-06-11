@@ -23,20 +23,21 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import java.math.BigInteger;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ServerHelloHandlerTest {
 
-    static BigInteger testServerHelloWithoutExtension = new BigInteger(
-	    "02000046030354cf6dcf922b63e8cb6af7527c6520f727d526b178ecf32180"
-		    + "27ccf8bb125d572068220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0c01300", 16);
-
+    static byte[] serverKeyExchangeWithoutExtensionBytes = 
+            ArrayConverter.hexStringToByteArray(
+                    "02000046030354cf6dcf922b63e8cb6af7527c6520f727d526" +
+                    "b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb" +
+                    "fdf364d81e28f6f68502cd596792769be4c0c01300");
+    
     ServerHelloHandler handler;
 
     TlsContext tlsContext;
@@ -52,28 +53,28 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testParseMessage() {
-	byte[] serverKeyExchangeBytes = testServerHelloWithoutExtension.toByteArray();
 	handler.initializeProtocolMessage();
 
-	int endPointer = handler.parseMessageAction(serverKeyExchangeBytes, 0);
+	int endPointer = handler.
+                parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
 	assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
-	assertArrayEquals("Server Session ID", new BigInteger(
-		"68220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0", 16).toByteArray(), message
+	assertArrayEquals("Server Session ID", ArrayConverter.hexStringToByteArray(
+		"68220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0"), message
 		.getSessionId().getValue());
-	assertArrayEquals("Server Random", new BigInteger(
-		"54cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d57", 16).toByteArray(),
+	assertArrayEquals("Server Random", ArrayConverter.hexStringToByteArray(
+		"54cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d57"),
 		tlsContext.getServerRandom());
 	assertEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
 		CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
 	assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
 
-	assertEquals("The pointer has to return the length of the protocol message", serverKeyExchangeBytes.length,
-		endPointer);
+	assertEquals("The pointer has to return the length of the protocol message",
+                serverKeyExchangeWithoutExtensionBytes.length, endPointer);
     }
 
     /**
