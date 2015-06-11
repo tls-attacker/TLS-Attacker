@@ -113,6 +113,94 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+	if (message[pointer] != HandshakeMessageType.CLIENT_HELLO.getValue()) {
+	    throw new InvalidMessageTypeException("This is not a client hello message");
+	}
+        protocolMessage.setType(message[pointer]);
+        
+        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+        int length = ArrayConverter.bytesToInt(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setLength(length);
+        
+        currentPointer = nextPointer;
+	nextPointer = currentPointer + ByteLength.PROTOCOL_VERSION;
+	ProtocolVersion serverProtocolVersion = 
+                ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
+		currentPointer, nextPointer));
+	protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
+        
+        currentPointer = nextPointer;
+	nextPointer = currentPointer + HandshakeByteLength.UNIX_TIME;
+	protocolMessage.setUnixTime(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+
+	currentPointer = nextPointer;
+	nextPointer = currentPointer + HandshakeByteLength.RANDOM;
+	protocolMessage.setRandom(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+        
+        tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage
+                .getUnixTime().getValue(), protocolMessage.getRandom().getValue()));
+        
+        currentPointer = nextPointer;
+	nextPointer = currentPointer
+                + ArrayConverter.bytesToInt(Arrays
+                        .copyOfRange(message, currentPointer, currentPointer
+                                + HandshakeByteLength.SESSION_ID_LENGTH))
+                + HandshakeByteLength.SESSION_ID_LENGTH;
+        currentPointer += HandshakeByteLength.SESSION_ID_LENGTH;
+	protocolMessage.setSessionId(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+        
+        currentPointer = nextPointer;
+        nextPointer = currentPointer + ArrayConverter.bytesToInt(Arrays
+                .copyOfRange(message, currentPointer, currentPointer
+                        + HandshakeByteLength.CIPHER_SUITES_LENGTH))
+                + HandshakeByteLength.CIPHER_SUITES_LENGTH;
+        currentPointer += HandshakeByteLength.CIPHER_SUITES_LENGTH;
+        protocolMessage.setCipherSuites(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+        
+        currentPointer = nextPointer;
+        nextPointer = currentPointer + ArrayConverter.bytesToInt(Arrays
+                .copyOfRange(message, currentPointer, currentPointer
+                        + HandshakeByteLength.COMPRESSION_METHODS_LENGTH))
+                + HandshakeByteLength.COMPRESSION_METHODS_LENGTH;
+        currentPointer += HandshakeByteLength.COMPRESSION_METHODS_LENGTH;
+        protocolMessage.setCompressions(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+        
+        protocolMessage.setExtensions(null);
+        
+        currentPointer = nextPointer;
+        if ((currentPointer - pointer) < length) {
+            currentPointer = currentPointer + ExtensionByteLength.EXTENSIONS;
+            while ((currentPointer - pointer) < length) {
+                nextPointer = currentPointer + ExtensionByteLength.TYPE;
+                byte[] extensionType = Arrays
+                        .copyOfRange(message, currentPointer, nextPointer);
+                //Not implemented/unknown extensions will generate an Exception ...
+                try {
+                    ExtensionHandler eh = ExtensionType
+                            .getExtensionType(extensionType).getExtensionHandler();
+                    currentPointer = eh.parseExtension(message, currentPointer);
+                    protocolMessage.addExtension(eh.getExtensionMessage());
+                }
+                //... which we catch, then disregard that extension and carry on.
+                catch (Exception ex) {
+                    currentPointer = nextPointer;
+                    nextPointer += 2;
+                    currentPointer += ArrayConverter.bytesToInt(Arrays
+                            .copyOfRange(message, currentPointer, nextPointer));
+                }
+            }
+        }
+        
+        protocolMessage.setCompleteResultingMessage(Arrays
+                .copyOfRange(message, pointer, currentPointer));
+        
+        return currentPointer;
     }
 }
