@@ -25,41 +25,39 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageT
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class HelloVerifyRequestMessage
-extends de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage {
+public class HelloVerifyRequestMessage extends de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray protocolVersion;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     ModifiableByteArray cookie;
-    
+
     public HelloVerifyRequestMessage(HandshakeMessageType handshakeMessageType) {
-        super(handshakeMessageType);
+	super(handshakeMessageType);
     }
-    
+
     public ModifiableByteArray getProtocolVersion() {
-        return protocolVersion;
+	return protocolVersion;
     }
-    
+
     public ModifiableByteArray getCookie() {
-        return cookie;
+	return cookie;
     }
-    
+
     public void setProtocolVersion(byte[] protocolVersion) {
-        this.protocolVersion = ModifiableVariableFactory
-                .safelySetValue(this.protocolVersion, protocolVersion);
+	this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
-    
+
     public void setProtocolVersion(ModifiableByteArray protocolVersion) {
-        this.protocolVersion = protocolVersion;
+	this.protocolVersion = protocolVersion;
     }
-    
+
     public void setCookie(byte[] cookie) {
-        this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
+	this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
     }
-    
+
     public void setCookie(ModifiableByteArray cookie) {
-        this.cookie = cookie;
+	this.cookie = cookie;
     }
 }

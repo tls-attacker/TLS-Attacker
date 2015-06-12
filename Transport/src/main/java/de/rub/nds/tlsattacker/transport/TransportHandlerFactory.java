@@ -38,10 +38,10 @@ public class TransportHandlerFactory {
 		return th;
 	    case EAP_TLS:
 		return new EAPTLSTransportHandler();
-            case UDP:
-                UDPTransportHandler udpth = new UDPTransportHandler();
-                udpth.setMaxResponseWait(maxResponseDelay);
-                return udpth;
+	    case UDP:
+		UDPTransportHandler udpth = new UDPTransportHandler();
+		udpth.setMaxResponseWait(maxResponseDelay);
+		return udpth;
 	    default:
 		throw new UnsupportedOperationException("This transport handler " + "type is not supported");
 	}

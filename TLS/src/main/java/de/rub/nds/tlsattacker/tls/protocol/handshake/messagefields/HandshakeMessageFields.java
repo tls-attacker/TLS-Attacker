@@ -27,8 +27,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 public class HandshakeMessageFields {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger length =
-            ModifiableVariableFactory.createIntegerModifiableVariable();
+    private ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
 
     public ModifiableInteger getLength() {
 	return length;
@@ -39,7 +38,6 @@ public class HandshakeMessageFields {
     }
 
     public void setLength(int length) {
-	this.length =
-                ModifiableVariableFactory.safelySetValue(this.length, length);
+	this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 }

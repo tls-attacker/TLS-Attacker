@@ -75,9 +75,8 @@ public class UDPTransportHandler implements TransportHandler {
 	so.connect(this.remoteAddress, this.remotePort);
 	localAddress = so.getLocalAddress();
 	localPort = so.getLocalPort();
-	LOGGER.debug("Socket bound to \"" + localAddress.getCanonicalHostName()
-                + ":" + localPort + "\". Specified remote host and port: \""
-                + this.remoteAddress.getCanonicalHostName() + ":"
+	LOGGER.debug("Socket bound to \"" + localAddress.getCanonicalHostName() + ":" + localPort
+		+ "\". Specified remote host and port: \"" + this.remoteAddress.getCanonicalHostName() + ":"
 		+ this.remotePort + "\".");
     }
 
@@ -113,8 +112,7 @@ public class UDPTransportHandler implements TransportHandler {
 	    try {
 		so.setSoTimeout(this.maxResponseWait);
 	    } catch (SocketException e) {
-		LOGGER.debug("Failed to set socket timeout. Exception:\n"
-                        + e.getMessage());
+		LOGGER.debug("Failed to set socket timeout. Exception:\n" + e.getMessage());
 	    }
 	}
     }

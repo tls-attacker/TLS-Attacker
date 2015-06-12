@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
 public class UDPTransportHandlerTest {
-    
+
     private final InetAddress localhost = InetAddress.getLoopbackAddress();
 
     public UDPTransportHandlerTest() {
@@ -45,44 +45,38 @@ public class UDPTransportHandlerTest {
 
 	byte[] txData = new byte[8192];
 	RandomHelper.getRandom().nextBytes(txData);
-        byte[] rxData = new byte[8192];
-	DatagramPacket rxPacket = new DatagramPacket(rxData, rxData.length,
-                localhost, testSocket.getLocalPort());
-        
+	byte[] rxData = new byte[8192];
+	DatagramPacket rxPacket = new DatagramPacket(rxData, rxData.length, localhost, testSocket.getLocalPort());
+
 	udpTH.sendData(txData);
 	testSocket.receive(rxPacket);
 
-	assertEquals("Confirm size of the sent data",
-                txData.length, rxPacket.getLength());
-	assertArrayEquals("Confirm sent data equals received data",
-                txData, rxPacket.getData());
-        
-        udpTH.closeConnection();
-        testSocket.close();
+	assertEquals("Confirm size of the sent data", txData.length, rxPacket.getLength());
+	assertArrayEquals("Confirm sent data equals received data", txData, rxPacket.getData());
+
+	udpTH.closeConnection();
+	testSocket.close();
     }
 
     @Test
     public void testFetchData() throws Exception {
-        UDPTransportHandler udpTH = new UDPTransportHandler();
-        DatagramSocket testSocket = new DatagramSocket();
-        
-        udpTH.initialize(localhost.getHostName(), testSocket.getLocalPort());
-        testSocket.connect(localhost, udpTH.getLocalPort());
-        
-        byte[] txData = new byte[8192];
-        RandomHelper.getRandom().nextBytes(txData);
-        DatagramPacket txPacket = new DatagramPacket(txData, txData.length,
-                localhost, udpTH.getLocalPort());
-        
-        testSocket.send(txPacket);
-        byte[] rxData = udpTH.fetchData();
-        
-        assertEquals("Confirm size of the received data",
-                txData.length, rxData.length);
-        assertArrayEquals("Confirm received data equals sent data",
-                txData, rxData);
-        
-        udpTH.closeConnection();
-        testSocket.close();        
+	UDPTransportHandler udpTH = new UDPTransportHandler();
+	DatagramSocket testSocket = new DatagramSocket();
+
+	udpTH.initialize(localhost.getHostName(), testSocket.getLocalPort());
+	testSocket.connect(localhost, udpTH.getLocalPort());
+
+	byte[] txData = new byte[8192];
+	RandomHelper.getRandom().nextBytes(txData);
+	DatagramPacket txPacket = new DatagramPacket(txData, txData.length, localhost, udpTH.getLocalPort());
+
+	testSocket.send(txPacket);
+	byte[] rxData = udpTH.fetchData();
+
+	assertEquals("Confirm size of the received data", txData.length, rxData.length);
+	assertArrayEquals("Confirm received data equals sent data", txData, rxData);
+
+	udpTH.closeConnection();
+	testSocket.close();
     }
 }
