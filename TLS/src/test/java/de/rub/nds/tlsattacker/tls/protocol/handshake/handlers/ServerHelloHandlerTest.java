@@ -57,7 +57,7 @@ public class ServerHelloHandlerTest {
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
 
-	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_HELLO,
+	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
 	assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
@@ -73,7 +73,7 @@ public class ServerHelloHandlerTest {
 		CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
 	assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
 
-	assertEquals("The pointer has to return the length of the protocol message",
+	assertEquals("The pointer has to return the length of this message + starting position",
 		serverKeyExchangeWithoutExtensionBytes.length, endPointer);
     }
 
