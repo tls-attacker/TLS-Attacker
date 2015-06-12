@@ -36,6 +36,12 @@ import static org.junit.Assert.*;
  */
 public class ClientHelloHandlerTest {
 
+	static byte[] clientHelloWithoutExtensionBytes = 
+            ArrayConverter.hexStringToByteArray("01000059030336CCE3E132A0C5B5" +
+            "DE2C0560B4FF7F6CDF7AE226120E4A99C07E2D9B68B275BB20FA6F8E9770106A" +
+            "CE8ACAB73E18B5D867CAF8AF7E206EF496F23A206A379FC7110012C02BC02FC0" +
+            "0AC009C013C014002F0035000A0100");
+			
     ClientHelloHandler handler;
 
     public ClientHelloHandlerTest() {
@@ -68,5 +74,46 @@ public class ClientHelloHandlerTest {
 
 	assertNotNull("Confirm function didn't return 'NULL'", returned);
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
+    }
+	
+	@Test
+    public void testParseMessageAction() {
+        handler.initializeProtocolMessage();
+        
+        int endPointer = handler.parseMessageAction(clientHelloWithoutExtensionBytes, 0);
+        ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
+        
+        byte[] expectedRandom = ArrayConverter.hexStringToByteArray(
+                "36cce3e132a0c5b5de2c0560b4ff7f6cdf7ae226120e4a99c07e2d9b68b275bb");
+        byte[] actualRandom = ArrayConverter.concatenate(
+                message.getUnixTime().getValue(), message.getRandom().getValue());
+        byte[] expectedSessionID = ArrayConverter.hexStringToByteArray(
+                "fa6f8e9770106ace8acab73e18b5d867caf8af7e206ef496f23a206a379fc711");
+        byte[] actualSessionID = message.getSessionId().getValue();
+        byte[] expectedCipherSuites = ArrayConverter.hexStringToByteArray(
+                "c02bc02fc00ac009c013c014002f0035000a");
+        byte[] actualCipherSuites = message.getCipherSuites().getValue();
+        
+        assertEquals("Check message type", HandshakeMessageType.CLIENT_HELLO,
+                message.getHandshakeMessageType());
+        assertEquals("Message length should be 508 bytes", new Integer(89),
+                message.getLength().getValue());
+        assertArrayEquals("Check Protocol Version",
+                ProtocolVersion.TLS12.getValue(),
+                message.getProtocolVersion().getValue());
+        assertArrayEquals("Check random", expectedRandom, actualRandom);
+        assertEquals("Check session_id length", new Integer(32),
+                message.getSessionIdLength().getValue());
+        assertArrayEquals("Check session_id", expectedSessionID,actualSessionID);
+        assertEquals("Check cipher_suites length", new Integer(18),
+                message.getCipherSuiteLength().getValue());
+        assertArrayEquals("Check cipher_suites", expectedCipherSuites,
+                actualCipherSuites);
+        assertEquals("Check compressions length", new Integer(1),
+                message.getCompressionLength().getValue());
+        assertArrayEquals("Check compressions", new byte[] {0x00},
+                message.getCompressions().getValue());
+        assertEquals("Check protocol message length pointer",
+                clientHelloWithoutExtensionBytes.length, endPointer);
     }
 }
