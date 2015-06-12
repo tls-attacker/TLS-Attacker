@@ -44,51 +44,51 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     protected Class<? extends ProtocolMessage> correctProtocolMessageClass;
 
     /**
-     *
+     * 
      * @param tlsContext
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
 	// ProtocolController protocolController =
-        // ProtocolController.getInstance();
-        this.tlsContext = tlsContext;
-        if (tlsContext == null) {
-            throw new ConfigurationException("TLS Context is not configured yet");
-        }
+	// ProtocolController.getInstance();
+	this.tlsContext = tlsContext;
+	if (tlsContext == null) {
+	    throw new ConfigurationException("TLS Context is not configured yet");
+	}
     }
 
     /**
      * Prepare message for sending. This method invokes before and after method
      * hooks.
-     *
+     * 
      * @return message in bytes
      */
     public byte[] prepareMessage() {
-        beforePrepareMessageAction();
-        byte[] ret = prepareMessageAction();
-        afterPrepareMessageAction();
-        return ret;
+	beforePrepareMessageAction();
+	byte[] ret = prepareMessageAction();
+	afterPrepareMessageAction();
+	return ret;
     }
 
     /**
      * Parse incoming message bytes and return a pointer to the last processed
      * byte + 1. This pointer is then used by further protocol message handler.
      * This method invokes before and after method hooks.
-     *
+     * 
      * @param message
-     * @param pointer 
-     * @return pointer to the next protocol message in the byte array, if
-     * any message following, i.e. lastProcessedBytePointer + 1
+     * @param pointer
+     * @return pointer to the next protocol message in the byte array, if any
+     *         message following, i.e. lastProcessedBytePointer + 1
      */
     public int parseMessage(byte[] message, int pointer) {
-        beforeParseMessageAction();
-        int ret = parseMessageAction(message, pointer);
-        afterParseMessageAction();
-        return ret;
+	beforeParseMessageAction();
+	int ret = parseMessageAction(message, pointer);
+	afterParseMessageAction();
+	return ret;
     }
 
     /**
      * Prepare message for sending
-     *
+     * 
      * @return message in bytes
      */
     protected abstract byte[] prepareMessageAction();
@@ -96,7 +96,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Parse incoming message bytes and return a pointer to the last processed
      * byte. This pointer is then used by further protocol message handler.
-     *
+     * 
      * @param message
      * @param pointer
      * @return
@@ -133,16 +133,16 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
 
     /**
      * Checks the protocol message
-     *
+     * 
      * @param protocolMessage
      * @return
      */
     public boolean isCorrectProtocolMessage(ProtocolMessage protocolMessage) {
-        if (protocolMessage == null) {
-            return false;
-        } else {
-            return protocolMessage.getClass().equals(correctProtocolMessageClass);
-        }
+	if (protocolMessage == null) {
+	    return false;
+	} else {
+	    return protocolMessage.getClass().equals(correctProtocolMessageClass);
+	}
 
     }
 
@@ -153,26 +153,27 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      */
     public void initializeProtocolMessage() {
 
-        try {
-            Constructor c = correctProtocolMessageClass.getConstructor();
-            Message pm = (Message) c.newInstance();
-            this.protocolMessage = pm;
-        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
-            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
-        }
+	try {
+	    Constructor c = correctProtocolMessageClass.getConstructor();
+	    Message pm = (Message) c.newInstance();
+	    this.protocolMessage = pm;
+	} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException
+		| InvocationTargetException | NoSuchMethodException ex) {
+	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+	}
     }
 
     /**
      * @return newly initialized protocol message used by this handler
      */
     public Message getProtocolMessage() {
-        return this.protocolMessage;
+	return this.protocolMessage;
     }
 
     /**
      * @param protocolMessage
      */
     public void setProtocolMessage(Message protocolMessage) {
-        this.protocolMessage = protocolMessage;
+	this.protocolMessage = protocolMessage;
     }
 }
