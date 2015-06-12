@@ -24,21 +24,20 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class ClientHelloMessage
-extends de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage{
-    
+public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage {
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     ModifiableByteArray cookie;
-    
+
     public ModifiableByteArray getCookie() {
-        return cookie;
+	return cookie;
     }
-    
+
     public void setCookie(byte[] cookie) {
-        this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
+	this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
     }
-    
+
     public void setCookie(ModifiableByteArray cookie) {
-        this.cookie = cookie;
+	this.cookie = cookie;
     }
 }

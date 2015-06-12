@@ -163,7 +163,7 @@ public abstract class WorkflowExecutor {
 				}
 				if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
 				    AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
-                                    am.setMessageIssuer(ConnectionEnd.SERVER);
+				    am.setMessageIssuer(ConnectionEnd.SERVER);
 				    if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
 					LOGGER.debug("The workflow execution is stopped because of a FATAL error");
 					proceedWorkflow = false;

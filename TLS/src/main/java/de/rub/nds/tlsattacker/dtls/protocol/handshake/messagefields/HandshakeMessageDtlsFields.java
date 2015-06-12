@@ -49,8 +49,7 @@ public class HandshakeMessageDtlsFields extends HandshakeMessageFields {
     }
 
     public void setMessageSeq(int messageSeq) {
-	this.messageSeq = ModifiableVariableFactory
-                .safelySetValue(this.messageSeq, messageSeq);
+	this.messageSeq = ModifiableVariableFactory.safelySetValue(this.messageSeq, messageSeq);
     }
 
     public void setMessageSeq(ModifiableInteger messageSeq) {
@@ -58,8 +57,7 @@ public class HandshakeMessageDtlsFields extends HandshakeMessageFields {
     }
 
     public void setFragmentOffset(int fragmentOffset) {
-	this.fragmentOffset = ModifiableVariableFactory
-                .safelySetValue(this.fragmentOffset, fragmentOffset);
+	this.fragmentOffset = ModifiableVariableFactory.safelySetValue(this.fragmentOffset, fragmentOffset);
     }
 
     public void setFragmentOffset(ModifiableInteger fragmentOffset) {
@@ -67,8 +65,7 @@ public class HandshakeMessageDtlsFields extends HandshakeMessageFields {
     }
 
     public void setFragmentLength(int fragmentLength) {
-	this.fragmentLength = ModifiableVariableFactory
-                .safelySetValue(this.fragmentLength, fragmentLength);
+	this.fragmentLength = ModifiableVariableFactory.safelySetValue(this.fragmentLength, fragmentLength);
     }
 
     public void setFragmentLength(ModifiableInteger fragmentLength) {

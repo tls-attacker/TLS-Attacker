@@ -17,7 +17,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
@@ -25,10 +28,12 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.record.constants.ByteLength;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.Time;
+import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -142,30 +147,30 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 
 	currentPointer = nextPointer;
 	nextPointer += HandshakeByteLength.SESSION_ID_LENGTH;
-        int sessionIdLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setSessionIdLength(sessionIdLength);
-        
-        currentPointer = nextPointer;
-        nextPointer +=sessionIdLength;
-        protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	int sessionIdLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setSessionIdLength(sessionIdLength);
 
 	currentPointer = nextPointer;
-	nextPointer += HandshakeByteLength.CIPHER_SUITES_LENGTH;
-        int cipherSuitesLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setCipherSuiteLength(cipherSuitesLength);
-        
-        currentPointer = nextPointer;
-        nextPointer += cipherSuitesLength;
-        protocolMessage.setCipherSuites(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	nextPointer += sessionIdLength;
+	protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
 	currentPointer = nextPointer;
-	nextPointer += HandshakeByteLength.COMPRESSION_METHODS_LENGTH;
-        int compressionsLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setCompressionLength(compressionsLength);
-	
-        currentPointer = nextPointer;
-        nextPointer += compressionsLength;
-        protocolMessage.setCompressions(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	nextPointer += HandshakeByteLength.CIPHER_SUITE;
+	int cipherSuitesLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setCipherSuiteLength(cipherSuitesLength);
+
+	currentPointer = nextPointer;
+	nextPointer += cipherSuitesLength;
+	protocolMessage.setCipherSuites(Arrays.copyOfRange(message, currentPointer, nextPointer));
+
+	currentPointer = nextPointer;
+	nextPointer += HandshakeByteLength.COMPRESSION;
+	int compressionsLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setCompressionLength(compressionsLength);
+
+	currentPointer = nextPointer;
+	nextPointer += compressionsLength;
+	protocolMessage.setCompressions(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
 	currentPointer = nextPointer;
 	if ((currentPointer - pointer) < length) {
@@ -183,13 +188,13 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 		// ... which we catch, then disregard that extension and carry
 		// on.
 		catch (Exception ex) {
-                    currentPointer = nextPointer;
-                    nextPointer += 2;
+		    currentPointer = nextPointer;
+		    nextPointer += 2;
 		    currentPointer += ArrayConverter.bytesToInt(Arrays
 			    .copyOfRange(message, currentPointer, nextPointer));
-                    nextPointer += 2;
-                    currentPointer += 2;
-                }
+		    nextPointer += 2;
+		    currentPointer += 2;
+		}
 	    }
 	}
 
