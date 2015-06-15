@@ -33,9 +33,8 @@ import static org.junit.Assert.*;
 public class ServerHelloHandlerTest {
 
     static byte[] serverKeyExchangeWithoutExtensionBytes = ArrayConverter
-	    .hexStringToByteArray("02000046030354cf6dcf922b63e8cb6af7527c6520f727d526"
-		    + "b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"
-		    + "fdf364d81e28f6f68502cd596792769be4c0c01300");
+	    .hexStringToByteArray("02000046030354cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d5720682200"
+		    + "00ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0c01300");
 
     ServerHelloHandler handler;
 
