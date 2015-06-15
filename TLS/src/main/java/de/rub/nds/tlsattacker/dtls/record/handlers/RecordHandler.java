@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.dtls.record.constants.ByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -52,9 +53,9 @@ public class RecordHandler {
 
     private static RecordHandler instance;
 
-    private ModifiableBigInteger sequenceCounter;
+    private BigInteger sequenceCounter;
 
-    private ModifiableInteger epochCounter;
+    private int epochCounter;
 
     private RecordHandler(TlsContext tlsContext) {
 	this.tlsContext = tlsContext;
@@ -63,8 +64,13 @@ public class RecordHandler {
 	    throw new ConfigurationException("The workflow was not configured properly, "
 		    + "it is not included in the ProtocolController");
 	}
-	ModifiableVariableFactory.safelySetValue(sequenceCounter, BigInteger.ZERO);
-	ModifiableVariableFactory.safelySetValue(epochCounter, 0);
+	if (tlsContext.getProtocolVersion() != ProtocolVersion.DTLS12) {
+	    if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
+		throw new UnsupportedOperationException("DTLSv1.0 is not supported.");
+	    }
+	    throw new ConfigurationException("The workflow was configured with an unsuitable protocol.");
+	}
+	sequenceCounter = BigInteger.ZERO;
     }
 
     public static RecordHandler getInstance() {
@@ -110,16 +116,16 @@ public class RecordHandler {
 	for (Record record : records) {
 	    byte[] ctArray = { record.getContentType().getValue() };
 	    byte[] pv = record.getProtocolVersion().getValue();
-	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), ByteLength.RECORD_LENGTH);
 	    byte[] en = ArrayConverter.intToBytes(record.getEpoch().getValue(), ByteLength.EPOCH);
-	    byte[] sn = ArrayConverter.bigIntegerToByteArray(record.getSequenceNumber().getValue(),
-		    ByteLength.SEQUENCE_NUMBER, true);
+	    byte[] sn = ArrayConverter.bigIntegerToNullPaddedByteArray(record.getSequenceNumber().getValue(),
+		    ByteLength.SEQUENCE_NUMBER);
+	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), ByteLength.RECORD_LENGTH);
 	    if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
 		byte[] pm = record.getProtocolMessageBytes().getValue();
-		result = ArrayConverter.concatenate(result, ctArray, pv, rl, en, sn, pm);
+		result = ArrayConverter.concatenate(result, ctArray, pv, en, sn, rl, pm);
 	    } else {
 		byte[] epm = record.getEncryptedProtocolMessageBytes().getValue();
-		result = ArrayConverter.concatenate(result, ctArray, pv, rl, en, sn, epm);
+		result = ArrayConverter.concatenate(result, ctArray, pv, en, sn, rl, epm);
 	    }
 	}
 	// LOGGER.debug("The protocol message(s) was split into {} record(s). The result is: {}",
@@ -165,7 +171,7 @@ public class RecordHandler {
 	record.setProtocolMessageBytes(pmData);
 
 	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-	    long combinedSequenceNumber = epochCounter.getValue() << 48 + sequenceCounter.getValue().longValue();
+	    long combinedSequenceNumber = epochCounter << 48 + sequenceCounter.longValue();
 	    byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getProtocolVersion(), contentType, record
 		    .getProtocolMessageBytes().getValue(), combinedSequenceNumber);
 	    record.setMac(mac);
@@ -202,19 +208,19 @@ public class RecordHandler {
 	    byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
 	    record.setProtocolVersion(protocolVersion);
 
-	    byte[] byteLength = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
-	    int length = ArrayConverter.bytesToInt(byteLength);
-	    record.setLength(length);
-
-	    byte[] byteEpoch = { rawRecordData[dataPointer + 5], rawRecordData[dataPointer + 6] };
+	    byte[] byteEpoch = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
 	    int epoch = ArrayConverter.bytesToInt(byteEpoch);
 	    record.setEpoch(epoch);
 
-	    byte[] byteSequenceNumber = { rawRecordData[dataPointer + 7], rawRecordData[dataPointer + 8],
-		    rawRecordData[dataPointer + 9], rawRecordData[dataPointer + 10], rawRecordData[dataPointer + 11],
-		    rawRecordData[dataPointer + 12] };
-	    BigInteger sequenceNumber = new BigInteger(ArrayConverter.bytesToHexString(byteSequenceNumber));
+	    byte[] byteSequenceNumber = { rawRecordData[dataPointer + 5], rawRecordData[dataPointer + 6],
+		    rawRecordData[dataPointer + 7], rawRecordData[dataPointer + 8], rawRecordData[dataPointer + 9],
+		    rawRecordData[dataPointer + 10] };
+	    BigInteger sequenceNumber = new BigInteger(1, byteSequenceNumber);
 	    record.setSequenceNumber(sequenceNumber);
+
+	    byte[] byteLength = { rawRecordData[dataPointer + 11], rawRecordData[dataPointer + 12] };
+	    int length = ArrayConverter.bytesToInt(byteLength);
+	    record.setLength(length);
 
 	    int lastByte = dataPointer + 13 + length;
 	    byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 13, lastByte);
@@ -261,14 +267,14 @@ public class RecordHandler {
 	this.recordCipher = recordCipher;
     }
 
-    private ModifiableBigInteger getNextSequenceNumber() {
-	ModifiableBigInteger output = sequenceCounter;
-	sequenceCounter.setModification(BigIntegerModificationFactory.add("1"));
+    private BigInteger getNextSequenceNumber() {
+	BigInteger output = sequenceCounter;
+	sequenceCounter = sequenceCounter.add(BigInteger.ONE);
 	return output;
     }
 
     private void advanceEpoch() {
-	epochCounter.setModification(IntegerModificationFactory.add(1));
-	sequenceCounter.setModification(BigIntegerModificationFactory.explicitValue(BigInteger.ZERO));
+	epochCounter += 1;
+	sequenceCounter = BigInteger.ZERO;
     }
 }

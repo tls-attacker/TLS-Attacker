@@ -286,4 +286,40 @@ public class ArrayConverter {
 	}
 	return output;
     }
+
+    /**
+     * Converts a BigInteger into a byte array of given size. If the BigInteger
+     * doesn't fit into the byte array, bits of the BigInteger will simply be
+     * truncated, starting with the most significant bit. If the array is larger
+     * than the BigInteger, prepending bytes in the array will be 0x00.
+     * 
+     * @param input
+     * @param outputSizeInBytes
+     * @return
+     */
+    public static byte[] bigIntegerToNullPaddedByteArray(BigInteger input, int outputSizeInBytes) {
+	if (input == null) {
+	    throw new IllegalArgumentException("'input' must not be null.");
+	}
+	byte[] output = new byte[outputSizeInBytes];
+
+	int numByteBlocks = input.bitLength() / 8;
+	int remainingBits;
+
+	if (numByteBlocks < output.length) {
+	    remainingBits = input.bitLength() % 8;
+	} else {
+	    remainingBits = 0;
+	    numByteBlocks = output.length;
+	}
+
+	int i;
+	for (i = 0; i < numByteBlocks; i++) {
+	    output[output.length - 1 - i] = input.shiftRight(i * 8).byteValue();
+	}
+	if (remainingBits > 0) {
+	    output[output.length - 1 - i] = input.shiftRight(i * 8).byteValue();
+	}
+	return output;
+    }
 }

@@ -10,8 +10,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
 public class ArrayConverterTest {
 
@@ -125,10 +125,24 @@ public class ArrayConverterTest {
      */
     @Test
     public void testHexStringToByteArray() {
-        String hex = "01";
-        assertArrayEquals("Testing simple one byte hex value", new byte[]{01}, ArrayConverter.hexStringToByteArray(hex));
-        hex = "FF";
-        assertArrayEquals("Testing one byte hex value > 0x7f", new byte[]{(byte)255}, ArrayConverter.hexStringToByteArray(hex));
+	String hex = "01";
+	assertArrayEquals("Testing simple one byte hex value", new byte[] { 0x01 },
+		ArrayConverter.hexStringToByteArray(hex));
+	hex = "FF";
+	assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff },
+		ArrayConverter.hexStringToByteArray(hex));
     }
-    
+
+    @Test
+    public void testBigIntegerToNullPaddedByteArray() {
+	BigInteger test = new BigInteger("1D42C86F7923DFEC", 16);
+
+	assertArrayEquals("Check zero output size", new byte[0],
+		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 0));
+	assertArrayEquals("Check check output size smaller than input", new byte[] { (byte) 0xEC },
+		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 1));
+	assertArrayEquals("Check output size bigger than input size",
+		ArrayConverter.hexStringToByteArray("0000000000000000000000001D42C86F7923DFEC"),
+		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 20));
+    }
 }
