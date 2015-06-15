@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorith
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,13 +35,14 @@ import static org.junit.Assert.*;
  */
 public class DHEServerKeyExchangeHandlerTest {
 
-    static BigInteger testServerKeyExchangeDSA = new BigInteger(
-	    "0c0000b90040da583c16d9852289d0e4af756f4cca92dd4be533b804fb0fed94ef9c8a4403ed574650d36999db29d776276ba2d3d"
-		    + "412e218f4dd1e084cf6d8003e7c4774e833000102004006a14fecf0b2e7fae2b30d879616207fb1022ce1000d87c3e9"
-		    + "8ede5a053799d61adc622daac01b0966232425784ffd3493f2ab3bfa109361a42c28c7ba4af76c0402002e302c02144"
-		    + "f232c10ad1fcfb92b3bedc7c0deddd5c04908ad02142211f07d891eb18a1e0d58dfba4949ffe5961451", 16);
+    static byte[] testServerKeyExchangeDSA = ArrayConverter
+	    .hexStringToByteArray("0c0000b90040da583c16d9852289d0e4af756f4cca92dd4be533b804fb0fed94ef9c8a4403ed574650d3"
+		    + "6999db29d776276ba2d3d412e218f4dd1e084cf6d8003e7c4774e833000102004006a14fecf0b2e7fae2b30d87961620"
+		    + "7fb1022ce1000d87c3e98ede5a053799d61adc622daac01b0966232425784ffd3493f2ab3bfa109361a42c28c7ba4af7"
+		    + "6c0402002e302c02144f232c10ad1fcfb92b3bedc7c0deddd5c04908ad02142211f07d891eb18a1e0d58dfba4949ffe5"
+		    + "961451");
 
-    static BigInteger testServerKeyExchangeRSA = new BigInteger("0", 16);
+    static byte[] testServerKeyExchangeRSA = ArrayConverter.hexStringToByteArray("00");
 
     DHEServerKeyExchangeHandler handler;
 
@@ -53,10 +55,9 @@ public class DHEServerKeyExchangeHandlerTest {
      */
     @Test
     public void testParseMessageDSA() {
-	byte[] serverKeyExchangeBytes = testServerKeyExchangeDSA.toByteArray();
 	handler.initializeProtocolMessage();
 
-	int endPointer = handler.parseMessageAction(serverKeyExchangeBytes, 0);
+	int endPointer = handler.parseMessageAction(testServerKeyExchangeDSA, 0);
 	DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
@@ -73,7 +74,7 @@ public class DHEServerKeyExchangeHandlerTest {
 		SignatureAlgorithm.getSignatureAlgorithm(message.getSignatureAlgorithm().getValue()));
 	assertEquals("Signature length must be 46", new Integer(46), message.getSignatureLength().getValue());
 
-	assertEquals("The pointer has to return the length of the protocol message", serverKeyExchangeBytes.length,
+	assertEquals("The pointer has to return the length of the protocol message", testServerKeyExchangeDSA.length,
 		endPointer);
     }
 

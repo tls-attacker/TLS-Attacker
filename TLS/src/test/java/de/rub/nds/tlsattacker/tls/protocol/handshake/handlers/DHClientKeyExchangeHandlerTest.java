@@ -53,7 +53,7 @@ public class DHClientKeyExchangeHandlerTest {
 
 	// initialize tls context with dh parameters
 	skeHandler = new DHEServerKeyExchangeHandler(context);
-	byte[] serverKeyExchangeBytes = DHEServerKeyExchangeHandlerTest.testServerKeyExchangeDSA.toByteArray();
+	byte[] serverKeyExchangeBytes = DHEServerKeyExchangeHandlerTest.testServerKeyExchangeDSA;
 	skeHandler.initializeProtocolMessage();
 	skeHandler.parseMessageAction(serverKeyExchangeBytes, 0);
     }

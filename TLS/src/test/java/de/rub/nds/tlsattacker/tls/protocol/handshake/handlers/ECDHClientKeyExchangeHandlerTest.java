@@ -57,7 +57,7 @@ public class ECDHClientKeyExchangeHandlerTest {
 
 	// initialize tls context with ec parameters
 	skeHandler = new ECDHEServerKeyExchangeHandler(context);
-	byte[] serverKeyExchangeBytes = testServerKeyExchangeECDSA.toByteArray();
+	byte[] serverKeyExchangeBytes = testServerKeyExchangeECDSA;
 	skeHandler.initializeProtocolMessage();
 	skeHandler.parseMessageAction(serverKeyExchangeBytes, 0);
     }
