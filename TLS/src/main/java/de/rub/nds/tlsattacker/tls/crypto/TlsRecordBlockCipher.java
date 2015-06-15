@@ -116,7 +116,8 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	this.tlsContext = tlsContext;
 	ProtocolVersion protocolVersion = tlsContext.getProtocolVersion();
 	CipherSuite cipherSuite = tlsContext.getSelectedCipherSuite();
-	if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12) {
+	if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12
+		|| protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
 	    useExplicitIv = true;
 	}
 	bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
@@ -241,6 +242,26 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 
 	// we increment sequence number for the sent records
 	sequenceNumber++;
+
+	return result;
+    }
+
+    public byte[] calculateDtlsMac(ProtocolVersion protocolVersion, ProtocolMessageType contentType, byte[] data,
+	    long dtlsMacSequenceNumber) {
+	byte[] SQN = ArrayConverter.longToUint64Bytes(dtlsMacSequenceNumber);
+	byte[] HDR = ArrayConverter.concatenate(contentType.getArrayValue(), protocolVersion.getValue(),
+		ArrayConverter.intToBytes(data.length, 2));
+
+	writeMac.update(SQN);
+	writeMac.update(HDR);
+	writeMac.update(data);
+
+	LOGGER.debug("The MAC was caluculated over the following data: \n  {}",
+		ArrayConverter.bytesToHexString(ArrayConverter.concatenate(SQN, HDR, data)));
+
+	byte[] result = writeMac.doFinal();
+
+	LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
 
 	return result;
     }

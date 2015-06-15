@@ -27,7 +27,9 @@ public enum ProtocolVersion {
 
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
-    TLS12(new byte[] { (byte) 0x03, (byte) 0x03 });
+    TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
+    DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFE }),
+    DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
     private byte[] value;
 
