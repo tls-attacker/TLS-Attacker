@@ -1,7 +1,9 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Felix Lange
+ * Copyright (C) 2015 Chair for Network and Data Security,
+ *                    Ruhr University Bochum
+ *                    (juraj.somorovsky@rub.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
