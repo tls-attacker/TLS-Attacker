@@ -17,29 +17,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.rub.nds.tlsattacker.tls.config.converters;
-
-import com.beust.jcommander.IStringConverter;
-import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
-import java.util.Arrays;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.rub.nds.tlsattacker.tls;
 
 /**
- * Converts a string named curve to a NamedCurve type (for command line
- * purposes).
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class NamedCurveConverter implements IStringConverter<NamedCurve> {
+public class NewClass {
 
-    @Override
-    public NamedCurve convert(String value) {
-
-	try {
-	    return NamedCurve.valueOf(value);
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a NamedCurve. "
-		    + "Available values are: " + Arrays.toString(NamedCurve.values()));
-	}
-    }
 }
