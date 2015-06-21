@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * Construct the 802.1x Header for encapsulated EAP
+ * https://standards.ieee.org/findstds/standard/802.1X-2010.html
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class Eap8021X extends EAPFrame {
 
     byte version;

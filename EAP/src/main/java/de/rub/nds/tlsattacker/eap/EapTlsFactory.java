@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * EAP-TLS Factto create EAP and EAP-TLS Frames
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class EapTlsFactory extends EapFactory {
 
     @Override
