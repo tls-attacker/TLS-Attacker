@@ -21,6 +21,11 @@ package de.rub.nds.tlsattacker.eap;
 
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
+/**
+ * State for the start of a Fragmentation. Change state if a Frag or Fragend Frame was received.
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class FragStartState implements EapState {
 
     EapolMachine eapolMachine;

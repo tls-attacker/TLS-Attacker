@@ -21,6 +21,12 @@ package de.rub.nds.tlsattacker.eap;
 
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
+/**
+ * Construct the EAP Frag End Frame with last TLS-Packet and EAP-FLag 0x00.
+ * http://tools.ietf.org/html/rfc3748
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class FragEnd extends EAPResponseDecorator {
 
     EAPFrame eapframe;

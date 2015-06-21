@@ -22,6 +22,11 @@ package de.rub.nds.tlsattacker.eap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * State for the end of a Fragmentation. Change state if a CCS, Alert or Failure was received.
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class FragEndState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FragEndState.class);
