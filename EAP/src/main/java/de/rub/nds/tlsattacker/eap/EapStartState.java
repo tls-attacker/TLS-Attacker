@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * Set EAP-TLS Statemachine in Start-State and send EAP-Start out. Change the State if a Identity Frame was received. 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class EapStartState implements EapState {
 
     EapolMachine eapolMachine;
