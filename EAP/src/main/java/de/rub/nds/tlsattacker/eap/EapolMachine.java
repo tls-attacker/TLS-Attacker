@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * EAPol Machine for send/receive Frames, set/get States and get ID from Protocolflow
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class EapolMachine {
 
     EapState eapStartState;

@@ -20,7 +20,7 @@
 package de.rub.nds.tlsattacker.eap;
 
 /**
- * EAP-TLS Factto create EAP and EAP-TLS Frames
+ * EAP-TLS Factory create EAP and EAP-TLS Frames
  * @author Felix Lange <flx.lange@gmail.com>
  */
 

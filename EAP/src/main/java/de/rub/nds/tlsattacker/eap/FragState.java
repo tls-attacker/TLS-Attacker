@@ -22,6 +22,11 @@ package de.rub.nds.tlsattacker.eap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * State for the Fragmentation process. Sends the EAP-ACKs. Change state if a Frag or Fragend Frame was received.
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
+
 public class FragState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FragState.class);
