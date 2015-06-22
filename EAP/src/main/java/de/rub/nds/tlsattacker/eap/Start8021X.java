@@ -22,9 +22,9 @@ package de.rub.nds.tlsattacker.eap;
 /**
  * Construct the 802.1x Start-Header with Version
  * https://standards.ieee.org/findstds/standard/802.1X-2010.html
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-
 public class Start8021X extends EAPFrame {
 
     byte version;

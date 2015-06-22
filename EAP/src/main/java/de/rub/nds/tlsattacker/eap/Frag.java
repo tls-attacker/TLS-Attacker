@@ -24,9 +24,9 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * Construct the a fragmented EAP-Frame with the right TLS-Length.
  * http://tools.ietf.org/html/rfc3748
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-
 public class Frag extends EAPResponseDecorator {
 
     EAPFrame eapframe;

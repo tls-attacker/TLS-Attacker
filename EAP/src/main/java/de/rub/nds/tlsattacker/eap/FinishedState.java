@@ -23,10 +23,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Last state in the protocolflow, sends the last EAP-ACK and switch to Success or Failure. This depends on the received frame.
+ * Last state in the protocolflow, sends the last EAP-ACK and switch to Success
+ * or Failure. This depends on the received frame.
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-
 public class FinishedState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FragEndState.class);
