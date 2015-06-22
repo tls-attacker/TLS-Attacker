@@ -18,8 +18,10 @@
  * limitations under the License.
  */
 package de.rub.nds.tlsattacker.eap;
+
 /**
- * Interface for EAP-TLS Statemachine. 
+ * Interface for EAP-TLS Statemachine.
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public interface EapState {

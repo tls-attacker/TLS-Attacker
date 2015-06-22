@@ -24,9 +24,9 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * Construct the NAK EAP-Frame for changing Authentication to EAP-TLS.
  * http://tools.ietf.org/html/rfc3748
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-
 public class Nak extends EAPResponseDecorator {
     EAPFrame eapframe;
 

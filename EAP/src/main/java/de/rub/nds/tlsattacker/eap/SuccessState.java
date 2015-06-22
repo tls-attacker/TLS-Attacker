@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Throws Success Message, if EAP-Frame Success was received.
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public class SuccessState implements EapState {

@@ -24,9 +24,9 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * Construct the Identity EAP-Frame with the username.
  * http://tools.ietf.org/html/rfc3748
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-
 public class Identity extends EAPResponseDecorator {
     EAPFrame eapframe;
 

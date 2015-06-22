@@ -21,9 +21,9 @@ package de.rub.nds.tlsattacker.eap;
 
 /**
  * Extract the TLS Packet from EAP-Frame. It cuts the header information.
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-
 public class ExtractTLS {
 
     byte[] frame, tls;
