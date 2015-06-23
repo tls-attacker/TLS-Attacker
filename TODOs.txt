@@ -2,14 +2,10 @@ TLS 1.0, 1.1, 1.3
 
 Server side processing
 
-DTLS
-
 Writing tests for message handlers (and other stuff)
 
 Certificate forgery and modifiable certificates:
 - for both client and server CertificateMessage handling
-
-CertificateRequest message parsing
 
 TLS renegotiation, session resumption
 
@@ -44,9 +40,3 @@ Application-Layer Protocol Negotiation Extension:
 - https://tools.ietf.org/html/rfc7301
 - include protocol name used on the tls layer (e.g. spdy)
 - implement abbreviated handshakes
-
-Fuzzing:
-- padding
-- length
-- kleine Untergruppen (crypto-fuzzing)
-- asn.1 fuzzing

@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.fuzzer.utils;
 
-import de.rub.nds.tlsattacker.fuzzer.config.FuzzerConfig;
-import de.rub.nds.tlsattacker.fuzzer.impl.Fuzzer;
+import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
+import de.rub.nds.tlsattacker.fuzzer.impl.SimpleFuzzer;
 import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -60,7 +60,7 @@ public class CertificateHelper {
      * @return server certificate if possible. If no server certificate message
      *         was received, returns null.
      */
-    public static Certificate fetchCertificate(FuzzerConfig config) {
+    public static Certificate fetchCertificate(SimpleFuzzerConfig config) {
 	ConfigHandler configHandler = new ClientConfigHandler();
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
@@ -68,7 +68,7 @@ public class CertificateHelper {
 	try {
 	    workflowExecutor.executeWorkflow();
 	} catch (Exception e) {
-	    Fuzzer.LOGGER.debug(e);
+	    SimpleFuzzer.LOGGER.debug(e);
 	    transportHandler.closeConnection();
 	}
 	return tlsContext.getServerCertificate();
