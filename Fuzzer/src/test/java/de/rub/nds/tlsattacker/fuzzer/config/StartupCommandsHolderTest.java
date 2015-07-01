@@ -37,11 +37,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class StartupCommandsHolderTest {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(StartupCommandsHolderTest.class);
 
     private String startupServerCommand, startupFuzzerCommand, startupShortName;
@@ -53,15 +53,15 @@ public class StartupCommandsHolderTest {
     private Marshaller m;
 
     private Unmarshaller um;
-    
+
     private StartupCommandsHolder holder;
 
     @Before
     public void setUp() throws JAXBException {
 	startupFuzzerCommand = "fuzzing command";
-        startupServerCommand = "server command";
-        startupShortName = "short name";
-        holder = new StartupCommandsHolder();
+	startupServerCommand = "server command";
+	startupShortName = "short name";
+	holder = new StartupCommandsHolder();
 
 	writer = new StringWriter();
 	context = JAXBContext.newInstance(StartupCommandsHolder.class);
@@ -72,15 +72,15 @@ public class StartupCommandsHolderTest {
 
     @Test
     public void serializationTest() throws JAXBException {
-        StartupCommand command = new StartupCommand();
-        command.setFuzzerCommand(startupFuzzerCommand);
-        command.setServerCommandParameters(startupServerCommand);
-        command.setShortName(startupShortName);
-        List<StartupCommand> commands = new LinkedList<>();
-        commands.add(command);
-        holder.setStartupCommands(commands);
-	
-        m.marshal(holder, writer);
+	StartupCommand command = new StartupCommand();
+	command.setFuzzerCommand(startupFuzzerCommand);
+	command.setServerCommandParameters(startupServerCommand);
+	command.setShortName(startupShortName);
+	List<StartupCommand> commands = new LinkedList<>();
+	commands.add(command);
+	holder.setStartupCommands(commands);
+
+	m.marshal(holder, writer);
 
 	String xmlString = writer.toString();
 	LOGGER.debug(xmlString);
@@ -88,10 +88,10 @@ public class StartupCommandsHolderTest {
 	um = context.createUnmarshaller();
 	StartupCommandsHolder holder2 = (StartupCommandsHolder) um.unmarshal(new StringReader(xmlString));
 
-        StartupCommand deserialized = holder2.getStartupCommands().get(0);
-        assertEquals(startupFuzzerCommand, deserialized.getFuzzerCommand());
-        assertEquals(startupServerCommand, deserialized.getServerCommandParameters());
-        assertEquals(startupShortName, deserialized.getShortName());
+	StartupCommand deserialized = holder2.getStartupCommands().get(0);
+	assertEquals(startupFuzzerCommand, deserialized.getFuzzerCommand());
+	assertEquals(startupServerCommand, deserialized.getServerCommandParameters());
+	assertEquals(startupShortName, deserialized.getShortName());
     }
-    
+
 }

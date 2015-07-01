@@ -16,43 +16,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.config;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package de.rub.nds.tlsattacker.fuzzer.impl;
 
 /**
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-@XmlRootElement
-public class StartupCommand {
-    private String serverCommandParameters;
-
-    private String fuzzerCommand;
-
-    private String shortName;
-
-    public String getServerCommandParameters() {
-	return serverCommandParameters;
-    }
-
-    public void setServerCommandParameters(String serverCommandParameters) {
-	this.serverCommandParameters = serverCommandParameters;
-    }
-
-    public String getFuzzerCommand() {
-	return fuzzerCommand;
-    }
-
-    public void setFuzzerCommand(String fuzzerCommand) {
-	this.fuzzerCommand = fuzzerCommand;
-    }
-
-    public String getShortName() {
-	return shortName;
-    }
-
-    public void setShortName(String shortName) {
-	this.shortName = shortName;
-    }
+public enum FuzzingType {
+    RANDOM,
+    SYSTEMATIC
 }

@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.utils;
+package de.rub.nds.tlsattacker.fuzzer.util;
 
 import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.impl.SimpleFuzzer;

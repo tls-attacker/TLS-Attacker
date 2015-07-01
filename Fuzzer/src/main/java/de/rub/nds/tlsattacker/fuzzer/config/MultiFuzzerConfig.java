@@ -21,14 +21,14 @@ package de.rub.nds.tlsattacker.fuzzer.config;
 import com.beust.jcommander.Parameter;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class MultiFuzzerConfig {
 
     public static final String ATTACK_COMMAND = "multi_fuzzer";
 
-    @Parameter(names = {"-h", "-help"}, help = true, description = "Prints help")
+    @Parameter(names = { "-h", "-help" }, help = true, description = "Prints help")
     protected boolean help;
 
     @Parameter(names = "-startup_command_file", required = true, description = "XML file that is used for starting the server and the fuzzer.")
@@ -39,13 +39,13 @@ public class MultiFuzzerConfig {
     }
 
     public String getStartupCommandFile() {
-        return startupCommandFile;
+	return startupCommandFile;
     }
 
     public void setStartupCommandFile(String startupCommandFile) {
-        this.startupCommandFile = startupCommandFile;
+	this.startupCommandFile = startupCommandFile;
     }
-    
+
     public boolean isHelp() {
 	return help;
     }

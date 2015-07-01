@@ -32,61 +32,61 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        // ECC does not work properly in the NSS provider
-        Security.removeProvider("SunPKCS11-NSS");
-        Security.addProvider(new BouncyCastleProvider());
+	// ECC does not work properly in the NSS provider
+	Security.removeProvider("SunPKCS11-NSS");
+	Security.addProvider(new BouncyCastleProvider());
 
-        GeneralConfig generalConfig = new GeneralConfig();
-        JCommander jc = new JCommander(generalConfig);
+	GeneralConfig generalConfig = new GeneralConfig();
+	JCommander jc = new JCommander(generalConfig);
 
-        SimpleFuzzerConfig config = new SimpleFuzzerConfig();
-        jc.addCommand(SimpleFuzzerConfig.ATTACK_COMMAND, config);
-        MultiFuzzerConfig mconfig = new MultiFuzzerConfig();
-        jc.addCommand(MultiFuzzerConfig.ATTACK_COMMAND, mconfig);
+	SimpleFuzzerConfig config = new SimpleFuzzerConfig();
+	jc.addCommand(SimpleFuzzerConfig.ATTACK_COMMAND, config);
+	MultiFuzzerConfig mconfig = new MultiFuzzerConfig();
+	jc.addCommand(MultiFuzzerConfig.ATTACK_COMMAND, mconfig);
 
-        jc.parse(args);
+	jc.parse(args);
 
-        if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
-            jc.usage();
-            return;
-        }
+	if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+	    jc.usage();
+	    return;
+	}
 
-        switch (jc.getParsedCommand()) {
-            case SimpleFuzzerConfig.ATTACK_COMMAND:
-                startSimpleFuzzer(config, generalConfig, jc);
-                break;
-            case MultiFuzzerConfig.ATTACK_COMMAND:
-                startMultiFuzzer(mconfig, generalConfig, jc);
-                break;
-            default:
-                throw new ConfigurationException("No command found");
-        }
+	switch (jc.getParsedCommand()) {
+	    case SimpleFuzzerConfig.ATTACK_COMMAND:
+		startSimpleFuzzer(config, generalConfig, jc);
+		break;
+	    case MultiFuzzerConfig.ATTACK_COMMAND:
+		startMultiFuzzer(mconfig, generalConfig, jc);
+		break;
+	    default:
+		throw new ConfigurationException("No command found");
+	}
 
     }
 
     private static void startSimpleFuzzer(SimpleFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
-        SimpleFuzzer fuzzer = new SimpleFuzzer(fuzzerConfig, generalConfig);
-        if(fuzzerConfig.isHelp()) {
-            jc.usage(SimpleFuzzerConfig.ATTACK_COMMAND);
-            return;
-        }
-        fuzzer.startFuzzer();
+	SimpleFuzzer fuzzer = new SimpleFuzzer(fuzzerConfig, generalConfig);
+	if (fuzzerConfig.isHelp()) {
+	    jc.usage(SimpleFuzzerConfig.ATTACK_COMMAND);
+	    return;
+	}
+	fuzzer.startFuzzer();
     }
-    
+
     private static void startMultiFuzzer(MultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
-        MultiFuzzer fuzzer = new MultiFuzzer(fuzzerConfig, generalConfig);
-        if(fuzzerConfig.isHelp()) {
-            jc.usage(MultiFuzzerConfig.ATTACK_COMMAND);
-            return;
-        }
-        fuzzer.startFuzzer();
+	MultiFuzzer fuzzer = new MultiFuzzer(fuzzerConfig, generalConfig);
+	if (fuzzerConfig.isHelp()) {
+	    jc.usage(MultiFuzzerConfig.ATTACK_COMMAND);
+	    return;
+	}
+	fuzzer.startFuzzer();
     }
 
 }

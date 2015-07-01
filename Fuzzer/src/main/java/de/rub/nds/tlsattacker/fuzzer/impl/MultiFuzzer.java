@@ -34,7 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class MultiFuzzer extends Fuzzer {
@@ -44,74 +44,74 @@ public class MultiFuzzer extends Fuzzer {
     private final MultiFuzzerConfig fuzzerConfig;
 
     public MultiFuzzer(MultiFuzzerConfig config, GeneralConfig generalConfig) {
-        super(generalConfig);
-        this.fuzzerConfig = config;
+	super(generalConfig);
+	this.fuzzerConfig = config;
     }
 
     @Override
     public void startFuzzer() {
-        String file = fuzzerConfig.getStartupCommandFile();
-        try {
-            StartupCommandsHolder holder = unmarshalStartupCommands(file);
-            for (StartupCommand command : holder.getStartupCommands()) {
-                String fullServerCommand = holder.getServerCommand() + " " + command.getServerCommandParameters();
-                LOGGER.info("Starting new fuzzer with the follwing parameters");
-                LOGGER.info("  Name: {}", command.getShortName());
-                LOGGER.info("  Server command: {}", fullServerCommand);
-                LOGGER.info("  Fuzzer config: {}", command.getFuzzerCommand());
+	String file = fuzzerConfig.getStartupCommandFile();
+	try {
+	    StartupCommandsHolder holder = unmarshalStartupCommands(file);
+	    for (StartupCommand command : holder.getStartupCommands()) {
+		String fullServerCommand = holder.getServerCommand() + " " + command.getServerCommandParameters();
+		LOGGER.info("Starting new fuzzer with the follwing parameters");
+		LOGGER.info("  Name: {}", command.getShortName());
+		LOGGER.info("  Server command: {}", fullServerCommand);
+		LOGGER.info("  Fuzzer config: {}", command.getFuzzerCommand());
 
-                SimpleFuzzerConfig simpleConfig = parseSimpleFuzzerConfig(command);
-                simpleConfig.setServerCommand(fullServerCommand);
-                
-                SimpleFuzzer fuzzer = new SimpleFuzzer(simpleConfig, generalConfig);
-                fuzzer.setFuzzingName(command.getShortName());
+		SimpleFuzzerConfig simpleConfig = parseSimpleFuzzerConfig(command);
+		simpleConfig.setServerCommand(fullServerCommand);
 
-                new SimpleFuzzerStarter(fuzzer).start();
-            }
-        } catch (FileNotFoundException | JAXBException ex) {
-            throw new ConfigurationException("Unmarshaling failed", ex);
-        }
+		SimpleFuzzer fuzzer = new SimpleFuzzer(simpleConfig, generalConfig);
+		fuzzer.setFuzzingName(command.getShortName());
+
+		new SimpleFuzzerStarter(fuzzer).start();
+	    }
+	} catch (FileNotFoundException | JAXBException ex) {
+	    throw new ConfigurationException("Unmarshaling failed", ex);
+	}
     }
 
     /**
      * Parses the simple fuzzer configuration, typically used from the main
      * class.
-     *
+     * 
      * @param command
      * @return
      */
     private SimpleFuzzerConfig parseSimpleFuzzerConfig(StartupCommand command) {
-        JCommander jc = new JCommander();
-        SimpleFuzzerConfig simpleConfig = new SimpleFuzzerConfig();
-        jc.addCommand(SimpleFuzzerConfig.ATTACK_COMMAND, simpleConfig);
-        jc.parse(command.getFuzzerCommand().split(" "));
-        return simpleConfig;
+	JCommander jc = new JCommander();
+	SimpleFuzzerConfig simpleConfig = new SimpleFuzzerConfig();
+	jc.addCommand(SimpleFuzzerConfig.ATTACK_COMMAND, simpleConfig);
+	jc.parse(command.getFuzzerCommand().split(" "));
+	return simpleConfig;
     }
 
     /**
      * Unmarshals the startup commands (for server and fuzzer) from an XML file
-     *
+     * 
      * @param file
      * @return
      * @throws JAXBException
      * @throws FileNotFoundException
      */
     private StartupCommandsHolder unmarshalStartupCommands(String file) throws JAXBException, FileNotFoundException {
-        JAXBContext context = JAXBContext.newInstance(StartupCommandsHolder.class);
-        Unmarshaller um = context.createUnmarshaller();
-        return (StartupCommandsHolder) um.unmarshal(new FileReader(file));
+	JAXBContext context = JAXBContext.newInstance(StartupCommandsHolder.class);
+	Unmarshaller um = context.createUnmarshaller();
+	return (StartupCommandsHolder) um.unmarshal(new FileReader(file));
     }
-    
-    class SimpleFuzzerStarter extends Thread {
-        private final SimpleFuzzer fuzzer;
 
-        public SimpleFuzzerStarter(SimpleFuzzer fuzzer) {
-            this.fuzzer = fuzzer;
-        }
-        
-        @Override
-        public void run() {
-            fuzzer.startFuzzer();
-        }
+    class SimpleFuzzerStarter extends Thread {
+	private final SimpleFuzzer fuzzer;
+
+	public SimpleFuzzerStarter(SimpleFuzzer fuzzer) {
+	    this.fuzzer = fuzzer;
+	}
+
+	@Override
+	public void run() {
+	    fuzzer.startFuzzer();
+	}
     }
 }

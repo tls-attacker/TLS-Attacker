@@ -16,43 +16,44 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.config;
+package de.rub.nds.tlsattacker.modifiablevariable.util;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.reflect.Field;
 
 /**
+ * Represents an object with its modifiable variable field.
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-@XmlRootElement
-public class StartupCommand {
-    private String serverCommandParameters;
+public class ModifiableVariableField {
 
-    private String fuzzerCommand;
+    private Object object;
 
-    private String shortName;
+    private Field field;
 
-    public String getServerCommandParameters() {
-	return serverCommandParameters;
+    public ModifiableVariableField() {
+
     }
 
-    public void setServerCommandParameters(String serverCommandParameters) {
-	this.serverCommandParameters = serverCommandParameters;
+    public ModifiableVariableField(Object o, Field f) {
+	this.object = o;
+	this.field = f;
     }
 
-    public String getFuzzerCommand() {
-	return fuzzerCommand;
+    public Object getObject() {
+	return object;
     }
 
-    public void setFuzzerCommand(String fuzzerCommand) {
-	this.fuzzerCommand = fuzzerCommand;
+    public void setObject(Object object) {
+	this.object = object;
     }
 
-    public String getShortName() {
-	return shortName;
+    public Field getField() {
+	return field;
     }
 
-    public void setShortName(String shortName) {
-	this.shortName = shortName;
+    public void setField(Field field) {
+	this.field = field;
     }
+
 }
