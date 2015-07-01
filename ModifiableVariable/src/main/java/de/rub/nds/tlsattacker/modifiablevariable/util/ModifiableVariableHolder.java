@@ -16,43 +16,46 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.config;
+package de.rub.nds.tlsattacker.modifiablevariable.util;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.reflect.Field;
+import java.util.List;
 
 /**
+ * Represents a modifiable variable holder (an object containing at least one
+ * ModifiableVariable field), containing a list of its ModifiableVariable fields
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-@XmlRootElement
-public class StartupCommand {
-    private String serverCommandParameters;
+public class ModifiableVariableHolder {
 
-    private String fuzzerCommand;
+    private Object object;
 
-    private String shortName;
+    private List<Field> fields;
 
-    public String getServerCommandParameters() {
-	return serverCommandParameters;
+    public ModifiableVariableHolder() {
+
     }
 
-    public void setServerCommandParameters(String serverCommandParameters) {
-	this.serverCommandParameters = serverCommandParameters;
+    public ModifiableVariableHolder(Object o, List<Field> f) {
+	this.object = o;
+	this.fields = f;
     }
 
-    public String getFuzzerCommand() {
-	return fuzzerCommand;
+    public Object getObject() {
+	return object;
     }
 
-    public void setFuzzerCommand(String fuzzerCommand) {
-	this.fuzzerCommand = fuzzerCommand;
+    public void setObject(Object object) {
+	this.object = object;
     }
 
-    public String getShortName() {
-	return shortName;
+    public List<Field> getFields() {
+	return fields;
     }
 
-    public void setShortName(String shortName) {
-	this.shortName = shortName;
+    public void setFields(List<Field> fields) {
+	this.fields = fields;
     }
+
 }

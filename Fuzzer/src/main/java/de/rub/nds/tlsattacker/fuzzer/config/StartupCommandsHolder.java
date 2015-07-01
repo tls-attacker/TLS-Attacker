@@ -27,33 +27,32 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StartupCommandsHolder {
-    
+
     private String serverCommand;
 
     @XmlElementWrapper(name = "startupCommandsList")
-    @XmlElements(value = {
-        @XmlElement(type = StartupCommand.class)})
+    @XmlElements(value = { @XmlElement(type = StartupCommand.class) })
     private List<StartupCommand> startupCommands;
 
     public List<StartupCommand> getStartupCommands() {
-        return startupCommands;
+	return startupCommands;
     }
 
     public void setStartupCommands(List<StartupCommand> startupCommands) {
-        this.startupCommands = startupCommands;
+	this.startupCommands = startupCommands;
     }
 
     public String getServerCommand() {
-        return serverCommand;
+	return serverCommand;
     }
 
     public void setServerCommand(String serverCommand) {
-        this.serverCommand = serverCommand;
+	this.serverCommand = serverCommand;
     }
 }

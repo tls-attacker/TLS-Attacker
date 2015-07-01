@@ -16,43 +16,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.config;
+package de.rub.nds.tlsattacker.modifiablevariable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Annotation interface for modifiable variables holders.
  * 
+ * Depth says how deep in the structure the ModifiableVariable is (for example,
+ * if the holder is stored in a list, depth=3 is appropriate).
+ * The depth parameter can be modified for performance reasons.
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-@XmlRootElement
-public class StartupCommand {
-    private String serverCommandParameters;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface HoldsModifiableVariable {
 
-    private String fuzzerCommand;
+    int depth() default 4;
 
-    private String shortName;
-
-    public String getServerCommandParameters() {
-	return serverCommandParameters;
-    }
-
-    public void setServerCommandParameters(String serverCommandParameters) {
-	this.serverCommandParameters = serverCommandParameters;
-    }
-
-    public String getFuzzerCommand() {
-	return fuzzerCommand;
-    }
-
-    public void setFuzzerCommand(String fuzzerCommand) {
-	this.fuzzerCommand = fuzzerCommand;
-    }
-
-    public String getShortName() {
-	return shortName;
-    }
-
-    public void setShortName(String shortName) {
-	this.shortName = shortName;
-    }
 }

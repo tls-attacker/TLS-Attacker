@@ -2,8 +2,8 @@
     <serverCommand>../../../servers/openssl-1.0.2a/apps/openssl</serverCommand>
     <startupCommandsList>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:51626 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PADDING,PUBLIC_KEY,CERTIFICATE -keystore ../resources/keystore-1024.jks -password password -max_transport_response_wait 300 -alias 1024_rsa</fuzzerCommand>
-            <serverCommandParameters>s_server -accept 51624 -key ../resources/privkey1024.pem -cert ../resources/server-cert1024.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51000 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE -keystore ../resources/keystore-1024.jks -password password -alias 1024_rsa</fuzzerCommand>
+            <serverCommandParameters>s_server -accept 51000 -key ../resources/privkey1024.pem -cert ../resources/server-cert1024.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
             <shortName>openssl-rsa-auth</shortName>
         </startupCommands>
     </startupCommandsList>

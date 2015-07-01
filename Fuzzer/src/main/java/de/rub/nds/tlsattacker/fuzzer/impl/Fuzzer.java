@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.fuzzer.impl;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public abstract class Fuzzer {
@@ -29,7 +29,7 @@ public abstract class Fuzzer {
     GeneralConfig generalConfig;
 
     public Fuzzer(GeneralConfig config) {
-        this.generalConfig = config;
+	this.generalConfig = config;
     }
 
     /**
