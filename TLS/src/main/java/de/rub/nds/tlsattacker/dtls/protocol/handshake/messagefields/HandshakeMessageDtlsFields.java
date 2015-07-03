@@ -73,4 +73,14 @@ public class HandshakeMessageDtlsFields extends HandshakeMessageFields {
     public void setFragmentLength(ModifiableInteger fragmentLength) {
 	this.fragmentLength = fragmentLength;
     }
+
+    @Override
+    public String toString() {
+	StringBuilder sb = new StringBuilder();
+	sb.append("\n  Handshake Message Length: ").append(length.getValue());
+	sb.append("\n  Handshake Message message_seq: ").append(messageSeq.getValue());
+	sb.append("\n  Handshake Message fragment_offset: ").append(fragmentOffset.getValue());
+	sb.append("\n  Handshake Message fragment_length: ").append(fragmentLength.getValue());
+	return sb.toString();
+    }
 }

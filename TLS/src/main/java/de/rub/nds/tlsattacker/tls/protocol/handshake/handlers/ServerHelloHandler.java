@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionByteLeng
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.constants.ByteLength;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -54,12 +55,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	if (message[pointer] != HandshakeMessageType.SERVER_HELLO.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a server hello message");
 	}
+	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+	protocolMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + ByteLength.PROTOCOL_VERSION;

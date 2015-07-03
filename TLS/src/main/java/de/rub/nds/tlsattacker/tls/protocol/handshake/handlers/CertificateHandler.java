@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -94,11 +95,14 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	    // + HandshakeByteLength.CERTIFICATES_LENGTH);
 	    // BC implicitly includes the certificates length of all the
 	    // certificates, so we only need to set the protocol message length
-	    protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
+
+	    HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+
+	    protocolMessageFields.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
 	    byte[] result = protocolMessage.getX509CertificateBytes().getValue();
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessage.getLength().getValue();
+		    + protocolMessageFields.getLength().getValue();
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));
 
@@ -114,12 +118,14 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a certificate message");
 	}
+	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+	protocolMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.CERTIFICATES_LENGTH;

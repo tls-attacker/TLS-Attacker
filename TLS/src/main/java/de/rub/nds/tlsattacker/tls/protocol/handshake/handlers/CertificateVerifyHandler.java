@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -107,10 +108,11 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 		    protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
 		    protocolMessage.getSignature().getValue());
 
-	    protocolMessage.setLength(result.length);
+	    HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	    protocolMessageFields.setLength(result.length);
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessage.getLength().getValue();
+		    + protocolMessageFields.getLength().getValue();
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));
 

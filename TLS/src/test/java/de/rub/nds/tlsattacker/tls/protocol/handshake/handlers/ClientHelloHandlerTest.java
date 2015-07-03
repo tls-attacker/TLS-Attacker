@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -92,9 +93,11 @@ public class ClientHelloHandlerTest {
 	byte[] actualSessionID = message.getSessionId().getValue();
 	byte[] expectedCipherSuites = ArrayConverter.hexStringToByteArray("c02bc02fc00ac009c013c014002f0035000a");
 	byte[] actualCipherSuites = message.getCipherSuites().getValue();
+	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
 
 	assertEquals("Check message type", HandshakeMessageType.CLIENT_HELLO, message.getHandshakeMessageType());
-	assertEquals("Message length should be 508 bytes", new Integer(89), message.getLength().getValue());
+	assertEquals("Message length should be 508 bytes", new Integer(89), handshakeMessageFields.getLength()
+		.getValue());
 	assertArrayEquals("Check Protocol Version", ProtocolVersion.TLS12.getValue(), message.getProtocolVersion()
 		.getValue());
 	assertArrayEquals("Check random", expectedRandom, actualRandom);

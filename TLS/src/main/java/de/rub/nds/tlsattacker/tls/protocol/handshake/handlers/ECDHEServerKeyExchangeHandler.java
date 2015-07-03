@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ECCurveType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -61,12 +62,14 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 	if (message[pointer] != HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException(HandshakeMessageType.SERVER_KEY_EXCHANGE);
 	}
+	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+	protocolMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer++;
