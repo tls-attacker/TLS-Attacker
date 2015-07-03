@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -62,12 +63,14 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	if (message[pointer] != HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException(HandshakeMessageType.SERVER_KEY_EXCHANGE);
 	}
+	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+	protocolMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.DH_PARAM_LENGTH;

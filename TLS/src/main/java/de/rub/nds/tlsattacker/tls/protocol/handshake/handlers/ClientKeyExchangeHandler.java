@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -51,8 +52,9 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 		    + ") is not supported yet");
 	}
 	byte[] result = this.prepareKeyExchangeMessage();
-	protocolMessage.setLength(result.length);
-	long header = (protocolMessage.getType().getValue() << 24) + protocolMessage.getLength().getValue();
+	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	protocolMessageFields.setLength(result.length);
+	long header = (protocolMessage.getType().getValue() << 24) + protocolMessageFields.getLength().getValue();
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		ArrayConverter.longToUint32Bytes(header), result));
 

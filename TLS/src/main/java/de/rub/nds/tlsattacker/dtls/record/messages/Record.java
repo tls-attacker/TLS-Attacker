@@ -17,35 +17,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields;
+package de.rub.nds.tlsattacker.dtls.record.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.tls.protocol.MessageFields;
+import java.math.BigInteger;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class HandshakeMessageFields extends MessageFields {
+public class Record extends de.rub.nds.tlsattacker.tls.record.messages.Record {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    protected ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableInteger epoch;
 
-    public ModifiableInteger getLength() {
-	return length;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableBigInteger sequenceNumber;
+
+    public ModifiableInteger getEpoch() {
+	return epoch;
     }
 
-    public void setLength(ModifiableInteger length) {
-	this.length = length;
+    public ModifiableBigInteger getSequenceNumber() {
+	return sequenceNumber;
     }
 
-    public void setLength(int length) {
-	this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+    public void setEpoch(int epoch) {
+	this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
     }
 
-    @Override
-    public String toString() {
-	return "\n  Handshake Message Length: " + length.getValue();
+    public void setEpoch(ModifiableInteger epoch) {
+	this.epoch = epoch;
+    }
+
+    public void setSequenceNumber(BigInteger sequenceNumber) {
+	this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
+	this.sequenceNumber = sequenceNumber;
     }
 }
