@@ -91,13 +91,12 @@ public class ModifiableVariableAnalyzerTest {
     public void testGetAllModifiableVariableFieldsRecursivelyWithList() {
 	SimpleClassWithModVariablesList test1 = new SimpleClassWithModVariablesList();
 	test1.bi = new ModifiableBigInteger();
-	test1.x = new Integer("1");
         test1.list = new LinkedList<>();
         test1.list.add(new SimpleClassWithModVariables());
         test1.list.add(new SimpleClassWithModVariables());
 	List<ModifiableVariableField> fields = ModifiableVariableAnalyzer
 		.getAllModifiableVariableFieldsRecursively(test1);
-	assertEquals(12, fields.size());
+	assertEquals(9, fields.size());
     }
 
     @Test
@@ -129,6 +128,14 @@ public class ModifiableVariableAnalyzerTest {
 	}
 	return false;
     }
+    
+    @Test
+    public void testEquals() {
+        SimpleClassWithModVariables s = new SimpleClassWithModVariables();
+        SimpleClassWithModVariables s2 = new SimpleClassWithModVariables();
+        System.out.println(s == s2);
+        System.out.println(s.equals(s2));
+    } 
 
     private class SimpleClassWithModVariables {
 	Integer x;
