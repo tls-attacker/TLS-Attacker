@@ -46,7 +46,7 @@ public class ModifiableVariableAnalyzer {
      * Integer and is not null. Searching in the Integer object would result
      * into an overflow.
      */
-    private static final int MAX_DEPTH = 3;
+    private static final int MAX_DEPTH = 8;
 
     /**
      * Lists all the modifiable variables declared in the given class
@@ -121,39 +121,78 @@ public class ModifiableVariableAnalyzer {
     private static List<ModifiableVariableHolder> getAllModifiableVariableHoldersRecursively(Object object,
             int currentDepth) {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
-        if (object != null) {
-            List<Field> modFields = getAllModifiableVariableFields(object);
-            if (!modFields.isEmpty()) {
-                System.out.println("found: " + currentDepth);
-                holders.add(new ModifiableVariableHolder(object, modFields));
-            }
-            List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
-            for (Field f : allFields) {
-                try {
-                    HoldsModifiableVariable holderProperty = f.getAnnotation(HoldsModifiableVariable.class);
-                    f.setAccessible(true);
-                    Object possibleHolder = f.get(object);
-                    if (possibleHolder != null && possibleHolder.getClass() != Object.class) {
-                        if (holderProperty != null) {
-                            System.out.println("before: " + currentDepth);
-                            currentDepth = holderProperty.depth();
-                            System.out.println("after: " + currentDepth);
-                            System.out.println(possibleHolder.getClass());
-                        }
-                        if (currentDepth != 0) {
-                            List<ModifiableVariableHolder> h = getAllModifiableVariableHoldersRecursively(possibleHolder, currentDepth - 1);
-                            if(h.size() != 0) {
-                                System.out.println(f.getName());
-                            }
-                            holders.addAll(getAllModifiableVariableHoldersRecursively(possibleHolder, currentDepth - 1));
-                        }
-                    }
-                } catch (IllegalAccessException | IllegalArgumentException ex) {
-                    LOGGER.info("Accessing field {} of type {} not possible", f.getName(), f.getType());
+        List<Field> modFields = getAllModifiableVariableFields(object);
+        if (!modFields.isEmpty()) {
+            System.out.println("found: " + currentDepth);
+            holders.add(new ModifiableVariableHolder(object, modFields));
+        }
+        List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
+        for (Field f : allFields) {
+            try {
+                HoldsModifiableVariable holderProperty = f.getAnnotation(HoldsModifiableVariable.class);
+                f.setAccessible(true);
+                Object possibleHolder = f.get(object);
+                if (currentDepth != 0 && possibleHolder != null && !holderListContainsObject(holders, possibleHolder)) {
+                    System.out.println("testing: " + possibleHolder.getClass());
+                    holders.addAll(getAllModifiableVariableHoldersRecursively(possibleHolder, currentDepth - 1));
                 }
+            } catch (IllegalAccessException | IllegalArgumentException ex) {
+                LOGGER.info("Accessing field {} of type {} not possible", f.getName(), f.getType());
             }
         }
         return holders;
+    }
+
+    private static boolean holderListContainsObject(List<ModifiableVariableHolder> holders, Object o) {
+//        System.out.println("Testing" + o);
+        for (ModifiableVariableHolder holder : holders) {
+            if (holder.getObject().equals(o)) {
+//                System.out.println(holder.getObject());
+//                System.out.println("Returning true:");
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static List<ModifiableVariableHolder> getAllModifiableVariableHoldersRecursively2(Object object,
+            int currentDepth) {
+        List<ModifiableVariableHolder> holders = new LinkedList<>();
+        List<Field> modFields = getAllModifiableVariableFields(object);
+        if (!modFields.isEmpty()) {
+            System.out.println("found: " + currentDepth);
+            holders.add(new ModifiableVariableHolder(object, modFields));
+        }
+        List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
+        for (Field f : allFields) {
+            try {
+                HoldsModifiableVariable holdsVariable = f.getAnnotation(HoldsModifiableVariable.class);
+                f.setAccessible(true);
+                Object possibleHolder = f.get(object);
+                if (possibleHolder != null && holdsVariable != null) {
+                    System.out.println("testing: " + possibleHolder.getClass());
+                    if (possibleHolder instanceof List) {
+                        List l = (List) possibleHolder;
+                        holders.addAll(getAllModifiableVariableHoldersFromList(l));
+                    } else if (possibleHolder.getClass().isArray()) {
+                        System.out.println("array");
+                    } else {
+                        holders.addAll(getAllModifiableVariableHoldersRecursively(possibleHolder, currentDepth - 1));
+                    }
+                }
+            } catch (IllegalAccessException | IllegalArgumentException ex) {
+                LOGGER.info("Accessing field {} of type {} not possible", f.getName(), f.getType());
+            }
+        }
+        return holders;
+    }
+
+    private static List<ModifiableVariableHolder> getAllModifiableVariableHoldersFromList(List<Object> list) {
+        List<ModifiableVariableHolder> result = new LinkedList<>();
+        for (Object o : list) {
+            result.addAll(getAllModifiableVariableHoldersRecursively(o));
+        }
+        return result;
     }
 
     // /**

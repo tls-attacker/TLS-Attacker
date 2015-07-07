@@ -20,11 +20,12 @@ package de.rub.nds.tlsattacker.modifiablevariable.util;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a modifiable variable holder (an object containing at least one
  * ModifiableVariable field), containing a list of its ModifiableVariable fields
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class ModifiableVariableHolder {
@@ -38,24 +39,24 @@ public class ModifiableVariableHolder {
     }
 
     public ModifiableVariableHolder(Object o, List<Field> f) {
-	this.object = o;
-	this.fields = f;
+        this.object = o;
+        this.fields = f;
     }
 
     public Object getObject() {
-	return object;
+        return object;
     }
 
     public void setObject(Object object) {
-	this.object = object;
+        this.object = object;
     }
 
     public List<Field> getFields() {
-	return fields;
+        return fields;
     }
 
     public void setFields(List<Field> fields) {
-	this.fields = fields;
+        this.fields = fields;
     }
 
 }

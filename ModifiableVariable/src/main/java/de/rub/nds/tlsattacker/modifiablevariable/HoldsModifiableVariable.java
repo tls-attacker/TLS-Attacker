@@ -36,6 +36,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HoldsModifiableVariable {
 
-    int depth() default 4;
-
 }
