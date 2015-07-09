@@ -62,7 +62,7 @@ public class DHEServerKeyExchangeHandlerTest {
 
 	int endPointer = handler.parseMessageAction(testServerKeyExchangeDSA, 0);
 	DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());

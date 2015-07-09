@@ -109,7 +109,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
 	}
 
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessageFields.setLength(result.length);
 

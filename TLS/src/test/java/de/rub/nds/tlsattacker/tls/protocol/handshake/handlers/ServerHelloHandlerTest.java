@@ -58,7 +58,7 @@ public class ServerHelloHandlerTest {
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());

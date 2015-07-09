@@ -63,7 +63,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	if (message[pointer] != HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException(HandshakeMessageType.SERVER_KEY_EXCHANGE);
 	}
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 

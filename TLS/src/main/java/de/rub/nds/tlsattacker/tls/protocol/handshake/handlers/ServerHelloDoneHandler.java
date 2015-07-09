@@ -49,7 +49,7 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 	if (message[pointer] != HandshakeMessageType.SERVER_HELLO_DONE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Server Hello Done message");
 	}
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 

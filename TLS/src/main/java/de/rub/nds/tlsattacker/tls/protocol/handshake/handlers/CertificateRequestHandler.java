@@ -52,7 +52,7 @@ public class CertificateRequestHandler<HandshakeMessage extends CertificateReque
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE_REQUEST.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Certificate Request message");
 	}
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;

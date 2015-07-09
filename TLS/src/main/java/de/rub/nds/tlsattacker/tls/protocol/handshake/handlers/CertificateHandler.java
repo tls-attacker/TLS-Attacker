@@ -96,7 +96,7 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	    // BC implicitly includes the certificates length of all the
 	    // certificates, so we only need to set the protocol message length
 
-	    HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	    protocolMessageFields.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
 	    byte[] result = protocolMessage.getX509CertificateBytes().getValue();

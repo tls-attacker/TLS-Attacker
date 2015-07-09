@@ -55,7 +55,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	if (message[pointer] != HandshakeMessageType.SERVER_HELLO.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a server hello message");
 	}
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 

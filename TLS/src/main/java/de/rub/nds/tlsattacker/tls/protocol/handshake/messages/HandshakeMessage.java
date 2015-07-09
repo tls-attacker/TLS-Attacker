@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.protocol.MessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -44,7 +43,7 @@ public class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     ModifiableByte type;
 
-    MessageFields handshakeMessageFields;
+    HandshakeMessageFields handshakeMessageFields;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
 	handshakeMessageFields = new HandshakeMessageFields();
@@ -52,11 +51,11 @@ public class HandshakeMessage extends ProtocolMessage {
 	this.handshakeMessageType = handshakeMessageType;
     }
 
-    public void setMessageFields(MessageFields handshakeMessageFields) {
+    public void setMessageFields(HandshakeMessageFields handshakeMessageFields) {
 	this.handshakeMessageFields = handshakeMessageFields;
     }
 
-    public MessageFields getMessageFields() {
+    public HandshakeMessageFields getMessageFields() {
 	return handshakeMessageFields;
     }
 
@@ -68,17 +67,9 @@ public class HandshakeMessage extends ProtocolMessage {
 	this.type = type;
     }
 
-    // public void setLength(ModifiableInteger length) {
-    // handshakeMessageFields.setLength(length);
-    // }
-
     public void setType(Byte type) {
 	this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
-
-    // public void setLength(int length) {
-    // handshakeMessageFields.setLength(length);
-    // }
 
     public HandshakeMessageType getHandshakeMessageType() {
 	return handshakeMessageType;

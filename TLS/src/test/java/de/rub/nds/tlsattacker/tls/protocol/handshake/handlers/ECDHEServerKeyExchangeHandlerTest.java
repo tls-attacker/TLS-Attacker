@@ -72,7 +72,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
 
 	int endPointer = handler.parseMessageAction(testServerKeyExchangeECDSA, 0);
 	ECDHEServerKeyExchangeMessage message = (ECDHEServerKeyExchangeMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
@@ -102,7 +102,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
 
 	int endPointer = handler.parseMessageAction(testServerKeyExchangeRSA, 0);
 	ECDHEServerKeyExchangeMessage message = (ECDHEServerKeyExchangeMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());

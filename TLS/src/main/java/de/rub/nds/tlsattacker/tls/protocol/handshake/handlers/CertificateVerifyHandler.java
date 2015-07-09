@@ -108,7 +108,7 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 		    protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
 		    protocolMessage.getSignature().getValue());
 
-	    HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 	    protocolMessageFields.setLength(result.length);
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)

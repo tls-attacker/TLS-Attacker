@@ -52,7 +52,7 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 		    + ") is not supported yet");
 	}
 	byte[] result = this.prepareKeyExchangeMessage();
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 	protocolMessageFields.setLength(result.length);
 	long header = (protocolMessage.getType().getValue() << 24) + protocolMessageFields.getLength().getValue();
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
