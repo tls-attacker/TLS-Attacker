@@ -76,7 +76,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
 	    byte[] result = protocolMessage.getVerifyData().getValue();
 
-	    HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	    protocolMessageFields.setLength(result.length);
 
@@ -105,7 +105,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	if (message[pointer] != HandshakeMessageType.FINISHED.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a server finished message");
 	}
-	HandshakeMessageFields finishedMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields finishedMessageFields = protocolMessage.getMessageFields();
 
 	finishedMessage.setType(message[pointer]);
 

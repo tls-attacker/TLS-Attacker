@@ -38,21 +38,31 @@ public class HandshakeMessageFactory {
 	this.protocolVersion = protocolVersion;
     }
 
-    public <T extends HandshakeMessage> T createHandshakeMessage(Class<T> handshakeMessageClass) throws Exception {
-	switch (protocolVersion) {
-	    case TLS12:
-		return handshakeMessageClass.newInstance();
-	    case DTLS12:
-		T hm = handshakeMessageClass.newInstance();
-		hm.setMessageFields(new HandshakeMessageDtlsFields());
-		return hm;
-	    default:
-		return null;
+    public <T extends HandshakeMessage> T createHandshakeMessage(Class<T> handshakeMessageClass) {
+	try {
+	    switch (protocolVersion) {
+		case TLS12:
+		    return handshakeMessageClass.newInstance();
+		case DTLS12:
+		    T hm = handshakeMessageClass.newInstance();
+		    hm.setMessageFields(new HandshakeMessageDtlsFields());
+		    return hm;
+
+		    // This case will not occur since an adequate
+		    // protocolVersion is to be established by the constructor.
+		    // Java needs it, though.
+		default:
+		    return null;
+	    }
+	} catch (InstantiationException | IllegalAccessException e) {
+	    // Since createHandshakeMessage is called with hard-coded parameters
+	    // only, this should not occur.
+	    return null;
 	}
     }
 
     public <T extends HandshakeMessage> T createHandshakeMessage(Class<T> handshakeMessageClass,
-	    ConnectionEnd messageIssuer) throws Exception {
+	    ConnectionEnd messageIssuer) {
 	T hm = createHandshakeMessage(handshakeMessageClass);
 	hm.setMessageIssuer(messageIssuer);
 	return hm;

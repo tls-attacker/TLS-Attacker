@@ -93,7 +93,7 @@ public class ClientHelloHandlerTest {
 	byte[] actualSessionID = message.getSessionId().getValue();
 	byte[] expectedCipherSuites = ArrayConverter.hexStringToByteArray("c02bc02fc00ac009c013c014002f0035000a");
 	byte[] actualCipherSuites = message.getCipherSuites().getValue();
-	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Check message type", HandshakeMessageType.CLIENT_HELLO, message.getHandshakeMessageType());
 	assertEquals("Message length should be 508 bytes", new Integer(89), handshakeMessageFields.getLength()

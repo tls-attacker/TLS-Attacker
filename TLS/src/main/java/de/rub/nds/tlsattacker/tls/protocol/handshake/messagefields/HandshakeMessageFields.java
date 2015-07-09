@@ -22,12 +22,11 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.tls.protocol.MessageFields;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class HandshakeMessageFields extends MessageFields {
+public class HandshakeMessageFields {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     protected ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();

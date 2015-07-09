@@ -57,7 +57,7 @@ public class ServerHelloDoneHandlerTest {
 
 	int endPointer = handler.parseMessage(serverHelloDoneMsg, 0);
 	ServerHelloDoneMessage message = handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = (HandshakeMessageFields) message.getMessageFields();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
 	assertEquals("Confirm expected message type: \"ServerHelloDone\"", HandshakeMessageType.SERVER_HELLO_DONE,
