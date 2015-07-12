@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
@@ -74,6 +75,7 @@ abstract class HelloMessage extends HandshakeMessage {
     /**
      * List of extensions
      */
+    @HoldsModifiableVariable
     List<ExtensionMessage> extensions = new LinkedList<>();
 
     public HelloMessage(HandshakeMessageType handshakeMessageType) {

@@ -19,12 +19,9 @@
 package de.rub.nds.tlsattacker.modifiablevariable.util;
 
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
-import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,14 +83,14 @@ public class ModifiableVariableAnalyzerTest {
 	fields = ModifiableVariableAnalyzer.getAllModifiableVariableFieldsRecursively(test1);
 	assertEquals(6, fields.size());
     }
-    
+
     @Test
     public void testGetAllModifiableVariableFieldsRecursivelyWithList() {
 	SimpleClassWithModVariablesList test1 = new SimpleClassWithModVariablesList();
 	test1.bi = new ModifiableBigInteger();
-        test1.list = new LinkedList<>();
-        test1.list.add(new SimpleClassWithModVariables());
-        test1.list.add(new SimpleClassWithModVariables());
+	test1.list = new LinkedList<>();
+	test1.list.add(new SimpleClassWithModVariables());
+	test1.list.add(new SimpleClassWithModVariables());
 	List<ModifiableVariableField> fields = ModifiableVariableAnalyzer
 		.getAllModifiableVariableFieldsRecursively(test1);
 	assertEquals(9, fields.size());
@@ -128,34 +125,26 @@ public class ModifiableVariableAnalyzerTest {
 	}
 	return false;
     }
-    
-    @Test
-    public void testEquals() {
-        SimpleClassWithModVariables s = new SimpleClassWithModVariables();
-        SimpleClassWithModVariables s2 = new SimpleClassWithModVariables();
-        System.out.println(s == s2);
-        System.out.println(s.equals(s2));
-    } 
 
     private class SimpleClassWithModVariables {
 	Integer x;
 	ModifiableBigInteger bi;
 	ModifiableByteArray array;
 	ModifiableInteger i;
-        @HoldsModifiableVariable
+	@HoldsModifiableVariable
 	SimpleClassWithModVariables test;
     }
-    
+
     private class SimpleClassWithModVariablesList {
 	Integer x;
 	ModifiableBigInteger bi;
 	ModifiableByteArray array;
 	ModifiableInteger i;
-        
-        @HoldsModifiableVariable
+
+	@HoldsModifiableVariable
 	SimpleClassWithModVariables test;
-        @HoldsModifiableVariable
-        List<SimpleClassWithModVariables> list;
+	@HoldsModifiableVariable
+	List<SimpleClassWithModVariables> list;
     }
 
 }
