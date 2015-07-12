@@ -24,12 +24,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation interface for modifiable variables holders.
+ * Annotation interface for modifiable variables holders. A modifiable variable
+ * holder is for example a TLS protocol message.
  * 
- * Depth says how deep in the structure the ModifiableVariable is (for example,
- * if the holder is stored in a list, depth=3 is appropriate).
- * The depth parameter can be modified for performance reasons.
- *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @Target(ElementType.FIELD)

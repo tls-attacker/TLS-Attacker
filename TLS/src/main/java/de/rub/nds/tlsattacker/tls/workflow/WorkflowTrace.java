@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
@@ -56,6 +57,7 @@ public class WorkflowTrace {
     /**
      * Workflow
      */
+    @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
 	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),

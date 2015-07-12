@@ -18,12 +18,8 @@
  */
 package de.rub.nds.tlsattacker.fuzzer.config;
 
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerAddModification;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
