@@ -20,7 +20,7 @@ package de.rub.nds.tlsattacker.eap;
 
 /**
  * Abstract Class for EAP-Response Decorator
- *
+ * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public abstract class EAPResponseDecorator extends EAPFrame {
