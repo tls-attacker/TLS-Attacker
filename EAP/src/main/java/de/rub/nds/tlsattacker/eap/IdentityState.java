@@ -19,6 +19,12 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * State for Identity. Sends the Identity Frame. Change state if a Client Hello,
+ * EAP-TLS Start or Failure Frame was received.
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class IdentityState implements EapState {
 
     EapolMachine eapolMachine;

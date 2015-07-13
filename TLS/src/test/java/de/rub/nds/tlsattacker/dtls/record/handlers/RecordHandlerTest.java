@@ -19,7 +19,7 @@
  */
 package de.rub.nds.tlsattacker.dtls.record.handlers;
 
-import de.rub.nds.tlsattacker.dtls.record.message.Record;
+import de.rub.nds.tlsattacker.dtls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
@@ -50,7 +50,7 @@ public class RecordHandlerTest {
      */
     @Test
     public void testWrapData() {
-	LinkedList<Record> testRecords = new LinkedList<>();
+	LinkedList<de.rub.nds.tlsattacker.tls.record.messages.Record> testRecords = new LinkedList<>();
 	byte[] protocolMessageData;
 	byte[] expectedResult;
 	byte[] result;
@@ -88,10 +88,10 @@ public class RecordHandlerTest {
 	byte[] testOnWireBytes = ArrayConverter
 		.hexStringToByteArray("16fefd00000000000000000005012345678914fefd000000000000000100010116fefd00010000000000"
 			+ "0200059876543210");
-	List<Record> result = rh.parseRecords(testOnWireBytes);
+	List<de.rub.nds.tlsattacker.tls.record.messages.Record> result = rh.parseRecords(testOnWireBytes);
 
 	assertEquals("Check number of records", 3, result.size());
-	Record currentRecord = result.get(0);
+	Record currentRecord = (de.rub.nds.tlsattacker.dtls.record.messages.Record) result.get(0);
 	assertEquals("Check first record type", new Byte(ProtocolMessageType.HANDSHAKE.getValue()), currentRecord
 		.getContentType().getValue());
 	assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord
@@ -103,7 +103,7 @@ public class RecordHandlerTest {
 	assertArrayEquals("Check first record protocol message content",
 		ArrayConverter.hexStringToByteArray("0123456789"), currentRecord.getProtocolMessageBytes().getValue());
 
-	currentRecord = result.get(1);
+	currentRecord = (de.rub.nds.tlsattacker.dtls.record.messages.Record) result.get(1);
 	assertEquals("Check first record type", new Byte(ProtocolMessageType.CHANGE_CIPHER_SPEC.getValue()),
 		currentRecord.getContentType().getValue());
 	assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord
@@ -115,7 +115,7 @@ public class RecordHandlerTest {
 	assertArrayEquals("Check first record protocol message content", ArrayConverter.hexStringToByteArray("01"),
 		currentRecord.getProtocolMessageBytes().getValue());
 
-	currentRecord = result.get(2);
+	currentRecord = (de.rub.nds.tlsattacker.dtls.record.messages.Record) result.get(2);
 	assertEquals("Check first record type", new Byte(ProtocolMessageType.HANDSHAKE.getValue()), currentRecord
 		.getContentType().getValue());
 	assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord

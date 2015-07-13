@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -67,16 +68,27 @@ public class UDPTransportHandlerTest {
 
 	udpTH.initialize(localhost.getHostName(), testSocket.getLocalPort());
 	testSocket.connect(localhost, udpTH.getLocalPort());
+	udpTH.setMaxResponseWait(1);
 
-	byte[] txData = new byte[8192];
-	RandomHelper.getRandom().nextBytes(txData);
-	DatagramPacket txPacket = new DatagramPacket(txData, txData.length, localhost, udpTH.getLocalPort());
+	byte[] allSentData = new byte[0];
+	byte[] allReceivedData = new byte[0];
+	byte[] txData;
+	byte[] rxData;
+	DatagramPacket txPacket;
+	int numTestPackets = 100;
 
-	testSocket.send(txPacket);
-	byte[] rxData = udpTH.fetchData();
+	for (int i = 0; i < numTestPackets; i++) {
+	    txData = new byte[RandomHelper.getRandom().nextInt(16383) + 1];
+	    RandomHelper.getRandom().nextBytes(txData);
+	    txPacket = new DatagramPacket(txData, txData.length, localhost, udpTH.getLocalPort());
+	    testSocket.send(txPacket);
+	    allSentData = ArrayConverter.concatenate(allSentData, txData);
+	    rxData = udpTH.fetchData();
+	    allReceivedData = ArrayConverter.concatenate(allReceivedData, rxData);
+	}
 
-	assertEquals("Confirm size of the received data", txData.length, rxData.length);
-	assertArrayEquals("Confirm received data equals sent data", txData, rxData);
+	assertEquals("Confirm size of the received data", allSentData.length, allReceivedData.length);
+	assertArrayEquals("Confirm received data equals sent data", allSentData, allReceivedData);
 
 	udpTH.closeConnection();
 	testSocket.close();

@@ -32,6 +32,12 @@ import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
 
+/**
+ * Networkhandler to open Interface, send/receive Frames on Data Link Layer,
+ * close the connection
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class NetworkHandler {
     private static NetworkHandler networkhandler = new NetworkHandler();
 

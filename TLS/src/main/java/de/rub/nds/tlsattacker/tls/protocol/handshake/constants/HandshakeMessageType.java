@@ -45,17 +45,109 @@ import java.util.Map;
  */
 public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
-    HELLO_REQUEST((byte) 0),
-    CLIENT_HELLO((byte) 1),
-    SERVER_HELLO((byte) 2),
-    NEW_SESSION_TICKET((byte) 4),
-    CERTIFICATE((byte) 11),
-    SERVER_KEY_EXCHANGE((byte) 12),
-    CERTIFICATE_REQUEST((byte) 13),
-    SERVER_HELLO_DONE((byte) 14),
-    CERTIFICATE_VERIFY((byte) 15),
-    CLIENT_KEY_EXCHANGE((byte) 16),
-    FINISHED((byte) 20);
+    HELLO_REQUEST((byte) 0) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    throw new UnsupportedOperationException("Not supported yet.");
+	}
+    },
+    CLIENT_HELLO((byte) 1) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new ClientHelloHandler(tlsContext);
+	}
+    },
+    SERVER_HELLO((byte) 2) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new ServerHelloHandler(tlsContext);
+	}
+    },
+    NEW_SESSION_TICKET((byte) 4) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    throw new UnsupportedOperationException("Not supported yet.");
+	}
+    },
+    CERTIFICATE((byte) 11) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new CertificateHandler(tlsContext);
+	}
+    },
+    SERVER_KEY_EXCHANGE((byte) 12) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    CipherSuite cs = tlsContext.getSelectedCipherSuite();
+	    switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
+		case EC_DIFFIE_HELLMAN:
+		    return new ECDHEServerKeyExchangeHandler(tlsContext);
+		case DHE_DSS:
+		case DHE_RSA:
+		case DH_ANON:
+		case DH_DSS:
+		case DH_RSA:
+		    return new DHEServerKeyExchangeHandler(tlsContext);
+		default:
+		    throw new UnsupportedOperationException("Not supported yet.");
+	    }
+	}
+    },
+    CERTIFICATE_REQUEST((byte) 13) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new CertificateRequestHandler(tlsContext);
+	}
+    },
+    SERVER_HELLO_DONE((byte) 14) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new ServerHelloDoneHandler(tlsContext);
+	}
+    },
+    CERTIFICATE_VERIFY((byte) 15) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new CertificateVerifyHandler(tlsContext);
+	}
+    },
+    CLIENT_KEY_EXCHANGE((byte) 16) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    CipherSuite cs = tlsContext.getSelectedCipherSuite();
+	    switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
+		case RSA:
+		    return new RSAClientKeyExchangeHandler(tlsContext);
+		case EC_DIFFIE_HELLMAN:
+		    return new ECDHClientKeyExchangeHandler(tlsContext);
+		case DHE_DSS:
+		case DHE_RSA:
+		case DH_ANON:
+		case DH_DSS:
+		case DH_RSA:
+		    return new DHClientKeyExchangeHandler(tlsContext);
+		default:
+		    throw new UnsupportedOperationException("Not supported yet.");
+	    }
+	}
+    },
+    FINISHED((byte) 20) {
+
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new FinishedHandler(tlsContext);
+	}
+    };
 
     private byte value;
 
@@ -96,68 +188,10 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	return this.name();
     }
 
+    abstract ProtocolMessageHandler getMessageHandler(TlsContext tlsContext);
+
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	CipherSuite cs = tlsContext.getSelectedCipherSuite();
-	ProtocolMessageHandler pmh = null;
-	switch (getMessageType(value)) {
-	    case CLIENT_HELLO:
-		pmh = new ClientHelloHandler(tlsContext);
-		break;
-	    case SERVER_HELLO:
-		pmh = new ServerHelloHandler(tlsContext);
-		break;
-	    case CERTIFICATE:
-		pmh = new CertificateHandler(tlsContext);
-		break;
-	    case SERVER_KEY_EXCHANGE:
-		switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
-		    case EC_DIFFIE_HELLMAN:
-			pmh = new ECDHEServerKeyExchangeHandler(tlsContext);
-			break;
-		    case DHE_DSS:
-		    case DHE_RSA:
-		    case DH_ANON:
-		    case DH_DSS:
-		    case DH_RSA:
-			pmh = new DHEServerKeyExchangeHandler(tlsContext);
-			break;
-		}
-		break;
-	    case CERTIFICATE_REQUEST:
-		pmh = new CertificateRequestHandler(tlsContext);
-		break;
-	    case SERVER_HELLO_DONE:
-		pmh = new ServerHelloDoneHandler(tlsContext);
-		break;
-	    case CLIENT_KEY_EXCHANGE:
-		switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
-		    case RSA:
-			pmh = new RSAClientKeyExchangeHandler(tlsContext);
-			break;
-		    case EC_DIFFIE_HELLMAN:
-			pmh = new ECDHClientKeyExchangeHandler(tlsContext);
-			break;
-		    case DHE_DSS:
-		    case DHE_RSA:
-		    case DH_ANON:
-		    case DH_DSS:
-		    case DH_RSA:
-			pmh = new DHClientKeyExchangeHandler(tlsContext);
-			break;
-		}
-		break;
-	    case CERTIFICATE_VERIFY:
-		pmh = new CertificateVerifyHandler(tlsContext);
-		break;
-	    case FINISHED:
-		pmh = new FinishedHandler(tlsContext);
-		break;
-
-	}
-	if (pmh == null) {
-	    throw new UnsupportedOperationException("Not supported yet.");
-	}
-	return pmh;
+	return getMessageHandler(tlsContext);
     }
 }

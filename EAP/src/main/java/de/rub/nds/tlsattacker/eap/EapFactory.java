@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * EAP-Factory to create EAP and EAP-TLS Frames
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public abstract class EapFactory {
 
     public EAPFrame getFrame(String typ, int id) {

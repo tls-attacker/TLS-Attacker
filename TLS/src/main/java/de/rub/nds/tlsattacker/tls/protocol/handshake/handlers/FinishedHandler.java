@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -75,10 +76,12 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
 	    byte[] result = protocolMessage.getVerifyData().getValue();
 
-	    protocolMessage.setLength(result.length);
+	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+
+	    protocolMessageFields.setLength(result.length);
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessage.getLength().getValue();
+		    + protocolMessageFields.getLength().getValue();
 
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));
@@ -102,12 +105,14 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	if (message[pointer] != HandshakeMessageType.FINISHED.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a server finished message");
 	}
+	HandshakeMessageFields finishedMessageFields = protocolMessage.getMessageFields();
+
 	finishedMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	finishedMessage.setLength(length);
+	finishedMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + length;
