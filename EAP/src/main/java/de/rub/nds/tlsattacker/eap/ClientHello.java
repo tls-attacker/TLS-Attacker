@@ -21,6 +21,12 @@ package de.rub.nds.tlsattacker.eap;
 
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
+/**
+ * Construct the EAP-TLS Response Frame for ClientHello or other Frames with
+ * EAP-TLS Flag 0x80 (Length include, not fragmented)
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class ClientHello extends EAPResponseDecorator {
 
     EAPFrame eapframe;

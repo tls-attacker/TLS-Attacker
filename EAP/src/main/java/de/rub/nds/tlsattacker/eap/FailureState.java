@@ -22,6 +22,11 @@ package de.rub.nds.tlsattacker.eap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Throws Failure Message, if the alert flag is set in EAP-Frame.
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class FailureState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FailureState.class);
@@ -60,6 +65,7 @@ public class FailureState implements EapState {
 	return null;
     }
 
+    @Override
     public String getState() {
 	return "FailureState";
     }

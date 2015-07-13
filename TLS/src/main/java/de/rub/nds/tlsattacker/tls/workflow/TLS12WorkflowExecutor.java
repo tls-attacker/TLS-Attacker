@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class TLS12WorkflowExecutor extends WorkflowExecutor {
+public class TLS12WorkflowExecutor extends GenericWorkflowExecutor {
 
     public TLS12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	super(transportHandler, tlsContext);

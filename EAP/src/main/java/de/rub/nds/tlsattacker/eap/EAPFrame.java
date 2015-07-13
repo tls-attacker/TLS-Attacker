@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * Abstract Class for EAP-Frames
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public abstract class EAPFrame {
     byte[] frame;
 

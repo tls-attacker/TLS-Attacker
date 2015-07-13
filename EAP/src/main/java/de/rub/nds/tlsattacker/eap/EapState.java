@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * Interface for EAP-TLS Statemachine.
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public interface EapState {
 
     public void send();

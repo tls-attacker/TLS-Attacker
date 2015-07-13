@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.constants.ByteLength;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -108,9 +109,12 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
 	}
 
-	protocolMessage.setLength(result.length);
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
-	long header = (HandshakeMessageType.CLIENT_HELLO.getValue() << 24) + protocolMessage.getLength().getValue();
+	protocolMessageFields.setLength(result.length);
+
+	long header = (HandshakeMessageType.CLIENT_HELLO.getValue() << 24)
+		+ protocolMessageFields.getLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		ArrayConverter.longToUint32Bytes(header), result));
@@ -123,12 +127,14 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	if (message[pointer] != HandshakeMessageType.CLIENT_HELLO.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a client hello message");
 	}
+	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+	protocolMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + ByteLength.PROTOCOL_VERSION;

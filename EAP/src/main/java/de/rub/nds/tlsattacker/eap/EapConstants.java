@@ -19,6 +19,11 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+/**
+ * EAP-Constants: Multicast L2 Address, Ethernet-Type 802.1x Authentication
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public final class EapConstants {
 
     /** Broadcast address of EAP packet */

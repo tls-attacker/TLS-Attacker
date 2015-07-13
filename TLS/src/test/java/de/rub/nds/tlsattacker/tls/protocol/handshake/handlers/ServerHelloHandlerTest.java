@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -57,10 +58,11 @@ public class ServerHelloHandlerTest {
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
+	assertEquals("Message length must be 70", new Integer(70), handshakeMessageFields.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
 	assertArrayEquals(
 		"Server Session ID",

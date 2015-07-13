@@ -51,28 +51,24 @@ public class HandshakeMessage extends ProtocolMessage {
 	this.handshakeMessageType = handshakeMessageType;
     }
 
-    public ModifiableByte getType() {
-	return type;
+    public void setMessageFields(HandshakeMessageFields handshakeMessageFields) {
+	this.handshakeMessageFields = handshakeMessageFields;
     }
 
-    public ModifiableInteger getLength() {
-	return handshakeMessageFields.getLength();
+    public HandshakeMessageFields getMessageFields() {
+	return handshakeMessageFields;
+    }
+
+    public ModifiableByte getType() {
+	return type;
     }
 
     public void setType(ModifiableByte type) {
 	this.type = type;
     }
 
-    public void setLength(ModifiableInteger length) {
-	handshakeMessageFields.setLength(length);
-    }
-
     public void setType(Byte type) {
 	this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
-    }
-
-    public void setLength(int length) {
-	handshakeMessageFields.setLength(length);
     }
 
     public HandshakeMessageType getHandshakeMessageType() {
@@ -81,10 +77,9 @@ public class HandshakeMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\n").append(handshakeMessageType.getName());
-	sb.append("\n  Handshake Message Length: ").append(handshakeMessageFields.getLength().getValue());
-	return sb.toString();
+	String sb = "\n" + handshakeMessageType.getName();
+	sb += handshakeMessageFields.toString();
+	return sb;
     }
 
     @Override

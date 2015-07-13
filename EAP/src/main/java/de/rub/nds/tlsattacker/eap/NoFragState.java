@@ -22,6 +22,12 @@ package de.rub.nds.tlsattacker.eap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * State for No Fragmentation. Change state if a Failure, Finished, Alert, Frag
+ * or NoFrag Frame was received.
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class NoFragState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(NoFragState.class);

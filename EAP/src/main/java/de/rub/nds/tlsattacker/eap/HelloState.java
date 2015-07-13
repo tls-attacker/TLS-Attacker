@@ -22,6 +22,12 @@ package de.rub.nds.tlsattacker.eap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * State for Client Hello. Sends the Client Hello Frame. Change state if a
+ * Failure,Frag, Frag Start, Nofrag or Frag End Frame was received.
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class HelloState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(HelloState.class);

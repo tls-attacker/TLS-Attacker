@@ -21,6 +21,11 @@ package de.rub.nds.tlsattacker.eap;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Split the TLS-Packets from TLS-Attacker for Fragmentation
+ * 
+ * @author Felix Lange <flx.lange@gmail.com>
+ */
 public class SplitTLS {
 
     byte[] sslraw;
