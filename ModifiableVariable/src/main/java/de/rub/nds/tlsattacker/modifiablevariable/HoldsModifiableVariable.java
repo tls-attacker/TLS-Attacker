@@ -16,18 +16,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.eap;
+package de.rub.nds.tlsattacker.modifiablevariable;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Abstract Class for EAP-Response Decorator
+ * Annotation interface for modifiable variables holders. A modifiable variable
+ * holder is for example a TLS protocol message.
  * 
- * @author Felix Lange <flx.lange@gmail.com>
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public abstract class EAPResponseDecorator extends EAPFrame {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface HoldsModifiableVariable {
 
-    @Override
-    public abstract byte[] getFrame();
-
-    @Override
-    public abstract void createFrame();
 }

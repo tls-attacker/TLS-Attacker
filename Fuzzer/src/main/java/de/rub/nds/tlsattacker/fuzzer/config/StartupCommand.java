@@ -16,24 +16,43 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.impl;
+package de.rub.nds.tlsattacker.fuzzer.config;
 
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public abstract class Fuzzer {
+@XmlRootElement
+public class StartupCommand {
+    private String serverCommandParameters;
 
-    GeneralConfig generalConfig;
+    private String fuzzerCommand;
 
-    public Fuzzer(GeneralConfig config) {
-	this.generalConfig = config;
+    private String shortName;
+
+    public String getServerCommandParameters() {
+	return serverCommandParameters;
     }
 
-    /**
-     * Starts fuzzing, should be implemented in every fuzzer
-     */
-    public abstract void startFuzzer();
+    public void setServerCommandParameters(String serverCommandParameters) {
+	this.serverCommandParameters = serverCommandParameters;
+    }
+
+    public String getFuzzerCommand() {
+	return fuzzerCommand;
+    }
+
+    public void setFuzzerCommand(String fuzzerCommand) {
+	this.fuzzerCommand = fuzzerCommand;
+    }
+
+    public String getShortName() {
+	return shortName;
+    }
+
+    public void setShortName(String shortName) {
+	this.shortName = shortName;
+    }
 }

@@ -16,18 +16,44 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.eap;
+package de.rub.nds.tlsattacker.modifiablevariable.util;
+
+import java.lang.reflect.Field;
 
 /**
- * Abstract Class for EAP-Response Decorator
+ * Represents an object with its modifiable variable field.
  * 
- * @author Felix Lange <flx.lange@gmail.com>
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public abstract class EAPResponseDecorator extends EAPFrame {
+public class ModifiableVariableField {
 
-    @Override
-    public abstract byte[] getFrame();
+    private Object object;
 
-    @Override
-    public abstract void createFrame();
+    private Field field;
+
+    public ModifiableVariableField() {
+
+    }
+
+    public ModifiableVariableField(Object o, Field f) {
+	this.object = o;
+	this.field = f;
+    }
+
+    public Object getObject() {
+	return object;
+    }
+
+    public void setObject(Object object) {
+	this.object = object;
+    }
+
+    public Field getField() {
+	return field;
+    }
+
+    public void setField(Field field) {
+	this.field = field;
+    }
+
 }

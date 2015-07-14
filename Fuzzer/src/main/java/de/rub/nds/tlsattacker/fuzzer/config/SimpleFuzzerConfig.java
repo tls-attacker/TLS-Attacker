@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.fuzzer.config;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyFormatConverter;
 import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyTypeConverter;
+import de.rub.nds.tlsattacker.fuzzer.impl.FuzzingType;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.config.CipherSuiteFilter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
@@ -37,9 +38,9 @@ import java.util.List;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class FuzzerConfig extends ClientCommandConfig {
+public class SimpleFuzzerConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "fuzzer";
+    public static final String ATTACK_COMMAND = "simple_fuzzer";
 
     @Parameter(names = "-server_command", description = "Command for starting the server")
     String serverCommand;
@@ -74,7 +75,10 @@ public class FuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-interrupt", description = "Interrupts scan after first finding resulting in an invalid workflow.")
     boolean interruptAfterFirstFinding;
 
-    public FuzzerConfig() {
+    @Parameter(names = "-fuzzing_type", description = "Fuzzing can be either done completely randomly, or systematically iterating over modifiable variable.")
+    FuzzingType fuzzingType = FuzzingType.SYSTEMATIC;
+
+    public SimpleFuzzerConfig() {
 	cipherSuites.clear();
 	cipherSuites.addAll(CipherSuite.getImplemented());
 	// shuffle ciphersuites
@@ -189,4 +193,11 @@ public class FuzzerConfig extends ClientCommandConfig {
 	this.modifiedVariableBlacklist = modifiedVariableBlacklist;
     }
 
+    public FuzzingType getFuzzingType() {
+	return fuzzingType;
+    }
+
+    public void setFuzzingType(FuzzingType fuzzingType) {
+	this.fuzzingType = fuzzingType;
+    }
 }

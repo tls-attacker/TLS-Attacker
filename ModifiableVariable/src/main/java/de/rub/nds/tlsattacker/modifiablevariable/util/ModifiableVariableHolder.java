@@ -16,24 +16,47 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.fuzzer.impl;
+package de.rub.nds.tlsattacker.modifiablevariable.util;
 
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Objects;
 
 /**
+ * Represents a modifiable variable holder (an object containing at least one
+ * ModifiableVariable field), containing a list of its ModifiableVariable fields
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public abstract class Fuzzer {
+public class ModifiableVariableHolder {
 
-    GeneralConfig generalConfig;
+    private Object object;
 
-    public Fuzzer(GeneralConfig config) {
-	this.generalConfig = config;
+    private List<Field> fields;
+
+    public ModifiableVariableHolder() {
+
     }
 
-    /**
-     * Starts fuzzing, should be implemented in every fuzzer
-     */
-    public abstract void startFuzzer();
+    public ModifiableVariableHolder(Object o, List<Field> f) {
+	this.object = o;
+	this.fields = f;
+    }
+
+    public Object getObject() {
+	return object;
+    }
+
+    public void setObject(Object object) {
+	this.object = object;
+    }
+
+    public List<Field> getFields() {
+	return fields;
+    }
+
+    public void setFields(List<Field> fields) {
+	this.fields = fields;
+    }
+
 }
