@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
@@ -29,9 +30,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.tls.record.constants.ByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
@@ -105,6 +104,7 @@ public class TlsContext {
      * workflow trace containing all the messages exchanged during the
      * communication
      */
+    @HoldsModifiableVariable
     private WorkflowTrace workflowTrace;
     /**
      * List of preconfigured protocol messages by the workflow configuration

@@ -16,18 +16,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.eap;
+package de.rub.nds.tlsattacker.fuzzer.impl;
 
 /**
- * Abstract Class for EAP-Response Decorator
  * 
- * @author Felix Lange <flx.lange@gmail.com>
+ * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public abstract class EAPResponseDecorator extends EAPFrame {
-
-    @Override
-    public abstract byte[] getFrame();
-
-    @Override
-    public abstract void createFrame();
+public enum FuzzingType {
+    RANDOM,
+    SYSTEMATIC
 }
