@@ -19,9 +19,9 @@
  */
 package de.rub.nds.tlsattacker.dtls.workflow;
 
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.messagefields.HandshakeMessageDtlsFields;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -29,9 +29,7 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.dtls.record.messages.Record;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -75,15 +73,21 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 
     private List<ProtocolMessage> protocolMessages;
 
-    private int protocolMessagePointer = 0;
+    private int protocolMessagePointer, recordBufferOffset, messageFlightPointer, receivedHandshakeMessageCounter;
+
+    private Record currentRecord;
 
     private List<de.rub.nds.tlsattacker.tls.record.messages.Record> recordBuffer = new LinkedList<>();
 
     private byte[] recordContentBuffer = new byte[0];
 
-    private int recordBufferOffset = 0;
-
     private ProtocolMessageType currentProtocolMessageType = ProtocolMessageType.ALERT;
+
+    private ConnectionEnd lastConnectionEnd;
+    
+    private int maxBogusRecordNumber = 20;
+    
+    private int maxWaitForValidHandshakeRecordTime = 3000;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	this.tlsContext = tlsContext;
@@ -102,91 +106,23 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	}
 	executed = true;
 
+	lastConnectionEnd = tlsContext.getMyConnectionEnd();
 	protocolMessages = workflowTrace.getProtocolMessages();
-	protocolMessagePointer = -1;
+	protocolMessagePointer = 0;
 	try {
-	    byte[] rawResponse;
-	    byte[] collectedRecords = null;
+	    ProtocolMessage pm;
 	    boolean proceedWorkflow = true;
-	    int messageFlightPointer = 0;
-	    ConnectionEnd lastConnectionEnd = tlsContext.getMyConnectionEnd();
 
-	    byte[] mbBytes = null;
-	    while (protocolMessagePointer < (protocolMessages.size() - 1) && proceedWorkflow) {
-		protocolMessagePointer++;
-		ProtocolMessage pm = protocolMessages.get(protocolMessagePointer);
-		if (lastConnectionEnd != pm.getMessageIssuer()) {
-		    messageFlightPointer = protocolMessagePointer;
-		}
+	    while (protocolMessagePointer < protocolMessages.size() && proceedWorkflow) {
+		pm = getCurrentWorkflowProtocolMessage();
+		updateFlightCounter(pm);
 		if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
-		    // it is our turn to send a message
-		    LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
-		    // create a protocol message bytes
-		    byte[] pmBytes = prepareProtocolMessageBytes(pm);
-		    // concatenate the protocol bytes with collected protocol
-		    // bytes
-		    mbBytes = ArrayConverter.concatenate(mbBytes, pmBytes);
-		    // ensure the protocol message has a record if needed
-		    ensureLastProtocolMessageHasRecord(protocolMessages, protocolMessagePointer);
-		    // collect records and flush the collected data if needed
-		    if (pm.getRecords() != null && !pm.getRecords().isEmpty()) {
-			byte[] record = recordHandler.wrapData(mbBytes, pm.getProtocolMessageType(), pm.getRecords());
-			mbBytes = null;
-			collectedRecords = ArrayConverter.concatenate(collectedRecords, record);
-			if (handlingLastProtocolMessageToSend(protocolMessages, protocolMessagePointer)
-				&& collectedRecords.length != 0) {
-			    // flush all the collected data
-			    LOGGER.debug("Sending collected records to the TLS peer: {}",
-				    ArrayConverter.bytesToHexString(collectedRecords));
-			    // transportHandler.sendData(collectedRecords);
-			    sendData(collectedRecords, protocolMessages, protocolMessagePointer);
-			    collectedRecords = null;
-			}
-		    }
+                    sendNextProtocolMessage(pm);
 		} else {
-		    // it is turn of our peer to send a message
-		    rawResponse = transportHandler.fetchData();
-		    List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = recordHandler
-			    .parseRecords(rawResponse);
-		    // check the record list is not emptyontent type in the
-		    // record
-		    if (records.isEmpty()) {
-			LOGGER.debug("The configured protocol message was not found, "
-				+ "the server does not send any data.");
-			LOGGER.debug("Retransmit # of the last message flight.");
-			this.removeNextProtocolMessages(protocolMessages, protocolMessagePointer);
-			unexpectedMessageFound = true;
-		    } else {
-			protocolMessagePointer--;
-			for (de.rub.nds.tlsattacker.tls.record.messages.Record record : records) {
-			    ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(record
-				    .getContentType().getValue());
-			    int dataPointer = 0;
-			    byte[] rawProtocolMessageBytes = record.getProtocolMessageBytes().getValue();
-			    while (dataPointer != rawProtocolMessageBytes.length && proceedWorkflow) {
-				ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
-					rawProtocolMessageBytes[dataPointer], tlsContext);
-				pm = null;
-				protocolMessagePointer++;
-				if (protocolMessagePointer < protocolMessages.size()) {
-				    pm = protocolMessages.get(protocolMessagePointer);
-				}
-
-				if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
-				    AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
-				    am.setMessageIssuer(ConnectionEnd.SERVER);
-				    if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-					LOGGER.debug("The workflow execution is stopped because of a FATAL error");
-					proceedWorkflow = false;
-				    }
-				}
-			    }
-			    pm.addRecord(record);
-			}
-		    }
+                    parseNextRecievedProtocolMessage();
 		}
 	    }
-	} catch (WorkflowExecutionException | CryptoException | IOException e) {
+	} catch (Exception e) {
 	    e.printStackTrace();
 	    protocolMessagePointer--;
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
@@ -195,31 +131,158 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	    this.removeNextProtocolMessages(protocolMessages, protocolMessagePointer + 1);
 	}
     }
+    
+    private void sendNextProtocolMessage(ProtocolMessage pm) throws IOException {
+        byte[] collectedRecords = new byte[0];
+        byte[] mbBytes = new byte[0];
+        LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
+        // create a protocol message bytes
+        byte[] pmBytes = prepareProtocolMessageBytes(pm);
+        // concatenate the protocol bytes with collected protocol
+        // bytes
+        mbBytes = ArrayConverter.concatenate(mbBytes, pmBytes);
+        // ensure the protocol message has a record if needed
+        ensureLastProtocolMessageHasRecord(protocolMessages, protocolMessagePointer);
+        // collect records and flush the collected data if needed
+        if (pm.getRecords() != null && !pm.getRecords().isEmpty()) {
+            byte[] record = recordHandler.wrapData(mbBytes, pm.getProtocolMessageType(), pm.getRecords());
+            mbBytes = null;
+            collectedRecords = ArrayConverter.concatenate(collectedRecords, record);
+            if (handlingLastProtocolMessageToSend(protocolMessages, protocolMessagePointer)
+                    && collectedRecords.length != 0) {
+                // flush all the collected data
+                LOGGER.debug("Sending collected records to the TLS peer: {}",
+                        ArrayConverter.bytesToHexString(collectedRecords));
+                // transportHandler.sendData(collectedRecords);
+                sendData(collectedRecords, protocolMessages, protocolMessagePointer);
+                collectedRecords = null;
+            }
+        }
+    }
 
-    private void parseNextProtocolMessage() throws Exception {
-	if (recordContentBuffer.length == 0) {
-	    refillRecordBuffer();
-	}
-	ProtocolMessageHandler pmh = currentProtocolMessageType.getProtocolMessageHandler(
-		recordContentBuffer[recordBufferOffset], tlsContext);
-	ProtocolMessage pm = protocolMessages.get(protocolMessagePointer);
-	if (!pmh.isCorrectProtocolMessage(pm)) {
-	    pm = wrongMessageFound(pmh);
+    private void updateFlightCounter(ProtocolMessage pm) {
+	if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
+		|| pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	    if (lastConnectionEnd != pm.getMessageIssuer()) {
+		messageFlightPointer = protocolMessagePointer;
+	    }
 	} else {
-	    pmh.setProtocolMessage(pm);
+	    messageFlightPointer = protocolMessagePointer;
 	}
+	lastConnectionEnd = pm.getMessageIssuer();
+    }
+
+    private boolean parseNextRecievedProtocolMessage() throws Exception {
+	boolean errorIndicator = false;
+	if (recordBufferOffset >= recordContentBuffer.length) {
+	    fillRecordContentBuffer();
+	}
+        ProtocolMessage pm = getNextWorkflowProtocolMessage();
+        if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+            prepareHandshakeMessageParse();
+        }
+	ProtocolMessageHandler pmh = getCurrentProtocolMessageHandler();
 	recordBufferOffset = pmh.parseMessage(recordContentBuffer, recordBufferOffset);
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
 	}
+	if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
+	    errorIndicator = alertMessageFound(pmh);
+	}
+	if (recordBufferOffset >= recordContentBuffer.length) {
+	    pm.addRecord(currentRecord);
+	}
+	return errorIndicator;
+    }
+
+    private void prepareHandshakeMessageParse() throws Exception {
+        boolean correctRecord = false;
+        int bogusRecordCounter = 0;
+        long endTimeMillies = System.currentTimeMillis() + maxWaitForValidHandshakeRecordTime;
+        
+        while (!correctRecord && (bogusRecordCounter <= maxBogusRecordNumber) && (System.currentTimeMillis() <= endTimeMillies)) {
+            if (currentProtocolMessageType == ProtocolMessageType.HANDSHAKE) {
+                int receivedHandshakeMessageSeq = recordContentBuffer[recordBufferOffset + 3] << 8 + recordContentBuffer[recordBufferOffset + 4];
+                if (receivedHandshakeMessageSeq == receivedHandshakeMessageCounter) {
+                    correctRecord = true;
+                }
+                else if (receivedHandshakeMessageSeq > receivedHandshakeMessageCounter) {
+                    
+                }
+                
+            }
+            else
+            {
+                fillRecordContentBuffer();
+                bogusRecordCounter++;
+            }
+        }
+        if (!correctRecord) {
+            throw new IllegalArgumentException("No adequate protocol records were received.");
+        }
+//        HandshakeMessage hm = (HandshakeMessage) pm;
+//        HandshakeMessageDtlsFields hmf = (HandshakeMessageDtlsFields) hm.getMessageFields();
+//        if (hmf.getMessageSeq().getValue() == receivedHandshakeMessageCounter) {
+//            if (checkHandshakeMessageFragmented(hmf)) {
+//                //Defragment
+//            }
+//        }
+//        else {
+//            
+//        }
+//
+//        return pm;
+    }
+    
+    
+    
+    private boolean checkHandshakeMessageFragmented(HandshakeMessageDtlsFields hmdf) {
+        return !hmdf.getLength().getValue().equals(hmdf.getFragmentLength().getValue());
+    }
+
+    //private ProtocolMessage getNextWorkflowProtocolMessage(ProtocolMessageHandler pmh) {
+     private ProtocolMessage getNextWorkflowProtocolMessage() {
+	ProtocolMessage pm;
+	if (protocolMessagePointer >= protocolMessages.size()) {
+           //pm = wrongMessageFound(pmh);
+           return null;
+        }
+	pm = protocolMessages.get(protocolMessagePointer);
+        
+	//if (!pmh.isCorrectProtocolMessage(pm)) {
+	//    pm = wrongMessageFound(pmh);
+	//} else {
+	//    pmh.setProtocolMessage(pm);
+	//}
+	protocolMessagePointer++;
+	return pm;
+    }
+
+    private ProtocolMessage getCurrentWorkflowProtocolMessage() {
+	if (protocolMessagePointer < protocolMessages.size()) {
+	    return protocolMessages.get(protocolMessagePointer);
+	}
+	return null;
+    }
+
+    private ProtocolMessageHandler getCurrentProtocolMessageHandler() {
+	return currentProtocolMessageType
+		.getProtocolMessageHandler(recordContentBuffer[recordBufferOffset], tlsContext);
+    }
+
+    private boolean alertMessageFound(ProtocolMessageHandler pmh) {
+	AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
+	am.setMessageIssuer(ConnectionEnd.SERVER);
+	if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
+	    LOGGER.debug("The workflow execution is stopped because of a FATAL error");
+	    return false;
+	}
+	return true;
     }
 
     private ProtocolMessage wrongMessageFound(ProtocolMessageHandler pmh) {
-	// the configured message is not the same as
-	// the message being parsed, we clean the
-	// next protocol messages
 	LOGGER.debug("The configured protocol message is not equal to the message being parsed or the message was not found.");
-	this.removeNextProtocolMessages(protocolMessages, protocolMessagePointer);
+	removeNextProtocolMessages(protocolMessages, protocolMessagePointer);
 	pmh.initializeProtocolMessage();
 	ProtocolMessage pm = pmh.getProtocolMessage();
 	protocolMessages.add(pm);
@@ -227,10 +290,10 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	return pm;
     }
 
-    private void refillRecordBuffer() throws Exception {
-	Record nextRecord = getNextValidRecord();
-	recordContentBuffer = nextRecord.getProtocolMessageBytes().getValue();
-	currentProtocolMessageType = ProtocolMessageType.getContentType(nextRecord.getContentType().getValue());
+    private void fillRecordContentBuffer() throws Exception {
+	currentRecord = getNextValidRecord();
+	recordContentBuffer = currentRecord.getProtocolMessageBytes().getValue();
+	currentProtocolMessageType = ProtocolMessageType.getContentType(currentRecord.getContentType().getValue());
 	recordBufferOffset = 0;
     }
 
@@ -365,5 +428,4 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	    }
 	}
     }
-
 }
