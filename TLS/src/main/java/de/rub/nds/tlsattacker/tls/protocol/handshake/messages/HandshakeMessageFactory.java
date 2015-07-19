@@ -31,7 +31,7 @@ public class HandshakeMessageFactory {
     private final ProtocolVersion protocolVersion;
 
     public HandshakeMessageFactory(ProtocolVersion protocolVersion) {
-	if (protocolVersion != ProtocolVersion.TLS12 || protocolVersion != ProtocolVersion.DTLS12) {
+	if (protocolVersion != ProtocolVersion.TLS12 && protocolVersion != ProtocolVersion.DTLS12) {
 	    throw new UnsupportedOperationException("The specified protocol version '" + protocolVersion.toString()
 		    + "' is not supported");
 	}
