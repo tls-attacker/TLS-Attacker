@@ -82,7 +82,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      *         message following, i.e. lastProcessedBytePointer + 1
      */
     public int parseMessage(byte[] message, int pointer) {
-	beforeParseMessageAction();
+	byte[] hookedMessage;
+	hookedMessage = beforeParseMessageAction(message, pointer);
 	int ret = parseMessageAction(message, pointer);
 	afterParseMessageAction();
 	return ret;
@@ -122,8 +123,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * before the parseMessageAction is executed
+     * 
+     * @param message
+     * @param pointer
+     * @return
      */
-    protected void beforeParseMessageAction() {
+    protected byte[] beforeParseMessageAction(byte[] message, int pointer) {
+	return message;
     }
 
     /**

@@ -66,6 +66,12 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	    return new ServerHelloHandler(tlsContext);
 	}
     },
+    HELLO_VERIFY_REQUEST((byte) 3) {
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    throw new UnsupportedOperationException("Not supported yet.");
+	}
+    },
     NEW_SESSION_TICKET((byte) 4) {
 
 	@Override

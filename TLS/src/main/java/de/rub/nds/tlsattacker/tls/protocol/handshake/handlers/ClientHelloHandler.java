@@ -70,6 +70,16 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
 		.getRandom().getValue()));
 
+	byte[] cookieArray = new byte[0];
+	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
+		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
+	    de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage) protocolMessage;
+	    dtlsClientHello.setCookie(tlsContext.getDtlsHandshakeCookie());
+	    dtlsClientHello.setCookieLength((byte) tlsContext.getDtlsHandshakeCookie().length);
+	    cookieArray = ArrayConverter.concatenate(new byte[] { dtlsClientHello.getCookieLength().getValue() },
+		    dtlsClientHello.getCookie().getValue());
+	}
+
 	byte[] cipherSuites = null;
 	for (CipherSuite cs : protocolMessage.getSupportedCipherSuites()) {
 	    cipherSuites = ArrayConverter.concatenate(cipherSuites, cs.getValue());
@@ -91,7 +101,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	byte[] result = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(), protocolMessage
 		.getUnixTime().getValue(), protocolMessage.getRandom().getValue(), ArrayConverter.intToBytes(
 		protocolMessage.getSessionIdLength().getValue(), 1), protocolMessage.getSessionId().getValue(),
-		ArrayConverter.intToBytes(protocolMessage.getCipherSuiteLength().getValue(),
+		cookieArray, ArrayConverter.intToBytes(protocolMessage.getCipherSuiteLength().getValue(),
 			HandshakeByteLength.CIPHER_SUITE), protocolMessage.getCipherSuites().getValue(),
 		ArrayConverter.intToBytes(protocolMessage.getCompressionLength().getValue(),
 			HandshakeByteLength.COMPRESSION), protocolMessage.getCompressions().getValue());
@@ -127,7 +137,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	if (message[pointer] != HandshakeMessageType.CLIENT_HELLO.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a client hello message");
 	}
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 
@@ -161,6 +171,19 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	currentPointer = nextPointer;
 	nextPointer += sessionIdLength;
 	protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
+
+	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
+		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
+	    de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage) protocolMessage;
+	    currentPointer = nextPointer;
+	    nextPointer += HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH;
+	    byte cookieLength = message[currentPointer];
+	    dtlsClientHello.setCookieLength(cookieLength);
+
+	    currentPointer = nextPointer;
+	    nextPointer += cookieLength;
+	    dtlsClientHello.setCookie(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	}
 
 	currentPointer = nextPointer;
 	nextPointer += HandshakeByteLength.CIPHER_SUITE;
