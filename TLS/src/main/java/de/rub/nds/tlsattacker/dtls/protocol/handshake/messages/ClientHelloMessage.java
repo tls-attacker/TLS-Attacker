@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.dtls.protocol.handshake.messages;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
@@ -31,8 +32,15 @@ public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.hand
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     ModifiableByteArray cookie;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    ModifiableByte cookieLength;
+
     public ModifiableByteArray getCookie() {
 	return cookie;
+    }
+
+    public ModifiableByte getCookieLength() {
+	return cookieLength;
     }
 
     public void setCookie(byte[] cookie) {
@@ -41,5 +49,13 @@ public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.hand
 
     public void setCookie(ModifiableByteArray cookie) {
 	this.cookie = cookie;
+    }
+
+    public void setCookieLength(byte cookieLength) {
+	this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+    }
+
+    public void setCookieLength(ModifiableByte cookieLength) {
+	this.cookieLength = cookieLength;
     }
 }

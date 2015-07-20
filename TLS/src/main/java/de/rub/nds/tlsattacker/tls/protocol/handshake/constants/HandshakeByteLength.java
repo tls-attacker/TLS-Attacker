@@ -110,4 +110,10 @@ public class HandshakeByteLength {
      */
     public static final int DISTINGUISHED_NAMES_LENGTH = 2;
 
+    /**
+     * Length of the cookie field in DTLS ClientHello and ClientHelloVerify
+     * messages.
+     */
+    public static final int DTLS_HANDSHAKE_COOKIE_LENGTH = 1;
+
 }

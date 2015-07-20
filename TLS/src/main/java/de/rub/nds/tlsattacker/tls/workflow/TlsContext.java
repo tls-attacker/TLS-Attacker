@@ -129,6 +129,11 @@ public class TlsContext {
 
     private LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
 
+    /**
+     * DTLS Cookie
+     */
+    private byte[] dtlsHandshakeCookie = new byte[0];
+
     public TlsContext() {
 	ecContext = new TlsECContext();
 	protocolVersion = ProtocolVersion.TLS12;
@@ -324,4 +329,11 @@ public class TlsContext {
 	this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
     }
 
+    public void setDtlsHandshakeCookie(byte[] cookie) {
+	this.dtlsHandshakeCookie = cookie;
+    }
+
+    public byte[] getDtlsHandshakeCookie() {
+	return dtlsHandshakeCookie;
+    }
 }

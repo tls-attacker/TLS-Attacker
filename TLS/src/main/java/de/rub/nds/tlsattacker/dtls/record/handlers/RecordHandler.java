@@ -20,11 +20,6 @@
 package de.rub.nds.tlsattacker.dtls.record.handlers;
 
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
