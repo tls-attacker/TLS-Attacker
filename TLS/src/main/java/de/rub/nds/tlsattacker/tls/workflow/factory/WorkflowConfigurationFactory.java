@@ -20,6 +20,7 @@
 package de.rub.nds.tlsattacker.tls.workflow.factory;
 
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
 import de.rub.nds.tlsattacker.tls.protocol.extension.constants.MaxFragmentLength;
@@ -63,15 +64,30 @@ public abstract class WorkflowConfigurationFactory {
 	    CipherSuite cs = config.getCipherSuites().get(0);
 	    switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
 		case RSA:
-		    return new RsaWorkflowConfigurationFactory(config);
+		    if (config.getProtocolVersion() == ProtocolVersion.DTLS10
+			    || config.getProtocolVersion() == ProtocolVersion.DTLS12) {
+			return new DtlsRsaWorkflowConfigurationFactory(config);
+		    } else {
+			return new RsaWorkflowConfigurationFactory(config);
+		    }
 		case EC_DIFFIE_HELLMAN:
-		    return new ECDHWorkflowConfigurationFactory(config);
+		    if (config.getProtocolVersion() == ProtocolVersion.DTLS10
+			    || config.getProtocolVersion() == ProtocolVersion.DTLS12) {
+			return new DtlsEcdhWorkflowConfigurationFactory(config);
+		    } else {
+			return new ECDHWorkflowConfigurationFactory(config);
+		    }
 		case DHE_DSS:
 		case DHE_RSA:
 		case DH_ANON:
 		case DH_DSS:
 		case DH_RSA:
-		    return new DHWorkflowConfigurationFactory(config);
+		    if (config.getProtocolVersion() == ProtocolVersion.DTLS10
+			    || config.getProtocolVersion() == ProtocolVersion.DTLS12) {
+			return new DtlsDhWorkflowConfigurationFactory(config);
+		    } else {
+			return new DHWorkflowConfigurationFactory(config);
+		    }
 		default:
 		    throw new UnsupportedOperationException("This configuration is not " + "supported yet");
 	    }

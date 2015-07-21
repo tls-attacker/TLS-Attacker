@@ -22,18 +22,31 @@ package de.rub.nds.tlsattacker.dtls.protocol.handshake.messages;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class HelloVerifyRequestMessage extends de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage {
+public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray protocolVersion;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    ModifiableByte cookieLength;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     ModifiableByteArray cookie;
+
+    public HelloVerifyRequestMessage() {
+	super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
+        protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
+        cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
+        cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+    }
 
     public HelloVerifyRequestMessage(HandshakeMessageType handshakeMessageType) {
 	super(handshakeMessageType);
@@ -45,6 +58,10 @@ public class HelloVerifyRequestMessage extends de.rub.nds.tlsattacker.tls.protoc
 
     public ModifiableByteArray getCookie() {
 	return cookie;
+    }
+
+    public ModifiableByte getCookieLength() {
+	return cookieLength;
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
@@ -61,5 +78,13 @@ public class HelloVerifyRequestMessage extends de.rub.nds.tlsattacker.tls.protoc
 
     public void setCookie(ModifiableByteArray cookie) {
 	this.cookie = cookie;
+    }
+
+    public void setCookieLength(byte cookieLength) {
+	this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+    }
+
+    public void setCookieLength(ModifiableByte cookieLength) {
+	this.cookieLength = cookieLength;
     }
 }

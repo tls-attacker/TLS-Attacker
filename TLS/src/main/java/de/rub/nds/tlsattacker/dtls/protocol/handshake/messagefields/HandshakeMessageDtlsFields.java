@@ -37,6 +37,12 @@ public class HandshakeMessageDtlsFields extends HandshakeMessageFields {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength;
+    
+    public HandshakeMessageDtlsFields() {
+        messageSeq = ModifiableVariableFactory.safelySetValue(messageSeq, 0);
+        fragmentOffset = ModifiableVariableFactory.safelySetValue(fragmentOffset, 0);
+        fragmentLength = ModifiableVariableFactory.safelySetValue(fragmentLength, 0);
+    }
 
     public ModifiableInteger getMessageSeq() {
 	return messageSeq;

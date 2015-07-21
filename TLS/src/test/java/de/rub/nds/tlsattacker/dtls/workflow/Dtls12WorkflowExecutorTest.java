@@ -55,5 +55,7 @@ public class Dtls12WorkflowExecutorTest {
 	    fail(ex.getMessage());
 	}
 
+	Dtls12WorkflowExecutor workflowExecutor = new Dtls12WorkflowExecutor(th, tlsContext);
+
     }
 }

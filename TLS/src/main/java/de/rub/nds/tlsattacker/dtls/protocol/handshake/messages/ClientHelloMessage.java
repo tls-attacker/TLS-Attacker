@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
@@ -34,6 +35,11 @@ public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.hand
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableByte cookieLength;
+    
+    public ClientHelloMessage() {
+        cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+        cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
+    }
 
     public ModifiableByteArray getCookie() {
 	return cookie;
@@ -57,5 +63,14 @@ public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.hand
 
     public void setCookieLength(ModifiableByte cookieLength) {
 	this.cookieLength = cookieLength;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString())
+                .append("\n DTLS cookie length: ").append(cookieLength.getValue())
+                .append("\n DTLS cookie: ").append(ArrayConverter.bytesToHexString(cookie.getValue()));
+        return sb.toString();
     }
 }
