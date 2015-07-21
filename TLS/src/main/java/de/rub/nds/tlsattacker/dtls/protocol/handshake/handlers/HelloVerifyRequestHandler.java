@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.dtls.protocol.handshake.handlers;
 
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handlers.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
@@ -36,7 +35,7 @@ import java.util.Arrays;
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  * @param <HandshakeMessage>
  */
-public class HelloVerifyRequestHandler<HandshakeMessage extends ClientHelloMessage> extends
+public class HelloVerifyRequestHandler<HandshakeMessage extends HelloVerifyRequestMessage> extends
 	HandshakeMessageHandler<HandshakeMessage> {
 
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
@@ -46,6 +45,8 @@ public class HelloVerifyRequestHandler<HandshakeMessage extends ClientHelloMessa
 
     @Override
     public byte[] prepareMessageAction() {
+	byte[] content;
+	HandshakeMessageFields messageFields = protocolMessage.getMessageFields();
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
 	// TODO: Calculate cookie via HMAC
@@ -58,8 +59,16 @@ public class HelloVerifyRequestHandler<HandshakeMessage extends ClientHelloMessa
 	protocolMessage.setCookie(cookie);
 	protocolMessage.setCookieLength((byte) cookie.length);
 
-	return ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(), new byte[] { protocolMessage
-		.getCookieLength().getValue() }, protocolMessage.getCookie().getValue());
+	content = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(),
+		new byte[] { protocolMessage.getCookieLength().getValue() }, protocolMessage.getCookie().getValue());
+
+	messageFields.setLength(content.length);
+
+	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+		new byte[] { HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue() },
+		ArrayConverter.intToBytes(messageFields.getLength().getValue(), 3), content));
+
+	return protocolMessage.getCompleteResultingMessage().getValue();
     }
 
     @Override
@@ -67,11 +76,17 @@ public class HelloVerifyRequestHandler<HandshakeMessage extends ClientHelloMessa
 	if (message[pointer] != HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a client verify message");
 	}
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 
-	int currentPointer = pointer;
-	int nextPointer = currentPointer + ByteLength.PROTOCOL_VERSION;
+	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessageFields.setLength(length);
+
+	currentPointer = nextPointer;
+	nextPointer = currentPointer + ByteLength.PROTOCOL_VERSION;
 	ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
 		currentPointer, nextPointer));
 	protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());

@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.dtls.workflow;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messagefields.HandshakeMessageDtlsFields;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -29,13 +28,11 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
 import de.rub.nds.tlsattacker.dtls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.exceptions.MalformedMessageException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -54,47 +51,29 @@ import org.bouncycastle.util.Arrays;
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class Dtls12WorkflowExecutor implements WorkflowExecutor {
+public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger(Dtls12WorkflowExecutor.class);
 
-    /**
-     * indicates if the workflow was already executed
-     */
-    private boolean executed = false;
+    private boolean unexpectedMessageFound, expectingChangeChipherSpec, wholeRecordParsedPreviously,
+	    fatalAlertMessageFound;
 
-    /**
-     * indicates that an unexpected message was found during the workflow
-     * execution
-     */
-    private boolean unexpectedMessageFound = false;
+    private byte[] recordContentBuffer = new byte[0], digestBytesBeforeNextFlightBegin = new byte[0],
+	    handshakeMessageSendBuffer, recordSendBuffer = new byte[0];
 
-    private final RecordHandler recordHandler;
-
-    private final TlsContext tlsContext;
+    private int protocolMessagePointer, recordContentBufferOffset, flightStartMessageNumber, messageFlightPointer,
+	    expectedHandshakeMessageSeq, sendHandshakeMessageSeq, epochCounter, flightRetransmitCounter,
+	    maxWaitForExpectedRecord = 3000, maxFlightRetries = 4, previousFlightBeginPointer = -1,
+	    maxPacketSize = 1400, maxHandshakeReorderBufferSize = 100;
 
     private final WorkflowTrace workflowTrace;
 
-    private final TransportHandler transportHandler;
-
-    private byte[] dataToSend;
-
-    private int maxFlightRetries = 4;
-
     private List<ProtocolMessage> protocolMessages;
 
-    private int protocolMessagePointer, recordContentBufferOffset, messageFlightPointer, flightStartMessageNumber,
-	    expectedHandshakeMessageSeq, sendHandshakeMessageSeq, epochCounter, flightRetransmitCounter;
+    private Record currentRecord, changeCipherSpecRecord;
 
-    private Record currentRecord;
-
-    private int maxHandshakeReorderBufferSize = 100;
-
-    private int maxPacketSize = 1400;
-
-    private int previousFlightBeginPointer = -1;
-
-    private List<de.rub.nds.tlsattacker.tls.record.messages.Record> recordBuffer = new LinkedList<>();
+    private List<de.rub.nds.tlsattacker.tls.record.messages.Record> recordBuffer = new LinkedList<>(),
+	    handshakeMessageSendRecordList = null;
 
     private final Map<Integer, List<Record>> handshakeMessageRecordMap = new HashMap<>();
 
@@ -102,37 +81,13 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 
     private final Map<Integer, byte[]> reassembledHandshakeMessageMap = new HashMap<>();
 
-    private byte[] recordContentBuffer = new byte[0];
-
     private ProtocolMessageType currentProtocolMessageType = ProtocolMessageType.ALERT;
 
-    private ConnectionEnd lastConnectionEnd;
-
-    private ConnectionEnd previousFlightConnectionEnd;
-
-    private int maxWaitForExpectedRecord = 3000;
-
-    private boolean expectingChangeChipherSpec = false;
-
-    private Record changeCipherSpecRecord;
-
-    private boolean wholeRecordParsedPreviously;
-
-    private byte[] digestBytesBeforeNextFlightBegin = new byte[0];
-
-    private boolean fatalAlertMessageFound = false;
-
-    private byte[] handshakeMessageSendBuffer;
-
-    private List<de.rub.nds.tlsattacker.tls.record.messages.Record> handshakeMessageSendRecordList = null;
-
-    private byte[] recordSendBuffer = new byte[0];
+    private ConnectionEnd lastConnectionEnd, previousFlightConnectionEnd;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-	this.tlsContext = tlsContext;
+	super(transportHandler, tlsContext);
 	this.workflowTrace = this.tlsContext.getWorkflowTrace();
-	this.transportHandler = transportHandler;
-	this.recordHandler = RecordHandler.createInstance(tlsContext);
 	if (this.transportHandler == null || this.recordHandler == null) {
 	    throw new ConfigurationException("The WorkflowExecutor was not configured properly");
 	}
@@ -359,7 +314,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	}
 
 	if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-	    errorIndicator = alertMessageFound(pmh);
+	    errorIndicator = handleIncomingAlert(pmh);
 	}
 
 	if ((pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) && !unexpectedMessageFound) {
@@ -419,7 +374,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	return null;
     }
 
-    private boolean alertMessageFound(ProtocolMessageHandler pmh) {
+    private boolean handleIncomingAlert(ProtocolMessageHandler pmh) {
 	AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
 	am.setMessageIssuer(ConnectionEnd.SERVER);
 	if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
@@ -442,7 +397,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
     private boolean loadNextNonHandshakeNonCcsRecord() throws Exception {
 	Record rcvRecord;
 	try {
-	    rcvRecord = loadSingleNextRecord();
+	    rcvRecord = processNextRecord();
 	} catch (SocketTimeoutException ste) {
 	    return false;
 	}
@@ -453,7 +408,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	while ((rcvRecordProtocolMessageType == ProtocolMessageType.HANDSHAKE || rcvRecordProtocolMessageType == ProtocolMessageType.CHANGE_CIPHER_SPEC)
 		&& (System.currentTimeMillis() <= endTimeMillies)) {
 	    try {
-		rcvRecord = loadSingleNextRecord();
+		rcvRecord = processNextRecord();
 		if (containsFatalAlertMessage(rcvRecord)) {
 		    return false;
 		}
@@ -465,7 +420,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	return (rcvRecordProtocolMessageType != ProtocolMessageType.HANDSHAKE && rcvRecordProtocolMessageType != ProtocolMessageType.CHANGE_CIPHER_SPEC);
     }
 
-    private Record loadSingleNextRecord() throws Exception {
+    private Record processNextRecord() throws Exception {
 	Record rcvRecord = receiveNextValidRecord();
 	ProtocolMessageType rcvRecordProtocolMessageType = ProtocolMessageType.getContentType(rcvRecord
 		.getContentType().getValue());
@@ -490,7 +445,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
 	while ((changeCipherSpecRecord != null) && (System.currentTimeMillis() <= endTimeMillies)) {
 	    try {
-		if (containsFatalAlertMessage(loadSingleNextRecord())) {
+		if (containsFatalAlertMessage(processNextRecord())) {
 		    return false;
 		}
 	    } catch (SocketTimeoutException ste) {
@@ -537,7 +492,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
 	while (!correctMessageAvailable && (System.currentTimeMillis() <= endTimeMillies)) {
 	    try {
-		if (containsFatalAlertMessage(loadSingleNextRecord())) {
+		if (containsFatalAlertMessage(processNextRecord())) {
 		    return false;
 		}
 	    } catch (SocketTimeoutException ste) {
@@ -707,39 +662,6 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
     }
 
     /**
-     * In a case the protocol message received was not equal to the messages in
-     * our protocol message list, we have to clear our protocol message list.
-     * 
-     * @param protocolMessages
-     * @param fromIndex
-     */
-    private void removeNextProtocolMessages(List<ProtocolMessage> protocolMessages, int fromIndex) {
-
-	for (int i = protocolMessages.size() - 1; i >= fromIndex; i--) {
-	    protocolMessages.remove(i);
-	}
-    }
-
-    private byte[] prepareProtocolMessageBytes(ProtocolMessage pm) {
-	// get protocol message handler
-	ProtocolMessageHandler handler = pm.getProtocolMessageHandler(tlsContext);
-	// create a protocol message
-	byte[] pmBytes = handler.prepareMessage();
-	if (LOGGER.isDebugEnabled()) {
-	    LOGGER.debug(pm.toString());
-	}
-	// return the protocol message bytes in case we are handling a normal
-	// protocol message
-	// otherwise, if handling a dummy protocol message, ruturn a null byte
-	// array
-	if (pm.isGoingToBeSent()) {
-	    return pmBytes;
-	} else {
-	    return new byte[0];
-	}
-    }
-
-    /**
      * In case we are handling last protocol message, this protocol message has
      * to be flushed out. The reasons for flushing out the message can be
      * following: 1) it is the last protocol message 2) the next protocol
@@ -775,7 +697,7 @@ public class Dtls12WorkflowExecutor implements WorkflowExecutor {
 	if (this.maxPacketSize > 16397) {
 	    this.maxPacketSize = 16397;
 	} else {
-	    this.maxPacketSize = this.maxPacketSize;
+	    this.maxPacketSize = maxPacketSize;
 	}
     }
 }

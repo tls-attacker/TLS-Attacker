@@ -51,36 +51,43 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
     /**
      * Implementation hook used after the prepareMessageAction: the content of
      * the parsed protocol message is parsed and the digest value is updated
+     * 
+     * @param messageBytes
+     * @return
      */
     @Override
-    protected void afterPrepareMessageAction() {
+    protected byte[] afterPrepareMessageAction(byte[] messageBytes) {
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12) {
-	    protocolMessage.setCompleteResultingMessage(finishDtlsHandshakeMessagePrepare());
+	    protocolMessage.setCompleteResultingMessage(finishDtlsHandshakeMessagePrepare(messageBytes));
 	}
 	byte[] pm = protocolMessage.getCompleteResultingMessage().getValue();
 	tlsContext.getDigest().update(pm);
+	return pm;
     }
 
     /**
      * Implementation hook used after the parseMessageAction: the content of the
      * parsed protocol message is parsed and the digest value is updated
+     * 
+     * @param ret
+     * @return
      */
     @Override
-    protected void afterParseMessageAction() {
+    protected int afterParseMessageAction(int ret) {
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12) {
 	    protocolMessage.setCompleteResultingMessage(dtlsAllMessageBytes);
+	    ret += 8;
 	}
 	byte[] pm = protocolMessage.getCompleteResultingMessage().getValue();
 	tlsContext.getDigest().update(pm);
+	return ret;
     }
 
     private byte[] prepareDtlsHandshakeMessageParse(byte[] message, int pointer) {
 	dtlsAllMessageBytes = message;
 	HandshakeMessageDtlsFields messageFields = new HandshakeMessageDtlsFields();
 	byte[] parsePmBytes;
-	int messageLength;
 
-	messageLength = (message[pointer + 1] << 16) + (message[pointer + 2] << 8) + message[pointer + 3];
 	messageFields.setMessageSeq((message[pointer + 4] << 8) + message[pointer + 5]);
 	messageFields.setFragmentOffset((message[pointer + 6] << 16) + (message[pointer + 7] << 8)
 		+ message[pointer + 8]);
@@ -88,16 +95,17 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 		+ message[pointer + 11]);
 	protocolMessage.setMessageFields(messageFields);
 
-	parsePmBytes = new byte[messageLength];
-	System.arraycopy(message, 0, parsePmBytes, 0, 4);
-	System.arraycopy(message, 12, parsePmBytes, 4, messageLength);
+	parsePmBytes = new byte[message.length - 8];
+	System.arraycopy(message, 0, parsePmBytes, 0, pointer);
+	System.arraycopy(message, pointer, parsePmBytes, pointer, 4);
+	System.arraycopy(message, pointer + 12, parsePmBytes, pointer + 4, message.length - pointer - 12);
 
 	return parsePmBytes;
     }
 
-    private byte[] finishDtlsHandshakeMessagePrepare() {
+    private byte[] finishDtlsHandshakeMessagePrepare(byte[] messageBytes) {
 	HandshakeMessageDtlsFields messageFields = (HandshakeMessageDtlsFields) protocolMessage.getMessageFields();
-	byte[] messageBytes = protocolMessage.getCompleteResultingMessage().getValue();
+	
 	messageFields.setFragmentLength(messageBytes.length - 4);
 	byte[] preparePmBytes = new byte[messageBytes.length + 8];
 
