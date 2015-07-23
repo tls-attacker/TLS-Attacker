@@ -78,7 +78,7 @@ public class RandomClient {
 	cm.setSupportedCompressionMethods(ccc.getCompressionMethods());
 	byte[] ch = handler.prepareMessageAction();
 	LOGGER.debug("Created the following client hello message: {}", ArrayConverter.bytesToHexString(ch));
-        context.setRecordHandler(new RecordHandler(context));
+	context.setRecordHandler(new RecordHandler(context));
 	RecordHandler rh = context.getRecordHandler();
 	List<Record> records = new LinkedList<>();
 	records.add(new Record());
