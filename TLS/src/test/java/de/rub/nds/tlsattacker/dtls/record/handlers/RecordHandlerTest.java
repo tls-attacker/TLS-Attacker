@@ -36,13 +36,14 @@ import static org.junit.Assert.*;
  */
 public class RecordHandlerTest {
 
-    RecordHandler rh;
+    de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler rh;
 
     TlsContext tlsContext = new TlsContext();
 
     public RecordHandlerTest() {
 	tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
-	rh = RecordHandler.createInstance(tlsContext);
+	tlsContext.setRecordHandler(new RecordHandler(tlsContext));
+	rh = tlsContext.getRecordHandler();
     }
 
     /**

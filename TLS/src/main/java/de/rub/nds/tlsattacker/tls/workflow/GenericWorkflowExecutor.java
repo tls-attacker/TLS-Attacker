@@ -48,7 +48,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
      */
     protected boolean executed = false;
 
-    protected final RecordHandler recordHandler;
+    protected RecordHandler recordHandler;
 
     protected final TlsContext tlsContext;
 
@@ -56,12 +56,12 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 
     MessageBytesCollector messageBytesCollector;
 
-    WorkflowContext workflowContext;
+    protected WorkflowContext workflowContext;
 
     public GenericWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	this.tlsContext = tlsContext;
 	this.transportHandler = transportHandler;
-	this.recordHandler = RecordHandler.createInstance(tlsContext);
+	this.recordHandler = new RecordHandler(tlsContext);
 	this.messageBytesCollector = new MessageBytesCollector();
 	this.workflowContext = new WorkflowContext();
     }

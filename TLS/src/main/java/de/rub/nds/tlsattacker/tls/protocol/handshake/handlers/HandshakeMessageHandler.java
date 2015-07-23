@@ -105,7 +105,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
     private byte[] finishDtlsHandshakeMessagePrepare(byte[] messageBytes) {
 	HandshakeMessageDtlsFields messageFields = (HandshakeMessageDtlsFields) protocolMessage.getMessageFields();
-	
+
 	messageFields.setFragmentLength(messageBytes.length - 4);
 	byte[] preparePmBytes = new byte[messageBytes.length + 8];
 

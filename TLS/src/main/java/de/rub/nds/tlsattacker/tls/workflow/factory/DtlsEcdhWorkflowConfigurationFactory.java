@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ccs.messages.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;

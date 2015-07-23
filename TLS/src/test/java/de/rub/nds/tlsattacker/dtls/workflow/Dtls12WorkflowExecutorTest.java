@@ -19,15 +19,23 @@
  */
 package de.rub.nds.tlsattacker.dtls.workflow;
 
+import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
@@ -41,21 +49,29 @@ public class Dtls12WorkflowExecutorTest {
 
     @Test
     public void testExecuteWorkflow() {
-	try {
-	    DatagramSocket ds = new DatagramSocket(15243, InetAddress.getByName("127.0.0.1"));
-	} catch (UnknownHostException | SocketException ex) {
-	    fail(ex.getMessage());
-	}
-	TransportHandler th = new UDPTransportHandler();
-	TlsContext tlsContext = new TlsContext();
-	tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
-	try {
-	    th.initialize("127.0.0.1", 15243);
-	} catch (IOException ex) {
-	    fail(ex.getMessage());
-	}
+	// ClientCommandConfig config = new ClientCommandConfig();
+	// ClientConfigHandler configHandler = new ClientConfigHandler();
+	//
+	// config.setProtocolVersion(ProtocolVersion.DTLS12);
+	// config.setConnect("127.0.0.1:4444");
+	// config.setTransportHandlerType(TransportHandlerType.UDP);
 
-	Dtls12WorkflowExecutor workflowExecutor = new Dtls12WorkflowExecutor(th, tlsContext);
+	// try {
+	// DatagramSocket ds = new DatagramSocket(15243,
+	// InetAddress.getByName("127.0.0.1"));
+	// } catch (UnknownHostException | SocketException ex) {
+	// fail(ex.getMessage());
+	// }
+	//
+	// TransportHandler th =
+	// configHandler.initializeTransportHandler(config);
+	//
+	// TlsContext context =
+	// WorkflowConfigurationFactory.createInstance(config).createClientHelloTlsContext();
+	// context.setMyConnectionEnd(ConnectionEnd.CLIENT);
+	// Dtls12WorkflowExecutor workflowExecutor = new
+	// Dtls12WorkflowExecutor(th, context);
+	// workflowExecutor.executeWorkflow();
 
     }
 }

@@ -64,7 +64,7 @@ public class HelloVerifyRequestHandlerTest {
 	handler = new HelloVerifyRequestHandler(tlsContext);
 	handler.setProtocolMessage(hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class));
 	HelloVerifyRequestMessage message = (HelloVerifyRequestMessage) handler.getProtocolMessage();
-        
+
 	message.setCookie(ArrayConverter.hexStringToByteArray("112233"));
 	message.setCookieLength((byte) 3);
 
