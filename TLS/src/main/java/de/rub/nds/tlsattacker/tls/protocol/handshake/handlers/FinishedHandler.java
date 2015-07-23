@@ -69,9 +69,9 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
 
 	try {
-	    if (RecordHandler.getInstance().getRecordCipher() == null) {
+	    if (tlsContext.getRecordHandler().getRecordCipher() == null) {
 		TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
-		RecordHandler.getInstance().setRecordCipher(tlsRecordBlockCipher);
+		tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
 	    }
 
 	    byte[] result = protocolMessage.getVerifyData().getValue();

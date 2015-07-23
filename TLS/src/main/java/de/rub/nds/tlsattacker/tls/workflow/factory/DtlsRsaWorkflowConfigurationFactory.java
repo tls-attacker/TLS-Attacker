@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ccs.messages.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessageFactory;
@@ -79,6 +79,14 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 	HelloVerifyRequestMessage hvrm = hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class,
 		ConnectionEnd.SERVER);
 	protocolMessages.add(hvrm);
+
+	ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);
+	protocolMessages.add(ch);
+
+	ch.setSupportedCipherSuites(config.getCipherSuites());
+	ch.setSupportedCompressionMethods(config.getCompressionMethods());
+
+	initializeClientHelloExtensions(config, ch);
 
 	workflowTrace.setProtocolMessages(protocolMessages);
 

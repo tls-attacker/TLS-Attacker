@@ -35,9 +35,9 @@ public class UDPTransportHandler implements TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(UDPTransportHandler.class);
 
-    private static final int DEFAULT_RESPONSE_WAIT = 1000;
+    private static final int DEFAULT_RESPONSE_WAIT = 3000;
 
-    private int maxResponseWait;
+    private int maxResponseWait = DEFAULT_RESPONSE_WAIT;
 
     private DatagramSocket so;
 
@@ -64,16 +64,12 @@ public class UDPTransportHandler implements TransportHandler {
      */
     private final int mtu = 1500;
 
-    public UDPTransportHandler() {
-	maxResponseWait = DEFAULT_RESPONSE_WAIT;
-    }
-
     @Override
     public void initialize(String remoteAddress, int remotePort) throws IOException {
 	this.remoteAddress = InetAddress.getByName(remoteAddress);
 	this.remotePort = remotePort;
 	so = new DatagramSocket();
-	so.setSoTimeout(maxResponseWait);
+	so.setSoTimeout(DEFAULT_RESPONSE_WAIT);
 	so.connect(this.remoteAddress, this.remotePort);
 	localAddress = so.getLocalAddress();
 	localPort = so.getLocalPort();

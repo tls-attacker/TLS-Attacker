@@ -40,29 +40,17 @@ public class RecordHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(RecordHandler.class);
 
-    private final TlsContext tlsContext;
+    protected final TlsContext tlsContext;
 
-    private TlsRecordBlockCipher recordCipher;
+    protected TlsRecordBlockCipher recordCipher;
 
-    private static RecordHandler instance;
-
-    private RecordHandler(TlsContext tlsContext) {
+    public RecordHandler(TlsContext tlsContext) {
 	this.tlsContext = tlsContext;
 	recordCipher = null;
 	if (tlsContext == null) {
 	    throw new ConfigurationException("The workflow was not configured properly, "
 		    + "it is not included in the ProtocolController");
 	}
-    }
-
-    public static RecordHandler getInstance() {
-	return instance;
-    }
-
-    // todo this is bad for future multi threading processing
-    public static RecordHandler createInstance(TlsContext tlsContext) {
-	instance = new RecordHandler(tlsContext);
-	return instance;
     }
 
     public byte[] wrapData(byte[] data, ProtocolMessageType contentType, List<Record> records) {
