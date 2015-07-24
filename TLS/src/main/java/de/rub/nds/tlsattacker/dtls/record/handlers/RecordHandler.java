@@ -41,7 +41,7 @@ import org.apache.logging.log4j.Logger;
 public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler {
 
     private static final Logger LOGGER = LogManager
-	    .getLogger(de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler.class);
+	    .getLogger(de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler.class);
 
     private BigInteger sequenceCounter;
 
