@@ -143,7 +143,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	byte[] record = recordHandler.wrapData(messageBytes, protocolMessage.getProtocolMessageType(),
 		protocolMessage.getRecords());
 
-	LOGGER.debug("Sending the following protocol message to TLS peer: {}\nRaw Bytes: {}",
+	LOGGER.debug("Sending the following protocol message to DTLS peer: {}\nRaw Bytes: {}",
 		protocolMessage.getClass(), ArrayConverter.bytesToHexString(record));
 
 	if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
@@ -171,25 +171,14 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
-	int maxMessageSize = maxPacketSize - 25;
-
 	ProtocolMessageHandler pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
 	HandshakeMessageDtlsFields handshakeMessageFields = (HandshakeMessageDtlsFields) handshakeMessage
 		.getMessageFields();
 	handshakeMessageFields.setMessageSeq(sendHandshakeMessageSeq);
 	byte[] handshakeMessageBytes = pmh.prepareMessage();
-	int handshakeMessageContentLength = handshakeMessageBytes.length - 12;
 
-	if (handshakeMessageContentLength > maxMessageSize) {
-	    byte[] handshakeMessageContentBytes = new byte[handshakeMessageContentLength];
-	    System.arraycopy(handshakeMessageBytes, 12, handshakeMessageContentBytes, 0, handshakeMessageContentLength);
-	    handshakeMessageSendBuffer = ArrayConverter.concatenate(
-		    handshakeMessageSendBuffer,
-		    prepareHandshakeMessageSend(handshakeMessageContentBytes, handshakeMessage
-			    .getHandshakeMessageType().getValue(), sendHandshakeMessageSeq, maxMessageSize));
-	} else {
-	    handshakeMessageSendBuffer = ArrayConverter.concatenate(handshakeMessageSendBuffer, handshakeMessageBytes);
-	}
+	handshakeMessageSendBuffer = ArrayConverter.concatenate(handshakeMessageSendBuffer,
+		handshakeFragmentHandler.fragmentHandshakeMessage(handshakeMessageBytes, maxPacketSize - 25));
 
 	if (handshakeMessageSendRecordList == null) {
 	    handshakeMessageSendRecordList = new ArrayList<>();
@@ -207,21 +196,10 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	sendHandshakeMessageSeq++;
     }
 
-    private byte[] prepareHandshakeMessageSend(byte[] handshakeMessageBytes, byte handshakeMessageType,
-	    int handshakeMessageSeq, int maxMessageSize) {
-	maxMessageSize -= 12;
-	int messageSize = handshakeMessageBytes.length;
-	if (messageSize >= maxMessageSize) {
-	    handshakeMessageBytes = handshakeFragmentHandler.fragmentHandshakeMessage(handshakeMessageBytes,
-		    handshakeMessageType, handshakeMessageSeq, maxMessageSize);
-	}
-	return handshakeMessageBytes;
-    }
-
     private void sendMessages(byte[] records) throws IOException {
 	recordSendBuffer = ArrayConverter.concatenate(recordSendBuffer, records);
 	if (handlingMyLastProtocolMessage(protocolMessages, workflowContext.getProtocolMessagePointer())) {
-	    LOGGER.debug("Sending the following protocol messages to TLS peer: {}",
+	    LOGGER.debug("Sending the following protocol messages to DTLS peer: {}",
 		    ArrayConverter.bytesToHexString(recordSendBuffer));
 	    int pointer = 0;
 	    int currentRecordSize = 0;
@@ -311,8 +289,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void updateFlight(ProtocolMessage pm) {
-	if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
-		|| pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	if (!(pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE || pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC)) {
 	    if (lastConnectionEnd != pm.getMessageIssuer()) {
 		previousFlightBeginPointer = flightStartMessageNumber;
 		previousFlightConnectionEnd = lastConnectionEnd;

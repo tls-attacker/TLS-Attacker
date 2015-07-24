@@ -293,12 +293,14 @@ public class HandshakeFragmentHandlerTest {
 
     @Test
     public void testFragmentHandshakeMessage() {
-	byte[] result = hfh.fragmentHandshakeMessage(certificateMessage, (byte) 11, 0, 10000);
+	byte[] result = hfh.fragmentHandshakeMessage(
+		ArrayConverter.concatenate(certificateMessageHeader, certificateMessage), 10000);
 	byte[] expectedResult = ArrayConverter.concatenate(certificateMessageHeader, certificateMessage);
 
 	assertArrayEquals("Check unfragmented message:", expectedResult, result);
 
-	result = hfh.fragmentHandshakeMessage(certificateMessage, (byte) 11, 0, 403);
+	result = hfh.fragmentHandshakeMessage(ArrayConverter.concatenate(certificateMessageHeader, certificateMessage),
+		403);
 	expectedResult = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("0b00030e0000000000000187"),
 		Arrays.copyOf(certificateMessage, 391),
 		ArrayConverter.hexStringToByteArray("0b00030e0000000187000187"),
@@ -306,7 +308,8 @@ public class HandshakeFragmentHandlerTest {
 
 	assertArrayEquals("Check fragmented message (two fragments):", expectedResult, result);
 
-	result = hfh.fragmentHandshakeMessage(certificateMessage, (byte) 11, 0, 362);
+	result = hfh.fragmentHandshakeMessage(ArrayConverter.concatenate(certificateMessageHeader, certificateMessage),
+		362);
 	expectedResult = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("0b00030e000000000000015E"),
 		Arrays.copyOf(certificateMessage, 350),
 		ArrayConverter.hexStringToByteArray("0b00030e000000015E00015E"),
@@ -316,7 +319,8 @@ public class HandshakeFragmentHandlerTest {
 
 	assertArrayEquals("Check fragmented message (three fragments):", expectedResult, result);
 
-	result = hfh.fragmentHandshakeMessage(certificateMessage, (byte) 11, 0, 112);
+	result = hfh.fragmentHandshakeMessage(ArrayConverter.concatenate(certificateMessageHeader, certificateMessage),
+		112);
 	expectedResult = ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("0b00030e0000000000000064"),
 		Arrays.copyOf(certificateMessage, 100),
 		ArrayConverter.hexStringToByteArray("0b00030e0000000064000064"),
