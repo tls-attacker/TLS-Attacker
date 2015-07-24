@@ -188,24 +188,27 @@ public class HandshakeFragmentHandler {
 	expectedHandshakeMessageSeq++;
     }
 
-    public byte[] fragmentHandshakeMessage(byte[] handshakeMessageBytes, byte handshakeMessageType,
-	    int handshakeMessageSeq, int maxMessageSize) {
+    public byte[] fragmentHandshakeMessage(byte[] handshakeMessageBytes, int maxMessageSize) {
 	maxMessageSize -= 12;
-	int messageSize = handshakeMessageBytes.length;
-	int numFragments = (int) Math.ceil(messageSize / maxMessageSize);
+	int messageSize = handshakeMessageBytes.length - 12;
+	int numFragments = (int) Math.ceil((double) messageSize / maxMessageSize);
+	if (numFragments == 0) {
+	    numFragments = 1;
+	}
 	LOGGER.debug("Splitting the handshake message into {} fragments", numFragments);
 	byte[] fragmentArray = new byte[0];
-	int indexPointer, fragmentLength;
+	int indexPointer, fragmentLength, fragmentSizeCounter;
 	byte[] handshakeHeader = new byte[12];
-	handshakeHeader[0] = handshakeMessageType;
+	handshakeHeader[0] = handshakeMessageBytes[0];
 	handshakeHeader[1] = (byte) (messageSize >>> 16);
 	handshakeHeader[2] = (byte) (messageSize >>> 8);
 	handshakeHeader[3] = (byte) messageSize;
-	handshakeHeader[4] = (byte) (handshakeMessageSeq >>> 8);
-	handshakeHeader[5] = (byte) handshakeMessageSeq;
+	handshakeHeader[4] = handshakeMessageBytes[4];
+	handshakeHeader[5] = handshakeMessageBytes[5];
 
-	for (int fragmentSizeCounter = handshakeMessageBytes.length; fragmentSizeCounter > 14; fragmentSizeCounter -= maxMessageSize) {
-	    indexPointer = handshakeMessageBytes.length - fragmentSizeCounter;
+	for (int i = 0; i < numFragments; i++) {
+	    indexPointer = i * maxMessageSize;
+	    fragmentSizeCounter = messageSize - maxMessageSize * i;
 	    if (fragmentSizeCounter < maxMessageSize) {
 		fragmentLength = fragmentSizeCounter;
 	    } else {
@@ -218,7 +221,7 @@ public class HandshakeFragmentHandler {
 	    handshakeHeader[10] = (byte) (fragmentLength >>> 8);
 	    handshakeHeader[11] = (byte) fragmentLength;
 	    fragmentArray = ArrayConverter.concatenate(fragmentArray, handshakeHeader,
-		    Arrays.copyOfRange(handshakeMessageBytes, indexPointer, indexPointer + fragmentLength));
+		    Arrays.copyOfRange(handshakeMessageBytes, indexPointer + 12, indexPointer + fragmentLength + 12));
 	}
 	return fragmentArray;
     }
