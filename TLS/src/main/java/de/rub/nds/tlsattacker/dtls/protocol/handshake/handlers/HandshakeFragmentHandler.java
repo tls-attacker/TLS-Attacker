@@ -39,11 +39,11 @@ public class HandshakeFragmentHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(HandshakeFragmentHandler.class);
 
-    private final Map<Integer, List<Record>> handshakeMessageRecordMap = new HashMap<>();
+    final Map<Integer, List<Record>> handshakeMessageRecordMap = new HashMap<>();
 
-    private final Map<Integer, BitSet> handshakeMessageReassembleBitmaskMap = new HashMap<>();
+    final Map<Integer, BitSet> handshakeMessageReassembleBitmaskMap = new HashMap<>();
 
-    private final Map<Integer, byte[]> reassembledHandshakeMessageMap = new HashMap<>();
+    final Map<Integer, byte[]> reassembledHandshakeMessageMap = new HashMap<>();
 
     private int expectedHandshakeMessageSeq;
 
@@ -218,8 +218,23 @@ public class HandshakeFragmentHandler {
 	    handshakeHeader[10] = (byte) (fragmentLength >>> 8);
 	    handshakeHeader[11] = (byte) fragmentLength;
 	    fragmentArray = ArrayConverter.concatenate(fragmentArray, handshakeHeader,
-		    Arrays.copyOfRange(handshakeMessageBytes, indexPointer, fragmentLength));
+		    Arrays.copyOfRange(handshakeMessageBytes, indexPointer, indexPointer + fragmentLength));
 	}
 	return fragmentArray;
+    }
+
+    public List<Record> getReceivedHandshakeMessageRecords(int seqNum) {
+	if (handshakeMessageRecordMap.containsKey(seqNum)) {
+	    return handshakeMessageRecordMap.get(seqNum);
+	}
+	return new ArrayList<>();
+    }
+
+    public void setExpectedHandshakeMessageSeq(int seqNum) {
+	expectedHandshakeMessageSeq = seqNum;
+    }
+
+    public int getExpectedHandshakeMessageSeq() {
+	return expectedHandshakeMessageSeq;
     }
 }
