@@ -57,10 +57,10 @@ public class HandshakeFragmentHandler {
 	int handshakeMessageFragOffset;
 	int handshakeMessageFragSize;
 
-	while ((workPointer + 12) < recordData.length) {
-	    handshakeMessageSeq = (recordData[workPointer + 4] << 8) + recordData[workPointer + 5];
+	while ((workPointer + 12) <= recordData.length) {
+	    handshakeMessageSeq = (recordData[workPointer + 4] << 8) + (recordData[workPointer + 5] & 0xFF);
 	    handshakeMessageFragSize = (recordData[workPointer + 9] << 16) + (recordData[workPointer + 10] << 8)
-		    + recordData[workPointer + 11];
+		    + (recordData[workPointer + 11] & 0xFF);
 
 	    if (handshakeMessageSeq < expectedHandshakeMessageSeq
 		    || checkHandshakeMessageAvailable(handshakeMessageSeq)) {
@@ -69,10 +69,10 @@ public class HandshakeFragmentHandler {
 	    }
 
 	    handshakeMessageFragOffset = (recordData[workPointer + 6] << 16) + (recordData[workPointer + 7] << 8)
-		    + recordData[workPointer + 8];
+		    + (recordData[workPointer + 8] & 0xFF);
 	    handshakeMessageType = recordData[workPointer];
 	    handshakeMessageSize = (recordData[workPointer + 1] << 16) + (recordData[workPointer + 2] << 8)
-		    + recordData[workPointer + 3];
+		    + (recordData[workPointer + 3] & 0xFF);
 	    workPointer += 12;
 
 	    if ((handshakeMessageFragSize + workPointer) > recordData.length) {
@@ -91,8 +91,8 @@ public class HandshakeFragmentHandler {
 	    if (!affectedHandshakeMessages.contains(handshakeMessageSeq)) {
 		affectedHandshakeMessages.add(handshakeMessageSeq);
 	    }
-	    processHandshakeMessageFragment(handshakeMessageType, handshakeMessageSize, handshakeMessageFragOffset,
-		    handshakeMessageFragSize, recordData, workPointer);
+	    processHandshakeMessageFragment(handshakeMessageType, handshakeMessageSize, handshakeMessageSeq,
+		    handshakeMessageFragOffset, handshakeMessageFragSize, recordData, workPointer);
 
 	    workPointer += handshakeMessageFragSize;
 	}
@@ -103,20 +103,20 @@ public class HandshakeFragmentHandler {
     }
 
     private void processHandshakeMessageFragment(byte handshakeMessageType, int handshakeMessageSize,
-	    int handshakeMessageFragOffset, int handshakeMessageFragSize, byte[] recordData, int workPointer) {
+	    int handshakeMessageSeq, int handshakeMessageFragOffset, int handshakeMessageFragSize, byte[] recordData,
+	    int workPointer) {
 
-	if (createKeyInReassembleMaps(handshakeMessageSize, expectedHandshakeMessageSeq)) {
-	    byte[] header = createCompleteHandshakeMessageHeader(handshakeMessageType, expectedHandshakeMessageSeq,
+	if (createKeyInReassembleMaps(handshakeMessageSize, handshakeMessageSeq)) {
+	    byte[] header = createCompleteHandshakeMessageHeader(handshakeMessageType, handshakeMessageSeq,
 		    handshakeMessageSize);
-	    handshakeMessageReassembleBitmaskMap.get(expectedHandshakeMessageSeq).set(0, 11, true);
-	    System.arraycopy(header, 0, reassembledHandshakeMessageMap.get(expectedHandshakeMessageSeq), 0, 12);
+	    handshakeMessageReassembleBitmaskMap.get(handshakeMessageSeq).set(0, 12, true);
+	    System.arraycopy(header, 0, reassembledHandshakeMessageMap.get(handshakeMessageSeq), 0, 12);
 	}
 
-	handshakeMessageReassembleBitmaskMap.get(expectedHandshakeMessageSeq).set(handshakeMessageFragOffset,
-		(handshakeMessageFragOffset + handshakeMessageFragSize - 1), true);
-	System.arraycopy(recordData, (workPointer + handshakeMessageFragOffset),
-		reassembledHandshakeMessageMap.get(expectedHandshakeMessageSeq), handshakeMessageFragOffset + 12,
-		handshakeMessageFragSize);
+	handshakeMessageReassembleBitmaskMap.get(handshakeMessageSeq).set(handshakeMessageFragOffset + 12,
+		(handshakeMessageFragOffset + 12 + handshakeMessageFragSize), true);
+	System.arraycopy(recordData, workPointer, reassembledHandshakeMessageMap.get(handshakeMessageSeq),
+		handshakeMessageFragOffset + 12, handshakeMessageFragSize);
     }
 
     protected byte[] createCompleteHandshakeMessageHeader(byte handshakeType, int handshakeMessageSeq,
@@ -150,8 +150,8 @@ public class HandshakeFragmentHandler {
     }
 
     private boolean checkHandshakeMessageCompleteness(int seqNum) {
-	return handshakeMessageReassembleBitmaskMap.get(seqNum).cardinality() == handshakeMessageReassembleBitmaskMap
-		.get(seqNum).length();
+	return handshakeMessageReassembleBitmaskMap.get(seqNum).cardinality() == reassembledHandshakeMessageMap
+		.get(seqNum).length;
     }
 
     private boolean createKeyInReassembleMaps(int handshakeMessageSize, int seqNum) {

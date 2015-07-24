@@ -88,11 +88,11 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 	HandshakeMessageDtlsFields messageFields = new HandshakeMessageDtlsFields();
 	byte[] parsePmBytes;
 
-	messageFields.setMessageSeq((message[pointer + 4] << 8) + message[pointer + 5]);
+	messageFields.setMessageSeq((message[pointer + 4] << 8) + (message[pointer + 5] & 0xFF));
 	messageFields.setFragmentOffset((message[pointer + 6] << 16) + (message[pointer + 7] << 8)
-		+ message[pointer + 8]);
+		+ (message[pointer + 8] & 0xFF));
 	messageFields.setFragmentLength((message[pointer + 9] << 16) + (message[pointer + 10] << 8)
-		+ message[pointer + 11]);
+		+ (message[pointer + 11] & 0xFF));
 	protocolMessage.setMessageFields(messageFields);
 
 	parsePmBytes = new byte[message.length - 8];
