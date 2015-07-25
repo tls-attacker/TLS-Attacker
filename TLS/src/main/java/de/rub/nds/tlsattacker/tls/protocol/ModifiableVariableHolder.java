@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.tls.protocol;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.ReflectionHelper;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public abstract class ModifiableVariableHolder {
+public abstract class ModifiableVariableHolder implements Serializable {
 
     /**
      * Lists all the modifiable variables declared in the class

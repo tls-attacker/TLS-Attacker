@@ -35,6 +35,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class AlertMessage extends ProtocolMessage {
     /**
+     * config array used to configure alert message
+     */
+    private byte[] config;
+    /**
      * alert level
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -75,6 +79,20 @@ public class AlertMessage extends ProtocolMessage {
 	    this.description = new ModifiableByte();
 	}
 	this.description.setOriginalValue(description);
+    }
+
+    public byte[] getConfig() {
+	return config;
+    }
+
+    public void setConfig(byte[] config) {
+	this.config = config;
+    }
+
+    public void setConfig(AlertLevel level, AlertDescription description) {
+	config = new byte[2];
+	config[0] = level.getValue();
+	config[1] = description.getValue();
     }
 
     @Override

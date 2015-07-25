@@ -28,6 +28,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageT
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHEServerKeyExchangeMessage;
@@ -38,6 +40,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchan
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,7 +55,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class WorkflowTrace {
+public class WorkflowTrace implements Serializable {
 
     /**
      * Workflow
@@ -61,6 +64,8 @@ public class WorkflowTrace {
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
 	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
+            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
 	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
 	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
 	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
