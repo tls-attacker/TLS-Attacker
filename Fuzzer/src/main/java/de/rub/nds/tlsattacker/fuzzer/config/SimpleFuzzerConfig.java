@@ -64,10 +64,10 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     List<ModifiableVariableProperty.Format> modifiableVariableFormats;
 
     @Parameter(names = "-duplicate_message", description = "Probability of a random message duplication", validateWith = PercentageValidator.class)
-    Integer duplicateMessagePercentage = 30;
+    Integer duplicateMessagePercentage = 50;
 
     @Parameter(names = "-not_sending_message", description = "Probability of a random message being not sent to the peer", validateWith = PercentageValidator.class)
-    Integer notSendingMessagePercantage = 40;
+    Integer notSendingMessagePercantage = 50;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
     Integer addRecordPercentage = 40;
@@ -77,6 +77,9 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 
     @Parameter(names = "-fuzzing_type", description = "Fuzzing can be either done completely randomly, or systematically iterating over modifiable variable.")
     FuzzingType fuzzingType = FuzzingType.SYSTEMATIC;
+
+    @Parameter(names = "-max_systematic_modifications", description = "Maximum number of modifications made to a field while executing a systematic fuzzing")
+    Integer maxSystematicModifications = 20;
 
     public SimpleFuzzerConfig() {
 	cipherSuites.clear();
@@ -199,5 +202,13 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 
     public void setFuzzingType(FuzzingType fuzzingType) {
 	this.fuzzingType = fuzzingType;
+    }
+
+    public Integer getMaxSystematicModifications() {
+	return maxSystematicModifications;
+    }
+
+    public void setMaxSystematicModifications(Integer maxSystematicModifications) {
+	this.maxSystematicModifications = maxSystematicModifications;
     }
 }
