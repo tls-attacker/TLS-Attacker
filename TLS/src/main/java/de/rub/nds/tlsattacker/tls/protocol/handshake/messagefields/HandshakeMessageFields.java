@@ -22,11 +22,14 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class HandshakeMessageFields {
+@XmlRootElement
+public class HandshakeMessageFields implements Serializable {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     protected ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();

@@ -19,41 +19,41 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class WorkflowContext {
 
     private int protocolMessagePointer;
-    
+
     private boolean proceedWorkflow;
-    
+
     public WorkflowContext() {
-        protocolMessagePointer = 0;
-        proceedWorkflow = true;
+	protocolMessagePointer = 0;
+	proceedWorkflow = true;
     }
 
     public int getProtocolMessagePointer() {
-        return protocolMessagePointer;
+	return protocolMessagePointer;
     }
 
     public void setProtocolMessagePointer(int protocolMessagePointer) {
-        this.protocolMessagePointer = protocolMessagePointer;
+	this.protocolMessagePointer = protocolMessagePointer;
     }
 
     public boolean isProceedWorkflow() {
-        return proceedWorkflow;
+	return proceedWorkflow;
     }
 
     public void setProceedWorkflow(boolean proceedWorkflow) {
-        this.proceedWorkflow = proceedWorkflow;
+	this.proceedWorkflow = proceedWorkflow;
     }
 
     public void incrementProtocolMessagePointer() {
-        protocolMessagePointer++;
+	protocolMessagePointer++;
     }
 
     public void decrementProtocolMessagePointer() {
-        protocolMessagePointer--;
+	protocolMessagePointer--;
     }
 }
