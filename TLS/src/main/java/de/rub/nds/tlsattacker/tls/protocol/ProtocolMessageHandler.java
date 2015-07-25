@@ -67,7 +67,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public byte[] prepareMessage() {
 	beforePrepareMessageAction();
 	byte[] ret = prepareMessageAction();
-	afterPrepareMessageAction();
+	ret = afterPrepareMessageAction(ret);
 	return ret;
     }
 
@@ -82,9 +82,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      *         message following, i.e. lastProcessedBytePointer + 1
      */
     public int parseMessage(byte[] message, int pointer) {
-	beforeParseMessageAction();
-	int ret = parseMessageAction(message, pointer);
-	afterParseMessageAction();
+	byte[] hookedMessage;
+	hookedMessage = beforeParseMessageAction(message, pointer);
+	int ret = parseMessageAction(hookedMessage, pointer);
+	ret = afterParseMessageAction(ret);
 	return ret;
     }
 
@@ -116,21 +117,31 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * Implementation hook, which allows the handlers to invoke specific methods
      * after the prepareMessageAction is executed
      */
-    protected void afterPrepareMessageAction() {
+    protected byte[] afterPrepareMessageAction(byte[] ret) {
+	return ret;
     }
 
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * before the parseMessageAction is executed
+     * 
+     * @param message
+     * @param pointer
+     * @return
      */
-    protected void beforeParseMessageAction() {
+    protected byte[] beforeParseMessageAction(byte[] message, int pointer) {
+	return message;
     }
 
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * after the parseMessageAction is executed
+     * 
+     * @param ret
+     * @return
      */
-    protected void afterParseMessageAction() {
+    protected int afterParseMessageAction(int ret) {
+	return ret;
     }
 
     /**

@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.ArrayList;
@@ -39,14 +39,25 @@ import static org.junit.Assert.*;
  */
 public class ClientHelloHandlerTest {
 
-    static byte[] clientHelloWithoutExtensionBytes = ArrayConverter.hexStringToByteArray("01000059030336CCE3E132A0C5B5"
-	    + "DE2C0560B4FF7F6CDF7AE226120E4A99C07E2D9B68B275BB20FA6F8E9770106A"
-	    + "CE8ACAB73E18B5D867CAF8AF7E206EF496F23A206A379FC7110012C02BC02FC0" + "0AC009C013C014002F0035000A0100");
+    static byte[] clientHelloWithoutExtensionBytes = ArrayConverter
+	    .hexStringToByteArray("01000059030336CCE3E132A0C5B5DE2C0560B4FF7F6CDF7AE226120E4A99C07E2D9B68B275BB20FA6F8E9770106ACE8ACAB73E18B5D867CAF8AF7E206EF496F23A206A379FC7110012C02BC02FC00AC009C013C014002F0035000A0100");
+
+    // DTLS clientHello with the dtls handshake fields (messageSeq,
+    // fragmentOffset and fragmentLength) already stripped out.
+    // Thus, only the cookie remains.
+    static byte[] dtlsClientHelloWithoutExtensionBytes = ArrayConverter
+	    .hexStringToByteArray("0100005eFEFD36CCE3E132A0C5B5DE2C0560B4FF7F6CDF7AE226120E4A99C07E2D9B68B275BB20FA6F8E9770106ACE8ACAB73E18B5D867CAF8AF7E206EF496F23A206A379FC711061122334455660012C02BC02FC00AC009C013C014002F0035000A0100");
+
+    static byte[] cookie = ArrayConverter.hexStringToByteArray("1122334455667788");
 
     ClientHelloHandler handler;
 
+    TlsContext tlsContext = new TlsContext();
+
     public ClientHelloHandlerTest() {
-	handler = new ClientHelloHandler(new TlsContext());
+	tlsContext.setDtlsHandshakeCookie(cookie);
+	tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
+	handler = new ClientHelloHandler(tlsContext);
     }
 
     /**
@@ -54,7 +65,7 @@ public class ClientHelloHandlerTest {
      */
     @Test
     public void testPrepareMessage() {
-	handler.initializeProtocolMessage();
+	handler.setProtocolMessage(new ClientHelloMessage());
 
 	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
 
@@ -68,8 +79,8 @@ public class ClientHelloHandlerTest {
 
 	byte[] returned = handler.prepareMessageAction();
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
-		new byte[] { 0x00, 0x00, 0x29 }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
-		message.getRandom().getValue(), new byte[] { 0x00, 0x00, 0x02 },
+		new byte[] { 0x00, 0x00, 0x32 }, ProtocolVersion.DTLS12.getValue(), message.getUnixTime().getValue(),
+		message.getRandom().getValue(), new byte[] { 0x00, 0x08 }, cookie, new byte[] { 0x00, 0x02 },
 		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(),
 		new byte[] { 0x01, CompressionMethod.NULL.getValue() });
 
@@ -79,9 +90,9 @@ public class ClientHelloHandlerTest {
 
     @Test
     public void testParseMessageAction() {
-	handler.initializeProtocolMessage();
+	handler.setProtocolMessage(new ClientHelloMessage());
 
-	int endPointer = handler.parseMessageAction(clientHelloWithoutExtensionBytes, 0);
+	int endPointer = handler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
 	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
 
 	byte[] expectedRandom = ArrayConverter
@@ -91,22 +102,32 @@ public class ClientHelloHandlerTest {
 	byte[] expectedSessionID = ArrayConverter
 		.hexStringToByteArray("fa6f8e9770106ace8acab73e18b5d867caf8af7e206ef496f23a206a379fc711");
 	byte[] actualSessionID = message.getSessionId().getValue();
+
+	byte expectedCookieLength = 6;
+	byte actualCookieLength = message.getCookieLength().getValue();
+	byte[] expectedCookie = ArrayConverter.hexStringToByteArray("112233445566");
+	byte[] actualCookie = message.getCookie().getValue();
+
 	byte[] expectedCipherSuites = ArrayConverter.hexStringToByteArray("c02bc02fc00ac009c013c014002f0035000a");
 	byte[] actualCipherSuites = message.getCipherSuites().getValue();
 	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Check message type", HandshakeMessageType.CLIENT_HELLO, message.getHandshakeMessageType());
-	assertEquals("Message length should be 508 bytes", new Integer(89), handshakeMessageFields.getLength()
+	assertEquals("Message length should be 94 bytes", new Integer(94), handshakeMessageFields.getLength()
 		.getValue());
-	assertArrayEquals("Check Protocol Version", ProtocolVersion.TLS12.getValue(), message.getProtocolVersion()
+	assertArrayEquals("Check Protocol Version", ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion()
 		.getValue());
 	assertArrayEquals("Check random", expectedRandom, actualRandom);
 	assertEquals("Check session_id length", new Integer(32), message.getSessionIdLength().getValue());
 	assertArrayEquals("Check session_id", expectedSessionID, actualSessionID);
+
+	assertEquals("Check cookie length", expectedCookieLength, actualCookieLength);
+	assertArrayEquals("Check cookie", expectedCookie, actualCookie);
+
 	assertEquals("Check cipher_suites length", new Integer(18), message.getCipherSuiteLength().getValue());
 	assertArrayEquals("Check cipher_suites", expectedCipherSuites, actualCipherSuites);
 	assertEquals("Check compressions length", new Integer(1), message.getCompressionLength().getValue());
 	assertArrayEquals("Check compressions", new byte[] { 0x00 }, message.getCompressions().getValue());
-	assertEquals("Check protocol message length pointer", clientHelloWithoutExtensionBytes.length, endPointer);
+	assertEquals("Check protocol message length pointer", dtlsClientHelloWithoutExtensionBytes.length, endPointer);
     }
 }

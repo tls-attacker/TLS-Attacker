@@ -70,6 +70,7 @@ public final class PseudoRandomFunction {
 
 	switch (protocolVersion) {
 	    case TLS12:
+	    case DTLS12:
 		return computeTls12(secret, label, seed, size, macAlgorithm);
 	    case TLS11:
 	    case TLS10:
