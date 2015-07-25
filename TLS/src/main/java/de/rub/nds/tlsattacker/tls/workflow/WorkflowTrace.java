@@ -64,8 +64,8 @@ public class WorkflowTrace implements Serializable {
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
 	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
 	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
 	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
 	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
