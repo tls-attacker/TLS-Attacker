@@ -217,7 +217,7 @@ public class SimpleFuzzer extends Fuzzer {
 		    analyzeServerTerminationAndWriteFile(sce, folder, step, tmpWorkflow);
 		    // if the workflow contains an unexpected fields / messages,
 		    // write them to a file
-                    String fieldName = fields.get(fieldNumber).getField().getName();
+		    String fieldName = fields.get(fieldNumber).getField().getName();
 		    analyzeResultingTlsContextAndWriteFile(tlsContext, folder, step, fieldName);
 		}
 	    }
@@ -276,8 +276,8 @@ public class SimpleFuzzer extends Fuzzer {
      * @throws JAXBException
      * @throws IOException
      */
-    private void analyzeResultingTlsContextAndWriteFile(TlsContext tlsContext, String folder, long step, String fieldName)
-	    throws JAXBException, IOException {
+    private void analyzeResultingTlsContextAndWriteFile(TlsContext tlsContext, String folder, long step,
+	    String fieldName) throws JAXBException, IOException {
 	if (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)
 		|| TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext)
 		// ||
@@ -330,7 +330,7 @@ public class SimpleFuzzer extends Fuzzer {
 	if (TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)) {
 	    fileNameBasic += "-fullmod-";
 	}
-        fileNameBasic += fieldName;
+	fileNameBasic += fieldName;
 	return fileNameBasic;
     }
 
