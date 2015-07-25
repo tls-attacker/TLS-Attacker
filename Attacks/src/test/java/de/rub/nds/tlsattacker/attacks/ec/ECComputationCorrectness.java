@@ -289,12 +289,12 @@ public class ECComputationCorrectness {
 	    return null;
 	}
     }
-    
+
     public void testCompute() {
-        BigInteger badx = new BigInteger("c70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397d", 16);
-        BigInteger bady = new BigInteger("4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
-        BigInteger secret = new BigInteger("aa6c4535a832135f7d5934e6e0de35d7eaedf8352ee2450e127efd13379949b8", 16);
-        BigInteger result = computeSecretWithCustomAlgorithm("secp256r1", badx, bady, secret);
-        System.out.println(result.toString(16));
+	BigInteger badx = new BigInteger("c70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397d", 16);
+	BigInteger bady = new BigInteger("4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
+	BigInteger secret = new BigInteger("aa6c4535a832135f7d5934e6e0de35d7eaedf8352ee2450e127efd13379949b8", 16);
+	BigInteger result = computeSecretWithCustomAlgorithm("secp256r1", badx, bady, secret);
+	System.out.println(result.toString(16));
     }
 }
