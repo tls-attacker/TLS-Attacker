@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -249,8 +250,10 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
     }
 
     public byte[] calculateDtlsMac(ProtocolVersion protocolVersion, ProtocolMessageType contentType, byte[] data,
-	    long dtlsMacSequenceNumber) {
-	byte[] SQN = ArrayConverter.longToUint64Bytes(dtlsMacSequenceNumber);
+	    long dtlsSequenceNumber, int epochNumber) {
+
+	byte[] SQN = ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
+		ArrayConverter.longToUint48Bytes(sequenceNumber));
 	byte[] HDR = ArrayConverter.concatenate(contentType.getArrayValue(), protocolVersion.getValue(),
 		ArrayConverter.intToBytes(data.length, 2));
 
@@ -258,8 +261,9 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(HDR);
 	writeMac.update(data);
 
-	LOGGER.debug("The MAC was caluculated over the following data: \n  {}",
-		ArrayConverter.bytesToHexString(ArrayConverter.concatenate(SQN, HDR, data)));
+	LOGGER.debug("The MAC will be caluculated over the following data: \n  {}", ArrayConverter
+		.bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
+			ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
 
 	byte[] result = writeMac.doFinal();
 

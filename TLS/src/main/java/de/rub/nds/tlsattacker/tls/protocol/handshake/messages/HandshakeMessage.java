@@ -45,6 +45,8 @@ public class HandshakeMessage extends ProtocolMessage {
 
     HandshakeMessageFields handshakeMessageFields;
 
+    boolean includeInDigest = true;
+
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
 	handshakeMessageFields = new HandshakeMessageFields();
 	this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
@@ -63,6 +65,10 @@ public class HandshakeMessage extends ProtocolMessage {
 	return type;
     }
 
+    public boolean getIncludeInDigest() {
+	return includeInDigest;
+    }
+
     public void setType(ModifiableByte type) {
 	this.type = type;
     }
@@ -73,6 +79,10 @@ public class HandshakeMessage extends ProtocolMessage {
 
     public HandshakeMessageType getHandshakeMessageType() {
 	return handshakeMessageType;
+    }
+
+    public void setIncludeInDigest(boolean includeInDigest) {
+	this.includeInDigest = includeInDigest;
     }
 
     @Override
