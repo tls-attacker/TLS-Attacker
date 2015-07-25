@@ -324,4 +324,17 @@ public class ArrayConverter {
 	}
 	return output;
     }
+
+    public static byte[] longToUint48Bytes(long input) {
+	byte[] output = new byte[6];
+
+	output[0] = (byte) (input >>> 40);
+	output[1] = (byte) (input >>> 32);
+	output[2] = (byte) (input >>> 24);
+	output[3] = (byte) (input >>> 16);
+	output[4] = (byte) (input >>> 8);
+	output[5] = (byte) input;
+
+	return output;
+    }
 }

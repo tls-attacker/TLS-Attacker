@@ -73,11 +73,13 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
 	ch.setSupportedCompressionMethods(config.getCompressionMethods());
+	ch.setIncludeInDigest(false);
 
 	initializeClientHelloExtensions(config, ch);
 
 	HelloVerifyRequestMessage hvrm = hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class,
 		ConnectionEnd.SERVER);
+	hvrm.setIncludeInDigest(false);
 	protocolMessages.add(hvrm);
 
 	ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);

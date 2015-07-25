@@ -43,7 +43,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
     private static final Logger LOGGER = LogManager
 	    .getLogger(de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler.class);
 
-    private BigInteger sequenceCounter;
+    private long sequenceCounter;
 
     private int epochCounter;
 
@@ -55,7 +55,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 	    }
 	    throw new ConfigurationException("The workflow was configured with an unsuitable protocol.");
 	}
-	sequenceCounter = BigInteger.ZERO;
+	sequenceCounter = 0;
     }
 
     @Override
@@ -144,15 +144,15 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 		returnPointer = (dataPointer + record.getMaxRecordLengthConfig());
 	    }
 	}
-	record.setSequenceNumber(getNextSequenceNumber());
+
+	record.setSequenceNumber(BigInteger.valueOf(sequenceCounter));
 	record.setEpoch(epochCounter);
 	record.setLength(pmData.length);
 	record.setProtocolMessageBytes(pmData);
 
 	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-	    long combinedSequenceNumber = epochCounter << 48 + sequenceCounter.longValue();
 	    byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getProtocolVersion(), contentType, record
-		    .getProtocolMessageBytes().getValue(), combinedSequenceNumber);
+		    .getProtocolMessageBytes().getValue(), sequenceCounter, epochCounter);
 	    record.setMac(mac);
 	    byte[] macedData = ArrayConverter.concatenate(record.getProtocolMessageBytes().getValue(), record.getMac()
 		    .getValue());
@@ -167,6 +167,8 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 	    record.setLength(encData.length);
 	    LOGGER.debug("Padded data after encryption:  {}", ArrayConverter.bytesToHexString(encData));
 	}
+
+	sequenceCounter++;
 
 	return returnPointer;
     }
@@ -239,14 +241,8 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 	return records;
     }
 
-    private BigInteger getNextSequenceNumber() {
-	BigInteger output = sequenceCounter;
-	sequenceCounter = sequenceCounter.add(BigInteger.ONE);
-	return output;
-    }
-
     private void advanceEpoch() {
 	epochCounter += 1;
-	sequenceCounter = BigInteger.ZERO;
+	sequenceCounter = 0;
     }
 }
