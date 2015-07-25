@@ -38,7 +38,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +66,7 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = new LinkedList<>();
+	List<ProtocolMessage> protocolMessages = new ArrayList<>();
 
 	ClientHelloMessage ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);
 	protocolMessages.add(ch);

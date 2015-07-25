@@ -36,6 +36,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,21 +61,24 @@ public class Dtls12WorkflowExecutorTest {
 	// } catch (UnknownHostException | SocketException ex) {
 	// fail(ex.getMessage());
 	// }
-	// ClientCommandConfig config = new ClientCommandConfig();
-	// ClientConfigHandler configHandler = new ClientConfigHandler();
-	//
-	// config.setProtocolVersion(ProtocolVersion.DTLS12);
-	// config.setConnect("127.0.0.1:4444");
-	// config.setTransportHandlerType(TransportHandlerType.UDP);
-	//
-	// TransportHandler th =
-	// configHandler.initializeTransportHandler(config);
-	//
-	// TlsContext context =
-	// WorkflowConfigurationFactory.createInstance(config).createHandshakeTlsContext();
-	// context.setMyConnectionEnd(ConnectionEnd.CLIENT);
-	// Dtls12WorkflowExecutor workflowExecutor = new
-	// Dtls12WorkflowExecutor(th, context);
-	// workflowExecutor.executeWorkflow();
+//	 ClientCommandConfig config = new ClientCommandConfig();
+//	 ClientConfigHandler configHandler = new ClientConfigHandler();
+//	
+//	 config.setProtocolVersion(ProtocolVersion.DTLS12);
+//	 config.setConnect("127.0.0.1:4444");
+//	 config.setTransportHandlerType(TransportHandlerType.UDP);
+//	 // ArrayList<CipherSuite> test = new ArrayList<>();
+//	 // test.add(CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA);
+//	 // config.setCipherSuites(test);
+//	
+//	 TransportHandler th =
+//	 configHandler.initializeTransportHandler(config);
+//	
+//	 TlsContext context =
+//	 WorkflowConfigurationFactory.createInstance(config).createFullTlsContext();
+//	 context.setMyConnectionEnd(ConnectionEnd.CLIENT);
+//	 Dtls12WorkflowExecutor workflowExecutor = new
+//	 Dtls12WorkflowExecutor(th, context);
+//	 workflowExecutor.executeWorkflow();
     }
 }

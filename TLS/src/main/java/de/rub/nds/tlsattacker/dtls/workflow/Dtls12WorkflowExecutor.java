@@ -38,7 +38,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,7 +100,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	    while (workflowContext.getProtocolMessagePointer() < protocolMessages.size()
 		    && workflowContext.isProceedWorkflow()) {
 		pm = getWorkflowProtocolMessage(workflowContext.getProtocolMessagePointer());
-		updateFlight(pm);
+		// updateFlight(pm);
 		if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
 		    handleMyProtocolMessage(pm);
 		    workflowContext.incrementProtocolMessagePointer();
@@ -245,7 +244,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 		if (flightRetransmitCounter >= maxFlightRetries) {
 		    workflowContext.setProceedWorkflow(false);
 		} else {
-		    abortFlight();
+		    // abortFlight();
 		}
 		return false;
 	    }
@@ -288,27 +287,28 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	return true;
     }
 
-    private void updateFlight(ProtocolMessage pm) {
-	if (!(pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE || pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC)) {
-	    if (lastConnectionEnd != pm.getMessageIssuer()) {
-		previousFlightBeginPointer = flightStartMessageNumber;
-		previousFlightConnectionEnd = lastConnectionEnd;
-		flightStartMessageNumber = workflowContext.getProtocolMessagePointer();
-		digestBytesBeforeNextFlightBegin = tlsContext.getDigest().getRawBytes();
-		flightRetransmitCounter = 0;
-	    }
-	    messageFlightPointer = workflowContext.getProtocolMessagePointer();
-	    lastConnectionEnd = pm.getMessageIssuer();
-	}
-    }
+    // private void updateFlight(ProtocolMessage pm) {
+    // if (!(pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE ||
+    // pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC)) {
+    // if (lastConnectionEnd != pm.getMessageIssuer()) {
+    // previousFlightBeginPointer = flightStartMessageNumber;
+    // previousFlightConnectionEnd = lastConnectionEnd;
+    // flightStartMessageNumber = workflowContext.getProtocolMessagePointer();
+    // digestBytesBeforeNextFlightBegin = tlsContext.getDigest().getRawBytes();
+    // flightRetransmitCounter = 0;
+    // }
+    // messageFlightPointer = workflowContext.getProtocolMessagePointer();
+    // lastConnectionEnd = pm.getMessageIssuer();
+    // }
+    // }
 
-    private void abortFlight() {
-	handshakeFragmentHandler.flush();
-	flightStartMessageNumber = previousFlightBeginPointer;
-	workflowContext.setProtocolMessagePointer(flightStartMessageNumber);
-	tlsContext.getDigest().setRawBytes(digestBytesBeforeNextFlightBegin);
-	flightRetransmitCounter++;
-    }
+    // private void abortFlight() {
+    // handshakeFragmentHandler.flush();
+    // flightStartMessageNumber = previousFlightBeginPointer;
+    // workflowContext.setProtocolMessagePointer(flightStartMessageNumber);
+    // tlsContext.getDigest().setRawBytes(digestBytesBeforeNextFlightBegin);
+    // flightRetransmitCounter++;
+    // }
 
     private ProtocolMessage getWorkflowProtocolMessage(int messagePointer) {
 	if (messagePointer < protocolMessages.size()) {
