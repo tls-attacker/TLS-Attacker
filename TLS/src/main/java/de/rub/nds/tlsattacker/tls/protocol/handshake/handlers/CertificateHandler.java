@@ -118,7 +118,7 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a certificate message");
 	}
-	HandshakeMessageFields protocolMessageFields = (HandshakeMessageFields) protocolMessage.getMessageFields();
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
 	protocolMessage.setType(message[pointer]);
 

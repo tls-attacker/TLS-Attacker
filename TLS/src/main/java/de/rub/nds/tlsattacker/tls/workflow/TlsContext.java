@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -128,6 +129,13 @@ public class TlsContext {
     private final TlsMessageDigest digest;
 
     private LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
+
+    private RecordHandler recordHandler;
+
+    /**
+     * DTLS Cookie
+     */
+    private byte[] dtlsHandshakeCookie = new byte[0];
 
     public TlsContext() {
 	ecContext = new TlsECContext();
@@ -324,4 +332,19 @@ public class TlsContext {
 	this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
     }
 
+    public void setDtlsHandshakeCookie(byte[] cookie) {
+	this.dtlsHandshakeCookie = cookie;
+    }
+
+    public byte[] getDtlsHandshakeCookie() {
+	return dtlsHandshakeCookie;
+    }
+
+    public RecordHandler getRecordHandler() {
+	return recordHandler;
+    }
+
+    public void setRecordHandler(RecordHandler recordHandler) {
+	this.recordHandler = recordHandler;
+    }
 }

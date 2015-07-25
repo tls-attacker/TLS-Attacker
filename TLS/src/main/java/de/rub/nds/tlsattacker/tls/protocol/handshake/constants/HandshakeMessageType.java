@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.constants;
 
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.handlers.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandlerBearer;
@@ -64,6 +65,12 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	@Override
 	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
 	    return new ServerHelloHandler(tlsContext);
+	}
+    },
+    HELLO_VERIFY_REQUEST((byte) 3) {
+	@Override
+	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
+	    return new HelloVerifyRequestHandler(tlsContext);
 	}
     },
     NEW_SESSION_TICKET((byte) 4) {

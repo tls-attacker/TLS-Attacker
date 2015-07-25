@@ -43,7 +43,8 @@ public class RecordHandlerTest {
 	ClientCommandConfig config = new ClientCommandConfig();
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	TlsContext context = factory.createHandshakeTlsContext();
-	recordHandler = RecordHandler.createInstance(context);
+	context.setRecordHandler(new RecordHandler(context));
+	recordHandler = context.getRecordHandler();
     }
 
     /**

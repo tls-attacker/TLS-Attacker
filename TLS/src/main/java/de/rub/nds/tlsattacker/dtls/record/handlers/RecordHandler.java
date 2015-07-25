@@ -20,12 +20,6 @@
 package de.rub.nds.tlsattacker.dtls.record.handlers;
 
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
@@ -44,28 +38,17 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class RecordHandler {
+public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler {
 
     private static final Logger LOGGER = LogManager
-	    .getLogger(de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler.class);
-
-    private final TlsContext tlsContext;
-
-    private TlsRecordBlockCipher recordCipher;
-
-    private static RecordHandler instance;
+	    .getLogger(de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler.class);
 
     private BigInteger sequenceCounter;
 
     private int epochCounter;
 
-    private RecordHandler(TlsContext tlsContext) {
-	this.tlsContext = tlsContext;
-	recordCipher = null;
-	if (tlsContext == null) {
-	    throw new ConfigurationException("The workflow was not configured properly, "
-		    + "it is not included in the ProtocolController");
-	}
+    public RecordHandler(TlsContext tlsContext) {
+	super(tlsContext);
 	if (tlsContext.getProtocolVersion() != ProtocolVersion.DTLS12) {
 	    if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
 		throw new UnsupportedOperationException("DTLSv1.0 is not supported.");
@@ -75,16 +58,7 @@ public class RecordHandler {
 	sequenceCounter = BigInteger.ZERO;
     }
 
-    public static RecordHandler getInstance() {
-	return instance;
-    }
-
-    // todo this is bad for future multi threading processing
-    public static RecordHandler createInstance(TlsContext tlsContext) {
-	instance = new RecordHandler(tlsContext);
-	return instance;
-    }
-
+    @Override
     public byte[] wrapData(byte[] data, ProtocolMessageType contentType, List<Record> records) {
 
 	// if there are no records defined, we throw an exception
@@ -197,6 +171,7 @@ public class RecordHandler {
 	return returnPointer;
     }
 
+    @Override
     public List<Record> parseRecords(byte[] rawRecordData) {
 
 	List<Record> records = new LinkedList<>();
@@ -262,14 +237,6 @@ public class RecordHandler {
 	LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
 
 	return records;
-    }
-
-    public TlsRecordBlockCipher getRecordCipher() {
-	return recordCipher;
-    }
-
-    public void setRecordCipher(TlsRecordBlockCipher recordCipher) {
-	this.recordCipher = recordCipher;
     }
 
     private BigInteger getNextSequenceNumber() {

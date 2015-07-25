@@ -17,27 +17,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.rub.nds.tlsattacker.tls.workflow;
-
-import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+package de.rub.nds.tlsattacker.tls.exceptions;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class WorkflowExecutorFactory {
+public class MalformedMessageException extends RuntimeException {
 
-    public static WorkflowExecutor createWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-	WorkflowExecutor we;
-	switch (tlsContext.getProtocolVersion()) {
-	    case TLS12:
-		we = new TLS12WorkflowExecutor(transportHandler, tlsContext);
-		return we;
-	    case DTLS12:
-		we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
-		return we;
-	    default:
-		throw new UnsupportedOperationException("not yet implemented");
-	}
+    public MalformedMessageException() {
+	super();
+    }
+
+    public MalformedMessageException(String message) {
+	super(message);
     }
 }
