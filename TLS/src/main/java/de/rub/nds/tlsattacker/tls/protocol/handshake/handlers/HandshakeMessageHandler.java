@@ -61,7 +61,9 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 	    protocolMessage.setCompleteResultingMessage(finishDtlsHandshakeMessagePrepare(messageBytes));
 	}
 	byte[] pm = protocolMessage.getCompleteResultingMessage().getValue();
-	tlsContext.getDigest().update(pm);
+	if (protocolMessage.getIncludeInDigest()) {
+	    tlsContext.getDigest().update(pm);
+	}
 	return pm;
     }
 
@@ -79,7 +81,9 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 	    ret += 8;
 	}
 	byte[] pm = protocolMessage.getCompleteResultingMessage().getValue();
-	tlsContext.getDigest().update(pm);
+	if (protocolMessage.getIncludeInDigest()) {
+	    tlsContext.getDigest().update(pm);
+	}
 	return ret;
     }
 

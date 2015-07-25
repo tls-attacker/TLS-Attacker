@@ -107,6 +107,8 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 		} else {
 		    if (receiveAndParseNextProtocolMessage(pm)) {
 			workflowContext.incrementProtocolMessagePointer();
+		    } else {
+			return;
 		    }
 		}
 	    }
