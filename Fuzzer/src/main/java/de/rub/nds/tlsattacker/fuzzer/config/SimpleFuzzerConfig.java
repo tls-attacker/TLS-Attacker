@@ -79,7 +79,7 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     FuzzingType fuzzingType = FuzzingType.SYSTEMATIC;
 
     @Parameter(names = "-max_systematic_modifications", description = "Maximum number of modifications made to a field while executing a systematic fuzzing")
-    Integer maxSystematicModifications = 20;
+    Integer maxSystematicModifications = 10;
 
     public SimpleFuzzerConfig() {
 	cipherSuites.clear();
