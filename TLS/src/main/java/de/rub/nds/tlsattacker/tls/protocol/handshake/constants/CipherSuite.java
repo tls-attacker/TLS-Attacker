@@ -96,6 +96,8 @@ public enum CipherSuite {
     TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA(new byte[] { (byte) 0xC0, (byte) 0x17 }),
     TLS_ECDH_anon_WITH_AES_128_CBC_SHA(new byte[] { (byte) 0xC0, (byte) 0x18 }),
     TLS_ECDH_anon_WITH_AES_256_CBC_SHA(new byte[] { (byte) 0xC0, (byte) 0x19 }),
+    TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256 (new byte[] { (byte) 0xC0, (byte) 0x23}),
+    TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA256 (new byte[] { (byte) 0xC0, (byte) 0x24}),
     TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256(new byte[] { (byte) 0xC0, (byte) 0x27 }),
     TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384(new byte[] { (byte) 0xC0, (byte) 0x28 }),
     TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256(new byte[] { (byte) 0xC0, (byte) 0x2F }),
