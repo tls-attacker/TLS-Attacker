@@ -1,0 +1,35 @@
+<startupCommandsHolder>
+    <serverCommand>../../servers/gnutls-3.3.16/src/gnutls-serv</serverCommand>
+    <startupCommandsList>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:52000 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256</fuzzerCommand>
+            <serverCommandParameters> --http --x509keyfile ../resources/privkey1024.pem --x509certfile ../resources/server-cert1024.pem -p 52000 -a -q</serverCommandParameters>
+            <shortName>gnutls-rsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:52001 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -keystore ../resources/keystore-1024.jks -password password -alias 1024_rsa  -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256</fuzzerCommand>
+            <serverCommandParameters> --http --x509keyfile ../resources/privkey1024.pem --x509certfile ../resources/server-cert1024.pem -p 52001 -a -b -q</serverCommandParameters>
+            <shortName>gnutls-rsa-heartbeat</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:52002 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</fuzzerCommand>
+            <serverCommandParameters> --http --x509keyfile ../resources/privkey1024.pem --x509certfile ../resources/server-cert1024.pem -p 52002 -a -q </serverCommandParameters>
+            <shortName>gnutls-ecdhe-rsa</shortName>
+        </startupCommands>
+         <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:52003 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA</fuzzerCommand>
+            <serverCommandParameters> --http --x509keyfile ../resources/privkey1024.pem --x509certfile ../resources/server-cert1024.pem -p 52003 -a -q </serverCommandParameters>
+            <shortName>gnutls-dhe-rsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:52004 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA256</fuzzerCommand>
+            <serverCommandParameters> --http --x509keyfile ../resources/eckey256.pem --x509certfile ../resources/eccert256.pem -p 52004 -a -q </serverCommandParameters>
+            <shortName>gnutls-ecdhe-ecdsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:52005 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</fuzzerCommand>
+            <serverCommandParameters> --http --x509keyfile ../resources/dsakey.pem --x509certfile ../resources/dsacert.pem -p 52005 -a -q </serverCommandParameters>
+            <shortName>gnutls-dsa</shortName>
+        </startupCommands>-->
+    </startupCommandsList>
+</startupCommandsHolder>
