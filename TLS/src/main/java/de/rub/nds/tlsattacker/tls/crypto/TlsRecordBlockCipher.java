@@ -253,7 +253,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    long dtlsSequenceNumber, int epochNumber) {
 
 	byte[] SQN = ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
-		ArrayConverter.longToUint48Bytes(sequenceNumber));
+		ArrayConverter.longToUint48Bytes(dtlsSequenceNumber));
 	byte[] HDR = ArrayConverter.concatenate(contentType.getArrayValue(), protocolVersion.getValue(),
 		ArrayConverter.intToBytes(data.length, 2));
 

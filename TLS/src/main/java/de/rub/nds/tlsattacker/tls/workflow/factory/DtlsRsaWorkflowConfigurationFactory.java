@@ -30,6 +30,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessageFactory;
@@ -146,6 +149,12 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.SERVER));
 	}
+
+	AlertMessage alertMessage = new AlertMessage(ConnectionEnd.CLIENT);
+
+	alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+
+	protocolMessages.add(alertMessage);
 
 	initializeProtocolMessageOrder(context);
 

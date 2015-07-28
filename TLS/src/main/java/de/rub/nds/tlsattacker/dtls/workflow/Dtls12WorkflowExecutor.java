@@ -56,7 +56,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	    recordSendBuffer = new byte[0];
 
     private int messageParseBufferOffset, flightStartMessageNumber, messageFlightPointer, sendHandshakeMessageSeq,
-	    epochCounter, flightRetransmitCounter, maxWaitForExpectedRecord = 3000, maxFlightRetries = 4,
+	    flightRetransmitCounter, maxWaitForExpectedRecord = 3000, maxFlightRetries = 4, serverEpochCounter,
 	    previousFlightBeginPointer = -1, maxPacketSize = 1400, maxHandshakeReorderBufferSize = 100;
 
     private final WorkflowTrace workflowTrace;
@@ -76,13 +76,16 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	super(transportHandler, tlsContext);
-	this.workflowTrace = this.tlsContext.getWorkflowTrace();
+
 	tlsContext.setRecordHandler(new RecordHandler(tlsContext));
+
+	workflowTrace = this.tlsContext.getWorkflowTrace();
 	recordHandler = tlsContext.getRecordHandler();
+	lastConnectionEnd = tlsContext.getMyConnectionEnd();
+
 	if (this.transportHandler == null || recordHandler == null) {
 	    throw new ConfigurationException("The WorkflowExecutor was not configured properly");
 	}
-	lastConnectionEnd = tlsContext.getMyConnectionEnd();
     }
 
     @Override
@@ -135,7 +138,9 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyNonHandshakeMessage(ProtocolMessage protocolMessage) throws IOException {
-	byte[] messageBytes = protocolMessage.getCompleteResultingMessage().getValue();
+	ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
+
+	byte[] messageBytes = pmh.prepareMessage();
 
 	if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
 	    protocolMessage.addRecord(new Record());
@@ -270,13 +275,20 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	    LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
 	}
 
-	if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-	    handleIncomingAlert(pmh);
-	} else if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-	    handshakeFragmentHandler.addRecordsToHandshakeMessage(pm);
-	    handshakeFragmentHandler.incrementExpectedHandshakeMessageSeq();
-	} else {
-	    pm.addRecord(currentRecord);
+	switch (pm.getProtocolMessageType()) {
+	    case ALERT:
+		handleIncomingAlert(pmh);
+		break;
+	    case HANDSHAKE:
+		handshakeFragmentHandler.addRecordsToHandshakeMessage(pm);
+		handshakeFragmentHandler.incrementExpectedHandshakeMessageSeq();
+		break;
+	    case CHANGE_CIPHER_SPEC:
+		serverEpochCounter++;
+		pm.addRecord(currentRecord);
+		break;
+	    default:
+		pm.addRecord(currentRecord);
 	}
 
 	// workflowContext.incrementProtocolMessagePointer();
@@ -466,10 +478,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private boolean checkRecordValidity(Record record) {
-	if (record.getEpoch().getValue() != epochCounter) {
-	    return false;
-	}
-	return true;
+	return record.getEpoch().getValue() == serverEpochCounter;
     }
 
     private void processNextPacket() throws Exception {
