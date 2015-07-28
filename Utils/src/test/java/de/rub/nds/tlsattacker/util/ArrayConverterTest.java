@@ -164,4 +164,17 @@ public class ArrayConverterTest {
 		ArrayConverter.hexStringToByteArray("0000000000000000000000001D42C86F7923DFEC"),
 		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 20));
     }
+
+    @Test
+    public void testLongToUint48Bytes() {
+	long testValue = 0x0000123456789ABCL;
+	byte[] expectedResult = ArrayConverter.hexStringToByteArray("123456789ABC");
+
+	assertArrayEquals("Assert correct output", expectedResult, ArrayConverter.longToUint48Bytes(testValue));
+
+	testValue = 0x0000000000000001L;
+	expectedResult = ArrayConverter.hexStringToByteArray("000000000001");
+
+	assertArrayEquals("Assert correct output", expectedResult, ArrayConverter.longToUint48Bytes(testValue));
+    }
 }
