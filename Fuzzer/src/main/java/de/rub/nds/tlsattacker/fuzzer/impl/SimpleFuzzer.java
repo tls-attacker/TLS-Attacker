@@ -57,8 +57,6 @@ public class SimpleFuzzer extends Fuzzer {
 
     public static Logger LOGGER = LogManager.getLogger(SimpleFuzzer.class);
 
-    private boolean startingTlsServer;
-
     private final SimpleFuzzerConfig fuzzerConfig;
 
     private String fuzzingName = "";
@@ -76,21 +74,12 @@ public class SimpleFuzzer extends Fuzzer {
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         configHandler.initializeGeneralConfig(generalConfig);
 
-        String serverCommand = null;
-        if (fuzzerConfig.getServerCommand() != null) {
-            serverCommand = fuzzerConfig.getServerCommand();
-            startingTlsServer = true;
-        } else if (fuzzerConfig.getServerCommandFile() != null) {
-            serverCommand = fuzzerConfig.getServerCommandFile();
-            startingTlsServer = true;
-        }
-
         String folder = initializeLogFolder();
 
         try {
             ServerStartCommandExecutor sce = null;
-            if (startingTlsServer) {
-                sce = startTestServer(serverCommand);
+            if (fuzzerConfig.containsServerCommand()) {
+                sce = startTestServer(fuzzerConfig.getResultingServerCommand());
             }
 
             Certificate certificate = CertificateHelper.fetchCertificate(fuzzerConfig);
@@ -100,12 +89,11 @@ public class SimpleFuzzer extends Fuzzer {
                 startFuzzing(configHandler, certificate, sce, folder);
             }
 
-            if (startingTlsServer && !sce.isServerTerminated()) {
-                sce.terminateServer();
-                LOGGER.info(sce.getServerOutputString());
-                LOGGER.info(sce.getServerErrorOutputString());
-            }
-
+//            if (fuzzerConfig.containsServerCommand() && !sce.isServerTerminated()) {
+//                sce.terminateServer();
+//                LOGGER.info(sce.getServerOutputString());
+//                LOGGER.info(sce.getServerErrorOutputString());
+//            }
         } catch (IOException | JAXBException | ConfigurationException | IllegalAccessException | IllegalArgumentException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
         }
@@ -141,6 +129,9 @@ public class SimpleFuzzer extends Fuzzer {
         long step = 0;
         interruptFuzzing = false;
         while (!interruptFuzzing) {
+            if (fuzzerConfig.containsServerCommand() && fuzzerConfig.isRestartServerInEachInteration()) {
+                sce = startTestServer(fuzzerConfig.getResultingServerCommand());
+            }
             TransportHandler transportHandler = configHandler.initializeTransportHandler(fuzzerConfig);
             TlsContext tlsContext = configHandler.initializeTlsContext(fuzzerConfig);
             WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
@@ -162,58 +153,71 @@ public class SimpleFuzzer extends Fuzzer {
             }
             // if the server was terminated, terminate fuzzing
             analyzeServerTerminationAndWriteFile(sce, folder, step, workflow);
-	    // if the workflow contains an unexpected fields / messages, write
+            // if the workflow contains an unexpected fields / messages, write
             // them to a file
             analyzeResultingTlsContextAndWriteFile(tlsContext, folder, step, "random");
+            if (fuzzerConfig.isRestartServerInEachInteration()) {
+                sce.terminateServer();
+            }
         }
     }
 
     private void startSystematicFuzzing(ConfigHandler configHandler, Certificate certificate,
-            ServerStartCommandExecutor sce, String folder) throws ConfigurationException, JAXBException, IOException,
+            ServerStartCommandExecutor sce, String folder) throws JAXBException, IOException,
             IllegalAccessException, IllegalArgumentException {
         long step = 0;
         interruptFuzzing = false;
+
         while (!interruptFuzzing) {
-
-            TlsContext tmpTlsContext = configHandler.initializeTlsContext(fuzzerConfig);
-            WorkflowTrace tmpWorkflow = tmpTlsContext.getWorkflowTrace();
-
-            if (step != 0) {
-		// protocol flow modification is executed only in later steps
-                // in the first step, we fuzz the given workflow
-                executeProtocolModification(tmpWorkflow, tmpTlsContext.getMyConnectionEnd());
-            }
-
-            List<ModifiableVariableField> fields = ModifiableVariableAnalyzer
-                    .getAllModifiableVariableFieldsRecursively(tmpWorkflow);
-            for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
-                for (int i = 0; i < fuzzerConfig.getMaxSystematicModifications(); i++) {
-                    TlsContext tlsContext = configHandler.initializeTlsContext(fuzzerConfig);
-                    WorkflowTrace workflow = (WorkflowTrace) UnoptimizedDeepCopy.copy(tmpWorkflow);
-                    tlsContext.setWorkflowTrace(workflow);
-                    List<ModifiableVariableField> currentFields = ModifiableVariableAnalyzer
-                            .getAllModifiableVariableFieldsRecursively(workflow);
-                    ModifiableVariableField mvField = currentFields.get(fieldNumber);
-                    FuzzingHelper.executeModifiableVariableModification((ModifiableVariableHolder) mvField.getObject(),
-                            mvField.getField());
-                    TransportHandler transportHandler = configHandler.initializeTransportHandler(fuzzerConfig);
-                    WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
-                            tlsContext);
-                    tlsContext.setServerCertificate(certificate);
-                    try {
-                        workflowExecutor.executeWorkflow();
-                    } catch (Exception ex) {
-                        LOGGER.debug(ex.getLocalizedMessage(), ex);
-                    }
-                    transportHandler.closeConnection();
-                    step++;
-                    // if the server was terminated, terminate fuzzing
-                    analyzeServerTerminationAndWriteFile(sce, folder, step, tmpWorkflow);
-		    // if the workflow contains an unexpected fields / messages,
-                    // write them to a file
-                    String fieldName = fields.get(fieldNumber).getField().getName();
-                    analyzeResultingTlsContextAndWriteFile(tlsContext, folder, step, fieldName);
+            try {
+                if (fuzzerConfig.containsServerCommand() && fuzzerConfig.isRestartServerInEachInteration()) {
+                    sce = startTestServer(fuzzerConfig.getResultingServerCommand());
                 }
+                TlsContext tmpTlsContext = configHandler.initializeTlsContext(fuzzerConfig);
+                WorkflowTrace tmpWorkflow = tmpTlsContext.getWorkflowTrace();
+
+                if (step != 0) {
+                    // protocol flow modification is executed only in later steps
+                    // in the first step, we fuzz the given workflow
+                    executeProtocolModification(tmpWorkflow, tmpTlsContext.getMyConnectionEnd());
+                }
+
+                List<ModifiableVariableField> fields = ModifiableVariableAnalyzer
+                        .getAllModifiableVariableFieldsRecursively(tmpWorkflow);
+                for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
+                    for (int i = 0; i < fuzzerConfig.getMaxSystematicModifications(); i++) {
+                        TlsContext tlsContext = configHandler.initializeTlsContext(fuzzerConfig);
+                        WorkflowTrace workflow = (WorkflowTrace) UnoptimizedDeepCopy.copy(tmpWorkflow);
+                        tlsContext.setWorkflowTrace(workflow);
+                        List<ModifiableVariableField> currentFields = ModifiableVariableAnalyzer
+                                .getAllModifiableVariableFieldsRecursively(workflow);
+                        ModifiableVariableField mvField = currentFields.get(fieldNumber);
+                        FuzzingHelper.executeModifiableVariableModification((ModifiableVariableHolder) mvField.getObject(),
+                                mvField.getField());
+                        TransportHandler transportHandler = configHandler.initializeTransportHandler(fuzzerConfig);
+                        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
+                                tlsContext);
+                        tlsContext.setServerCertificate(certificate);
+                        try {
+                            workflowExecutor.executeWorkflow();
+                        } catch (Exception ex) {
+                            LOGGER.debug(ex.getLocalizedMessage(), ex);
+                        }
+                        transportHandler.closeConnection();
+                        step++;
+                        // if the server was terminated, terminate fuzzing
+                        analyzeServerTerminationAndWriteFile(sce, folder, step, tmpWorkflow);
+                        // if the workflow contains an unexpected fields / messages,
+                        // write them to a file
+                        String fieldName = fields.get(fieldNumber).getField().getName();
+                        analyzeResultingTlsContextAndWriteFile(tlsContext, folder, step, fieldName);
+                    }
+                }
+                if (fuzzerConfig.isRestartServerInEachInteration()) {
+                    sce.terminateServer();
+                }
+            } catch (ConfigurationException ex) {
+                LOGGER.info(ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -251,7 +255,7 @@ public class SimpleFuzzer extends Fuzzer {
      */
     private void analyzeServerTerminationAndWriteFile(ServerStartCommandExecutor sce, String folder, long step,
             WorkflowTrace workflow) throws IOException, JAXBException {
-        if (startingTlsServer && sce.isServerTerminated()) {
+        if (fuzzerConfig.containsServerCommand() && sce.isServerTerminated() && !fuzzerConfig.isRestartServerInEachInteration()) {
             FileOutputStream fos = new FileOutputStream(folder + "/terminated" + Long.toString(step) + ".xml");
             WorkflowTraceSerializer.write(fos, workflow);
             interruptFuzzing = true;
@@ -295,7 +299,7 @@ public class SimpleFuzzer extends Fuzzer {
         ServerStartCommandExecutor sce = new ServerStartCommandExecutor(serverCommand);
         sce.startServer();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(10);
         } catch (InterruptedException ex) {
         }
         return sce;
