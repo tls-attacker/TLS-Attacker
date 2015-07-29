@@ -30,6 +30,6 @@
             <fuzzerCommand>simple_fuzzer -connect localhost:52005 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</fuzzerCommand>
             <serverCommandParameters> --http --x509keyfile ../resources/dsakey.pem --x509certfile ../resources/dsacert.pem -p 52005 -a -q </serverCommandParameters>
             <shortName>gnutls-dsa</shortName>
-        </startupCommands>-->
+        </startupCommands>
     </startupCommandsList>
 </startupCommandsHolder>
