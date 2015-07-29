@@ -35,11 +35,17 @@ public class DtlsPoodleCommandConfig extends ClientCommandConfig {
 
     public static final String ATTACK_COMMAND = "dtls_poodle";
 
-    @Parameter(names = "-messagespertrain", description = "number of messages per train")
+    @Parameter(names = "-messagespertrain", description = "Number of messages per train")
     public int messagesPerTrain = 10;
 
-    @Parameter(names = "-trainmessagesize", description = "message size of a trains messages")
+    @Parameter(names = "-trainmessagesize", description = "Message size of each trains messages")
     public int trainMessageSize = 1450;
+
+    @Parameter(names = "-rounds", description = "Number of attack rounds")
+    public int nrOfRounds = 20;
+
+    @Parameter(names = "-resultfile", description = "Save the response times in the specified file")
+    public String resultFilePath = null;
 
     public DtlsPoodleCommandConfig() {
 	// Just to be sure
@@ -62,11 +68,27 @@ public class DtlsPoodleCommandConfig extends ClientCommandConfig {
 	return trainMessageSize;
     }
 
+    public int getNrOfRounds() {
+	return nrOfRounds;
+    }
+
+    public String getResultFilePath() {
+	return resultFilePath;
+    }
+
     public void setMessagesPerTrain(int messagesPerTrain) {
 	this.messagesPerTrain = messagesPerTrain;
     }
 
     public void setTrainMessageSize(int trainMessageSize) {
 	this.trainMessageSize = trainMessageSize;
+    }
+
+    public void setNrOfRounds(int nrOfRounds) {
+	this.nrOfRounds = nrOfRounds;
+    }
+
+    public void setResultFilePath(String resultFilePath) {
+	this.resultFilePath = resultFilePath;
     }
 }
