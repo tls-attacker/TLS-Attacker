@@ -1,5 +1,5 @@
 <startupCommandsHolder>
-    <serverCommand>../../servers/go/go</serverCommand>
+    <serverCommand>../../servers/go/go </serverCommand>
     <startupCommandsList>
         <startupCommands>
             <fuzzerCommand>simple_fuzzer -connect localhost:8000 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256</fuzzerCommand>

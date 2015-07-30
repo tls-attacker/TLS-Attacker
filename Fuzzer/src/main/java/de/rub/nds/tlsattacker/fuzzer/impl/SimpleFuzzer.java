@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ServerStartCommandExecutor;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
@@ -83,18 +84,15 @@ public class SimpleFuzzer extends Fuzzer {
             }
 
             Certificate certificate = CertificateHelper.fetchCertificate(fuzzerConfig);
-            if (certificate == null) {
-                LOGGER.error("No server certificate was fetched. Was the handshake executed correctly? Execute the program again.");
-            } else {
-                startFuzzing(configHandler, certificate, sce, folder);
-            }
+
+            startFuzzing(configHandler, certificate, sce, folder);
 
 //            if (fuzzerConfig.containsServerCommand() && !sce.isServerTerminated()) {
 //                sce.terminateServer();
 //                LOGGER.info(sce.getServerOutputString());
 //                LOGGER.info(sce.getServerErrorOutputString());
 //            }
-        } catch (IOException | JAXBException | ConfigurationException | IllegalAccessException | IllegalArgumentException ex) {
+        } catch (IOException | JAXBException | IllegalAccessException | IllegalArgumentException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
         }
     }
@@ -170,9 +168,6 @@ public class SimpleFuzzer extends Fuzzer {
 
         while (!interruptFuzzing) {
             try {
-                if (fuzzerConfig.containsServerCommand() && fuzzerConfig.isRestartServerInEachInteration()) {
-                    sce = startTestServer(fuzzerConfig.getResultingServerCommand());
-                }
                 TlsContext tmpTlsContext = configHandler.initializeTlsContext(fuzzerConfig);
                 WorkflowTrace tmpWorkflow = tmpTlsContext.getWorkflowTrace();
 
@@ -186,6 +181,9 @@ public class SimpleFuzzer extends Fuzzer {
                         .getAllModifiableVariableFieldsRecursively(tmpWorkflow);
                 for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
                     for (int i = 0; i < fuzzerConfig.getMaxSystematicModifications(); i++) {
+                        if (fuzzerConfig.containsServerCommand() && fuzzerConfig.isRestartServerInEachInteration()) {
+                            sce = startTestServer(fuzzerConfig.getResultingServerCommand());
+                        }
                         TlsContext tlsContext = configHandler.initializeTlsContext(fuzzerConfig);
                         WorkflowTrace workflow = (WorkflowTrace) UnoptimizedDeepCopy.copy(tmpWorkflow);
                         tlsContext.setWorkflowTrace(workflow);
@@ -206,15 +204,16 @@ public class SimpleFuzzer extends Fuzzer {
                         transportHandler.closeConnection();
                         step++;
                         // if the server was terminated, terminate fuzzing
-                        analyzeServerTerminationAndWriteFile(sce, folder, step, tmpWorkflow);
+                        analyzeServerTerminationAndWriteFile(sce, folder, step, workflow);
                         // if the workflow contains an unexpected fields / messages,
                         // write them to a file
                         String fieldName = fields.get(fieldNumber).getField().getName();
                         analyzeResultingTlsContextAndWriteFile(tlsContext, folder, step, fieldName);
+
+                        if (fuzzerConfig.isRestartServerInEachInteration()) {
+                            sce.terminateServer();
+                        }
                     }
-                }
-                if (fuzzerConfig.isRestartServerInEachInteration()) {
-                    sce.terminateServer();
                 }
             } catch (ConfigurationException ex) {
                 LOGGER.info(ex.getLocalizedMessage(), ex);
@@ -277,7 +276,7 @@ public class SimpleFuzzer extends Fuzzer {
     private void analyzeResultingTlsContextAndWriteFile(TlsContext tlsContext, String folder, long step,
             String fieldName) throws JAXBException, IOException {
         if (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)
-                || TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext)
+                || TlsContextAnalyzer.containsServerFinishedWithModifiedHandshake(tlsContext)
                 // ||
                 // TlsContextAnalyzer.containsAlertAfterMissingMessage(tlsContext)
                 // == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT
@@ -299,7 +298,7 @@ public class SimpleFuzzer extends Fuzzer {
         ServerStartCommandExecutor sce = new ServerStartCommandExecutor(serverCommand);
         sce.startServer();
         try {
-            Thread.sleep(10);
+            Thread.sleep(200);
         } catch (InterruptedException ex) {
         }
         return sce;
@@ -322,8 +321,8 @@ public class SimpleFuzzer extends Fuzzer {
         if (TlsContextAnalyzer.containsFullWorkflowWithMissingMessage(tlsContext)) {
             fileNameBasic += "-missing-";
         }
-        if (TlsContextAnalyzer.containsFullWorkflowWithUnexpectedMessage(tlsContext)) {
-            fileNameBasic += "-unexpected-";
+        if (TlsContextAnalyzer.containsServerFinishedWithModifiedHandshake(tlsContext)) {
+            fileNameBasic += "-modifiedhandshake-";
         }
         if (TlsContextAnalyzer.containsFullWorkflowWithModifiedMessage(tlsContext)) {
             fileNameBasic += "-fullmod-";
