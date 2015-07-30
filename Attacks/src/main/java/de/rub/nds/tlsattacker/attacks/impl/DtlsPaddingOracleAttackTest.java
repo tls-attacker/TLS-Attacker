@@ -122,14 +122,14 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     }
 
     private Long[] executeAttackRound() throws IOException {
-	List<byte[]> attackTrain = createInvalidPaddingMessageTrain(config.getTrainMessageSize(),
+	List<byte[]> invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getTrainMessageSize(),
 		config.getMessagesPerTrain(), ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
-	List<byte[]> validTrain = createInvalidMacMessageTrain(config.getTrainMessageSize(),
+	List<byte[]> invalidMacTrain = createInvalidMacMessageTrain(config.getTrainMessageSize(),
 		config.getMessagesPerTrain(),
 		ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C }, 0));
 	Long[] results = new Long[2];
 
-	for (byte[] record : attackTrain) {
+	for (byte[] record : invalidPaddingTrain) {
 	    transportHandler.sendData(record);
 	}
 
@@ -138,7 +138,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	long endNanos = System.nanoTime();
 	results[0] = endNanos - startNanos;
 
-	for (byte[] record : validTrain) {
+	for (byte[] record : invalidMacTrain) {
 	    transportHandler.sendData(record);
 	}
 
