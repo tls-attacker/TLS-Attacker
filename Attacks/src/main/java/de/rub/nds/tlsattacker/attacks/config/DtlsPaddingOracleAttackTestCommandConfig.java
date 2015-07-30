@@ -31,9 +31,9 @@ import java.util.List;
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPoodleCommandConfig extends ClientCommandConfig {
+public class DtlsPaddingOracleAttackTestCommandConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "dtls_poodle";
+    public static final String ATTACK_COMMAND = "dtls_potest";
 
     @Parameter(names = "-messagespertrain", description = "Number of messages per train")
     public int messagesPerTrain = 10;
@@ -47,7 +47,7 @@ public class DtlsPoodleCommandConfig extends ClientCommandConfig {
     @Parameter(names = "-resultfile", description = "Save the response times in the specified file")
     public String resultFilePath = null;
 
-    public DtlsPoodleCommandConfig() {
+    public DtlsPaddingOracleAttackTestCommandConfig() {
 	// Just to be sure
 	transportHandlerType = TransportHandlerType.UDP;
 	protocolVersion = ProtocolVersion.DTLS12;

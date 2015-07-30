@@ -19,7 +19,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.DtlsPoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
@@ -48,14 +48,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Executes a poodle attack. It logs an error in case the tested server is
- * vulnerable to poodle.
+ * Tests if the subject can be used as a padding oracle by sending messages with
+ * invalid MACs or invalid paddings.
  * 
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
+ * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
+public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttackTestCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(DtlsPoodleAttack.class);
+    public static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttackTest.class);
 
     private TlsContext tlsContext;
 
@@ -65,7 +65,7 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 
     private TransportHandler transportHandler;
 
-    public DtlsPoodleAttack(DtlsPoodleCommandConfig config) {
+    public DtlsPaddingOracleAttackTest(DtlsPaddingOracleAttackTestCommandConfig config) {
 	super(config);
     }
 
@@ -102,12 +102,12 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 		    fileWriter.write(sb.toString());
 		}
 
-		// sb = new StringBuilder();
-		// sb.append(i);
-		// sb.append(" of ");
-		// sb.append(config.getNrOfRounds());
-		// sb.append(" rounds.\n");
-		// LOGGER.info(sb.toString());
+		sb = new StringBuilder();
+		sb.append(i);
+		sb.append(" of ");
+		sb.append(config.getNrOfRounds());
+		sb.append(" rounds.\n");
+		LOGGER.info(sb.toString());
 	    }
 	    if (config.getResultFilePath() != null) {
 		fileWriter.close();
@@ -122,9 +122,11 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
     }
 
     private Long[] executeAttackRound() throws IOException {
-	List<byte[]> attackTrain = createAttackMessageTrain(config.getTrainMessageSize(), config.getMessagesPerTrain(),
-		ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
-	List<byte[]> validTrain = createValidMessageTrain(config.getTrainMessageSize(), config.getMessagesPerTrain());
+	List<byte[]> attackTrain = createInvalidPaddingMessageTrain(config.getTrainMessageSize(),
+		config.getMessagesPerTrain(), ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
+	List<byte[]> validTrain = createInvalidMacMessageTrain(config.getTrainMessageSize(),
+		config.getMessagesPerTrain(),
+		ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C }, 0));
 	Long[] results = new Long[2];
 
 	for (byte[] record : attackTrain) {
@@ -147,10 +149,10 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	return results;
     }
 
-    private List<byte[]> createAttackMessageTrain(int l, int n, VariableModification<byte[]> modifier) {
+    private List<byte[]> createInvalidPaddingMessageTrain(int l, int n, VariableModification<byte[]> modifier) {
 	List<byte[]> train = new ArrayList<>();
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
-	byte[] messageData = new byte[l - 13];
+	byte[] messageData = new byte[l];
 	ModifiableByteArray padding = new ModifiableByteArray();
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
@@ -179,18 +181,23 @@ public class DtlsPoodleAttack extends Attacker<DtlsPoodleCommandConfig> {
 	return train;
     }
 
-    private List<byte[]> createValidMessageTrain(int l, int n) {
+    private List<byte[]> createInvalidMacMessageTrain(int l, int n, VariableModification<byte[]> modifier) {
 	List<byte[]> train = new ArrayList<>();
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
-	byte[] messageData = new byte[l - 13];
+	byte[] messageData = new byte[l];
+	ModifiableByteArray macData = new ModifiableByteArray();
+	Record record;
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
 
+	macData.setModification(modifier);
 	RandomHelper.getRandom().nextBytes(messageData);
 	apMessage.setData(messageData);
 
 	for (int i = 0; i < n; i++) {
-	    records.add(new Record());
+	    record = new Record();
+	    record.setMac(macData);
+	    records.add(record);
 	    train.add(recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records));
 	    records.remove(0);
 	}

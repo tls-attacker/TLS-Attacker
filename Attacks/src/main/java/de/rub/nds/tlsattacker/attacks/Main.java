@@ -22,7 +22,7 @@ package de.rub.nds.tlsattacker.attacks;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.DtlsPoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttackTest;
-import de.rub.nds.tlsattacker.attacks.impl.DtlsPoodleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackTest;
@@ -73,8 +73,8 @@ public class Main {
 	jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
 	WinshockCommandConfig winshock = new WinshockCommandConfig();
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
-	DtlsPoodleCommandConfig dtlsPoodle = new DtlsPoodleCommandConfig();
-	jc.addCommand(DtlsPoodleCommandConfig.ATTACK_COMMAND, dtlsPoodle);
+	DtlsPaddingOracleAttackTestCommandConfig dtlsPoodle = new DtlsPaddingOracleAttackTestCommandConfig();
+	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPoodle);
 
 	jc.parse(args);
 
@@ -106,8 +106,8 @@ public class Main {
 	    case WinshockCommandConfig.ATTACK_COMMAND:
 		attacker = new WinshockAttack(winshock);
 		break;
-	    case DtlsPoodleCommandConfig.ATTACK_COMMAND:
-		attacker = new DtlsPoodleAttack(dtlsPoodle);
+	    case DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND:
+		attacker = new DtlsPaddingOracleAttackTest(dtlsPoodle);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");
