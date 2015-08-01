@@ -78,7 +78,7 @@ public class Main {
 	DtlsPaddingOracleAttackTestCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackTestCommandConfig();
 	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
 	DtlsPaddingOracleAttackSweepTestCommandConfig dtlsPaddingOracleAttackSweepTest = new DtlsPaddingOracleAttackSweepTestCommandConfig();
-	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackSweepTest);
+	jc.addCommand(DtlsPaddingOracleAttackSweepTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackSweepTest);
 
 	jc.parse(args);
 
