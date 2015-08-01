@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackSweepTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
@@ -48,14 +49,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Tests if the subject can be used as a padding oracle by sending messages with
- * invalid MACs or invalid paddings.
+ * Performs a latency test based on trains of invalid padding and invalid mac
+ * messages through a configurable range of message sizes.
  * 
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttackTestCommandConfig> {
+public class DtlsPaddingOracleAttackSweepTest extends Attacker<DtlsPaddingOracleAttackSweepTestCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttackTest.class);
+    public static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttackSweepTest.class);
 
     private TlsContext tlsContext;
 
@@ -68,19 +69,22 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
 	    modifiedMacArray = new ModifiableByteArray();
 
+    private int currentMessageSize;
+
+    private int numberOfIterations;
+
     private WorkflowExecutor workflowExecutor;
 
     private WorkflowTrace trace;
 
-    public DtlsPaddingOracleAttackTest(DtlsPaddingOracleAttackTestCommandConfig config) {
+    public DtlsPaddingOracleAttackSweepTest(DtlsPaddingOracleAttackSweepTestCommandConfig config) {
 	super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
 	initExecuteAttack(configHandler);
-
-	long[][] resultBuffer = new long[config.getNrOfRounds()][2];
+	long[][][] resultBuffer = new long[numberOfIterations][config.getNrOfRoundsPerIteration()][2];
 	FileWriter fileWriter;
 	StringBuilder sb;
 	int counter = 0;
@@ -89,13 +93,13 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
 	try {
 	    sb = new StringBuilder(50);
-	    for (int i = 0; i < config.getNrOfRounds(); i++) {
+	    for (int i = 0; i < numberOfIterations; i++) {
 		resultBuffer[i] = executeAttackRound();
 
+		sb.append("End of iteration ");
 		sb.append(i);
-		sb.append(" of ");
-		sb.append(config.getNrOfRounds());
-		sb.append(" rounds.\n");
+		sb.append("/");
+		sb.append(numberOfIterations);
 		LOGGER.info(sb.toString());
 		sb.setLength(0);
 	    }
@@ -104,22 +108,24 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 		sb = new StringBuilder(2097152);
 		fileWriter = new FileWriter(config.getResultFilePath(), true);
 
-		for (long[] roundResults : resultBuffer) {
-		    sb.append(counter);
-		    sb.append(";invalid_Padding;");
-		    sb.append(roundResults[0]);
-		    sb.append("\n");
-		    counter++;
-		    sb.append(counter);
-		    sb.append(";invalid_MAC;");
-		    sb.append(roundResults[1]);
-		    sb.append("\n");
-		    counter++;
-		    // Limit string builder RAM usage to about 4 MiByte by
-		    // writing out data
-		    if (sb.length() > 2097000) {
-			fileWriter.write(sb.toString());
-			sb.setLength(0);
+		for (long[][] roundResults : resultBuffer) {
+		    for (long[] roundSubResults : roundResults) {
+			sb.append(counter);
+			sb.append(";invalid_Padding;");
+			sb.append(roundSubResults[0]);
+			sb.append("\n");
+			counter++;
+			sb.append(counter);
+			sb.append(";invalid_MAC;");
+			sb.append(roundSubResults[1]);
+			sb.append("\n");
+			counter++;
+			// Limit string builder RAM usage to about 4 MiByte by
+			// writing out data
+			if (sb.length() > 2097000) {
+			    fileWriter.write(sb.toString());
+			    sb.setLength(0);
+			}
 		    }
 		}
 
@@ -135,37 +141,42 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	transportHandler.closeConnection();
     }
 
-    private long[] executeAttackRound() throws IOException {
-	byte[] roundMessageData = new byte[config.getTrainMessageSize()];
-	RandomHelper.getRandom().nextBytes(roundMessageData);
-	byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData);
-	byte[][] invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData);
-	long[] results = new long[2];
+    private long[][] executeAttackRound() throws IOException {
+	long[][] results = new long[config.getNrOfRoundsPerIteration()][2];
+	byte[] roundMessageData = new byte[currentMessageSize];
+	byte[][] invalidPaddingTrain;
+	byte[][] invalidMacTrain;
 
-	for (byte[] record : invalidPaddingTrain) {
-	    transportHandler.sendData(record);
-	}
-	long startNanos = System.nanoTime();
-	try {
-	    transportHandler.fetchData();
-	} catch (SocketTimeoutException e) {
-	    LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid padding)");
-	}
-	long endNanos = System.nanoTime();
-	results[0] = endNanos - startNanos;
+	for (int i = 0; i < config.getNrOfRoundsPerIteration(); i++) {
+	    RandomHelper.getRandom().nextBytes(roundMessageData);
+	    invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData);
+	    invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData);
+	    for (byte[] record : invalidPaddingTrain) {
+		transportHandler.sendData(record);
+	    }
+	    long startNanos = System.nanoTime();
+	    try {
+		transportHandler.fetchData();
+	    } catch (SocketTimeoutException e) {
+		LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid padding)");
+	    }
+	    long endNanos = System.nanoTime();
+	    results[i][0] = endNanos - startNanos;
 
-	for (byte[] record : invalidMacTrain) {
-	    transportHandler.sendData(record);
+	    for (byte[] record : invalidMacTrain) {
+		transportHandler.sendData(record);
+	    }
+	    startNanos = System.nanoTime();
+	    try {
+		transportHandler.fetchData();
+	    } catch (SocketTimeoutException e) {
+		LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid MAC)");
+	    }
+	    endNanos = System.nanoTime();
+	    results[i][1] = endNanos - startNanos;
 	}
-	startNanos = System.nanoTime();
-	try {
-	    transportHandler.fetchData();
-	} catch (SocketTimeoutException e) {
-	    LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid MAC)");
-	}
-	endNanos = System.nanoTime();
-	results[1] = endNanos - startNanos;
 
+	currentMessageSize += config.getMessageSizeIncrement();
 	return results;
     }
 
@@ -244,5 +255,8 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
 	modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
 		0));
+	currentMessageSize = config.getStartMessageSize();
+	numberOfIterations = (int) Math.ceil(((double) (config.getEndMessageSize() - config.getStartMessageSize()))
+		/ config.getMessageSizeIncrement());
     }
 }
