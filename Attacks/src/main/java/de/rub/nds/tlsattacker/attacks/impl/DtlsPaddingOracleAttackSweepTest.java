@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackSweepTestCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
@@ -97,7 +96,7 @@ public class DtlsPaddingOracleAttackSweepTest extends Attacker<DtlsPaddingOracle
 		resultBuffer[i] = executeAttackRound();
 
 		sb.append("End of iteration ");
-		sb.append(i);
+		sb.append(i + 1);
 		sb.append("/");
 		sb.append(numberOfIterations);
 		LOGGER.info(sb.toString());
@@ -108,16 +107,21 @@ public class DtlsPaddingOracleAttackSweepTest extends Attacker<DtlsPaddingOracle
 		sb = new StringBuilder(2097152);
 		fileWriter = new FileWriter(config.getResultFilePath(), true);
 
-		for (long[][] roundResults : resultBuffer) {
-		    for (long[] roundSubResults : roundResults) {
+		currentMessageSize = config.getStartMessageSize();
+		for (long[][] iterationResults : resultBuffer) {
+		    for (long[] roundResults : iterationResults) {
 			sb.append(counter);
-			sb.append(";invalid_Padding;");
-			sb.append(roundSubResults[0]);
+			sb.append(";invalid_Padding_l_");
+			sb.append(currentMessageSize);
+			sb.append(";");
+			sb.append(roundResults[0]);
 			sb.append("\n");
 			counter++;
 			sb.append(counter);
-			sb.append(";invalid_MAC;");
-			sb.append(roundSubResults[1]);
+			sb.append(";invalid_MAC_l_");
+			sb.append(currentMessageSize);
+			sb.append(";");
+			sb.append(roundResults[1]);
 			sb.append("\n");
 			counter++;
 			// Limit string builder RAM usage to about 4 MiByte by
@@ -127,6 +131,7 @@ public class DtlsPaddingOracleAttackSweepTest extends Attacker<DtlsPaddingOracle
 			    sb.setLength(0);
 			}
 		    }
+		    currentMessageSize += config.getMessageSizeIncrement();
 		}
 
 		fileWriter.write(sb.toString());
