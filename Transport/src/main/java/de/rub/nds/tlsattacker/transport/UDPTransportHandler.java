@@ -37,8 +37,6 @@ public class UDPTransportHandler implements TransportHandler {
 
     private static final int DEFAULT_RESPONSE_WAIT = 3000;
 
-    private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 1048576;
-
     private int maxResponseWait = DEFAULT_RESPONSE_WAIT;
 
     private DatagramSocket so;
@@ -50,6 +48,8 @@ public class UDPTransportHandler implements TransportHandler {
     private int remotePort;
 
     private int localPort;
+
+    private final byte[] packetReceiveBuffer = new byte[65527];
 
     /**
      * To avoid fragmentation, the size of any packet should ideally be smaller
@@ -71,7 +71,6 @@ public class UDPTransportHandler implements TransportHandler {
 	this.remoteAddress = InetAddress.getByName(remoteAddress);
 	this.remotePort = remotePort;
 	so = new DatagramSocket();
-	so.setReceiveBufferSize(DEFAULT_RECEIVE_BUFFER_SIZE);
 	so.setSoTimeout(DEFAULT_RESPONSE_WAIT);
 	so.connect(this.remoteAddress, this.remotePort);
 	localAddress = so.getLocalAddress();
@@ -88,13 +87,10 @@ public class UDPTransportHandler implements TransportHandler {
 
     @Override
     public byte[] fetchData() throws IOException {
-	// A packet buffer of 65527 bytes is enough to retain the largest
-	// possible UDP packets in IPv4 and IPv6.
-	byte[] buffer = new byte[65527];
-	DatagramPacket rPacket = new DatagramPacket(buffer, buffer.length);
+	DatagramPacket rPacket = new DatagramPacket(packetReceiveBuffer, packetReceiveBuffer.length);
 	so.receive(rPacket);
 	// Function returns only the recieved packet, not the whole buffer
-	return Arrays.copyOfRange(rPacket.getData(), 0, rPacket.getLength());
+	return Arrays.copyOfRange(packetReceiveBuffer, 0, rPacket.getLength());
     }
 
     @Override

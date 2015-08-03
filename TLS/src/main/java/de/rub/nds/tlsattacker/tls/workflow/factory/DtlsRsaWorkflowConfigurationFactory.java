@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.tls.workflow.factory;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.tls.workflow.factory.*;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -45,8 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates configuration of implemented RSA functionality in the protocol.
+ * Creates configuration of implemented RSA functionality in the DTLS-protocol.
  * 
+ * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
@@ -151,9 +151,7 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 	}
 
 	AlertMessage alertMessage = new AlertMessage(ConnectionEnd.CLIENT);
-
 	alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
-
 	protocolMessages.add(alertMessage);
 
 	initializeProtocolMessageOrder(context);

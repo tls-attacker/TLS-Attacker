@@ -106,9 +106,6 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 		result = ArrayConverter.concatenate(result, ctArray, pv, en, sn, rl, epm);
 	    }
 	}
-	// LOGGER.debug("The protocol message(s) was split into {} record(s). The result is: {}",
-	// records.size(),
-	// ArrayConverter.bytesToHexString(result));
 	LOGGER.debug("The protocol message(s) was split into {} record(s).", records.size());
 
 	return result;
@@ -150,7 +147,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 	record.setLength(pmData.length);
 	record.setProtocolMessageBytes(pmData);
 
-	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC && epochCounter > 0) {
 	    byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getProtocolVersion(), contentType, record
 		    .getProtocolMessageBytes().getValue(), sequenceCounter, epochCounter);
 	    record.setMac(mac);

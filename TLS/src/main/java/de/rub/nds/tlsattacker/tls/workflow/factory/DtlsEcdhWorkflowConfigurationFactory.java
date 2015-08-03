@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.tls.workflow.factory;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.tls.workflow.factory.*;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -30,6 +29,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
@@ -45,6 +47,7 @@ import java.util.List;
 /**
  * Creates configuration of implemented ECDH(E) functionality in the protocol.
  * 
+ * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
@@ -74,11 +77,13 @@ public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationF
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
 	ch.setSupportedCompressionMethods(config.getCompressionMethods());
+	ch.setIncludeInDigest(false);
 
 	initializeClientHelloExtensions(config, ch);
 
 	HelloVerifyRequestMessage hvrm = hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class,
 		ConnectionEnd.SERVER);
+	hvrm.setIncludeInDigest(false);
 	protocolMessages.add(hvrm);
 
 	ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);
@@ -151,6 +156,10 @@ public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationF
 	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.SERVER));
 	}
+
+	AlertMessage alertMessage = new AlertMessage(ConnectionEnd.CLIENT);
+	alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+	protocolMessages.add(alertMessage);
 
 	initializeProtocolMessageOrder(context);
 
