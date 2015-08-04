@@ -1,1 +1,1 @@
-../../../servers/openssl-1.0.2a/apps/openssl s_server -accept 51624 -key ../resources/privkey1024.pem -cert ../resources/server-cert1024.pem -verify ../resources/server-cert1024.pem
+../../../servers/openssl-1.0.2a/apps/openssl s_server -accept 51624 -key ../resources/privkey1024.pem -cert ../resources/rsa1024cert.pem -verify ../resources/rsa1024key.pem
