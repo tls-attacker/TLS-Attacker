@@ -261,13 +261,17 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(HDR);
 	writeMac.update(data);
 
-	LOGGER.debug("The MAC will be caluculated over the following data: \n  {}", ArrayConverter
-		.bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
-			ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("The MAC will be caluculated over the following data: \n  {}", ArrayConverter
+		    .bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
+			    ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
+	}
 
 	byte[] result = writeMac.doFinal();
 
-	LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
+	}
 
 	return result;
     }
