@@ -39,63 +39,54 @@ public class UDPTransportHandler implements TransportHandler {
 
     private int maxResponseWait = DEFAULT_RESPONSE_WAIT;
 
-    private DatagramSocket so;
+    private DatagramSocket datagramSocket;
 
-    private InetAddress remoteAddress;
+    private final DatagramPacket receivedPacket = new DatagramPacket(new byte[65527], 65527);
 
-    private InetAddress localAddress;
+    private DatagramPacket sentPacket;
 
-    private int remotePort;
-
-    private int localPort;
-
-    private final byte[] packetReceiveBuffer = new byte[65527];
-
-    /**
-     * To avoid fragmentation, the size of any packet should ideally be smaller
-     * or equal to the PMTU between two peers. In most ethernet or internet
-     * environments the (P)MTU is 1500 bytes.
-     * 
-     * UDPs header consists of 8 bytes, while the typical IPv4 header is 20
-     * bytes in size. This results in 1500 - 28 = 1472 bytes of payload per
-     * packet. When in LAN environments that support Jumboframes the MTU is 9000
-     * bytes, resulting in a payload size of 9000 - 28 = 8972 bytes.
-     * 
-     * TODO (future): PMTU discovery. Additional library like jNetPcap needed
-     * (Java doesn't support ICMP or raw IP packets natively).
-     */
-    private final int mtu = 1500;
+    private long responseNanos = -1;
 
     @Override
     public void initialize(String remoteAddress, int remotePort) throws IOException {
-	this.remoteAddress = InetAddress.getByName(remoteAddress);
-	this.remotePort = remotePort;
-	so = new DatagramSocket();
-	so.setSoTimeout(DEFAULT_RESPONSE_WAIT);
-	so.connect(this.remoteAddress, this.remotePort);
-	localAddress = so.getLocalAddress();
-	localPort = so.getLocalPort();
-	LOGGER.debug("Socket bound to \"" + localAddress.getCanonicalHostName() + ":" + localPort
-		+ "\". Specified remote host and port: \"" + this.remoteAddress.getCanonicalHostName() + ":"
-		+ this.remotePort + "\".");
+	datagramSocket = new DatagramSocket();
+	datagramSocket.setSoTimeout(DEFAULT_RESPONSE_WAIT);
+	datagramSocket.connect(InetAddress.getByName(remoteAddress), remotePort);
+
+	sentPacket = new DatagramPacket(new byte[0], 0, datagramSocket.getInetAddress(), datagramSocket.getPort());
+
+	if (LOGGER.isDebugEnabled()) {
+	    StringBuilder logOut = new StringBuilder();
+	    logOut.append("Socket bound to \"");
+	    logOut.append(datagramSocket.getLocalAddress().getCanonicalHostName());
+	    logOut.append(":");
+	    logOut.append(datagramSocket.getLocalPort());
+	    logOut.append("\". Specified remote host and port: \"");
+	    logOut.append(datagramSocket.getInetAddress().getCanonicalHostName());
+	    logOut.append(":");
+	    logOut.append(datagramSocket.getPort());
+	    logOut.append("\".");
+	    LOGGER.debug(logOut.toString());
+	}
     }
 
     @Override
     public void sendData(byte[] data) throws IOException {
-	so.send(new DatagramPacket(data, 0, data.length, remoteAddress, remotePort));
+	sentPacket.setData(data, 0, data.length);
+	datagramSocket.send(sentPacket);
     }
 
     @Override
     public byte[] fetchData() throws IOException {
-	DatagramPacket rPacket = new DatagramPacket(packetReceiveBuffer, packetReceiveBuffer.length);
-	so.receive(rPacket);
-	// Function returns only the recieved packet, not the whole buffer
-	return Arrays.copyOfRange(packetReceiveBuffer, 0, rPacket.getLength());
+	responseNanos = System.nanoTime();
+	datagramSocket.receive(receivedPacket);
+	responseNanos = System.nanoTime() - responseNanos;
+	return Arrays.copyOfRange(receivedPacket.getData(), 0, receivedPacket.getLength());
     }
 
     @Override
     public void closeConnection() {
-	so.close();
+	datagramSocket.close();
 	LOGGER.debug("Socket closed.");
     }
 
@@ -105,20 +96,32 @@ public class UDPTransportHandler implements TransportHandler {
 
     public void setMaxResponseWait(int maxResponseWait) {
 	this.maxResponseWait = maxResponseWait;
-	if (so != null) {
+	if (datagramSocket != null) {
 	    try {
-		so.setSoTimeout(this.maxResponseWait);
+		datagramSocket.setSoTimeout(this.maxResponseWait);
 	    } catch (SocketException e) {
-		LOGGER.debug("Failed to set socket timeout. Exception:\n" + e.getMessage());
+		LOGGER.debug("Failed to set socket timeout. Exception:\n{}", e.getMessage());
 	    }
 	}
     }
 
-    public int getMTU() {
-	return mtu;
+    public int getLocalPort() {
+	return datagramSocket.getLocalPort();
     }
 
-    public int getLocalPort() {
-	return localPort;
+    public InetAddress getLocalAddress() {
+	return datagramSocket.getLocalAddress();
+    }
+
+    public int getRemotePort() {
+	return datagramSocket.getPort();
+    }
+
+    public InetAddress getRemoteAddress() {
+	return datagramSocket.getInetAddress();
+    }
+
+    public long getResponseTimeNanos() {
+	return responseNanos;
     }
 }

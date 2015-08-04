@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private List<ProtocolMessage> protocolMessages;
 
-    private TransportHandler transportHandler;
+    private UDPTransportHandler transportHandler;
 
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
 	    modifiedMacArray = new ModifiableByteArray();
@@ -157,38 +158,33 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private long handleTrain(byte[][] train, byte[] sentHeartbeatMessagePayload, String trainInfo) {
 	try {
-	    long startNanos, endNanos, result;
-
 	    for (byte[] record : train) {
 		transportHandler.sendData(record);
 	    }
 
-	    startNanos = System.nanoTime();
 	    byte[] serverAnswer = transportHandler.fetchData();
-	    endNanos = System.nanoTime();
-	    result = endNanos - startNanos;
 
 	    if (serverAnswer != null && serverAnswer.length > 1) {
 		HeartbeatMessage receivedHbMessage = new HeartbeatMessage();
 		List<de.rub.nds.tlsattacker.tls.record.messages.Record> parsedReceivedRecords = recordHandler
 			.parseRecords(serverAnswer);
 		if (parsedReceivedRecords.size() != 1) {
-		    LOGGER.info("Unexpected number of records parsed from server. Train: " + trainInfo);
+		    LOGGER.info("Unexpected number of records parsed from server. Train: {}", trainInfo);
 		} else {
 		    receivedHbMessage.getProtocolMessageHandler(tlsContext).parseMessage(
 			    parsedReceivedRecords.get(0).getProtocolMessageBytes().getValue(), 0);
 		    if (!Arrays.equals(receivedHbMessage.getPayload().getValue(), sentHeartbeatMessagePayload)) {
 			LOGGER.info("Heartbeat answer didn't contain the correct payload. Train: " + trainInfo);
 		    } else {
-			LOGGER.info("Correct heartbeat-payload received. Train: " + trainInfo);
+			LOGGER.info("Correct heartbeat-payload received. Train: {}", trainInfo);
 		    }
 		}
 	    } else {
-		LOGGER.info("No data from the server was received. Train: " + trainInfo);
+		LOGGER.info("No data from the server was received. Train: {}", trainInfo);
 	    }
-	    return result;
+	    return transportHandler.getResponseTimeNanos();
 	} catch (SocketTimeoutException e) {
-	    LOGGER.info("Receive timeout when waiting for heartbeat answer. Train: " + trainInfo);
+	    LOGGER.info("Received timeout when waiting for heartbeat answer. Train: {}", trainInfo);
 	} catch (Exception e) {
 	    LOGGER.info(e.getMessage());
 	}
@@ -229,6 +225,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
 	Record record = new Record();
 	record.setMac(modifiedMacArray);
+	record.setPadding(modifiedPaddingArray);
 	records.add(record);
 	byte[] recordBytes = recordHandler.wrapData(applicationMessageContent, ProtocolMessageType.APPLICATION_DATA,
 		records);
@@ -261,7 +258,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     }
 
     private void initExecuteAttack(ConfigHandler configHandler) {
-	transportHandler = configHandler.initializeTransportHandler(config);
+	transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(config);
 	tlsContext = configHandler.initializeTlsContext(config);
 	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	recordHandler = (RecordHandler) tlsContext.getRecordHandler();
