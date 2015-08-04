@@ -170,11 +170,17 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 			.parseRecords(serverAnswer);
 		if (parsedReceivedRecords.size() != 1) {
 		    LOGGER.info("Unexpected number of records parsed from server. Train: {}", trainInfo);
+
+		    flushTransportHandler();
+		    return -1;
 		} else {
 		    receivedHbMessage.getProtocolMessageHandler(tlsContext).parseMessage(
 			    parsedReceivedRecords.get(0).getProtocolMessageBytes().getValue(), 0);
 		    if (!Arrays.equals(receivedHbMessage.getPayload().getValue(), sentHeartbeatMessagePayload)) {
 			LOGGER.info("Heartbeat answer didn't contain the correct payload. Train: " + trainInfo);
+
+			flushTransportHandler();
+			return -1;
 		    } else {
 			LOGGER.info("Correct heartbeat-payload received. Train: {}", trainInfo);
 		    }
@@ -267,5 +273,17 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
 	modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
 		0));
+    }
+
+    private void flushTransportHandler() throws IOException {
+	transportHandler.setMaxResponseWait(200);
+	try {
+	    while (true) {
+		transportHandler.fetchData();
+	    }
+	} catch (SocketTimeoutException e) {
+	} finally {
+	    transportHandler.setMaxResponseWait(3000);
+	}
     }
 }
