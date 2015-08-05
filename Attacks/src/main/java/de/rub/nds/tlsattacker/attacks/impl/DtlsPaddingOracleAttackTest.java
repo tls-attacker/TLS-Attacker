@@ -94,10 +94,17 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	    for (int i = 0; i < config.getNrOfRounds(); i++) {
 		resultBuffer[i] = executeAttackRound();
 
-		sb.append(i + 1);
-		sb.append(" of ");
-		sb.append(config.getNrOfRounds());
-		sb.append(" rounds.\n");
+		if (resultBuffer[i][0] == -1 || resultBuffer[i][1] == -1) {
+		    sb.append("Round no. ");
+		    sb.append(i + 1);
+		    sb.append(" - No useful results were gained. Repeat.");
+		    i--;
+		} else {
+		    sb.append(i + 1);
+		    sb.append(" of ");
+		    sb.append(config.getNrOfRounds());
+		    sb.append(" rounds.\n");
+		}
 		LOGGER.info(sb.toString());
 		sb.setLength(0);
 	    }
