@@ -43,7 +43,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
     private static final Logger LOGGER = LogManager
 	    .getLogger(de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler.class);
 
-    private long sequenceCounter;
+    private long sequenceCounter, lastEpochSequenceCounter;
 
     private int epochCounter;
 
@@ -98,7 +98,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 	    byte[] sn = ArrayConverter.bigIntegerToNullPaddedByteArray(dtlsRecord.getSequenceNumber().getValue(),
 		    ByteLength.SEQUENCE_NUMBER);
 	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), ByteLength.RECORD_LENGTH);
-	    if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	    if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || epochCounter < 1) {
 		byte[] pm = record.getProtocolMessageBytes().getValue();
 		result = ArrayConverter.concatenate(result, ctArray, pv, en, sn, rl, pm);
 	    } else {
@@ -239,7 +239,19 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
     }
 
     private void advanceEpoch() {
-	epochCounter += 1;
+	epochCounter++;
+	lastEpochSequenceCounter = sequenceCounter;
 	sequenceCounter = 0;
+    }
+
+    public void revertEpoch() {
+	if (epochCounter > 0) {
+	    epochCounter--;
+	    sequenceCounter = lastEpochSequenceCounter;
+	}
+    }
+
+    public int getEpoch() {
+	return epochCounter;
     }
 }
