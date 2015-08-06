@@ -55,22 +55,23 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     private byte[] handshakeMessageSendBuffer, recordSendBuffer = new byte[0];
 
     private int messageParseBufferOffset, sendHandshakeMessageSeq, maxWaitForExpectedRecord = 3000, maxRetransmits = 4,
-	    serverEpochCounter, maxPacketSize = 1400, maxHandshakeReorderBufferSize = 100;
+	    serverEpochCounter, maxPacketSize = 1400, maxHandshakeReorderBufferSize = 100, retransmitCounter,
+	    retransmitPointer, retransmitEpoch;
 
     private final WorkflowTrace workflowTrace;
 
+    private Record currentRecord, changeCipherSpecRecordBuffer, parseRecordBuffer;
+
     private List<ProtocolMessage> protocolMessages;
 
-    private Record currentRecord, changeCipherSpecRecordBuffer, parseRecordBuffer;
+    private final List<byte[]> retransmitList = new ArrayList<>();
 
     private List<de.rub.nds.tlsattacker.tls.record.messages.Record> recordBuffer = new LinkedList<>(),
 	    handshakeMessageSendRecordList = null;
 
     private final HandshakeFragmentHandler handshakeFragmentHandler = new HandshakeFragmentHandler();
 
-    // private int retransmitEpoch, retransmitCounter, retransmitPointer
-
-    // private List<Record> retransmitList = new ArrayList<>();
+    private final RecordHandler dtlsRecordHandler;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	super(transportHandler, tlsContext);
@@ -79,6 +80,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
 	workflowTrace = this.tlsContext.getWorkflowTrace();
 	recordHandler = tlsContext.getRecordHandler();
+	dtlsRecordHandler = (RecordHandler) tlsContext.getRecordHandler();
 
 	if (this.transportHandler == null || recordHandler == null) {
 	    throw new ConfigurationException("The WorkflowExecutor was not configured properly");
@@ -96,14 +98,17 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	    ProtocolMessage pm;
 
 	    while (workflowContext.getProtocolMessagePointer() < protocolMessages.size()
-		    && workflowContext.isProceedWorkflow()) {
+		    && workflowContext.isProceedWorkflow() && retransmitCounter < maxRetransmits) {
 		pm = getWorkflowProtocolMessage(workflowContext.getProtocolMessagePointer());
+		updateFlight(pm);
 		if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
 		    handleMyProtocolMessage(pm);
 		    workflowContext.incrementProtocolMessagePointer();
 		} else {
 		    if (receiveAndParseNextProtocolMessage(pm)) {
 			workflowContext.incrementProtocolMessagePointer();
+		    } else {
+			handleRetransmit();
 		    }
 		}
 	    }
@@ -150,6 +155,8 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
 	byte[] messageBytes = pmh.prepareMessage();
 
+	retransmitList.add(messageBytes);
+
 	if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
 	    protocolMessage.addRecord(new Record());
 	}
@@ -169,6 +176,8 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
 	handshakeMessageSendBuffer = ArrayConverter.concatenate(handshakeMessageSendBuffer,
 		handshakeFragmentHandler.fragmentHandshakeMessage(handshakeMessageBytes, maxPacketSize - 25));
+
+	retransmitList.add(handshakeMessageSendBuffer);
 
 	if (handshakeMessageSendRecordList == null) {
 	    handshakeMessageSendRecordList = new ArrayList<>();
@@ -454,84 +463,90 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	}
     }
 
-    // private boolean isHandshakeOrCCS(ProtocolMessageType pmt) {
-    // return pmt == ProtocolMessageType.HANDSHAKE || pmt ==
-    // ProtocolMessageType.CHANGE_CIPHER_SPEC;
-    // }
-    //
-    // private void handleRetransmit() throws IOException {
-    // Record retransmittedRecord;
-    // int currentPointer;
-    //
-    // for (int i = 0; i < retransmitList.size(); i++) {
-    // retransmittedRecord = retransmitList.get(i);
-    // currentPointer = retransmitPointer - (retransmitList.size() - i);
-    //
-    // retransmittedRecord.setSequenceNumber(BigInteger.valueOf(dtlsRecordHandler.getNextSequenceNumber()));
-    //
-    // sendDataBuffered(retransmittedRecord, currentPointer);
-    // }
-    // retransmitCounter++;
-    // }
-    //
-    // private int getNextHandshakeMessageNotFromMe(int currentProtocolMessage,
-    // List<ProtocolMessage> protocolMessageList,
-    // ConnectionEnd myEnd) {
-    // if (currentProtocolMessage > (protocolMessageList.size() - 2)) {
-    // // If the current message is the last message, return immediately
-    // return -1;
-    // }
-    //
-    // int output;
-    // boolean found = false;
-    // ProtocolMessage currentMessage;
-    //
-    // for (output = currentProtocolMessage + 1; output <
-    // protocolMessageList.size(); output++) {
-    // currentMessage = protocolMessageList.get(output);
-    // if (isHandshakeOrCCS(currentMessage.getProtocolMessageType())) {
-    // if (currentMessage.getMessageIssuer() != myEnd) {
-    // found = true;
-    // break;
-    // }
-    // }
-    // }
-    //
-    // if (!found) {
-    // return -1;
-    // } else {
-    // return output;
-    // }
-    // }
-    // private void updateFlight(ProtocolMessage pm) throws
-    // CloneNotSupportedException {
-    // if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
-    // if (workflowContext.getProtocolMessagePointer() > 1) {
-    // ProtocolMessage lastPM =
-    // protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
-    //
-    // if (isHandshakeOrCCS(pm.getProtocolMessageType())) {
-    // if ((lastPM.getMessageIssuer() != tlsContext.getMyConnectionEnd()
-    // || !isHandshakeOrCCS(lastPM.getProtocolMessageType())) &&
-    // workflowContext.getProtocolMessagePointer() > retransmitPointer) {
-    // flightTransition();
-    // }
-    // }
-    // } else {
-    // flightTransition();
-    // }
-    // }
-    // }
-    //
-    // private void flightTransition() throws CloneNotSupportedException {
-    // retransmitPointer =
-    // getNextHandshakeMessageNotFromMe(workflowContext.getProtocolMessagePointer(),
-    // protocolMessages, tlsContext.getMyConnectionEnd());
-    // retransmitCounter = 0;
-    // retransmitList.clear();
-    // }
-    //
-    // private void abortFlight() {
-    // workflowContext.setProtocolMessagePointer(retransmitPointer);
-    // }
+    private boolean isHandshakeOrCCS(ProtocolMessageType pmt) {
+	return pmt == ProtocolMessageType.HANDSHAKE || pmt == ProtocolMessageType.CHANGE_CIPHER_SPEC;
+    }
+
+    private void handleRetransmit() throws IOException {
+	int currentPointer;
+	byte[] retransmittedMessage;
+	LinkedList<de.rub.nds.tlsattacker.tls.record.messages.Record> recordList = new LinkedList<>();
+
+	if (retransmitEpoch < dtlsRecordHandler.getEpoch()) {
+	    dtlsRecordHandler.revertEpoch();
+	}
+
+	for (int i = 0; i < retransmitList.size(); i++) {
+	    recordList.add(new Record());
+	    retransmittedMessage = retransmitList.get(i);
+	    currentPointer = retransmitPointer - (retransmitList.size() - i);
+
+	    if (retransmittedMessage.length == 1) {
+		sendDataBuffered(recordHandler.wrapData(retransmittedMessage, ProtocolMessageType.CHANGE_CIPHER_SPEC,
+			recordList), currentPointer);
+	    } else if (retransmittedMessage.length > 2) {
+		sendDataBuffered(
+			recordHandler.wrapData(retransmittedMessage, ProtocolMessageType.HANDSHAKE, recordList),
+			currentPointer);
+	    } else {
+		LOGGER.error("Empty retransmit message bytes");
+	    }
+	    recordList.removeFirst();
+	}
+	retransmitCounter++;
+    }
+
+    private int getNextHandshakeMessageNotFromMe(int currentProtocolMessage, List<ProtocolMessage> protocolMessageList,
+	    ConnectionEnd myEnd) {
+	if (currentProtocolMessage > (protocolMessageList.size() - 2)) {
+	    // If the current message is the last message, return immediately
+	    return -1;
+	}
+
+	int output;
+	boolean found = false;
+	ProtocolMessage currentMessage;
+
+	for (output = currentProtocolMessage + 1; output < protocolMessageList.size(); output++) {
+	    currentMessage = protocolMessageList.get(output);
+	    if (isHandshakeOrCCS(currentMessage.getProtocolMessageType())) {
+		if (currentMessage.getMessageIssuer() != myEnd) {
+		    found = true;
+		    break;
+		}
+	    }
+	}
+
+	if (!found) {
+	    return -1;
+	} else {
+	    return output;
+	}
+    }
+
+    private void updateFlight(ProtocolMessage pm) {
+	if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
+	    if (workflowContext.getProtocolMessagePointer() > 1) {
+		ProtocolMessage lastPM = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
+
+		if (isHandshakeOrCCS(pm.getProtocolMessageType())) {
+		    if ((lastPM.getMessageIssuer() != tlsContext.getMyConnectionEnd() || !isHandshakeOrCCS(lastPM
+			    .getProtocolMessageType()))
+			    && workflowContext.getProtocolMessagePointer() > retransmitPointer) {
+			flightTransition();
+		    }
+		}
+	    } else {
+		flightTransition();
+	    }
+	}
+    }
+
+    private void flightTransition() {
+	retransmitPointer = getNextHandshakeMessageNotFromMe(workflowContext.getProtocolMessagePointer(),
+		protocolMessages, tlsContext.getMyConnectionEnd());
+	retransmitCounter = 0;
+	retransmitEpoch = dtlsRecordHandler.getEpoch();
+	retransmitList.clear();
+    }
 }
