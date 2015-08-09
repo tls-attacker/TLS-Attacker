@@ -22,7 +22,6 @@ package de.rub.nds.tlsattacker.attacks;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackSweepTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
@@ -31,7 +30,6 @@ import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttackTest;
-import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttackSweepTest;
 import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
@@ -77,8 +75,6 @@ public class Main {
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
 	DtlsPaddingOracleAttackTestCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackTestCommandConfig();
 	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
-	DtlsPaddingOracleAttackSweepTestCommandConfig dtlsPaddingOracleAttackSweepTest = new DtlsPaddingOracleAttackSweepTestCommandConfig();
-	jc.addCommand(DtlsPaddingOracleAttackSweepTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackSweepTest);
 
 	jc.parse(args);
 
@@ -112,9 +108,6 @@ public class Main {
 		break;
 	    case DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND:
 		attacker = new DtlsPaddingOracleAttackTest(dtlsPaddingOracleAttackTest);
-		break;
-	    case DtlsPaddingOracleAttackSweepTestCommandConfig.ATTACK_COMMAND:
-		attacker = new DtlsPaddingOracleAttackSweepTest(dtlsPaddingOracleAttackSweepTest);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");

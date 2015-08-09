@@ -37,7 +37,6 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.FileWriter;
@@ -272,6 +271,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private void initExecuteAttack(ConfigHandler configHandler) {
 	transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(config);
+	transportHandler.setMaxResponseWait(config.getTimeout());
 	tlsContext = configHandler.initializeTlsContext(config);
 	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	recordHandler = (RecordHandler) tlsContext.getRecordHandler();
@@ -283,14 +283,14 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     }
 
     private void flushTransportHandler() throws IOException {
-	transportHandler.setMaxResponseWait(200);
+	transportHandler.setMaxResponseWait(50);
 	try {
 	    while (true) {
 		transportHandler.fetchData();
 	    }
 	} catch (SocketTimeoutException e) {
 	} finally {
-	    transportHandler.setMaxResponseWait(3000);
+	    transportHandler.setMaxResponseWait(config.getTimeout());
 	}
     }
 }
