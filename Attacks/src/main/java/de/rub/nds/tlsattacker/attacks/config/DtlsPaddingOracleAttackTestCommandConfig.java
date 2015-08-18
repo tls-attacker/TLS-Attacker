@@ -36,16 +36,19 @@ public class DtlsPaddingOracleAttackTestCommandConfig extends ClientCommandConfi
     public static final String ATTACK_COMMAND = "dtls_potest";
 
     @Parameter(names = "-messagespertrain", description = "Number of messages per train")
-    public int messagesPerTrain = 10;
+    int messagesPerTrain = 10;
 
     @Parameter(names = "-trainmessagesize", description = "Message size of each trains messages")
-    public int trainMessageSize = 1450;
+    int trainMessageSize = 1450;
 
     @Parameter(names = "-rounds", description = "Number of attack rounds")
-    public int nrOfRounds = 20;
+    int nrOfRounds = 20;
 
     @Parameter(names = "-resultfile", description = "Save the response times in the specified file")
-    public String resultFilePath = null;
+    String resultFilePath = null;
+
+    @Parameter(names = "-messagewaitnanos", description = "Wait for this amount of nanoseconds between sending two messages of any given train (rate limiting)")
+    long messageWaitNanos = 0;
 
     public DtlsPaddingOracleAttackTestCommandConfig() {
 	// Just to be sure
@@ -76,6 +79,10 @@ public class DtlsPaddingOracleAttackTestCommandConfig extends ClientCommandConfi
 	return resultFilePath;
     }
 
+    public long getMessageWaitNanos() {
+	return messageWaitNanos;
+    }
+
     public void setMessagesPerTrain(int messagesPerTrain) {
 	this.messagesPerTrain = messagesPerTrain;
     }
@@ -90,5 +97,9 @@ public class DtlsPaddingOracleAttackTestCommandConfig extends ClientCommandConfi
 
     public void setResultFilePath(String resultFilePath) {
 	this.resultFilePath = resultFilePath;
+    }
+
+    public void setMessageWaitNanos(long messageWaitNanos) {
+	this.messageWaitNanos = messageWaitNanos;
     }
 }

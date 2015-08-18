@@ -158,7 +158,7 @@ public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationF
 	}
 
 	AlertMessage alertMessage = new AlertMessage(ConnectionEnd.CLIENT);
-	alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+	alertMessage.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
 	protocolMessages.add(alertMessage);
 
 	initializeProtocolMessageOrder(context);
