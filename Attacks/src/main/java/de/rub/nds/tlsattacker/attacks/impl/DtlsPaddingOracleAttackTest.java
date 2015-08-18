@@ -45,6 +45,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.LockSupport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -164,11 +165,13 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private long handleTrain(byte[][] train, byte[] sentHeartbeatMessagePayload, String trainInfo) {
 	try {
-	    for (byte[] record : train) {
-		transportHandler.sendData(record);
-	    }
+	    byte[] serverAnswer;
 
-	    byte[] serverAnswer = transportHandler.fetchData();
+	    if (config.getMessageWaitNanos() > 0) {
+		serverAnswer = handleTrainIOWithWaitNanos(train, config.getMessageWaitNanos());
+	    } else {
+		serverAnswer = handleTrainIO(train);
+	    }
 
 	    if (serverAnswer != null && serverAnswer.length > 1) {
 		HeartbeatMessage receivedHbMessage = new HeartbeatMessage();
@@ -201,6 +204,21 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 	    LOGGER.info(e.getMessage());
 	}
 	return -1;
+    }
+
+    private byte[] handleTrainIO(byte[][] train) throws Exception {
+	for (byte[] record : train) {
+	    transportHandler.sendData(record);
+	}
+	return transportHandler.fetchData();
+    }
+
+    private byte[] handleTrainIOWithWaitNanos(byte[][] train, long waitNanos) throws Exception {
+	for (byte[] record : train) {
+	    LockSupport.parkNanos(waitNanos);
+	    transportHandler.sendData(record);
+	}
+	return transportHandler.fetchData();
     }
 
     private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData, HeartbeatMessage heartbeatMessage) {
@@ -257,7 +275,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private void closeDtlsConnectionGracefully() {
 	AlertMessage closeNotify = new AlertMessage();
-	closeNotify.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
+	closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
 	List<de.rub.nds.tlsattacker.tls.record.messages.Record> records = new ArrayList<>();
 	records.add(new Record());
 
