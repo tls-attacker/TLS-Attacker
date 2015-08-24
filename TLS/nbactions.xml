@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -workflow_trace_config_file /tmp/openssl-rsa-auth2015-07-25-19:43:41/295-fullmod.xml -keystore ../resources/keystore-1024.jks -password password -alias 1024_rsa</exec.args>
+                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -workflow_trace_config_file /home/juraj/Downloads/analysis-tls/mbedtls-ecdhe-rsa2015-07-30-18:59:13/14063-modifiedhandshake-protocolVersion.xml -connect localhost:54000 -max_transport_response_wait 200 -workflow_trace_type FULL</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir></exec.workingdir>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect localhost:4433 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -keystore ../resources/keystore-1024.jks -password password -alias 1024_rsa -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.rub.nds.tlsattacker.tls.Main client -workflow_trace_config_file /home/juraj/Downloads/analysis-tls/mbedtls-ecdhe-rsa2015-07-30-18:59:13/14063-modifiedhandshake-protocolVersion.xml -connect localhost:54000 -max_transport_response_wait 200 -workflow_trace_type FULL</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir></exec.workingdir>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect localhost:4433 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE -keystore ../resources/keystore-1024.jks -password password -alias 1024_rsa -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256</exec.args>
+                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -workflow_trace_config_file /home/juraj/Downloads/analysis-tls/mbedtls-ecdhe-rsa2015-07-30-18:59:13/14063-modifiedhandshake-protocolVersion.xml -connect localhost:54000 -max_transport_response_wait 200 -workflow_trace_type FULL</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir></exec.workingdir>
             </properties>

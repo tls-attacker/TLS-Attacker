@@ -1,3 +1,0 @@
-<!DOCTYPE order [<!ENTITY test "juraj.somorovsky@rub.de">]>
-
-<saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" saml.Email="juraj.somorovsky@rub.de">juraj.somorovsky@rub.de</saml:NameID>

@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -175,8 +177,8 @@ public final class TlsContextAnalyzer {
 	return containsFullWorkflow(tlsContext) && containsMissingMessage(tlsContext);
     }
 
-    public static boolean containsFullWorkflowWithUnexpectedMessage(TlsContext tlsContext) {
-	return containsFullWorkflow(tlsContext) && containsUnexpectedMessage(tlsContext);
+    public static boolean containsServerFinishedWithModifiedHandshake(TlsContext tlsContext) {
+	return containsServerFinishedMessage(tlsContext) && containsModifiedHandshake(tlsContext);
     }
 
     /**
@@ -222,6 +224,25 @@ public final class TlsContextAnalyzer {
 	    position++;
 	}
 	return -1;
+    }
+    
+    /**
+     * Returns true in case there is a modification in the handshake
+     * 
+     * @param tlsContext
+     * @return
+     */
+    public static boolean containsModifiedHandshake(TlsContext tlsContext) {
+        int unexpected = getUnexpectedMessagePosition(tlsContext);
+        int finished = getServerFinishedMessagePosition(tlsContext);
+        if(unexpected != -1) {
+            if(finished == -1) {
+                return true;
+            } else {
+                return unexpected < finished;
+            }
+        }
+        return false;
     }
 
     /**
@@ -271,6 +292,31 @@ public final class TlsContextAnalyzer {
 	    if ((pm.getMessageIssuer() == tlsContext.getMyConnectionEnd())
 		    && (!typeConfigured.equals(new ProtocolMessageTypeHolder(pm)))) {
 		return i;
+	    }
+	}
+	return -1;
+    }
+    
+    /**
+     * Returns true in case the workflow a server Finished Message
+     * 
+     * @param tlsContext
+     * @return
+     */
+    public static boolean containsServerFinishedMessage(TlsContext tlsContext) {
+	return (getServerFinishedMessagePosition(tlsContext) != -1);
+    }
+
+    private static int getServerFinishedMessagePosition(TlsContext tlsContext) {
+        List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
+	for (int i = 0; i < protocolMessages.size(); i++) {
+	    ProtocolMessage pm = protocolMessages.get(i);
+	    if ((pm.getMessageIssuer() != tlsContext.getMyConnectionEnd())
+		    && (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE)) {
+                HandshakeMessage hm = (HandshakeMessage) pm;
+		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
+		    return i;
+		}
 	    }
 	}
 	return -1;
