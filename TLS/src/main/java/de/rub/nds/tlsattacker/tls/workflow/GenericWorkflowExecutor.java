@@ -61,12 +61,10 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
     public GenericWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	this.tlsContext = tlsContext;
 	this.transportHandler = transportHandler;
-
-	messageBytesCollector = new MessageBytesCollector();
-	workflowContext = new WorkflowContext();
-	recordHandler = new RecordHandler(tlsContext);
-
+	this.recordHandler = new RecordHandler(tlsContext);
 	tlsContext.setRecordHandler(recordHandler);
+	this.messageBytesCollector = new MessageBytesCollector();
+	this.workflowContext = new WorkflowContext();
     }
 
     @Override

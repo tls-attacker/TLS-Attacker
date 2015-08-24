@@ -1,0 +1,41 @@
+RSA key pair generation (password is password):
+
+- Generate JKS:
+keytool -keystore rsa1024.jks -genkeypair -alias alias -validity 3650 -keysize 1024 -keyalg rsa
+
+- Export to PKCS12:
+keytool -importkeystore -srckeystore rsa1024.jks -destkeystore rsa1024.p12 -srcstoretype jks -deststoretype pkcs12
+
+- Export to PEM (key and cert):
+openssl pkcs12 -in rsa1024.p12 -out rsa1024.pem -nodes
+
+- Export to PEM (cert):
+openssl pkcs12 -in rsa1024.p12 -out rsa1024cert.pem -nokeys
+
+- Export to PEM (key):
+openssl pkcs12 -in rsa1024.p12 -out rsa1024key.pem -nocerts
+
+- Remove password from the key file:
+openssl rsa -in rsa1024key.pem -out rsa1024key.pem
+
+
+
+EC key pair generation (password is password):
+
+- Generate JKS:
+keytool -keystore ec256.jks -genkeypair -alias alias -validity 3650 -keysize 256 -keyalg ec
+
+- Export to PKCS12:
+keytool -importkeystore -srckeystore ec256.jks -destkeystore ec256.p12 -srcstoretype jks -deststoretype pkcs12
+
+- Export to PEM (key and cert):
+openssl pkcs12 -in ec256.p12 -out ec256.pem -nodes
+
+- Export to PEM (cert):
+openssl pkcs12 -in ec256.p12 -out ec256cert.pem -nokeys
+
+- Export to PEM (key):
+openssl pkcs12 -in ec256.p12 -out ec256key.pem -nocerts
+
+- Remove password from the key file:
+openssl ec -in ec256key.pem -out ec256key.pem

@@ -1,10 +1,40 @@
 <startupCommandsHolder>
-    <serverCommand>../../../servers/openssl-1.0.2d/apps/openssl</serverCommand>
+    <serverCommand>../../servers/openssl-1.0.2d/apps/openssl </serverCommand>
     <startupCommandsList>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:51000 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -keystore ../resources/keystore-1024.jks -password password -alias 1024_rsa -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256</fuzzerCommand>
-            <serverCommandParameters>s_server -quiet -accept 51000 -key ../resources/privkey1024.pem -cert ../resources/server-cert1024.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51000 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256 -max_transport_response_wait 200</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51000 -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem </serverCommandParameters>
+            <shortName>openssl-rsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51001 -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -keystore ../resources/rsa1024.jks -password password -alias alias -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256 -max_transport_response_wait 200</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51001 -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
             <shortName>openssl-rsa-auth</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51002 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA -max_transport_response_wait 200</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51002 -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem </serverCommandParameters>
+            <shortName>openssl-ecdhe-rsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51003 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA -max_transport_response_wait 200</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51003 -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem </serverCommandParameters>
+            <shortName>openssl-dhe-rsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51004 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA256 -max_transport_response_wait 200</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51004 -key ../resources/ec256key.pem -cert ../resources/ec256cert.pem </serverCommandParameters>
+            <shortName>openssl-ecdhe-ecdsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51005 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -keystore ../resources/ec256.jks -password password -alias alias -cipher TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA256 -max_transport_response_wait 200</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51005 -key ../resources/ec256key.pem -cert ../resources/ec256cert.pem -verify ../resources/eccert256.pem</serverCommandParameters>
+            <shortName>openssl-ecdhe-ecdsa-auth</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:51006 -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,CERTIFICATE,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept 51006 -key ../resources/dsakey.pem -cert ../resources/dsacert.pem </serverCommandParameters>
+            <shortName>openssl-dsa</shortName>
         </startupCommands>
     </startupCommandsList>
 </startupCommandsHolder>

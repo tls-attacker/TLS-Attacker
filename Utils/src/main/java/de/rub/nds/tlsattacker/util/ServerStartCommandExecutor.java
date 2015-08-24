@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class ServerStartCommandExecutor {
 
-    private static Logger LOGGER = LogManager.getLogger(ServerStartCommandExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerStartCommandExecutor.class);
 
     /**
      * Command.
@@ -50,7 +50,7 @@ public final class ServerStartCommandExecutor {
 
     List<String> serverErrorOutput;
 
-    static final int MAX_OUTPUT_LINES = 500;
+    static final int MAX_OUTPUT_LINES = 1000;
 
     /**
      * Instance of this executor.
@@ -106,6 +106,14 @@ public final class ServerStartCommandExecutor {
 
     public String getServerErrorOutputString() {
 	return getOutputString(serverErrorOutput);
+    }
+    
+    public void clearServerOutput() {
+        serverOutput.clear();
+    }
+    
+    public void clearServerErrorOutput() {
+        serverErrorOutput.clear();
     }
 
     /**
@@ -164,7 +172,7 @@ public final class ServerStartCommandExecutor {
 		BufferedReader br = new BufferedReader(isr);
 		String line;
 		while ((line = br.readLine()) != null) {
-		    System.out.println(line);
+		    LOGGER.debug(line);
 		    output.add(line);
 		    if (output.size() > MAX_OUTPUT_LINES) {
 			output.remove(0);

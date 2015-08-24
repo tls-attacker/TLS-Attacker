@@ -1,1 +1,1 @@
-../../../servers/gnutls-3.3.14/install/bin/gnutls-serv --http --x509keyfile ../resources/privkey1024.pem --x509certfile ../resources/server-cert1024.pem -p 51625 -a -b
+../../../servers/gnutls-3.3.14/install/bin/gnutls-serv --http --x509keyfile ../resources/rsa1024key.pem --x509certfile ../resources/rsa1024cert.pem -p 51625 -a -b
