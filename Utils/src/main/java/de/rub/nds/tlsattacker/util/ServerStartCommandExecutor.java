@@ -107,13 +107,13 @@ public final class ServerStartCommandExecutor {
     public String getServerErrorOutputString() {
 	return getOutputString(serverErrorOutput);
     }
-    
+
     public void clearServerOutput() {
-        serverOutput.clear();
+	serverOutput.clear();
     }
-    
+
     public void clearServerErrorOutput() {
-        serverErrorOutput.clear();
+	serverErrorOutput.clear();
     }
 
     /**

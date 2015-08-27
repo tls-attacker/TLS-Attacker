@@ -225,7 +225,7 @@ public final class TlsContextAnalyzer {
 	}
 	return -1;
     }
-    
+
     /**
      * Returns true in case there is a modification in the handshake
      * 
@@ -233,16 +233,16 @@ public final class TlsContextAnalyzer {
      * @return
      */
     public static boolean containsModifiedHandshake(TlsContext tlsContext) {
-        int unexpected = getUnexpectedMessagePosition(tlsContext);
-        int finished = getServerFinishedMessagePosition(tlsContext);
-        if(unexpected != -1) {
-            if(finished == -1) {
-                return true;
-            } else {
-                return unexpected < finished;
-            }
-        }
-        return false;
+	int unexpected = getUnexpectedMessagePosition(tlsContext);
+	int finished = getServerFinishedMessagePosition(tlsContext);
+	if (unexpected != -1) {
+	    if (finished == -1) {
+		return true;
+	    } else {
+		return unexpected < finished;
+	    }
+	}
+	return false;
     }
 
     /**
@@ -296,7 +296,7 @@ public final class TlsContextAnalyzer {
 	}
 	return -1;
     }
-    
+
     /**
      * Returns true in case the workflow a server Finished Message
      * 
@@ -308,12 +308,12 @@ public final class TlsContextAnalyzer {
     }
 
     private static int getServerFinishedMessagePosition(TlsContext tlsContext) {
-        List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
+	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
 	for (int i = 0; i < protocolMessages.size(); i++) {
 	    ProtocolMessage pm = protocolMessages.get(i);
 	    if ((pm.getMessageIssuer() != tlsContext.getMyConnectionEnd())
 		    && (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE)) {
-                HandshakeMessage hm = (HandshakeMessage) pm;
+		HandshakeMessage hm = (HandshakeMessage) pm;
 		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
 		    return i;
 		}
