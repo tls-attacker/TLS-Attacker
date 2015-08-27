@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
@@ -73,7 +75,9 @@ public class BleichenbacherAttackTest extends Attacker<BleichenbacherTestCommand
 	    LOGGER.info("Sent by: {}, Type: {}", pm.getMessageIssuer(), pm.getProtocolMessageType());
 	    if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
 		AlertMessage alert = (AlertMessage) pm;
-		LOGGER.info("  Alert {}: {}", alert.getLevel(), alert.getDescription());
+		AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
+		AlertLevel al = AlertLevel.getAlertLevel(alert.getLevel().getValue());
+		LOGGER.info("  Alert {}: {}", al, ad);
 	    }
 	}
 
