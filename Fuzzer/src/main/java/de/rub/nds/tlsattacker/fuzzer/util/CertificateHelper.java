@@ -68,11 +68,13 @@ public class CertificateHelper {
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	try {
 	    workflowExecutor.executeWorkflow();
-            return tlsContext.getServerCertificate();
+	    return tlsContext.getServerCertificate();
 	} catch (Exception e) {
 	    SimpleFuzzer.LOGGER.debug(e);
 	    transportHandler.closeConnection();
-            throw new ConfigurationException("No server certificate was fetched. Was the handshake executed correctly? Execute the program again.", e);
+	    throw new ConfigurationException(
+		    "No server certificate was fetched. Was the handshake executed correctly? Execute the program again.",
+		    e);
 	}
     }
 

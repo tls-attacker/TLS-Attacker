@@ -34,7 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class SimpleFuzzerConfig extends ClientCommandConfig {
@@ -84,46 +84,46 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     boolean restartServerInEachInteration = false;
 
     public SimpleFuzzerConfig() {
-        cipherSuites.clear();
-        cipherSuites.addAll(CipherSuite.getImplemented());
-        // shuffle ciphersuites
-        Collections.shuffle(cipherSuites);
-        // filter ciphersuites so that only identical ciphersuites hold there
-        CipherSuiteFilter.filterCipherSuites(cipherSuites);
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
-        modifiableVariableTypes = new LinkedList<>();
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.PADDING);
+	cipherSuites.clear();
+	cipherSuites.addAll(CipherSuite.getImplemented());
+	// shuffle ciphersuites
+	Collections.shuffle(cipherSuites);
+	// filter ciphersuites so that only identical ciphersuites hold there
+	CipherSuiteFilter.filterCipherSuites(cipherSuites);
+	workflowTraceType = WorkflowTraceType.HANDSHAKE;
+	modifiableVariableTypes = new LinkedList<>();
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.PADDING);
 
-        modifiableVariableFormats = new LinkedList<>();
-        modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
-        modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
-        modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
+	modifiableVariableFormats = new LinkedList<>();
+	modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
+	modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
+	modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
     }
 
     public String getServerCommand() {
-        return serverCommand;
+	return serverCommand;
     }
 
     public void setServerCommand(String serverCommand) {
-        this.serverCommand = serverCommand;
+	this.serverCommand = serverCommand;
     }
 
     public String getServerCommandFromFile() {
-        return serverCommandFromFile;
+	return serverCommandFromFile;
     }
 
     public void setServerCommandFromFile(String serverCommandFromFile) {
-        this.serverCommandFromFile = serverCommandFromFile;
+	this.serverCommandFromFile = serverCommandFromFile;
     }
 
     public Integer getModifyVariablePercentage() {
-        return modifyVariablePercentage;
+	return modifyVariablePercentage;
     }
 
     public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
-        this.modifyVariablePercentage = modifyVariablePercentage;
+	this.modifyVariablePercentage = modifyVariablePercentage;
     }
 
     // public String getModifiedVariablePattern() {
@@ -135,102 +135,102 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     // this.modifiedVariableWhitelist = modifiedVariableWhitelist;
     // }
     public List<ModifiableVariableProperty.Type> getModifiableVariableTypes() {
-        return modifiableVariableTypes;
+	return modifiableVariableTypes;
     }
 
     public void setModifiableVariableTypes(List<ModifiableVariableProperty.Type> modifiableVariableTypes) {
-        this.modifiableVariableTypes = modifiableVariableTypes;
+	this.modifiableVariableTypes = modifiableVariableTypes;
     }
 
     public List<ModifiableVariableProperty.Format> getModifiableVariableFormats() {
-        return modifiableVariableFormats;
+	return modifiableVariableFormats;
     }
 
     public void setModifiableVariableFormats(List<ModifiableVariableProperty.Format> modifiableVariableFormats) {
-        this.modifiableVariableFormats = modifiableVariableFormats;
+	this.modifiableVariableFormats = modifiableVariableFormats;
     }
 
     public Integer getDuplicateMessagePercentage() {
-        return duplicateMessagePercentage;
+	return duplicateMessagePercentage;
     }
 
     public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
-        this.duplicateMessagePercentage = duplicateMessagePercentage;
+	this.duplicateMessagePercentage = duplicateMessagePercentage;
     }
 
     public Integer getNotSendingMessagePercantage() {
-        return notSendingMessagePercantage;
+	return notSendingMessagePercantage;
     }
 
     public void setNotSendingMessagePercantage(Integer notSendingMessagePercantage) {
-        this.notSendingMessagePercantage = notSendingMessagePercantage;
+	this.notSendingMessagePercantage = notSendingMessagePercantage;
     }
 
     public Integer getAddRecordPercentage() {
-        return addRecordPercentage;
+	return addRecordPercentage;
     }
 
     public void setAddRecordPercentage(Integer addRecordPercentage) {
-        this.addRecordPercentage = addRecordPercentage;
+	this.addRecordPercentage = addRecordPercentage;
     }
 
     public boolean isInterruptAfterFirstFinding() {
-        return interruptAfterFirstFinding;
+	return interruptAfterFirstFinding;
     }
 
     public void setInterruptAfterFirstFinding(boolean interruptAfterFirstFinding) {
-        this.interruptAfterFirstFinding = interruptAfterFirstFinding;
+	this.interruptAfterFirstFinding = interruptAfterFirstFinding;
     }
 
     public String getModifiedVariableWhitelist() {
-        return modifiedVariableWhitelist;
+	return modifiedVariableWhitelist;
     }
 
     public void setModifiedVariableWhitelist(String modifiedVariableWhitelist) {
-        this.modifiedVariableWhitelist = modifiedVariableWhitelist;
+	this.modifiedVariableWhitelist = modifiedVariableWhitelist;
     }
 
     public String getModifiedVariableBlacklist() {
-        return modifiedVariableBlacklist;
+	return modifiedVariableBlacklist;
     }
 
     public void setModifiedVariableBlacklist(String modifiedVariableBlacklist) {
-        this.modifiedVariableBlacklist = modifiedVariableBlacklist;
+	this.modifiedVariableBlacklist = modifiedVariableBlacklist;
     }
 
     public FuzzingType getFuzzingType() {
-        return fuzzingType;
+	return fuzzingType;
     }
 
     public void setFuzzingType(FuzzingType fuzzingType) {
-        this.fuzzingType = fuzzingType;
+	this.fuzzingType = fuzzingType;
     }
 
     public Integer getMaxSystematicModifications() {
-        return maxSystematicModifications;
+	return maxSystematicModifications;
     }
 
     public void setMaxSystematicModifications(Integer maxSystematicModifications) {
-        this.maxSystematicModifications = maxSystematicModifications;
+	this.maxSystematicModifications = maxSystematicModifications;
     }
 
     public boolean isRestartServerInEachInteration() {
-        return restartServerInEachInteration;
+	return restartServerInEachInteration;
     }
 
     public void setRestartServerInEachInteration(boolean restartServerInEachInteration) {
-        this.restartServerInEachInteration = restartServerInEachInteration;
+	this.restartServerInEachInteration = restartServerInEachInteration;
     }
 
     public boolean containsServerCommand() {
-        return serverCommand != null || serverCommandFromFile != null;
+	return serverCommand != null || serverCommandFromFile != null;
     }
-    
+
     public String getResultingServerCommand() {
-        if(serverCommand != null) {
-            return serverCommand;
-        } else {
-            return serverCommandFromFile;
-        }
+	if (serverCommand != null) {
+	    return serverCommand;
+	} else {
+	    return serverCommandFromFile;
+	}
     }
 }

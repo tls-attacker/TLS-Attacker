@@ -21,34 +21,23 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
-import static de.rub.nds.tlsattacker.attacks.impl.PoodleAttack.LOGGER;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
-import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,6 +71,10 @@ public class BleichenbacherAttackTest extends Attacker<BleichenbacherTestCommand
 	LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
 	for (ProtocolMessage pm : protocolMessages) {
 	    LOGGER.info("Sent by: {}, Type: {}", pm.getMessageIssuer(), pm.getProtocolMessageType());
+	    if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+		AlertMessage alert = (AlertMessage) pm;
+		LOGGER.info("  Alert {}: {}", alert.getLevel(), alert.getDescription());
+	    }
 	}
 
     }
