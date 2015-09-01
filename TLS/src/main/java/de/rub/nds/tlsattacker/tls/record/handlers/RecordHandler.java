@@ -142,12 +142,14 @@ public class RecordHandler {
 	    record.setPaddingLength(paddingLength);
 	    byte[] padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
 	    record.setPadding(padding);
-	    byte[] paddedData = ArrayConverter.concatenate(macedData, record.getPadding().getValue());
-	    LOGGER.debug("Padded data before encryption:  {}", ArrayConverter.bytesToHexString(paddedData));
-	    byte[] encData = recordCipher.encrypt(paddedData);
+	    byte[] paddedMacedData = ArrayConverter.concatenate(macedData, record.getPadding().getValue());
+	    record.setPlainRecordBytes(paddedMacedData);
+	    LOGGER.debug("Padded MACed data before encryption:  {}",
+		    ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
+	    byte[] encData = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
 	    record.setEncryptedProtocolMessageBytes(encData);
 	    record.setLength(encData.length);
-	    LOGGER.debug("Padded data after encryption:  {}", ArrayConverter.bytesToHexString(encData));
+	    LOGGER.debug("Padded MACed data after encryption:  {}", ArrayConverter.bytesToHexString(encData));
 	}
 
 	return returnPointer;
@@ -179,6 +181,7 @@ public class RecordHandler {
 		    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
 		record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
 		byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);
+		record.setPlainRecordBytes(paddedData);
 		LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(paddedData));
 		int paddingLength = paddedData[paddedData.length - 1];
 		record.setPaddingLength(paddingLength);

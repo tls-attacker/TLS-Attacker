@@ -80,6 +80,12 @@ public class Record extends ModifiableVariableHolder {
     ModifiableInteger paddingLength;
 
     /**
+     * Plain record bytes (MACed and padded data)
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
+    ModifiableByteArray plainRecordBytes;
+
+    /**
      * encrypted protocol message bytes (if encryption activated)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
@@ -173,6 +179,18 @@ public class Record extends ModifiableVariableHolder {
 
     public void setPaddingLength(int paddingLength) {
 	this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+    }
+
+    public ModifiableByteArray getPlainRecordBytes() {
+	return plainRecordBytes;
+    }
+
+    public void setPlainRecordBytes(ModifiableByteArray plainRecordBytes) {
+	this.plainRecordBytes = plainRecordBytes;
+    }
+
+    public void setPlainRecordBytes(byte[] value) {
+	this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, value);
     }
 
     public ModifiableByteArray getEncryptedProtocolMessageBytes() {
