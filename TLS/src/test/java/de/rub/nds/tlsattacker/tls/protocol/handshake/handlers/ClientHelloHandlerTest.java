@@ -87,6 +87,12 @@ public class ClientHelloHandlerTest {
 	assertNotNull("Confirm function didn't return 'NULL'", returned);
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
+    
+    @Test
+    public void testPrepareMessageWithExtensions() {
+        // TODO Philip: write a method for testing a ClientHello message with 
+        // a Heartbeat and Elliptic Curve extension
+    }
 
     @Test
     public void testParseMessageAction() {
