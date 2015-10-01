@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.LenstraTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
@@ -35,6 +36,7 @@ import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
+import de.rub.nds.tlsattacker.attacks.impl.LenstraAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
@@ -78,6 +80,8 @@ public class Main {
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
 	DtlsPaddingOracleAttackTestCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackTestCommandConfig();
 	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
+	LenstraTestCommandConfig lenstraTest = new LenstraTestCommandConfig();
+	jc.addCommand(LenstraTestCommandConfig.ATTACK_COMMAND, lenstraTest);
 
 	jc.parse(args);
 
@@ -114,6 +118,9 @@ public class Main {
 		break;
 	    case DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND:
 		attacker = new DtlsPaddingOracleAttackTest(dtlsPaddingOracleAttackTest);
+		break;
+	    case LenstraTestCommandConfig.ATTACK_COMMAND:
+		attacker = new LenstraAttackTest(lenstraTest);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");
