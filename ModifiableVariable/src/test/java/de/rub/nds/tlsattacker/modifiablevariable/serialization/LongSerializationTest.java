@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Philip. Implement methods similarly to LongSerializationTest
+ * TODO Philip. Implement methods similarly to BigIntegerSerializationTest
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
