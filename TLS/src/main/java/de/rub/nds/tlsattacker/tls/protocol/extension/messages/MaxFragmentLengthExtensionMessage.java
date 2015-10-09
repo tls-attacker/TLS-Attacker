@@ -22,8 +22,8 @@ package de.rub.nds.tlsattacker.tls.protocol.extension.messages;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.MaxFragmentLengthExtensionHandler;
 

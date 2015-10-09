@@ -22,9 +22,9 @@ package de.rub.nds.tlsattacker.dtls.record.handlers;
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.dtls.record.constants.ByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -94,10 +94,10 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.handlers.Re
 	    de.rub.nds.tlsattacker.dtls.record.messages.Record dtlsRecord = (de.rub.nds.tlsattacker.dtls.record.messages.Record) record;
 	    byte[] ctArray = { record.getContentType().getValue() };
 	    byte[] pv = record.getProtocolVersion().getValue();
-	    byte[] en = ArrayConverter.intToBytes(dtlsRecord.getEpoch().getValue(), ByteLength.EPOCH);
+	    byte[] en = ArrayConverter.intToBytes(dtlsRecord.getEpoch().getValue(), RecordByteLength.EPOCH);
 	    byte[] sn = ArrayConverter.bigIntegerToNullPaddedByteArray(dtlsRecord.getSequenceNumber().getValue(),
-		    ByteLength.SEQUENCE_NUMBER);
-	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), ByteLength.RECORD_LENGTH);
+		    RecordByteLength.SEQUENCE_NUMBER);
+	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
 	    if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || epochCounter < 1) {
 		byte[] pm = record.getProtocolMessageBytes().getValue();
 		result = ArrayConverter.concatenate(result, ctArray, pv, en, sn, rl, pm);

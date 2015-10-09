@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;

@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import java.math.BigInteger;
 
 /**

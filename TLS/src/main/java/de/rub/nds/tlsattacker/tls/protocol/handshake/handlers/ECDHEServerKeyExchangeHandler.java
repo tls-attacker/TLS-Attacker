@@ -20,14 +20,14 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
 import de.rub.nds.tlsattacker.tls.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ECCurveType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -73,8 +73,8 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 
 	currentPointer = nextPointer;
 	nextPointer++;
-	ECCurveType ct = ECCurveType.getCurveType(message[currentPointer]);
-	if (ct != ECCurveType.NAMED_CURVE) {
+	EllipticCurveType ct = EllipticCurveType.getCurveType(message[currentPointer]);
+	if (ct != EllipticCurveType.NAMED_CURVE) {
 	    throw new UnsupportedOperationException("Currently only named curves are supported");
 	}
 	protocolMessage.setCurveType(ct.getValue());

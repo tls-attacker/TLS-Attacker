@@ -55,8 +55,8 @@ public class ModifiableLong extends ModifiableVariable<Long> implements Serializ
     public boolean isOriginalValueModified() {
 	return originalValue != null && originalValue.compareTo(getValue()) != 0;
     }
-    
+
     public byte[] getByteArray(int size) {
-        return ArrayConverter.longToBytes(getValue(), size);
+	return ArrayConverter.longToBytes(getValue(), size);
     }
 }

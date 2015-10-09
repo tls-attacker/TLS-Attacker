@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 
 /**

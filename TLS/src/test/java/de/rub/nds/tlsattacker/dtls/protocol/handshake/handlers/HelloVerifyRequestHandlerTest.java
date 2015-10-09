@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessag
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessageFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

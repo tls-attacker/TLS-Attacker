@@ -23,10 +23,10 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.SignatureAndHashAlgorithmsExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import java.util.List;
 
 /**

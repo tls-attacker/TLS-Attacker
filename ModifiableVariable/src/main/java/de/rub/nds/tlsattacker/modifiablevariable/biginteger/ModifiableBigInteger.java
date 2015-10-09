@@ -56,12 +56,12 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
     public boolean isOriginalValueModified() {
 	return originalValue != null && (originalValue.compareTo(getValue()) != 0);
     }
-    
+
     public byte[] getByteArray() {
-        return ArrayConverter.bigIntegerToByteArray(getValue());
+	return ArrayConverter.bigIntegerToByteArray(getValue());
     }
-    
+
     public byte[] getByteArray(int size) {
-        return ArrayConverter.bigIntegerToByteArray(getValue(), size, true);
+	return ArrayConverter.bigIntegerToByteArray(getValue(), size, true);
     }
 }
