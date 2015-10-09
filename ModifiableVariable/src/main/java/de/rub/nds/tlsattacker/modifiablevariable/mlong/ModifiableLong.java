@@ -21,6 +21,7 @@ package de.rub.nds.tlsattacker.modifiablevariable.mlong;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -53,5 +54,9 @@ public class ModifiableLong extends ModifiableVariable<Long> implements Serializ
     @Override
     public boolean isOriginalValueModified() {
 	return originalValue != null && originalValue.compareTo(getValue()) != 0;
+    }
+    
+    public byte[] getByteArray(int size) {
+        return ArrayConverter.longToBytes(getValue(), size);
     }
 }

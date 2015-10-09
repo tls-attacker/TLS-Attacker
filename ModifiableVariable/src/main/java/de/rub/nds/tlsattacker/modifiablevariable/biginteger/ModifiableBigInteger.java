@@ -21,6 +21,7 @@ package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.Serializable;
 import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -54,5 +55,13 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
     @Override
     public boolean isOriginalValueModified() {
 	return originalValue != null && (originalValue.compareTo(getValue()) != 0);
+    }
+    
+    public byte[] getByteArray() {
+        return ArrayConverter.bigIntegerToByteArray(getValue());
+    }
+    
+    public byte[] getByteArray(int size) {
+        return ArrayConverter.bigIntegerToByteArray(getValue(), size, true);
     }
 }
