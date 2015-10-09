@@ -31,7 +31,7 @@ import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;

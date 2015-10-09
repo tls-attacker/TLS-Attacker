@@ -20,7 +20,7 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

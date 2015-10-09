@@ -55,8 +55,8 @@ public class ModifiableInteger extends ModifiableVariable<Integer> implements Se
     public boolean isOriginalValueModified() {
 	return originalValue != null && originalValue.compareTo(getValue()) != 0;
     }
-    
+
     public byte[] getByteArray(int size) {
-        return ArrayConverter.intToBytes(getValue(), size);
+	return ArrayConverter.intToBytes(getValue(), size);
     }
 }

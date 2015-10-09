@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.exceptions;
 
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 
 /**
  * Invalid message type exception (thrown when unexpected TLS message appears

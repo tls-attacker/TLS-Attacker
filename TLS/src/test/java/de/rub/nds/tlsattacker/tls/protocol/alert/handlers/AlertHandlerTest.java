@@ -18,8 +18,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.alert.handlers;
 
-import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertDescription;
-import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;

@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.tls.config.CipherSuiteFilter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import java.util.Collections;
 import java.util.LinkedList;

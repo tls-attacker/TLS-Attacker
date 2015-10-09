@@ -23,10 +23,10 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.Manger;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.record.constants.ByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.Time;
 import java.io.FileInputStream;
@@ -354,12 +354,12 @@ public class ServerWithPython {
 		// object
 		result = ArrayConverter.concatenate(ProtocolMessageType.HANDSHAKE.getArrayValue(),
 			ProtocolVersion.TLS12.getValue(),
-			ArrayConverter.intToBytes(data.length, ByteLength.RECORD_LENGTH), data);
+			ArrayConverter.intToBytes(data.length, RecordByteLength.RECORD_LENGTH), data);
 		break;
 	    case CHANGE_CIPHER_SPEC:
 		result = ArrayConverter.concatenate(ProtocolMessageType.CHANGE_CIPHER_SPEC.getArrayValue(),
 			ProtocolVersion.TLS12.getValue(),
-			ArrayConverter.intToBytes(data.length, ByteLength.RECORD_LENGTH), data);
+			ArrayConverter.intToBytes(data.length, RecordByteLength.RECORD_LENGTH), data);
 		break;
 	}
 

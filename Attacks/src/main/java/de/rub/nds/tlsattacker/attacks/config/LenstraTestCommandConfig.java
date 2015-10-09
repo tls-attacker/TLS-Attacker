@@ -20,7 +20,7 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import java.util.LinkedList;
 
 /**

@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
@@ -34,7 +34,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.messages.HeartbeatExtension
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
