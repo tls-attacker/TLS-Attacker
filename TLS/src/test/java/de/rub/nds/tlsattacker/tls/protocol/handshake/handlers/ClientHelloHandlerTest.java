@@ -135,10 +135,10 @@ public class ClientHelloHandlerTest {
 	message.setExtensions(extensions);
         
         byte[] returned = handler.prepareMessageAction();
-        for (int i =0; i<returned.length; i++ )
+        /**for (int i =0; i<returned.length; i++ )
         {
             System.out.println(String.format("%02X",returned[i]));
-        }
+        }*/
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x3A }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), ArrayConverter.intToBytes (message.getSessionIdLength().getValue(),1), new byte[] { 0x00, 0x02 },
