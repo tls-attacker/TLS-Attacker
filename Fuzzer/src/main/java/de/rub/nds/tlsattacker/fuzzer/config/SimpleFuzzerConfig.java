@@ -82,6 +82,9 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 
     @Parameter(names = "-restart_server", description = "Indicates whether the server is restarted in each fuzzing iteration.")
     boolean restartServerInEachInteration = false;
+    
+    @Parameter(names = "-execute_protocol_modification", description = "If set to true, random protocol flows are generated.")
+    boolean executeProtocolModification = false;
 
     public SimpleFuzzerConfig() {
 	cipherSuites.clear();
@@ -220,6 +223,14 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 
     public void setRestartServerInEachInteration(boolean restartServerInEachInteration) {
 	this.restartServerInEachInteration = restartServerInEachInteration;
+    }
+
+    public boolean isExecuteProtocolModification() {
+        return executeProtocolModification;
+    }
+
+    public void setExecuteProtocolModification(boolean executeProtocolModification) {
+        this.executeProtocolModification = executeProtocolModification;
     }
 
     public boolean containsServerCommand() {
