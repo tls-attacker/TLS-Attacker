@@ -26,16 +26,15 @@ import de.rub.nds.tlsattacker.tls.config.converters.HeartbeatModeConverter;
 import de.rub.nds.tlsattacker.tls.config.converters.NamedCurveConverter;
 import de.rub.nds.tlsattacker.tls.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -110,6 +109,9 @@ public abstract class CommandConfig {
 
     @Parameter(names = "-max_transport_response_wait", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
     protected Integer maxTransportResponseWait;
+
+    @Parameter(names = "-enforce_transport_response_wait", description = "Enforces that the peer always waits at least the number of millis defined in the max_transport_response_wait to collect all the server response bytes. Otherwise, the peer just takes the first bytes it receives (which can have negative consequences, if for example the server response bytes arrive with a delay).")
+    protected boolean enforceTransportResponseWait;
 
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
@@ -314,5 +316,13 @@ public abstract class CommandConfig {
 
     public void setSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
 	this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
+    }
+
+    public boolean isEnforceTransportResponseWait() {
+	return enforceTransportResponseWait;
+    }
+
+    public void setEnforceTransportResponseWait(boolean enforceTransportResponseWait) {
+	this.enforceTransportResponseWait = enforceTransportResponseWait;
     }
 }

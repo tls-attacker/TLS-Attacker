@@ -24,8 +24,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.NameType;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.NameType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ServerNameIndicationExtensionHandler;
 

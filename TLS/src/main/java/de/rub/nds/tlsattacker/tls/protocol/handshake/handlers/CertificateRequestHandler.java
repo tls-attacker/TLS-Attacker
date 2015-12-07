@@ -19,10 +19,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;

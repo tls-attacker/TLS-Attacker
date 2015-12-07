@@ -26,11 +26,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertDescription;
-import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;

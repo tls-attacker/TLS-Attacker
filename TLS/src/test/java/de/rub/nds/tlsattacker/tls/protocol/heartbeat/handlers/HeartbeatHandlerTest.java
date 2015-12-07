@@ -20,9 +20,9 @@ package de.rub.nds.tlsattacker.tls.protocol.heartbeat.handlers;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.junit.Test;

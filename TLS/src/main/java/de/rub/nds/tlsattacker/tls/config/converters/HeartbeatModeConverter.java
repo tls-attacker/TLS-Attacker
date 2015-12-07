@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.tls.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import java.util.Arrays;
 
 /**

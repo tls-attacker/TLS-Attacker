@@ -22,7 +22,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;

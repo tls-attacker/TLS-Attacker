@@ -19,12 +19,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension.handlers;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**

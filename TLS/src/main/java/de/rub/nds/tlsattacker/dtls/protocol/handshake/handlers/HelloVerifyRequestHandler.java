@@ -23,10 +23,10 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.handlers.HandshakeMessageHa
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.record.constants.ByteLength;
+import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -86,7 +86,7 @@ public class HelloVerifyRequestHandler<HandshakeMessage extends HelloVerifyReque
 	protocolMessageFields.setLength(length);
 
 	currentPointer = nextPointer;
-	nextPointer = currentPointer + ByteLength.PROTOCOL_VERSION;
+	nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
 	ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
 		currentPointer, nextPointer));
 	protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());

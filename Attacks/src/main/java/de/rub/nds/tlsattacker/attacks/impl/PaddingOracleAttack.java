@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -71,7 +70,13 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
 	LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
 
-	for (ProtocolMessage pm : lastMessages) {
+	for (int i = 0; i < lastMessages.size(); i++) {
+	    ProtocolMessage pm = lastMessages.get(i);
+	    Record r = records.get(i);
+	    LOGGER.info("----- NEXT HANDSHAKE WITH MODIFIED APPLICATION DATA RECORD -----");
+	    LOGGER.info("Plain record bytes of the modified record: ");
+	    LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
+	    LOGGER.info("Last protocol message in the protocol flow");
 	    LOGGER.info(pm.toString());
 	}
     }

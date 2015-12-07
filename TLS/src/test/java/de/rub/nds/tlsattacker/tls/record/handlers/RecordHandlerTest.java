@@ -20,7 +20,7 @@
 package de.rub.nds.tlsattacker.tls.record.handlers;
 
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.messages.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;

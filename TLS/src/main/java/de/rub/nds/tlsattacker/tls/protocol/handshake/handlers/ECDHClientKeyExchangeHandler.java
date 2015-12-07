@@ -1,31 +1,30 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
 import de.rub.nds.tlsattacker.tls.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -82,6 +81,9 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 		LOGGER.debug("  Parameter B: {}", publicKeyParameters.getParameters().getCurve().getB());
 		LOGGER.debug("  Base point: {} ", publicKeyParameters.getParameters().getG());
 		LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
+	    } catch (NoSuchMethodError e) {
+		LOGGER.debug("The method was not found. It is possible that it is because an older bouncy castle"
+			+ " library was used. We try to proceed the workflow.", e);
 	    } catch (IOException e) {
 		throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate", e);
 	    }

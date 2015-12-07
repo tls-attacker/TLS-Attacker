@@ -171,16 +171,18 @@ public class SimpleFuzzer extends Fuzzer {
 		TlsContext tmpTlsContext = configHandler.initializeTlsContext(fuzzerConfig);
 		WorkflowTrace tmpWorkflow = tmpTlsContext.getWorkflowTrace();
 
-		if (step != 0) {
-		    // protocol flow modification is executed only in later
-		    // steps
-		    // in the first step, we fuzz the given workflow
-		    executeProtocolModification(tmpWorkflow, tmpTlsContext.getMyConnectionEnd());
-		}
+		executeProtocolModification(tmpWorkflow, tmpTlsContext.getMyConnectionEnd());
+		addRandomRecords(tmpWorkflow, ConnectionEnd.CLIENT);
 
 		List<ModifiableVariableField> fields = ModifiableVariableAnalyzer
 			.getAllModifiableVariableFieldsRecursively(tmpWorkflow);
 		for (int fieldNumber = 0; fieldNumber < fields.size(); fieldNumber++) {
+		    if (!FuzzingHelper.isModifiableVariableModificationAllowed(fields.get(fieldNumber).getField(),
+			    fuzzerConfig.getModifiableVariableTypes(), fuzzerConfig.getModifiableVariableFormats(),
+			    fuzzerConfig.getModifiedVariableWhitelist(), fuzzerConfig.getModifiedVariableBlacklist())) {
+			System.out.println("skipping " + fields.get(fieldNumber).getField().getName());
+			continue;
+		    }
 		    for (int i = 0; i < fuzzerConfig.getMaxSystematicModifications(); i++) {
 			if (fuzzerConfig.containsServerCommand() && fuzzerConfig.isRestartServerInEachInteration()) {
 			    sce = startTestServer(fuzzerConfig.getResultingServerCommand());
@@ -232,14 +234,19 @@ public class SimpleFuzzer extends Fuzzer {
     }
 
     private void executeProtocolModification(WorkflowTrace workflow, ConnectionEnd myConnectionEnd) {
-	while (FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getDuplicateMessagePercentage())) {
-	    FuzzingHelper.duplicateRandomProtocolMessage(workflow, myConnectionEnd);
+	if (fuzzerConfig.isExecuteProtocolModification()) {
+	    while (FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getDuplicateMessagePercentage())) {
+		FuzzingHelper.duplicateRandomProtocolMessage(workflow, myConnectionEnd);
+	    }
+	    while (FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getNotSendingMessagePercantage())) {
+		FuzzingHelper.getRandomProtocolMessage(workflow, myConnectionEnd).setGoingToBeSent(false);
+	    }
 	}
+    }
+
+    private void addRandomRecords(WorkflowTrace workflow, ConnectionEnd myConnectionEnd) {
 	while (FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getAddRecordPercentage())) {
 	    FuzzingHelper.addRecordsAtRandom(workflow, myConnectionEnd);
-	}
-	while (FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getNotSendingMessagePercantage())) {
-	    FuzzingHelper.getRandomProtocolMessage(workflow, myConnectionEnd).setGoingToBeSent(false);
 	}
     }
 

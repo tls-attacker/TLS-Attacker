@@ -19,12 +19,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

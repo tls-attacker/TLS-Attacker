@@ -26,11 +26,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertDescription;
-import de.rub.nds.tlsattacker.tls.protocol.alert.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.handlers.HeartbeatHandler;
-import de.rub.nds.tlsattacker.tls.protocol.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 

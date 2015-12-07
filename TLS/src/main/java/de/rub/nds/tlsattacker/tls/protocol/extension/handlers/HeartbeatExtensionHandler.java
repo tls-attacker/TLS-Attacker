@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension.handlers;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;

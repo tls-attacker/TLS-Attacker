@@ -20,7 +20,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

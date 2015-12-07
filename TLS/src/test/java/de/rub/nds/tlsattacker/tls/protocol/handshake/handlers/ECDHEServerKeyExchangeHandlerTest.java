@@ -19,11 +19,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ECCurveType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHEServerKeyExchangeMessage;
@@ -77,8 +77,8 @@ public class ECDHEServerKeyExchangeHandlerTest {
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
 	assertEquals("Message length must be 208", new Integer(208), handshakeMessageFields.getLength().getValue());
-	assertEquals("Curve Type must be named curve", ECCurveType.NAMED_CURVE,
-		ECCurveType.getCurveType(message.getCurveType().getValue()));
+	assertEquals("Curve Type must be named curve", EllipticCurveType.NAMED_CURVE,
+		EllipticCurveType.getCurveType(message.getCurveType().getValue()));
 	assertEquals("Named Curve must be sect571r1", NamedCurve.SECT571R1,
 		NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
 	assertEquals("Public key length is 145", new Integer(145), message.getPublicKeyLength().getValue());
@@ -107,8 +107,8 @@ public class ECDHEServerKeyExchangeHandlerTest {
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
 	assertEquals("Message length must be 281", new Integer(281), handshakeMessageFields.getLength().getValue());
-	assertEquals("Curve Type must be named curve", ECCurveType.NAMED_CURVE,
-		ECCurveType.getCurveType(message.getCurveType().getValue()));
+	assertEquals("Curve Type must be named curve", EllipticCurveType.NAMED_CURVE,
+		EllipticCurveType.getCurveType(message.getCurveType().getValue()));
 	assertEquals("Named Curve must be sect571r1", NamedCurve.SECT571R1,
 		NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
 	assertEquals("Public key length is 145", new Integer(145), message.getPublicKeyLength().getValue());

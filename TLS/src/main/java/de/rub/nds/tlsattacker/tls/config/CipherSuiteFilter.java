@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import java.util.List;
 
 /**

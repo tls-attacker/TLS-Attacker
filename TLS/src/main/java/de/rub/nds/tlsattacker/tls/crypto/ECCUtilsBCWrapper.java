@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import java.io.IOException;
 import java.io.InputStream;
 import org.bouncycastle.crypto.params.ECDomainParameters;

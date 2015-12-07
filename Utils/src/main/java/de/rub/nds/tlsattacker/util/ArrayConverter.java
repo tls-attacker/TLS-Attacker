@@ -87,6 +87,29 @@ public class ArrayConverter {
     }
 
     /**
+     * Takes a long value and stores its last bytes into a byte array
+     * 
+     * @param value
+     *            long value
+     * @param size
+     *            byte size of the new integer byte array
+     * @return
+     */
+    public static final byte[] longToBytes(long value, int size) {
+	if (size < 1) {
+	    throw new IllegalArgumentException("The array must be at least of size 1");
+	}
+	byte[] result = new byte[size];
+	int shift = 0;
+	for (int i = size - 1; i >= 0; i--) {
+	    result[i] = (byte) (value >>> shift);
+	    shift += 8;
+	}
+
+	return result;
+    }
+
+    /**
      * Converts multiple bytes into one int value
      * 
      * @param value

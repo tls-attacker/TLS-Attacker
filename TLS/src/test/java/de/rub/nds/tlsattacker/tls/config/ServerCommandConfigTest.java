@@ -22,7 +22,7 @@ package de.rub.nds.tlsattacker.tls.config;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

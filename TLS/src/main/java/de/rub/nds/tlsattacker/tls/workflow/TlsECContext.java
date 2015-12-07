@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 

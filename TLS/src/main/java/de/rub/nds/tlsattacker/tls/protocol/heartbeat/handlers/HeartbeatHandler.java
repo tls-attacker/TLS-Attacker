@@ -19,9 +19,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.heartbeat.handlers;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.constants.HeartbeatByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

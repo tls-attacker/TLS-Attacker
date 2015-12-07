@@ -25,11 +25,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.ECCurveType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -111,7 +111,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public String toString() {
 	StringBuilder sb = new StringBuilder();
 	sb.append(super.toString()).append("\n  Curve Type: ")
-		.append(ECCurveType.getCurveType(this.curveType.getValue())).append("\n  Named Curve: ")
+		.append(EllipticCurveType.getCurveType(this.curveType.getValue())).append("\n  Named Curve: ")
 		.append(NamedCurve.getNamedCurve(this.namedCurve.getValue())).append("\n  Public Key: ")
 		.append(ArrayConverter.bytesToHexString(this.publicKey.getValue())).append("\n  Signature Algorithm: ")
 		.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ")
