@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
@@ -38,7 +39,7 @@ public class ServerHelloHandlerTest {
     static byte[] serverKeyExchangeWithoutExtensionBytes = ArrayConverter
 	    .hexStringToByteArray("02000046030354cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d5720682200"
 		    + "00ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0c01300");
-    
+
     static byte[] serverKeyExchangeWithHeartbeatBytes = ArrayConverter
 	    .hexStringToByteArray("0200004D030354cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d5720682200"
 		    + "00ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0c013000005000F000101");
@@ -90,7 +91,7 @@ public class ServerHelloHandlerTest {
     @Test
     public void testParseMessageWithExtensions() {
 	// TODO Philip
-        handler.initializeProtocolMessage();
+	handler.initializeProtocolMessage();
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithHeartbeatBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
@@ -111,9 +112,9 @@ public class ServerHelloHandlerTest {
 	assertEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
 		CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
 	assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
-        assertTrue("Extension must be Heartbeat", message.containsExtension(ExtensionType.HEARTBEAT));
-        
-        assertEquals("The pointer has to return the length of this message + starting position",
+	assertTrue("Extension must be Heartbeat", message.containsExtension(ExtensionType.HEARTBEAT));
+
+	assertEquals("The pointer has to return the length of this message + starting position",
 		serverKeyExchangeWithHeartbeatBytes.length, endPointer);
     }
 

@@ -25,12 +25,12 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.messages.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.extension.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class ClientHelloHandlerTest {
 
     static byte[] clientHelloWithoutExtensionBytes = ArrayConverter
 	    .hexStringToByteArray("01000059030336CCE3E132A0C5B5DE2C0560B4FF7F6CDF7AE226120E4A99C07E2D9B68B275BB20FA6F8E9770106ACE8ACAB73E18B5D867CAF8AF7E206EF496F23A206A379FC7110012C02BC02FC00AC009C013C014002F0035000A0100");
-    
+
     static byte[] clientHelloWithHeartbeatandEllipticCurvesBytes = ArrayConverter
 	    .hexStringToByteArray("0100003A0303561EAC1C71D111AB0186813D11808C3EEA236E37C0110A75B929D6E0A3F53F42000002C0300100000F000F000101000A00060004000F0001");
 
@@ -62,21 +62,21 @@ public class ClientHelloHandlerTest {
     ClientHelloHandler handler;
 
     TlsContext tlsContext = new TlsContext();
-    
-    
+
     public ClientHelloHandlerTest() {
-        //To Test DTLs uncomment (*) the following two lines and the tests, comment (**) all TLS stuff
-	//(*)tlsContext.setDtlsHandshakeCookie(cookie);
-	//(*)tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
-	tlsContext.setProtocolVersion(ProtocolVersion.TLS12);//(**)
-        handler = new ClientHelloHandler(tlsContext);
-        
+	// To Test DTLs uncomment (*) the following two lines and the tests,
+	// comment (**) all TLS stuff
+	// (*)tlsContext.setDtlsHandshakeCookie(cookie);
+	// (*)tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
+	tlsContext.setProtocolVersion(ProtocolVersion.TLS12);// (**)
+	handler = new ClientHelloHandler(tlsContext);
+
     }
 
     /**
      * Test of prepareMessageAction method, of class ClientHelloHandler.
      */
-    //(*)@Test
+    // (*)@Test
     public void testPrepareMessage() {
 	handler.setProtocolMessage(new ClientHelloMessage());
 
@@ -101,11 +101,12 @@ public class ClientHelloHandlerTest {
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
-    @Test//(**)
+    @Test
+    // (**)
     public void testPrepareMessageWithExtensions() {
 	// TODO Philip: write a method for testing a ClientHello message with
 	// a Heartbeat and Elliptic Curve extension
-        handler.setProtocolMessage(new ClientHelloMessage());
+	handler.setProtocolMessage(new ClientHelloMessage());
 
 	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
 
@@ -116,42 +117,43 @@ public class ClientHelloHandlerTest {
 	List<CompressionMethod> compressionMethods = new ArrayList();
 	compressionMethods.add(CompressionMethod.NULL);
 	message.setSupportedCompressionMethods(compressionMethods);
-        
-        HeartbeatExtensionMessage heart;
-        heart = new HeartbeatExtensionMessage();
-        heart.setHeartbeatModeConfig(HeartbeatMode.PEER_ALLOWED_TO_SEND);
-        
-        EllipticCurvesExtensionMessage ecc;
-        ecc = new EllipticCurvesExtensionMessage();
-        List<NamedCurve> curve = new ArrayList();
-        curve.add(NamedCurve.SECP160K1);
-        curve.add(NamedCurve.SECT163K1);
-        ecc.setSupportedCurvesConfig(curve);
-        
-        
-        List<ExtensionMessage> extensions = new ArrayList();
-        extensions.add(heart);
-        extensions.add(ecc);
+
+	HeartbeatExtensionMessage heart;
+	heart = new HeartbeatExtensionMessage();
+	heart.setHeartbeatModeConfig(HeartbeatMode.PEER_ALLOWED_TO_SEND);
+
+	EllipticCurvesExtensionMessage ecc;
+	ecc = new EllipticCurvesExtensionMessage();
+	List<NamedCurve> curve = new ArrayList();
+	curve.add(NamedCurve.SECP160K1);
+	curve.add(NamedCurve.SECT163K1);
+	ecc.setSupportedCurvesConfig(curve);
+
+	List<ExtensionMessage> extensions = new ArrayList();
+	extensions.add(heart);
+	extensions.add(ecc);
 	message.setExtensions(extensions);
-        
-        byte[] returned = handler.prepareMessageAction();
-        /**for (int i =0; i<returned.length; i++ )
-        {
-            System.out.println(String.format("%02X",returned[i]));
-        }*/
-        byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
+
+	byte[] returned = handler.prepareMessageAction();
+	/**
+	 * for (int i =0; i<returned.length; i++ ) {
+	 * System.out.println(String.format("%02X",returned[i])); }
+	 */
+	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x3A }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
-		message.getRandom().getValue(), ArrayConverter.intToBytes (message.getSessionIdLength().getValue(),1), new byte[] { 0x00, 0x02 },
-		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(),
-		new byte[] { 0x01, CompressionMethod.NULL.getValue()}, new byte[] { 0x00, 0x0F }, ExtensionType.HEARTBEAT.getValue(),
-                new byte[] { 0x00, 0x01, HeartbeatMode.PEER_ALLOWED_TO_SEND.getValue() }, ExtensionType.ELLIPTIC_CURVES.getValue(),
-                new byte[] { 0x00, 0x06 }, new byte[] { 0x00, 0x04 }, NamedCurve.SECP160K1.getValue(), NamedCurve.SECT163K1.getValue()  );
+		message.getRandom().getValue(), ArrayConverter.intToBytes(message.getSessionIdLength().getValue(), 1),
+		new byte[] { 0x00, 0x02 }, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(), new byte[] {
+			0x01, CompressionMethod.NULL.getValue() }, new byte[] { 0x00, 0x0F },
+		ExtensionType.HEARTBEAT.getValue(),
+		new byte[] { 0x00, 0x01, HeartbeatMode.PEER_ALLOWED_TO_SEND.getValue() },
+		ExtensionType.ELLIPTIC_CURVES.getValue(), new byte[] { 0x00, 0x06 }, new byte[] { 0x00, 0x04 },
+		NamedCurve.SECP160K1.getValue(), NamedCurve.SECT163K1.getValue());
 
 	assertNotNull("Confirm function didn't return 'NULL'", returned);
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
-    //(*)@Test
+    // (*)@Test
     public void testParseMessageAction() {
 	handler.setProtocolMessage(new ClientHelloMessage());
 
