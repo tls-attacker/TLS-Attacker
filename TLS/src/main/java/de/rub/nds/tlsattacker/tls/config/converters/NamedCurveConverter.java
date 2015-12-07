@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.tls.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import java.util.Arrays;
 
 /**

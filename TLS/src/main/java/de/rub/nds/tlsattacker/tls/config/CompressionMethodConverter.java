@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.tls.config;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import java.util.Arrays;
 
 /**

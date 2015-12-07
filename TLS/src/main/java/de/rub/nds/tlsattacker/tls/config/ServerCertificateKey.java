@@ -18,7 +18,7 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
