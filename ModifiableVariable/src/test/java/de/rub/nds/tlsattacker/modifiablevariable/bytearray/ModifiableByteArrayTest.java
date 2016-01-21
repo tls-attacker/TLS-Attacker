@@ -66,231 +66,125 @@ public class ModifiableByteArrayTest {
 	assertArrayEquals(originalValue, instance.getValue());
     }
 
-    // /**
-    // * Test of setExplicitValue method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testExplicitValue() {
-    // LOGGER.info("testExplicitValue");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setExplicitValue(modification1);
-    //
-    // assertArrayEquals(modification1, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setXorFirstBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testXorFirstBytes() {
-    // LOGGER.info("testXorFirstBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setXorFirstBytes(modification1);
-    //
-    // byte[] expResult = originalValue.clone();
-    // for (int i = 0; i < modification1.length; i++) {
-    // expResult[i] = (byte) (originalValue[i] ^ modification1[i]);
-    // }
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    //
-    // instance.setXorFirstBytes(modification2);
-    //
-    // Exception e = null;
-    // try {
-    // instance.getValue();
-    // } catch (ArrayIndexOutOfBoundsException ae) {
-    // e = ae;
-    // LOGGER.debug(ae.getLocalizedMessage());
-    // }
-    // assertNotNull(e);
-    // }
-    //
-    // /**
-    // * Test of setXorLastBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testXorLastBytes() {
-    // LOGGER.info("testXorLastBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setXorLastBytes(modification1);
-    //
-    // byte[] expResult = originalValue.clone();
-    // int start = expResult.length - modification1.length;
-    // for (int i = 0; i < modification1.length; i++) {
-    // expResult[start + i] = (byte) (originalValue[start + i] ^
-    // modification1[i]);
-    // }
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    //
-    // instance.setXorLastBytes(modification2);
-    //
-    // Exception e = null;
-    // try {
-    // instance.getValue();
-    // } catch (ArrayIndexOutOfBoundsException ae) {
-    // e = ae;
-    // LOGGER.debug(ae.getLocalizedMessage());
-    // }
-    // assertNotNull(e);
-    // }
-    //
-    // /**
-    // * Test of setPrependBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testPrependBytes() {
-    // LOGGER.info("testPrependBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setPrependBytes(modification1);
-    //
-    // byte[] expResult = ArrayConverter.concatenate(modification1,
-    // originalValue);
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setAppendBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testAppendBytes() {
-    // LOGGER.info("testAppendBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setAppendBytes(modification1);
-    //
-    // byte[] expResult = ArrayConverter.concatenate(originalValue,
-    // modification1);
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setDeleteLastBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testDeleteLastBytes() {
-    // LOGGER.info("testDeleteLastBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setDeleteFirstBytes(2);
-    //
-    // byte[] expResult = Arrays.copyOfRange(originalValue, 2,
-    // originalValue.length);
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setDeleteFirstBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testDeleteFirstBytes() {
-    // LOGGER.info("testDeleteFirstBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setDeleteLastBytes(2);
-    //
-    // byte[] expResult = Arrays.copyOf(originalValue, originalValue.length -
-    // 2);
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setDeleteBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testSetDeleteBytes() {
-    // LOGGER.info("testDeleteBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setDeleteBytes(3);
-    // instance.setPosition(2);
-    //
-    // byte[] expResult = new byte[]{(byte) 0, (byte) 1, (byte) 5, (byte) 6};
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setInsertBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testInsertBytes() {
-    // LOGGER.info("testInsertBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setInsertBytes(modification1);
-    // instance.setPosition(4);
-    //
-    // byte[] expResult = ArrayConverter.concatenate(
-    // Arrays.copyOf(originalValue, 4), modification1,
-    // Arrays.copyOfRange(originalValue, 4, originalValue.length));
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    // }
-    //
-    // /**
-    // * Test of setXorBytes method, of class ModifiableByteArray.
-    // */
-    // @Test
-    // public void testXorBytes() {
-    // LOGGER.info("testXorBytes");
-    // ModifiableByteArray instance = new ModifiableByteArray();
-    // instance.setValue(originalValue);
-    // instance.setXorBytes(modification1);
-    // instance.setPosition(2);
-    //
-    // byte[] expResult = originalValue.clone();
-    // expResult[2] = 0;
-    // expResult[3] = 0;
-    //
-    // LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-    // LOGGER.debug("Computed: " +
-    // ArrayConverter.bytesToHexString(instance.getValue()));
-    // assertArrayEquals(expResult, instance.getValue());
-    //
-    // instance.setPosition(6);
-    // Exception e = null;
-    // try {
-    // instance.getValue();
-    // } catch (ArrayIndexOutOfBoundsException ae) {
-    // e = ae;
-    // LOGGER.debug(ae.getLocalizedMessage());
-    // }
-    // assertNotNull(e);
-    // }
+    /**
+     * Test of setExplicitValue method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testExplicitValue() {
+        LOGGER.info("testExplicitValue");
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(modification1);
+        start.setModification(modifier);
+        assertArrayEquals(modification1, start.getValue());
+    }
+
+     /**
+     * Test of setXorFirstBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testXorFirstBytes() {
+        LOGGER.info("testXorFirstBytes");
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(modification1, 0);
+        start.setModification(modifier);
+
+        byte[] expResult = originalValue.clone();
+        for (int i = 0; i < modification1.length; i++) {
+            expResult[i] = (byte) (originalValue[i] ^ modification1[i]);
+        }
+        
+        assertArrayEquals(expResult, start.getValue());
+
+        VariableModification<byte[]> modifier2 = ByteArrayModificationFactory.xor(modification2, 0);
+        start.setModification(modifier2);
+
+        Exception e = null;
+        try {
+            start.getValue();
+        } catch (ArrayIndexOutOfBoundsException ae) {
+            e = ae;
+            LOGGER.debug(ae.getLocalizedMessage());
+        }
+        assertNotNull(e);
+    }
+    
+    /**
+     * Test of setXorLastBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testXorLastBytes() {
+        LOGGER.info("testXorLastBytes");
+
+        byte[] expResult = originalValue.clone();
+        int first = expResult.length - modification1.length;
+        for (int i = 0; i < modification1.length; i++) {
+            expResult[first + i] = (byte) (originalValue[first + i]
+                    ^ modification1[i]);
+        }
+        
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(modification1, first);
+        start.setModification(modifier);
+
+        LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
+        LOGGER.debug("Computed: "
+                + ArrayConverter.bytesToHexString(start.getValue()));
+        assertArrayEquals(expResult, start.getValue());
+
+        VariableModification<byte[]> modifier2 = ByteArrayModificationFactory.xor(modification2, first);
+        start.setModification(modifier2);
+
+        Exception e = null;
+        try {
+            start.getValue();
+        } catch (ArrayIndexOutOfBoundsException ae) {
+            e = ae;
+            LOGGER.debug(ae.getLocalizedMessage());
+        }
+        assertNotNull(e);
+    }
+    
+    /**
+     * Test of setPrependBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testPrependBytes() {
+        LOGGER.info("testPrependBytes");
+        // TODO Robert
+    }
+
+    /**
+     * Test of setAppendBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testAppendBytes() {
+        LOGGER.info("testAppendBytes");
+        // TODO Robert
+    }
+
+    /**
+     * Test of setDeleteLastBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testDeleteLastBytes() {
+        LOGGER.info("testDeleteLastBytes");
+        // TODO Robert
+    }
+
+    /**
+     * Test of setDeleteFirstBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testDeleteFirstBytes() {
+        LOGGER.info("testDeleteFirstBytes");
+        // TODO Robert
+    }
+
+    /**
+     * Test of setInsertBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testInsertBytes() {
+        LOGGER.info("testInsertBytes");
+        // TODO Robert
+    }
 
     /**
      * Test of add method, of class BigIntegerModificationFactory.
