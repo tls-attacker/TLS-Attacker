@@ -71,83 +71,81 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testExplicitValue() {
-        LOGGER.info("testExplicitValue");
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(modification1);
-        start.setModification(modifier);
-        assertArrayEquals(modification1, start.getValue());
+	LOGGER.info("testExplicitValue");
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(modification1);
+	start.setModification(modifier);
+	assertArrayEquals(modification1, start.getValue());
     }
 
-     /**
+    /**
      * Test of setXorFirstBytes method, of class ModifiableByteArray.
      */
     @Test
     public void testXorFirstBytes() {
-        LOGGER.info("testXorFirstBytes");
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(modification1, 0);
-        start.setModification(modifier);
+	LOGGER.info("testXorFirstBytes");
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(modification1, 0);
+	start.setModification(modifier);
 
-        byte[] expResult = originalValue.clone();
-        for (int i = 0; i < modification1.length; i++) {
-            expResult[i] = (byte) (originalValue[i] ^ modification1[i]);
-        }
-        
-        assertArrayEquals(expResult, start.getValue());
+	byte[] expResult = originalValue.clone();
+	for (int i = 0; i < modification1.length; i++) {
+	    expResult[i] = (byte) (originalValue[i] ^ modification1[i]);
+	}
 
-        VariableModification<byte[]> modifier2 = ByteArrayModificationFactory.xor(modification2, 0);
-        start.setModification(modifier2);
+	assertArrayEquals(expResult, start.getValue());
 
-        Exception e = null;
-        try {
-            start.getValue();
-        } catch (ArrayIndexOutOfBoundsException ae) {
-            e = ae;
-            LOGGER.debug(ae.getLocalizedMessage());
-        }
-        assertNotNull(e);
+	VariableModification<byte[]> modifier2 = ByteArrayModificationFactory.xor(modification2, 0);
+	start.setModification(modifier2);
+
+	Exception e = null;
+	try {
+	    start.getValue();
+	} catch (ArrayIndexOutOfBoundsException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
     }
-    
+
     /**
      * Test of setXorLastBytes method, of class ModifiableByteArray.
      */
     @Test
     public void testXorLastBytes() {
-        LOGGER.info("testXorLastBytes");
+	LOGGER.info("testXorLastBytes");
 
-        byte[] expResult = originalValue.clone();
-        int first = expResult.length - modification1.length;
-        for (int i = 0; i < modification1.length; i++) {
-            expResult[first + i] = (byte) (originalValue[first + i]
-                    ^ modification1[i]);
-        }
-        
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(modification1, first);
-        start.setModification(modifier);
+	byte[] expResult = originalValue.clone();
+	int first = expResult.length - modification1.length;
+	for (int i = 0; i < modification1.length; i++) {
+	    expResult[first + i] = (byte) (originalValue[first + i] ^ modification1[i]);
+	}
 
-        LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
-        LOGGER.debug("Computed: "
-                + ArrayConverter.bytesToHexString(start.getValue()));
-        assertArrayEquals(expResult, start.getValue());
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(modification1, first);
+	start.setModification(modifier);
 
-        VariableModification<byte[]> modifier2 = ByteArrayModificationFactory.xor(modification2, first);
-        start.setModification(modifier2);
+	LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
+	LOGGER.debug("Computed: " + ArrayConverter.bytesToHexString(start.getValue()));
+	assertArrayEquals(expResult, start.getValue());
 
-        Exception e = null;
-        try {
-            start.getValue();
-        } catch (ArrayIndexOutOfBoundsException ae) {
-            e = ae;
-            LOGGER.debug(ae.getLocalizedMessage());
-        }
-        assertNotNull(e);
+	VariableModification<byte[]> modifier2 = ByteArrayModificationFactory.xor(modification2, first);
+	start.setModification(modifier2);
+
+	Exception e = null;
+	try {
+	    start.getValue();
+	} catch (ArrayIndexOutOfBoundsException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
     }
-    
+
     /**
      * Test of setPrependBytes method, of class ModifiableByteArray.
      */
     @Test
     public void testPrependBytes() {
-        LOGGER.info("testPrependBytes");
-        // TODO Robert
+	LOGGER.info("testPrependBytes");
+	// TODO Robert
     }
 
     /**
@@ -155,8 +153,8 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testAppendBytes() {
-        LOGGER.info("testAppendBytes");
-        // TODO Robert
+	LOGGER.info("testAppendBytes");
+	// TODO Robert
     }
 
     /**
@@ -164,8 +162,8 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testDeleteLastBytes() {
-        LOGGER.info("testDeleteLastBytes");
-        // TODO Robert
+	LOGGER.info("testDeleteLastBytes");
+	// TODO Robert
     }
 
     /**
@@ -173,8 +171,8 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testDeleteFirstBytes() {
-        LOGGER.info("testDeleteFirstBytes");
-        // TODO Robert
+	LOGGER.info("testDeleteFirstBytes");
+	// TODO Robert
     }
 
     /**
@@ -182,8 +180,8 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testInsertBytes() {
-        LOGGER.info("testInsertBytes");
-        // TODO Robert
+	LOGGER.info("testInsertBytes");
+	// TODO Robert
     }
 
     /**
