@@ -46,7 +46,7 @@ $ java -jar Attacks-1.0-SNAPSHOT-jar-with-dependencies.jar padding_oracle -conne
 ```
 
 In case you are a more experienced developer, you can create your own TLS message flow. For example:
-```
+```java
 	TransportHandler transportHandler = initializeTransportHandler(config);
 	TlsContext context = initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = initializeWorkflowExecutor(transportHandler, context);
