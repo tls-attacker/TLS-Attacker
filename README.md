@@ -1,4 +1,25 @@
-# TLS-Attacker-Development
+# TLS-Attacker
+TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an oportunity to easily define a custom TLS protocol flow and test it against his TLS library.
+
+## Compilation
+In order to compile and use TLS-Attacker, you need to have Java and maven installed. Run the maven command from the TLS-Attacker directory:
+```bash
+$ cd TLS-Attacker
+$ mvn clean package
+```
+Alternatively, if you are in hurry, you can skip the tests by using:
+```bash
+$ mvn clean package -DskipTests=true
+```
+## Code Structure
+TLS-Attacker consists of several (maven) projects:
+- Utils: contains utilities for Array handling or for deep object copying
+- ModifiableVariable: one of the basic modules. It contains modifiable variables that allow one to execute (specific as well as random) variable modifications during the protocol flow. You can for example execute a XOR operation on a byte array, while using this byte array to construct your TLS protocol message. ModifiableVariables are used in the protocol messages.
+- TLS: TLS protocol implementation, currently (D)TLS1.2 compatible. 
+- Attacks: Implementation of some well-known attacks and tests for these attacks.
+- Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
+
+You can find more information about these modules and about using TLS-Attacker in the Wiki.
 
 Examples:
 
