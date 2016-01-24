@@ -131,7 +131,7 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE_VERIFY.getValue()) {
-	    throw new InvalidMessageTypeException("This is not a Certificate Request message");
+	    throw new InvalidMessageTypeException("This is not a Certificate Verify message");
 	}
 	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
