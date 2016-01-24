@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -30,6 +31,7 @@ import static org.junit.Assert.*;
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @author Florian Pfützenreuter - florian.pfuetzenreuter@rub.de
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ServerHelloDoneHandlerTest {
 
@@ -44,7 +46,16 @@ public class ServerHelloDoneHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-	// todo
+	handler.setProtocolMessage(new ServerHelloDoneMessage());
+
+	ServerHelloDoneMessage message = (ServerHelloDoneMessage) handler.getProtocolMessage();
+
+	byte[] returned = handler.prepareMessageAction();
+	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO_DONE.getValue() },
+		new byte[] { 0x00, 0x00, 0x00 });
+
+	assertNotNull("Confirm function didn't return 'NULL'", returned);
+	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
     /**
