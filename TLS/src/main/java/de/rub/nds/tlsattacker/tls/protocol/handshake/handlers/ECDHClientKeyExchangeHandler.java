@@ -45,6 +45,7 @@ import org.bouncycastle.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage> {
 
@@ -57,7 +58,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     }
 
     @Override
-    public int parseMessageAction(byte[] message, int pointer) {
+    public int parseKeyExchangeMessage(byte[] message, int pointer) {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 
