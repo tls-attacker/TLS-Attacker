@@ -24,14 +24,21 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -112,8 +119,62 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     }
     
     @Override
-    int parseKeyExchangeMessage (byte [] message, int pointer)
+    int parseKeyExchangeMessage (byte [] message, int currentPointer)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int nextPointer = currentPointer + HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH;
+	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setEncryptedPremasterSecretLength(length);
+	currentPointer = nextPointer;
+        
+        nextPointer = currentPointer + length;
+	protocolMessage.setEncryptedPremasterSecret(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	
+        byte [] encryptedPremasterSecret = protocolMessage.getEncryptedPremasterSecret().getValue();
+        
+        KeyStore ks = tlsContext.getKeyStore();
+        
+        try {
+              Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
+              RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
+              
+              Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
+	    cipher.init(Cipher.DECRYPT_MODE, rsaKey);
+	    LOGGER.debug("Decrypting the following encrypted premaster secret: {}",
+		    ArrayConverter.bytesToHexString(encryptedPremasterSecret));
+	    byte[] decrypted = cipher.doFinal(encryptedPremasterSecret);
+            
+            protocolMessage.setPlainPaddedPremasterSecret(decrypted);
+            
+        
+        }catch (KeyStoreException | NoSuchAlgorithmException| UnrecoverableKeyException | InvalidKeyException | NoSuchProviderException 
+                | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
+	    throw new ConfigurationException("Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
+	}
+        
+        byte [] plainPaddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
+        
+        int plainPaddedPremasterSecretLength = plainPaddedPremasterSecret.length;
+        
+        int plainPaddedPremasterSecretoffset = plainPaddedPremasterSecretLength - 48;
+        
+        byte [] premasterSecret = Arrays.copyOfRange(plainPaddedPremasterSecret, plainPaddedPremasterSecretoffset, plainPaddedPremasterSecretLength);
+        
+        protocolMessage.setPremasterSecret(premasterSecret);
+        
+        byte[] random = tlsContext.getClientServerRandom();
+
+	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+		tlsContext.getSelectedCipherSuite());
+	byte[] masterSecret = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), protocolMessage
+		.getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
+		HandshakeByteLength.MASTER_SECRET, prfAlgorithm.getJavaName());
+	protocolMessage.setMasterSecret(masterSecret);
+	LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
+
+	tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
+        
+        currentPointer = nextPointer;
+
+	return currentPointer;
     }
 }
