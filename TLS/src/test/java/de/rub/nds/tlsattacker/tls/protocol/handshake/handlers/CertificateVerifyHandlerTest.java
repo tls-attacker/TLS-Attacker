@@ -19,16 +19,36 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
+import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class CertificateVerifyHandlerTest {
 
+    CertificateVerifyHandler handler;
+
+    TlsContext tlsContext;
+
     public CertificateVerifyHandlerTest() {
+	tlsContext = new TlsContext();
+	handler = new CertificateVerifyHandler(tlsContext);
     }
 
     /**
@@ -44,7 +64,25 @@ public class CertificateVerifyHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-	// todo
+
+	handler.initializeProtocolMessage();
+
+	byte[] inputBytes = { HandshakeMessageType.CERTIFICATE_VERIFY.getValue() };
+	byte[] sigHashAlg = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getValue();
+	inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x05 }, new byte[] { 0x25,
+		0x26, 0x27, 0x28, 0x29 });
+	int endPointer = handler.parseMessageAction(inputBytes, 0);
+	CertificateVerifyMessage message = (CertificateVerifyMessage) handler.getProtocolMessage();
+
+	assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
+	assertEquals("Confirm actual message length", endPointer, 10);
+	assertEquals("Confirm message type", HandshakeMessageType.CERTIFICATE_VERIFY, message.getHandshakeMessageType());
+	assertArrayEquals("Confirm SignatureAndHashAlgorithm type", sigHashAlg, message.getSignatureHashAlgorithm()
+		.getValue());
+	assertTrue("Confirm Signature Length", message.getSignatureLength().getValue() == 5);
+	assertTrue("Confirm Signature",
+		Arrays.equals(message.getSignature().getValue(), new byte[] { 0x25, 0x26, 0x27, 0x28, 0x29 }));
+
     }
 
 }
