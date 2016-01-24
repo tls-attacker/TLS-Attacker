@@ -21,7 +21,9 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -36,6 +38,8 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.ECPrivateKey;
+import java.util.Arrays;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,6 +58,7 @@ import org.apache.logging.log4j.Logger;
  * obvious for every handshake message.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
 public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerifyMessage> extends
@@ -125,7 +130,34 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("not supported yet");
+	if (message[pointer] != HandshakeMessageType.CERTIFICATE_VERIFY.getValue()) {
+	    throw new InvalidMessageTypeException("This is not a Certificate Request message");
+	}
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+
+	protocolMessage.setType(message[pointer]);
+	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+
+	int nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
+	SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(Arrays
+		.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getValue());
+	currentPointer = nextPointer;
+
+	nextPointer = currentPointer + 2;
+	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessageFields.setLength(length);
+	protocolMessage.setSignatureLength(length);
+	currentPointer = nextPointer;
+
+	nextPointer = currentPointer + length;
+	protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	currentPointer = nextPointer;
+	// TODO maybe verify signature and set a boolean in TLS-Context
+
+	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
+
+	return currentPointer;
     }
 
 }
