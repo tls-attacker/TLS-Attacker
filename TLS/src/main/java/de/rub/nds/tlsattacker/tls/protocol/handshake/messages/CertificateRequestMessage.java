@@ -31,9 +31,36 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
+ * import java.util.LinkedList;
+ * import java.util.List;
+ * import javax.xml.bind.annotation.XmlAccessType;
+ * import javax.xml.bind.annotation.XmlAccessorType;
+ * import javax.xml.bind.annotation.XmlElement;
+ * import javax.xml.bind.annotation.XmlElementWrapper;
+ * import javax.xml.bind.annotation.XmlElements;
+ * import javax.xml.bind.annotation.XmlRootElement;
+ */
+
+/**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
+ */
+
+/**
+ * @XmlRootElement
+ * @XmlAccessorType(XmlAccessType.FIELD)
  */
 public class CertificateRequestMessage extends HandshakeMessage {
+
+    /**
+     * List of supported Client Certificate Types
+     * 
+     * @XmlElementWrapper
+     * @XmlElements(value = { @XmlElement(type = ClientCertificateType.class,
+     *                    name = "ClientCertificateTypes") }) private
+     *                    List<ClientCertificateType>
+     *                    supportedClientCertificateTypes = new LinkedList<>();
+     */
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     ModifiableInteger clientCertificateTypesCount;
@@ -140,6 +167,18 @@ public class CertificateRequestMessage extends HandshakeMessage {
 	this.distinguishedNames = ModifiableVariableFactory.safelySetValue(this.distinguishedNames, distinguishedNames);
     }
 
+    /**
+     * public void
+     * setSupportedClientCertificateTypes(List<ClientCertificateType>
+     * supportedClientCertificateTypes) { this.supportedClientCertificateTypes =
+     * supportedClientCertificateTypes; }
+     */
+
+    /**
+     * public List<ClientCertificateType> getSupportedClientCertificateTypes() {
+     * return supportedClientCertificateTypes; }
+     */
+
     @Override
     public String toString() {
 	StringBuilder sb = new StringBuilder(super.toString());
@@ -156,7 +195,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 	    sb.append(SignatureAlgorithm.getSignatureAlgorithm(signatureHashAlgorithms.getValue()[i + 1])).append(", ");
 	}
 	sb.append("\n  Distinguished Names Length: ").append(distinguishedNamesLength.getValue());
-	sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
+	// sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
 	return sb.toString();
     }
 
