@@ -31,12 +31,16 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.util.Time;
 import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
@@ -132,6 +136,60 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public byte[] prepareMessageAction() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
+
+	// TODO try to find a way to set proper Session-IDs
+	protocolMessage.setSessionId(ArrayConverter
+		.hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
+	int length = protocolMessage.getSessionId().getValue().length;
+	protocolMessage.setSessionIdLength(length);
+
+	// random handling
+	final long unixTime = Time.getUnixTime();
+	protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+
+	byte[] random = new byte[HandshakeByteLength.RANDOM];
+	RandomHelper.getRandom().nextBytes(random);
+	protocolMessage.setRandom(random);
+
+	tlsContext.setServerRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
+		.getRandom().getValue()));
+
+	CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
+	protocolMessage.setSelectedCipherSuite(selectedCipherSuite.getValue());
+
+	CompressionMethod selectedCompressionMethod = tlsContext.getCompressionMethod();
+	protocolMessage.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
+
+	byte[] result = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(), protocolMessage
+		.getUnixTime().getValue(), protocolMessage.getRandom().getValue(), ArrayConverter.intToBytes(
+		protocolMessage.getSessionIdLength().getValue(), 1), protocolMessage.getSessionId().getValue(),
+		protocolMessage.getSelectedCipherSuite().getValue(), new byte[] { protocolMessage
+			.getSelectedCompressionMethod().getValue() });
+
+	byte[] extensionBytes = null;
+	for (ExtensionMessage extension : protocolMessage.getExtensions()) {
+	    ExtensionHandler handler = extension.getExtensionHandler();
+	    handler.initializeClientHelloExtension(extension);
+	    extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
+	}
+
+	if (extensionBytes != null && extensionBytes.length != 0) {
+	    byte[] extensionLength = ArrayConverter.intToBytes(extensionBytes.length, ExtensionByteLength.EXTENSIONS);
+
+	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
+	}
+
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+
+	protocolMessageFields.setLength(result.length);
+
+	long header = (HandshakeMessageType.SERVER_HELLO.getValue() << 24)
+		+ protocolMessageFields.getLength().getValue();
+
+	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+		ArrayConverter.longToUint32Bytes(header), result));
+
+	return protocolMessage.getCompleteResultingMessage().getValue();
     }
 }
