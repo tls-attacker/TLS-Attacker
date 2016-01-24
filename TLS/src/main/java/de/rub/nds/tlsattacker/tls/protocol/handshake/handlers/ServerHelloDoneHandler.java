@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
@@ -41,7 +42,17 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
     @Override
     public byte[] prepareMessageAction() {
-	throw new UnsupportedOperationException("Not supported yet.");
+
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+
+	protocolMessageFields.setLength(0);
+
+	long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
+		+ protocolMessageFields.getLength().getValue();
+
+	protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
+
+	return protocolMessage.getCompleteResultingMessage().getValue();
     }
 
     @Override
