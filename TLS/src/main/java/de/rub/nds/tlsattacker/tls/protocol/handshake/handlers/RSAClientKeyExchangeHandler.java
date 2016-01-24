@@ -41,6 +41,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
 
@@ -108,5 +109,11 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    throw new WorkflowExecutionException(ex.getLocalizedMessage());
 	}
 
+    }
+    
+    @Override
+    int parseKeyExchangeMessage (byte [] message, int pointer)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
