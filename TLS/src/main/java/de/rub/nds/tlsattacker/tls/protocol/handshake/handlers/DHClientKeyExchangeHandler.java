@@ -46,6 +46,7 @@ import org.bouncycastle.util.BigIntegers;
  * Handler for DH and DHE ClientKeyExchange messages
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClientKeyExchangeMessage> {
 
@@ -58,7 +59,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     }
 
     @Override
-    public int parseMessageAction(byte[] message, int pointer) {
+    public int parseKeyExchangeMessage(byte[] message, int pointer) {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 
