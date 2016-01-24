@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
 public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKeyExchangeMessage> extends
@@ -63,9 +64,12 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+        
+	int resultPointer = parseKeyExchangeMessage(message, pointer);
+        
+        return resultPointer;
     }
 
     abstract byte[] prepareKeyExchangeMessage();
-
+    abstract int parseKeyExchangeMessage(byte[] message, int pointer);
 }
