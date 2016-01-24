@@ -21,12 +21,15 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 
 /**
  * 
@@ -64,10 +67,26 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
+        if (message[pointer] != HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue()) {
+	    throw new InvalidMessageTypeException("This is not a Client key exchange message");
+	}
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
         
-	int resultPointer = parseKeyExchangeMessage(message, pointer);
+        protocolMessage.setType(message[pointer]);
+
+	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessageFields.setLength(length);
+        currentPointer = nextPointer;
         
-        return resultPointer;
+	int resultPointer = this.parseKeyExchangeMessage(message, currentPointer);
+        
+        currentPointer = resultPointer;
+        
+        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
+        
+        return currentPointer;
     }
 
     abstract byte[] prepareKeyExchangeMessage();
