@@ -23,6 +23,9 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -32,6 +35,10 @@ import java.util.LinkedList;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
+ */
+
+/**
  * @param <HandshakeMessage>
  */
 public class CertificateRequestHandler<HandshakeMessage extends CertificateRequestMessage> extends
@@ -44,7 +51,50 @@ public class CertificateRequestHandler<HandshakeMessage extends CertificateReque
 
     @Override
     public byte[] prepareMessageAction() {
-	throw new UnsupportedOperationException("Not supported yet.");
+	// TODO parse Arguments from Console and set properties with
+	// Confighandler
+
+	byte[] clientCertificateTypes = { ClientCertificateType.RSA_SIGN.getValue() };
+	protocolMessage.setClientCertificateTypes(clientCertificateTypes);
+
+	int clientCertificateTypesCount = protocolMessage.getClientCertificateTypes().getValue().length;
+	protocolMessage.setClientCertificateTypesCount(clientCertificateTypesCount);
+
+	byte[] signatureAndHashAlgorithms = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512)
+		.getValue();
+	signatureAndHashAlgorithms = ArrayConverter.concatenate(signatureAndHashAlgorithms,
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA384).getValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA256).getValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA224).getValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1).getValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5).getValue());
+	protocolMessage.setSignatureHashAlgorithms(signatureAndHashAlgorithms);
+
+	int signatureAndHashAlgorithmsCount = protocolMessage.getSignatureHashAlgorithms().getValue().length;
+	protocolMessage.setSignatureHashAlgorithmsLength(signatureAndHashAlgorithmsCount);
+
+	int distinguishedNamesLength = 0;
+	protocolMessage.setDistinguishedNamesLength(distinguishedNamesLength);
+
+	byte[] result = ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage
+		.getClientCertificateTypesCount().getValue(), 1), protocolMessage.getClientCertificateTypes()
+		.getValue(), ArrayConverter.intToBytes(protocolMessage.getSignatureHashAlgorithmsLength().getValue(),
+		HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH), protocolMessage.getSignatureHashAlgorithms()
+		.getValue(), ArrayConverter.intToBytes(protocolMessage.getDistinguishedNamesLength().getValue(),
+		HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH));
+
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+
+	protocolMessageFields.setLength(result.length);
+
+	long header = (HandshakeMessageType.CERTIFICATE_REQUEST.getValue() << 24)
+		+ protocolMessageFields.getLength().getValue();
+
+	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+		ArrayConverter.longToUint32Bytes(header), result));
+
+	return protocolMessage.getCompleteResultingMessage().getValue();
+
     }
 
     @Override
