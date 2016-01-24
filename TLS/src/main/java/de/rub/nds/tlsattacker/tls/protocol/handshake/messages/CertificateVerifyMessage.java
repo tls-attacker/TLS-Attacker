@@ -29,9 +29,14 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class CertificateVerifyMessage extends HandshakeMessage {
-
+    /**
+     * selected Signature and Hashalgorithm
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    ModifiableByteArray signatureHashAlgorithm;
     /**
      * signature length
      */
@@ -51,6 +56,19 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     public CertificateVerifyMessage(ConnectionEnd messageIssuer) {
 	super(HandshakeMessageType.CERTIFICATE_VERIFY);
 	this.messageIssuer = messageIssuer;
+    }
+
+    public ModifiableByteArray getSignatureHashAlgorithm() {
+	return signatureHashAlgorithm;
+    }
+
+    public void setSignatureHashAlgorithm(ModifiableByteArray signatureHashAlgorithm) {
+	this.signatureHashAlgorithm = signatureHashAlgorithm;
+    }
+
+    public void setSignatureHashAlgorithm(byte[] signatureHashAlgorithm) {
+	this.signatureHashAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithm,
+		signatureHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {
