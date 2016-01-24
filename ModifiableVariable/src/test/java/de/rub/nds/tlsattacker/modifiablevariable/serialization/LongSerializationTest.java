@@ -39,6 +39,7 @@ import org.junit.Test;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * 
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class LongSerializationTest {
