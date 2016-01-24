@@ -35,6 +35,7 @@ import static org.junit.Assert.*;
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @author Florian Pfützenreuter - florian.pfuetzenreuter@rub.de
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class CertificateRequestHandlerTest {
 
@@ -49,6 +50,19 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
+	handler.setProtocolMessage(new CertificateRequestMessage());
+
+	CertificateRequestMessage message = (CertificateRequestMessage) handler.getProtocolMessage();
+
+	byte[] returned = handler.prepareMessageAction();
+	byte[] expected = ArrayConverter.concatenate(
+		new byte[] { HandshakeMessageType.CERTIFICATE_REQUEST.getValue() }, new byte[] { 0x00, 0x00, 0x12 },
+		new byte[] { 0x01 }, message.getClientCertificateTypes().getValue(), new byte[] { 0x00, 0x0C }, message
+			.getSignatureHashAlgorithms().getValue(), new byte[] { 0x00, 0x00 });
+
+	assertNotNull("Confirm function didn't return 'NULL'", returned);
+	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
+
     }
 
     /**
