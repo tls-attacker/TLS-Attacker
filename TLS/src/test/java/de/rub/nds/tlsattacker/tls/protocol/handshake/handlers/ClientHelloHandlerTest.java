@@ -42,6 +42,7 @@ import static org.junit.Assert.*;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ClientHelloHandlerTest {
 
@@ -104,8 +105,6 @@ public class ClientHelloHandlerTest {
     @Test
     // (**)
     public void testPrepareMessageWithExtensions() {
-	// TODO Philip: write a method for testing a ClientHello message with
-	// a Heartbeat and Elliptic Curve extension
 	handler.setProtocolMessage(new ClientHelloMessage());
 
 	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
