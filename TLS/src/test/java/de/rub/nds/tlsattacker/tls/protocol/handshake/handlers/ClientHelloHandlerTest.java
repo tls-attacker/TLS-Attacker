@@ -51,6 +51,9 @@ public class ClientHelloHandlerTest {
 
     static byte[] clientHelloWithHeartbeatandEllipticCurvesBytes = ArrayConverter
 	    .hexStringToByteArray("0100003A0303561EAC1C71D111AB0186813D11808C3EEA236E37C0110A75B929D6E0A3F53F42000002C0300100000F000F000101000A00060004000F0001");
+    
+    static byte[] clientHelloWithHeartbeatBytes = ArrayConverter
+	    .hexStringToByteArray("010000300303561EAC1C71D111AB0186813D11808C3EEA236E37C0110A75B929D6E0A3F53F42000002C03001000005000F000101");
 
     // DTLS clientHello with the dtls handshake fields (messageSeq,
     // fragmentOffset and fragmentLength) already stripped out.
@@ -61,27 +64,28 @@ public class ClientHelloHandlerTest {
     static byte[] cookie = ArrayConverter.hexStringToByteArray("1122334455667788");
 
     ClientHelloHandler handler;
+    ClientHelloHandler dtlshandler;
 
     TlsContext tlsContext = new TlsContext();
+    TlsContext dtlsContext = new TlsContext();
 
     public ClientHelloHandlerTest() {
-	// To Test DTLs uncomment (*) the following two lines and the tests,
-	// comment (**) all TLS stuff
-	// (*)tlsContext.setDtlsHandshakeCookie(cookie);
-	// (*)tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
-	tlsContext.setProtocolVersion(ProtocolVersion.TLS12);// (**)
+	tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
 	handler = new ClientHelloHandler(tlsContext);
+        dtlsContext.setDtlsHandshakeCookie(cookie);
+	dtlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
+        dtlshandler = new ClientHelloHandler(dtlsContext);
 
     }
 
     /**
      * Test of prepareMessageAction method, of class ClientHelloHandler.
      */
-    // (*)@Test
+    @Test
     public void testPrepareMessage() {
-	handler.setProtocolMessage(new ClientHelloMessage());
+	dtlshandler.setProtocolMessage(new ClientHelloMessage());
 
-	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
+	ClientHelloMessage message = (ClientHelloMessage) dtlshandler.getProtocolMessage();
 
 	List<CipherSuite> cipherSuites = new ArrayList();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
@@ -91,7 +95,7 @@ public class ClientHelloHandlerTest {
 	compressionMethods.add(CompressionMethod.NULL);
 	message.setSupportedCompressionMethods(compressionMethods);
 
-	byte[] returned = handler.prepareMessageAction();
+	byte[] returned = dtlshandler.prepareMessageAction();
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x32 }, ProtocolVersion.DTLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), new byte[] { 0x00, 0x08 }, cookie, new byte[] { 0x00, 0x02 },
@@ -103,11 +107,10 @@ public class ClientHelloHandlerTest {
     }
 
     @Test
-    // (**)
     public void testPrepareMessageWithExtensions() {
 	handler.setProtocolMessage(new ClientHelloMessage());
 
-	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
+	de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage) handler.getProtocolMessage();
 
 	List<CipherSuite> cipherSuites = new ArrayList();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
@@ -134,10 +137,7 @@ public class ClientHelloHandlerTest {
 	message.setExtensions(extensions);
 
 	byte[] returned = handler.prepareMessageAction();
-	/**
-	 * for (int i =0; i<returned.length; i++ ) {
-	 * System.out.println(String.format("%02X",returned[i])); }
-	 */
+        
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x3A }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), ArrayConverter.intToBytes(message.getSessionIdLength().getValue(), 1),
@@ -152,12 +152,12 @@ public class ClientHelloHandlerTest {
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
-    // (*)@Test
+    @Test
     public void testParseMessageAction() {
-	handler.setProtocolMessage(new ClientHelloMessage());
+	dtlshandler.setProtocolMessage(new ClientHelloMessage());
 
-	int endPointer = handler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
-	ClientHelloMessage message = (ClientHelloMessage) handler.getProtocolMessage();
+	int endPointer = dtlshandler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
+	ClientHelloMessage message = (ClientHelloMessage) dtlshandler.getProtocolMessage();
 
 	byte[] expectedRandom = ArrayConverter
 		.hexStringToByteArray("36cce3e132a0c5b5de2c0560b4ff7f6cdf7ae226120e4a99c07e2d9b68b275bb");
@@ -193,5 +193,34 @@ public class ClientHelloHandlerTest {
 	assertEquals("Check compressions length", new Integer(1), message.getCompressionLength().getValue());
 	assertArrayEquals("Check compressions", new byte[] { 0x00 }, message.getCompressions().getValue());
 	assertEquals("Check protocol message length pointer", dtlsClientHelloWithoutExtensionBytes.length, endPointer);
+    }
+    
+    /**
+     * Test of parseMessageActionwithExtensions method, of class ClientHelloHandler.
+     */
+    @Test
+    public void testParseMessageWithExtensions() {
+	handler.initializeProtocolMessage();
+
+	int endPointer = handler.parseMessageAction(clientHelloWithHeartbeatBytes, 0);
+	de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage) handler.getProtocolMessage();
+	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
+
+	assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
+		message.getHandshakeMessageType());
+	assertEquals("Message length must be 48", new Integer(48), handshakeMessageFields.getLength().getValue());
+	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
+	assertEquals("Client Session ID Length",new Integer(0),message.getSessionIdLength().getValue());
+	assertArrayEquals("Client Random",ArrayConverter.hexStringToByteArray("561EAC1C71D111AB0186813D11808C3EEA236E37C0110A75B929D6E0A3F53F42"),
+		tlsContext.getClientRandom());
+        assertEquals("Cipersuite Length",new Integer(2),message.getCipherSuiteLength().getValue());
+	assertArrayEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(), message.getCipherSuites().getValue());
+        assertEquals("Compression Length",new Integer(1),message.getCompressionLength().getValue());
+	assertArrayEquals("Compression must be null", CompressionMethod.NULL.getArrayValue(), message.getCompressions().getValue());
+	assertTrue("Extension must be Heartbeat", message.containsExtension(ExtensionType.HEARTBEAT));
+
+	assertEquals("The pointer has to return the length of this message + starting position",
+		clientHelloWithHeartbeatBytes.length, endPointer);
     }
 }
