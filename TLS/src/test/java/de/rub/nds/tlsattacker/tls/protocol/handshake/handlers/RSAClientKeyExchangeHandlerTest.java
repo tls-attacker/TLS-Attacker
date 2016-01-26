@@ -46,6 +46,7 @@ import static org.junit.Assert.*;
 /**
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class RSAClientKeyExchangeHandlerTest {
     
