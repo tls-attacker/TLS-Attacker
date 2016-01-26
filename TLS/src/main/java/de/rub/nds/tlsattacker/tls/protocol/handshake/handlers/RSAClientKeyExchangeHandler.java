@@ -159,6 +159,9 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
         
         byte [] premasterSecret = Arrays.copyOfRange(plainPaddedPremasterSecret, plainPaddedPremasterSecretoffset, plainPaddedPremasterSecretLength);
         
+        LOGGER.debug("Resulting premaster secret: {}",
+		    ArrayConverter.bytesToHexString(premasterSecret));
+        
         protocolMessage.setPremasterSecret(premasterSecret);
         
         byte[] random = tlsContext.getClientServerRandom();
