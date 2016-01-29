@@ -73,4 +73,9 @@ public class ApplicationMessage extends ProtocolMessage {
 	sb.append("\nApplication Data:");
 	return sb.toString();
     }
+
+    @Override
+    public String toCompactString() {
+	return "Application";
+    }
 }

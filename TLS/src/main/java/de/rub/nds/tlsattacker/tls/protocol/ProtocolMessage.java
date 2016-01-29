@@ -143,4 +143,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 		completeResultingMessage);
     }
 
+    public abstract String toCompactString();
+
 }

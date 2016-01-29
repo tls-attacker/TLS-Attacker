@@ -16,43 +16,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.tls.crypto;
+package de.rub.nds.tlsattacker.tls.util;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.apache.logging.log4j.Level;
 
 /**
- * TODO Robert
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class TlsMessageDigestTest {
+public class LogLevel {
 
     /**
-     * Test of getDigestLength method, of class TlsMessageDigest.
+     * This log level is used to inform about important results of TLS
+     * evaluations. For example, to present a final result of an executed
+     * attack.
      */
-    @Test
-    public void testGetDigestLength() {
-    }
-
-    /**
-     * Test of update method, of class TlsMessageDigest.
-     */
-    @Test
-    public void testUpdate() {
-    }
-
-    /**
-     * Test of digest method, of class TlsMessageDigest.
-     */
-    @Test
-    public void testDigest() {
-    }
-
-    /**
-     * Test of reset method, of class TlsMessageDigest.
-     */
-    @Test
-    public void testReset() {
-    }
+    public static final Level CONSOLE_OUTPUT = Level.forName("CONSOLE_OUTPUT", 150);
 }
