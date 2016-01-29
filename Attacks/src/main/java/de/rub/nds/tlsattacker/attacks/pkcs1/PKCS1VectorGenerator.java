@@ -131,6 +131,8 @@ public final class PKCS1VectorGenerator {
 	key[rsaKeyLength - symmetricKey.length - 1] = 0x00;
 	// copy the symmetric key to the field
 	System.arraycopy(symmetricKey, 0, key, rsaKeyLength - symmetricKey.length, symmetricKey.length);
+	LOG.info("Generated a PKCS1 padded message a correct key length, but invalid protocol version: {}",
+		ArrayConverter.bytesToHexString(key));
 
 	return key;
     }
