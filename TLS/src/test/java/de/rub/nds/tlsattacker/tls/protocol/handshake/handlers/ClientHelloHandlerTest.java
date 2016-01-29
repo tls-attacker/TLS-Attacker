@@ -110,7 +110,9 @@ public class ClientHelloHandlerTest {
     public void testPrepareMessageWithExtensions() {
 	handler.setProtocolMessage(new ClientHelloMessage());
 
-	de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage) handler.getProtocolMessage();
+	de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage message = 
+                (de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage) 
+                handler.getProtocolMessage();
 
 	List<CipherSuite> cipherSuites = new ArrayList();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
