@@ -49,42 +49,43 @@ import static org.junit.Assert.*;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class RSAClientKeyExchangeHandlerTest {
-    
+
     static byte[] rsaClientKeyExchange = ArrayConverter
-            .hexStringToByteArray("100000820080"
-                    +"7c215853b3265a49507cc4390195971539e6d0da12d7a5570dc74dcab5ddbad9d1003d0292938704d38d84488228eef26ed0f7edf54789f1da3ff2974cc4b100"
-                    +"f4cb5c663bfb0bfcca6c2c41d3e241c70da8dde8dec9f755ae153e9aa2811cb50bf31e6960d55e5de2cb52020e5b634ed0f2e332912caf595b7e090821cee732");
-    
+	    .hexStringToByteArray("100000820080"
+		    + "7c215853b3265a49507cc4390195971539e6d0da12d7a5570dc74dcab5ddbad9d1003d0292938704d38d84488228eef26ed0f7edf54789f1da3ff2974cc4b100"
+		    + "f4cb5c663bfb0bfcca6c2c41d3e241c70da8dde8dec9f755ae153e9aa2811cb50bf31e6960d55e5de2cb52020e5b634ed0f2e332912caf595b7e090821cee732");
+
     static byte[] clientRandom = ArrayConverter
-            .hexStringToByteArray("3fddd7503dca1dd8c35d28a62c3667d77fba97f0d6c46c7e08fdb70f625edb53");
-    
+	    .hexStringToByteArray("3fddd7503dca1dd8c35d28a62c3667d77fba97f0d6c46c7e08fdb70f625edb53");
+
     static byte[] serverRandom = ArrayConverter
-            .hexStringToByteArray("d05579f8ae2a5862864481764db12b8af57a910debb4a706f7a3b9c664e09dd8");
-    
+	    .hexStringToByteArray("d05579f8ae2a5862864481764db12b8af57a910debb4a706f7a3b9c664e09dd8");
+
     RSAClientKeyExchangeHandler handler;
 
     TlsContext tlsContext;
 
     public RSAClientKeyExchangeHandlerTest() {
-         // ECC does not work properly in the NSS provider
-	 Security.removeProvider("SunPKCS11-NSS");
-	 Security.addProvider(new BouncyCastleProvider());
-        
-         tlsContext = new TlsContext();
-         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
-         tlsContext.setClientRandom(clientRandom);
-         tlsContext.setServerRandom(serverRandom);
-         
-         try {
-		KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
-		tlsContext.setKeyStore(ks);
-		tlsContext.setAlias("alias");
-		tlsContext.setPassword("password");
-             } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException ex) {
-                    throw new ConfigurationException("Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
-	    }
-            try {
-            String alias = tlsContext.getAlias();
+	// ECC does not work properly in the NSS provider
+	Security.removeProvider("SunPKCS11-NSS");
+	Security.addProvider(new BouncyCastleProvider());
+
+	tlsContext = new TlsContext();
+	tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+	tlsContext.setClientRandom(clientRandom);
+	tlsContext.setServerRandom(serverRandom);
+
+	try {
+	    KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+	    tlsContext.setKeyStore(ks);
+	    tlsContext.setAlias("alias");
+	    tlsContext.setPassword("password");
+	} catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException ex) {
+	    throw new ConfigurationException(
+		    "Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
+	}
+	try {
+	    String alias = tlsContext.getAlias();
 	    java.security.cert.Certificate sunCert = tlsContext.getKeyStore().getCertificate(alias);
 	    if (alias == null || sunCert == null) {
 		throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
@@ -100,13 +101,13 @@ public class RSAClientKeyExchangeHandlerTest {
 	    Certificate tlsCerts = new Certificate(certs);
 
 	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-	   
-           tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
-	   tlsContext.setX509ServerCertificateObject(x509CertObject);
-        } catch (KeyStoreException | CertificateEncodingException | IOException | CertificateParsingException ex) {
+
+	    tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
+	    tlsContext.setX509ServerCertificateObject(x509CertObject);
+	} catch (KeyStoreException | CertificateEncodingException | IOException | CertificateParsingException ex) {
 	    throw new ConfigurationException("Certificate with the selected alias could not be found", ex);
 	}
-        handler = new RSAClientKeyExchangeHandler(tlsContext);
+	handler = new RSAClientKeyExchangeHandler(tlsContext);
     }
 
     /**
@@ -120,14 +121,15 @@ public class RSAClientKeyExchangeHandlerTest {
 	RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
 
 	byte[] returned = handler.prepareMessageAction();
-        
-        handler.initializeProtocolMessage();
+
+	handler.initializeProtocolMessage();
 
 	int endPointer = handler.parseMessageAction(returned, 0);
-        RSAClientKeyExchangeMessage messageparse = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
+	RSAClientKeyExchangeMessage messageparse = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
 
 	assertNotNull("Confirm function didn't return 'NULL'", returned);
-        assertArrayEquals("Confirm returned message equals the expected message", message.getPremasterSecret().getValue(), messageparse.getPremasterSecret().getValue());
+	assertArrayEquals("Confirm returned message equals the expected message", message.getPremasterSecret()
+		.getValue(), messageparse.getPremasterSecret().getValue());
     }
 
     /**
@@ -138,23 +140,24 @@ public class RSAClientKeyExchangeHandlerTest {
 	handler.initializeProtocolMessage();
 
 	int endPointer = handler.parseMessageAction(rsaClientKeyExchange, 0);
-        RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
-	
-        byte[] exceptedPremastersecret = ArrayConverter.hexStringToByteArray("0303803ad3b1644b2c01c7d48be9bcf0b4cd2c7340c647594c7e3295c16cd958182143bee87a0907ff32486078fbe9ea");
-        
-        byte[] exceptedMastersecret = ArrayConverter.hexStringToByteArray("7F3E0FC44E1C9DB7A292FC89A5058B276C5C56B3E02B36CEADB3CC53BEADA78E4A8157E0A8AB65060D5EE99E05F5A313");
-	
-	
+	RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
+
+	byte[] exceptedPremastersecret = ArrayConverter
+		.hexStringToByteArray("0303803ad3b1644b2c01c7d48be9bcf0b4cd2c7340c647594c7e3295c16cd958182143bee87a0907ff32486078fbe9ea");
+
+	byte[] exceptedMastersecret = ArrayConverter
+		.hexStringToByteArray("7F3E0FC44E1C9DB7A292FC89A5058B276C5C56B3E02B36CEADB3CC53BEADA78E4A8157E0A8AB65060D5EE99E05F5A313");
 
 	assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
 	assertEquals("Confirm actual message length", 134, endPointer);
-	assertEquals("Confirm message type", HandshakeMessageType.CLIENT_KEY_EXCHANGE, message.getHandshakeMessageType());
+	assertEquals("Confirm message type", HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+		message.getHandshakeMessageType());
 	assertArrayEquals("Confirm excepted Premastersecret", exceptedPremastersecret, message.getPremasterSecret()
 		.getValue());
-        assertArrayEquals("Confirm excepted Mastersecret", exceptedMastersecret, message.getMasterSecret()
-		.getValue());
-	assertTrue("Confirm encrypted Premastersecret Length", message.getEncryptedPremasterSecretLength().getValue() == 128);
-	
+	assertArrayEquals("Confirm excepted Mastersecret", exceptedMastersecret, message.getMasterSecret().getValue());
+	assertTrue("Confirm encrypted Premastersecret Length",
+		message.getEncryptedPremasterSecretLength().getValue() == 128);
+
     }
 
 }
