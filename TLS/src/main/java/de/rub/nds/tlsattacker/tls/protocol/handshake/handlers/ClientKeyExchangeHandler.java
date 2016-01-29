@@ -67,28 +67,29 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-        if (message[pointer] != HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue()) {
+	if (message[pointer] != HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Client key exchange message");
 	}
 	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-        
-        protocolMessage.setType(message[pointer]);
+
+	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
 	protocolMessageFields.setLength(length);
-        currentPointer = nextPointer;
-        
+	currentPointer = nextPointer;
+
 	int resultPointer = this.parseKeyExchangeMessage(message, currentPointer);
-        
-        currentPointer = resultPointer;
-        
-        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
-        
-        return currentPointer;
+
+	currentPointer = resultPointer;
+
+	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
+
+	return currentPointer;
     }
 
     abstract byte[] prepareKeyExchangeMessage();
+
     abstract int parseKeyExchangeMessage(byte[] message, int pointer);
 }
