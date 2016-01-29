@@ -38,7 +38,7 @@ public class TransportHandlerFactory {
 	    case SIMPLE:
 		SimpleTransportHandler th = new SimpleTransportHandler();
 		th.setMaxResponseWait(maxResponseDelay);
-		th.setEnforceResponseWait(true);
+		th.setEnforceResponseWait(enforceResponseWait);
 		return th;
 	    case EAP_TLS:
 		return new EAPTLSTransportHandler();

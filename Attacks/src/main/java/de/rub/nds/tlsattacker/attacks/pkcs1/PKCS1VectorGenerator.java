@@ -1,24 +1,24 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -56,9 +56,10 @@ public final class PKCS1VectorGenerator {
      * Generates different encrypted PKCS1 vectors
      * 
      * @param publicKey
+     * @param type
      * @return
      */
-    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey) {
+    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherTestCommandConfig.Type type) {
 
 	// we do not need secure random here
 	Random random = new Random();
@@ -67,25 +68,30 @@ public final class PKCS1VectorGenerator {
 	int rsaKeyLength = publicKey.getModulus().bitLength() / 8;
 
 	// compute the number of all vectors that are being generated
-	int vectorSize = STATIC_VECTOR_SIZE + rsaKeyLength - 2;
+	int vectorSize = STATIC_VECTOR_SIZE;
+	if (type == BleichenbacherTestCommandConfig.Type.FULL) {
+	    vectorSize += rsaKeyLength - 2;
+	}
 
 	// create plain padded keys
 	byte[][] plainPaddedKeys = new byte[vectorSize][];
 	plainPaddedKeys[0] = getEK_NoNullByte(rsaKeyLength, keyBytes);
 	plainPaddedKeys[1] = getEK_NullByteInPadding(rsaKeyLength, keyBytes);
 	plainPaddedKeys[2] = getEK_NullByteInPkcsPadding(rsaKeyLength, keyBytes);
-	plainPaddedKeys[3] = getEK_SymmetricKeyOfSize16(rsaKeyLength, keyBytes);
-	plainPaddedKeys[4] = getEK_SymmetricKeyOfSize24(rsaKeyLength, keyBytes);
-	plainPaddedKeys[5] = getEK_SymmetricKeyOfSize32(rsaKeyLength, keyBytes);
-	plainPaddedKeys[6] = getEK_SymmetricKeyOfSize40(rsaKeyLength, keyBytes);
-	plainPaddedKeys[7] = getEK_SymmetricKeyOfSize8(rsaKeyLength, keyBytes);
+	plainPaddedKeys[3] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 0);
+	plainPaddedKeys[4] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 1);
+	plainPaddedKeys[5] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 8);
+	plainPaddedKeys[6] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 16);
+	plainPaddedKeys[7] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 32);
 	plainPaddedKeys[8] = getEK_WrongFirstByte(rsaKeyLength, keyBytes);
 	plainPaddedKeys[9] = getEK_WrongSecondByte(rsaKeyLength, keyBytes);
-	// correct key
+	// correct key (with invalid TLS version number)
 	plainPaddedKeys[10] = getPaddedKey(rsaKeyLength, keyBytes);
 
-	byte[][] additionalPaddedKeys = getEK_DifferentPositionsOf0x00(rsaKeyLength, keyBytes);
-	System.arraycopy(additionalPaddedKeys, 0, plainPaddedKeys, STATIC_VECTOR_SIZE, additionalPaddedKeys.length);
+	if (type == BleichenbacherTestCommandConfig.Type.FULL) {
+	    byte[][] additionalPaddedKeys = getEK_DifferentPositionsOf0x00(rsaKeyLength, keyBytes);
+	    System.arraycopy(additionalPaddedKeys, 0, plainPaddedKeys, STATIC_VECTOR_SIZE, additionalPaddedKeys.length);
+	}
 
 	try {
 	    Security.addProvider(new BouncyCastleProvider());
@@ -132,14 +138,14 @@ public final class PKCS1VectorGenerator {
     private static byte[] getEK_WrongFirstByte(int rsaKeyLength, byte[] symmetricKey) {
 	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
 	key[0] = 23;
-	LOG.debug("Generated a PKCS1 padded message with a wrong first byte: " + ArrayConverter.bytesToHexString(key));
+	LOG.info("Generated a PKCS1 padded message with a wrong first byte: {}", ArrayConverter.bytesToHexString(key));
 	return key;
     }
 
     private static byte[] getEK_WrongSecondByte(int rsaKeyLength, byte[] symmetricKey) {
 	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
 	key[1] = 23;
-	LOG.debug("Generated a PKCS1 padded message with a wrong second byte: " + ArrayConverter.bytesToHexString(key));
+	LOG.info("Generated a PKCS1 padded message with a wrong second byte: {}", ArrayConverter.bytesToHexString(key));
 	return key;
     }
 
@@ -150,78 +156,35 @@ public final class PKCS1VectorGenerator {
 		key[i] = 0x01;
 	    }
 	}
-	LOG.debug("Generated a PKCS1 padded message with no separating byte: " + ArrayConverter.bytesToHexString(key));
+	LOG.info("Generated a PKCS1 padded message with no separating byte: {}", ArrayConverter.bytesToHexString(key));
 	return key;
     }
 
     private static byte[] getEK_NullByteInPkcsPadding(int rsaKeyLength, byte[] symmetricKey) {
 	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
 	key[3] = 0x00;
-	LOG.debug("Generated a PKCS1 padded message with a 0x00 byte in the PKCS1 padding: "
-		+ ArrayConverter.bytesToHexString(key));
+	LOG.info("Generated a PKCS1 padded message with a 0x00 byte in the PKCS1 padding: {}",
+		ArrayConverter.bytesToHexString(key));
 	return key;
     }
 
     private static byte[] getEK_NullByteInPadding(int rsaKeyLength, byte[] symmetricKey) {
 	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
 	key[11] = 0x00;
-	LOG.debug("Generated a PKCS1 padded message with a 0x00 byte in padding: "
-		+ ArrayConverter.bytesToHexString(key));
+	LOG.info("Generated a PKCS1 padded message with a 0x00 byte in padding: {}",
+		ArrayConverter.bytesToHexString(key));
 	return key;
     }
 
-    private static byte[] getEK_SymmetricKeyOfSize40(int rsaKeyLength, byte[] symmetricKey) {
-	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
-	key[rsaKeyLength - 40 - 1] = 0x00;
-	LOG.debug("Generated a PKCS1 padded symmetric key of size 40: " + ArrayConverter.bytesToHexString(key));
-	return key;
-    }
-
-    private static byte[] getEK_SymmetricKeyOfSize32(int rsaKeyLength, byte[] symmetricKey) {
+    private static byte[] getEK_SymmetricKeyOfSize(int rsaKeyLength, byte[] symmetricKey, int size) {
 	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
 	for (int i = 3; i < key.length; i++) {
 	    if (key[i] == 0x00) {
 		key[i] = 0x01;
 	    }
 	}
-	key[rsaKeyLength - 32 - 1] = 0x00;
-	LOG.debug("Generated a PKCS1 padded symmetric key of size 32: " + ArrayConverter.bytesToHexString(key));
-	return key;
-    }
-
-    private static byte[] getEK_SymmetricKeyOfSize24(int rsaKeyLength, byte[] symmetricKey) {
-	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
-	for (int i = 3; i < key.length; i++) {
-	    if (key[i] == 0x00) {
-		key[i] = 0x01;
-	    }
-	}
-	key[rsaKeyLength - 24 - 1] = 0x00;
-	LOG.debug("Generated a PKCS1 padded symmetric key of size 24: " + ArrayConverter.bytesToHexString(key));
-	return key;
-    }
-
-    private static byte[] getEK_SymmetricKeyOfSize16(int rsaKeyLength, byte[] symmetricKey) {
-	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
-	for (int i = 3; i < key.length; i++) {
-	    if (key[i] == 0x00) {
-		key[i] = 0x01;
-	    }
-	}
-	key[rsaKeyLength - 16 - 1] = 0x00;
-	LOG.debug("Generated a PKCS1 padded symmetric key of size 16: " + ArrayConverter.bytesToHexString(key));
-	return key;
-    }
-
-    private static byte[] getEK_SymmetricKeyOfSize8(int rsaKeyLength, byte[] symmetricKey) {
-	byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
-	for (int i = 3; i < key.length; i++) {
-	    if (key[i] == 0x00) {
-		key[i] = 0x01;
-	    }
-	}
-	key[rsaKeyLength - 8 - 1] = 0x00;
-	LOG.debug("Generated a PKCS1 padded symmetric key of size 8: " + ArrayConverter.bytesToHexString(key));
+	key[rsaKeyLength - size - 1] = 0x00;
+	LOG.info("Generated a PKCS1 padded symmetric key of size {}: {}", size, ArrayConverter.bytesToHexString(key));
 	return key;
     }
 
@@ -245,6 +208,7 @@ public final class PKCS1VectorGenerator {
 	    // insert 0x00 to an incorrect position
 	    result[i - 2][i] = 0x00;
 	}
+	LOG.info("Generated PKCS1 vectors with different invalid 0x00 positions");
 
 	return result;
     }
