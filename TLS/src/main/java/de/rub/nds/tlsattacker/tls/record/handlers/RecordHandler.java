@@ -155,6 +155,11 @@ public class RecordHandler {
 	return returnPointer;
     }
 
+    /**
+     * 
+     * @param rawRecordData
+     * @return list of parsed records or null, if there was not enough data
+     */
     public List<Record> parseRecords(byte[] rawRecordData) {
 
 	List<Record> records = new LinkedList<>();
@@ -172,6 +177,9 @@ public class RecordHandler {
 	    byte[] byteLength = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
 	    int length = ArrayConverter.bytesToInt(byteLength);
 	    record.setLength(length);
+	    if (dataPointer + 5 + length > rawRecordData.length) {
+		return null;
+	    }
 	    int lastByte = dataPointer + 5 + length;
 	    byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 5, lastByte);
 	    LOGGER.debug("Raw protocol bytes from the current record:  {}",

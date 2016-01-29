@@ -286,8 +286,12 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
      * @throws IOException
      */
     protected List<Record> fetchRecords() throws IOException {
+        // todo: this can be done better and more performant, but it is ok for now
 	byte[] rawResponse = transportHandler.fetchData();
-	List<Record> records = recordHandler.parseRecords(rawResponse);
+	List<Record> records;
+	while ((records = recordHandler.parseRecords(rawResponse)) == null) {
+	    rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
+	}
 	if (records.isEmpty()) {
 	    throw new WorkflowExecutionException("The configured protocol message was not found, "
 		    + "the server does not send any data.");

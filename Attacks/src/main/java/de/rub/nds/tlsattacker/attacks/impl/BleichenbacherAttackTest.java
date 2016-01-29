@@ -66,7 +66,7 @@ public class BleichenbacherAttackTest extends Attacker<BleichenbacherTestCommand
 	    publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
 	    LOGGER.info("Fetched the following server public key: " + publicKey);
 	} catch (Exception e) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "No connection possible");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "No connection possible: {}", e);
 	    return;
 	}
 
