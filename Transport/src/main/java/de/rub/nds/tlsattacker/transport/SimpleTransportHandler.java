@@ -52,8 +52,6 @@ public class SimpleTransportHandler implements TransportHandler {
 
     private int maxResponseWait;
 
-    private boolean enforceResponseWait;
-
     public SimpleTransportHandler() {
 	maxResponseWait = DEFAULT_RESPONSE_WAIT;
     }
@@ -88,7 +86,7 @@ public class SimpleTransportHandler implements TransportHandler {
 	byte[] response = new byte[0];
 	long minTimeMillies = System.currentTimeMillis() + maxResponseWait;
 	// long maxTimeMillies = System.currentTimeMillis() + timeout;
-	while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0 || enforceResponseWait)) {
+	while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0)) {
 	    // while ((System.currentTimeMillis() < maxTimeMillies) &&
 	    // (bis.available() != 0)) {
 	    while (bis.available() != 0) {
@@ -148,13 +146,5 @@ public class SimpleTransportHandler implements TransportHandler {
 
     public void setMaxResponseWait(int maxResponseWait) {
 	this.maxResponseWait = maxResponseWait;
-    }
-
-    public boolean isEnforceResponseWait() {
-	return enforceResponseWait;
-    }
-
-    public void setEnforceResponseWait(boolean enforceResponseWait) {
-	this.enforceResponseWait = enforceResponseWait;
     }
 }
