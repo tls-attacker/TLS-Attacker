@@ -32,13 +32,11 @@ public class TransportHandlerFactory {
 	return new SimpleTransportHandler();
     }
 
-    public static TransportHandler createTransportHandler(TransportHandlerType type, int maxResponseDelay,
-	    boolean enforceResponseWait) {
+    public static TransportHandler createTransportHandler(TransportHandlerType type, int maxResponseDelay) {
 	switch (type) {
 	    case SIMPLE:
 		SimpleTransportHandler th = new SimpleTransportHandler();
 		th.setMaxResponseWait(maxResponseDelay);
-		th.setEnforceResponseWait(enforceResponseWait);
 		return th;
 	    case EAP_TLS:
 		return new EAPTLSTransportHandler();
