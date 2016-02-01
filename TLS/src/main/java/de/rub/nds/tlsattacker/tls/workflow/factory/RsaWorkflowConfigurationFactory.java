@@ -42,6 +42,7 @@ import java.util.List;
  * Creates configuration of implemented RSA functionality in the protocol.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
