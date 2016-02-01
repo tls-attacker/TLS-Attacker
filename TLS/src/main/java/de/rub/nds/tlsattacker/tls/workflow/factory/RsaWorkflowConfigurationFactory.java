@@ -84,7 +84,7 @@ public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactor
 
 	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
 	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
-	if (config.getKeystore() != null) {
+	if (config.getKeystore() != null && config.isClientAuthentication()) {
 	    protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
 	    protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
 
