@@ -67,15 +67,15 @@ public class CertificateVerifyHandlerTest {
 
 	handler.initializeProtocolMessage();
 
-	byte[] inputBytes = { HandshakeMessageType.CERTIFICATE_VERIFY.getValue() };
-	byte[] sigHashAlg = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getValue();
+	byte[] inputBytes = { HandshakeMessageType.CERTIFICATE_VERIFY.getValue(), 0x00, 0x00, 0x09 };
+	byte[] sigHashAlg = { SignatureAlgorithm.RSA.getValue(), HashAlgorithm.SHA512.getValue() };
 	inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x05 }, new byte[] { 0x25,
 		0x26, 0x27, 0x28, 0x29 });
 	int endPointer = handler.parseMessageAction(inputBytes, 0);
 	CertificateVerifyMessage message = (CertificateVerifyMessage) handler.getProtocolMessage();
 
 	assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
-	assertEquals("Confirm actual message length", endPointer, 10);
+	assertEquals("Confirm actual message length", endPointer, 13);
 	assertEquals("Confirm message type", HandshakeMessageType.CERTIFICATE_VERIFY, message.getHandshakeMessageType());
 	assertArrayEquals("Confirm SignatureAndHashAlgorithm type", sigHashAlg, message.getSignatureHashAlgorithm()
 		.getValue());
