@@ -50,6 +50,11 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 	long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
 		+ protocolMessageFields.getLength().getValue();
 
+	if (tlsContext.isClientAuthentication()) {
+	    tlsContext.setServerHandshakeStatus(1);
+	} else {
+	    tlsContext.setServerHandshakeStatus(2);
+	}
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
 
 	return protocolMessage.getCompleteResultingMessage().getValue();
