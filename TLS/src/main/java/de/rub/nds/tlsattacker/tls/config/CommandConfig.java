@@ -42,6 +42,7 @@ import java.util.List;
  * Configuration used for both the client and the server.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public abstract class CommandConfig {
 
@@ -112,6 +113,9 @@ public abstract class CommandConfig {
 
     @Parameter(names = "-enforce_transport_response_wait", description = "Enforces that the peer always waits at least the number of millis defined in the max_transport_response_wait to collect all the server response bytes. Otherwise, the peer just takes the first bytes it receives (which can have negative consequences, if for example the server response bytes arrive with a delay).")
     protected boolean enforceTransportResponseWait;
+
+    @Parameter(names = "-client_authentication", description = "YES or NO")
+    protected boolean clientAuthentication = true;
 
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
@@ -324,5 +328,13 @@ public abstract class CommandConfig {
 
     public void setEnforceTransportResponseWait(boolean enforceTransportResponseWait) {
 	this.enforceTransportResponseWait = enforceTransportResponseWait;
+    }
+
+    public boolean isClientAuthentication() {
+	return clientAuthentication;
+    }
+
+    public void setClientAuthentication(boolean clientAuthentication) {
+	this.clientAuthentication = clientAuthentication;
     }
 }
