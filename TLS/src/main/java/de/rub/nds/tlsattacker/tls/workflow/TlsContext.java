@@ -125,6 +125,23 @@ public class TlsContext {
      * key store password
      */
     private String password;
+    /**
+     * ServerHandshakeStatus for fetching Records: 0 = ServerHelloDone has not
+     * been prepared yet or Finished Message is handled -> normal fetch and
+     * parse records 1 = ServerHelloDone has been prepared yet and
+     * Clientauthentication 2 = ServerHelloDone has been prepared yet and no
+     * Clientauthentication -> save Finished for later parsing 3 =
+     * ClientKeyExchange has been parsed -> Parse Saved FinishedRecord
+     */
+    private int serverHandshakeStatus = 0;
+    /**
+     * Client Authentication YES or NO
+     */
+    private boolean clientAuthentication = true;
+    /**
+     * Client Finished Raw Bytes
+     */
+    private byte[] finishedRecords;
 
     private final TlsMessageDigest digest;
 
@@ -346,5 +363,29 @@ public class TlsContext {
 
     public void setRecordHandler(RecordHandler recordHandler) {
 	this.recordHandler = recordHandler;
+    }
+
+    public int getServerHandshakeStatus() {
+	return serverHandshakeStatus;
+    }
+
+    public void setServerHandshakeStatus(int status) {
+	this.serverHandshakeStatus = status;
+    }
+
+    public boolean isClientAuthentication() {
+	return clientAuthentication;
+    }
+
+    public void setClientAuthentication(boolean status) {
+	this.clientAuthentication = status;
+    }
+
+    public void setFinishedRecords(byte[] finishedRecord) {
+	this.finishedRecords = finishedRecord;
+    }
+
+    public byte[] getFinishedRecords() {
+	return finishedRecords;
     }
 }
