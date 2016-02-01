@@ -203,6 +203,9 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	nextPointer += compressionsLength;
 	protocolMessage.setCompressions(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
+	byte[] compression = protocolMessage.getCompressions().getValue();
+	tlsContext.setCompressionMethod(CompressionMethod.getCompressionMethod(compression[0]));
+
 	currentPointer = nextPointer;
 	if ((currentPointer - pointer) < length) {
 	    currentPointer += ExtensionByteLength.EXTENSIONS;
