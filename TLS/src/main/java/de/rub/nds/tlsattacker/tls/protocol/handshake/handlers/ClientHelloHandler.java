@@ -40,6 +40,7 @@ import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
 public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> extends
