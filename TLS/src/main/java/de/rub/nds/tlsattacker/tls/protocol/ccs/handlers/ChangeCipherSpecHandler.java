@@ -19,9 +19,16 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.ccs.handlers;
 
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.messages.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -45,6 +52,17 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
+	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
+	    try {
+		if (tlsContext.getRecordHandler().getRecordCipher() == null) {
+		    TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
+		    tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
+		}
+	    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
+		    | InvalidKeyException ex) {
+		throw new CryptoException(ex);
+	    }
+	}
 	protocolMessage.setCcsProtocolType(message[pointer]);
 	return pointer + 1;
     }
