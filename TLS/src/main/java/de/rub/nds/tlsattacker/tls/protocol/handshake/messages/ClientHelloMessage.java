@@ -180,9 +180,11 @@ public class ClientHelloMessage extends HelloMessage {
 		.append(ArrayConverter.bytesToHexString(cipherSuites.getValue()))
 		.append("\n  Supported Compression Methods: ")
 		.append(ArrayConverter.bytesToHexString(compressions.getValue())).append("\n  Extensions: ");
-	for (ExtensionMessage e : extensions) {
-	    sb.append(e.toString());
-	}
+	// Some ExtensionsTypes are not supported yet, so avoiding the
+	// NULLPointerException needs to be done
+	/**
+	 * for (ExtensionMessage e : extensions) { sb.append(e.toString()); }
+	 */
 	return sb.toString();
     }
 }
