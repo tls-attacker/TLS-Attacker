@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class SimpleTransportHandler implements TransportHandler {
 
