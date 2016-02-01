@@ -43,6 +43,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class TlsContext {
 
