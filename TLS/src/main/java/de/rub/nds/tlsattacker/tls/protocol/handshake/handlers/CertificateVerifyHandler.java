@@ -138,19 +138,23 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	protocolMessage.setType(message[pointer]);
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 
-	int nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
+	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessageFields.setLength(length);
+	currentPointer = nextPointer;
+
+	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
 	SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(Arrays
 		.copyOfRange(message, currentPointer, nextPointer));
 	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getValue());
 	currentPointer = nextPointer;
 
-	nextPointer = currentPointer + 2;
-	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
-	protocolMessage.setSignatureLength(length);
+	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
+	int sigLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setSignatureLength(sigLength);
 	currentPointer = nextPointer;
 
-	nextPointer = currentPointer + length;
+	nextPointer = currentPointer + sigLength;
 	protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
 	currentPointer = nextPointer;
 	// TODO maybe verify signature and set a boolean in TLS-Context
