@@ -115,7 +115,7 @@ public abstract class CommandConfig {
     protected boolean enforceTransportResponseWait;
 
     @Parameter(names = "-client_authentication", description = "YES or NO")
-    protected boolean clientAuthentication = true;
+    protected boolean clientAuthentication = false;
 
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
