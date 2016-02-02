@@ -138,7 +138,7 @@ public class TlsContext {
     /**
      * Client Authentication YES or NO
      */
-    private boolean clientAuthentication = true;
+    private boolean clientAuthentication = false;
     /**
      * Client Finished Raw Bytes
      */
