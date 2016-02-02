@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
@@ -41,6 +42,7 @@ import org.apache.logging.log4j.LogManager;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
@@ -61,10 +63,18 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
 	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
-	byte[] verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
-		PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
-		prfAlgorithm.getJavaName());
 
+	byte[] verifyData;
+
+	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
+	    verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
+		    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
+		    prfAlgorithm.getJavaName());
+	} else {
+	    verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
+		    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
+		    prfAlgorithm.getJavaName());
+	}
 	protocolMessage.setVerifyData(verifyData);
 	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
 
