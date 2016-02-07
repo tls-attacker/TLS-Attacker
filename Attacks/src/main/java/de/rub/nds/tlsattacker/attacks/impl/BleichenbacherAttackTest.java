@@ -66,7 +66,8 @@ public class BleichenbacherAttackTest extends Attacker<BleichenbacherTestCommand
 	    publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
 	    LOGGER.info("Fetched the following server public key: " + publicKey);
 	} catch (Exception e) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "No connection possible: {}", e);
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, No connection possible: {}", config.getConnect(),
+		    e.getLocalizedMessage());
 	    return;
 	}
 
@@ -94,9 +95,11 @@ public class BleichenbacherAttackTest extends Attacker<BleichenbacherTestCommand
 	}
 	sb.append(']');
 	if (protocolMessageSet.size() == 1) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable, one message found: {}", sb.toString());
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Not vulnerable, one message found: {}", config.getConnect(),
+		    sb.toString());
 	} else {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Most probably vulnerable, found: {}", sb.toString());
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
+		    sb.toString());
 	}
 
     }
