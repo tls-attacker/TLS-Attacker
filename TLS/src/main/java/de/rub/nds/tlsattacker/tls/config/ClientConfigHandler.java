@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ClientConfigHandler extends ConfigHandler {
 
-    private static Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
 
     @Override
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
