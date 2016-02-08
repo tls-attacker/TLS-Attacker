@@ -98,28 +98,8 @@ You can also use an XML structure and run your customized TLS protocol from XML:
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA512</hashAlgorithm>
-                        <signatureAlgorithm>DSA</signatureAlgorithm>
-                        <value>0602</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA512</hashAlgorithm>
                         <signatureAlgorithm>ECDSA</signatureAlgorithm>
                         <value>0603</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA384</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                        <value>0501</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA384</hashAlgorithm>
-                        <signatureAlgorithm>DSA</signatureAlgorithm>
-                        <value>0502</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA384</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                        <value>0503</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA256</hashAlgorithm>
@@ -128,38 +108,13 @@ You can also use an XML structure and run your customized TLS protocol from XML:
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA256</hashAlgorithm>
-                        <signatureAlgorithm>DSA</signatureAlgorithm>
-                        <value>0402</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA256</hashAlgorithm>
                         <signatureAlgorithm>ECDSA</signatureAlgorithm>
                         <value>0403</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA224</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                        <value>0301</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA224</hashAlgorithm>
-                        <signatureAlgorithm>DSA</signatureAlgorithm>
-                        <value>0302</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA224</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                        <value>0303</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA1</hashAlgorithm>
                         <signatureAlgorithm>RSA</signatureAlgorithm>
                         <value>0201</value>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA1</hashAlgorithm>
-                        <signatureAlgorithm>DSA</signatureAlgorithm>
-                        <value>0202</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA1</hashAlgorithm>
