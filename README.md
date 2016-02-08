@@ -74,8 +74,145 @@ In case you are a more experienced developer, you can create your own TLS messag
 	workflowExecutor.executeWorkflow();
 ```
 You can also use an XML structure and run your customized TLS protocol from XML:
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <protocolMessages>
+        <ClientHello>
+            <messageIssuer>CLIENT</messageIssuer>
+            <extensions>
+                <EllipticCurves>
+                    <supportedCurvesConfig>SECP192R1</supportedCurvesConfig>
+                    <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
+                    <supportedCurvesConfig>SECP384R1</supportedCurvesConfig>
+                    <supportedCurvesConfig>SECP521R1</supportedCurvesConfig>
+                </EllipticCurves>
+                <ECPointFormat>
+                    <pointFormatsConfig>UNCOMPRESSED</pointFormatsConfig>
+                </ECPointFormat>
+                <SignatureAndHashAlgorithmsExtension>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA512</hashAlgorithm>
+                        <signatureAlgorithm>RSA</signatureAlgorithm>
+                        <value>0601</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA512</hashAlgorithm>
+                        <signatureAlgorithm>DSA</signatureAlgorithm>
+                        <value>0602</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA512</hashAlgorithm>
+                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+                        <value>0603</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA384</hashAlgorithm>
+                        <signatureAlgorithm>RSA</signatureAlgorithm>
+                        <value>0501</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA384</hashAlgorithm>
+                        <signatureAlgorithm>DSA</signatureAlgorithm>
+                        <value>0502</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA384</hashAlgorithm>
+                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+                        <value>0503</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA256</hashAlgorithm>
+                        <signatureAlgorithm>RSA</signatureAlgorithm>
+                        <value>0401</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA256</hashAlgorithm>
+                        <signatureAlgorithm>DSA</signatureAlgorithm>
+                        <value>0402</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA256</hashAlgorithm>
+                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+                        <value>0403</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA224</hashAlgorithm>
+                        <signatureAlgorithm>RSA</signatureAlgorithm>
+                        <value>0301</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA224</hashAlgorithm>
+                        <signatureAlgorithm>DSA</signatureAlgorithm>
+                        <value>0302</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA224</hashAlgorithm>
+                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+                        <value>0303</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA1</hashAlgorithm>
+                        <signatureAlgorithm>RSA</signatureAlgorithm>
+                        <value>0201</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA1</hashAlgorithm>
+                        <signatureAlgorithm>DSA</signatureAlgorithm>
+                        <value>0202</value>
+                    </signatureAndHashAlgorithmsConfig>
+                    <signatureAndHashAlgorithmsConfig>
+                        <hashAlgorithm>SHA1</hashAlgorithm>
+                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+                        <value>0203</value>
+                    </signatureAndHashAlgorithmsConfig>
+                </SignatureAndHashAlgorithmsExtension>
+            </extensions>
+            <supportedCompressionMethods>
+                <CompressionMethod>NULL</CompressionMethod>
+            </supportedCompressionMethods>
+            <supportedCipherSuites>
+                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
+                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
+                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
+            </supportedCipherSuites>
+        </ClientHello>
+        <ServerHello>
+            <messageIssuer>SERVER</messageIssuer>
+        </ServerHello>
+        <Certificate>
+            <messageIssuer>SERVER</messageIssuer>
+        </Certificate>
+        <ECDHEServerKeyExchange>
+            <messageIssuer>SERVER</messageIssuer>
+        </ECDHEServerKeyExchange>
+        <ServerHelloDone>
+            <messageIssuer>SERVER</messageIssuer>
+        </ServerHelloDone>
+        <ECDHClientKeyExchange>
+            <goingToBeSent>true</goingToBeSent>
+            <messageIssuer>CLIENT</messageIssuer>
+        </ECDHClientKeyExchange>
+        <ChangeCipherSpec>
+            <goingToBeSent>true</goingToBeSent>
+            <messageIssuer>CLIENT</messageIssuer>
+        </ChangeCipherSpec>
+        <Finished>
+            <goingToBeSent>true</goingToBeSent>
+            <messageIssuer>CLIENT</messageIssuer>
+        </Finished>
+        <ChangeCipherSpec>
+            <messageIssuer>SERVER</messageIssuer>
+        </ChangeCipherSpec>
+        <Finished>
+            <messageIssuer>SERVER</messageIssuer>
+        </Finished>
+    </protocolMessages>
+</workflowTrace>
 ```
-tbd
+Given this XML structure is located in config.xml, you would just need to execute:
+```bash
+$ java -jar TLS-1.0-SNAPSHOT-jar-with-dependencies.jar client -connect localhost:51624 -workflow_trace_config_file config.xml
 ```
 Further examples are in the Wiki.
 
