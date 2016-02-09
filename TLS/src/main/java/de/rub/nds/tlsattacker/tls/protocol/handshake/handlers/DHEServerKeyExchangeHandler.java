@@ -243,8 +243,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 		    selectedSignatureHashAlgo.getJavaName());
 
 	    byte[] toBeSignedBytes = ArrayConverter.concatenate(tlsContext.getClientRandom(), tlsContext
-		    .getServerRandom(), protocolMessage.getSerializedP().getValue(), protocolMessage.getSerializedG()
-		    .getValue(), protocolMessage.getSerializedPublicKey().getValue());
+		    .getServerRandom(), dhParams);
 
 	    instance.update(toBeSignedBytes);
 	    byte[] signature = instance.sign();
@@ -255,7 +254,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 		    new byte[] { protocolMessage.getHashAlgorithm().getValue(),
 			    protocolMessage.getSignatureAlgorithm().getValue() }, ArrayConverter.intToBytes(
 			    protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
-		    signature);
+		    protocolMessage.getSignature().getValue());
 
 	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
