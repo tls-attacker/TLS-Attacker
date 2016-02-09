@@ -55,7 +55,7 @@ public class DHEServerKeyExchangeHandlerTest {
 		    + "6c0402002e302c02144f232c10ad1fcfb92b3bedc7c0deddd5c04908ad02142211f07d891eb18a1e0d58dfba4949ffe5"
 		    + "961451");
 
-     static byte[] clientRandom = ArrayConverter
+    static byte[] clientRandom = ArrayConverter
 	    .hexStringToByteArray("3fddd7503dca1dd8c35d28a62c3667d77fba97f0d6c46c7e08fdb70f625edb53");
 
     static byte[] serverRandom = ArrayConverter
@@ -65,11 +65,9 @@ public class DHEServerKeyExchangeHandlerTest {
 
     TlsContext tlsContext;
 
-    
-
     public DHEServerKeyExchangeHandlerTest() {
-	
-        // ECC does not work properly in the NSS provider
+
+	// ECC does not work properly in the NSS provider
 	Security.removeProvider("SunPKCS11-NSS");
 	Security.addProvider(new BouncyCastleProvider());
 
@@ -83,10 +81,9 @@ public class DHEServerKeyExchangeHandlerTest {
 	    tlsContext.setAlias("alias");
 	    tlsContext.setPassword("password");
 	} catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException ex) {
-	    throw new ConfigurationException(
-		    "Something went wrong loading key from Keystore", ex);
+	    throw new ConfigurationException("Something went wrong loading key from Keystore", ex);
 	}
-        handler = new DHEServerKeyExchangeHandler(tlsContext);
+	handler = new DHEServerKeyExchangeHandler(tlsContext);
     }
 
     /**
@@ -137,10 +134,10 @@ public class DHEServerKeyExchangeHandlerTest {
 	DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
 
 	byte[] result = handler.prepareMessageAction();
-        
-        assertNotNull("Confirm function didn't return 'NULL'", result);
+
+	assertNotNull("Confirm function didn't return 'NULL'", result);
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
-	
+
     }
 }
