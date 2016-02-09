@@ -38,6 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.crypto.tls.ServerDHParams;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -102,6 +103,10 @@ public class TlsContext {
      * Server DH parameters
      */
     private ServerDHParams serverDHParameters;
+    /**
+     * Server DH Private Key
+     */
+    private DHPrivateKeyParameters serverDHPrivateKeyParameters;
     /**
      * workflow trace containing all the messages exchanged during the
      * communication
@@ -283,6 +288,14 @@ public class TlsContext {
 
     public void setServerDHParameters(ServerDHParams serverDHParameters) {
 	this.serverDHParameters = serverDHParameters;
+    }
+
+    public DHPrivateKeyParameters getServerDHPrivateKeyParameters() {
+	return serverDHPrivateKeyParameters;
+    }
+
+    public void setServerDHPrivateKeyParameters(DHPrivateKeyParameters serverDHPrivateKeyParameters) {
+	this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
     }
 
     public List<ProtocolMessageTypeHolder> getPreconfiguredProtocolMessages() {
