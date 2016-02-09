@@ -28,7 +28,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHClientKeyExchang
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
@@ -59,8 +61,43 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     }
 
     @Override
-    public int parseKeyExchangeMessage(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+    public int parseKeyExchangeMessage(byte[] message, int currentPointer) {
+	int nextPointer = currentPointer + HandshakeByteLength.DH_PARAM_LENGTH;
+	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setSerializedPublicKeyLength(length);
+	currentPointer = nextPointer;
+
+	nextPointer = currentPointer + length;
+	protocolMessage.setSerializedPublicKey(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	BigInteger publicKey = new BigInteger(1, Arrays.copyOfRange(message, currentPointer, nextPointer));
+	protocolMessage.setY(publicKey);
+
+	DHPublicKeyParameters clientPubParameters = new DHPublicKeyParameters(protocolMessage.getY().getValue(),
+		tlsContext.getServerDHParameters().getPublicKey().getParameters());
+
+	byte[] premasterSecret = TlsDHUtils.calculateDHBasicAgreement(clientPubParameters,
+		tlsContext.getServerDHPrivateKeyParameters());
+	protocolMessage.setPremasterSecret(premasterSecret);
+
+	LOGGER.debug("Resulting premaster secret: {}", ArrayConverter.bytesToHexString(premasterSecret));
+
+	protocolMessage.setPremasterSecret(premasterSecret);
+
+	byte[] random = tlsContext.getClientServerRandom();
+
+	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+		tlsContext.getSelectedCipherSuite());
+	byte[] masterSecret = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), protocolMessage
+		.getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
+		HandshakeByteLength.MASTER_SECRET, prfAlgorithm.getJavaName());
+	protocolMessage.setMasterSecret(masterSecret);
+	LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
+
+	tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
+
+	currentPointer = nextPointer;
+
+	return currentPointer;
     }
 
     @Override
