@@ -44,6 +44,7 @@ import java.util.List;
  * Creates configuration of implemented DH(E) functionality in the protocol.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
@@ -96,7 +97,7 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
 	    protocolMessages.add(hmFactory.createHandshakeMessage(DHEServerKeyExchangeMessage.class,
 		    ConnectionEnd.SERVER));
 	}
-	if (config.getKeystore() != null) {
+	if (config.getKeystore() != null && config.isClientAuthentication()) {
 	    protocolMessages.add(hmFactory
 		    .createHandshakeMessage(CertificateRequestMessage.class, ConnectionEnd.SERVER));
 	    protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloDoneMessage.class, ConnectionEnd.SERVER));
