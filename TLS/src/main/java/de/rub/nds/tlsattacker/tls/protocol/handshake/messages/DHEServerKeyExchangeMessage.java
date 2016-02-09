@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -32,6 +33,7 @@ import java.math.BigInteger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
@@ -65,6 +67,41 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableBigInteger publicKey;
+    /**
+     * server's private key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
+    ModifiableBigInteger privateKey;
+    /**
+     * Length of the serialized DH modulus
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    ModifiableInteger serializedPLength;
+    /**
+     * serialized DH modulus
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    ModifiableByteArray serializedP;
+    /**
+     * Length of the serialized DH generator
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    ModifiableInteger serializedGLength;
+    /**
+     * serialized DH generator
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    ModifiableByteArray serializedG;
+    /**
+     * Length of the serialized public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    ModifiableInteger serializedPublicKeyLength;
+    /**
+     * serialized public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    ModifiableByteArray serializedPublicKey;
 
     public DHEServerKeyExchangeMessage() {
 	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
@@ -146,6 +183,92 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public void setPublicKeyLength(int length) {
 	this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
+    }
+
+    public ModifiableBigInteger getPrivateKey() {
+	return privateKey;
+    }
+
+    public void setPrivateKey(ModifiableBigInteger privateKey) {
+	this.privateKey = privateKey;
+    }
+
+    public void setPrivateKey(BigInteger privateKey) {
+	this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
+    }
+
+    public ModifiableInteger getSerializedPLength() {
+	return serializedPLength;
+    }
+
+    public void setSerializedPLength(ModifiableInteger serializedPLength) {
+	this.serializedPLength = serializedPLength;
+    }
+
+    public void setSerializedPLength(Integer pLength) {
+	this.serializedPLength = ModifiableVariableFactory.safelySetValue(this.serializedPLength, pLength);
+    }
+
+    public ModifiableByteArray getSerializedP() {
+	return serializedP;
+    }
+
+    public void setSerializedP(ModifiableByteArray serializedP) {
+	this.serializedP = serializedP;
+    }
+
+    public void setSerializedP(byte[] serializedP) {
+	this.serializedP = ModifiableVariableFactory.safelySetValue(this.serializedP, serializedP);
+    }
+
+    public ModifiableInteger getSerializedGLength() {
+	return serializedGLength;
+    }
+
+    public void setSerializedGLength(ModifiableInteger serializedGLength) {
+	this.serializedGLength = serializedGLength;
+    }
+
+    public void setSerializedGLength(Integer gLength) {
+	this.serializedGLength = ModifiableVariableFactory.safelySetValue(this.serializedGLength, gLength);
+    }
+
+    public ModifiableByteArray getSerializedG() {
+	return serializedG;
+    }
+
+    public void setSerializedG(ModifiableByteArray serializedG) {
+	this.serializedG = serializedG;
+    }
+
+    public void setSerializedG(byte[] serializedG) {
+	this.serializedG = ModifiableVariableFactory.safelySetValue(this.serializedG, serializedG);
+    }
+
+    public ModifiableInteger getSerializedPublicKeyLength() {
+	return serializedPublicKeyLength;
+    }
+
+    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
+	this.serializedPublicKeyLength = serializedPublicKeyLength;
+    }
+
+    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
+	this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
+		publicKeyLength);
+    }
+
+    public ModifiableByteArray getSerializedPublicKey() {
+	return serializedPublicKey;
+    }
+
+    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
+	this.serializedPublicKey = serializedPublicKey;
+    }
+
+    public void setSerializedPublicKey(byte[] serializedPublicKey) {
+	this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
+		serializedPublicKey);
     }
 
     @Override
