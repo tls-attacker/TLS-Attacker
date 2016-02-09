@@ -36,6 +36,7 @@ import static org.junit.Assert.*;
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class DHClientKeyExchangeHandlerTest {
 
@@ -83,5 +84,13 @@ public class DHClientKeyExchangeHandlerTest {
 		serializedPublicKey);
 
 	Assert.assertArrayEquals(expected, result);
+    }
+
+    /**
+     * Test of parseMessageAction method, of class DHClientKeyExchangeHandler.
+     */
+    @Test
+    public void testParseMessage() {
+	// todo
     }
 }
