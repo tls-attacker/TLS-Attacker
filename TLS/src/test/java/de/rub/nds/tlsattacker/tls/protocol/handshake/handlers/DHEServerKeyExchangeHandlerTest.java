@@ -22,12 +22,21 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.handlers;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messagefields.HandshakeMessageFields;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.security.cert.CertificateException;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,6 +44,7 @@ import static org.junit.Assert.*;
  * Tests for ECDHE key exchange handler, with values from wireshark
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class DHEServerKeyExchangeHandlerTest {
 
@@ -45,12 +55,38 @@ public class DHEServerKeyExchangeHandlerTest {
 		    + "6c0402002e302c02144f232c10ad1fcfb92b3bedc7c0deddd5c04908ad02142211f07d891eb18a1e0d58dfba4949ffe5"
 		    + "961451");
 
-    static byte[] testServerKeyExchangeRSA = ArrayConverter.hexStringToByteArray("00");
+     static byte[] clientRandom = ArrayConverter
+	    .hexStringToByteArray("3fddd7503dca1dd8c35d28a62c3667d77fba97f0d6c46c7e08fdb70f625edb53");
+
+    static byte[] serverRandom = ArrayConverter
+	    .hexStringToByteArray("d05579f8ae2a5862864481764db12b8af57a910debb4a706f7a3b9c664e09dd8");
 
     DHEServerKeyExchangeHandler handler;
 
+    TlsContext tlsContext;
+
+    
+
     public DHEServerKeyExchangeHandlerTest() {
-	handler = new DHEServerKeyExchangeHandler(new TlsContext());
+	
+        // ECC does not work properly in the NSS provider
+	Security.removeProvider("SunPKCS11-NSS");
+	Security.addProvider(new BouncyCastleProvider());
+
+	tlsContext = new TlsContext();
+	tlsContext.setClientRandom(clientRandom);
+	tlsContext.setServerRandom(serverRandom);
+
+	try {
+	    KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+	    tlsContext.setKeyStore(ks);
+	    tlsContext.setAlias("alias");
+	    tlsContext.setPassword("password");
+	} catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException ex) {
+	    throw new ConfigurationException(
+		    "Something went wrong loading key from Keystore", ex);
+	}
+        handler = new DHEServerKeyExchangeHandler(tlsContext);
     }
 
     /**
@@ -89,5 +125,22 @@ public class DHEServerKeyExchangeHandlerTest {
 
 	CertificateMessage cm = new CertificateMessage();
 	assertFalse(handler.isCorrectProtocolMessage(cm));
+    }
+
+    /**
+     * Test of prepareMessageAction method, of class
+     * DHEServerKeyExchangeHandler.
+     */
+    @Test
+    public void testPrepareMessageRSA() {
+	handler.initializeProtocolMessage();
+	DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
+
+	byte[] result = handler.prepareMessageAction();
+        
+        assertNotNull("Confirm function didn't return 'NULL'", result);
+	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
+		message.getHandshakeMessageType());
+	
     }
 }
