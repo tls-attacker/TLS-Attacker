@@ -96,4 +96,24 @@ public class IntegerModificationTest {
 	assertEquals(new Integer(10), start.getOriginalValue());
     }
 
+    @Test
+    public void testShiftLeft() {
+	VariableModification<Integer> modifier = IntegerModificationFactory.shiftLeft(2);
+	start.setModification(modifier);
+	expectedResult = 40;
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+	assertEquals(new Integer(10), start.getOriginalValue());
+    }
+
+    @Test
+    public void testShiftRight() {
+	VariableModification<Integer> modifier = IntegerModificationFactory.shiftRight(2);
+	start.setModification(modifier);
+	expectedResult = 2;
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+	assertEquals(new Integer(10), start.getOriginalValue());
+    }
+
 }

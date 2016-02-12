@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
@@ -28,9 +27,11 @@ import java.util.Random;
  */
 final public class IntegerModificationFactory {
 
-    private static final int MODIFICATION_COUNT = 4;
+    private static final int MODIFICATION_COUNT = 6;
 
     private static final int MAX_MODIFICATION_VALUE = 32000;
+
+    private static final int MAX_MODIFICATION_SHIFT_VALUE = 20;
 
     private IntegerModificationFactory() {
     }
@@ -41,6 +42,22 @@ final public class IntegerModificationFactory {
 
     public static IntegerAddModification add(final Integer summand) {
 	return new IntegerAddModification(summand);
+    }
+
+    public static IntegerShiftLeftModification shiftLeft(final String shift) {
+	return shiftLeft(new Integer(shift));
+    }
+
+    public static IntegerShiftLeftModification shiftLeft(final Integer shift) {
+	return new IntegerShiftLeftModification(shift);
+    }
+
+    public static IntegerShiftRightModification shiftRight(final String shift) {
+	return shiftRight(new Integer(shift));
+    }
+
+    public static IntegerShiftRightModification shiftRight(final Integer shift) {
+	return new IntegerShiftRightModification(shift);
     }
 
     public static VariableModification<Integer> sub(final String subtrahend) {
@@ -71,6 +88,7 @@ final public class IntegerModificationFactory {
 	Random random = RandomHelper.getRandom();
 	int r = random.nextInt(MODIFICATION_COUNT);
 	int modification = random.nextInt(MAX_MODIFICATION_VALUE);
+	int shiftModification = random.nextInt(MAX_MODIFICATION_SHIFT_VALUE);
 	VariableModification<Integer> vm = null;
 	switch (r) {
 	    case 0:
@@ -84,6 +102,12 @@ final public class IntegerModificationFactory {
 		return vm;
 	    case 3:
 		vm = new IntegerExplicitValueModification(modification);
+		return vm;
+	    case 4:
+		vm = new IntegerShiftLeftModification(shiftModification);
+		return vm;
+	    case 5:
+		vm = new IntegerShiftRightModification(shiftModification);
 		return vm;
 	}
 	return vm;
