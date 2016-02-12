@@ -20,7 +20,6 @@ package de.rub.nds.tlsattacker.modifiablevariable.util;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a modifiable variable holder (an object containing at least one

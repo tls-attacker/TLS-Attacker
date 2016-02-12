@@ -114,4 +114,26 @@ public class BigIntegerModificationTest {
 	start.setModification(modifier);
 	assertTrue(start.isOriginalValueModified());
     }
+
+    @Test
+    public void testShiftLeft() {
+	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.shiftLeft(2);
+	start.setModification(modifier);
+	expectedResult = new BigInteger("40");
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+	assertNotSame(expectedResult, result);
+	assertEquals(BigInteger.TEN, start.getOriginalValue());
+    }
+
+    @Test
+    public void testShiftRight() {
+	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.shiftRight(1);
+	start.setModification(modifier);
+	expectedResult = new BigInteger("5");
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+	assertNotSame(expectedResult, result);
+	assertEquals(BigInteger.TEN, start.getOriginalValue());
+    }
 }
