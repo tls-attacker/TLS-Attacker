@@ -298,8 +298,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	if (records.isEmpty()) {
 	    throw new WorkflowExecutionException("The configured protocol message was not found, "
 		    + "the server does not send any data.");
-	List<Record> records;
-	byte[] rawResponse;
+	}
 	int sHandshStatus = tlsContext.getServerHandshakeStatus();
 	int dataPointer = 0;
 	int recordCount = 0;

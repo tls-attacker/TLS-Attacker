@@ -55,7 +55,7 @@ public class ServerConfigHandler extends ConfigHandler {
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
 	ServerCommandConfig ccConfig = (ServerCommandConfig) config;
 	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-		config.getMaxTransportResponseWait(), config.isEnforceTransportResponseWait());
+		config.getMaxTransportResponseWait());
 	try {
 	    String host = "server";
 	    int port = Integer.parseInt(ccConfig.getPort());
