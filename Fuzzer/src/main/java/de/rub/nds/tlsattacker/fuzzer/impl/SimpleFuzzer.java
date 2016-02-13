@@ -263,22 +263,26 @@ public class SimpleFuzzer extends Fuzzer {
      */
     private void analyzeServerTerminationAndWriteFile(ServerStartCommandExecutor sce, String folder, long step,
 	    WorkflowTrace workflow, ConfigHandler configHandler) throws IOException, JAXBException {
-	if (fuzzerConfig.containsServerCommand() && sce.isServerTerminated()
-		&& !fuzzerConfig.isRestartServerInEachInteration()) {
+	if (fuzzerConfig.containsServerCommand() && sce.isServerTerminated()) {
 	    interruptFuzzing = true;
-	} else if (!fuzzerConfig.containsServerCommand()) {
-	    try {
-		TransportHandler transportHandler = configHandler.initializeTransportHandler(fuzzerConfig);
-		transportHandler.closeConnection();
-	    } catch (Exception e) {
-		interruptFuzzing = true;
-		System.out.println("final: " + e);
-	    }
 	}
-	// if (interruptFuzzing) {
-	FileOutputStream fos = new FileOutputStream(folder + "/terminated" + Long.toString(step) + ".xml");
-	WorkflowTraceSerializer.write(fos, workflow);
+	// else if (!fuzzerConfig.containsServerCommand()) {
+	// try {
+	// TransportHandler transportHandler =
+	// configHandler.initializeTransportHandler(fuzzerConfig);
+	// transportHandler.closeConnection();
+	// } catch (Exception e) {
+	// interruptFuzzing = true;
+	// System.out.println("final: " + e);
 	// }
+	// }
+	if (interruptFuzzing) {
+	    FileOutputStream fos = new FileOutputStream(folder + "/terminated" + Long.toString(step) + ".xml");
+	    WorkflowTraceSerializer.write(fos, workflow);
+	    LOGGER.error(sce.getServerErrorOutputString());
+	    LOGGER.error(sce.getServerOutputString());
+	    System.out.println("----------------------------");
+	}
     }
 
     /**
