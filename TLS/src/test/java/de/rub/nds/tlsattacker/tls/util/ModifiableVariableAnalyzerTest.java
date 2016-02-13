@@ -20,7 +20,7 @@ package de.rub.nds.tlsattacker.tls.util;
 
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.eap.ClientHello;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.junit.Test;
