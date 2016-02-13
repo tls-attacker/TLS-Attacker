@@ -19,13 +19,13 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ECPointFormatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.HeartbeatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.MaxFragmentLengthExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.ServerNameIndicationExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.handlers.SignatureAndHashAlgorithmsExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;

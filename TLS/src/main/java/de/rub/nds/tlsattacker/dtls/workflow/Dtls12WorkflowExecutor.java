@@ -19,19 +19,19 @@
  */
 package de.rub.nds.tlsattacker.dtls.workflow;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.handlers.HandshakeFragmentHandler;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.messagefields.HandshakeMessageDtlsFields;
-import de.rub.nds.tlsattacker.dtls.record.handlers.RecordHandler;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeFragmentHandler;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeMessageDtlsFields;
+import de.rub.nds.tlsattacker.dtls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.dtls.record.messages.Record;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
+import de.rub.nds.tlsattacker.dtls.record.Record;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -66,7 +66,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     private final List<byte[]> retransmitList = new ArrayList<>();
 
-    private List<de.rub.nds.tlsattacker.tls.record.messages.Record> recordBuffer = new LinkedList<>(),
+    private List<de.rub.nds.tlsattacker.tls.record.Record> recordBuffer = new LinkedList<>(),
 	    handshakeMessageSendRecordList = null;
 
     private final HandshakeFragmentHandler handshakeFragmentHandler = new HandshakeFragmentHandler();
@@ -427,7 +427,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private Record receiveNextValidRecord() throws IOException {
-	de.rub.nds.tlsattacker.dtls.record.messages.Record nextRecord = receiveNextRecord();
+	de.rub.nds.tlsattacker.dtls.record.Record nextRecord = receiveNextRecord();
 	while (!checkRecordValidity(nextRecord)) {
 	    nextRecord = receiveNextRecord();
 	}
@@ -470,7 +470,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     private void handleRetransmit() throws IOException {
 	int currentPointer;
 	byte[] retransmittedMessage;
-	LinkedList<de.rub.nds.tlsattacker.tls.record.messages.Record> recordList = new LinkedList<>();
+	LinkedList<de.rub.nds.tlsattacker.tls.record.Record> recordList = new LinkedList<>();
 
 	if (retransmitEpoch < dtlsRecordHandler.getEpoch()) {
 	    dtlsRecordHandler.revertEpoch();
