@@ -17,6 +17,6 @@
         </Root>
 <!--        <Root level="console_output">
             <AppenderRef ref="ConsoleSimple" level="CONSOLE_OUTPUT"/>
-        </Root>
-    </Loggers>-->
+        </Root>-->
+    </Loggers>
 </Configuration>
