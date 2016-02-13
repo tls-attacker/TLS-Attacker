@@ -21,7 +21,6 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake.messages;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -33,7 +32,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class HandshakeMessage extends ProtocolMessage {
+public abstract class HandshakeMessage extends ProtocolMessage {
 
     HandshakeMessageType handshakeMessageType;
 
@@ -90,6 +89,11 @@ public class HandshakeMessage extends ProtocolMessage {
 	String sb = "\n" + handshakeMessageType.getName();
 	sb += handshakeMessageFields.toString();
 	return sb;
+    }
+
+    @Override
+    public String toCompactString() {
+	return handshakeMessageType.getName();
     }
 
     @Override

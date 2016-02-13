@@ -72,4 +72,9 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 		.append(String.format("%02X ", ccsProtocolType.getValue()));
 	return sb.toString();
     }
+
+    @Override
+    public String toCompactString() {
+	return "ChangeCipherSpec";
+    }
 }

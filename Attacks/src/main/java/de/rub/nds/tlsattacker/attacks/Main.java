@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.LenstraTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttackTest;
@@ -39,6 +40,7 @@ import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.LenstraAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.SniTest;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
@@ -82,6 +84,8 @@ public class Main {
 	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
 	LenstraTestCommandConfig lenstraTest = new LenstraTestCommandConfig();
 	jc.addCommand(LenstraTestCommandConfig.ATTACK_COMMAND, lenstraTest);
+	SniTestCommandConfig sniTest = new SniTestCommandConfig();
+	jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
 
 	jc.parse(args);
 
@@ -121,6 +125,9 @@ public class Main {
 		break;
 	    case LenstraTestCommandConfig.ATTACK_COMMAND:
 		attacker = new LenstraAttackTest(lenstraTest);
+		break;
+	    case SniTestCommandConfig.ATTACK_COMMAND:
+		attacker = new SniTest(sniTest);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");

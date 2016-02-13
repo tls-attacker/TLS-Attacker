@@ -20,12 +20,9 @@ package de.rub.nds.tlsattacker.fuzzer;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
 import de.rub.nds.tlsattacker.fuzzer.impl.SimpleFuzzer;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.security.Security;

@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect epost.de:25 -max_transport_response_wait 200 -cipher TLS_RSA_WITH_RC4_128_SHA -enforce_transport_response_wait</exec.args>
+                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect 104.219.104.168:443 -max_transport_response_wait 900</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir></exec.workingdir>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect epost.de:25 -max_transport_response_wait 200 -cipher TLS_RSA_WITH_RC4_128_SHA -enforce_transport_response_wait</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect 104.219.104.168:443 -max_transport_response_wait 900</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir></exec.workingdir>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect epost.de:25 -max_transport_response_wait 200 -cipher TLS_RSA_WITH_RC4_128_SHA -enforce_transport_response_wait</exec.args>
+                <exec.args>-classpath %classpath de.rub.nds.tlsattacker.tls.Main client -connect 104.219.104.168:443 -max_transport_response_wait 900</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir></exec.workingdir>
             </properties>

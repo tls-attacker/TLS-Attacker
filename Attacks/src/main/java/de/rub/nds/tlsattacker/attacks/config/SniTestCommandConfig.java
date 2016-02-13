@@ -28,35 +28,23 @@ import java.util.LinkedList;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class BleichenbacherTestCommandConfig extends ClientCommandConfig {
+public class SniTestCommandConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "bleichenbacher_test";
+    public static final String ATTACK_COMMAND = "sni_test";
 
-    public enum Type {
-	FULL,
-	FAST
-    }
+    @Parameter(names = "-server_name2", description = "Servername for HostName TLS extension, used in the second ClientHello message.")
+    protected String serverName2;
 
-    @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
-    Type type;
-
-    public BleichenbacherTestCommandConfig() {
+    public SniTestCommandConfig() {
 	cipherSuites = new LinkedList<>();
 	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-	type = Type.FAST;
     }
 
-    public Type getType() {
-	return type;
+    public String getServerName2() {
+	return serverName2;
     }
 
-    public void setType(Type type) {
-	this.type = type;
+    public void setServerName2(String serverName2) {
+	this.serverName2 = serverName2;
     }
 }

@@ -16,46 +16,43 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.modifiablevariable.util;
+package de.rub.nds.tlsattacker.tls.crypto;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * Represents a modifiable variable holder (an object containing at least one
- * ModifiableVariable field), containing a list of its ModifiableVariable fields
+ * TODO Robert
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class ModifiableVariableHolder {
+public class TlsMessageDigestTest {
 
-    private Object object;
-
-    private List<Field> fields;
-
-    public ModifiableVariableHolder() {
-
+    /**
+     * Test of getDigestLength method, of class TlsMessageDigest.
+     */
+    @Test
+    public void testGetDigestLength() {
     }
 
-    public ModifiableVariableHolder(Object o, List<Field> f) {
-	this.object = o;
-	this.fields = f;
+    /**
+     * Test of update method, of class TlsMessageDigest.
+     */
+    @Test
+    public void testUpdate() {
     }
 
-    public Object getObject() {
-	return object;
+    /**
+     * Test of digest method, of class TlsMessageDigest.
+     */
+    @Test
+    public void testDigest() {
     }
 
-    public void setObject(Object object) {
-	this.object = object;
+    /**
+     * Test of reset method, of class TlsMessageDigest.
+     */
+    @Test
+    public void testReset() {
     }
-
-    public List<Field> getFields() {
-	return fields;
-    }
-
-    public void setFields(List<Field> fields) {
-	this.fields = fields;
-    }
-
 }

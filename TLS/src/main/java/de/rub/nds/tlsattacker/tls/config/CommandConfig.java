@@ -111,9 +111,6 @@ public abstract class CommandConfig {
     @Parameter(names = "-max_transport_response_wait", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
     protected Integer maxTransportResponseWait;
 
-    @Parameter(names = "-enforce_transport_response_wait", description = "Enforces that the peer always waits at least the number of millis defined in the max_transport_response_wait to collect all the server response bytes. Otherwise, the peer just takes the first bytes it receives (which can have negative consequences, if for example the server response bytes arrive with a delay).")
-    protected boolean enforceTransportResponseWait;
-
     @Parameter(names = "-client_authentication", description = "YES or NO")
     protected boolean clientAuthentication = false;
 
@@ -320,14 +317,6 @@ public abstract class CommandConfig {
 
     public void setSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
 	this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
-    }
-
-    public boolean isEnforceTransportResponseWait() {
-	return enforceTransportResponseWait;
-    }
-
-    public void setEnforceTransportResponseWait(boolean enforceTransportResponseWait) {
-	this.enforceTransportResponseWait = enforceTransportResponseWait;
     }
 
     public boolean isClientAuthentication() {

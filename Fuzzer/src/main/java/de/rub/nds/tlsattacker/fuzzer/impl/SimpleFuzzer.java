@@ -150,7 +150,7 @@ public class SimpleFuzzer extends Fuzzer {
 		step++;
 	    }
 	    // if the server was terminated, terminate fuzzing
-	    analyzeServerTerminationAndWriteFile(sce, folder, step, workflow);
+	    analyzeServerTerminationAndWriteFile(sce, folder, step, workflow, configHandler);
 	    // if the workflow contains an unexpected fields / messages, write
 	    // them to a file
 	    analyzeResultingTlsContextAndWriteFile(tlsContext, folder, step, "random");
@@ -207,7 +207,7 @@ public class SimpleFuzzer extends Fuzzer {
 			transportHandler.closeConnection();
 			step++;
 			// if the server was terminated, terminate fuzzing
-			analyzeServerTerminationAndWriteFile(sce, folder, step, workflow);
+			analyzeServerTerminationAndWriteFile(sce, folder, step, workflow, configHandler);
 			// if the workflow contains an unexpected fields /
 			// messages,
 			// write them to a file
@@ -262,12 +262,26 @@ public class SimpleFuzzer extends Fuzzer {
      * @throws JAXBException
      */
     private void analyzeServerTerminationAndWriteFile(ServerStartCommandExecutor sce, String folder, long step,
-	    WorkflowTrace workflow) throws IOException, JAXBException {
-	if (fuzzerConfig.containsServerCommand() && sce.isServerTerminated()
-		&& !fuzzerConfig.isRestartServerInEachInteration()) {
+	    WorkflowTrace workflow, ConfigHandler configHandler) throws IOException, JAXBException {
+	if (fuzzerConfig.containsServerCommand() && sce.isServerTerminated()) {
+	    interruptFuzzing = true;
+	}
+	// else if (!fuzzerConfig.containsServerCommand()) {
+	// try {
+	// TransportHandler transportHandler =
+	// configHandler.initializeTransportHandler(fuzzerConfig);
+	// transportHandler.closeConnection();
+	// } catch (Exception e) {
+	// interruptFuzzing = true;
+	// System.out.println("final: " + e);
+	// }
+	// }
+	if (interruptFuzzing) {
 	    FileOutputStream fos = new FileOutputStream(folder + "/terminated" + Long.toString(step) + ".xml");
 	    WorkflowTraceSerializer.write(fos, workflow);
-	    interruptFuzzing = true;
+	    LOGGER.error(sce.getServerErrorOutputString());
+	    LOGGER.error(sce.getServerOutputString());
+	    System.out.println("----------------------------");
 	}
     }
 
