@@ -16,46 +16,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.modifiablevariable.util;
+package de.rub.nds.tlsattacker.tls.util;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
- * Represents a modifiable variable holder (an object containing at least one
- * ModifiableVariable field), containing a list of its ModifiableVariable fields
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class ModifiableVariableHolder {
+public class LogLevel {
 
-    private Object object;
-
-    private List<Field> fields;
-
-    public ModifiableVariableHolder() {
-
-    }
-
-    public ModifiableVariableHolder(Object o, List<Field> f) {
-	this.object = o;
-	this.fields = f;
-    }
-
-    public Object getObject() {
-	return object;
-    }
-
-    public void setObject(Object object) {
-	this.object = object;
-    }
-
-    public List<Field> getFields() {
-	return fields;
-    }
-
-    public void setFields(List<Field> fields) {
-	this.fields = fields;
-    }
-
+    /**
+     * This log level is used to inform about important results of TLS
+     * evaluations. For example, to present a final result of an executed
+     * attack.
+     */
+    public static final Level CONSOLE_OUTPUT = Level.forName("CONSOLE_OUTPUT", 150);
 }

@@ -29,9 +29,11 @@ import java.util.Random;
  */
 final public class BigIntegerModificationFactory {
 
-    private static final int MODIFICATION_COUNT = 4;
+    private static final int MODIFICATION_COUNT = 6;
 
-    private static final int MAX_MODIFICATION_VALUE = 32000;
+    private static final int MAX_MODIFICATION_VALUE = 320000;
+
+    private static final int MAX_MODIFICATION_SHIFT_VALUE = 50;
 
     private BigIntegerModificationFactory() {
     }
@@ -42,6 +44,22 @@ final public class BigIntegerModificationFactory {
 
     public static BigIntegerAddModification add(final BigInteger summand) {
 	return new BigIntegerAddModification(summand);
+    }
+
+    public static BigIntegerShiftLeftModification shiftLeft(final String shift) {
+	return shiftLeft(new Integer(shift));
+    }
+
+    public static BigIntegerShiftLeftModification shiftLeft(final Integer shift) {
+	return new BigIntegerShiftLeftModification(shift);
+    }
+
+    public static BigIntegerShiftRightModification shiftRight(final String shift) {
+	return shiftRight(new Integer(shift));
+    }
+
+    public static BigIntegerShiftRightModification shiftRight(final Integer shift) {
+	return new BigIntegerShiftRightModification(shift);
     }
 
     public static VariableModification<BigInteger> sub(final String subtrahend) {
@@ -72,6 +90,7 @@ final public class BigIntegerModificationFactory {
 	Random random = RandomHelper.getRandom();
 	int r = random.nextInt(MODIFICATION_COUNT);
 	BigInteger modification = BigInteger.valueOf(random.nextInt(MAX_MODIFICATION_VALUE));
+	int shiftModification = random.nextInt(MAX_MODIFICATION_SHIFT_VALUE);
 	VariableModification<BigInteger> vm = null;
 	switch (r) {
 	    case 0:
@@ -85,6 +104,12 @@ final public class BigIntegerModificationFactory {
 		return vm;
 	    case 3:
 		vm = new BigIntegerExplicitValueModification(modification);
+		return vm;
+	    case 4:
+		vm = new BigIntegerShiftLeftModification(shiftModification);
+		return vm;
+	    case 5:
+		vm = new BigIntegerShiftRightModification(shiftModification);
 		return vm;
 	}
 	return vm;

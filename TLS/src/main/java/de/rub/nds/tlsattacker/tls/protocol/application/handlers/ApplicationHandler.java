@@ -44,7 +44,7 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	System.out.println(ArrayConverter.bytesToHexString(message));
+	// System.out.println(ArrayConverter.bytesToHexString(message));
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 

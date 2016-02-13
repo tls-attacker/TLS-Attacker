@@ -46,13 +46,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class ClientConfigHandler extends ConfigHandler {
 
-    private static Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
 
     @Override
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
 	ClientCommandConfig ccConfig = (ClientCommandConfig) config;
 	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-		config.getMaxTransportResponseWait(), config.isEnforceTransportResponseWait());
+		config.getMaxTransportResponseWait());
 	try {
 	    String[] hp = ccConfig.getConnect().split(":");
 	    String host = hp[0];

@@ -218,6 +218,14 @@ public class ArrayConverter {
 	return result;
     }
 
+    public static byte[] concatenate(final byte[] array1, final byte[] array2, int numberOfArray2Bytes) {
+	int length = array1.length + numberOfArray2Bytes;
+	byte[] result = new byte[length];
+	System.arraycopy(array1, 0, result, 0, array1.length);
+	System.arraycopy(array2, 0, result, array1.length, numberOfArray2Bytes);
+	return result;
+    }
+
     public static void makeArrayNonZero(final byte[] array) {
 	for (int i = 0; i < array.length; i++) {
 	    if (array[i] == 0) {
