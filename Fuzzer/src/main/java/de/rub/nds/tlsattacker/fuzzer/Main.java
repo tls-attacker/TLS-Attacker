@@ -19,8 +19,10 @@
 package de.rub.nds.tlsattacker.fuzzer;
 
 import com.beust.jcommander.JCommander;
+import de.rub.nds.tlsattacker.fuzzer.config.CleverMultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
+import de.rub.nds.tlsattacker.fuzzer.impl.CleverMultiFuzzer;
 import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
 import de.rub.nds.tlsattacker.fuzzer.impl.SimpleFuzzer;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -47,6 +49,8 @@ public class Main {
 	jc.addCommand(SimpleFuzzerConfig.ATTACK_COMMAND, config);
 	MultiFuzzerConfig mconfig = new MultiFuzzerConfig();
 	jc.addCommand(MultiFuzzerConfig.ATTACK_COMMAND, mconfig);
+	CleverMultiFuzzerConfig cmconfig = new CleverMultiFuzzerConfig();
+	jc.addCommand(CleverMultiFuzzerConfig.ATTACK_COMMAND, cmconfig);
 
 	jc.parse(args);
 
@@ -61,6 +65,9 @@ public class Main {
 		break;
 	    case MultiFuzzerConfig.ATTACK_COMMAND:
 		startMultiFuzzer(mconfig, generalConfig, jc);
+		break;
+	    case CleverMultiFuzzerConfig.ATTACK_COMMAND:
+		startCleverMultiFuzzer(cmconfig, generalConfig, jc);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");
@@ -81,6 +88,16 @@ public class Main {
 	MultiFuzzer fuzzer = new MultiFuzzer(fuzzerConfig, generalConfig);
 	if (fuzzerConfig.isHelp()) {
 	    jc.usage(MultiFuzzerConfig.ATTACK_COMMAND);
+	    return;
+	}
+	fuzzer.startFuzzer();
+    }
+
+    private static void startCleverMultiFuzzer(CleverMultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig,
+	    JCommander jc) {
+	CleverMultiFuzzer fuzzer = new CleverMultiFuzzer(fuzzerConfig, generalConfig);
+	if (fuzzerConfig.isHelp()) {
+	    jc.usage(CleverMultiFuzzerConfig.ATTACK_COMMAND);
 	    return;
 	}
 	fuzzer.startFuzzer();

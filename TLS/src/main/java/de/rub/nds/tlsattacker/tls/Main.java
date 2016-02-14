@@ -26,10 +26,14 @@ import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.Security;
+import javax.xml.bind.JAXBException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
@@ -83,5 +87,10 @@ public class Main {
 	// }
 
 	transportHandler.closeConnection();
+
+	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
+	    FileOutputStream fos = new FileOutputStream(config.getWorkflowTraceOutputFile());
+	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
+	}
     }
 }
