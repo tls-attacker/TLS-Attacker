@@ -92,6 +92,9 @@ public abstract class CommandConfig {
     @Parameter(names = "-workflow_trace_config_file", description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
     protected String workflowTraceConfigFile;
 
+    @Parameter(names = "-workflow_trace_output_file", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")
+    protected String workflowTraceOutputFile;
+
     @Parameter(names = "-heartbeat_mode", description = "Sets the heartbeat mode (PEER_ALLOWED_TO_SEND or PEER_NOT_ALLOWED_TO_SEND)", converter = HeartbeatModeConverter.class)
     protected HeartbeatMode heartbeatMode;
 
@@ -237,6 +240,14 @@ public abstract class CommandConfig {
 
     public void setWorkflowTraceConfigFile(String workflowTraceConfigFile) {
 	this.workflowTraceConfigFile = workflowTraceConfigFile;
+    }
+
+    public String getWorkflowTraceOutputFile() {
+	return workflowTraceOutputFile;
+    }
+
+    public void setWorkflowTraceOutputFile(String workflowTraceOutputFile) {
+	this.workflowTraceOutputFile = workflowTraceOutputFile;
     }
 
     public List<CompressionMethod> getCompressionMethods() {
