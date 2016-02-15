@@ -41,7 +41,9 @@ public class StartupCommandsHolder {
     private String workflowFolder;
 
     private String modifiedVariableTypes;
-
+    
+    private String outputFolder;
+    
     @XmlElementWrapper(name = "startupCommandsList")
     @XmlElements(value = { @XmlElement(type = StartupCommand.class) })
     private List<StartupCommand> startupCommands;
@@ -84,5 +86,13 @@ public class StartupCommandsHolder {
 
     public void setModifiedVariableTypes(String modifiedVariableTypes) {
 	this.modifiedVariableTypes = modifiedVariableTypes;
+    }
+
+    public String getOutputFolder() {
+        return outputFolder;
+    }
+
+    public void setOutputFolder(String outputFolder) {
+        this.outputFolder = outputFolder;
     }
 }

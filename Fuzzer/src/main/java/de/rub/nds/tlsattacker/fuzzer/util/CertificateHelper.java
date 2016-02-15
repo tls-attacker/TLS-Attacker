@@ -48,7 +48,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateHelper {
 
-    private static Logger LOGGER = LogManager.getLogger(CertificateHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(CertificateHelper.class);
 
     private CertificateHelper() {
 

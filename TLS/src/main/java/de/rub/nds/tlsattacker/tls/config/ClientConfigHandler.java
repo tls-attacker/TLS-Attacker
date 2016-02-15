@@ -72,18 +72,19 @@ public class ClientConfigHandler extends ConfigHandler {
     public TlsContext initializeTlsContext(CommandConfig config) {
 	ClientCommandConfig ccConfig = (ClientCommandConfig) config;
 	TlsContext tlsContext;
+        WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	if (ccConfig.getWorkflowTraceConfigFile() != null) {
 	    try {
 		tlsContext = new TlsContext();
 		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowTraceConfigFile());
 		WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
 		tlsContext.setWorkflowTrace(workflowTrace);
+                WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
 	    } catch (IOException | JAXBException ex) {
 		throw new ConfigurationException("The workflow trace could not be loaded from "
 			+ ccConfig.getWorkflowTraceConfigFile(), ex);
 	    }
 	} else {
-	    WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	    switch (ccConfig.getWorkflowTraceType()) {
 		case FULL:
 		    tlsContext = factory.createFullTlsContext();

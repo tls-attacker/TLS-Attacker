@@ -27,17 +27,17 @@ import java.util.List;
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class ModifiableVariableHolder {
+public class ModifiableVariableListHolder {
 
     private Object object;
 
     private List<Field> fields;
 
-    public ModifiableVariableHolder() {
+    public ModifiableVariableListHolder() {
 
     }
 
-    public ModifiableVariableHolder(Object o, List<Field> f) {
+    public ModifiableVariableListHolder(Object o, List<Field> f) {
 	this.object = o;
 	this.fields = f;
     }

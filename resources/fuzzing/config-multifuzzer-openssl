@@ -1,7 +1,9 @@
 <startupCommandsHolder>
-    <serverCommand>../../../servers/openssl-1.0.2f/apps/openssl </serverCommand>
+    <serverCommand>../../../servers/openssl-1.1.0-pre1/apps/openssl </serverCommand>
     <serverPort>51000</serverPort>
+    <workflowFolder>../resources/fuzzing/workflows</workflowFolder>
     <modifiedVariableTypes>TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PLAIN_PROTOCOL_MESSAGE</modifiedVariableTypes>
+    <!--<outputFolder>/tmp/</outputFolder>-->
     <startupCommandsList>
         <startupCommands>
             <fuzzerCommand>simple_fuzzer -connect localhost:$PORT</fuzzerCommand>
@@ -9,27 +11,17 @@
             <shortName>openssl-rsa</shortName>
         </startupCommands>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -max_fragment_length 4 -heartbeat_mode PEER_ALLOWED_TO_SEND -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -keystore ../resources/rsa1024.jks -password password -alias alias -cipher TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256 -max_transport_response_wait 60 -execute_protocol_modification -fuzzing_type random</fuzzerCommand>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias </fuzzerCommand>
             <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
             <shortName>openssl-rsa-auth</shortName>
         </startupCommands>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA -max_transport_response_wait 60 -execute_protocol_modification -fuzzing_type random</fuzzerCommand>
-            <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem </serverCommandParameters>
-            <shortName>openssl-ecdhe-rsa</shortName>
-        </startupCommands>
-        <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE -cipher TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA -max_transport_response_wait 60 -execute_protocol_modification -fuzzing_type random</fuzzerCommand>
-            <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem </serverCommandParameters>
-            <shortName>openssl-dhe-rsa</shortName>
-        </startupCommands>
-        <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA256 -max_transport_response_wait 60 -execute_protocol_modification -fuzzing_type random</fuzzerCommand>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT </fuzzerCommand>
             <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/ec256key.pem -cert ../resources/ec256cert.pem </serverCommandParameters>
             <shortName>openssl-ecdhe-ecdsa</shortName>
         </startupCommands>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -workflow_trace_type FULL -server_name test.de  -modified_variable_types TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PUBLIC_KEY,PLAIN_PROTOCOL_MESSAGE  -cipher TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256 -execute_protocol_modification -fuzzing_type random</fuzzerCommand>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT</fuzzerCommand>
             <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/dsakey.pem -cert ../resources/dsacert.pem </serverCommandParameters>
             <shortName>openssl-dsa</shortName>
         </startupCommands>

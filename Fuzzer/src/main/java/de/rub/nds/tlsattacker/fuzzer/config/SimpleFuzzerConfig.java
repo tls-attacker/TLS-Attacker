@@ -103,6 +103,7 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
+        
     }
 
     public String getServerCommand() {
