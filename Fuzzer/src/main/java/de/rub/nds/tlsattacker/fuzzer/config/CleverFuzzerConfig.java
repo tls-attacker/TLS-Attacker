@@ -23,18 +23,14 @@ import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyFormatConverter;
 import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyTypeConverter;
 import de.rub.nds.tlsattacker.fuzzer.impl.FuzzingType;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.tlsattacker.tls.config.CipherSuiteFilter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class CleverFuzzerConfig extends ClientCommandConfig {
@@ -69,12 +65,11 @@ public class CleverFuzzerConfig extends ClientCommandConfig {
     Integer notSendingMessagePercantage = 50;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
-    Integer addRecordPercentage = 40;
+    Integer addRecordPercentage = 50;
 
     // @Parameter(names = "-interrupt", description =
     // "Interrupts scan after first finding resulting in an invalid workflow.")
     // boolean interruptAfterFirstFinding;
-
     @Parameter(names = "-fuzzing_type", description = "Fuzzing can be either done completely randomly, or systematically iterating over modifiable variable.")
     FuzzingType fuzzingType = FuzzingType.CLEVER;
 
@@ -82,48 +77,56 @@ public class CleverFuzzerConfig extends ClientCommandConfig {
     Integer variableModificationIter = 100;
 
     @Parameter(names = "-random_modification_iter", description = "Number of random modifications made to a handshake while executing a systematic fuzzing in step 2.")
-    Integer randomModificationIter = 100000;
+    Integer randomModificationIter = 10000;
 
     @Parameter(names = "-handshake_modification_iter", description = "Number of random modifications to the handshake made while fuzzing in step 3.")
-    Integer handshakeModificationIter = 100000;
+    Integer handshakeModificationIter = 10000;
 
     @Parameter(names = "-restart_server", description = "Indicates whether the server is restarted in each fuzzing iteration.")
     boolean restartServerInEachInteration = false;
 
-    public CleverFuzzerConfig() {
-	modifiableVariableTypes = new LinkedList<>();
-	modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
-	modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
-	modifiableVariableTypes.add(ModifiableVariableProperty.Type.PADDING);
+    @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.")
+    String outputFolder;
 
-	modifiableVariableFormats = new LinkedList<>();
-	modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
-	modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
-	modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
+    @Parameter(names = "-workflow_folder", description = "Folder with tested workflows.")
+    String workflowFolder;
+
+    public CleverFuzzerConfig() {
+        modifiableVariableTypes = new LinkedList<>();
+        modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
+        modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
+        modifiableVariableTypes.add(ModifiableVariableProperty.Type.PADDING);
+
+        modifiableVariableFormats = new LinkedList<>();
+        modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
+        modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
+        modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
+
+        outputFolder = "/tmp/";
     }
 
     public String getServerCommand() {
-	return serverCommand;
+        return serverCommand;
     }
 
     public void setServerCommand(String serverCommand) {
-	this.serverCommand = serverCommand;
+        this.serverCommand = serverCommand;
     }
 
     public String getServerCommandFromFile() {
-	return serverCommandFromFile;
+        return serverCommandFromFile;
     }
 
     public void setServerCommandFromFile(String serverCommandFromFile) {
-	this.serverCommandFromFile = serverCommandFromFile;
+        this.serverCommandFromFile = serverCommandFromFile;
     }
 
     public Integer getModifyVariablePercentage() {
-	return modifyVariablePercentage;
+        return modifyVariablePercentage;
     }
 
     public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
-	this.modifyVariablePercentage = modifyVariablePercentage;
+        this.modifyVariablePercentage = modifyVariablePercentage;
     }
 
     // public String getModifiedVariablePattern() {
@@ -135,43 +138,43 @@ public class CleverFuzzerConfig extends ClientCommandConfig {
     // this.modifiedVariableWhitelist = modifiedVariableWhitelist;
     // }
     public List<ModifiableVariableProperty.Type> getModifiableVariableTypes() {
-	return modifiableVariableTypes;
+        return modifiableVariableTypes;
     }
 
     public void setModifiableVariableTypes(List<ModifiableVariableProperty.Type> modifiableVariableTypes) {
-	this.modifiableVariableTypes = modifiableVariableTypes;
+        this.modifiableVariableTypes = modifiableVariableTypes;
     }
 
     public List<ModifiableVariableProperty.Format> getModifiableVariableFormats() {
-	return modifiableVariableFormats;
+        return modifiableVariableFormats;
     }
 
     public void setModifiableVariableFormats(List<ModifiableVariableProperty.Format> modifiableVariableFormats) {
-	this.modifiableVariableFormats = modifiableVariableFormats;
+        this.modifiableVariableFormats = modifiableVariableFormats;
     }
 
     public Integer getGenerateMessagePercentage() {
-	return generateMessagePercentage;
+        return generateMessagePercentage;
     }
 
     public void setGenerateMessagePercentage(Integer generateMessagePercentage) {
-	this.generateMessagePercentage = generateMessagePercentage;
+        this.generateMessagePercentage = generateMessagePercentage;
     }
 
     public Integer getNotSendingMessagePercantage() {
-	return notSendingMessagePercantage;
+        return notSendingMessagePercantage;
     }
 
     public void setNotSendingMessagePercantage(Integer notSendingMessagePercantage) {
-	this.notSendingMessagePercantage = notSendingMessagePercantage;
+        this.notSendingMessagePercantage = notSendingMessagePercantage;
     }
 
     public Integer getAddRecordPercentage() {
-	return addRecordPercentage;
+        return addRecordPercentage;
     }
 
     public void setAddRecordPercentage(Integer addRecordPercentage) {
-	this.addRecordPercentage = addRecordPercentage;
+        this.addRecordPercentage = addRecordPercentage;
     }
 
     // public boolean isInterruptAfterFirstFinding() {
@@ -182,72 +185,87 @@ public class CleverFuzzerConfig extends ClientCommandConfig {
     // interruptAfterFirstFinding) {
     // this.interruptAfterFirstFinding = interruptAfterFirstFinding;
     // }
-
     public String getModifiedVariableWhitelist() {
-	return modifiedVariableWhitelist;
+        return modifiedVariableWhitelist;
     }
 
     public void setModifiedVariableWhitelist(String modifiedVariableWhitelist) {
-	this.modifiedVariableWhitelist = modifiedVariableWhitelist;
+        this.modifiedVariableWhitelist = modifiedVariableWhitelist;
     }
 
     public String getModifiedVariableBlacklist() {
-	return modifiedVariableBlacklist;
+        return modifiedVariableBlacklist;
     }
 
     public void setModifiedVariableBlacklist(String modifiedVariableBlacklist) {
-	this.modifiedVariableBlacklist = modifiedVariableBlacklist;
+        this.modifiedVariableBlacklist = modifiedVariableBlacklist;
     }
 
     public FuzzingType getFuzzingType() {
-	return fuzzingType;
+        return fuzzingType;
     }
 
     public void setFuzzingType(FuzzingType fuzzingType) {
-	this.fuzzingType = fuzzingType;
+        this.fuzzingType = fuzzingType;
     }
 
     public Integer getVariableModificationIter() {
-	return variableModificationIter;
+        return variableModificationIter;
     }
 
     public void setVariableModificationIter(Integer variableModificationIter) {
-	this.variableModificationIter = variableModificationIter;
+        this.variableModificationIter = variableModificationIter;
     }
 
     public boolean isRestartServerInEachInteration() {
-	return restartServerInEachInteration;
+        return restartServerInEachInteration;
     }
 
     public void setRestartServerInEachInteration(boolean restartServerInEachInteration) {
-	this.restartServerInEachInteration = restartServerInEachInteration;
+        this.restartServerInEachInteration = restartServerInEachInteration;
     }
 
     public Integer getRandomModificationIter() {
-	return randomModificationIter;
+        return randomModificationIter;
     }
 
     public void setRandomModificationIter(Integer randomModificationIter) {
-	this.randomModificationIter = randomModificationIter;
+        this.randomModificationIter = randomModificationIter;
     }
 
     public Integer getHandshakeModificationIter() {
-	return handshakeModificationIter;
+        return handshakeModificationIter;
     }
 
     public void setHandshakeModificationIter(Integer handshakeModificationIter) {
-	this.handshakeModificationIter = handshakeModificationIter;
+        this.handshakeModificationIter = handshakeModificationIter;
+    }
+
+    public String getOutputFolder() {
+        return outputFolder;
+    }
+
+    public void setOutputFolder(String outputFolder) {
+        this.outputFolder = outputFolder;
+    }
+
+    public String getWorkflowFolder() {
+        return workflowFolder;
+    }
+
+    public void setWorkflowFolder(String workflowFolder) {
+        this.workflowFolder = workflowFolder;
     }
 
     public boolean containsServerCommand() {
-	return serverCommand != null || serverCommandFromFile != null;
+        return serverCommand != null || serverCommandFromFile != null;
     }
 
     public String getResultingServerCommand() {
-	if (serverCommand != null) {
-	    return serverCommand;
-	} else {
-	    return serverCommandFromFile;
-	}
+        if (serverCommand != null) {
+            return serverCommand;
+        } else {
+            return serverCommandFromFile;
+        }
     }
 }

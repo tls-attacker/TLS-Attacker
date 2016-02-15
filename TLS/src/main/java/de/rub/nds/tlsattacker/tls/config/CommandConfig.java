@@ -134,7 +134,7 @@ public abstract class CommandConfig {
 	namedCurves.add(NamedCurve.SECP384R1);
 	namedCurves.add(NamedCurve.SECP521R1);
 	nextProtoNeg = new LinkedList<>();
-	maxTransportResponseWait = 100;
+	maxTransportResponseWait = 150;
 	alias = "";
 	signatureAndHashAlgorithms = new LinkedList<>();
 	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
