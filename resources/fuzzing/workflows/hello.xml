@@ -20,10 +20,6 @@
                 <MaxFragmentLengthExtension>
                     <maxFragmentLengthConfig>TWO_12</maxFragmentLengthConfig>
                 </MaxFragmentLengthExtension>
-                <ServerNameIndicationExtension>
-                    <nameTypeConfig>HOST_NAME</nameTypeConfig>
-                    <serverNameConfig>test.de</serverNameConfig>
-                </ServerNameIndicationExtension>
                 <SignatureAndHashAlgorithmsExtension>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA512</hashAlgorithm>

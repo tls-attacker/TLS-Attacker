@@ -74,7 +74,7 @@ public class CleverFuzzerConfig extends ClientCommandConfig {
     FuzzingType fuzzingType = FuzzingType.CLEVER;
 
     @Parameter(names = "-variable_modification_iter", description = "Number of modifications made to each field while executing a systematic fuzzing in step 1.")
-    Integer variableModificationIter = 100;
+    Integer variableModificationIter = 1000;
 
     @Parameter(names = "-random_modification_iter", description = "Number of random modifications made to a handshake while executing a systematic fuzzing in step 2.")
     Integer randomModificationIter = 10000;

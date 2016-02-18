@@ -81,7 +81,7 @@ public final class ServerStartCommandExecutor {
 	error.start();
 	output.start();
 
-	LOGGER.debug("Server successfully started.");
+	LOGGER.info("Server successfully started.");
     }
 
     public List<String> getServerOutput() {

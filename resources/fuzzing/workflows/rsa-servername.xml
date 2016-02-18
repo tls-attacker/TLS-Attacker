@@ -12,14 +12,30 @@
                     <supportedCurvesConfig>SECP521R1</supportedCurvesConfig>
                 </EllipticCurves>
                 <ECPointFormat>
+                    <extensionBytes>
+                        <originalValue>00 0B 00 02 01 00 </originalValue>
+                    </extensionBytes>
+                    <extensionLength>
+                        <originalValue>2</originalValue>
+                    </extensionLength>
+                    <extensionType>
+                        <originalValue>00 0B </originalValue>
+                    </extensionType>
+                    <pointFormats>
+                        <originalValue>00 </originalValue>
+                    </pointFormats>
                     <pointFormatsConfig>UNCOMPRESSED</pointFormatsConfig>
+                    <pointFormatsLength>
+                        <originalValue>1</originalValue>
+                    </pointFormatsLength>
                 </ECPointFormat>
-                <HeartbeatExtension>
-                    <heartbeatModeConfig>PEER_ALLOWED_TO_SEND</heartbeatModeConfig>
-                </HeartbeatExtension>
                 <MaxFragmentLengthExtension>
                     <maxFragmentLengthConfig>TWO_12</maxFragmentLengthConfig>
                 </MaxFragmentLengthExtension>
+                <ServerNameIndicationExtension>
+                    <nameTypeConfig>HOST_NAME</nameTypeConfig>
+                    <serverNameConfig>test.de</serverNameConfig>
+                </ServerNameIndicationExtension>
                 <SignatureAndHashAlgorithmsExtension>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA512</hashAlgorithm>
@@ -57,10 +73,10 @@
                 <CompressionMethod>NULL</CompressionMethod>
             </supportedCompressionMethods>
             <supportedCipherSuites>
-                <!--<CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</CipherSuite>-->
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
+                <CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
+                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
+                <!--<CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
+                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA256</CipherSuite>-->
             </supportedCipherSuites>
         </ClientHello>
         <ServerHello>
@@ -69,15 +85,12 @@
         <Certificate>
             <messageIssuer>SERVER</messageIssuer>
         </Certificate>
-        <ECDHEServerKeyExchange>
-            <messageIssuer>SERVER</messageIssuer>
-        </ECDHEServerKeyExchange>
         <ServerHelloDone>
             <messageIssuer>SERVER</messageIssuer>
         </ServerHelloDone>
-        <ECDHClientKeyExchange>
+        <RSAClientKeyExchange>
             <messageIssuer>CLIENT</messageIssuer>
-        </ECDHClientKeyExchange>
+        </RSAClientKeyExchange>
         <ChangeCipherSpec>
             <messageIssuer>CLIENT</messageIssuer>
         </ChangeCipherSpec>
@@ -93,11 +106,5 @@
         <Application>
             <messageIssuer>CLIENT</messageIssuer>
         </Application>
-        <Heartbeat>
-            <messageIssuer>CLIENT</messageIssuer>
-        </Heartbeat>
-        <Heartbeat>
-            <messageIssuer>SERVER</messageIssuer>
-        </Heartbeat>
     </protocolMessages>
 </workflowTrace>

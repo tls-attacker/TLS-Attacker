@@ -160,14 +160,18 @@ public class TlsContext {
      */
     private byte[] dtlsHandshakeCookie = new byte[0];
 
-    public TlsContext() {
+    public TlsContext(ProtocolVersion pv) {
 	ecContext = new TlsECContext();
-	protocolVersion = ProtocolVersion.TLS12;
+	protocolVersion = pv;
 	try {
 	    digest = new TlsMessageDigest(this.protocolVersion);
 	} catch (NoSuchAlgorithmException ex) {
 	    throw new CryptoException(ex);
 	}
+    }
+    
+    public TlsContext() {
+        this(ProtocolVersion.TLS12);
     }
 
     public byte[] getMasterSecret() {
