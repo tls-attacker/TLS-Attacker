@@ -17,10 +17,6 @@
                 <MaxFragmentLengthExtension>
                     <maxFragmentLengthConfig>TWO_12</maxFragmentLengthConfig>
                 </MaxFragmentLengthExtension>
-                <ServerNameIndicationExtension>
-                    <nameTypeConfig>HOST_NAME</nameTypeConfig>
-                    <serverNameConfig>test.de</serverNameConfig>
-                </ServerNameIndicationExtension>
                 <SignatureAndHashAlgorithmsExtension>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA512</hashAlgorithm>
@@ -59,8 +55,8 @@
             </supportedCompressionMethods>
             <supportedCipherSuites>
                 <CipherSuite>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_DHE_DSS_WITH_AES_128_CBC_SHA256</CipherSuite>
-                <CipherSuite>TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</CipherSuite>
+                <!--<CipherSuite>TLS_DHE_DSS_WITH_AES_128_CBC_SHA256</CipherSuite>
+                <CipherSuite>TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</CipherSuite>-->
             </supportedCipherSuites>
         </ClientHello>
         <ServerHello>

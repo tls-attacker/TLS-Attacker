@@ -75,7 +75,7 @@ public class ClientConfigHandler extends ConfigHandler {
         WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	if (ccConfig.getWorkflowTraceConfigFile() != null) {
 	    try {
-		tlsContext = new TlsContext();
+		tlsContext = new TlsContext(config.getProtocolVersion());
 		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowTraceConfigFile());
 		WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
 		tlsContext.setWorkflowTrace(workflowTrace);

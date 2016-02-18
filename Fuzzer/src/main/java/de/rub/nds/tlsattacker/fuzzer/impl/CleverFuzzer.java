@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import javax.xml.bind.JAXBException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
@@ -80,6 +81,8 @@ public class CleverFuzzer extends Fuzzer {
 
     private final Set<String> variablesWithoutHandshakeInfluence;
 
+    private long totalProtocolFlows = 0;
+
     public CleverFuzzer(CleverFuzzerConfig fuzzerConfig, GeneralConfig generalConfig) {
         super(generalConfig);
         this.fuzzerConfig = fuzzerConfig;
@@ -100,12 +103,17 @@ public class CleverFuzzer extends Fuzzer {
                 sce = startTestServer(fuzzerConfig.getResultingServerCommand());
             }
 
-            gatherWorkflowsAndCertificate();
+            try {
+                gatherWorkflowsAndCertificate();
+            } catch (ConfigurationException ex) {
+                LOGGER.info(ex.getLocalizedMessage());
+            }
 
             startFuzzing(logFolder);
 
         } catch (ConfigurationException | JAXBException | IOException | IllegalAccessException | IllegalArgumentException ex) {
-            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+//            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+            LOGGER.info(ex.getLocalizedMessage());
         } finally {
             if (fuzzerConfig.containsServerCommand()
                     && !sce.isServerTerminated()) {
@@ -146,7 +154,7 @@ public class CleverFuzzer extends Fuzzer {
                     }
                     validWorkflowTraces.add(tmpTrace);
                 }
-            } catch (WorkflowExecutionException ex) {
+            } catch (WorkflowExecutionException | ConfigurationException ex) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not possible to execute a correct workflow", ex.getLocalizedMessage());
                 LOGGER.debug(ex);
             }
@@ -162,13 +170,14 @@ public class CleverFuzzer extends Fuzzer {
         phase23(2, logFolder);
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 2 is over, starting phase 3");
         phase23(3, logFolder);
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 3 finalized");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 3 finished");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Total protocol flows: {}", totalProtocolFlows);
     }
 
     /**
      * Use the TLS protocol flows and modify systematically specific variables.
-     * The output of this phase is a list of variables that are most probably not
-     * correctly checked by the server.
+     * The output of this phase is a list of variables that are most probably
+     * not correctly checked by the server.
      *
      * @param logFolder
      * @throws IOException
@@ -216,10 +225,11 @@ public class CleverFuzzer extends Fuzzer {
                     }
                     // if the server was terminated, write file
                     analyzeServerTerminationAndWriteFile(sce, logFolder, currentFieldName, trace.getName(), iter, workflow);
-                    // if the workflow contains an unexpected fields /
+                        // if the workflow contains an unexpected fields /
                     // messages,
                     // write them to a file
                     analyzeResultingTlsContextAndWriteFile(tlsContext, logFolder, currentFieldName, trace.getName(), iter);
+                    totalProtocolFlows++;
                     if (interruptFuzzing) {
                         return;
                     }
@@ -227,6 +237,7 @@ public class CleverFuzzer extends Fuzzer {
                 if (influencesHandshake) {
                     variablesWithoutHandshakeInfluence.add(currentMessageName + "." + currentFieldName);
                 }
+
             }
         }
     }
@@ -241,7 +252,7 @@ public class CleverFuzzer extends Fuzzer {
             WorkflowTrace validWorkflow = pickRandomTrace();
             TlsContext tlsContext = createTlsContext(validWorkflow);
             WorkflowTrace workflow = tlsContext.getWorkflowTrace();
-            
+
             if (phase == 3) {
                 executeProtocolModificationPhase(workflow, tlsContext.getMyConnectionEnd());
             }
@@ -267,6 +278,7 @@ public class CleverFuzzer extends Fuzzer {
             // messages,
             // write them to a file
             analyzeResultingTlsContextAndWriteFile(tlsContext, logFolder, "", validWorkflow.getName(), iter);
+            totalProtocolFlows++;
         }
     }
 
@@ -381,7 +393,7 @@ public class CleverFuzzer extends Fuzzer {
 
     private void executeProtocolModificationPhase(WorkflowTrace workflow, ConnectionEnd myConnectionEnd) {
         int i = 0;
-        while(i < MAX_MODIFICATION_COUNT && FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getGenerateMessagePercentage())) {
+        while (i < MAX_MODIFICATION_COUNT && FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getGenerateMessagePercentage())) {
             i++;
             FuzzingHelper.addRandomProtocolMessage(workflow, myConnectionEnd);
         }
@@ -394,7 +406,7 @@ public class CleverFuzzer extends Fuzzer {
 
     private void addRandomRecords(WorkflowTrace workflow, ConnectionEnd myConnectionEnd) {
         int i = 0;
-        while(i < MAX_MODIFICATION_COUNT && FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getAddRecordPercentage())) {
+        while (i < MAX_MODIFICATION_COUNT && FuzzingHelper.executeFuzzingUnit(fuzzerConfig.getAddRecordPercentage())) {
             i++;
             FuzzingHelper.addRecordsAtRandom(workflow, myConnectionEnd);
         }
@@ -452,7 +464,7 @@ public class CleverFuzzer extends Fuzzer {
         sce = new ServerStartCommandExecutor(serverCommand);
         sce.startServer();
         try {
-            Thread.sleep(200);
+            Thread.sleep(2500);
         } catch (InterruptedException ex) {
         }
         return sce;

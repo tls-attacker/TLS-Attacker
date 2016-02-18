@@ -58,8 +58,11 @@ public class CleverMultiFuzzer extends Fuzzer {
             String types = holder.getModifiedVariableTypes();
             for (StartupCommand command : holder.getStartupCommands()) {
                 port++;
-                String fullServerCommand = holder.getServerCommand() + " " + command.getServerCommandParameters();
-                fullServerCommand = fullServerCommand.replace("$PORT", Integer.toString(port));
+                String fullServerCommand = null;
+                if (holder.getServerCommand() != null && !holder.getServerCommand().isEmpty()) {
+                    fullServerCommand = holder.getServerCommand() + " " + command.getServerCommandParameters();
+                    fullServerCommand = fullServerCommand.replace("$PORT", Integer.toString(port));
+                }
                 String fuzzerCommand = command.getFuzzerCommand().replace("$PORT", Integer.toString(port));
                 if (types != null && !types.isEmpty()) {
                     fuzzerCommand = fuzzerCommand + " -modified_variable_types " + types;

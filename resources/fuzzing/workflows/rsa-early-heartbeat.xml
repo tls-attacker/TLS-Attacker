@@ -63,8 +63,8 @@
             <supportedCipherSuites>
                 <CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
                 <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
-                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA256</CipherSuite>
+                <!--<CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
+                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA256</CipherSuite>-->
             </supportedCipherSuites>
         </ClientHello>
         <ServerHello>
