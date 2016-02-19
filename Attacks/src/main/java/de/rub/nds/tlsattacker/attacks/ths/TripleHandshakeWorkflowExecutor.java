@@ -16,8 +16,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.tls.workflow;
+package de.rub.nds.tlsattacker.attacks.ths;
 
+import static de.rub.nds.tlsattacker.tls.config.ServerCertificateKey.RSA;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -26,8 +27,13 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
@@ -38,21 +44,32 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
+public class TripleHandshakeWorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(GenericWorkflowExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger(TripleHandshakeWorkflowExecutor.class);
 
     /**
      * indicates if the workflow was already executed
      */
     protected boolean executed = false;
 
+    /**
+     * indicates if workflow executed as client
+     */
+    protected boolean client = false;
+
+    /**
+     * indicates if Key-Exchange is DHE
+     */
+    protected boolean dheKeyEx = false;
+
     protected RecordHandler recordHandler;
 
     protected final TlsContext tlsContext;
+
+    protected final TripleHandshakeSharedContext sharedContext;
 
     protected final TransportHandler transportHandler;
 
@@ -60,8 +77,15 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 
     protected WorkflowContext workflowContext;
 
-    public GenericWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
+    /**
+     * indicates where the Threads have to be synchronized
+     */
+    private int syncA, syncB;
+
+    public TripleHandshakeWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext,
+	    TripleHandshakeSharedContext sharedContext) {
 	this.tlsContext = tlsContext;
+	this.sharedContext = sharedContext;
 	this.transportHandler = transportHandler;
 	this.recordHandler = new RecordHandler(tlsContext);
 	tlsContext.setRecordHandler(recordHandler);
@@ -69,12 +93,47 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	this.workflowContext = new WorkflowContext();
     }
 
-    @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 	if (executed) {
 	    throw new IllegalStateException("The workflow has already been" + " executed. Create a new Workflow.");
 	}
 	executed = true;
+
+	tlsContext.setTHSAttack(true);
+
+	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+	    client = true;
+	    try {
+		sharedContext.lock();
+	    } catch (InterruptedException e) {
+		throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+	    }
+	}
+
+	CipherSuite cs = tlsContext.getSelectedCipherSuite();
+	switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
+	    case RSA:
+		if (client) {
+		    syncA = 0;
+		    syncB = 4;
+		} else {
+		    syncA = 1;
+		    syncB = 7;
+		}
+		break;
+	    case DHE_RSA:
+		if (client) {
+		    syncA = 0;
+		    syncB = 5;
+		} else {
+		    syncA = 1;
+		    syncB = 8;
+		}
+		dheKeyEx = true;
+		break;
+	    default:
+		throw new UnsupportedOperationException("This configuration is not " + "supported yet");
+	}
 
 	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
 	ensureMyLastProtocolMessagesHaveRecords(protocolMessages);
@@ -83,9 +142,17 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 		    && workflowContext.isProceedWorkflow()) {
 		ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
 		if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
+		    if (workflowContext.getProtocolMessagePointer() == syncA
+			    | workflowContext.getProtocolMessagePointer() == syncB) {
+			synchronizeWorkflowsBeforePrepare(workflowContext.getProtocolMessagePointer());
+		    }
 		    handleMyProtocolMessage(protocolMessages);
 		} else {
 		    handleProtocolMessagesFromPeer(protocolMessages);
+		    if (workflowContext.getProtocolMessagePointer() == syncA
+			    | workflowContext.getProtocolMessagePointer() == syncB) {
+			synchronizeWorkflowsAfterParse(workflowContext.getProtocolMessagePointer());
+		    }
 		}
 	    }
 	} catch (WorkflowExecutionException | CryptoException | IOException e) {
@@ -93,6 +160,65 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	} finally {
 	    // remove all unused protocol messages
 	    this.removeNextProtocolMessages(protocolMessages, workflowContext.getProtocolMessagePointer());
+	}
+    }
+
+    private void synchronizeWorkflowsBeforePrepare(int syncPoint) {
+	if (client) {
+	    if (syncPoint == syncA) {
+		tlsContext.setClientRandom(sharedContext.getClientRandom());
+	    }
+	    if (syncPoint == syncB && !dheKeyEx) {
+		tlsContext.setPreMasterSecret(sharedContext.getPreMasterSecret());
+	    }
+	}
+
+	else {
+	    if (syncPoint == syncA) {
+		tlsContext.setServerRandom(sharedContext.getServerRandom());
+		tlsContext.setSessionID(sharedContext.getSessionID());
+		if (dheKeyEx) {
+		    tlsContext.setServerDHParameters(sharedContext.getServerDHParameters());
+		}
+	    }
+	}
+    }
+
+    private void synchronizeWorkflowsAfterParse(int syncPoint) {
+	if (client) {
+	    if (syncPoint == syncB) {
+		sharedContext.setServerRandom(tlsContext.getServerRandom());
+		sharedContext.setSessionID(tlsContext.getSessionID());
+		if (dheKeyEx) {
+		    sharedContext.setServerDHParameters(tlsContext.getServerDHParameters());
+		}
+		try {
+		    sharedContext.unlockAndWait();
+		} catch (InterruptedException e) {
+		    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+		}
+	    }
+	}
+
+	else {
+	    if (syncPoint == syncA) {
+		sharedContext.setClientRandom(tlsContext.getClientRandom());
+		try {
+		    sharedContext.unlockAndWait();
+		} catch (InterruptedException e) {
+		    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+		}
+	    }
+	    if (syncPoint == syncB) {
+		if (!dheKeyEx) {
+		    sharedContext.setPreMasterSecret(tlsContext.getPreMasterSecret());
+		}
+		try {
+		    sharedContext.unlock();
+		} catch (InterruptedException e) {
+		    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+		}
+	    }
 	}
     }
 
@@ -290,7 +416,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
     protected List<Record> fetchRecords() throws IOException {
 	// todo: this can be done better and more performant, but it is ok for
 	// now
-	byte[] rawResponse = transportHandler.fetchData();
+	byte[] rawResponse = null;
 	List<Record> records;
 	int sHandshStatus = tlsContext.getServerHandshakeStatus();
 	int dataPointer = 0;
@@ -344,6 +470,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 
 	} else {
 	    LOGGER.debug("HandshakeStatus default");
+	    rawResponse = transportHandler.fetchData();
 	    while ((records = recordHandler.parseRecords(rawResponse)) == null) {
 		rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
 	    }
