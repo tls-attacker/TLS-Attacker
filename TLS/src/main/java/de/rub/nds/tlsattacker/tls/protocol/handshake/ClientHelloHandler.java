@@ -58,16 +58,22 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	int length = protocolMessage.getSessionId().getValue().length;
 	protocolMessage.setSessionIdLength(length);
 
-	// random handling
-	final long unixTime = Time.getUnixTime();
-	protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+	if (tlsContext.isTHSAttack()) {
+	    byte[] clientRandom = tlsContext.getClientRandom();
+	    protocolMessage.setUnixTime(Arrays.copyOfRange(clientRandom, 0, 4));
+	    protocolMessage.setRandom(Arrays.copyOfRange(clientRandom, 4, clientRandom.length));
+	} else {
+	    // random handling
+	    final long unixTime = Time.getUnixTime();
+	    protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
 
-	byte[] random = new byte[HandshakeByteLength.RANDOM];
-	RandomHelper.getRandom().nextBytes(random);
-	protocolMessage.setRandom(random);
+	    byte[] random = new byte[HandshakeByteLength.RANDOM];
+	    RandomHelper.getRandom().nextBytes(random);
+	    protocolMessage.setRandom(random);
 
-	tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
-		.getRandom().getValue()));
+	    tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(),
+		    protocolMessage.getRandom().getValue()));
+	}
 
 	byte[] cookieArray = new byte[0];
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
