@@ -71,12 +71,17 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	BigInteger publicKey = new BigInteger(1, Arrays.copyOfRange(message, currentPointer, nextPointer));
 	protocolMessage.setY(publicKey);
 
-	DHPublicKeyParameters clientPubParameters = new DHPublicKeyParameters(protocolMessage.getY().getValue(),
-		tlsContext.getServerDHParameters().getPublicKey().getParameters());
+	byte[] premasterSecret;
 
-	byte[] premasterSecret = TlsDHUtils.calculateDHBasicAgreement(clientPubParameters,
-		tlsContext.getServerDHPrivateKeyParameters());
-	protocolMessage.setPremasterSecret(premasterSecret);
+	if (tlsContext.isTHSAttack()) {
+	    premasterSecret = BigIntegers.asUnsignedByteArray(tlsContext.getServerDHParameters().getPublicKey().getY());
+	} else {
+	    DHPublicKeyParameters clientPubParameters = new DHPublicKeyParameters(protocolMessage.getY().getValue(),
+		    tlsContext.getServerDHParameters().getPublicKey().getParameters());
+
+	    premasterSecret = TlsDHUtils.calculateDHBasicAgreement(clientPubParameters,
+		    tlsContext.getServerDHPrivateKeyParameters());
+	}
 
 	LOGGER.debug("Resulting premaster secret: {}", ArrayConverter.bytesToHexString(premasterSecret));
 
@@ -117,23 +122,42 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	    }
 	}
 
-	// generate client's original dh public and private key, based on the
-	// server's public parameters
-	AsymmetricCipherKeyPair kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext
-		.getServerDHParameters().getPublicKey().getParameters());
-	DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) kp.getPublic();
-	DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) kp.getPrivate();
+	byte[] premasterSecret;
 
-	protocolMessage.setG(dhPublic.getParameters().getG());
-	protocolMessage.setP(dhPublic.getParameters().getP());
-	protocolMessage.setY(dhPublic.getY());
-	protocolMessage.setX(dhPrivate.getX());
+	if (!tlsContext.isTHSAttack()) {
+	    // generate client's original dh public and private key, based on
+	    // the
+	    // server's public parameters
+	    AsymmetricCipherKeyPair kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext
+		    .getServerDHParameters().getPublicKey().getParameters());
+	    DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) kp.getPublic();
+	    DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) kp.getPrivate();
 
-	// set the modified values of client's private and public parameters
-	DHParameters newParams = new DHParameters(protocolMessage.getP().getValue(), protocolMessage.getG().getValue());
-	// DHPublicKeyParameters newDhPublic = new
-	// DHPublicKeyParameters(dhMessage.getY().getValue(), newParams);
-	DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(protocolMessage.getX().getValue(), newParams);
+	    protocolMessage.setG(dhPublic.getParameters().getG());
+	    protocolMessage.setP(dhPublic.getParameters().getP());
+	    protocolMessage.setY(dhPublic.getY());
+	    protocolMessage.setX(dhPrivate.getX());
+
+	    // set the modified values of client's private and public parameters
+	    DHParameters newParams = new DHParameters(protocolMessage.getP().getValue(), protocolMessage.getG()
+		    .getValue());
+	    // DHPublicKeyParameters newDhPublic = new
+	    // DHPublicKeyParameters(dhMessage.getY().getValue(), newParams);
+	    DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(protocolMessage.getX().getValue(),
+		    newParams);
+
+	    premasterSecret = TlsDHUtils.calculateDHBasicAgreement(tlsContext.getServerDHParameters().getPublicKey(),
+		    newDhPrivate);
+	}
+
+	else {
+	    premasterSecret = BigIntegers.asUnsignedByteArray(tlsContext.getServerDHParameters().getPublicKey().getY());
+	    protocolMessage.setY(tlsContext.getServerDHParameters().getPublicKey().getParameters().getG());
+	}
+
+	protocolMessage.setPremasterSecret(premasterSecret);
+	LOGGER.debug("Computed PreMaster Secret: {}",
+		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
 	byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(protocolMessage.getY().getValue());
 	protocolMessage.setSerializedPublicKey(serializedPublicKey);
@@ -142,12 +166,6 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	byte[] result = ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage
 		.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PARAM_LENGTH), protocolMessage
 		.getSerializedPublicKey().getValue());
-
-	byte[] premasterSecret = TlsDHUtils.calculateDHBasicAgreement(
-		tlsContext.getServerDHParameters().getPublicKey(), newDhPrivate);
-	protocolMessage.setPremasterSecret(premasterSecret);
-	LOGGER.debug("Computed PreMaster Secret: {}",
-		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
 	byte[] random = tlsContext.getClientServerRandom();
 
