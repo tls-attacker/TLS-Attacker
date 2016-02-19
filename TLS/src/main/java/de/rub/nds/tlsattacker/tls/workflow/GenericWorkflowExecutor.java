@@ -290,7 +290,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
     protected List<Record> fetchRecords() throws IOException {
 	// todo: this can be done better and more performant, but it is ok for
 	// now
-	byte[] rawResponse = transportHandler.fetchData();
+	byte[] rawResponse = null;
 	List<Record> records;
 	int sHandshStatus = tlsContext.getServerHandshakeStatus();
 	int dataPointer = 0;
@@ -344,6 +344,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 
 	} else {
 	    LOGGER.debug("HandshakeStatus default");
+	    rawResponse = transportHandler.fetchData();
 	    while ((records = recordHandler.parseRecords(rawResponse)) == null) {
 		rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
 	    }
