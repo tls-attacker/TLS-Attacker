@@ -61,6 +61,10 @@ public class TlsContext {
      */
     private byte[] masterSecret = new byte[HandshakeByteLength.MASTER_SECRET];
     /**
+     * premaster secret established during the handshake
+     */
+    private byte[] preMasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+    /**
      * client random, including unix time
      */
     private byte[] clientRandom = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
@@ -76,6 +80,10 @@ public class TlsContext {
      * compression algorithm
      */
     private CompressionMethod compressionMethod;
+    /**
+     * session ID
+     */
+    private byte[] sessionID = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
     /**
      * server certificate parsed from the server certificate message
      */
@@ -145,6 +153,10 @@ public class TlsContext {
      */
     private boolean clientAuthentication = false;
     /**
+     * TripleHandshakeWorkflow
+     */
+    private boolean ths = false;
+    /**
      * Client Finished Raw Bytes
      */
     private byte[] finishedRecords;
@@ -194,6 +206,14 @@ public class TlsContext {
 	return ArrayConverter.concatenate(clientRandom, serverRandom);
     }
 
+    public byte[] getPreMasterSecret() {
+	return preMasterSecret;
+    }
+
+    public void setPreMasterSecret(byte[] preMasterSecret) {
+	this.preMasterSecret = preMasterSecret;
+    }
+
     public ProtocolVersion getProtocolVersion() {
 	return protocolVersion;
     }
@@ -232,6 +252,14 @@ public class TlsContext {
 
     public void setCompressionMethod(CompressionMethod compressionMethod) {
 	this.compressionMethod = compressionMethod;
+    }
+
+    public byte[] getSessionID() {
+	return sessionID;
+    }
+
+    public void setSessionID(byte[] sessionID) {
+	this.sessionID = sessionID;
     }
 
     public WorkflowTrace getWorkflowTrace() {
@@ -393,6 +421,14 @@ public class TlsContext {
 
     public void setClientAuthentication(boolean status) {
 	this.clientAuthentication = status;
+    }
+
+    public boolean isTHSAttack() {
+	return ths;
+    }
+
+    public void setTHSAttack(boolean ths) {
+	this.ths = ths;
     }
 
     public void setFinishedRecords(byte[] finishedRecord) {
