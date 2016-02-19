@@ -93,6 +93,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	nextPointer = currentPointer + sessionIdLength;
 	byte[] sessionId = Arrays.copyOfRange(message, currentPointer, nextPointer);
 	protocolMessage.setSessionId(sessionId);
+	tlsContext.setSessionID(sessionId);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.CIPHER_SUITE;
@@ -136,22 +137,32 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     public byte[] prepareMessageAction() {
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
-	// TODO try to find a way to set proper Session-IDs
-	protocolMessage.setSessionId(ArrayConverter
-		.hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
+	if (tlsContext.isTHSAttack()) {
+	    protocolMessage.setSessionId(tlsContext.getSessionID());
+	} else {
+	    // TODO try to find a way to set proper Session-IDs
+	    protocolMessage.setSessionId(ArrayConverter
+		    .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
+	}
 	int length = protocolMessage.getSessionId().getValue().length;
 	protocolMessage.setSessionIdLength(length);
 
-	// random handling
-	final long unixTime = Time.getUnixTime();
-	protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+	if (tlsContext.isTHSAttack()) {
+	    byte[] serverRandom = tlsContext.getServerRandom();
+	    protocolMessage.setUnixTime(Arrays.copyOfRange(serverRandom, 0, 4));
+	    protocolMessage.setRandom(Arrays.copyOfRange(serverRandom, 4, serverRandom.length));
+	} else {
+	    // random handling
+	    final long unixTime = Time.getUnixTime();
+	    protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
 
-	byte[] random = new byte[HandshakeByteLength.RANDOM];
-	RandomHelper.getRandom().nextBytes(random);
-	protocolMessage.setRandom(random);
+	    byte[] random = new byte[HandshakeByteLength.RANDOM];
+	    RandomHelper.getRandom().nextBytes(random);
+	    protocolMessage.setRandom(random);
 
-	tlsContext.setServerRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
-		.getRandom().getValue()));
+	    tlsContext.setServerRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(),
+		    protocolMessage.getRandom().getValue()));
+	}
 
 	CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
 	protocolMessage.setSelectedCipherSuite(selectedCipherSuite.getValue());
