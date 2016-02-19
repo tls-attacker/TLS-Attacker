@@ -172,34 +172,48 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	generator.init(512, defaultPrimeProbability, new SecureRandom());
 	DHParameters params = generator.generateParameters();*/
         
-        //fixed DH modulus P and DH generator G
-        byte [] pArray = ArrayConverter
-	    .hexStringToByteArray("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc"
+        DHPublicKeyParameters dhPublic;
+        
+        if (tlsContext.isTHSAttack()) {
+	    dhPublic = tlsContext.getServerDHParameters().getPublicKey();
+            BigInteger pubKeyServer = dhPublic.getY();
+            BigInteger pubKeyServer1 = pubKeyServer.min(BigInteger.ONE);
+            BigInteger pModified = pubKeyServer.multiply(pubKeyServer1);
+            protocolMessage.setG(dhPublic.getParameters().getG());
+            protocolMessage.setP(pModified);
+            protocolMessage.setPublicKey(dhPublic.getY());
+        }
+        else{
+            //fixed DH modulus P and DH generator G
+            byte [] pArray = ArrayConverter
+                .hexStringToByteArray("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc"
                     + "74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d"
                     + "51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24"
                     + "117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83"
                     + "655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca1821"
                     + "7c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf695"
                     + "5817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff");
-        byte [] gArray = {0x02}; 
-        BigInteger p = new BigInteger(1, pArray);
-        BigInteger g = new BigInteger(1, gArray);
-        DHParameters params = new DHParameters( p, g );
+            byte [] gArray = {0x02}; 
+            BigInteger p = new BigInteger(1, pArray);
+            BigInteger g = new BigInteger(1, gArray);
+            DHParameters params = new DHParameters( p, g );
         
-	KeyGenerationParameters kgp = new DHKeyGenerationParameters(new SecureRandom(), params);
-	DHKeyPairGenerator keyGen = new DHKeyPairGenerator();
-	keyGen.init(kgp);
-	AsymmetricCipherKeyPair serverKeyPair = keyGen.generateKeyPair();
+            KeyGenerationParameters kgp = new DHKeyGenerationParameters(new SecureRandom(), params);
+            DHKeyPairGenerator keyGen = new DHKeyPairGenerator();
+            keyGen.init(kgp);
+            AsymmetricCipherKeyPair serverKeyPair = keyGen.generateKeyPair();
         
-	DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
-	DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
-
-	protocolMessage.setG(dhPublic.getParameters().getG());
-	protocolMessage.setP(dhPublic.getParameters().getP());
-	protocolMessage.setPublicKey(dhPublic.getY());
-	protocolMessage.setPrivateKey(dhPrivate.getX());
-	tlsContext.setServerDHPrivateKeyParameters(dhPrivate);
-
+            dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
+            DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
+            
+            
+            protocolMessage.setG(dhPublic.getParameters().getG());
+            protocolMessage.setP(dhPublic.getParameters().getP());
+            protocolMessage.setPublicKey(dhPublic.getY());
+            protocolMessage.setPrivateKey(dhPrivate.getX());
+            tlsContext.setServerDHPrivateKeyParameters(dhPrivate);
+        }
+        
 	byte[] serializedP = BigIntegers.asUnsignedByteArray(protocolMessage.getP().getValue());
 	protocolMessage.setSerializedP(serializedP);
 	protocolMessage.setSerializedPLength(serializedP.length);
