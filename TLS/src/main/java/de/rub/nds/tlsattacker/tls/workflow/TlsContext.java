@@ -140,14 +140,13 @@ public class TlsContext {
      */
     private String password;
     /**
-     * ServerHandshakeStatus for fetching Records: 0 = ServerHelloDone has not
-     * been prepared yet or Finished Message is handled -> normal fetch and
-     * parse records 1 = ServerHelloDone has been prepared yet and
-     * Clientauthentication 2 = ServerHelloDone has been prepared yet and no
-     * Clientauthentication -> save Finished for later parsing 3 =
-     * ClientKeyExchange has been parsed -> Parse Saved FinishedRecord
+     * host to connect
      */
-    private int serverHandshakeStatus = 0;
+    private String host;
+    /**
+     * certsecured folder on host
+     */
+    private String certSecure;
     /**
      * Client Authentication YES or NO
      */
@@ -155,11 +154,11 @@ public class TlsContext {
     /**
      * TripleHandshakeWorkflow
      */
-    private boolean ths = false;
+    private boolean sessionResumption = false;
     /**
-     * Client Finished Raw Bytes
+     * TripleHandshakeWorkflow
      */
-    private byte[] finishedRecords;
+    private boolean ths = false;
 
     private final TlsMessageDigest digest;
 
@@ -358,6 +357,22 @@ public class TlsContext {
 	this.password = password;
     }
 
+    public String getHost() {
+	return host;
+    }
+
+    public void setHost(String host) {
+	this.host = host;
+    }
+
+    public String getCertSecure() {
+	return certSecure;
+    }
+
+    public void setCertSecure(String certSecure) {
+	this.certSecure = certSecure;
+    }
+
     public TlsMessageDigest getDigest() {
 	return digest;
     }
@@ -407,14 +422,6 @@ public class TlsContext {
 	this.recordHandler = recordHandler;
     }
 
-    public int getServerHandshakeStatus() {
-	return serverHandshakeStatus;
-    }
-
-    public void setServerHandshakeStatus(int status) {
-	this.serverHandshakeStatus = status;
-    }
-
     public boolean isClientAuthentication() {
 	return clientAuthentication;
     }
@@ -423,19 +430,19 @@ public class TlsContext {
 	this.clientAuthentication = status;
     }
 
+    public boolean isSessionResumption() {
+	return sessionResumption;
+    }
+
+    public void setSessionResumption(boolean sessionResumption) {
+	this.sessionResumption = sessionResumption;
+    }
+
     public boolean isTHSAttack() {
 	return ths;
     }
 
     public void setTHSAttack(boolean ths) {
 	this.ths = ths;
-    }
-
-    public void setFinishedRecords(byte[] finishedRecord) {
-	this.finishedRecords = finishedRecord;
-    }
-
-    public byte[] getFinishedRecords() {
-	return finishedRecords;
     }
 }
