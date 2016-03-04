@@ -122,7 +122,11 @@ public class SimpleTransportHandler implements TransportHandler {
 	}
 	// LOGGER.debug("Accepted new bytes from server: {}",
 	// ArrayConverter.bytesToHexString(response));
-	LOGGER.debug("Accepted {} new bytes from server", response.length);
+	if (isServer) {
+	    LOGGER.debug("Accepted {} new bytes from client", response.length);
+	} else {
+	    LOGGER.debug("Accepted {} new bytes from server", response.length);
+	}
 	if (response.length < 33) {
 	    LOGGER.debug(ArrayConverter.bytesToHexString(response));
 	}
@@ -148,6 +152,13 @@ public class SimpleTransportHandler implements TransportHandler {
 	try {
 	    if (socket != null) {
 		socket.close();
+	    }
+	} catch (IOException e) {
+	    LOGGER.debug(e);
+	}
+	try {
+	    if (serverSocket != null) {
+		serverSocket.close();
 	    }
 	} catch (IOException e) {
 	    LOGGER.debug(e);
