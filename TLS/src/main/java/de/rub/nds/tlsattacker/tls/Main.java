@@ -26,8 +26,10 @@ import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
+import de.rub.nds.tlsattacker.tls.workflow.SessionResumptionWorkflowConfiguration;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -83,5 +85,18 @@ public class Main {
 	// }
 
 	transportHandler.closeConnection();
+
+	if (config.isSessionResumption()) {
+	    TransportHandler transportHandlerSR = configHandler.initializeTransportHandler(config);
+
+	    SessionResumptionWorkflowConfiguration SRworkflow = new SessionResumptionWorkflowConfiguration(tlsContext,
+		    config);
+	    SRworkflow.createWorkflow();
+
+	    WorkflowExecutor workflowExecutorSR = configHandler.initializeWorkflowExecutor(transportHandlerSR,
+		    tlsContext);
+
+	    workflowExecutorSR.executeWorkflow();
+	}
     }
 }
