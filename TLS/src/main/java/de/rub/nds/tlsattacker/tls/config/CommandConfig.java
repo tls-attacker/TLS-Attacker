@@ -113,6 +113,9 @@ public abstract class CommandConfig {
 
     @Parameter(names = "-client_authentication", description = "YES or NO")
     protected boolean clientAuthentication = false;
+    
+    @Parameter(names = "-session_resumption", description = "YES or NO")
+    protected boolean sessionResumption = false;
 
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
@@ -325,5 +328,13 @@ public abstract class CommandConfig {
 
     public void setClientAuthentication(boolean clientAuthentication) {
 	this.clientAuthentication = clientAuthentication;
+    }
+    
+    public boolean isSessionResumption() {
+	return sessionResumption;
+    }
+
+    public void setSessionResumption(boolean sessionResumption) {
+	this.sessionResumption = sessionResumption;
     }
 }
