@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
@@ -53,8 +54,13 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
     public byte[] prepareMessageAction() {
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
-	// by default we do not use a session id
-	protocolMessage.setSessionId(new byte[0]);
+	if (tlsContext.isSessionResumption()) {
+	    protocolMessage.setSessionId(tlsContext.getSessionID());
+	} else {
+	    // by default we do not use a session id
+	    protocolMessage.setSessionId(new byte[0]);
+	}
+
 	int length = protocolMessage.getSessionId().getValue().length;
 	protocolMessage.setSessionIdLength(length);
 
@@ -176,6 +182,11 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	currentPointer = nextPointer;
 	nextPointer += sessionIdLength;
 	protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
+
+	if (tlsContext.isSessionResumption()
+		&& !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
+	    throw new WorkflowExecutionException("Session ID is unknown to the Server");
+	}
 
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
 		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
