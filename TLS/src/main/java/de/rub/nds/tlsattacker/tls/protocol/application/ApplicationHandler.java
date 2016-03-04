@@ -44,10 +44,14 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     public byte[] prepareMessageAction() {
 	String responseBody;
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
+	    String status = "Handshake successful!";
+	    if (tlsContext.isSessionResumption()) {
+		status = "Session Resumption successful!";
+	    }
 	    responseBody = "HTTP/1.1 200 OK\n" + "Server: localhost\n"
 		    + "Content-Type: text/html; charset=ISO-8859-1\n" + "\n" + "<html>\n" + "<head>\n"
-		    + "<title>HTTP</TITLE>\n" + "</head>\n" + "<body>\n" + "<p>Handshake successful!</p>\n"
-		    + "</body>\n" + "</html>";
+		    + "<title>HTTP</TITLE>\n" + "</head>\n" + "<body>\n" + "<p>" + status + "</p>\n" + "</body>\n"
+		    + "</html>";
 	} else {
 	    if (tlsContext.getCertSecure() == null) {
 		responseBody = "GET / HTTP/1.1\r\n" + "Host: " + tlsContext.getHost() + "\r\n\r\n";
