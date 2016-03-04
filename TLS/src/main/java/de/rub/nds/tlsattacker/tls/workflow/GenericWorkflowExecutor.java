@@ -31,7 +31,6 @@ import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -288,63 +287,12 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
      * @throws IOException
      */
     protected List<Record> fetchRecords() throws IOException {
-	// todo: this can be done better and more performant, but it is ok for
-	// now
-	byte[] rawResponse = null;
 	List<Record> records;
-	int sHandshStatus = tlsContext.getServerHandshakeStatus();
-	int dataPointer = 0;
-	int recordCount = 0;
-	byte[] rawResponseWithoutFinished = null;
-	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER && sHandshStatus != 0) {
-	    switch (sHandshStatus) {
-		case 1:
-		    LOGGER.debug("HandshakeStatus 1");
-		    rawResponse = transportHandler.fetchData();
-		    while (dataPointer != rawResponse.length) {
-			byte[] byteLength = { rawResponse[dataPointer + 3], rawResponse[dataPointer + 4] };
-			int length = ArrayConverter.bytesToInt(byteLength);
-			int lastByte = dataPointer + 5 + length;
-			byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawResponse, dataPointer, lastByte);
-			recordCount++;
-			dataPointer = lastByte;
-			if (recordCount == 5) {
-			    tlsContext.setFinishedRecords(rawBytesFromCurrentRecord);
-			} else if (recordCount == 4) {
-			    rawResponseWithoutFinished = Arrays.copyOfRange(rawResponse, 0, lastByte);
-			}
-		    }
-		    tlsContext.setServerHandshakeStatus(3);
-		    break;
-		case 2:
-		    LOGGER.debug("HandshakeStatus 2");
-		    rawResponse = transportHandler.fetchData();
-		    while (dataPointer != rawResponse.length) {
-			byte[] byteLength = { rawResponse[dataPointer + 3], rawResponse[dataPointer + 4] };
-			int length = ArrayConverter.bytesToInt(byteLength);
-			int lastByte = dataPointer + 5 + length;
-			byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawResponse, dataPointer, lastByte);
-			recordCount++;
-			dataPointer = lastByte;
-			if (recordCount == 3) {
-			    tlsContext.setFinishedRecords(rawBytesFromCurrentRecord);
-			} else if (recordCount == 2) {
-			    rawResponseWithoutFinished = Arrays.copyOfRange(rawResponse, 0, lastByte);
-			}
-		    }
-		    tlsContext.setServerHandshakeStatus(3);
-		    break;
-		case 3:
-		    LOGGER.debug("HandshakeStatus 3");
-		    rawResponseWithoutFinished = tlsContext.getFinishedRecords();
-		    tlsContext.setServerHandshakeStatus(0);
-		    break;
-	    }
-	    records = recordHandler.parseRecords(rawResponseWithoutFinished);
-
+	if (recordHandler.getFinishedBytes() != null) {
+	    records = recordHandler.parseRecords(recordHandler.getFinishedBytes());
+	    recordHandler.setFinishedBytes(null);
 	} else {
-	    LOGGER.debug("HandshakeStatus default");
-	    rawResponse = transportHandler.fetchData();
+	    byte[] rawResponse = transportHandler.fetchData();
 	    while ((records = recordHandler.parseRecords(rawResponse)) == null) {
 		rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
 	    }
