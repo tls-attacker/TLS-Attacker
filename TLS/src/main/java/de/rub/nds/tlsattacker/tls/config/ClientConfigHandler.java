@@ -43,6 +43,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ClientConfigHandler extends ConfigHandler {
 
@@ -85,6 +86,9 @@ public class ClientConfigHandler extends ConfigHandler {
 	} else {
 	    WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	    switch (ccConfig.getWorkflowTraceType()) {
+		case FULL_SERVER_RESPONSE:
+		    tlsContext = factory.createFullServerResponseTlsContext();
+		    break;
 		case FULL:
 		    tlsContext = factory.createFullTlsContext();
 		    break;
@@ -99,6 +103,9 @@ public class ClientConfigHandler extends ConfigHandler {
 	    }
 
 	}
+	String[] hp = ccConfig.getConnect().split(":");
+	String host = hp[0];
+	tlsContext.setHost(host);
 	tlsContext.setMyConnectionEnd(ConnectionEnd.CLIENT);
 
 	if (config.getKeystore() != null) {
