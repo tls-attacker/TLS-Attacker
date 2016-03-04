@@ -19,14 +19,21 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.application;
 
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger(ApplicationHandler.class);
 
     public ApplicationHandler(TlsContext tlsContext) {
 	super(tlsContext);
@@ -35,7 +42,23 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public byte[] prepareMessageAction() {
-	protocolMessage.setData("test".getBytes());
+	String responseBody;
+	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
+	    responseBody = "HTTP/1.1 200 OK\n" + "Server: localhost\n"
+		    + "Content-Type: text/html; charset=ISO-8859-1\n" + "\n" + "<html>\n" + "<head>\n"
+		    + "<title>HTTP</TITLE>\n" + "</head>\n" + "<body>\n" + "<p>Handshake successful!</p>\n"
+		    + "</body>\n" + "</html>";
+	} else {
+	    if (tlsContext.getCertSecure() == null) {
+		responseBody = "GET / HTTP/1.1\r\n" + "Host: " + tlsContext.getHost() + "\r\n\r\n";
+	    } else {
+		responseBody = "GET /" + tlsContext.getCertSecure() + " HTTP/1.1\r\n" + "Host: " + tlsContext.getHost()
+			+ "\r\n\r\n";
+	    }
+	}
+	System.out.println(responseBody);
+	protocolMessage.setData(responseBody.getBytes());
+	LOGGER.debug("MessageData: {}", ArrayConverter.bytesToHexString(protocolMessage.getData().getValue()));
 	byte[] result = protocolMessage.getData().getValue();
 
 	return result;
@@ -43,8 +66,12 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	// System.out.println(ArrayConverter.bytesToHexString(message));
-	throw new UnsupportedOperationException("Not supported yet.");
+	String application = new String(message);
+	System.out.println(application);
+	protocolMessage.setData(message);
+	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, message.length));
+	pointer = message.length;
+	return pointer;
     }
 
 }
