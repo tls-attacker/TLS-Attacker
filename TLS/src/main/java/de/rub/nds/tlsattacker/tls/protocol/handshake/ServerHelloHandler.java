@@ -113,18 +113,28 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	tlsContext.setCompressionMethod(CompressionMethod.getCompressionMethod(protocolMessage
 		.getSelectedCompressionMethod().getValue()));
 
-	if (currentPointer < length) {
-	    // we have to handle extensions
-	    nextPointer = currentPointer + ExtensionByteLength.EXTENSIONS;
-	    int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-
-	    currentPointer = nextPointer;
-	    while (currentPointer < length) {
+	if ((currentPointer - pointer) < length) {
+	    currentPointer += ExtensionByteLength.EXTENSIONS;
+	    while ((currentPointer - pointer) < length) {
 		nextPointer = currentPointer + ExtensionByteLength.TYPE;
 		byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
-		ExtensionHandler eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
-		currentPointer = eh.parseExtension(message, currentPointer);
-		protocolMessage.addExtension(eh.getExtensionMessage());
+		// Not implemented/unknown extensions will generate an Exception
+		// ...
+		try {
+		    ExtensionHandler eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
+		    currentPointer = eh.parseExtension(message, currentPointer);
+		    protocolMessage.addExtension(eh.getExtensionMessage());
+		}
+		// ... which we catch, then disregard that extension and carry
+		// on.
+		catch (Exception ex) {
+		    currentPointer = nextPointer;
+		    nextPointer += 2;
+		    currentPointer += ArrayConverter.bytesToInt(Arrays
+			    .copyOfRange(message, currentPointer, nextPointer));
+		    nextPointer += 2;
+		    currentPointer += 2;
+		}
 	    }
 	}
 
