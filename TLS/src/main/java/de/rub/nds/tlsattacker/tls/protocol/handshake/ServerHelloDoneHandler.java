@@ -22,7 +22,6 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -48,11 +47,6 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 	long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
 		+ protocolMessageFields.getLength().getValue();
 
-	if (tlsContext.isClientAuthentication()) {
-	    tlsContext.setServerHandshakeStatus(1);
-	} else {
-	    tlsContext.setServerHandshakeStatus(2);
-	}
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
 
 	return protocolMessage.getCompleteResultingMessage().getValue();
