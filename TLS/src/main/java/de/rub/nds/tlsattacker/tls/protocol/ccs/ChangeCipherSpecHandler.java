@@ -52,7 +52,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
+	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER || tlsContext.isSessionResumption()) {
 	    try {
 		if (tlsContext.getRecordHandler().getRecordCipher() == null) {
 		    TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
