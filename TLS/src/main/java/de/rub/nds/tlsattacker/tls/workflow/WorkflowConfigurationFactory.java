@@ -40,6 +40,7 @@ import java.util.List;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public abstract class WorkflowConfigurationFactory {
 
@@ -115,6 +116,16 @@ public abstract class WorkflowConfigurationFactory {
      * @return
      */
     public abstract TlsContext createFullTlsContext();
+
+    /**
+     * Creates a full TLS context with additional application data
+     * ServerResponse
+     * 
+     * @return
+     */
+    public TlsContext createFullServerResponseTlsContext() {
+	return createFullTlsContext();
+    }
 
     /**
      * Initializes ClientHello extensions
