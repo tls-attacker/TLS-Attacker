@@ -33,8 +33,6 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -121,6 +119,19 @@ public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactor
 	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.SERVER));
 	}
+
+	initializeProtocolMessageOrder(context);
+
+	return context;
+    }
+
+    @Override
+    public TlsContext createFullServerResponseTlsContext() {
+	TlsContext context = this.createFullTlsContext();
+
+	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
+
+	protocolMessages.add(new ApplicationMessage(ConnectionEnd.SERVER));
 
 	initializeProtocolMessageOrder(context);
 
