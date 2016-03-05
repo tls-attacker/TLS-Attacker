@@ -18,6 +18,7 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -48,6 +49,11 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
      * indicates if the workflow was already executed
      */
     protected boolean executed = false;
+    
+     /**
+     * indicates if the peer requests renegotiation
+     */
+    protected boolean renegotiation = false;
 
     protected RecordHandler recordHandler;
 
@@ -85,6 +91,18 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 		    handleMyProtocolMessage(protocolMessages);
 		} else {
 		    handleProtocolMessagesFromPeer(protocolMessages);
+                    if (renegotiation){
+                        workflowContext.setProtocolMessagePointer(0);
+                        tlsContext.getDigest().reset();
+                        /* if there is no keystore file we can not authenticate per certificate 
+                        *  and if there isClientauthentication ist true we do not need to change the WorkflowTrace
+                        */
+                        if(tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()){
+                           RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
+                           reneWorkflowConfig.createWorkflow();
+                           protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages(); 
+                        }
+                    }
 		}
 	    }
 	} catch (WorkflowExecutionException | CryptoException | IOException e) {
@@ -167,8 +185,10 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	    ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent.get(0)
 		    .getContentType().getValue());
 	    parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages, protocolMessageType);
-	    ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
-	    pm.setRecords(recordsOfSameContent);
+            if (!renegotiation){
+                ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
+                pm.setRecords(recordsOfSameContent);
+            }
 	}
     }
 
@@ -184,14 +204,19 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
 	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
 		    rawProtocolMessageBytes[dataPointer], tlsContext);
-	    identifyCorrectProtocolMessage(protocolMessages, pmh);
-
-	    dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
-	    if (LOGGER.isDebugEnabled()) {
-		LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
-	    }
-	    handleIncomingAlert(pmh);
-	    workflowContext.incrementProtocolMessagePointer();
+            if (pmh.getProtocolMessage().toString().equals("HELLO_REQUEST")){
+                renegotiation = true;
+            }
+            else{
+                identifyCorrectProtocolMessage(protocolMessages, pmh);
+            
+                dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
+                }
+                handleIncomingAlert(pmh);
+                workflowContext.incrementProtocolMessagePointer();
+            }
 	}
     }
 
