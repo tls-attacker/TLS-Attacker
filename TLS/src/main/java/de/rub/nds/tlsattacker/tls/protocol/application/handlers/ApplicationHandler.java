@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -38,14 +39,17 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     public byte[] prepareMessageAction() {
 	protocolMessage.setData("test".getBytes());
 	byte[] result = protocolMessage.getData().getValue();
-
 	return result;
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	System.out.println(ArrayConverter.bytesToHexString(message));
-	throw new UnsupportedOperationException("Not supported yet.");
+
+	protocolMessage.setData(Arrays.copyOfRange(message, pointer,message.length));
+	//System.out.println(ArrayConverter.bytesToHexString(message));
+	//System.out.println(ArrayConverter.bytesToHexString(Arrays.copyOf(message, pointer)));
+	return message.length;
+
     }
 
 }
