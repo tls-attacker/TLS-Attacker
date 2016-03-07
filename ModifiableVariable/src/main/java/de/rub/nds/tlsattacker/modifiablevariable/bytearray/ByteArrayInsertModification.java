@@ -21,6 +21,7 @@ package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import static de.rub.nds.tlsattacker.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -53,8 +54,14 @@ public class ByteArrayInsertModification extends VariableModification<byte[]> {
 	int start = startPosition;
 	if (start < 0) {
 	    start += input.length;
+            if (start < 0) {
+                //Man könnte auch versuchen die Startposition Modulo zu rechnen, aber vermutlich ist mehr schief gelaufen.
+                throw new IllegalArgumentException("Trying to insert from too negative Startposition. start = " + startPosition);
+            }
 	}
-
+        if (startPosition > input.length) {
+	    throw new ArrayIndexOutOfBoundsException("Trying to insert behind the Array. ArraySize:"+ input.length + " Insert Position:" + startPosition);
+	}
 	byte[] ret1 = Arrays.copyOf(input, start);
 	byte[] ret3 = null;
 	if ((start) < input.length) {
