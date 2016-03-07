@@ -148,6 +148,16 @@ public class TlsMessageDigest {
     }
 
     public void setRawBytes(byte[] rawBytes) {
-	this.rawBytes = rawBytes;
+	reset();
+	if (rawBytes != null) {
+
+	    this.rawBytes = rawBytes;
+	    hash1.update(rawBytes);
+	    if (hash2 != null) {
+		hash2.update(rawBytes);
+	    }
+	} else {
+	    rawBytes = new byte[0];
+	}
     }
 }
