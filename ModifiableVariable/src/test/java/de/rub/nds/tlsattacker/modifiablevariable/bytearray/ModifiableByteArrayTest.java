@@ -26,15 +26,14 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Assume;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de> todo write tests here
+ * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModifiableByteArrayTest {
 
     private ModifiableByteArray start;
-
-    private byte[] expectedResult, result;
 
     private byte[] originalValue;
 
@@ -42,7 +41,7 @@ public class ModifiableByteArrayTest {
 
     private byte[] modification2;
 
-    private static Logger LOGGER = LogManager.getLogger(ModifiableByteArray.class);
+    private static final Logger LOGGER = LogManager.getLogger(ModifiableByteArray.class);
 
     @Before
     public void setUp() {
@@ -59,7 +58,7 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testSetValue() {
-	LOGGER.info("setValue");
+	LOGGER.info("testSetValue");
 	ModifiableByteArray instance = new ModifiableByteArray();
 	byte[] test = originalValue.clone();
 	instance.setOriginalValue(test);
@@ -144,8 +143,23 @@ public class ModifiableByteArrayTest {
      */
     @Test
     public void testPrependBytes() {
-	LOGGER.info("testPrependBytes");
-	// TODO Robert
+	LOGGER.info("testPrepend");
+	int len = originalValue.length + modification1.length;
+	byte[] expResult = new byte[len];
+	for (int i = 0; i < len; i++) {
+	    if (i < modification1.length) {
+		expResult[i] = modification1[i];
+	    } else {
+		expResult[i] = originalValue[i - modification1.length];
+	    }
+	}
+
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.insert(modification1, 0);
+	start.setModification(modifier);
+
+	LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
+	LOGGER.debug("Computed: " + ArrayConverter.bytesToHexString(start.getValue()));
+	assertArrayEquals(expResult, start.getValue());
     }
 
     /**
@@ -154,7 +168,23 @@ public class ModifiableByteArrayTest {
     @Test
     public void testAppendBytes() {
 	LOGGER.info("testAppendBytes");
-	// TODO Robert
+	int len = originalValue.length + modification1.length;
+	byte[] expResult = new byte[len];
+	for (int i = 0; i < len; i++) {
+	    if (i < originalValue.length) {
+		expResult[i] = originalValue[i];
+	    } else {
+		expResult[i] = modification1[i - originalValue.length];
+	    }
+	}
+
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory
+		.insert(modification1, originalValue.length);
+	start.setModification(modifier);
+
+	LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
+	LOGGER.debug("Computed: " + ArrayConverter.bytesToHexString(start.getValue()));
+	assertArrayEquals(expResult, start.getValue());
     }
 
     /**
@@ -163,7 +193,21 @@ public class ModifiableByteArrayTest {
     @Test
     public void testDeleteLastBytes() {
 	LOGGER.info("testDeleteLastBytes");
-	// TODO Robert
+	// Löscht modification lenght viele bytes
+	Assume.assumeTrue(modification1.length < originalValue.length);
+	int len = originalValue.length - modification1.length;
+	byte[] expResult = new byte[len];
+	for (int i = 0; i < len; i++) {
+	    expResult[i] = originalValue[i];
+
+	}
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.delete(len, modification1.length);
+	start.setModification(modifier);
+
+	LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
+	LOGGER.debug("Computed: " + ArrayConverter.bytesToHexString(start.getValue()));
+	assertArrayEquals(expResult, start.getValue());
+
     }
 
     /**
@@ -172,7 +216,108 @@ public class ModifiableByteArrayTest {
     @Test
     public void testDeleteFirstBytes() {
 	LOGGER.info("testDeleteFirstBytes");
-	// TODO Robert
+	// Löscht modification lenght viele bytes
+	Assume.assumeTrue(modification1.length < originalValue.length);
+
+	int len = originalValue.length;
+	byte[] expResult = new byte[len - modification1.length];
+	for (int i = modification1.length; i < len; i++) {
+	    expResult[i - modification1.length] = originalValue[i];
+
+	}
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.delete(0, modification1.length);
+	start.setModification(modifier);
+
+	LOGGER.debug("Expected: " + ArrayConverter.bytesToHexString(expResult));
+	LOGGER.debug("Computed: " + ArrayConverter.bytesToHexString(start.getValue()));
+	assertArrayEquals(expResult, start.getValue());
+
+    }
+
+    /**
+     * Test of setDeleteBytes method, of class ModifiableByteArray.
+     */
+    @Test
+    public void testDeleteBytes() {
+	LOGGER.info("testDeleteBytes");
+	// versucht randcases abzudecken
+	LOGGER.debug("Testing Delete all Bytes");
+	int len = originalValue.length;
+	byte[] expResult = new byte[0];
+
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.delete(0, len);
+	start.setModification(modifier);
+
+	assertArrayEquals(expResult, start.getValue());
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Testing Delete more Bytes than possible");
+	modifier = ByteArrayModificationFactory.delete(0, len + 1);
+	start.setModification(modifier);
+
+	Exception e = null;
+	try {
+	    start.getValue();
+	} catch (ArrayIndexOutOfBoundsException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Testing Delete negative amount");
+	modifier = ByteArrayModificationFactory.delete(0, -1);
+	start.setModification(modifier);
+	e = null;
+	try {
+	    start.getValue();
+	} catch (IllegalArgumentException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Testing Delete 0 Bytes");
+	modifier = ByteArrayModificationFactory.delete(0, 0);
+	start.setModification(modifier);
+	e = null;
+	try {
+	    start.getValue();
+	} catch (IllegalArgumentException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Testing Delete from negative Start position");
+	modifier = ByteArrayModificationFactory.delete(len * -2, modification1.length);
+	start.setModification(modifier);
+
+	e = null;
+	try {
+	    start.getValue();
+	} catch (Exception ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Testing Delete from to big Start Position");
+	modifier = ByteArrayModificationFactory.delete(len * 2, modification1.length);
+	start.setModification(modifier);
+
+	e = null;
+	try {
+	    start.getValue();
+	} catch (ArrayIndexOutOfBoundsException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+
     }
 
     /**
@@ -181,7 +326,43 @@ public class ModifiableByteArrayTest {
     @Test
     public void testInsertBytes() {
 	LOGGER.info("testInsertBytes");
-	// TODO Robert
+	// Insert negativ position, insert 0 bytes, insert zu weit
+	Assume.assumeTrue(modification1.length < originalValue.length);
+	LOGGER.debug("Inserting negative Position");
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.insert(modification1, -2
+		* originalValue.length);
+	start.setModification(modifier);
+	Exception e = null;
+	try {
+	    start.getValue();
+	} catch (IllegalArgumentException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Inserting empty Array");
+	byte[] emptyArray = new byte[0];
+	modifier = ByteArrayModificationFactory.insert(emptyArray, 0);
+	start.setModification(modifier);
+	assertArrayEquals(originalValue, start.getValue());
+
+	start = new ModifiableByteArray();
+	start.setOriginalValue(originalValue);
+	LOGGER.debug("Inserting to big Start position");
+	modifier = ByteArrayModificationFactory.insert(modification1, originalValue.length * 2);
+	start.setModification(modifier);
+
+	e = null;
+	try {
+	    start.getValue();
+	} catch (ArrayIndexOutOfBoundsException ae) {
+	    e = ae;
+	    LOGGER.debug(ae.getLocalizedMessage());
+	}
+	assertNotNull(e);
+
     }
 
     /**

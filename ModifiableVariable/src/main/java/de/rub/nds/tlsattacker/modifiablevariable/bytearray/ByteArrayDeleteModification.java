@@ -51,6 +51,10 @@ public class ByteArrayDeleteModification extends VariableModification<byte[]> {
 	int start = startPosition;
 	if (start < 0) {
 	    start += input.length;
+	    if (start < 0) {
+		throw new IllegalArgumentException("Trying to delete from too negative Startposition. start = "
+			+ (start - input.length));
+	    }
 	}
 	final int endPosition = start + count;
 	if ((endPosition) > input.length) {
