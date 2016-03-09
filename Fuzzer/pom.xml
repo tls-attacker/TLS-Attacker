@@ -15,11 +15,6 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-    <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-    </properties>
-    
     <build>
         <plugins>
             <plugin>
@@ -47,4 +42,9 @@
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <main.basedir>${project.parent.basedir}</main.basedir>
+    </properties>
 </project>
