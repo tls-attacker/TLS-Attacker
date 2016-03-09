@@ -25,6 +25,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class SimpleTransportHandler implements TransportHandler {
 
@@ -43,6 +45,10 @@ public class SimpleTransportHandler implements TransportHandler {
     private static final int DEFAULT_RESPONSE_WAIT = 400;
 
     private Socket socket;
+
+    private ServerSocket serverSocket;
+
+    private boolean isServer = false;
 
     private BufferedOutputStream bos;
 
@@ -58,7 +64,15 @@ public class SimpleTransportHandler implements TransportHandler {
 
     @Override
     public void initialize(String address, int port) throws IOException {
-	socket = new Socket(address, port);
+	if (address.equals("server")) {
+	    serverSocket = new ServerSocket(port);
+	    socket = serverSocket.accept();
+	    LOGGER.debug("Server");
+	    isServer = true;
+	} else {
+	    socket = new Socket(address, port);
+	}
+
 	OutputStream os = socket.getOutputStream();
 	bos = new BufferedOutputStream(os);
 

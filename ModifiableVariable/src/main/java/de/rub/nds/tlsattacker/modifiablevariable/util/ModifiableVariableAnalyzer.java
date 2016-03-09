@@ -78,9 +78,9 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
-	List<ModifiableVariableHolder> holders = getAllModifiableVariableHoldersRecursively(object);
+	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
 	List<ModifiableVariableField> fields = new LinkedList<>();
-	for (ModifiableVariableHolder holder : holders) {
+	for (ModifiableVariableListHolder holder : holders) {
 	    for (Field f : holder.getFields()) {
 		fields.add(new ModifiableVariableField(holder.getObject(), f));
 	    }
@@ -95,11 +95,11 @@ public class ModifiableVariableAnalyzer {
      * @param object
      * @return
      */
-    public static List<ModifiableVariableHolder> getAllModifiableVariableHoldersRecursively(Object object) {
-	List<ModifiableVariableHolder> holders = new LinkedList<>();
+    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
+	List<ModifiableVariableListHolder> holders = new LinkedList<>();
 	List<Field> modFields = getAllModifiableVariableFields(object);
 	if (!modFields.isEmpty()) {
-	    holders.add(new ModifiableVariableHolder(object, modFields));
+	    holders.add(new ModifiableVariableListHolder(object, modFields));
 	}
 	List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
 	for (Field f : allFields) {
@@ -127,8 +127,8 @@ public class ModifiableVariableAnalyzer {
      * @param list
      * @return
      */
-    private static List<ModifiableVariableHolder> getAllModifiableVariableHoldersFromList(List<Object> list) {
-	List<ModifiableVariableHolder> result = new LinkedList<>();
+    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersFromList(List<Object> list) {
+	List<ModifiableVariableListHolder> result = new LinkedList<>();
 	for (Object o : list) {
 	    result.addAll(getAllModifiableVariableHoldersRecursively(o));
 	}
@@ -139,8 +139,8 @@ public class ModifiableVariableAnalyzer {
      * @param array
      * @return
      */
-    private static List<ModifiableVariableHolder> getAllModifiableVariableHoldersFromArray(Object[] array) {
-	List<ModifiableVariableHolder> result = new LinkedList<>();
+    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersFromArray(Object[] array) {
+	List<ModifiableVariableListHolder> result = new LinkedList<>();
 	for (Object o : array) {
 	    result.addAll(getAllModifiableVariableHoldersRecursively(o));
 	}
@@ -152,7 +152,7 @@ public class ModifiableVariableAnalyzer {
     // *
     // * @return
     // */
-    // public ModifiableVariableHolder getRandomModifiableVariableHolder() {
+    // public ModifiableVariableListHolder getRandomModifiableVariableHolder() {
     // List<ModifiableVariableHolder> holders =
     // getAllModifiableVariableHolders();
     // int randomHolder = RandomHelper.getRandom().nextInt(holders.size());

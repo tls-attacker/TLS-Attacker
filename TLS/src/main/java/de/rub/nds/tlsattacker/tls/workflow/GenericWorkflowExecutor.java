@@ -23,14 +23,15 @@ import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
-import de.rub.nds.tlsattacker.tls.record.messages.Record;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 
@@ -290,12 +292,65 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	// now
 	byte[] rawResponse = transportHandler.fetchData();
 	List<Record> records;
-	while ((records = recordHandler.parseRecords(rawResponse)) == null) {
-	    rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
-	}
-	if (records.isEmpty()) {
-	    throw new WorkflowExecutionException("The configured protocol message was not found, "
-		    + "the server does not send any data.");
+	int sHandshStatus = tlsContext.getServerHandshakeStatus();
+	int dataPointer = 0;
+	int recordCount = 0;
+	byte[] rawResponseWithoutFinished = null;
+	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER && sHandshStatus != 0) {
+	    switch (sHandshStatus) {
+		case 1:
+		    LOGGER.debug("HandshakeStatus 1");
+		    rawResponse = transportHandler.fetchData();
+		    while (dataPointer != rawResponse.length) {
+			byte[] byteLength = { rawResponse[dataPointer + 3], rawResponse[dataPointer + 4] };
+			int length = ArrayConverter.bytesToInt(byteLength);
+			int lastByte = dataPointer + 5 + length;
+			byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawResponse, dataPointer, lastByte);
+			recordCount++;
+			dataPointer = lastByte;
+			if (recordCount == 5) {
+			    tlsContext.setFinishedRecords(rawBytesFromCurrentRecord);
+			} else if (recordCount == 4) {
+			    rawResponseWithoutFinished = Arrays.copyOfRange(rawResponse, 0, lastByte);
+			}
+		    }
+		    tlsContext.setServerHandshakeStatus(3);
+		    break;
+		case 2:
+		    LOGGER.debug("HandshakeStatus 2");
+		    rawResponse = transportHandler.fetchData();
+		    while (dataPointer != rawResponse.length) {
+			byte[] byteLength = { rawResponse[dataPointer + 3], rawResponse[dataPointer + 4] };
+			int length = ArrayConverter.bytesToInt(byteLength);
+			int lastByte = dataPointer + 5 + length;
+			byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawResponse, dataPointer, lastByte);
+			recordCount++;
+			dataPointer = lastByte;
+			if (recordCount == 3) {
+			    tlsContext.setFinishedRecords(rawBytesFromCurrentRecord);
+			} else if (recordCount == 2) {
+			    rawResponseWithoutFinished = Arrays.copyOfRange(rawResponse, 0, lastByte);
+			}
+		    }
+		    tlsContext.setServerHandshakeStatus(3);
+		    break;
+		case 3:
+		    LOGGER.debug("HandshakeStatus 3");
+		    rawResponseWithoutFinished = tlsContext.getFinishedRecords();
+		    tlsContext.setServerHandshakeStatus(0);
+		    break;
+	    }
+	    records = recordHandler.parseRecords(rawResponseWithoutFinished);
+
+	} else {
+	    LOGGER.debug("HandshakeStatus default");
+	    while ((records = recordHandler.parseRecords(rawResponse)) == null) {
+		rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
+	    }
+	    if (records.isEmpty()) {
+		throw new WorkflowExecutionException("The configured protocol message was not found, "
+			+ "the server does not send any data.");
+	    }
 	}
 	return records;
     }

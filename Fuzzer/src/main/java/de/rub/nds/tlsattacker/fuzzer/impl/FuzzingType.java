@@ -24,5 +24,6 @@ package de.rub.nds.tlsattacker.fuzzer.impl;
  */
 public enum FuzzingType {
     RANDOM,
-    SYSTEMATIC
+    SYSTEMATIC,
+    CLEVER
 }

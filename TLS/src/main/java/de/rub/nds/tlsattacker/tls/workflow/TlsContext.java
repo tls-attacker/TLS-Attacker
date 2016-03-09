@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.tls.record.handlers.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -38,11 +38,13 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.crypto.tls.ServerDHParams;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class TlsContext {
 
@@ -102,6 +104,10 @@ public class TlsContext {
      */
     private ServerDHParams serverDHParameters;
     /**
+     * Server DH Private Key
+     */
+    private DHPrivateKeyParameters serverDHPrivateKeyParameters;
+    /**
      * workflow trace containing all the messages exchanged during the
      * communication
      */
@@ -125,6 +131,23 @@ public class TlsContext {
      * key store password
      */
     private String password;
+    /**
+     * ServerHandshakeStatus for fetching Records: 0 = ServerHelloDone has not
+     * been prepared yet or Finished Message is handled -> normal fetch and
+     * parse records 1 = ServerHelloDone has been prepared yet and
+     * Clientauthentication 2 = ServerHelloDone has been prepared yet and no
+     * Clientauthentication -> save Finished for later parsing 3 =
+     * ClientKeyExchange has been parsed -> Parse Saved FinishedRecord
+     */
+    private int serverHandshakeStatus = 0;
+    /**
+     * Client Authentication YES or NO
+     */
+    private boolean clientAuthentication = false;
+    /**
+     * Client Finished Raw Bytes
+     */
+    private byte[] finishedRecords;
 
     private final TlsMessageDigest digest;
 
@@ -137,14 +160,18 @@ public class TlsContext {
      */
     private byte[] dtlsHandshakeCookie = new byte[0];
 
-    public TlsContext() {
+    public TlsContext(ProtocolVersion pv) {
 	ecContext = new TlsECContext();
-	protocolVersion = ProtocolVersion.TLS12;
+	protocolVersion = pv;
 	try {
 	    digest = new TlsMessageDigest(this.protocolVersion);
 	} catch (NoSuchAlgorithmException ex) {
 	    throw new CryptoException(ex);
 	}
+    }
+    
+    public TlsContext() {
+        this(ProtocolVersion.TLS12);
     }
 
     public byte[] getMasterSecret() {
@@ -267,6 +294,14 @@ public class TlsContext {
 	this.serverDHParameters = serverDHParameters;
     }
 
+    public DHPrivateKeyParameters getServerDHPrivateKeyParameters() {
+	return serverDHPrivateKeyParameters;
+    }
+
+    public void setServerDHPrivateKeyParameters(DHPrivateKeyParameters serverDHPrivateKeyParameters) {
+	this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
+    }
+
     public List<ProtocolMessageTypeHolder> getPreconfiguredProtocolMessages() {
 	return preconfiguredProtocolMessages;
     }
@@ -346,5 +381,29 @@ public class TlsContext {
 
     public void setRecordHandler(RecordHandler recordHandler) {
 	this.recordHandler = recordHandler;
+    }
+
+    public int getServerHandshakeStatus() {
+	return serverHandshakeStatus;
+    }
+
+    public void setServerHandshakeStatus(int status) {
+	this.serverHandshakeStatus = status;
+    }
+
+    public boolean isClientAuthentication() {
+	return clientAuthentication;
+    }
+
+    public void setClientAuthentication(boolean status) {
+	this.clientAuthentication = status;
+    }
+
+    public void setFinishedRecords(byte[] finishedRecord) {
+	this.finishedRecords = finishedRecord;
+    }
+
+    public byte[] getFinishedRecords() {
+	return finishedRecords;
     }
 }
