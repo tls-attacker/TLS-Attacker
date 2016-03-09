@@ -56,7 +56,6 @@ public class RenegotiationWorkflowConfiguration {
     }
 
     public void createWorkflow() {
-	tlsContext.setClientAuthentication(true);
 	ProtocolMessage lastMessage = tlsContext.getWorkflowTrace().getLastProtocolMesssage();
         WorkflowTrace workflowTrace;
         if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE){
@@ -103,10 +102,15 @@ public class RenegotiationWorkflowConfiguration {
             }
 	}
 	
-	protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+        if (tlsContext.isClientAuthentication()) {
+            protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+        }
+        
 	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-
-	protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
+        
+        if (tlsContext.isClientAuthentication()) {
+            protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
+        }
         
         if (tlsContext.getSelectedCipherSuite().name().contains("_DH")){
             protocolMessages.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
@@ -116,8 +120,10 @@ public class RenegotiationWorkflowConfiguration {
             protocolMessages.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
         }
         
-	protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
-	
+        if (tlsContext.isClientAuthentication()) {
+            protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
+        }
+        
         protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
 
