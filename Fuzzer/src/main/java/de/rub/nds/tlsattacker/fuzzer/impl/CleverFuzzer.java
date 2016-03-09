@@ -245,6 +245,7 @@ public class CleverFuzzer extends Fuzzer {
     private void phase23(int phase, String logFolder) throws IOException, JAXBException {
         long iter = 0;
         while (!interruptFuzzing && iter < fuzzerConfig.getRandomModificationIter()) {
+            try {
             iter++;
             if (iter % 1000 == 0) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Iteration {} in phase {}.", iter, phase);
@@ -279,6 +280,9 @@ public class CleverFuzzer extends Fuzzer {
             // write them to a file
             analyzeResultingTlsContextAndWriteFile(tlsContext, logFolder, "", validWorkflow.getName(), iter);
             totalProtocolFlows++;
+            } catch(Exception e) {
+                
+            }
         }
     }
 
