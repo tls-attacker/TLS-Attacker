@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.tls.protocol.application;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -42,8 +43,8 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	 System.out.println(ArrayConverter.bytesToHexString(message));
-         return pointer + message.length;
+	protocolMessage.setData(Arrays.copyOfRange(message, pointer, message.length));
+	return pointer + message.length;
     }
 
 }
