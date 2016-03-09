@@ -25,10 +25,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.record.messages.Record;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -65,6 +66,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 
 	for (Record record : records) {
 	    executeAttackRound(configHandler, record);
+
 	}
 
 	LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
@@ -96,7 +98,11 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	trace.getProtocolMessages().add(applicationMessage);
 	trace.getProtocolMessages().add(allertMessage);
 
-	workflowExecutor.executeWorkflow();
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (WorkflowExecutionException ex) {
+	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+	}
 
 	lastMessages.add(trace.getLastProtocolMesssage());
 

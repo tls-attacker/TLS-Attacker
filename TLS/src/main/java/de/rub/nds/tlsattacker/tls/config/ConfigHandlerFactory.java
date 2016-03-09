@@ -22,6 +22,7 @@ package de.rub.nds.tlsattacker.tls.config;
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class ConfigHandlerFactory {
 
@@ -34,7 +35,7 @@ public class ConfigHandlerFactory {
 	    case ClientCommandConfig.COMMAND:
 		return new ClientConfigHandler();
 	    case ServerCommandConfig.COMMAND:
-		throw new UnsupportedOperationException("Command server is not supported yet");
+		return new ServerConfigHandler();
 	    default:
 		throw new UnsupportedOperationException("You have to select one of the available commands");
 

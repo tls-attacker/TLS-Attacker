@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ClientConfigHandler extends ConfigHandler {
 
-    private static Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
 
     @Override
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
@@ -72,18 +72,19 @@ public class ClientConfigHandler extends ConfigHandler {
     public TlsContext initializeTlsContext(CommandConfig config) {
 	ClientCommandConfig ccConfig = (ClientCommandConfig) config;
 	TlsContext tlsContext;
+        WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	if (ccConfig.getWorkflowTraceConfigFile() != null) {
 	    try {
-		tlsContext = new TlsContext();
+		tlsContext = new TlsContext(config.getProtocolVersion());
 		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowTraceConfigFile());
 		WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
 		tlsContext.setWorkflowTrace(workflowTrace);
+                WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
 	    } catch (IOException | JAXBException ex) {
 		throw new ConfigurationException("The workflow trace could not be loaded from "
 			+ ccConfig.getWorkflowTraceConfigFile(), ex);
 	    }
 	} else {
-	    WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	    switch (ccConfig.getWorkflowTraceType()) {
 		case FULL:
 		    tlsContext = factory.createFullTlsContext();

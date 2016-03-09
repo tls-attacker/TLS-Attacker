@@ -19,26 +19,27 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.alert.messages.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ccs.messages.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.messages.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,6 +80,8 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
 	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     private List<ProtocolMessage> protocolMessages;
+    
+    private String name;
 
     public List<ProtocolMessage> getProtocolMessages() {
 	return protocolMessages;
@@ -139,6 +142,54 @@ public class WorkflowTrace implements Serializable {
     public ProtocolMessage getLastProtocolMesssage() {
 	int size = protocolMessages.size();
 	return protocolMessages.get(size - 1);
+    }
+    
+    private List<ProtocolMessage> getMessages(ConnectionEnd peer) {
+        List<ProtocolMessage> messages = new LinkedList<>();
+        for(ProtocolMessage pm : protocolMessages) {
+            if(pm.getMessageIssuer() == peer) {
+                messages.add(pm);
+            }
+        }
+        return messages;
+    }
+    
+    public List<ProtocolMessage> getClientMessages() {
+        return getMessages(ConnectionEnd.CLIENT);
+    }
+    
+    public List<ProtocolMessage> getServerMessages() {
+        return getMessages(ConnectionEnd.SERVER);
+    }
+    
+    private boolean containsFinishedMessage(ConnectionEnd peer) {
+        for(ProtocolMessage pm : protocolMessages) {
+            if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+		HandshakeMessage hm = (HandshakeMessage) pm;
+		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
+                    if(hm.getMessageIssuer() == peer) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean containsClientFinished() {
+        return containsFinishedMessage(ConnectionEnd.CLIENT);
+    }
+    
+    public boolean containsServerFinished() {
+        return containsFinishedMessage(ConnectionEnd.SERVER);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

@@ -1,0 +1,12 @@
+<startupCommandsHolder>
+    <serverPort>11110</serverPort>
+    <workflowFolder>../resources/fuzzing/workflows</workflowFolder>
+    <modifiedVariableTypes>TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PLAIN_PROTOCOL_MESSAGE</modifiedVariableTypes>
+    <!--<outputFolder>/tmp/</outputFolder>-->
+    <startupCommandsList>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT</fuzzerCommand>
+            <shortName>wolfssl-rsa</shortName>
+        </startupCommands>
+    </startupCommandsList>
+</startupCommandsHolder>

@@ -1,0 +1,29 @@
+<startupCommandsHolder>
+    <serverCommand>../../../servers/openssl-1.0.2g/apps/openssl </serverCommand>
+    <serverPort>51000</serverPort>
+    <workflowFolder>../resources/fuzzing/workflows</workflowFolder>
+    <modifiedVariableTypes>TLS_CONSTANT,LENGTH,COUNT,PUBLIC_KEY,PADDING,SIGNATURE,PLAIN_PROTOCOL_MESSAGE</modifiedVariableTypes>
+    <!--<outputFolder>/tmp/</outputFolder>-->
+    <startupCommandsList>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem </serverCommandParameters>
+            <shortName>openssl-rsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias </fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
+            <shortName>openssl-rsa-auth</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT </fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/ec256key.pem -cert ../resources/ec256cert.pem </serverCommandParameters>
+            <shortName>openssl-ecdhe-ecdsa</shortName>
+        </startupCommands>
+        <startupCommands>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT</fuzzerCommand>
+            <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/dsakey.pem -cert ../resources/dsacert.pem </serverCommandParameters>
+            <shortName>openssl-dsa</shortName>
+        </startupCommands>
+    </startupCommandsList>
+</startupCommandsHolder>

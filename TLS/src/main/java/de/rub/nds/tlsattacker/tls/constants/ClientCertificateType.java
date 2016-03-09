@@ -26,6 +26,7 @@ import java.util.Map;
  * http://tools.ietf.org/html/rfc5246#section-7.4.4
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public enum ClientCertificateType {
 
@@ -63,5 +64,9 @@ public enum ClientCertificateType {
 
     public byte getValue() {
 	return value;
+    }
+
+    public byte[] getArrayValue() {
+	return new byte[] { value };
     }
 }

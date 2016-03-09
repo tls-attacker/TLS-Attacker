@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.messages.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.IOException;
 import java.io.InputStream;

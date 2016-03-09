@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

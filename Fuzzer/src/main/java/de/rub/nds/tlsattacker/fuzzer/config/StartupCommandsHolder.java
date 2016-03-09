@@ -36,6 +36,14 @@ public class StartupCommandsHolder {
 
     private String serverCommand;
 
+    private int serverPort;
+
+    private String workflowFolder;
+
+    private String modifiedVariableTypes;
+    
+    private String outputFolder;
+    
     @XmlElementWrapper(name = "startupCommandsList")
     @XmlElements(value = { @XmlElement(type = StartupCommand.class) })
     private List<StartupCommand> startupCommands;
@@ -54,5 +62,37 @@ public class StartupCommandsHolder {
 
     public void setServerCommand(String serverCommand) {
 	this.serverCommand = serverCommand;
+    }
+
+    public int getServerPort() {
+	return serverPort;
+    }
+
+    public void setServerPort(int serverPort) {
+	this.serverPort = serverPort;
+    }
+
+    public String getWorkflowFolder() {
+	return workflowFolder;
+    }
+
+    public void setWorkflowFolder(String workflowFolder) {
+	this.workflowFolder = workflowFolder;
+    }
+
+    public String getModifiedVariableTypes() {
+	return modifiedVariableTypes;
+    }
+
+    public void setModifiedVariableTypes(String modifiedVariableTypes) {
+	this.modifiedVariableTypes = modifiedVariableTypes;
+    }
+
+    public String getOutputFolder() {
+        return outputFolder;
+    }
+
+    public void setOutputFolder(String outputFolder) {
+        this.outputFolder = outputFolder;
     }
 }

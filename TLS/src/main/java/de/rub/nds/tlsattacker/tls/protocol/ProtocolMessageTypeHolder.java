@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.messages.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 
 /**
  * 

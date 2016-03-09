@@ -42,6 +42,7 @@ import java.util.List;
  * Configuration used for both the client and the server.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public abstract class CommandConfig {
 
@@ -91,6 +92,9 @@ public abstract class CommandConfig {
     @Parameter(names = "-workflow_trace_config_file", description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
     protected String workflowTraceConfigFile;
 
+    @Parameter(names = "-workflow_trace_output_file", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")
+    protected String workflowTraceOutputFile;
+
     @Parameter(names = "-heartbeat_mode", description = "Sets the heartbeat mode (PEER_ALLOWED_TO_SEND or PEER_NOT_ALLOWED_TO_SEND)", converter = HeartbeatModeConverter.class)
     protected HeartbeatMode heartbeatMode;
 
@@ -110,6 +114,9 @@ public abstract class CommandConfig {
     @Parameter(names = "-max_transport_response_wait", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
     protected Integer maxTransportResponseWait;
 
+    @Parameter(names = "-client_authentication", description = "YES or NO")
+    protected boolean clientAuthentication = false;
+
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
 
@@ -127,7 +134,7 @@ public abstract class CommandConfig {
 	namedCurves.add(NamedCurve.SECP384R1);
 	namedCurves.add(NamedCurve.SECP521R1);
 	nextProtoNeg = new LinkedList<>();
-	maxTransportResponseWait = 100;
+	maxTransportResponseWait = 150;
 	alias = "";
 	signatureAndHashAlgorithms = new LinkedList<>();
 	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
@@ -235,6 +242,14 @@ public abstract class CommandConfig {
 	this.workflowTraceConfigFile = workflowTraceConfigFile;
     }
 
+    public String getWorkflowTraceOutputFile() {
+	return workflowTraceOutputFile;
+    }
+
+    public void setWorkflowTraceOutputFile(String workflowTraceOutputFile) {
+	this.workflowTraceOutputFile = workflowTraceOutputFile;
+    }
+
     public List<CompressionMethod> getCompressionMethods() {
 	return compressionMethods;
     }
@@ -313,5 +328,13 @@ public abstract class CommandConfig {
 
     public void setSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
 	this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
+    }
+
+    public boolean isClientAuthentication() {
+	return clientAuthentication;
+    }
+
+    public void setClientAuthentication(boolean clientAuthentication) {
+	this.clientAuthentication = clientAuthentication;
     }
 }
