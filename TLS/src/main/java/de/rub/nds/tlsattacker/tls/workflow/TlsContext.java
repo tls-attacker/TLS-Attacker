@@ -169,9 +169,9 @@ public class TlsContext {
 	    throw new CryptoException(ex);
 	}
     }
-    
+
     public TlsContext() {
-        this(ProtocolVersion.TLS12);
+	this(ProtocolVersion.TLS12);
     }
 
     public byte[] getMasterSecret() {
