@@ -16,12 +16,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package de.rub.nds.tlsattacker.tls.protocol.application.handlers;
+package de.rub.nds.tlsattacker.tls.protocol.application;
 
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import de.rub.nds.tlsattacker.tls.protocol.application.messages.ApplicationMessage;
 import static org.junit.Assert.assertArrayEquals;
 
 /**

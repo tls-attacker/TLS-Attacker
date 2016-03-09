@@ -54,13 +54,16 @@ public class ByteArrayInsertModification extends VariableModification<byte[]> {
 	int start = startPosition;
 	if (start < 0) {
 	    start += input.length;
-            if (start < 0) {
-                //Man könnte auch versuchen die Startposition Modulo zu rechnen, aber vermutlich ist mehr schief gelaufen.
-                throw new IllegalArgumentException("Trying to insert from too negative Startposition. start = " + startPosition);
-            }
+	    if (start < 0) {
+		// Man könnte auch versuchen die Startposition Modulo zu
+		// rechnen, aber vermutlich ist mehr schief gelaufen.
+		throw new IllegalArgumentException("Trying to insert from too negative Startposition. start = "
+			+ startPosition);
+	    }
 	}
-        if (startPosition > input.length) {
-	    throw new ArrayIndexOutOfBoundsException("Trying to insert behind the Array. ArraySize:"+ input.length + " Insert Position:" + startPosition);
+	if (startPosition > input.length) {
+	    throw new ArrayIndexOutOfBoundsException("Trying to insert behind the Array. ArraySize:" + input.length
+		    + " Insert Position:" + startPosition);
 	}
 	byte[] ret1 = Arrays.copyOf(input, start);
 	byte[] ret3 = null;

@@ -80,7 +80,7 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
 	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     private List<ProtocolMessage> protocolMessages;
-    
+
     private String name;
 
     public List<ProtocolMessage> getProtocolMessages() {
@@ -143,53 +143,53 @@ public class WorkflowTrace implements Serializable {
 	int size = protocolMessages.size();
 	return protocolMessages.get(size - 1);
     }
-    
+
     private List<ProtocolMessage> getMessages(ConnectionEnd peer) {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for(ProtocolMessage pm : protocolMessages) {
-            if(pm.getMessageIssuer() == peer) {
-                messages.add(pm);
-            }
-        }
-        return messages;
+	List<ProtocolMessage> messages = new LinkedList<>();
+	for (ProtocolMessage pm : protocolMessages) {
+	    if (pm.getMessageIssuer() == peer) {
+		messages.add(pm);
+	    }
+	}
+	return messages;
     }
-    
+
     public List<ProtocolMessage> getClientMessages() {
-        return getMessages(ConnectionEnd.CLIENT);
+	return getMessages(ConnectionEnd.CLIENT);
     }
-    
+
     public List<ProtocolMessage> getServerMessages() {
-        return getMessages(ConnectionEnd.SERVER);
+	return getMessages(ConnectionEnd.SERVER);
     }
-    
+
     private boolean containsFinishedMessage(ConnectionEnd peer) {
-        for(ProtocolMessage pm : protocolMessages) {
-            if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+	for (ProtocolMessage pm : protocolMessages) {
+	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
 		HandshakeMessage hm = (HandshakeMessage) pm;
 		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
-                    if(hm.getMessageIssuer() == peer) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+		    if (hm.getMessageIssuer() == peer) {
+			return true;
+		    }
+		}
+	    }
+	}
+	return false;
     }
-    
+
     public boolean containsClientFinished() {
-        return containsFinishedMessage(ConnectionEnd.CLIENT);
+	return containsFinishedMessage(ConnectionEnd.CLIENT);
     }
-    
+
     public boolean containsServerFinished() {
-        return containsFinishedMessage(ConnectionEnd.SERVER);
+	return containsFinishedMessage(ConnectionEnd.SERVER);
     }
 
     public String getName() {
-        return name;
+	return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+	this.name = name;
     }
 
 }
