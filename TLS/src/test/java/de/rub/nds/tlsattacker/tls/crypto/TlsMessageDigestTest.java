@@ -30,9 +30,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 
 /**
- * TODO Robert
- * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * @author Robert Merget
  */
 public class TlsMessageDigestTest {
 
@@ -48,10 +47,10 @@ public class TlsMessageDigestTest {
     private byte[] testarray = { 3, 0, 5, 6 };
     private byte[] testarray2 = { 1, 2, 3, 4, 5, 6, 7 };
 
-    @Test
     /**
      * Test for the Different Constructors
      */
+    @Test
     public void constructorTest() {
 	LOGGER.info("testConstructors");
 	TlsMessageDigest d = null;
@@ -217,12 +216,7 @@ public class TlsMessageDigestTest {
 	digest1.setRawBytes(testarray);
 	int testLength = 2;
 	int testPosition = 2;
-	digest1.update(testarray2, testPosition, testLength); // sollte byte
-							      // Array von
-							      // position an
-							      // einfügen und
-							      // zwar length
-							      // viele.
+	digest1.update(testarray2, testPosition, testLength);
 	result = digest1.getRawBytes();
 
 	LOGGER.debug("After3:" + ArrayConverter.bytesToHexString(digest1.getRawBytes()));
