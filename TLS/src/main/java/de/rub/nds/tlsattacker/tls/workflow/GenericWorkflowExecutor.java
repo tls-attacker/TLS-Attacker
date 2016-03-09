@@ -18,7 +18,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -91,18 +90,6 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 		    handleMyProtocolMessage(protocolMessages);
 		} else {
 		    handleProtocolMessagesFromPeer(protocolMessages);
-                    if (renegotiation){
-                        workflowContext.setProtocolMessagePointer(0);
-                        tlsContext.getDigest().reset();
-                        /* if there is no keystore file we can not authenticate per certificate 
-                        *  and if there isClientauthentication ist true we do not need to change the WorkflowTrace
-                        */
-                        if(tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()){
-                           RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
-                           reneWorkflowConfig.createWorkflow();
-                           protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages(); 
-                        }
-                    }
 		}
 	    }
 	} catch (WorkflowExecutionException | CryptoException | IOException e) {
@@ -188,6 +175,9 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
             if (!renegotiation){
                 ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
                 pm.setRecords(recordsOfSameContent);
+            }
+            else{
+                handleRenegotiation();
             }
 	}
     }
@@ -390,5 +380,31 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 		}
 	    }
 	}
+    }
+    
+    /**
+     * Handles a renegotiation request.
+     */
+    protected void handleRenegotiation () {
+        workflowContext.setProtocolMessagePointer(0);
+        tlsContext.getDigest().reset();
+        
+        /* if there is no keystore file we can not authenticate per certificate 
+        *  and if there isClientauthentication ist true we do not need to change the WorkflowTrace
+        */
+        if(tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()){
+            tlsContext.setClientAuthentication(true);
+            RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
+            reneWorkflowConfig.createWorkflow();
+        }
+        else if (tlsContext.getKeyStore() == null && tlsContext.isSessionResumption()) {
+             RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
+             reneWorkflowConfig.createWorkflow();
+        }
+        
+        tlsContext.setSessionResumption(false);
+        renegotiation = false;
+        executed = false;
+        executeWorkflow();
     }
 }
