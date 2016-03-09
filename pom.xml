@@ -109,7 +109,7 @@
                     <artifactId>maven-java-formatter-plugin</artifactId>
                     <version>0.4</version>
                     <configuration>
-                        <configFile>${highest-basedir}/maven-eclipse-codestyle.xml</configFile>
+                        <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
                         <lineEnding>LF</lineEnding>
                     </configuration>
                     <executions>
@@ -126,7 +126,7 @@
                     <artifactId>license-maven-plugin</artifactId>
                     <version>2.11</version>
                     <configuration>
-                        <header>${highest-basedir}/license_header_plain.txt</header>
+                        <header>${main.basedir}/license_header_plain.txt</header>
                         <strictCheck>true</strictCheck>
                         <includes>
                             <include>src/**/*.java</include>
@@ -149,33 +149,11 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!--
-            Configure a property that hold the path of the WS-Attacker basedir
-            ${highest-basedir}/runnable 
-            will e.g. be the output for the framework
-            -->
-            <plugin>
-                <groupId>org.commonjava.maven.plugins</groupId>
-                <artifactId>directory-maven-plugin</artifactId>
-                <version>0.1</version>
-                <executions>
-                    <execution>
-                        <id>directories</id>
-                        <goals>
-                            <goal>highest-basedir</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <property>highest-basedir</property>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
                 <artifactId>maven-java-formatter-plugin</artifactId>
                 <configuration>
-                    <configFile>${highest-basedir}/maven-eclipse-codestyle.xml</configFile>
+                    <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
                     <lineEnding>LF</lineEnding>
                 </configuration>
             </plugin>
@@ -203,7 +181,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.12.1</version>
                 <configuration>
-                    <configLocation>${highest-basedir}/checkstyle.xml</configLocation>
+                    <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
         </plugins>
@@ -214,5 +192,6 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <licenseOwner>Chair for Network and Data Security, Ruhr University Bochum</licenseOwner>
+        <main.basedir>${project.basedir}</main.basedir>
     </properties>
 </project>
