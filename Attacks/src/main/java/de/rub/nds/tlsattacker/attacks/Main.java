@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.LenstraTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
@@ -39,6 +40,7 @@ import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.LenstraAttackTest;
+import de.rub.nds.tlsattacker.attacks.impl.ManInTheMiddleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.SniTest;
@@ -91,6 +93,8 @@ public class Main {
 	jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
 	TripleHandshakeAttackCommandConfig tripleHsAttack = new TripleHandshakeAttackCommandConfig();
 	jc.addCommand(TripleHandshakeAttackCommandConfig.ATTACK_COMMAND, tripleHsAttack);
+        ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
+	jc.addCommand(ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND, MitM_Attack);
 
 	jc.parse(args);
 
@@ -136,6 +140,9 @@ public class Main {
 		break;
 	    case TripleHandshakeAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new TripleHandshakeAttack(tripleHsAttack);
+		break;
+            case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
+		attacker = new ManInTheMiddleAttack(MitM_Attack);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");
