@@ -26,16 +26,16 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class HelloRequestMessage extends HandshakeMessage {
-    
+
     public HelloRequestMessage() {
 	super(HandshakeMessageType.HELLO_REQUEST);
 	this.messageIssuer = ConnectionEnd.SERVER;
-        setIncludeInDigest(false);
+	setIncludeInDigest(false);
     }
 
     public HelloRequestMessage(ConnectionEnd messageIssuer) {
 	super(HandshakeMessageType.HELLO_REQUEST);
 	this.messageIssuer = messageIssuer;
-        setIncludeInDigest(false);
+	setIncludeInDigest(false);
     }
 }
