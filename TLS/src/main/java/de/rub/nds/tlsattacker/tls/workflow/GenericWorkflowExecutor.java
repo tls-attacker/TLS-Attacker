@@ -390,7 +390,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
         tlsContext.getDigest().reset();
         
         /* if there is no keystore file we can not authenticate per certificate 
-        *  and if there isClientauthentication ist true we do not need to change the WorkflowTrace
+        *  and if isClientauthentication is true, we do not need to change the WorkflowTrace
         */
         if(tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()){
             tlsContext.setClientAuthentication(true);
