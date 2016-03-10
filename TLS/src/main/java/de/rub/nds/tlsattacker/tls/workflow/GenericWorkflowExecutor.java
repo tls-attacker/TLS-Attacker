@@ -48,8 +48,8 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
      * indicates if the workflow was already executed
      */
     protected boolean executed = false;
-    
-     /**
+
+    /**
      * indicates if the peer requests renegotiation
      */
     protected boolean renegotiation = false;
@@ -172,13 +172,12 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	    ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent.get(0)
 		    .getContentType().getValue());
 	    parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages, protocolMessageType);
-            if (!renegotiation){
-                ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
-                pm.setRecords(recordsOfSameContent);
-            }
-            else{
-                handleRenegotiation();
-            }
+	    if (!renegotiation) {
+		ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
+		pm.setRecords(recordsOfSameContent);
+	    } else {
+		handleRenegotiation();
+	    }
 	}
     }
 
@@ -194,19 +193,18 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
 	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
 		    rawProtocolMessageBytes[dataPointer], tlsContext);
-            if (pmh.getProtocolMessage().toString().equals("HELLO_REQUEST")){
-                renegotiation = true;
-            }
-            else{
-                identifyCorrectProtocolMessage(protocolMessages, pmh);
-            
-                dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
-                }
-                handleIncomingAlert(pmh);
-                workflowContext.incrementProtocolMessagePointer();
-            }
+	    if (pmh.getProtocolMessage().toString().equals("HELLO_REQUEST")) {
+		renegotiation = true;
+	    } else {
+		identifyCorrectProtocolMessage(protocolMessages, pmh);
+
+		dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
+		if (LOGGER.isDebugEnabled()) {
+		    LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
+		}
+		handleIncomingAlert(pmh);
+		workflowContext.incrementProtocolMessagePointer();
+	    }
 	}
     }
 
@@ -381,30 +379,31 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	    }
 	}
     }
-    
+
     /**
      * Handles a renegotiation request.
      */
-    protected void handleRenegotiation () {
-        workflowContext.setProtocolMessagePointer(0);
-        tlsContext.getDigest().reset();
-        
-        /* if there is no keystore file we can not authenticate per certificate 
-        *  and if isClientauthentication is true, we do not need to change the WorkflowTrace
-        */
-        if(tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()){
-            tlsContext.setClientAuthentication(true);
-            RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
-            reneWorkflowConfig.createWorkflow();
-        }
-        else if (tlsContext.getKeyStore() == null && tlsContext.isSessionResumption()) {
-             RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
-             reneWorkflowConfig.createWorkflow();
-        }
-        
-        tlsContext.setSessionResumption(false);
-        renegotiation = false;
-        executed = false;
-        executeWorkflow();
+    protected void handleRenegotiation() {
+	workflowContext.setProtocolMessagePointer(0);
+	tlsContext.getDigest().reset();
+
+	/*
+	 * if there is no keystore file we can not authenticate per certificate
+	 * and if isClientauthentication is true, we do not need to change the
+	 * WorkflowTrace
+	 */
+	if (tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()) {
+	    tlsContext.setClientAuthentication(true);
+	    RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
+	    reneWorkflowConfig.createWorkflow();
+	} else if (tlsContext.getKeyStore() == null && tlsContext.isSessionResumption()) {
+	    RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
+	    reneWorkflowConfig.createWorkflow();
+	}
+
+	tlsContext.setSessionResumption(false);
+	renegotiation = false;
+	executed = false;
+	executeWorkflow();
     }
 }
