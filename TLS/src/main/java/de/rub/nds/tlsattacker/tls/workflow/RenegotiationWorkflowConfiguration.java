@@ -57,17 +57,15 @@ public class RenegotiationWorkflowConfiguration {
 
     public void createWorkflow() {
 	ProtocolMessage lastMessage = tlsContext.getWorkflowTrace().getLastProtocolMesssage();
-        WorkflowTrace workflowTrace;
-        if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE){
-            workflowTrace = createHandshakeWorkflow();
-        }
-        else if (lastMessage.getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA &&
-                lastMessage.getMessageIssuer() == ConnectionEnd.CLIENT){
-                workflowTrace = createFullWorkflow();
-        }
-        else{
-            workflowTrace = createFullSRWorkflow();
-        }
+	WorkflowTrace workflowTrace;
+	if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+	    workflowTrace = createHandshakeWorkflow();
+	} else if (lastMessage.getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA
+		&& lastMessage.getMessageIssuer() == ConnectionEnd.CLIENT) {
+	    workflowTrace = createFullWorkflow();
+	} else {
+	    workflowTrace = createFullSRWorkflow();
+	}
 
 	tlsContext.setWorkflowTrace(workflowTrace);
 
@@ -83,48 +81,47 @@ public class RenegotiationWorkflowConfiguration {
 	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(ch);
 
-	List <CipherSuite> ciphers = new LinkedList<>(); 
-        ciphers.add(tlsContext.getSelectedCipherSuite());
-        ch.setSupportedCipherSuites(ciphers);
-        List <CompressionMethod> compressions = new LinkedList<>();
-        compressions.add(CompressionMethod.NULL);
-        ch.setSupportedCompressionMethods(compressions);
+	List<CipherSuite> ciphers = new LinkedList<>();
+	ciphers.add(tlsContext.getSelectedCipherSuite());
+	ch.setSupportedCipherSuites(ciphers);
+	List<CompressionMethod> compressions = new LinkedList<>();
+	compressions.add(CompressionMethod.NULL);
+	ch.setSupportedCompressionMethods(compressions);
 
 	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
 	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
-        
-        if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
-            if(tlsContext.getSelectedCipherSuite().name().contains("_DHE_")){
-                protocolMessages.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
-            }
-            else{
-               protocolMessages.add(new ECDHEServerKeyExchangeMessage(ConnectionEnd.SERVER)); 
-            }
+
+	if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
+	    if (tlsContext.getSelectedCipherSuite().name().contains("_DHE_")) {
+		protocolMessages.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
+	    } else {
+		protocolMessages.add(new ECDHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
+	    }
 	}
-	
-        if (tlsContext.isClientAuthentication()) {
-            protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
-        }
-        
+
+	if (tlsContext.isClientAuthentication()) {
+	    protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+	}
+
 	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-        
-        if (tlsContext.isClientAuthentication()) {
-            protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
-        }
-        
-        if (tlsContext.getSelectedCipherSuite().name().contains("_DH")){
-            protocolMessages.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-        }else if (tlsContext.getSelectedCipherSuite().name().contains("_ECDH")){
-            protocolMessages.add(new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-        }else{
-            protocolMessages.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-        }
-        
-        if (tlsContext.isClientAuthentication()) {
-            protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
-        }
-        
-        protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+
+	if (tlsContext.isClientAuthentication()) {
+	    protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
+	}
+
+	if (tlsContext.getSelectedCipherSuite().name().contains("_DH")) {
+	    protocolMessages.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	} else if (tlsContext.getSelectedCipherSuite().name().contains("_ECDH")) {
+	    protocolMessages.add(new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	} else {
+	    protocolMessages.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	}
+
+	if (tlsContext.isClientAuthentication()) {
+	    protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
+	}
+
+	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
 
 	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
