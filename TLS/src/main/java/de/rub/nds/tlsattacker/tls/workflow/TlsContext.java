@@ -449,7 +449,7 @@ public class TlsContext {
     public void setTHSAttack(boolean ths) {
 	this.ths = ths;
     }
-    
+
     public boolean isMitMAttack() {
 	return mitm;
     }
