@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -193,7 +194,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
 	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
 		    rawProtocolMessageBytes[dataPointer], tlsContext);
-	    if (pmh.getProtocolMessage().toString().equals("HELLO_REQUEST")) {
+	    if (Arrays.equals(rawProtocolMessageBytes, new byte[]{(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00})) {
 		renegotiation = true;
 	    } else {
 		identifyCorrectProtocolMessage(protocolMessages, pmh);
