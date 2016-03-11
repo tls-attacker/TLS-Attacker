@@ -194,7 +194,8 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
 	while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
 	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
 		    rawProtocolMessageBytes[dataPointer], tlsContext);
-	    if (Arrays.equals(rawProtocolMessageBytes, new byte[]{(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00})) {
+	    if (Arrays.equals(rawProtocolMessageBytes,
+		    new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
 		renegotiation = true;
 	    } else {
 		identifyCorrectProtocolMessage(protocolMessages, pmh);
