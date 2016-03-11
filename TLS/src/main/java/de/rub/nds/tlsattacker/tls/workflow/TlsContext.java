@@ -159,6 +159,10 @@ public class TlsContext {
      * TripleHandshakeWorkflow
      */
     private boolean ths = false;
+    /**
+     * Man_in_the_Middle_Workflow
+     */
+    private boolean mitm = false;
 
     private final TlsMessageDigest digest;
 
@@ -444,5 +448,13 @@ public class TlsContext {
 
     public void setTHSAttack(boolean ths) {
 	this.ths = ths;
+    }
+    
+    public boolean isMitMAttack() {
+	return mitm;
+    }
+
+    public void setMitMAttack(boolean mitm) {
+	this.mitm = mitm;
     }
 }
