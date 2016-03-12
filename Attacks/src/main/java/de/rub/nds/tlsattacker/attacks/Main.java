@@ -93,7 +93,7 @@ public class Main {
 	jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
 	TripleHandshakeAttackCommandConfig tripleHsAttack = new TripleHandshakeAttackCommandConfig();
 	jc.addCommand(TripleHandshakeAttackCommandConfig.ATTACK_COMMAND, tripleHsAttack);
-        ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
+	ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
 	jc.addCommand(ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND, MitM_Attack);
 
 	jc.parse(args);
@@ -141,7 +141,7 @@ public class Main {
 	    case TripleHandshakeAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new TripleHandshakeAttack(tripleHsAttack);
 		break;
-            case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
+	    case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new ManInTheMiddleAttack(MitM_Attack);
 		break;
 	    default:
