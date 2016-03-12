@@ -42,7 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Creates an example-workflowtrace for Man-in-the-Middle Attack 
+ * Creates an example-workflowtrace for Man-in-the-Middle Attack
  * 
  * @author Philip Riese <philip.riese@rub.de>
  */
