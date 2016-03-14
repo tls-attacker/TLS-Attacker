@@ -75,12 +75,22 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	}
 	protocolMessage.setVerifyData(verifyData);
 	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
-
+        
 	try {
-	    if (tlsContext.getRecordHandler().getRecordCipher() == null) {
-		TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
-		tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
-	    }
+            if(tlsContext.isRenegotiation() && tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT){
+                try {
+		    TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
+		    tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
+                        | InvalidKeyException ex) {
+                    throw new CryptoException(ex);
+                }
+            }else {
+                if (tlsContext.getRecordHandler().getRecordCipher() == null) {
+                    TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
+                    tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
+                }
+            }
 
 	    byte[] result = protocolMessage.getVerifyData().getValue();
 
