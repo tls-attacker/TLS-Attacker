@@ -53,16 +53,26 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER || tlsContext.isSessionResumption()) {
-	    try {
-		if (tlsContext.getRecordHandler().getRecordCipher() == null) {
+	    if(tlsContext.isRenegotiation() && tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER){
+                try {
 		    TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
 		    tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
-		}
-	    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
-		    | InvalidKeyException ex) {
-		throw new CryptoException(ex);
-	    }
-	}
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
+                        | InvalidKeyException ex) {
+                    throw new CryptoException(ex);
+                }
+            }else {
+                try {
+                    if (tlsContext.getRecordHandler().getRecordCipher() == null) {
+                        TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
+                        tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
+                    }
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException
+                        | InvalidKeyException ex) {
+                    throw new CryptoException(ex);
+                }
+            }
+        }
 	protocolMessage.setCcsProtocolType(message[pointer]);
 	return pointer + 1;
     }
