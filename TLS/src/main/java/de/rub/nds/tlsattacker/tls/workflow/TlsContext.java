@@ -152,9 +152,13 @@ public class TlsContext {
      */
     private boolean clientAuthentication = false;
     /**
-     * TripleHandshakeWorkflow
+     * SessionResumptionWorkflow
      */
     private boolean sessionResumption = false;
+    /**
+     * RenegotiationWorkflow
+     */
+    private boolean renegotiation = false;
     /**
      * TripleHandshakeWorkflow
      */
@@ -440,6 +444,14 @@ public class TlsContext {
 
     public void setSessionResumption(boolean sessionResumption) {
 	this.sessionResumption = sessionResumption;
+    }
+
+    public boolean isRenegotiation() {
+	return renegotiation;
+    }
+
+    public void setRenegotiation(boolean renegotiation) {
+	this.renegotiation = renegotiation;
     }
 
     public boolean isTHSAttack() {
