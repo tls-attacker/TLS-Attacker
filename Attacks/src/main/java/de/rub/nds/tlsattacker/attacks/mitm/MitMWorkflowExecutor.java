@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
@@ -169,12 +171,20 @@ public class MitMWorkflowExecutor {
 
     // forward Message without parse
     private void forwardMessage(ProtocolMessage pm) {
+	/**
+	 * try { System.out.println("Sleeping..."); Thread.sleep(2000);
+	 * System.out.println("Done sleeping, no interrupt."); } catch
+	 * (InterruptedException e) { System.out.println("I was interrupted!");
+	 * e.printStackTrace(); }
+	 **/
 	TransportHandler fetch;
 	TransportHandler send;
 	if (pm.getMessageIssuer() == ConnectionEnd.CLIENT) {
+	    tlsContext = clientTlsContext;
 	    fetch = serverTransportHandler;
 	    send = clientTransportHandler;
 	} else {
+	    tlsContext = serverTlsContext;
 	    fetch = clientTransportHandler;
 	    send = serverTransportHandler;
 	}
@@ -184,6 +194,12 @@ public class MitMWorkflowExecutor {
 	} catch (IOException e) {
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
 	}
+	if (tlsContext.getRecordHandler().getRecordCipher() != null) {
+	    TlsRecordBlockCipher tlsRecordBlockCipher = tlsContext.getRecordHandler().getRecordCipher();
+	    byte[] a = new byte[] { 0x35 };
+	    tlsRecordBlockCipher.calculateMac(ProtocolVersion.TLS12, ProtocolMessageType.HANDSHAKE, a);
+	}
+
 	serverWorkflowContext.incrementProtocolMessagePointer();
 	clientWorkflowContext.incrementProtocolMessagePointer();
     }
@@ -464,7 +480,7 @@ public class MitMWorkflowExecutor {
     protected boolean handlingMyLastProtocolMessageWithContentType(List<ProtocolMessage> protocolMessages, int pointer) {
 	ProtocolMessage currentProtocolMessage = protocolMessages.get(pointer);
 	return ((protocolMessages.size() == (pointer + 1))
-		|| (protocolMessages.get(pointer + 1).getMessageIssuer() != clientTlsContext.getMyConnectionEnd()) || currentProtocolMessage
+		|| (protocolMessages.get(pointer + 1).getMessageIssuer() != currentProtocolMessage.getMessageIssuer()) || currentProtocolMessage
 		    .getProtocolMessageType() != (protocolMessages.get(pointer + 1).getProtocolMessageType()));
     }
 
@@ -479,8 +495,9 @@ public class MitMWorkflowExecutor {
      * @return
      */
     protected boolean handlingMyLastProtocolMessage(List<ProtocolMessage> protocolMessages, int pointer) {
-	return ((protocolMessages.size() == (pointer + 1)) || (protocolMessages.get(pointer + 1).getMessageIssuer() != tlsContext
-		.getMyConnectionEnd()));
+	return ((protocolMessages.size() == (pointer + 1))
+		|| (protocolMessages.get(pointer + 1).getMessageIssuer() != tlsContext.getMyConnectionEnd()) || (protocolMessages
+		.get(pointer + 1).getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA));
     }
 
     /**
@@ -519,6 +536,8 @@ public class MitMWorkflowExecutor {
 
 	clientTlsContext.setSessionResumption(false);
 	serverTlsContext.setSessionResumption(false);
+	clientTlsContext.setRenegotiation(true);
+	serverTlsContext.setRenegotiation(true);
 	renegotiation = false;
 	executed = false;
 	executeWorkflow();
