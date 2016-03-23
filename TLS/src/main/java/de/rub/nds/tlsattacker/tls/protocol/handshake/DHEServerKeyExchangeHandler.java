@@ -175,13 +175,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
         DHPublicKeyParameters dhPublic;
         
         if (tlsContext.isTHSAttack()) {
-	    dhPublic = tlsContext.getServerDHParameters().getPublicKey();
-            BigInteger pubKeyServer = dhPublic.getY();
+            BigInteger pubKeyServer = protocolMessage.getPublicKey().getValue();
             BigInteger pubKeyServer1 = pubKeyServer.min(BigInteger.ONE);
             BigInteger pModified = pubKeyServer.multiply(pubKeyServer1);
-            protocolMessage.setG(dhPublic.getParameters().getG());
             protocolMessage.setP(pModified);
-            protocolMessage.setPublicKey(dhPublic.getY());
         }
         else{
             //fixed DH modulus P and DH generator G
