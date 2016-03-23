@@ -65,9 +65,8 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	protocolMessage.setSessionIdLength(length);
 
 	if (tlsContext.isTHSAttack()) {
-	    byte[] clientRandom = tlsContext.getClientRandom();
-	    protocolMessage.setUnixTime(Arrays.copyOfRange(clientRandom, 0, 4));
-	    protocolMessage.setRandom(Arrays.copyOfRange(clientRandom, 4, clientRandom.length));
+	    protocolMessage.setUnixTime(protocolMessage.getUnixTime());
+	    protocolMessage.setRandom(protocolMessage.getRandom());
 	} else {
 	    // random handling
 	    final long unixTime = Time.getUnixTime();
@@ -77,9 +76,10 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	    RandomHelper.getRandom().nextBytes(random);
 	    protocolMessage.setRandom(random);
 
-	    tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(),
-		    protocolMessage.getRandom().getValue()));
 	}
+
+	tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
+		.getRandom().getValue()));
 
 	byte[] cookieArray = new byte[0];
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
@@ -118,16 +118,22 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 			HandshakeByteLength.COMPRESSION), protocolMessage.getCompressions().getValue());
 
 	byte[] extensionBytes = null;
-	for (ExtensionMessage extension : protocolMessage.getExtensions()) {
-	    ExtensionHandler handler = extension.getExtensionHandler();
-	    handler.initializeClientHelloExtension(extension);
-	    extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
-	}
+	if (tlsContext.isTHSAttack()) {
+	    extensionBytes = protocolMessage.getExtensionBytes();
+	    result = ArrayConverter.concatenate(result, extensionBytes);
+	} else {
+	    for (ExtensionMessage extension : protocolMessage.getExtensions()) {
+		ExtensionHandler handler = extension.getExtensionHandler();
+		handler.initializeClientHelloExtension(extension);
+		extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
+	    }
 
-	if (extensionBytes != null && extensionBytes.length != 0) {
-	    byte[] extensionLength = ArrayConverter.intToBytes(extensionBytes.length, ExtensionByteLength.EXTENSIONS);
+	    if (extensionBytes != null && extensionBytes.length != 0) {
+		byte[] extensionLength = ArrayConverter.intToBytes(extensionBytes.length,
+			ExtensionByteLength.EXTENSIONS);
 
-	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
+		result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
+	    }
 	}
 
 	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
@@ -183,7 +189,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	nextPointer += sessionIdLength;
 	protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
-	if (tlsContext.isSessionResumption()
+	if (!tlsContext.isTHSAttack() && tlsContext.isSessionResumption()
 		&& !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
 	    throw new WorkflowExecutionException("Session ID is unknown to the Server");
 	}
@@ -225,6 +231,12 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	currentPointer = nextPointer;
 	if ((currentPointer - pointer) < length) {
 	    currentPointer += ExtensionByteLength.EXTENSIONS;
+	    if (tlsContext.isTHSAttack()) {
+		int extensionLength = ArrayConverter.bytesToInt(Arrays
+			.copyOfRange(message, nextPointer, currentPointer));
+		int helpPointer = currentPointer + extensionLength;
+		protocolMessage.setExtensionBytes(Arrays.copyOfRange(message, nextPointer, helpPointer));
+	    }
 	    while ((currentPointer - pointer) < length) {
 		nextPointer = currentPointer + ExtensionByteLength.TYPE;
 		byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
