@@ -34,8 +34,14 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
     @Parameter(names = "-port", description = "ServerPort")
     protected String port = "4433";
 
+    @Parameter(names = "-cert_secure_folder", description = "Cert secure folder on target server. Standard value = certsecure")
+    protected String certSecure = "certsecure";
+
+    @Parameter(names = "-session_ticket", description = "Enable if the server uses Session Tickets for Session Resumption")
+    protected boolean sessionTicket = false;
+
     public TripleHandshakeAttackCommandConfig() {
-	workflowTraceType = WorkflowTraceType.HANDSHAKE;
+	workflowTraceType = WorkflowTraceType.FULL_SERVER_RESPONSE;
     }
 
     public String getPort() {
@@ -44,5 +50,21 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
 
     public void setPort(String port) {
 	this.port = port;
+    }
+
+    public String getCertSecure() {
+	return certSecure;
+    }
+
+    public void setCertSecure(String certSecure) {
+	this.certSecure = certSecure;
+    }
+
+    public boolean isSessionTicket() {
+	return sessionTicket;
+    }
+
+    public void setSessionTicket(boolean sessionTicket) {
+	this.sessionTicket = sessionTicket;
     }
 }
