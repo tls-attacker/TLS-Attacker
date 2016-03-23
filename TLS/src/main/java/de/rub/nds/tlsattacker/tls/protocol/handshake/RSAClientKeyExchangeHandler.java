@@ -72,9 +72,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	ArrayConverter.makeArrayNonZero(padding);
 
 	byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-	if (tlsContext.isTHSAttack()) {
-	    premasterSecret = tlsContext.getPreMasterSecret();
-	} else if (tlsContext.isMitMAttack()) {
+	if (tlsContext.isMitMAttack() || tlsContext.isTHSAttack()) {
 	    premasterSecret = protocolMessage.getPremasterSecret().getValue();
 	} else {
 	    RandomHelper.getRandom().nextBytes(premasterSecret);
