@@ -70,8 +70,8 @@ public class RenegotiationWorkflowConfiguration {
 	tlsContext.setWorkflowTrace(workflowTrace);
 
 	initializeProtocolMessageOrder(tlsContext);
-        
-        tlsContext.setRenegotiation(true);
+
+	tlsContext.setRenegotiation(true);
     }
 
     private WorkflowTrace createHandshakeWorkflow() {
