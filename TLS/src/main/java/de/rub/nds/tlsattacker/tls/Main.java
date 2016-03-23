@@ -97,6 +97,8 @@ public class Main {
 		    tlsContext);
 
 	    workflowExecutorSR.executeWorkflow();
+
+	    transportHandlerSR.closeConnection();
 	}
     }
 }
