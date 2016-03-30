@@ -119,12 +119,13 @@ public class TripleHandshakeWorkflowConfiguration {
 	protocolMessages.add(sAm1);
 	hrm.setOnlyForward(true);
 
-	ApplicationMessage sAm2 = new ApplicationMessage(ConnectionEnd.SERVER);
-	protocolMessages.add(sAm2);
-	hrm.setOnlyForward(true);
-
 	/**
-	 * protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
+	 * ApplicationMessage sAm2 = new
+	 * ApplicationMessage(ConnectionEnd.SERVER); protocolMessages.add(sAm2);
+	 * hrm.setOnlyForward(true); /
+	 * 
+	 * /** protocolMessages.add(new
+	 * CertificateMessage(ConnectionEnd.CLIENT));
 	 * 
 	 * if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
 	 * protocolMessages.add(new
