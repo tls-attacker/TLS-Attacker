@@ -102,6 +102,8 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 
 	mitmWorkflowExecutor2.executeWorkflow();
 
+	LOGGER.info("The renegotiation was not aborted, so the server and the client are vulnerable");
+
 	clientTransportHandler.closeConnection();
 	serverTransportHandler.closeConnection();
 
