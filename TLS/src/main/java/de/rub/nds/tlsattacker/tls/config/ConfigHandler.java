@@ -76,12 +76,5 @@ public abstract class ConfigHandler {
 
     public abstract TlsContext initializeTlsContext(CommandConfig config);
 
-    // public ProtocolController initializeProtocolController(TransportHandler
-    // transportHandler, TlsContext tlsContext) {
-    // ProtocolController pc = ProtocolController.createInstance();
-    // pc.setTransportHandler(transportHandler);
-    // pc.setTlsContext(tlsContext);
-    // return pc;
-    // }
     public abstract WorkflowExecutor initializeWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext);
 }

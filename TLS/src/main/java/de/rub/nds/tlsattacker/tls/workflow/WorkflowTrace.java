@@ -103,6 +103,10 @@ public class WorkflowTrace implements Serializable {
 	return protocolMessages.add(pm);
     }
 
+    public ProtocolMessage remove(int index) {
+	return protocolMessages.remove(index);
+    }
+
     public List<ProtocolMessage> getProtocolMessages() {
 	return protocolMessages;
     }
