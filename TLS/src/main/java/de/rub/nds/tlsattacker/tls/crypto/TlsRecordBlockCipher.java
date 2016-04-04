@@ -152,7 +152,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	int offset = 0;
 	byte[] clientMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + readMac.getMacLength());
 	offset += readMac.getMacLength();
-	LOGGER.debug("Client MAC write Secret:  {}", ArrayConverter.bytesToHexString(clientMacWriteSecret));
+	LOGGER.debug("Client MAC write Secret: {}", ArrayConverter.bytesToHexString(clientMacWriteSecret));
 
 	byte[] serverMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + writeMac.getMacLength());
 	offset += writeMac.getMacLength();
@@ -160,11 +160,11 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 
 	clientWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
 	offset += keySize;
-	LOGGER.debug("Client write key:  {}", ArrayConverter.bytesToHexString(clientWriteKey));
+	LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
 
 	serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
 	offset += keySize;
-	LOGGER.debug("Server write key:  {}", ArrayConverter.bytesToHexString(serverWriteKey));
+	LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
 
 	byte[] clientWriteIv, serverWriteIv;
 	if (useExplicitIv) {
@@ -175,10 +175,10 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	} else {
 	    clientWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + encryptCipher.getBlockSize());
 	    offset += encryptCipher.getBlockSize();
-	    LOGGER.debug("Client write IV: \n  {}", ArrayConverter.bytesToHexString(clientWriteIv));
+	    LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
 	    serverWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + decryptCipher.getBlockSize());
 	    offset += decryptCipher.getBlockSize();
-	    LOGGER.debug("Server write IV: \n  {}", ArrayConverter.bytesToHexString(serverWriteIv));
+	    LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
 	}
 
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
@@ -236,12 +236,12 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(HDR);
 	writeMac.update(data);
 
-	LOGGER.debug("The MAC was caluculated over the following data: \n  {}",
+	LOGGER.debug("The MAC was caluculated over the following data: {}",
 		ArrayConverter.bytesToHexString(ArrayConverter.concatenate(SQN, HDR, data)));
 
 	byte[] result = writeMac.doFinal();
 
-	LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
+	LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
 
 	// we increment sequence number for the sent records
 	sequenceNumber++;
@@ -262,7 +262,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(data);
 
 	if (LOGGER.isDebugEnabled()) {
-	    LOGGER.debug("The MAC will be caluculated over the following data: \n  {}", ArrayConverter
+	    LOGGER.debug("The MAC will be caluculated over the following data: {}", ArrayConverter
 		    .bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
 			    ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
 	}
@@ -270,7 +270,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	byte[] result = writeMac.doFinal();
 
 	if (LOGGER.isDebugEnabled()) {
-	    LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
+	    LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
 	}
 
 	return result;
