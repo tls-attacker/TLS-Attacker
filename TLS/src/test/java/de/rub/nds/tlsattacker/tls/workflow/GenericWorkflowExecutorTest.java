@@ -18,7 +18,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -30,7 +29,6 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFactory;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -39,7 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
-import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -50,7 +47,6 @@ import static org.junit.Assert.*;
 public class GenericWorkflowExecutorTest {
 
     TlsContext context;
-    HandshakeMessageFactory hmFactory;
     List<ProtocolMessage> protocolMessages;
 
     /**
@@ -212,17 +208,16 @@ public class GenericWorkflowExecutorTest {
     private void initializeContext() {
 	context = new TlsContext();
 	context.setProtocolVersion(ProtocolVersion.TLS12);
-	hmFactory = new HandshakeMessageFactory(context.getProtocolVersion());
 	protocolMessages = new LinkedList<>();
-	protocolMessages.add(hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloMessage.class, ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(CertificateMessage.class, ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloDoneMessage.class, ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(DHClientKeyExchangeMessage.class, ConnectionEnd.CLIENT));
+	protocolMessages.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
+	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
+	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	protocolMessages.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(hmFactory.createHandshakeMessage(FinishedMessage.class, ConnectionEnd.CLIENT));
+	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(FinishedMessage.class, ConnectionEnd.SERVER));
+	protocolMessages.add(new FinishedMessage(ConnectionEnd.SERVER));
 	protocolMessages.add(new ApplicationMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new ApplicationMessage(ConnectionEnd.CLIENT));
     }

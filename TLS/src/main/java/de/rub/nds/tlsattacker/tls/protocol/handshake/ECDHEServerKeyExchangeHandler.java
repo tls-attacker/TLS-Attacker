@@ -60,14 +60,12 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 	if (message[pointer] != HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException(HandshakeMessageType.SERVER_KEY_EXCHANGE);
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer++;

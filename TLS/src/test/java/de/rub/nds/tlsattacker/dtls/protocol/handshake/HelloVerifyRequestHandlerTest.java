@@ -19,14 +19,10 @@
  */
 package de.rub.nds.tlsattacker.dtls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeMessageDtlsFields;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import static org.junit.Assert.assertArrayEquals;
@@ -42,8 +38,6 @@ public class HelloVerifyRequestHandlerTest {
     ProtocolMessageHandler handler;
 
     TlsContext tlsContext = new TlsContext();
-
-    HandshakeMessageFactory hmFactory = new HandshakeMessageFactory(ProtocolVersion.DTLS12);
 
     byte[] helloVerifyRequestMessageBytes = ArrayConverter
 	    .hexStringToByteArray("030000070005000000000007FEFD0448EA9A2C0300000B000600000000000BFEFD08112210F47DE981150300010100"
@@ -63,15 +57,13 @@ public class HelloVerifyRequestHandlerTest {
     @Test
     public void testPrepareMessage() {
 	handler = new HelloVerifyRequestHandler(tlsContext);
-	handler.setProtocolMessage(hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
 	HelloVerifyRequestMessage message = (HelloVerifyRequestMessage) handler.getProtocolMessage();
 
 	message.setCookie(ArrayConverter.hexStringToByteArray("112233"));
 	message.setCookieLength((byte) 3);
 
-	HandshakeMessageDtlsFields messageFields = (HandshakeMessageDtlsFields) message.getMessageFields();
-
-	messageFields.setMessageSeq(500);
+	message.setMessageSeq(500);
 
 	byte[] returned = handler.prepareMessage();
 	byte[] expected = ArrayConverter.concatenate(
@@ -88,7 +80,7 @@ public class HelloVerifyRequestHandlerTest {
     public void testParseMessageAction() {
 	handler = new HelloVerifyRequestHandler(tlsContext);
 
-	handler.setProtocolMessage(hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
 
 	int endPointer = 0;
 	endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
@@ -100,10 +92,8 @@ public class HelloVerifyRequestHandlerTest {
 	byte[] expectedCookie = ArrayConverter.hexStringToByteArray("48EA9A2C");
 	byte[] actualCookie = message.getCookie().getValue();
 
-	HandshakeMessageDtlsFields handshakeMessageFields = (HandshakeMessageDtlsFields) message.getMessageFields();
-
 	assertEquals("Check message type", HandshakeMessageType.HELLO_VERIFY_REQUEST, message.getHandshakeMessageType());
-	assertEquals("Message length should be 7 bytes", new Integer(7), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length should be 7 bytes", new Integer(7), message.getLength().getValue());
 	assertArrayEquals("Check Protocol Version", ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion()
 		.getValue());
 	assertEquals("Check cookie length", expectedCookieLength, actualCookieLength);
@@ -111,8 +101,7 @@ public class HelloVerifyRequestHandlerTest {
 	assertEquals("Check protocol message length pointer", 19, endPointer);
 
 	handler = new HelloVerifyRequestHandler(tlsContext);
-
-	handler.setProtocolMessage(hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
 
 	endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
 
@@ -123,11 +112,8 @@ public class HelloVerifyRequestHandlerTest {
 	expectedCookie = ArrayConverter.hexStringToByteArray("112210F47DE98115");
 	actualCookie = message.getCookie().getValue();
 
-	handshakeMessageFields = (HandshakeMessageDtlsFields) message.getMessageFields();
-
 	assertEquals("Check message type", HandshakeMessageType.HELLO_VERIFY_REQUEST, message.getHandshakeMessageType());
-	assertEquals("Message length should be 11 bytes", new Integer(11), handshakeMessageFields.getLength()
-		.getValue());
+	assertEquals("Message length should be 11 bytes", new Integer(11), message.getLength().getValue());
 	assertArrayEquals("Check Protocol Version", ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion()
 		.getValue());
 	assertEquals("Check cookie length", expectedCookieLength, actualCookieLength);
@@ -135,8 +121,7 @@ public class HelloVerifyRequestHandlerTest {
 	assertEquals("Check protocol message length pointer", 42, endPointer);
 
 	handler = new HelloVerifyRequestHandler(tlsContext);
-
-	handler.setProtocolMessage(hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
 
 	endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
 
@@ -153,11 +138,8 @@ public class HelloVerifyRequestHandlerTest {
 			+ "462EF83213");
 	actualCookie = message.getCookie().getValue();
 
-	handshakeMessageFields = (HandshakeMessageDtlsFields) message.getMessageFields();
-
 	assertEquals("Check message type", HandshakeMessageType.HELLO_VERIFY_REQUEST, message.getHandshakeMessageType());
-	assertEquals("Message length should be 257 bytes", new Integer(257), handshakeMessageFields.getLength()
-		.getValue());
+	assertEquals("Message length should be 257 bytes", new Integer(257), message.getLength().getValue());
 	assertArrayEquals("Check Protocol Version", ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion()
 		.getValue());
 	assertEquals("Check cookie length", expectedCookieLength, actualCookieLength);

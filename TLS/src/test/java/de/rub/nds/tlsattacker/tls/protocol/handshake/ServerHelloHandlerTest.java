@@ -19,8 +19,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
@@ -31,7 +29,6 @@ import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.ArrayList;
@@ -72,11 +69,10 @@ public class ServerHelloHandlerTest {
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 70", new Integer(70), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
 	assertArrayEquals(
 		"Server Session ID",
@@ -103,11 +99,10 @@ public class ServerHelloHandlerTest {
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithHeartbeatBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 77", new Integer(77), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 77", new Integer(77), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
 	assertArrayEquals(
 		"Server Session ID",

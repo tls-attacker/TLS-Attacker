@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsE
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 

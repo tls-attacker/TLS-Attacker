@@ -19,7 +19,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -54,9 +53,8 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 		    + ") is not supported yet");
 	}
 	byte[] result = this.prepareKeyExchangeMessage();
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-	protocolMessageFields.setLength(result.length);
-	long header = (protocolMessage.getType().getValue() << 24) + protocolMessageFields.getLength().getValue();
+	protocolMessage.setLength(result.length);
+	long header = (protocolMessage.getType().getValue() << 24) + protocolMessage.getLength().getValue();
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		ArrayConverter.longToUint32Bytes(header), result));
 
@@ -68,14 +66,12 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 	if (message[pointer] != HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Client key exchange message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 	currentPointer = nextPointer;
 
 	int resultPointer = this.parseKeyExchangeMessage(message, currentPointer);

@@ -118,12 +118,9 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
 	}
 
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+	protocolMessage.setLength(result.length);
 
-	protocolMessageFields.setLength(result.length);
-
-	long header = (HandshakeMessageType.CLIENT_HELLO.getValue() << 24)
-		+ protocolMessageFields.getLength().getValue();
+	long header = (HandshakeMessageType.CLIENT_HELLO.getValue() << 24) + protocolMessage.getLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		ArrayConverter.longToUint32Bytes(header), result));
@@ -136,14 +133,12 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	if (message[pointer] != HandshakeMessageType.CLIENT_HELLO.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a client hello message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;

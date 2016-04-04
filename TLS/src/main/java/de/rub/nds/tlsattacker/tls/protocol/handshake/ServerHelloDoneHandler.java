@@ -22,7 +22,6 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -41,12 +40,10 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
     @Override
     public byte[] prepareMessageAction() {
 
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
-	protocolMessageFields.setLength(0);
+	protocolMessage.setLength(0);
 
 	long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
-		+ protocolMessageFields.getLength().getValue();
+		+ protocolMessage.getLength().getValue();
 
 	if (tlsContext.isClientAuthentication()) {
 	    tlsContext.setServerHandshakeStatus(1);
@@ -63,14 +60,12 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 	if (message[pointer] != HandshakeMessageType.SERVER_HELLO_DONE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Server Hello Done message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 	// should always be null
 
 	currentPointer = nextPointer;

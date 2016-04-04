@@ -34,10 +34,6 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFactory;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -50,8 +46,6 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
 
     private final CommandConfig config;
 
-    private HandshakeMessageFactory hmFactory;
-
     DHWorkflowConfigurationFactory(CommandConfig config) {
 	this.config = config;
     }
@@ -61,22 +55,16 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
 	TlsContext context = new TlsContext();
 	context.setProtocolVersion(config.getProtocolVersion());
 
-	hmFactory = new HandshakeMessageFactory(context.getProtocolVersion());
-
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = new LinkedList<>();
-
-	ClientHelloMessage ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
+	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	workflowTrace.add(ch);
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
 	ch.setSupportedCompressionMethods(config.getCompressionMethods());
 
 	initializeClientHelloExtensions(config, ch);
-
-	workflowTrace.setProtocolMessages(protocolMessages);
 
 	context.setWorkflowTrace(workflowTrace);
 	initializeProtocolMessageOrder(context);
@@ -88,36 +76,29 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
     public TlsContext createHandshakeTlsContext() {
 	TlsContext context = this.createClientHelloTlsContext();
 
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
+	WorkflowTrace workflowTrace = context.getWorkflowTrace();
 
-	protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloMessage.class, ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(CertificateMessage.class, ConnectionEnd.SERVER));
+	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
 
 	if (config.getCipherSuites().get(0).isEphemeral()) {
-	    protocolMessages.add(hmFactory.createHandshakeMessage(DHEServerKeyExchangeMessage.class,
-		    ConnectionEnd.SERVER));
+	    workflowTrace.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
 	}
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    protocolMessages.add(hmFactory
-		    .createHandshakeMessage(CertificateRequestMessage.class, ConnectionEnd.SERVER));
-	    protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloDoneMessage.class, ConnectionEnd.SERVER));
-
-	    protocolMessages.add(hmFactory.createHandshakeMessage(CertificateMessage.class, ConnectionEnd.CLIENT));
-	    protocolMessages.add(hmFactory.createHandshakeMessage(DHClientKeyExchangeMessage.class,
-		    ConnectionEnd.CLIENT));
-	    protocolMessages
-		    .add(hmFactory.createHandshakeMessage(CertificateVerifyMessage.class, ConnectionEnd.CLIENT));
+	    workflowTrace.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
 	} else {
-	    protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloDoneMessage.class, ConnectionEnd.SERVER));
-
-	    protocolMessages.add(hmFactory.createHandshakeMessage(DHClientKeyExchangeMessage.class,
-		    ConnectionEnd.CLIENT));
+	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
 	}
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(hmFactory.createHandshakeMessage(FinishedMessage.class, ConnectionEnd.CLIENT));
+	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+	workflowTrace.add(new FinishedMessage(ConnectionEnd.CLIENT));
 
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(FinishedMessage.class, ConnectionEnd.SERVER));
+	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new FinishedMessage(ConnectionEnd.SERVER));
 
 	initializeProtocolMessageOrder(context);
 
