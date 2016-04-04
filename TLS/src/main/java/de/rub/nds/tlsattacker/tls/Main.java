@@ -31,9 +31,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.Security;
-import javax.xml.bind.JAXBException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**

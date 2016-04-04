@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPaddingOracleAttackTestCommandConfig extends ClientCommandConfig {
+public class DtlsPaddingOracleAttackCommandConfig extends ClientCommandConfig {
 
     public static final String ATTACK_COMMAND = "dtls_potest";
 
@@ -50,7 +50,7 @@ public class DtlsPaddingOracleAttackTestCommandConfig extends ClientCommandConfi
     @Parameter(names = "-messagewaitnanos", description = "Wait for this amount of nanoseconds between sending two messages of any given train (rate limiting)")
     long messageWaitNanos = 0;
 
-    public DtlsPaddingOracleAttackTestCommandConfig() {
+    public DtlsPaddingOracleAttackCommandConfig() {
 	// Just to be sure
 	transportHandlerType = TransportHandlerType.UDP;
 	protocolVersion = ProtocolVersion.DTLS12;

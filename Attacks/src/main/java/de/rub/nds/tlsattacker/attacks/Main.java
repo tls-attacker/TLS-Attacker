@@ -20,21 +20,21 @@ package de.rub.nds.tlsattacker.attacks;
 
 import de.rub.nds.tlsattacker.tls.Attacker;
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackFullCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
-import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttackTest;
-import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttackTest;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
+import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
+import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackFull;
 import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttack;
-import de.rub.nds.tlsattacker.attacks.impl.EllipticCurveAttackTest;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
@@ -62,14 +62,14 @@ public class Main {
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);
 
-	BleichenbacherTestCommandConfig bleichenbacherTest = new BleichenbacherTestCommandConfig();
-	jc.addCommand(BleichenbacherTestCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
+	BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig();
+	jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 	EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig();
 	jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
-	EllipticCurveAttackTestCommandConfig ellipticTest = new EllipticCurveAttackTestCommandConfig();
-	jc.addCommand(EllipticCurveAttackTestCommandConfig.ATTACK_COMMAND, ellipticTest);
-	EllipticCurveAttackCommandConfig elliptic = new EllipticCurveAttackCommandConfig();
-	jc.addCommand(EllipticCurveAttackCommandConfig.ATTACK_COMMAND, elliptic);
+	EllipticCurveAttackCommandConfig ellipticTest = new EllipticCurveAttackCommandConfig();
+	jc.addCommand(EllipticCurveAttackCommandConfig.ATTACK_COMMAND, ellipticTest);
+	EllipticCurveAttackFullCommandConfig elliptic = new EllipticCurveAttackFullCommandConfig();
+	jc.addCommand(EllipticCurveAttackFullCommandConfig.ATTACK_COMMAND, elliptic);
 	HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
 	jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
 	PoodleCommandConfig poodle = new PoodleCommandConfig();
@@ -78,8 +78,8 @@ public class Main {
 	jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
 	WinshockCommandConfig winshock = new WinshockCommandConfig();
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
-	DtlsPaddingOracleAttackTestCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackTestCommandConfig();
-	jc.addCommand(DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
+	DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig();
+	jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
 	SniTestCommandConfig sniTest = new SniTestCommandConfig();
 	jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
 
@@ -92,17 +92,17 @@ public class Main {
 
 	Attacker attacker;
 	switch (jc.getParsedCommand()) {
-	    case BleichenbacherTestCommandConfig.ATTACK_COMMAND:
-		attacker = new BleichenbacherAttackTest(bleichenbacherTest);
+	    case BleichenbacherCommandConfig.ATTACK_COMMAND:
+		attacker = new BleichenbacherAttack(bleichenbacherTest);
 		break;
 	    case EarlyCCSCommandConfig.ATTACK_COMMAND:
 		attacker = new EarlyCCSAttack(earlyCCS);
 		break;
-	    case EllipticCurveAttackTestCommandConfig.ATTACK_COMMAND:
-		attacker = new EllipticCurveAttackTest(ellipticTest);
-		break;
 	    case EllipticCurveAttackCommandConfig.ATTACK_COMMAND:
-		attacker = new EllipticCurveAttack(elliptic);
+		attacker = new EllipticCurveAttack(ellipticTest);
+		break;
+	    case EllipticCurveAttackFullCommandConfig.ATTACK_COMMAND:
+		attacker = new EllipticCurveAttackFull(elliptic);
 		break;
 	    case HeartbleedCommandConfig.ATTACK_COMMAND:
 		attacker = new HeartbleedAttack(heartbleed);
@@ -116,8 +116,8 @@ public class Main {
 	    case WinshockCommandConfig.ATTACK_COMMAND:
 		attacker = new WinshockAttack(winshock);
 		break;
-	    case DtlsPaddingOracleAttackTestCommandConfig.ATTACK_COMMAND:
-		attacker = new DtlsPaddingOracleAttackTest(dtlsPaddingOracleAttackTest);
+	    case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
+		attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
 		break;
 	    case SniTestCommandConfig.ATTACK_COMMAND:
 		attacker = new SniTest(sniTest);

@@ -28,9 +28,9 @@ import java.util.LinkedList;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class BleichenbacherTestCommandConfig extends ClientCommandConfig {
+public class BleichenbacherCommandConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "bleichenbacher_test";
+    public static final String ATTACK_COMMAND = "bleichenbacher";
 
     public enum Type {
 	FULL,
@@ -40,7 +40,7 @@ public class BleichenbacherTestCommandConfig extends ClientCommandConfig {
     @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
     Type type;
 
-    public BleichenbacherTestCommandConfig() {
+    public BleichenbacherCommandConfig() {
 	cipherSuites = new LinkedList<>();
 	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
 	cipherSuites.add(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);

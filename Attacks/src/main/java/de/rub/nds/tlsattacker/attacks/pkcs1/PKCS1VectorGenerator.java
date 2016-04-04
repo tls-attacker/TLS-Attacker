@@ -18,7 +18,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
-import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -59,7 +59,7 @@ public final class PKCS1VectorGenerator {
      * @param type
      * @return
      */
-    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherTestCommandConfig.Type type) {
+    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
 
 	// we do not need secure random here
 	Random random = new Random();
@@ -69,7 +69,7 @@ public final class PKCS1VectorGenerator {
 
 	// compute the number of all vectors that are being generated
 	int vectorSize = STATIC_VECTOR_SIZE;
-	if (type == BleichenbacherTestCommandConfig.Type.FULL) {
+	if (type == BleichenbacherCommandConfig.Type.FULL) {
 	    vectorSize += rsaKeyLength - 2;
 	}
 
@@ -88,7 +88,7 @@ public final class PKCS1VectorGenerator {
 	// correct key (with invalid TLS version number)
 	plainPaddedKeys[10] = getPaddedKey(rsaKeyLength, keyBytes);
 
-	if (type == BleichenbacherTestCommandConfig.Type.FULL) {
+	if (type == BleichenbacherCommandConfig.Type.FULL) {
 	    byte[][] additionalPaddedKeys = getEK_DifferentPositionsOf0x00(rsaKeyLength, keyBytes);
 	    System.arraycopy(additionalPaddedKeys, 0, plainPaddedKeys, STATIC_VECTOR_SIZE, additionalPaddedKeys.length);
 	}

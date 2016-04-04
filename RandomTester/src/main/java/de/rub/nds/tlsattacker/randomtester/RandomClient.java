@@ -176,7 +176,7 @@ public class RandomClient {
 	@Override
 	public void run() {
 	    SimpleTransportHandler th = new SimpleTransportHandler();
-	    th.setMaxResponseWait(10000);
+	    th.setTlsTimeout(10000);
 	    try {
 		th.initialize(address, port);
 		th.sendData(request);

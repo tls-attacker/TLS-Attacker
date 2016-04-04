@@ -32,17 +32,17 @@ public class TransportHandlerFactory {
 	return new SimpleTransportHandler();
     }
 
-    public static TransportHandler createTransportHandler(TransportHandlerType type, int maxResponseDelay) {
+    public static TransportHandler createTransportHandler(TransportHandlerType type, int tlsTimeout) {
 	switch (type) {
 	    case SIMPLE:
 		SimpleTransportHandler th = new SimpleTransportHandler();
-		th.setMaxResponseWait(maxResponseDelay);
+		th.setTlsTimeout(tlsTimeout);
 		return th;
 	    case EAP_TLS:
 		return new EAPTLSTransportHandler();
 	    case UDP:
 		UDPTransportHandler udpth = new UDPTransportHandler();
-		udpth.setMaxResponseWait(maxResponseDelay);
+		udpth.setTlsTimeout(tlsTimeout);
 		return udpth;
 	    default:
 		throw new UnsupportedOperationException("This transport handler " + "type is not supported");
