@@ -40,7 +40,6 @@
         <module>Fuzzer</module>
         <module>MITM-TLS-Server</module>
         <module>RandomTester</module>
-        <module>ModifiableCertificate</module>
     </modules>
 
     <dependencies>
