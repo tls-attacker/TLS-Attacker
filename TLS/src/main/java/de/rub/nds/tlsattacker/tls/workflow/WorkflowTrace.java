@@ -51,6 +51,9 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * A wrapper class over a list of protocol messages maintained in the TLS
+ * context.
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement
@@ -83,6 +86,23 @@ public class WorkflowTrace implements Serializable {
 
     private String name;
 
+    /**
+     * Initializes the workflow trace with an empty list of protocol messages
+     */
+    public WorkflowTrace() {
+	this.protocolMessages = new LinkedList<>();
+    }
+
+    /**
+     * Adds protocol message to the list
+     * 
+     * @param pm
+     * @return Returns true if the list was changed
+     */
+    public boolean add(ProtocolMessage pm) {
+	return protocolMessages.add(pm);
+    }
+
     public List<ProtocolMessage> getProtocolMessages() {
 	return protocolMessages;
     }
@@ -91,6 +111,12 @@ public class WorkflowTrace implements Serializable {
 	this.protocolMessages = protocolMessages;
     }
 
+    /**
+     * Returns a list of protocol messages of a specific type
+     * 
+     * @param type
+     * @return
+     */
     public List<Integer> getProtocolMessagePositions(ProtocolMessageType type) {
 	List<Integer> positions = new LinkedList<>();
 	int position = 0;
@@ -103,6 +129,33 @@ public class WorkflowTrace implements Serializable {
 	return positions;
     }
 
+    public boolean containsProtocolMessage(ProtocolMessageType type) {
+	return !getProtocolMessagePositions(type).isEmpty();
+    }
+
+    /**
+     * Returns the first protocol message of a specified type, which is
+     * contained in the list of protocol messages. Throws an
+     * IllegalArgumentException if no message is found.
+     * 
+     * @param type
+     * @return
+     */
+    public ProtocolMessage getFirstProtocolMessage(ProtocolMessageType type) {
+	for (ProtocolMessage pm : protocolMessages) {
+	    if (pm.getProtocolMessageType() == type) {
+		return pm;
+	    }
+	}
+	throw new IllegalArgumentException("The Workflow does not contain any " + type);
+    }
+
+    /**
+     * Returns a list of handshake messages of a given type.
+     * 
+     * @param type
+     * @return
+     */
     public List<Integer> getHandshakeMessagePositions(HandshakeMessageType type) {
 	List<Integer> positions = new LinkedList<>();
 	int position = 0;
@@ -118,15 +171,18 @@ public class WorkflowTrace implements Serializable {
 	return positions;
     }
 
-    public ProtocolMessage getFirstProtocolMessage(ProtocolMessageType type) {
-	for (ProtocolMessage pm : protocolMessages) {
-	    if (pm.getProtocolMessageType() == type) {
-		return pm;
-	    }
-	}
-	return null;
+    public boolean containsHandshakeMessage(HandshakeMessageType type) {
+	return !getHandshakeMessagePositions(type).isEmpty();
     }
 
+    /**
+     * Returns the first handshake message of a specified type, which is
+     * contained in the list of protocol messages. Throws an
+     * IllegalArgumentException if no message is found.
+     * 
+     * @param type
+     * @return
+     */
     public HandshakeMessage getFirstHandshakeMessage(HandshakeMessageType type) {
 	for (ProtocolMessage pm : protocolMessages) {
 	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
@@ -136,7 +192,7 @@ public class WorkflowTrace implements Serializable {
 		}
 	    }
 	}
-	return null;
+	throw new IllegalArgumentException("The Workflow does not contain any " + type);
     }
 
     public ProtocolMessage getLastProtocolMesssage() {

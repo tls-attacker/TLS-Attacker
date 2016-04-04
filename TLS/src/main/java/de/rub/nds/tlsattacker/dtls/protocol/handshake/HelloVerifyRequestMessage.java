@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
@@ -46,6 +47,11 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 	protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
 	cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
 	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+    }
+
+    public HelloVerifyRequestMessage(ConnectionEnd messageIssuer) {
+	this();
+	this.messageIssuer = messageIssuer;
     }
 
     public HelloVerifyRequestMessage(HandshakeMessageType handshakeMessageType) {

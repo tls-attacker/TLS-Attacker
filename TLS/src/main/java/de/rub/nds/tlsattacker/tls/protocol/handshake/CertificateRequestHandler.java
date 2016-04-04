@@ -81,12 +81,10 @@ public class CertificateRequestHandler<HandshakeMessage extends CertificateReque
 		.getValue(), ArrayConverter.intToBytes(protocolMessage.getDistinguishedNamesLength().getValue(),
 		HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH));
 
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
-	protocolMessageFields.setLength(result.length);
+	protocolMessage.setLength(result.length);
 
 	long header = (HandshakeMessageType.CERTIFICATE_REQUEST.getValue() << 24)
-		+ protocolMessageFields.getLength().getValue();
+		+ protocolMessage.getLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		ArrayConverter.longToUint32Bytes(header), result));
@@ -100,14 +98,12 @@ public class CertificateRequestHandler<HandshakeMessage extends CertificateReque
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE_REQUEST.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Certificate Request message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 	currentPointer = nextPointer;
 
 	nextPointer = currentPointer + 1;

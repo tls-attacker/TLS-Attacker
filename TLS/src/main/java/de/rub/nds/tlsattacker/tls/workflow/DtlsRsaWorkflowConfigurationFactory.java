@@ -1,28 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
@@ -34,14 +32,9 @@ import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFactory;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Creates configuration of implemented RSA functionality in the DTLS-protocol.
@@ -53,8 +46,6 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 
     private final CommandConfig config;
 
-    private HandshakeMessageFactory hmFactory;
-
     DtlsRsaWorkflowConfigurationFactory(CommandConfig config) {
 	this.config = config;
     }
@@ -64,15 +55,11 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 	TlsContext context = new TlsContext();
 	context.setProtocolVersion(config.getProtocolVersion());
 
-	hmFactory = new HandshakeMessageFactory(context.getProtocolVersion());
-
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = new ArrayList<>();
-
-	ClientHelloMessage ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
+	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	workflowTrace.add(ch);
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
 	ch.setSupportedCompressionMethods(config.getCompressionMethods());
@@ -80,20 +67,17 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
 
 	initializeClientHelloExtensions(config, ch);
 
-	HelloVerifyRequestMessage hvrm = hmFactory.createHandshakeMessage(HelloVerifyRequestMessage.class,
-		ConnectionEnd.SERVER);
+	HelloVerifyRequestMessage hvrm = new HelloVerifyRequestMessage(ConnectionEnd.SERVER);
 	hvrm.setIncludeInDigest(false);
-	protocolMessages.add(hvrm);
+	workflowTrace.add(hvrm);
 
-	ch = hmFactory.createHandshakeMessage(ClientHelloMessage.class, ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
+	ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	workflowTrace.add(ch);
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
 	ch.setSupportedCompressionMethods(config.getCompressionMethods());
 
 	initializeClientHelloExtensions(config, ch);
-
-	workflowTrace.setProtocolMessages(protocolMessages);
 
 	context.setWorkflowTrace(workflowTrace);
 	initializeProtocolMessageOrder(context);
@@ -105,32 +89,25 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
     public TlsContext createHandshakeTlsContext() {
 	TlsContext context = this.createClientHelloTlsContext();
 
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloMessage.class, ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(CertificateMessage.class, ConnectionEnd.SERVER));
+	WorkflowTrace workflowTrace = context.getWorkflowTrace();
+	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
 	if (config.getKeystore() != null) {
-	    protocolMessages.add(hmFactory
-		    .createHandshakeMessage(CertificateRequestMessage.class, ConnectionEnd.SERVER));
-	    protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloDoneMessage.class, ConnectionEnd.SERVER));
-
-	    protocolMessages.add(hmFactory.createHandshakeMessage(CertificateMessage.class, ConnectionEnd.CLIENT));
-	    protocolMessages.add(hmFactory.createHandshakeMessage(RSAClientKeyExchangeMessage.class,
-		    ConnectionEnd.CLIENT));
-	    protocolMessages
-		    .add(hmFactory.createHandshakeMessage(CertificateVerifyMessage.class, ConnectionEnd.CLIENT));
+	    workflowTrace.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
 	} else {
-	    protocolMessages.add(hmFactory.createHandshakeMessage(ServerHelloDoneMessage.class, ConnectionEnd.SERVER));
-
-	    protocolMessages.add(hmFactory.createHandshakeMessage(RSAClientKeyExchangeMessage.class,
-		    ConnectionEnd.CLIENT));
+	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
 	}
 
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(hmFactory.createHandshakeMessage(FinishedMessage.class, ConnectionEnd.CLIENT));
+	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+	workflowTrace.add(new FinishedMessage(ConnectionEnd.CLIENT));
 
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(hmFactory.createHandshakeMessage(FinishedMessage.class, ConnectionEnd.SERVER));
+	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new FinishedMessage(ConnectionEnd.SERVER));
 
 	initializeProtocolMessageOrder(context);
 
@@ -141,18 +118,17 @@ public class DtlsRsaWorkflowConfigurationFactory extends WorkflowConfigurationFa
     public TlsContext createFullTlsContext() {
 	TlsContext context = this.createHandshakeTlsContext();
 
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.CLIENT));
+	WorkflowTrace workflowTrace = context.getWorkflowTrace();
+	workflowTrace.add(new ApplicationMessage(ConnectionEnd.CLIENT));
 
 	if (config.getHeartbeatMode() != null) {
-	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
 	}
 
 	AlertMessage alertMessage = new AlertMessage(ConnectionEnd.CLIENT);
 	alertMessage.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
-	protocolMessages.add(alertMessage);
+	workflowTrace.add(alertMessage);
 
 	initializeProtocolMessageOrder(context);
 

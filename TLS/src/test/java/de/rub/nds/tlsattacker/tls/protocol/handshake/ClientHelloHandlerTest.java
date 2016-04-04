@@ -19,8 +19,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloHandler;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
@@ -176,11 +174,9 @@ public class ClientHelloHandlerTest {
 
 	byte[] expectedCipherSuites = ArrayConverter.hexStringToByteArray("c02bc02fc00ac009c013c014002f0035000a");
 	byte[] actualCipherSuites = message.getCipherSuites().getValue();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Check message type", HandshakeMessageType.CLIENT_HELLO, message.getHandshakeMessageType());
-	assertEquals("Message length should be 94 bytes", new Integer(94), handshakeMessageFields.getLength()
-		.getValue());
+	assertEquals("Message length should be 94 bytes", new Integer(94), message.getLength().getValue());
 	assertArrayEquals("Check Protocol Version", ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion()
 		.getValue());
 	assertArrayEquals("Check random", expectedRandom, actualRandom);
@@ -208,11 +204,10 @@ public class ClientHelloHandlerTest {
 	int endPointer = handler.parseMessageAction(clientHelloWithHeartbeatBytes, 0);
 	de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
 		.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 48", new Integer(48), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 48", new Integer(48), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
 	assertEquals("Client Session ID Length", new Integer(0), message.getSessionIdLength().getValue());
 	assertArrayEquals(

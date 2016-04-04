@@ -19,14 +19,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
@@ -96,11 +92,10 @@ public class DHEServerKeyExchangeHandlerTest {
 
 	int endPointer = handler.parseMessageAction(testServerKeyExchangeDSA, 0);
 	DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 185", new Integer(185), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 185", new Integer(185), message.getLength().getValue());
 	assertEquals("p length must be 64", new Integer(64), message.getpLength().getValue());
 	assertEquals("g length must be ", new Integer(1), message.getgLength().getValue());
 	assertEquals("g must be 2", new BigInteger("2"), message.getG().getValue());

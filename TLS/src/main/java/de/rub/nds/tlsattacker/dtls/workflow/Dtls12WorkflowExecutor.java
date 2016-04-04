@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.dtls.workflow;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeFragmentHandler;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeMessageDtlsFields;
 import de.rub.nds.tlsattacker.dtls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -169,9 +168,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
 	ProtocolMessageHandler pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
-	HandshakeMessageDtlsFields handshakeMessageFields = (HandshakeMessageDtlsFields) handshakeMessage
-		.getMessageFields();
-	handshakeMessageFields.setMessageSeq(sendHandshakeMessageSeq);
+	handshakeMessage.setMessageSeq(sendHandshakeMessageSeq);
 	byte[] handshakeMessageBytes = pmh.prepareMessage();
 
 	handshakeMessageSendBuffer = ArrayConverter.concatenate(handshakeMessageSendBuffer,

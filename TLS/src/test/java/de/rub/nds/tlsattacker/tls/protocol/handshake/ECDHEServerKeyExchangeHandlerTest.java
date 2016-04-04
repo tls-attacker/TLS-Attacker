@@ -19,18 +19,13 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.math.BigInteger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -73,11 +68,10 @@ public class ECDHEServerKeyExchangeHandlerTest {
 
 	int endPointer = handler.parseMessageAction(testServerKeyExchangeECDSA, 0);
 	ECDHEServerKeyExchangeMessage message = (ECDHEServerKeyExchangeMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 208", new Integer(208), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 208", new Integer(208), message.getLength().getValue());
 	assertEquals("Curve Type must be named curve", EllipticCurveType.NAMED_CURVE,
 		EllipticCurveType.getCurveType(message.getCurveType().getValue()));
 	assertEquals("Named Curve must be sect571r1", NamedCurve.SECT571R1,
@@ -103,11 +97,10 @@ public class ECDHEServerKeyExchangeHandlerTest {
 
 	int endPointer = handler.parseMessageAction(testServerKeyExchangeRSA, 0);
 	ECDHEServerKeyExchangeMessage message = (ECDHEServerKeyExchangeMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 281", new Integer(281), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 281", new Integer(281), message.getLength().getValue());
 	assertEquals("Curve Type must be named curve", EllipticCurveType.NAMED_CURVE,
 		EllipticCurveType.getCurveType(message.getCurveType().getValue()));
 	assertEquals("Named Curve must be sect571r1", NamedCurve.SECT571R1,
