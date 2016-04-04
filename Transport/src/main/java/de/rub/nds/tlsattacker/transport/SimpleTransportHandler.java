@@ -42,7 +42,7 @@ public class SimpleTransportHandler implements TransportHandler {
     /**
      * min number of milliseconds to wait for a response to come
      */
-    private static final int DEFAULT_RESPONSE_WAIT = 400;
+    private static final int DEFAULT_TLS_TIMEOUT = 400;
 
     private Socket socket;
 
@@ -56,10 +56,10 @@ public class SimpleTransportHandler implements TransportHandler {
 
     private int timeout;
 
-    private int maxResponseWait;
+    private int tlsTimeout;
 
     public SimpleTransportHandler() {
-	maxResponseWait = DEFAULT_RESPONSE_WAIT;
+	tlsTimeout = DEFAULT_TLS_TIMEOUT;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class SimpleTransportHandler implements TransportHandler {
     @Override
     public byte[] fetchData() throws IOException {
 	byte[] response = new byte[0];
-	long minTimeMillies = System.currentTimeMillis() + maxResponseWait;
+	long minTimeMillies = System.currentTimeMillis() + tlsTimeout;
 	// long maxTimeMillies = System.currentTimeMillis() + timeout;
 	while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0)) {
 	    // while ((System.currentTimeMillis() < maxTimeMillies) &&
@@ -154,11 +154,11 @@ public class SimpleTransportHandler implements TransportHandler {
 	}
     }
 
-    public int getMaxResponseWait() {
-	return maxResponseWait;
+    public int getTlsTimeout() {
+	return tlsTimeout;
     }
 
-    public void setMaxResponseWait(int maxResponseWait) {
-	this.maxResponseWait = maxResponseWait;
+    public void setTlsTimeout(int tlsTimeout) {
+	this.tlsTimeout = tlsTimeout;
     }
 }

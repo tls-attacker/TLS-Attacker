@@ -52,7 +52,7 @@ public class ClientConfigHandler extends ConfigHandler {
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
 	ClientCommandConfig ccConfig = (ClientCommandConfig) config;
 	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-		config.getMaxTransportResponseWait());
+		config.getTlsTimeout());
 	try {
 	    String[] hp = ccConfig.getConnect().split(":");
 	    String host = hp[0];

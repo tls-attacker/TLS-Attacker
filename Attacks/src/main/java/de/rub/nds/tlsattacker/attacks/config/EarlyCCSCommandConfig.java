@@ -28,7 +28,4 @@ import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 public class EarlyCCSCommandConfig extends ClientCommandConfig {
 
     public static final String ATTACK_COMMAND = "early_ccs";
-
-    public void test() {
-    }
 }

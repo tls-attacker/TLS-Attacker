@@ -111,8 +111,8 @@ public abstract class CommandConfig {
     @Parameter(names = "-max_fragment_length", description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
     protected Integer maxFragmentLength;
 
-    @Parameter(names = "-max_transport_response_wait", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
-    protected Integer maxTransportResponseWait;
+    @Parameter(names = "-tls_timeout", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
+    protected Integer tlsTimeout;
 
     @Parameter(names = "-client_authentication", description = "YES or NO")
     protected boolean clientAuthentication = false;
@@ -134,7 +134,7 @@ public abstract class CommandConfig {
 	namedCurves.add(NamedCurve.SECP384R1);
 	namedCurves.add(NamedCurve.SECP521R1);
 	nextProtoNeg = new LinkedList<>();
-	maxTransportResponseWait = 150;
+	tlsTimeout = 400;
 	alias = "";
 	signatureAndHashAlgorithms = new LinkedList<>();
 	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
@@ -306,12 +306,12 @@ public abstract class CommandConfig {
 	this.maxFragmentLength = maxFragmentLength;
     }
 
-    public Integer getMaxTransportResponseWait() {
-	return maxTransportResponseWait;
+    public Integer getTlsTimeout() {
+	return tlsTimeout;
     }
 
-    public void setMaxTransportResponseWait(Integer maxTransportResponseWait) {
-	this.maxTransportResponseWait = maxTransportResponseWait;
+    public void setTlsTimeout(Integer tlsTimeout) {
+	this.tlsTimeout = tlsTimeout;
     }
 
     public String getAlias() {

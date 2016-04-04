@@ -18,7 +18,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
@@ -55,11 +55,11 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class BleichenbacherAttackTest extends Attacker<BleichenbacherTestCommandConfig> {
+public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(BleichenbacherAttackTest.class);
+    public static Logger LOGGER = LogManager.getLogger(BleichenbacherAttack.class);
 
-    public BleichenbacherAttackTest(BleichenbacherTestCommandConfig config) {
+    public BleichenbacherAttack(BleichenbacherCommandConfig config) {
 	super(config);
     }
 

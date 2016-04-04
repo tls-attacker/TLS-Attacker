@@ -41,8 +41,8 @@ public class MitmConfig {
     @Parameter(names = "-delay", description = "Delay between bytes sent to the client, while sending the server certificate (in millis).")
     protected Integer delay = 80;
 
-    @Parameter(names = "-max_transport_response_wait", description = "Maximum time in milliseconds to wait for peer's response.")
-    protected Integer maxTransportResponseWait = 50;
+    @Parameter(names = "-tls_timeout", description = "Maximum time in milliseconds to wait for peer's response.")
+    protected Integer tlsTimeout = 50;
 
     @Parameter(names = { "-split_certificate" }, description = "Split certificate into bytes and send them in separated records (works against most of the browsers)")
     protected boolean splitCertificate;
@@ -79,12 +79,12 @@ public class MitmConfig {
 	this.delay = delay;
     }
 
-    public Integer getMaxTransportResponseWait() {
-	return maxTransportResponseWait;
+    public Integer getTlsTimeout() {
+	return tlsTimeout;
     }
 
-    public void setMaxTransportResponseWait(Integer maxTransportResponseWait) {
-	this.maxTransportResponseWait = maxTransportResponseWait;
+    public void setTlsTimeout(Integer tlsTimeout) {
+	this.tlsTimeout = tlsTimeout;
     }
 
     public boolean isSplitCertificate() {

@@ -20,11 +20,12 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
+import java.math.BigInteger;
 
 /**
  * 
@@ -32,39 +33,48 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
  */
 public class EllipticCurveAttackCommandConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "elliptic";
+    public static final String ATTACK_COMMAND = "elliptic_test";
 
-    @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
-    protected int additionalEquations;
+    @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class, required = true)
+    BigInteger premasterSecret;
 
-    @Parameter(names = "-server_type", description = "Allows to switch between a normal vulnerable server type and an Oracle server type (for oracle a slightly different algorithm is needed).")
-    protected ICEAttacker.ServerType serverType;
+    @Parameter(names = "-public_point_base_x", description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class, required = true)
+    BigInteger publicPointBaseX;
+
+    @Parameter(names = "-public_point_base_y", description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class, required = true)
+    BigInteger publicPointBaseY;
 
     public EllipticCurveAttackCommandConfig() {
 	cipherSuites.clear();
-	cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
 	namedCurves.clear();
 	namedCurves.add(NamedCurve.SECP256R1);
 	workflowTraceType = WorkflowTraceType.HANDSHAKE;
-	additionalEquations = 3;
-	serverType = ICEAttacker.ServerType.NORMAL;
     }
 
-    public int getAdditionalEquations() {
-	return additionalEquations;
+    public BigInteger getPremasterSecret() {
+	return premasterSecret;
     }
 
-    public void setAdditionalEquations(int additionalEquations) {
-	this.additionalEquations = additionalEquations;
+    public void setPremasterSecret(BigInteger premasterSecret) {
+	this.premasterSecret = premasterSecret;
     }
 
-    public ICEAttacker.ServerType getServerType() {
-	return serverType;
+    public BigInteger getPublicPointBaseX() {
+	return publicPointBaseX;
     }
 
-    public void setServerType(ICEAttacker.ServerType serverType) {
-	this.serverType = serverType;
+    public void setPublicPointBaseX(BigInteger publicPointBaseX) {
+	this.publicPointBaseX = publicPointBaseX;
+    }
+
+    public BigInteger getPublicPointBaseY() {
+	return publicPointBaseY;
+    }
+
+    public void setPublicPointBaseY(BigInteger publicPointBaseY) {
+	this.publicPointBaseY = publicPointBaseY;
     }
 
 }

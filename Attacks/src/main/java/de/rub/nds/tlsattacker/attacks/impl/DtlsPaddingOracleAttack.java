@@ -19,7 +19,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.dtls.record.RecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
@@ -55,9 +55,9 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttackTestCommandConfig> {
+public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttackTest.class);
+    public static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttack.class);
 
     private TlsContext tlsContext;
 
@@ -74,7 +74,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private WorkflowTrace trace;
 
-    public DtlsPaddingOracleAttackTest(DtlsPaddingOracleAttackTestCommandConfig config) {
+    public DtlsPaddingOracleAttack(DtlsPaddingOracleAttackCommandConfig config) {
 	super(config);
     }
 
@@ -289,7 +289,7 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
 
     private void initExecuteAttack(ConfigHandler configHandler) {
 	transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(config);
-	transportHandler.setMaxResponseWait(config.getTimeout());
+	transportHandler.setTlsTimeout(config.getTimeout());
 	tlsContext = configHandler.initializeTlsContext(config);
 	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	recordHandler = (RecordHandler) tlsContext.getRecordHandler();
@@ -301,14 +301,14 @@ public class DtlsPaddingOracleAttackTest extends Attacker<DtlsPaddingOracleAttac
     }
 
     private void flushTransportHandler() throws IOException {
-	transportHandler.setMaxResponseWait(50);
+	transportHandler.setTlsTimeout(50);
 	try {
 	    while (true) {
 		transportHandler.fetchData();
 	    }
 	} catch (SocketTimeoutException e) {
 	} finally {
-	    transportHandler.setMaxResponseWait(config.getTimeout());
+	    transportHandler.setTlsTimeout(config.getTimeout());
 	}
     }
 }
