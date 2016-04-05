@@ -18,6 +18,7 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.MessageDigest;
@@ -56,82 +57,45 @@ public class TlsMessageDigestTest {
 	TlsMessageDigest d = null;
 	Exception e = null;
 	try {
-	    d = new TlsMessageDigest();
+	    d = new TlsMessageDigest(DigestAlgorithm.LEGACY);
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
-	    LOGGER.info("Could not Create default Digest with default Constructor");
+	    LOGGER.info("Could not Create legacy Digest");
 	}
 	assertNull(e);
 	try {
-	    d = new TlsMessageDigest(ProtocolVersion.TLS12);
+	    d = new TlsMessageDigest(DigestAlgorithm.SHA256);
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.TLS12 Constructor");
+	    LOGGER.info("Could not Create sha256 Digest");
 	}
 	assertNull(e);
 	try {
-	    d = new TlsMessageDigest(ProtocolVersion.TLS10);
+	    d = new TlsMessageDigest(DigestAlgorithm.SHA384);
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.TLS10 Constructor");
+	    LOGGER.info("Could not Create default sha384 Digest");
 	}
 	assertNull(e);
-	try {
-	    d = new TlsMessageDigest(ProtocolVersion.TLS11);
-	} catch (NoSuchAlgorithmException ex) {
-	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.TLS11 Constructor");
-	}
-	assertNull(e);
-	try {
-	    d = new TlsMessageDigest(ProtocolVersion.DTLS10);
-	} catch (NoSuchAlgorithmException ex) {
-	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.DTLS10 Constructor");
-	}
-	assertNull(e);
-	try {
-	    d = new TlsMessageDigest(ProtocolVersion.DTLS12);
-	} catch (NoSuchAlgorithmException ex) {
-	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.DTLS12 Constructor");
-	}
-	assertNull(e);
-	try {
-	    d = new TlsMessageDigest(testAlgorithm1);
-	} catch (NoSuchAlgorithmException ex) {
-	    e = ex;
-	    LOGGER.info("Could not Create default Digest with String \"" + testAlgorithm1 + "\" Constructor");
-	}
-	assertNull(e);
-	try {
-	    d = new TlsMessageDigest(testAlgorithm1, testAlgorithm2);
-	} catch (NoSuchAlgorithmException ex) {
-	    e = ex;
-	    LOGGER.info("Could not Create default Digest with String \"" + testAlgorithm1 + "\" \"" + testAlgorithm2
-		    + "\"  Constructor");
-	}
-	assertNull(e);
-
     }
 
     @Before
     public void setUp() {
 	Exception e = null;
 	try {
-	    digest1 = new TlsMessageDigest(ProtocolVersion.TLS10);
+	    digest1 = new TlsMessageDigest(DigestAlgorithm.LEGACY);
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.TLS10 Constructor");
+	    LOGGER.info("Could not Create default Legacy Digest ");
 	}
 	assertNull(e);
 	try {
-	    digest2 = new TlsMessageDigest(ProtocolVersion.TLS12);
+	    digest2 = new TlsMessageDigest(DigestAlgorithm.SHA256);
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
-	    LOGGER.info("Could not Create default Digest with ProtocolVersion.TLS12 Contructor");
+	    LOGGER.info("Could not Create sha256 Digest");
 	}
-
+	assertNull(e);
     }
 
     /**
@@ -187,7 +151,7 @@ public class TlsMessageDigestTest {
 	byte[] digresult = digest1.digest();
 	TlsMessageDigest digestTest = null;
 	try {
-	    digestTest = new TlsMessageDigest(ProtocolVersion.TLS10);
+	    digestTest = new TlsMessageDigest(DigestAlgorithm.LEGACY);
 	} catch (NoSuchAlgorithmException ex) {
 	    Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
 	}
@@ -207,7 +171,7 @@ public class TlsMessageDigestTest {
 	digresult = digest1.digest();
 	digestTest = null;
 	try {
-	    digestTest = new TlsMessageDigest(ProtocolVersion.TLS10);
+	    digestTest = new TlsMessageDigest(DigestAlgorithm.LEGACY);
 	} catch (NoSuchAlgorithmException ex) {
 	    Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
 	}
@@ -231,7 +195,7 @@ public class TlsMessageDigestTest {
 	digresult = digest1.digest();
 	digestTest = null;
 	try {
-	    digestTest = new TlsMessageDigest(ProtocolVersion.TLS10);
+	    digestTest = new TlsMessageDigest(DigestAlgorithm.LEGACY);
 	} catch (NoSuchAlgorithmException ex) {
 	    Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
 	}
@@ -256,7 +220,7 @@ public class TlsMessageDigestTest {
 	assertTrue(dig.length == testAlgorithm3Length);
 	TlsMessageDigest corruptedDigest = null;
 	try {
-	    corruptedDigest = new TlsMessageDigest(ProtocolVersion.TLS12);
+	    corruptedDigest = new TlsMessageDigest(DigestAlgorithm.SHA256);
 	    // Keine Bytes gesetzt
 	    dig = corruptedDigest.digest();
 
@@ -288,7 +252,7 @@ public class TlsMessageDigestTest {
 	Exception e = null;
 	TlsMessageDigest digest3 = null;
 	try {
-	    digest3 = new TlsMessageDigest(ProtocolVersion.TLS10);
+	    digest3 = new TlsMessageDigest(DigestAlgorithm.LEGACY);
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
 	    LOGGER.info("Could not Create default Digest with ProtocolVersion TLS10 Constructor");

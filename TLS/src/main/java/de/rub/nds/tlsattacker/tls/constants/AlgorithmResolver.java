@@ -18,6 +18,9 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Resolves crypto algorithms and their properties from a given cipehr suite
  * (and TLS version).
@@ -25,6 +28,8 @@ package de.rub.nds.tlsattacker.tls.constants;
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class AlgorithmResolver {
+
+    private static final Logger LOGGER = LogManager.getLogger(AlgorithmResolver.class);
 
     private AlgorithmResolver() {
 
@@ -34,22 +39,52 @@ public class AlgorithmResolver {
      * Returns a PRF algorithm based on the protocol version and the cipher
      * suite. TLS 1.0 and 1.1 used a legacy PRF based on MD5 and SHA-1. TLS 1.2
      * uses per default SHA256 PRF, but allows for definition of further PRFs in
-     * AEAD cipher suites (in an AEAD cipher suite, the last part identifies the
-     * PRF).
+     * specific cipher suites (the last part of a cipher suite string identifies
+     * the PRF).
      * 
      * @param protocolVersion
      * @param cipherSuite
      * @return
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+	PRFAlgorithm result;
 	if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
 		|| protocolVersion == ProtocolVersion.DTLS10) {
-	    return PRFAlgorithm.TLS_PRF_LEGACY;
-	} else if (cipherSuite.isAEAD() && cipherSuite.name().endsWith("SHA384")) {
-	    return PRFAlgorithm.TLS_PRF_SHA384;
+	    result = PRFAlgorithm.TLS_PRF_LEGACY;
+	} else if (cipherSuite.name().endsWith("SHA384")) {
+	    result = PRFAlgorithm.TLS_PRF_SHA384;
 	} else {
-	    return PRFAlgorithm.TLS_PRF_SHA256;
+	    result = PRFAlgorithm.TLS_PRF_SHA256;
 	}
+	LOGGER.debug("Using the following PRF Algorithm: {}", result);
+	return result;
+    }
+
+    /**
+     * Returns a digest algorithm based on the protocol version and the cipher
+     * suite. The digest algorithm is used to compute a message digest over the
+     * handshake messages and to compute valid finished messages. TLS 1.0 and
+     * 1.1 used a legacy digest based on MD5 and SHA-1. TLS 1.2 uses per default
+     * SHA256 digest algorithm, but allows for definition of further digest
+     * algorithms in specific cipher suites (the last part of a cipher suite
+     * string identifies the digest).
+     * 
+     * @param protocolVersion
+     * @param cipherSuite
+     * @return
+     */
+    public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+	DigestAlgorithm result;
+	if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+		|| protocolVersion == ProtocolVersion.DTLS10) {
+	    result = DigestAlgorithm.LEGACY;
+	} else if (cipherSuite.name().endsWith("SHA384")) {
+	    result = DigestAlgorithm.SHA384;
+	} else {
+	    result = DigestAlgorithm.SHA256;
+	}
+	LOGGER.debug("Using the following Digest Algorithm: {}", result);
+	return result;
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
@@ -109,23 +144,31 @@ public class AlgorithmResolver {
     }
 
     public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {
+	MacAlgorithm result = null;
 	if (cipherSuite.isAEAD()) {
-	    return MacAlgorithm.AEAD;
+	    result = MacAlgorithm.AEAD;
+	} else {
+	    String cipher = cipherSuite.toString();
+	    if (cipher.endsWith("MD5")) {
+		result = MacAlgorithm.HMAC_MD5;
+	    } else if (cipher.endsWith("SHA")) {
+		result = MacAlgorithm.HMAC_SHA1;
+	    } else if (cipher.endsWith("SHA256")) {
+		result = MacAlgorithm.HMAC_SHA256;
+	    } else if (cipher.endsWith("SHA384")) {
+		result = MacAlgorithm.HMAC_SHA384;
+	    } else if (cipher.endsWith("SHA512")) {
+		result = MacAlgorithm.HMAC_SHA512;
+	    } else if (cipher.endsWith("NULL")) {
+		result = MacAlgorithm.NULL;
+	    }
 	}
-	String cipher = cipherSuite.toString();
-	if (cipher.endsWith("MD5")) {
-	    return MacAlgorithm.HMAC_MD5;
-	} else if (cipher.endsWith("SHA")) {
-	    return MacAlgorithm.HMAC_SHA1;
-	} else if (cipher.endsWith("SHA256")) {
-	    return MacAlgorithm.HMAC_SHA256;
-	} else if (cipher.endsWith("SHA384")) {
-	    return MacAlgorithm.HMAC_SHA384;
-	} else if (cipher.endsWith("SHA512")) {
-	    return MacAlgorithm.HMAC_SHA512;
-	} else if (cipher.endsWith("NULL")) {
-	    return MacAlgorithm.NULL;
+	if (result != null) {
+	    LOGGER.debug("Using the following Mac Algorithm: {}", result);
+	    return result;
+	} else {
+	    throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
+		    + " is not supported yet");
 	}
-	throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipher + " is not supported yet");
     }
 }
