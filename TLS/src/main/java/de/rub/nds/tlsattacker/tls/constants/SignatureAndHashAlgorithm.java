@@ -22,10 +22,13 @@ package de.rub.nds.tlsattacker.tls.constants;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.Serializable;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
+ * Construction of a hash and signature algorithm.
+ * 
+ * Very confusing, consists of two bytes, the first is hash algorithm:
+ * {HashAlgorithm, SignatureAlgorithm}
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class SignatureAndHashAlgorithm implements Serializable {
@@ -33,8 +36,6 @@ public class SignatureAndHashAlgorithm implements Serializable {
     private SignatureAlgorithm signatureAlgorithm;
 
     private HashAlgorithm hashAlgorithm;
-
-    private byte[] value;
 
     public SignatureAndHashAlgorithm() {
 
@@ -45,7 +46,6 @@ public class SignatureAndHashAlgorithm implements Serializable {
 	    throw new ConfigurationException("SignatureAndHashAlgorithm always consists of two bytes, but found "
 		    + ArrayConverter.bytesToHexString(value));
 	}
-	this.value = value;
 	hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[0]);
 	signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
     }
@@ -53,20 +53,14 @@ public class SignatureAndHashAlgorithm implements Serializable {
     public SignatureAndHashAlgorithm(SignatureAlgorithm sigAlgorithm, HashAlgorithm hashAlgorithm) {
 	this.signatureAlgorithm = sigAlgorithm;
 	this.hashAlgorithm = hashAlgorithm;
-	this.value = new byte[] { hashAlgorithm.getValue(), sigAlgorithm.getValue() };
     }
 
     public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(byte[] value) {
 	return new SignatureAndHashAlgorithm(value);
     }
 
-    @XmlJavaTypeAdapter(HexBinaryAdapter.class)
-    public byte[] getValue() {
-	return value;
-    }
-
-    public void setValue(byte[] value) {
-	this.value = value;
+    public byte[] getByteValue() {
+	return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
     }
 
     public SignatureAlgorithm getSignatureAlgorithm() {
@@ -86,7 +80,8 @@ public class SignatureAndHashAlgorithm implements Serializable {
     }
 
     public String getJavaName() {
-	String hashName = hashAlgorithm.getJavaName().replace("-", "");
-	return hashName + "with" + signatureAlgorithm.getJavaName();
+	String hashAlgorithmName = hashAlgorithm.getJavaName().replace("-", "");
+	String signatureAlgorithmName = signatureAlgorithm.getJavaName();
+	return hashAlgorithmName + "with" + signatureAlgorithmName;
     }
 }

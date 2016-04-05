@@ -75,7 +75,7 @@ public class CertificateRequestHandlerTest {
 
 	byte[] inputBytes = { HandshakeMessageType.CERTIFICATE_REQUEST.getValue(), 0x00, 0x00, 0x07, 0x01,
 		ClientCertificateType.RSA_SIGN.getValue(), 0x00, 0x02 };
-	byte[] sigHashAlg = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getValue();
+	byte[] sigHashAlg = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getByteValue();
 	inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x00 });
 	int endPointer = handler.parseMessageAction(inputBytes, 0);
 	CertificateRequestMessage message = (CertificateRequestMessage) handler.getProtocolMessage();

@@ -59,13 +59,13 @@ public class CertificateRequestHandler<HandshakeMessage extends CertificateReque
 	protocolMessage.setClientCertificateTypesCount(clientCertificateTypesCount);
 
 	byte[] signatureAndHashAlgorithms = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512)
-		.getValue();
+		.getByteValue();
 	signatureAndHashAlgorithms = ArrayConverter.concatenate(signatureAndHashAlgorithms,
-		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA384).getValue(),
-		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA256).getValue(),
-		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA224).getValue(),
-		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1).getValue(),
-		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5).getValue());
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA384).getByteValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA256).getByteValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA224).getByteValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1).getByteValue(),
+		new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5).getByteValue());
 	protocolMessage.setSignatureHashAlgorithms(signatureAndHashAlgorithms);
 
 	int signatureAndHashAlgorithmsCount = protocolMessage.getSignatureHashAlgorithms().getValue().length;

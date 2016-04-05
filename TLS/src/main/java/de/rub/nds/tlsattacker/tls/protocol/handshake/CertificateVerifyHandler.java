@@ -106,8 +106,8 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	    protocolMessage.setSignature(signature);
 	    protocolMessage.setSignatureLength(protocolMessage.getSignature().getValue().length);
 
-	    byte[] result = ArrayConverter.concatenate(selectedSignatureHashAlgo.getValue(), ArrayConverter.intToBytes(
-		    protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
+	    byte[] result = ArrayConverter.concatenate(selectedSignatureHashAlgo.getByteValue(), ArrayConverter
+		    .intToBytes(protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
 		    protocolMessage.getSignature().getValue());
 
 	    protocolMessage.setLength(result.length);
@@ -140,7 +140,7 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
 	SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(Arrays
 		.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getValue());
+	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getByteValue());
 	currentPointer = nextPointer;
 
 	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
