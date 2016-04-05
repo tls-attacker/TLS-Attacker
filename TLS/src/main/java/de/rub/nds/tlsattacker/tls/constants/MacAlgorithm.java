@@ -25,6 +25,7 @@ package de.rub.nds.tlsattacker.tls.constants;
 public enum MacAlgorithm {
 
     NULL("null"),
+    AEAD("null"),
     HMAC_MD5("HmacMD5"),
     HMAC_SHA1("HmacSHA1"),
     HMAC_SHA256("HmacSHA256"),

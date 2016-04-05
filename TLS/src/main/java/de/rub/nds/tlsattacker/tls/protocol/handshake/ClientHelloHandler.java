@@ -81,7 +81,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 
 	byte[] cipherSuites = null;
 	for (CipherSuite cs : protocolMessage.getSupportedCipherSuites()) {
-	    cipherSuites = ArrayConverter.concatenate(cipherSuites, cs.getValue());
+	    cipherSuites = ArrayConverter.concatenate(cipherSuites, cs.getByteValue());
 	}
 	protocolMessage.setCipherSuites(cipherSuites);
 

@@ -24,15 +24,17 @@ package de.rub.nds.tlsattacker.tls.constants;
  */
 public enum PRFAlgorithm {
 
-    TLS_PRF_SHA256("HmacSHA256");
+    TLS_PRF_LEGACY(MacAlgorithm.NULL),
+    TLS_PRF_SHA256(MacAlgorithm.HMAC_SHA256),
+    TLS_PRF_SHA384(MacAlgorithm.HMAC_SHA384);
 
-    private PRFAlgorithm(String javaName) {
-	this.javaName = javaName;
+    private PRFAlgorithm(MacAlgorithm macAlgorithm) {
+	this.macAlgorithm = macAlgorithm;
     }
 
-    private final String javaName;
+    private final MacAlgorithm macAlgorithm;
 
-    public String getJavaName() {
-	return javaName;
+    public MacAlgorithm getMacAlgorithm() {
+        return macAlgorithm;
     }
 }
