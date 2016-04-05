@@ -68,7 +68,7 @@ public class CertificateVerifyHandlerTest {
 	handler.initializeProtocolMessage();
 
 	byte[] inputBytes = { HandshakeMessageType.CERTIFICATE_VERIFY.getValue(), 0x00, 0x00, 0x09 };
-	byte[] sigHashAlg = { SignatureAlgorithm.RSA.getValue(), HashAlgorithm.SHA512.getValue() };
+	byte[] sigHashAlg = { HashAlgorithm.SHA512.getValue(), SignatureAlgorithm.RSA.getValue() };
 	inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x05 }, new byte[] { 0x25,
 		0x26, 0x27, 0x28, 0x29 });
 	int endPointer = handler.parseMessageAction(inputBytes, 0);
