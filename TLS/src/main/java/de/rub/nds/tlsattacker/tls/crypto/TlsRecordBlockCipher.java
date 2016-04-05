@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
@@ -82,7 +81,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
     /**
      * encryption IV
      */
-    private final IvParameterSpec encryptIv;
+    private IvParameterSpec encryptIv;
 
     /**
      * decryption IV
@@ -108,6 +107,10 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
      * server encryption key
      */
     private final byte[] serverWriteKey;
+
+    private SecretKey encryptKey;
+
+    private SecretKey decryptKey;
 
     /**
      * TLS context
@@ -184,8 +187,8 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
 	    encryptIv = new IvParameterSpec(clientWriteIv);
 	    decryptIv = new IvParameterSpec(serverWriteIv);
-	    SecretKey encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-	    SecretKey decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
+	    encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
+	    decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
 	    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
 	    decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);
 	    readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
@@ -315,10 +318,14 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    if (useExplicitIv) {
 		ciphertext = ArrayConverter.concatenate(encryptIv.getIV(), encryptCipher.doFinal(data));
 	    } else {
+		encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
 		ciphertext = encryptCipher.doFinal(data);
+		encryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
+			ciphertext.length - decryptCipher.getBlockSize(), ciphertext.length));
 	    }
 	    return ciphertext;
-	} catch (BadPaddingException | IllegalBlockSizeException ex) {
+	} catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
+		| InvalidKeyException ex) {
 	    throw new CryptoException(ex);
 	}
     }
@@ -336,16 +343,20 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    byte[] plaintext;
 	    if (useExplicitIv) {
 		decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
-		if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
-		    decryptCipher.init(Cipher.DECRYPT_MODE,
-			    new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
-		} else {
-		    decryptCipher.init(Cipher.DECRYPT_MODE,
-			    new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
-		}
+	    }
+	    if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+		decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
+			decryptIv);
+	    } else {
+		decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()),
+			decryptIv);
+	    }
+	    if (useExplicitIv) {
 		plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
 	    } else {
-		throw new UnsupportedOperationException("not supported yet");
+		plaintext = decryptCipher.doFinal(data);
+		decryptIv = new IvParameterSpec(Arrays.copyOfRange(data, data.length - decryptCipher.getBlockSize(),
+			data.length));
 	    }
 	    return plaintext;
 	} catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
