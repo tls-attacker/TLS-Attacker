@@ -144,8 +144,8 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 
 	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
-	byte[] keyBlock = PseudoRandomFunction.compute(protocolVersion, masterSecret,
-		PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize, prfAlgorithm.getJavaName());
+	byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+		PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
 
 	LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
 

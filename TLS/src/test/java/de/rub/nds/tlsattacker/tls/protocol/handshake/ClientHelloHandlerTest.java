@@ -98,8 +98,8 @@ public class ClientHelloHandlerTest {
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x32 }, ProtocolVersion.DTLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), new byte[] { 0x00, 0x08 }, cookie, new byte[] { 0x00, 0x02 },
-		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(),
-		new byte[] { 0x01, CompressionMethod.NULL.getValue() });
+		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getByteValue(), new byte[] { 0x01,
+			CompressionMethod.NULL.getValue() });
 
 	assertNotNull("Confirm function didn't return 'NULL'", returned);
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
@@ -141,8 +141,8 @@ public class ClientHelloHandlerTest {
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x3A }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), ArrayConverter.intToBytes(message.getSessionIdLength().getValue(), 1),
-		new byte[] { 0x00, 0x02 }, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(), new byte[] {
-			0x01, CompressionMethod.NULL.getValue() }, new byte[] { 0x00, 0x0F },
+		new byte[] { 0x00, 0x02 }, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getByteValue(),
+		new byte[] { 0x01, CompressionMethod.NULL.getValue() }, new byte[] { 0x00, 0x0F },
 		ExtensionType.HEARTBEAT.getValue(),
 		new byte[] { 0x00, 0x01, HeartbeatMode.PEER_ALLOWED_TO_SEND.getValue() },
 		ExtensionType.ELLIPTIC_CURVES.getValue(), new byte[] { 0x00, 0x06 }, new byte[] { 0x00, 0x04 },
@@ -216,7 +216,7 @@ public class ClientHelloHandlerTest {
 		tlsContext.getClientRandom());
 	assertEquals("Cipersuite Length", new Integer(2), message.getCipherSuiteLength().getValue());
 	assertArrayEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getValue(), message.getCipherSuites().getValue());
+		CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384.getByteValue(), message.getCipherSuites().getValue());
 	assertEquals("Compression Length", new Integer(1), message.getCompressionLength().getValue());
 	assertArrayEquals("Compression must be null", CompressionMethod.NULL.getArrayValue(), message.getCompressions()
 		.getValue());

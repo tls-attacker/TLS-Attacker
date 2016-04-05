@@ -64,13 +64,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	byte[] verifyData;
 
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
-	    verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
-		    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
-		    prfAlgorithm.getJavaName());
+	    verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+		    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
 	} else {
-	    verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
-		    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
-		    prfAlgorithm.getJavaName());
+	    verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+		    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
 	}
 	protocolMessage.setVerifyData(verifyData);
 	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));

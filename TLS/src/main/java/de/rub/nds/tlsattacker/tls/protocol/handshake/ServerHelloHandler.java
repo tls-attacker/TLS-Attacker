@@ -97,7 +97,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	CipherSuite selectedCipher = CipherSuite.getCipherSuite(Arrays
 		.copyOfRange(message, currentPointer, nextPointer));
 	// System.out.println(selectedCipher);
-	protocolMessage.setSelectedCipherSuite(selectedCipher.getValue());
+	protocolMessage.setSelectedCipherSuite(selectedCipher.getByteValue());
 
 	tlsContext.setSelectedCipherSuite(CipherSuite.getCipherSuite(protocolMessage.getSelectedCipherSuite()
 		.getValue()));
@@ -152,7 +152,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 		.getRandom().getValue()));
 
 	CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-	protocolMessage.setSelectedCipherSuite(selectedCipherSuite.getValue());
+	protocolMessage.setSelectedCipherSuite(selectedCipherSuite.getByteValue());
 
 	CompressionMethod selectedCompressionMethod = tlsContext.getCompressionMethod();
 	protocolMessage.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
