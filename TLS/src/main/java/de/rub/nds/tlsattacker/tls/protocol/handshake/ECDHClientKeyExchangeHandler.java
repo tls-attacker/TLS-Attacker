@@ -134,9 +134,8 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
 	    PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		    tlsContext.getSelectedCipherSuite());
-	    byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage
-		    .getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
-		    HandshakeByteLength.MASTER_SECRET);
+	    byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
+		    .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
 	    LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
 
 	    protocolMessage.setMasterSecret(masterSecret);

@@ -35,6 +35,6 @@ public enum PRFAlgorithm {
     private final MacAlgorithm macAlgorithm;
 
     public MacAlgorithm getMacAlgorithm() {
-        return macAlgorithm;
+	return macAlgorithm;
     }
 }

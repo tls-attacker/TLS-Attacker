@@ -74,8 +74,8 @@ public class PseudoRandomFunctionTest {
 	byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
 
 	assertArrayEquals(result1, result2);
-        
-        new NonStrictExpectations() {
+
+	new NonStrictExpectations() {
 	    {
 		mockedParameters.getPrfAlgorithm();
 		result = 2;

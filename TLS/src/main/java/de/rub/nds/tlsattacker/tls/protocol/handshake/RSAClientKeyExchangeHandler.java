@@ -89,9 +89,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
 	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
-	byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage
-		.getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
-		HandshakeByteLength.MASTER_SECRET);
+	byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
+		.getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
 	protocolMessage.setMasterSecret(masterSecret);
 	LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
 
@@ -167,9 +166,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
 	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
-	byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage
-		.getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
-		HandshakeByteLength.MASTER_SECRET);
+	byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
+		.getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
 	protocolMessage.setMasterSecret(masterSecret);
 	LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
 
