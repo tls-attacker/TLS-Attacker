@@ -19,8 +19,6 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -32,19 +30,7 @@ public enum PRFAlgorithm {
 	this.javaName = javaName;
     }
 
-    private String javaName;
-
-    /**
-     * Currently only this PRF is supported TODO: include support for further
-     * types
-     * 
-     * @param protocolVersion
-     * @param cipherSuite
-     * @return
-     */
-    public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-	return TLS_PRF_SHA256;
-    }
+    private final String javaName;
 
     public String getJavaName() {
 	return javaName;

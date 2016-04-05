@@ -21,7 +21,6 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

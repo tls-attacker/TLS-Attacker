@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.BulkCipherAlgorithm;
@@ -31,7 +32,6 @@ import de.rub.nds.tlsattacker.tls.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -124,12 +124,12 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    useExplicitIv = true;
 	}
 	bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
-	CipherAlgorithm cipherAlg = CipherAlgorithm.getCipher(cipherSuite);
+	CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
 	int keySize = cipherAlg.getKeySize();
 	encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
 	decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
 
-	MacAlgorithm macAlg = MacAlgorithm.getMacAlgorithm(cipherSuite);
+	MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
 	readMac = Mac.getInstance(macAlg.getJavaName());
 	writeMac = Mac.getInstance(macAlg.getJavaName());
 
@@ -142,7 +142,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	byte[] masterSecret = tlsContext.getMasterSecret();
 	byte[] seed = tlsContext.getServerClientRandom();
 
-	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
 	byte[] keyBlock = PseudoRandomFunction.compute(protocolVersion, masterSecret,
 		PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize, prfAlgorithm.getJavaName());

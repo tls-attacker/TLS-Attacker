@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -47,7 +48,7 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
     public byte[] prepareMessageAction() {
 	protocolMessage.setType(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue());
 	CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-	KeyExchangeAlgorithm keyExchange = KeyExchangeAlgorithm.getKeyExchangeAlgorithm(selectedCipherSuite);
+	KeyExchangeAlgorithm keyExchange = AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite);
 	if (keyExchange != keyExchangeAlgorithm) {
 	    throw new UnsupportedOperationException("The selected key exchange algorithm (" + keyExchange
 		    + ") is not supported yet");

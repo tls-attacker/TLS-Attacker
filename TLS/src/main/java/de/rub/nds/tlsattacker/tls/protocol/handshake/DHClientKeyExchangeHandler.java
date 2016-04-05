@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
@@ -56,7 +57,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
 	super(tlsContext);
 	this.correctProtocolMessageClass = DHClientKeyExchangeMessage.class;
-	this.keyExchangeAlgorithm = KeyExchangeAlgorithm.getKeyExchangeAlgorithm(tlsContext.getSelectedCipherSuite());
+	this.keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getSelectedCipherSuite());
     }
 
     @Override
@@ -84,7 +85,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
 	byte[] random = tlsContext.getClientServerRandom();
 
-	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
 	byte[] masterSecret = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), protocolMessage
 		.getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
@@ -151,7 +152,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
 	byte[] random = tlsContext.getClientServerRandom();
 
-	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
 	byte[] masterSecret = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), protocolMessage
 		.getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,

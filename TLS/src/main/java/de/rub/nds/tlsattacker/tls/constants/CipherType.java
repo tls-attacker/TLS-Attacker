@@ -28,19 +28,4 @@ public enum CipherType {
     BLOCK,
     AEAD;
 
-    /**
-     * TODO handle aead ciphers
-     * 
-     * @param cipherSuite
-     * @return
-     */
-    public static CipherType getCipherType(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.contains("AES") || cipher.contains("DES")) {
-	    return BLOCK;
-	} else if (cipher.contains("RC4")) {
-	    return STREAM;
-	}
-	throw new UnsupportedOperationException("The cipher algorithm is not supported yet.");
-    }
 }
