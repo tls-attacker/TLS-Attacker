@@ -91,11 +91,11 @@ public final class WorkflowTraceSerializer {
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
 	context = getJAXBContext();
 	Unmarshaller m = context.createUnmarshaller();
-        
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+
+	XMLInputFactory xif = XMLInputFactory.newFactory();
+	xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+	xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+	XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
 
 	WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
 	inputStream.close();
