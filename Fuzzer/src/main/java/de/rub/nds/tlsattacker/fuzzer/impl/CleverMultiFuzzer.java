@@ -26,11 +26,15 @@ import de.rub.nds.tlsattacker.fuzzer.config.StartupCommand;
 import de.rub.nds.tlsattacker.fuzzer.config.StartupCommandsHolder;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,7 +91,7 @@ public class CleverMultiFuzzer extends Fuzzer {
 
 		new CleverFuzzerStarter(fuzzer, command.getShortName()).start();
 	    }
-	} catch (FileNotFoundException | JAXBException ex) {
+	} catch (FileNotFoundException | JAXBException | XMLStreamException ex) {
 	    throw new ConfigurationException("Unmarshaling failed", ex);
 	}
     }
@@ -115,10 +119,16 @@ public class CleverMultiFuzzer extends Fuzzer {
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    private StartupCommandsHolder unmarshalStartupCommands(String file) throws JAXBException, FileNotFoundException {
+    private StartupCommandsHolder unmarshalStartupCommands(String file) throws JAXBException, FileNotFoundException, XMLStreamException {
 	JAXBContext context = JAXBContext.newInstance(StartupCommandsHolder.class);
 	Unmarshaller um = context.createUnmarshaller();
-	return (StartupCommandsHolder) um.unmarshal(new FileReader(file));
+        
+        XMLInputFactory xif = XMLInputFactory.newFactory();
+        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        XMLStreamReader xsr = xif.createXMLStreamReader(new FileInputStream(file));
+        
+	return (StartupCommandsHolder) um.unmarshal(xsr);
     }
 
     class CleverFuzzerStarter extends Thread {
