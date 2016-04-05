@@ -43,32 +43,6 @@ public enum CipherAlgorithm {
 
     private final String javaName;
 
-    /**
-     * TODO handle aead ciphers
-     * 
-     * @param cipherSuite
-     * @return
-     */
-    public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.contains("NULL")) {
-	    return NULL;
-	} else if (cipher.contains("RC4")) {
-	    return RC4_128;
-	} else if (cipher.contains("DES_EDE_CBC")) {
-	    return DES_EDE_CBC;
-	} else if (cipher.contains("AES_128_CBC")) {
-	    return AES_128_CBC;
-	} else if (cipher.contains("AES_256_CBC")) {
-	    return AES_256_CBC;
-	} else if (cipher.contains("AES_128_GCM")) {
-	    return AES_128_GCM;
-	} else if (cipher.contains("AES_256_GCM")) {
-	    return AES_256_GCM;
-	}
-	throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
-    }
-
     public int getKeySize() {
 	return keySize;
     }

@@ -20,7 +20,6 @@
 package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandlerBearer;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloHandler;
@@ -92,7 +91,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	@Override
 	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
 	    CipherSuite cs = tlsContext.getSelectedCipherSuite();
-	    switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
+	    switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
 		case EC_DIFFIE_HELLMAN:
 		    return new ECDHEServerKeyExchangeHandler(tlsContext);
 		case DHE_DSS:
@@ -132,7 +131,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	@Override
 	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
 	    CipherSuite cs = tlsContext.getSelectedCipherSuite();
-	    switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
+	    switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
 		case RSA:
 		    return new RSAClientKeyExchangeHandler(tlsContext);
 		case EC_DIFFIE_HELLMAN:

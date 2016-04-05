@@ -18,6 +18,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -131,7 +132,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 		    ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 	    LOGGER.debug("Client Server Random: {}", ArrayConverter.bytesToHexString(random));
 
-	    PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+	    PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		    tlsContext.getSelectedCipherSuite());
 	    byte[] masterSecret = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), protocolMessage
 		    .getPremasterSecret().getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,

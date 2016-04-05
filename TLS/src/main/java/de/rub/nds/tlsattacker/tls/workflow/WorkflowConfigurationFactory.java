@@ -20,6 +20,7 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
@@ -32,7 +33,6 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionM
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +61,7 @@ public abstract class WorkflowConfigurationFactory {
 	} else {
 	    // we decide based on the first cipher how to construct a handshake.
 	    CipherSuite cs = config.getCipherSuites().get(0);
-	    switch (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs)) {
+	    switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
 		case RSA:
 		    if (config.getProtocolVersion() == ProtocolVersion.DTLS10
 			    || config.getProtocolVersion() == ProtocolVersion.DTLS12) {
