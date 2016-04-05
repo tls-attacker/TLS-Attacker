@@ -41,7 +41,7 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
+public class GenericWorkflowExecutor implements WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger(GenericWorkflowExecutor.class);
 
