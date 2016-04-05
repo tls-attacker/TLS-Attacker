@@ -1,32 +1,28 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Computes message digest for two algorithms at once, typically for MD5 and
@@ -36,44 +32,54 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class TlsMessageDigest {
-
-    private static final Logger LOGGER = LogManager.getLogger(TlsMessageDigest.class);
+public final class TlsMessageDigest {
 
     private MessageDigest hash1;
 
     private MessageDigest hash2;
 
-    private byte[] rawBytes;
+    private byte[] rawBytes = {};
 
-    public TlsMessageDigest() throws NoSuchAlgorithmException {
-	this.hash1 = MessageDigest.getInstance("MD5");
-	this.hash2 = MessageDigest.getInstance("SHA-1");
-    }
+    private boolean initialized;
 
-    public TlsMessageDigest(String hashAlgorithm1, String hashAlgorithm2) throws NoSuchAlgorithmException {
-	this.hash1 = MessageDigest.getInstance(hashAlgorithm1);
-	this.hash2 = MessageDigest.getInstance(hashAlgorithm2);
-    }
+    /**
+     * Default constructor. We use this in cases when we do not know yet, which
+     * message digest is going to be computed.
+     */
+    public TlsMessageDigest() {
 
-    public TlsMessageDigest(String hashAlgorithm1) throws NoSuchAlgorithmException {
-	this.hash1 = MessageDigest.getInstance(hashAlgorithm1);
     }
 
     /**
-     * @param protocolVersion
+     * Constructor with TLS digest algorithm, incl. its initialization
+     * 
+     * @param digestAlgorithm
      * @throws NoSuchAlgorithmException
      */
-    public TlsMessageDigest(ProtocolVersion protocolVersion) throws NoSuchAlgorithmException {
-	if (protocolVersion == ProtocolVersion.TLS12) {
-	    // TODO this can cause problems if TLS1.2 cipher suite does not use
-	    // sha-256
-	    // most of the ciphersuite however use sha256, no problem for now
-	    this.hash1 = MessageDigest.getInstance("SHA-256");
-	} else {
+    public TlsMessageDigest(DigestAlgorithm digestAlgorithm) throws NoSuchAlgorithmException {
+	initializeDigestAlgorithm(digestAlgorithm);
+    }
+
+    /**
+     * Initialization of the message digest algorithm(s). The function in
+     * addition computes a digest over the data that is already contained in the
+     * raw bytes.
+     * 
+     * @param digestAlgorithm
+     * @throws NoSuchAlgorithmException
+     */
+    public void initializeDigestAlgorithm(DigestAlgorithm digestAlgorithm) throws NoSuchAlgorithmException {
+	if (initialized) {
+	    throw new IllegalStateException("The TLS message digest algorithm has already been set");
+	}
+	if (digestAlgorithm == DigestAlgorithm.LEGACY) {
 	    this.hash1 = MessageDigest.getInstance("MD5");
 	    this.hash2 = MessageDigest.getInstance("SHA-1");
+	} else {
+	    this.hash1 = MessageDigest.getInstance(digestAlgorithm.getJavaName());
 	}
+	initialized = true;
+	updateDigest(rawBytes);
     }
 
     public String getAlgorithm() {
@@ -94,34 +100,52 @@ public class TlsMessageDigest {
     }
 
     public void update(byte in) {
-	// LOGGER.debug("Updating digest over the following data: \n  {}", in);
-	hash1.update(in);
-	if (hash2 != null) {
-	    hash2.update(in);
+	if (initialized) {
+	    updateDigest(in);
 	}
 	byte[] tmp = new byte[1];
 	tmp[0] = in;
 	rawBytes = ArrayConverter.concatenate(rawBytes, tmp);
     }
 
+    public void updateDigest(byte in) {
+	// LOGGER.debug("Updating digest over the following data: \n  {}", in);
+	hash1.update(in);
+	if (hash2 != null) {
+	    hash2.update(in);
+	}
+    }
+
     public void update(byte[] in, int inOff, int len) {
+	if (initialized) {
+	    updateDigest(in, inOff, len);
+	}
+	rawBytes = ArrayConverter.concatenate(rawBytes, Arrays.copyOfRange(in, inOff, inOff + len));
+    }
+
+    public void updateDigest(byte[] in, int inOff, int len) {
 	// LOGGER.debug("Updating digest over the following data: \n  {}",
 	// ArrayConverter.bytesToHexString(Arrays.copyOfRange(in, inOff, len)));
 	hash1.update(in, inOff, len);
 	if (hash2 != null) {
 	    hash2.update(in, inOff, len);
 	}
-	rawBytes = ArrayConverter.concatenate(rawBytes, Arrays.copyOfRange(in, inOff, inOff + len));
     }
 
     public void update(byte[] in) {
+	if (initialized) {
+	    updateDigest(in);
+	}
+	rawBytes = ArrayConverter.concatenate(rawBytes, in);
+    }
+
+    public void updateDigest(byte[] in) {
 	// LOGGER.debug("Updating digest over the following data: \n  {}",
 	// ArrayConverter.bytesToHexString(in));
 	hash1.update(in);
 	if (hash2 != null) {
 	    hash2.update(in);
 	}
-	rawBytes = ArrayConverter.concatenate(rawBytes, in);
     }
 
     public byte[] digest() {
@@ -150,12 +174,8 @@ public class TlsMessageDigest {
     public void setRawBytes(byte[] rawBytes) {
 	reset();
 	if (rawBytes != null) {
-
 	    this.rawBytes = rawBytes;
-	    hash1.update(rawBytes);
-	    if (hash2 != null) {
-		hash2.update(rawBytes);
-	    }
+	    updateDigest(rawBytes);
 	} else {
 	    rawBytes = new byte[0];
 	}

@@ -101,6 +101,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
 	tlsContext.setSelectedCipherSuite(CipherSuite.getCipherSuite(protocolMessage.getSelectedCipherSuite()
 		.getValue()));
+	tlsContext.setProtocolVersion(serverProtocolVersion);
+	tlsContext.initiliazeTlsMessageDigest();
 
 	currentPointer = nextPointer;
 	byte compression = message[currentPointer];
