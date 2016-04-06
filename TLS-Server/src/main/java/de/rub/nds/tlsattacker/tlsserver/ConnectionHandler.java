@@ -30,13 +30,12 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- * @version 0.1
  */
 public class ConnectionHandler implements Runnable {
-    /** application socket */
-    private final Socket applicationSocket;
 
-    private final static Logger LOGGER = LogManager.getRootLogger();
+    private final static Logger LOGGER = LogManager.getLogger(ConnectionHandler.class);
+
+    private final Socket applicationSocket;
 
     /**
      * ConnectionHandler constructor
@@ -48,6 +47,7 @@ public class ConnectionHandler implements Runnable {
 	applicationSocket = socket;
     }
 
+    @Override
     public void run() {
 
 	LOGGER.debug("new Thread started");

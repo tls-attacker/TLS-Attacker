@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tlsserver;
 
@@ -26,8 +25,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.security.interfaces.ECPrivateKey;
-import java.util.Enumeration;
 import javax.net.ssl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,29 +35,19 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class TLSServer extends Thread {
 
-    /**
-     * jks key
-     */
+    private static final Logger LOGGER = LogManager.getLogger(TLSServer.class);
+
     private static final String PATH_TO_JKS = "eckey192.jks";
 
-    /**
-     * Password for server key store.
-     */
     private static final String JKS_PASSWORD = "password";
 
-    /**
-     * Protocol short name.
-     */
     private static final String PROTOCOL = "TLS";
 
-    /**
-     * Test port.
-     */
     private static final int PORT = 55443;
 
-    private String[] cipherSuites = null;
+    private final String[] cipherSuites = null;
 
-    private final int listenPort;
+    private final int port;
 
     private final SSLContext sslContext;
 
@@ -68,24 +55,9 @@ public class TLSServer extends Thread {
 
     private boolean shutdown;
 
-    private static final int TIMEOUT = 2000;
-
-    private static final Logger LOGGER = LogManager.getLogger(TLSServer.class);
-
-    public TLSServer(final String keystorePath, final String password, final String protocol, final int port)
-	    throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-	    UnrecoverableKeyException, KeyManagementException {
-	KeyStore keyStore = KeyStore.getInstance("JKS");
-	FileInputStream fis = null;
-	try {
-	    fis = new FileInputStream(keystorePath);
-	    keyStore.load(fis, password.toCharArray());
-	} finally {
-	    if (fis != null) {
-		fis.close();
-	    }
-	}
-	outPutKeyInformation(keyStore, password);
+    public TLSServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
+	    IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException,
+	    KeyManagementException {
 
 	KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
 	keyManagerFactory.init(keyStore, password.toCharArray());
@@ -99,7 +71,6 @@ public class TLSServer extends Thread {
 
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug("Provider: " + sslContext.getProvider());
-
 	    LOGGER.debug("Supported cipher suites ("
 		    + sslContext.getServerSocketFactory().getSupportedCipherSuites().length + ")");
 	    for (String c : sslContext.getServerSocketFactory().getSupportedCipherSuites()) {
@@ -107,30 +78,26 @@ public class TLSServer extends Thread {
 	    }
 	}
 
-	this.listenPort = port;
+	this.port = port;
 	LOGGER.info("SSL Server successfully initialized!");
     }
 
-    private void outPutKeyInformation(KeyStore keystore, String password) {
+    public static KeyStore readKeyStore(String keystorePath, String password) throws KeyStoreException, IOException,
+	    NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
+	KeyStore keyStore = KeyStore.getInstance("JKS");
+	FileInputStream fis = null;
 	try {
-	    Enumeration e = keystore.aliases();
-	    while (e.hasMoreElements()) {
-		String alias = (String) e.nextElement();
-
-		// Does alias refer to a private key?
-		boolean b = keystore.isKeyEntry(alias);
-		if (b) {
-		    ECPrivateKey k = (ECPrivateKey) keystore.getKey(alias, password.toCharArray());
-		    LOGGER.debug("using this private key of " + k.getS().bitLength() + " bit length");
-		    LOGGER.debug(k.getS());
-		}
+	    fis = new FileInputStream(keystorePath);
+	    keyStore.load(fis, password.toCharArray());
+	} finally {
+	    if (fis != null) {
+		fis.close();
 	    }
-	} catch (Exception e) {
-	    // not that important for us
-	    e.printStackTrace();
 	}
+	return keyStore;
     }
 
+    @Override
     public void run() {
 	try {
 	    preSetup();
@@ -142,12 +109,10 @@ public class TLSServer extends Thread {
 		    ConnectionHandler ch = new ConnectionHandler(socket);
 		    Thread t = new Thread(ch);
 		    t.start();
-		} catch (Exception e) {
-		    e.printStackTrace();
+		} catch (Exception ex) {
+		    LOGGER.debug(ex.getLocalizedMessage(), ex);
 		}
 	    }
-	} catch (SocketException ex) {
-	    LOGGER.debug(ex.getLocalizedMessage(), ex);
 	} catch (IOException ex) {
 	    LOGGER.debug(ex.getLocalizedMessage(), ex);
 	} finally {
@@ -165,7 +130,7 @@ public class TLSServer extends Thread {
 
     private void preSetup() throws SocketException, IOException {
 	SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
-	serverSocket = serverSocketFactory.createServerSocket(listenPort);
+	serverSocket = serverSocketFactory.createServerSocket(port);
 	serverSocket.setReuseAddress(true);
 	if (cipherSuites != null) {
 	    ((SSLServerSocket) serverSocket).setEnabledCipherSuites(cipherSuites);
@@ -206,15 +171,18 @@ public class TLSServer extends Thread {
 	    protocol = PROTOCOL;
 	    port = PORT;
 	} else {
-	    System.out
-		    .println("Usage (run with): java -jar [name].jar [jks-path] [password] [protocol] [port] \n (set [protocol] to TLS)");
+	    System.out.println("Usage (run with): java -jar [name].jar [jks-path] "
+		    + "[password] [protocol] [port] \n (set [protocol] to TLS)");
 	    return;
 	}
 
-	TLSServer server = new TLSServer(path, password, protocol, port);
-	// server.cipherSuites = new
-	// String[]{"TLS_ECDH_RSA_WITH_AES_128_CBC_SHA"};
+	KeyStore keyStore = readKeyStore(path, password);
+	TLSServer server = new TLSServer(keyStore, password, protocol, port);
 	Thread t = new Thread(server);
 	t.start();
+    }
+
+    public String[] getCipherSuites() {
+	return cipherSuites;
     }
 }
