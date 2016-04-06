@@ -39,7 +39,6 @@
         <module>EAP</module>
         <module>Fuzzer</module>
         <module>MITM-TLS-Server</module>
-        <module>RandomTester</module>
     </modules>
 
     <dependencies>
