@@ -34,6 +34,12 @@
             <artifactId>jcommander</artifactId>
             <version>1.30</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TLS-Server</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <name>TLS</name>
     <build>
