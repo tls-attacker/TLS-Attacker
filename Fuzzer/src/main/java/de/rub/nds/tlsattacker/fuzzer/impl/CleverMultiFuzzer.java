@@ -119,15 +119,16 @@ public class CleverMultiFuzzer extends Fuzzer {
      * @throws JAXBException
      * @throws FileNotFoundException
      */
-    private StartupCommandsHolder unmarshalStartupCommands(String file) throws JAXBException, FileNotFoundException, XMLStreamException {
+    private StartupCommandsHolder unmarshalStartupCommands(String file) throws JAXBException, FileNotFoundException,
+	    XMLStreamException {
 	JAXBContext context = JAXBContext.newInstance(StartupCommandsHolder.class);
 	Unmarshaller um = context.createUnmarshaller();
-        
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        XMLStreamReader xsr = xif.createXMLStreamReader(new FileInputStream(file));
-        
+
+	XMLInputFactory xif = XMLInputFactory.newFactory();
+	xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+	xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+	XMLStreamReader xsr = xif.createXMLStreamReader(new FileInputStream(file));
+
 	return (StartupCommandsHolder) um.unmarshal(xsr);
     }
 

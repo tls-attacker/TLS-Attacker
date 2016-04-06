@@ -45,7 +45,7 @@ public class TLSServer extends Thread {
 
     private static final int PORT = 55443;
 
-    private final String[] cipherSuites = null;
+    private String[] cipherSuites = null;
 
     private final int port;
 
@@ -68,6 +68,8 @@ public class TLSServer extends Thread {
 	TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
 	sslContext = SSLContext.getInstance(protocol);
 	sslContext.init(keyManagers, trustManagers, null);
+
+	cipherSuites = sslContext.getServerSocketFactory().getSupportedCipherSuites();
 
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug("Provider: " + sslContext.getProvider());
@@ -132,9 +134,10 @@ public class TLSServer extends Thread {
 	SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
 	serverSocket = serverSocketFactory.createServerSocket(port);
 	serverSocket.setReuseAddress(true);
-	if (cipherSuites != null) {
-	    ((SSLServerSocket) serverSocket).setEnabledCipherSuites(cipherSuites);
-	}
+	// if (cipherSuites != null) {
+	// ((SSLServerSocket)
+	// serverSocket).setEnabledCipherSuites(cipherSuites);
+	// }
 	LOGGER.debug("|| presetup successful");
     }
 

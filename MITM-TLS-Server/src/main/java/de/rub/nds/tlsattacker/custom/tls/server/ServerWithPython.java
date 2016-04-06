@@ -240,7 +240,7 @@ public class ServerWithPython {
 	byte[] random = new byte[28];
 	RANDOM.nextBytes(random);
 	byte[] sessionIdLength = { 0x00 };
-	byte[] cipher = CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA.getValue();
+	byte[] cipher = CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA.getByteValue();
 	byte[] compression = { 0x00 };
 	byte[] extension = { 0x00, 0x23, 0x00, 0x00 };
 	byte[] extensionLength = ArrayConverter.intToBytes(0x04, 2);
