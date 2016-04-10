@@ -40,6 +40,9 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
     @Parameter(names = "-session_ticket", description = "Enable if the server uses Session Tickets for Session Resumption")
     protected boolean sessionTicket = false;
 
+    @Parameter(names = "-pause_after_FullHs", description = "Enable if there should be a pause between initial and Rehandshake")
+    protected boolean pause = false;
+
     public TripleHandshakeAttackCommandConfig() {
 	workflowTraceType = WorkflowTraceType.FULL_SERVER_RESPONSE;
     }
@@ -66,5 +69,13 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
 
     public void setSessionTicket(boolean sessionTicket) {
 	this.sessionTicket = sessionTicket;
+    }
+
+    public boolean isPause() {
+	return pause;
+    }
+
+    public void setPause(boolean pause) {
+	this.pause = pause;
     }
 }
