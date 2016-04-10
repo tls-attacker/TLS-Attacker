@@ -88,36 +88,38 @@ public class TripleHandshakeWorkflowConfiguration {
 	protocolMessages.add(hrm);
 	hrm.setOnlyForward(true);
 
-	/**
-	 * // renegotiation protocolMessages.add(new
-	 * ClientHelloMessage(ConnectionEnd.CLIENT)); ApplicationMessage cAm =
-	 * new ApplicationMessage(ConnectionEnd.CLIENT);
-	 * protocolMessages.add(cAm); hrm.setOnlyForward(true);
-	 * 
-	 * ApplicationMessage sAm = new
-	 * ApplicationMessage(ConnectionEnd.SERVER); protocolMessages.add(sAm);
-	 * hrm.setOnlyForward(true);
-	 **/
+	// renegotiation
 
-	protocolMessages.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
+	ApplicationMessage cam2 = new ApplicationMessage(ConnectionEnd.CLIENT);
+	protocolMessages.add(cam2);
+	cam2.setOnlyForward(true);
 
-	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
+	ApplicationMessage sam = new ApplicationMessage(ConnectionEnd.SERVER);
+	protocolMessages.add(sam);
+	sam.setOnlyForward(true);
 
-	if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
-	    protocolMessages.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
-	}
+	// protocolMessages.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
+	//
+	// protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	// protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
+	//
+	// if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
+	// protocolMessages.add(new
+	// DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
+	// }
+	//
+	// protocolMessages.add(new
+	// CertificateRequestMessage(ConnectionEnd.SERVER));
+	// protocolMessages.add(new
+	// ServerHelloDoneMessage(ConnectionEnd.SERVER));
 
-	protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	ApplicationMessage cam3 = new ApplicationMessage(ConnectionEnd.CLIENT);
+	protocolMessages.add(cam3);
+	cam3.setOnlyForward(true);
 
-	ApplicationMessage cAm1 = new ApplicationMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(cAm1);
-	hrm.setOnlyForward(true);
-
-	ApplicationMessage sAm1 = new ApplicationMessage(ConnectionEnd.SERVER);
-	protocolMessages.add(sAm1);
-	hrm.setOnlyForward(true);
+	ApplicationMessage sam2 = new ApplicationMessage(ConnectionEnd.SERVER);
+	protocolMessages.add(sam2);
+	sam2.setOnlyForward(true);
 
 	/**
 	 * ApplicationMessage sAm2 = new
