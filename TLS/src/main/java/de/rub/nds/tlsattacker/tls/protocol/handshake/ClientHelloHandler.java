@@ -54,6 +54,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
     public byte[] prepareMessageAction() {
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
+	// supporting Session Resumption with Session IDs
 	if (tlsContext.isSessionResumption()) {
 	    protocolMessage.setSessionId(tlsContext.getSessionID());
 	} else {
@@ -64,6 +65,8 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	int length = protocolMessage.getSessionId().getValue().length;
 	protocolMessage.setSessionIdLength(length);
 
+	// automatic forwarding parts of the message within the Triple Handshake
+	// attack
 	if (tlsContext.isTHSAttack()) {
 	    protocolMessage.setUnixTime(protocolMessage.getUnixTime());
 	    protocolMessage.setRandom(protocolMessage.getRandom());
@@ -118,6 +121,8 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 			HandshakeByteLength.COMPRESSION), protocolMessage.getCompressions().getValue());
 
 	byte[] extensionBytes = null;
+	// automatic forwarding parts of the message within the Triple Handshake
+	// attack
 	if (tlsContext.isTHSAttack()) {
 	    extensionBytes = protocolMessage.getExtensionBytes();
 	    result = ArrayConverter.concatenate(result, extensionBytes);
@@ -189,6 +194,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	nextPointer += sessionIdLength;
 	protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
+	// handle unknown SessionID during Session resumption
 	if (!tlsContext.isTHSAttack() && tlsContext.isSessionResumption()
 		&& !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
 	    throw new WorkflowExecutionException("Session ID is unknown to the Server");
@@ -231,6 +237,8 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	currentPointer = nextPointer;
 	if ((currentPointer - pointer) < length) {
 	    currentPointer += ExtensionByteLength.EXTENSIONS;
+	    // store extensions for automatic forwarding parts of the message
+	    // within the Triple Handshake attack
 	    if (tlsContext.isTHSAttack()) {
 		int extensionLength = ArrayConverter.bytesToInt(Arrays
 			.copyOfRange(message, nextPointer, currentPointer));
