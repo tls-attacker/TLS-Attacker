@@ -95,6 +95,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	byte[] sessionId = Arrays.copyOfRange(message, currentPointer, nextPointer);
 	protocolMessage.setSessionId(sessionId);
 
+	// handle unknown SessionID during Session resumption
 	if (!tlsContext.isTHSAttack() && tlsContext.isSessionResumption()
 		&& !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
 	    throw new WorkflowExecutionException("Session ID is unknown to the Client");
@@ -154,10 +155,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     public byte[] prepareMessageAction() {
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
+	// supporting Session Resumption with Session IDs
 	if (tlsContext.isSessionResumption()) {
 	    protocolMessage.setSessionId(tlsContext.getSessionID());
 	} else {
-	    // TODO try to find a way to set proper Session-IDs
+	    // since the server cannot handle more than one Client at once a
+	    // static Session-ID is set
 	    protocolMessage.setSessionId(ArrayConverter
 		    .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
 	    tlsContext.setSessionID(protocolMessage.getSessionId().getValue());
@@ -188,6 +191,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 		protocolMessage.getSelectedCipherSuite().getValue(), new byte[] { protocolMessage
 			.getSelectedCompressionMethod().getValue() });
 
+	// extensions have to be added to the protocol message before the
+	// workflow trace is generated
 	byte[] extensionBytes = null;
 	for (ExtensionMessage extension : protocolMessage.getExtensions()) {
 	    ExtensionHandler handler = extension.getExtensionHandler();
