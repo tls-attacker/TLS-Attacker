@@ -154,6 +154,7 @@ public class MitMWorkflowExecutor {
 
     // currently acting as client
     private void setClient() {
+	LOGGER.debug("Currently acting as client:");
 	recordHandler = clientRecordHandler;
 	tlsContext = clientTlsContext;
 	transportHandler = clientTransportHandler;
@@ -162,6 +163,7 @@ public class MitMWorkflowExecutor {
 
     // currently acting as server
     private void setServer() {
+	LOGGER.debug("Currently acting as server:");
 	recordHandler = serverRecordHandler;
 	tlsContext = serverTlsContext;
 	transportHandler = serverTransportHandler;
@@ -190,15 +192,19 @@ public class MitMWorkflowExecutor {
 	}
 	try {
 	    byte[] data = fetch.fetchData();
+	    LOGGER.debug("Forwarded Data:  {}", ArrayConverter.bytesToHexString(data));
 	    send.sendData(data);
 	} catch (IOException e) {
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
 	}
-	if (tlsContext.getRecordHandler().getRecordCipher() != null) {
-	    TlsRecordBlockCipher tlsRecordBlockCipher = tlsContext.getRecordHandler().getRecordCipher();
-	    byte[] a = new byte[] { 0x35 };
-	    tlsRecordBlockCipher.calculateMac(ProtocolVersion.TLS12, ProtocolMessageType.HANDSHAKE, a);
-	}
+	/**
+	 * if (tlsContext.getRecordHandler().getRecordCipher() != null) {
+	 * TlsRecordBlockCipher tlsRecordBlockCipher =
+	 * tlsContext.getRecordHandler().getRecordCipher(); byte[] a = new
+	 * byte[] { 0x35 };
+	 * tlsRecordBlockCipher.calculateMac(ProtocolVersion.TLS12,
+	 * ProtocolMessageType.HANDSHAKE, a); }
+	 **/
 
 	serverWorkflowContext.incrementProtocolMessagePointer();
 	clientWorkflowContext.incrementProtocolMessagePointer();
@@ -223,17 +229,18 @@ public class MitMWorkflowExecutor {
 	byte[] pmBytes;
 	boolean finished = pm.getClass().toString()
 		.equals("class de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage");
-	if (pm.getClass().toString().equals("class de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage")
-		|| finished || !pm.isGoingToBeSent()) {
+	boolean ccs = pm.getClass().toString()
+		.equals("class de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage");
+	if (ccs || finished || !pm.isGoingToBeSent()) {
 	    pmBytes = handler.prepareMessage();
 	} else {
 	    pmBytes = pm.getCompleteResultingMessage().getValue();
 	}
 
 	// if message needs to be modified manually
-	if (pm.isModify() || modify) {
+	if ((pm.isModify() || modify) && !ccs) {
 	    javax.swing.JFrame frame = new javax.swing.JFrame();
-	    MitM_Dialog dialog = new MitM_Dialog(frame, true, pm);
+	    MitM_Dialog dialog = new MitM_Dialog(frame, true, pm, tlsContext.getMyConnectionEnd().toString());
 	    dialog.setVisible(true);
 	    dialog.setVisible(false);
 	    dialog.dispose();
