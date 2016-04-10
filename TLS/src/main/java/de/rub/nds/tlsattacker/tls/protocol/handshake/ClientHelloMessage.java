@@ -83,7 +83,7 @@ public class ClientHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray compressions;
     /**
-     * array of all extension bytes
+     * array of all extension bytes to forward them as MitM
      */
     byte[] extensionBytes;
 
