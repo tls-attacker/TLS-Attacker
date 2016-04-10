@@ -108,6 +108,10 @@ public class ClientConfigHandler extends ConfigHandler {
 	tlsContext.setHost(host);
 	tlsContext.setMyConnectionEnd(ConnectionEnd.CLIENT);
 
+	if (config.isClientAuthentication()) {
+	    tlsContext.setClientAuthentication(true);
+	}
+
 	if (config.getKeystore() != null) {
 	    try {
 		KeyStore ks = KeystoreHandler.loadKeyStore(config.getKeystore(), config.getPassword());
