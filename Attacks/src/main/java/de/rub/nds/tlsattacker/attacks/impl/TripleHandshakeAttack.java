@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,6 +57,7 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 	serverCommandConfig.setPassword(config.getPassword());
 	serverCommandConfig.setAlias(config.getAlias());
 	serverCommandConfig.setWorkflowTraceType(config.getWorkflowTraceType());
+	serverCommandConfig.setMaxTransportResponseWait(config.getMaxTransportResponseWait());
 
 	GeneralConfig generalConfig = new GeneralConfig();
 	ConfigHandler serverConfigHandler = ConfigHandlerFactory.createConfigHandler("server");
@@ -83,6 +85,15 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 
 	clientTransportHandler.closeConnection();
 	serverTransportHandler.closeConnection();
+
+	if (config.isPause()) {
+	    System.out.println("Press a Button to continue, if Browser has terminated loading.");
+	    try {
+		System.in.read();
+	    } catch (IOException e) {
+		System.err.println(e);
+	    }
+	}
 
 	clientTlsContext.setCertSecure(config.getCertSecure());
 
