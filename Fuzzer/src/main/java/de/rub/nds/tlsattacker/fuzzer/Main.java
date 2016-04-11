@@ -20,12 +20,8 @@
 package de.rub.nds.tlsattacker.fuzzer;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.fuzzer.config.CleverMultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
-import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
-import de.rub.nds.tlsattacker.fuzzer.impl.CleverMultiFuzzer;
 import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
-import de.rub.nds.tlsattacker.fuzzer.impl.SimpleFuzzer;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.security.Security;
@@ -46,12 +42,8 @@ public class Main {
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);
 
-	SimpleFuzzerConfig config = new SimpleFuzzerConfig();
-	jc.addCommand(SimpleFuzzerConfig.ATTACK_COMMAND, config);
-	MultiFuzzerConfig mconfig = new MultiFuzzerConfig();
-	jc.addCommand(MultiFuzzerConfig.ATTACK_COMMAND, mconfig);
-	CleverMultiFuzzerConfig cmconfig = new CleverMultiFuzzerConfig();
-	jc.addCommand(CleverMultiFuzzerConfig.ATTACK_COMMAND, cmconfig);
+	MultiFuzzerConfig cmconfig = new MultiFuzzerConfig();
+	jc.addCommand(MultiFuzzerConfig.ATTACK_COMMAND, cmconfig);
 
 	jc.parse(args);
 
@@ -61,13 +53,7 @@ public class Main {
 	}
 
 	switch (jc.getParsedCommand()) {
-	    case SimpleFuzzerConfig.ATTACK_COMMAND:
-		startSimpleFuzzer(config, generalConfig, jc);
-		break;
 	    case MultiFuzzerConfig.ATTACK_COMMAND:
-		startMultiFuzzer(mconfig, generalConfig, jc);
-		break;
-	    case CleverMultiFuzzerConfig.ATTACK_COMMAND:
 		startCleverMultiFuzzer(cmconfig, generalConfig, jc);
 		break;
 	    default:
@@ -76,29 +62,11 @@ public class Main {
 
     }
 
-    private static void startSimpleFuzzer(SimpleFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
-	SimpleFuzzer fuzzer = new SimpleFuzzer(fuzzerConfig, generalConfig);
-	if (fuzzerConfig.isHelp()) {
-	    jc.usage(SimpleFuzzerConfig.ATTACK_COMMAND);
-	    return;
-	}
-	fuzzer.startFuzzer();
-    }
-
-    private static void startMultiFuzzer(MultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
+    private static void startCleverMultiFuzzer(MultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig,
+	    JCommander jc) {
 	MultiFuzzer fuzzer = new MultiFuzzer(fuzzerConfig, generalConfig);
 	if (fuzzerConfig.isHelp()) {
 	    jc.usage(MultiFuzzerConfig.ATTACK_COMMAND);
-	    return;
-	}
-	fuzzer.startFuzzer();
-    }
-
-    private static void startCleverMultiFuzzer(CleverMultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig,
-	    JCommander jc) {
-	CleverMultiFuzzer fuzzer = new CleverMultiFuzzer(fuzzerConfig, generalConfig);
-	if (fuzzerConfig.isHelp()) {
-	    jc.usage(CleverMultiFuzzerConfig.ATTACK_COMMAND);
 	    return;
 	}
 	fuzzer.startFuzzer();

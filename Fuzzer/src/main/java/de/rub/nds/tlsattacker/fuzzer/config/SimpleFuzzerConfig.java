@@ -22,15 +22,10 @@ package de.rub.nds.tlsattacker.fuzzer.config;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyFormatConverter;
 import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyTypeConverter;
-import de.rub.nds.tlsattacker.fuzzer.impl.FuzzingType;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.tlsattacker.tls.config.CipherSuiteFilter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +43,7 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given file.", converter = FileConverter.class)
     String serverCommandFromFile;
 
-    @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100)", validateWith = PercentageValidator.class)
+    @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100), in steps 2 and 3", validateWith = PercentageValidator.class)
     Integer modifyVariablePercentage = 50;
 
     @Parameter(names = "-modified_variable_whitelist", description = "Pattern for modifiable variables that are going to be modified randomly (e.g., defining *length consideres only variables ending with length")
@@ -63,38 +58,34 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-modified_variable_formats", description = "Format of modifiable variables that are going to be modified randomly (e.g., defining ASN1 consideres only variables with ASN.1 formats)", converter = PropertyFormatConverter.class)
     List<ModifiableVariableProperty.Format> modifiableVariableFormats;
 
-    @Parameter(names = "-duplicate_message", description = "Probability of a random message duplication", validateWith = PercentageValidator.class)
-    Integer duplicateMessagePercentage = 50;
+    @Parameter(names = "-generate_message", description = "Probability of a random message generation in step 3", validateWith = PercentageValidator.class)
+    Integer generateMessagePercentage = 50;
 
-    @Parameter(names = "-not_sending_message", description = "Probability of a random message being not sent to the peer", validateWith = PercentageValidator.class)
+    @Parameter(names = "-not_sending_message", description = "Probability of a random message being not sent to the peer in step 3", validateWith = PercentageValidator.class)
     Integer notSendingMessagePercantage = 50;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
-    Integer addRecordPercentage = 40;
+    Integer addRecordPercentage = 50;
 
-    @Parameter(names = "-interrupt", description = "Interrupts scan after first finding resulting in an invalid workflow.")
-    boolean interruptAfterFirstFinding;
+    @Parameter(names = "-variable_modification_iter", description = "Number of modifications made to each field while executing a systematic fuzzing in step 1.")
+    Integer variableModificationIter = 1000;
 
-    @Parameter(names = "-fuzzing_type", description = "Fuzzing can be either done completely randomly, or systematically iterating over modifiable variable.")
-    FuzzingType fuzzingType = FuzzingType.SYSTEMATIC;
+    @Parameter(names = "-random_modification_iter", description = "Number of random modifications made to a handshake while executing a systematic fuzzing in step 2.")
+    Integer randomModificationIter = 10000;
 
-    @Parameter(names = "-max_systematic_modifications", description = "Maximum number of modifications made to a field while executing a systematic fuzzing")
-    Integer maxSystematicModifications = 10;
+    @Parameter(names = "-handshake_modification_iter", description = "Number of random modifications to the handshake made while fuzzing in step 3.")
+    Integer handshakeModificationIter = 10000;
 
     @Parameter(names = "-restart_server", description = "Indicates whether the server is restarted in each fuzzing iteration.")
     boolean restartServerInEachInteration = false;
 
-    @Parameter(names = "-execute_protocol_modification", description = "If set to true, random protocol flows are generated.")
-    boolean executeProtocolModification = false;
+    @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.")
+    String outputFolder;
+
+    @Parameter(names = "-workflow_folder", description = "Folder with tested workflows.")
+    String workflowFolder;
 
     public SimpleFuzzerConfig() {
-	cipherSuites.clear();
-	cipherSuites.addAll(CipherSuite.getImplemented());
-	// shuffle ciphersuites
-	Collections.shuffle(cipherSuites);
-	// filter ciphersuites so that only identical ciphersuites hold there
-	CipherSuiteFilter.filterCipherSuites(cipherSuites);
-	workflowTraceType = WorkflowTraceType.HANDSHAKE;
 	modifiableVariableTypes = new LinkedList<>();
 	modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
 	modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
@@ -105,6 +96,7 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
 
+	outputFolder = "/tmp/";
     }
 
     public String getServerCommand() {
@@ -155,12 +147,12 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	this.modifiableVariableFormats = modifiableVariableFormats;
     }
 
-    public Integer getDuplicateMessagePercentage() {
-	return duplicateMessagePercentage;
+    public Integer getGenerateMessagePercentage() {
+	return generateMessagePercentage;
     }
 
-    public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
-	this.duplicateMessagePercentage = duplicateMessagePercentage;
+    public void setGenerateMessagePercentage(Integer generateMessagePercentage) {
+	this.generateMessagePercentage = generateMessagePercentage;
     }
 
     public Integer getNotSendingMessagePercantage() {
@@ -179,14 +171,14 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	this.addRecordPercentage = addRecordPercentage;
     }
 
-    public boolean isInterruptAfterFirstFinding() {
-	return interruptAfterFirstFinding;
-    }
-
-    public void setInterruptAfterFirstFinding(boolean interruptAfterFirstFinding) {
-	this.interruptAfterFirstFinding = interruptAfterFirstFinding;
-    }
-
+    // public boolean isInterruptAfterFirstFinding() {
+    // return interruptAfterFirstFinding;
+    // }
+    //
+    // public void setInterruptAfterFirstFinding(boolean
+    // interruptAfterFirstFinding) {
+    // this.interruptAfterFirstFinding = interruptAfterFirstFinding;
+    // }
     public String getModifiedVariableWhitelist() {
 	return modifiedVariableWhitelist;
     }
@@ -203,20 +195,12 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	this.modifiedVariableBlacklist = modifiedVariableBlacklist;
     }
 
-    public FuzzingType getFuzzingType() {
-	return fuzzingType;
+    public Integer getVariableModificationIter() {
+	return variableModificationIter;
     }
 
-    public void setFuzzingType(FuzzingType fuzzingType) {
-	this.fuzzingType = fuzzingType;
-    }
-
-    public Integer getMaxSystematicModifications() {
-	return maxSystematicModifications;
-    }
-
-    public void setMaxSystematicModifications(Integer maxSystematicModifications) {
-	this.maxSystematicModifications = maxSystematicModifications;
+    public void setVariableModificationIter(Integer variableModificationIter) {
+	this.variableModificationIter = variableModificationIter;
     }
 
     public boolean isRestartServerInEachInteration() {
@@ -227,12 +211,36 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	this.restartServerInEachInteration = restartServerInEachInteration;
     }
 
-    public boolean isExecuteProtocolModification() {
-	return executeProtocolModification;
+    public Integer getRandomModificationIter() {
+	return randomModificationIter;
     }
 
-    public void setExecuteProtocolModification(boolean executeProtocolModification) {
-	this.executeProtocolModification = executeProtocolModification;
+    public void setRandomModificationIter(Integer randomModificationIter) {
+	this.randomModificationIter = randomModificationIter;
+    }
+
+    public Integer getHandshakeModificationIter() {
+	return handshakeModificationIter;
+    }
+
+    public void setHandshakeModificationIter(Integer handshakeModificationIter) {
+	this.handshakeModificationIter = handshakeModificationIter;
+    }
+
+    public String getOutputFolder() {
+	return outputFolder;
+    }
+
+    public void setOutputFolder(String outputFolder) {
+	this.outputFolder = outputFolder;
+    }
+
+    public String getWorkflowFolder() {
+	return workflowFolder;
+    }
+
+    public void setWorkflowFolder(String workflowFolder) {
+	this.workflowFolder = workflowFolder;
     }
 
     public boolean containsServerCommand() {
