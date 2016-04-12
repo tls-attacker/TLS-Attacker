@@ -25,32 +25,26 @@
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA512</hashAlgorithm>
                         <signatureAlgorithm>RSA</signatureAlgorithm>
-                        <value>0601</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA512</hashAlgorithm>
                         <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                        <value>0603</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA256</hashAlgorithm>
                         <signatureAlgorithm>RSA</signatureAlgorithm>
-                        <value>0401</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA256</hashAlgorithm>
                         <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                        <value>0403</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA1</hashAlgorithm>
                         <signatureAlgorithm>RSA</signatureAlgorithm>
-                        <value>0201</value>
                     </signatureAndHashAlgorithmsConfig>
                     <signatureAndHashAlgorithmsConfig>
                         <hashAlgorithm>SHA1</hashAlgorithm>
                         <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                        <value>0203</value>
                     </signatureAndHashAlgorithmsConfig>
                 </SignatureAndHashAlgorithmsExtension>
             </extensions>
