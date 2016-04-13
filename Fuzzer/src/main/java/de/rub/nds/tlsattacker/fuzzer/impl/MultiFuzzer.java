@@ -88,7 +88,7 @@ public class MultiFuzzer extends Fuzzer {
 		SimpleFuzzer fuzzer = new SimpleFuzzer(simpleConfig, generalConfig);
 		fuzzer.setFuzzingName(command.getShortName());
 
-		new CleverFuzzerStarter(fuzzer, command.getShortName()).start();
+		new FuzzerStarter(fuzzer, command.getShortName()).start();
 	    }
 	} catch (FileNotFoundException | JAXBException | XMLStreamException ex) {
 	    throw new ConfigurationException("Unmarshaling failed", ex);
@@ -131,11 +131,11 @@ public class MultiFuzzer extends Fuzzer {
 	return (StartupCommandsHolder) um.unmarshal(xsr);
     }
 
-    class CleverFuzzerStarter extends Thread {
+    class FuzzerStarter extends Thread {
 
 	private final SimpleFuzzer fuzzer;
 
-	public CleverFuzzerStarter(SimpleFuzzer fuzzer, String name) {
+	public FuzzerStarter(SimpleFuzzer fuzzer, String name) {
 	    super(name);
 	    this.fuzzer = fuzzer;
 	}

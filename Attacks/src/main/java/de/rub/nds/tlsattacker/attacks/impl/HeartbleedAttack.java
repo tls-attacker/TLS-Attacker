@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -45,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(HeartbleedAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(HeartbleedAttack.class);
 
     public HeartbleedAttack(HeartbleedCommandConfig config) {
 	super(config);
@@ -74,9 +75,11 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 	HeartbeatMessage lastMessage = (HeartbeatMessage) trace.getProtocolMessages().get(
 		trace.getProtocolMessages().size() - 1);
 	if (lastMessage.getMessageIssuer() == ConnectionEnd.SERVER) {
-	    LOGGER.error("The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
 	} else {
-	    LOGGER.info("The server does not respond with a heartbeat message, it is not vulnerable");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "The server does not respond with a heartbeat message, it is not vulnerable");
 	}
 
 	transportHandler.closeConnection();

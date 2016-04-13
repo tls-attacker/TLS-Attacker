@@ -6,10 +6,7 @@
             <includeInDigest>true</includeInDigest>
             <extensions>
                 <EllipticCurves>
-                    <supportedCurvesConfig>SECP192R1</supportedCurvesConfig>
                     <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP384R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP521R1</supportedCurvesConfig>
                 </EllipticCurves>
                 <ECPointFormat>
                     <pointFormatsConfig>UNCOMPRESSED</pointFormatsConfig>

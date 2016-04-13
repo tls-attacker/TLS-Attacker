@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -45,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(PoodleAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(PoodleAttack.class);
 
     public PoodleAttack(PoodleCommandConfig config) {
 	super(config);
@@ -80,11 +81,14 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 	TlsContextAnalyzer.AnalyzerResponse analyzerResponse = TlsContextAnalyzer
 		.containsAlertAfterModifiedMessage(tlsContext);
 	if (analyzerResponse == TlsContextAnalyzer.AnalyzerResponse.ALERT) {
-	    LOGGER.info("The modified message padding was identified, the server correctly responds with an alert message");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
 	} else if (analyzerResponse == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT) {
-	    LOGGER.error("The modified message padding was not identified, the server does NOT respond with an alert message");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
 	} else {
-	    LOGGER.error("The protocol message flow was incomplete, analze the message flow");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "Vulnerable(?). The protocol message flow was incomplete, analyze the message flow");
 	}
 
 	transportHandler.closeConnection();
