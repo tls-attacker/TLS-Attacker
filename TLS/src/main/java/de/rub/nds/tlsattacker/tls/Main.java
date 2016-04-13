@@ -31,8 +31,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.FileOutputStream;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
@@ -40,10 +38,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
-	// ECC does not work properly in the NSS provider
-	Security.removeProvider("SunPKCS11-NSS");
-	Security.addProvider(new BouncyCastleProvider());
 
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);
@@ -68,7 +62,7 @@ public class Main {
 	}
 
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
-	configHandler.initializeGeneralConfig(generalConfig);
+	configHandler.initialize(generalConfig);
 
 	if (configHandler.printHelpForCommand(jc, config)) {
 	    return;

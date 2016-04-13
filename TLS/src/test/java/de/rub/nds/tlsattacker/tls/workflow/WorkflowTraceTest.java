@@ -37,7 +37,7 @@ public class WorkflowTraceTest {
 
     public WorkflowTraceTest() {
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initializeGeneralConfig(new GeneralConfig());
+	configHandler.initialize(new GeneralConfig());
 	ClientCommandConfig ccc = new ClientCommandConfig();
 	TlsContext tlsContext = configHandler.initializeTlsContext(ccc);
 	trace = tlsContext.getWorkflowTrace();

@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.Random;
@@ -35,7 +34,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
@@ -95,7 +93,6 @@ public final class PKCS1VectorGenerator {
 	}
 
 	try {
-	    Security.addProvider(new BouncyCastleProvider());
 	    Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
 	    rsa.init(Cipher.ENCRYPT_MODE, publicKey);
 	    byte[][] encryptedKeys = new byte[vectorSize][];

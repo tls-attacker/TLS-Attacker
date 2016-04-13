@@ -81,7 +81,7 @@ public class TlsClientTest {
 	GeneralConfig generalConfig = new GeneralConfig();
 	generalConfig.setLogLevel(Level.INFO);
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initializeGeneralConfig(generalConfig);
+	configHandler.initialize(generalConfig);
 
 	ClientCommandConfig config = new ClientCommandConfig();
 	config.setConnect("localhost:" + PORT);

@@ -95,7 +95,7 @@ public class SimpleFuzzer extends Fuzzer {
     public void startFuzzer() {
 
 	configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initializeGeneralConfig(generalConfig);
+	configHandler.initialize(generalConfig);
 
 	String logFolder = initializeLogFolder();
 
