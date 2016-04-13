@@ -23,12 +23,13 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import java.math.BigInteger;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class Record extends de.rub.nds.tlsattacker.tls.record.Record {
+public class DtlsRecord extends Record {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;

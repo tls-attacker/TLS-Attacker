@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
@@ -61,7 +61,7 @@ public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationF
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	ClientHelloDtlsMessage ch = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
 	workflowTrace.add(ch);
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
@@ -74,7 +74,7 @@ public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationF
 	hvrm.setIncludeInDigest(false);
 	workflowTrace.add(hvrm);
 
-	ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	ch = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
 	workflowTrace.add(ch);
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());

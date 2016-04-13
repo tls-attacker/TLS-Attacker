@@ -24,12 +24,13 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage {
+public class ClientHelloDtlsMessage extends ClientHelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     ModifiableByteArray cookie;
@@ -37,13 +38,13 @@ public class ClientHelloMessage extends de.rub.nds.tlsattacker.tls.protocol.hand
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableByte cookieLength;
 
-    public ClientHelloMessage() {
+    public ClientHelloDtlsMessage() {
 	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
 	cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
 	this.messageIssuer = ConnectionEnd.CLIENT;
     }
 
-    public ClientHelloMessage(ConnectionEnd messageIssuer) {
+    public ClientHelloDtlsMessage(ConnectionEnd messageIssuer) {
 	this();
 	this.messageIssuer = messageIssuer;
     }

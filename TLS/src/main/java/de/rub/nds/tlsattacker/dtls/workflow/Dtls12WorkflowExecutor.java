@@ -20,7 +20,7 @@
 package de.rub.nds.tlsattacker.dtls.workflow;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeFragmentHandler;
-import de.rub.nds.tlsattacker.dtls.record.RecordHandler;
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -29,8 +29,9 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.dtls.record.Record;
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -59,7 +60,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     private final WorkflowTrace workflowTrace;
 
-    private Record currentRecord, changeCipherSpecRecordBuffer, parseRecordBuffer;
+    private DtlsRecord currentRecord, changeCipherSpecRecordBuffer, parseRecordBuffer;
 
     private List<ProtocolMessage> protocolMessages;
 
@@ -70,16 +71,16 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     private final HandshakeFragmentHandler handshakeFragmentHandler = new HandshakeFragmentHandler();
 
-    private final RecordHandler dtlsRecordHandler;
+    private final DtlsRecordHandler dtlsRecordHandler;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	super(transportHandler, tlsContext);
 
-	tlsContext.setRecordHandler(new RecordHandler(tlsContext));
+	tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
 
 	workflowTrace = this.tlsContext.getWorkflowTrace();
 	recordHandler = tlsContext.getRecordHandler();
-	dtlsRecordHandler = (RecordHandler) tlsContext.getRecordHandler();
+	dtlsRecordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
 
 	if (this.transportHandler == null || recordHandler == null) {
 	    throw new ConfigurationException("The WorkflowExecutor was not configured properly");
@@ -138,7 +139,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	byte[] messageBytes = pmh.prepareMessage();
 
 	if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
-	    protocolMessage.addRecord(new Record());
+	    protocolMessage.addRecord(new DtlsRecord());
 	}
 
 	byte[] record = recordHandler.wrapData(messageBytes, protocolMessage.getProtocolMessageType(),
@@ -157,7 +158,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	retransmitList.add(messageBytes);
 
 	if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
-	    protocolMessage.addRecord(new Record());
+	    protocolMessage.addRecord(new DtlsRecord());
 	}
 
 	byte[] record = recordHandler.wrapData(messageBytes, ProtocolMessageType.CHANGE_CIPHER_SPEC,
@@ -178,7 +179,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
 	if (handshakeMessageSendRecordList == null) {
 	    handshakeMessageSendRecordList = new ArrayList<>();
-	    handshakeMessageSendRecordList.add(new Record());
+	    handshakeMessageSendRecordList.add(new DtlsRecord());
 	}
 
 	handshakeMessage.setRecords(handshakeMessageSendRecordList);
@@ -222,7 +223,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	}
     }
 
-    private Record getNextProtocolMessageRecord(ProtocolMessage pm) throws Exception {
+    private DtlsRecord getNextProtocolMessageRecord(ProtocolMessage pm) throws Exception {
 	switch (pm.getProtocolMessageType()) {
 	    case HANDSHAKE:
 		return getHandshakeMessage();
@@ -234,7 +235,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private boolean receiveAndParseNextProtocolMessage(ProtocolMessage pm) throws Exception {
-	Record rcvRecord = parseRecordBuffer;
+	DtlsRecord rcvRecord = parseRecordBuffer;
 
 	if (rcvRecord == null) {
 	    rcvRecord = getNextProtocolMessageRecord(pm);
@@ -312,8 +313,9 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	return pm;
     }
 
-    protected Record getHandshakeMessage() throws Exception {
-	Record rcvRecord, outRecord = new Record();
+    protected DtlsRecord getHandshakeMessage() throws Exception {
+	DtlsRecord rcvRecord;
+	DtlsRecord outRecord = new DtlsRecord();
 	ProtocolMessageType rcvRecordProtocolMessageType;
 	long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
 	boolean messageAvailable = false;
@@ -349,8 +351,8 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	return null;
     }
 
-    protected Record getNonHandshakeNonCcsMessages() throws Exception {
-	Record rcvRecord;
+    protected DtlsRecord getNonHandshakeNonCcsMessages() throws Exception {
+	DtlsRecord rcvRecord;
 	ProtocolMessageType rcvRecordProtocolMessageType = null;
 	long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
 
@@ -376,8 +378,8 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	return null;
     }
 
-    protected Record getChangeCipherSpecMessage() throws Exception {
-	Record rcvRecord;
+    protected DtlsRecord getChangeCipherSpecMessage() throws Exception {
+	DtlsRecord rcvRecord;
 	ProtocolMessageType rcvRecordProtocolMessageType;
 	long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
 
@@ -411,36 +413,36 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	return changeCipherSpecRecordBuffer != null;
     }
 
-    private Record getReceivedChangeCipherSepc() {
-	Record output = changeCipherSpecRecordBuffer;
+    private DtlsRecord getReceivedChangeCipherSepc() {
+	DtlsRecord output = changeCipherSpecRecordBuffer;
 	changeCipherSpecRecordBuffer = null;
 	return output;
     }
 
-    private void processChangeCipherSpecRecord(Record ccsRecord) {
+    private void processChangeCipherSpecRecord(DtlsRecord ccsRecord) {
 	if (changeCipherSpecRecordBuffer == null) {
 	    changeCipherSpecRecordBuffer = ccsRecord;
 	}
     }
 
-    private Record receiveNextValidRecord() throws IOException {
-	de.rub.nds.tlsattacker.dtls.record.Record nextRecord = receiveNextRecord();
+    private DtlsRecord receiveNextValidRecord() throws IOException {
+	de.rub.nds.tlsattacker.dtls.record.DtlsRecord nextRecord = receiveNextRecord();
 	while (!checkRecordValidity(nextRecord)) {
 	    nextRecord = receiveNextRecord();
 	}
 	return nextRecord;
     }
 
-    private Record receiveNextRecord() throws IOException {
+    private DtlsRecord receiveNextRecord() throws IOException {
 	if (recordBuffer.isEmpty()) {
 	    processNextPacket();
 	}
-	Record out = (Record) recordBuffer.get(0);
+	DtlsRecord out = (DtlsRecord) recordBuffer.get(0);
 	recordBuffer.remove(0);
 	return out;
     }
 
-    private boolean checkRecordValidity(Record record) {
+    private boolean checkRecordValidity(DtlsRecord record) {
 	return record.getEpoch().getValue() == serverEpochCounter;
     }
 
@@ -474,7 +476,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 	}
 
 	for (int i = 0; i < retransmitList.size(); i++) {
-	    recordList.add(new Record());
+	    recordList.add(new DtlsRecord());
 	    retransmittedMessage = retransmitList.get(i);
 	    currentPointer = retransmitPointer - (retransmitList.size() - i);
 

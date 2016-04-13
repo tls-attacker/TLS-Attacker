@@ -72,7 +72,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	byte[] cookieArray = new byte[0];
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
 		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
-	    de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage) protocolMessage;
+	    de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage) protocolMessage;
 	    dtlsClientHello.setCookie(tlsContext.getDtlsHandshakeCookie());
 	    dtlsClientHello.setCookieLength((byte) tlsContext.getDtlsHandshakeCookie().length);
 	    cookieArray = ArrayConverter.concatenate(new byte[] { dtlsClientHello.getCookieLength().getValue() },
@@ -168,7 +168,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
 		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
-	    de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage) protocolMessage;
+	    de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage) protocolMessage;
 	    currentPointer = nextPointer;
 	    nextPointer += HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH;
 	    byte cookieLength = message[currentPointer];
