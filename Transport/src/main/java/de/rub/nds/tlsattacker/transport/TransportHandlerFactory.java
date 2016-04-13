@@ -34,7 +34,7 @@ public class TransportHandlerFactory {
 
     public static TransportHandler createTransportHandler(TransportHandlerType type, int tlsTimeout) {
 	switch (type) {
-	    case SIMPLE:
+	    case TCP:
 		SimpleTransportHandler th = new SimpleTransportHandler();
 		th.setTlsTimeout(tlsTimeout);
 		return th;

@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -38,15 +39,16 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.RecordHandler {
+public class DtlsRecordHandler extends RecordHandler {
 
-    private static final Logger LOGGER = LogManager.getLogger(de.rub.nds.tlsattacker.dtls.record.RecordHandler.class);
+    private static final Logger LOGGER = LogManager
+	    .getLogger(de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler.class);
 
     private long sequenceCounter, lastEpochSequenceCounter;
 
     private int epochCounter;
 
-    public RecordHandler(TlsContext tlsContext) {
+    public DtlsRecordHandler(TlsContext tlsContext) {
 	super(tlsContext);
 	if (tlsContext.getProtocolVersion() != ProtocolVersion.DTLS12) {
 	    if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
@@ -70,11 +72,12 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.RecordHandl
 	while (dataPointer != data.length) {
 	    // we check if there are enough records to be written in
 	    if (records.size() == currentRecord) {
-		records.add(new de.rub.nds.tlsattacker.dtls.record.Record());
+		records.add(new de.rub.nds.tlsattacker.dtls.record.DtlsRecord());
 	    }
 	    Record record = records.get(currentRecord);
 	    // fill record with data
-	    dataPointer = fillRecord((de.rub.nds.tlsattacker.dtls.record.Record) record, contentType, data, dataPointer);
+	    dataPointer = fillRecord((de.rub.nds.tlsattacker.dtls.record.DtlsRecord) record, contentType, data,
+		    dataPointer);
 	    if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
 		advanceEpoch();
 	    }
@@ -89,7 +92,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.RecordHandl
 	// create resulting byte array
 	byte[] result = new byte[0];
 	for (Record record : records) {
-	    de.rub.nds.tlsattacker.dtls.record.Record dtlsRecord = (de.rub.nds.tlsattacker.dtls.record.Record) record;
+	    de.rub.nds.tlsattacker.dtls.record.DtlsRecord dtlsRecord = (de.rub.nds.tlsattacker.dtls.record.DtlsRecord) record;
 	    byte[] ctArray = { record.getContentType().getValue() };
 	    byte[] pv = record.getProtocolVersion().getValue();
 	    byte[] en = ArrayConverter.intToBytes(dtlsRecord.getEpoch().getValue(), RecordByteLength.EPOCH);
@@ -125,7 +128,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.RecordHandl
      *            current position in the read data
      * @return new position of the data going to be sent in the records
      */
-    private int fillRecord(de.rub.nds.tlsattacker.dtls.record.Record record, ProtocolMessageType contentType,
+    private int fillRecord(de.rub.nds.tlsattacker.dtls.record.DtlsRecord record, ProtocolMessageType contentType,
 	    byte[] data, int dataPointer) {
 	record.setContentType(contentType.getValue());
 	record.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
@@ -179,7 +182,7 @@ public class RecordHandler extends de.rub.nds.tlsattacker.tls.record.RecordHandl
 		throw new WorkflowExecutionException("Could not identify valid protocol message type for the current "
 			+ "record. The value in the record was: " + rawRecordData[dataPointer]);
 	    }
-	    de.rub.nds.tlsattacker.dtls.record.Record record = new de.rub.nds.tlsattacker.dtls.record.Record();
+	    de.rub.nds.tlsattacker.dtls.record.DtlsRecord record = new de.rub.nds.tlsattacker.dtls.record.DtlsRecord();
 	    record.setContentType(contentType.getValue());
 
 	    byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };

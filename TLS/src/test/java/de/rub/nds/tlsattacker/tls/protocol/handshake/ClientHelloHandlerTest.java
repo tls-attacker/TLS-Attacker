@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
@@ -82,9 +82,9 @@ public class ClientHelloHandlerTest {
      */
     @Test
     public void testPrepareMessage() {
-	dtlshandler.setProtocolMessage(new ClientHelloMessage());
+	dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage());
 
-	ClientHelloMessage message = (ClientHelloMessage) dtlshandler.getProtocolMessage();
+	ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
 
 	List<CipherSuite> cipherSuites = new ArrayList();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
@@ -107,7 +107,7 @@ public class ClientHelloHandlerTest {
 
     @Test
     public void testPrepareMessageWithExtensions() {
-	handler.setProtocolMessage(new ClientHelloMessage());
+	handler.setProtocolMessage(new ClientHelloDtlsMessage());
 
 	de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
 		.getProtocolMessage();
@@ -154,10 +154,10 @@ public class ClientHelloHandlerTest {
 
     @Test
     public void testParseMessageAction() {
-	dtlshandler.setProtocolMessage(new ClientHelloMessage());
+	dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage());
 
 	int endPointer = dtlshandler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
-	ClientHelloMessage message = (ClientHelloMessage) dtlshandler.getProtocolMessage();
+	ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
 
 	byte[] expectedRandom = ArrayConverter
 		.hexStringToByteArray("36cce3e132a0c5b5de2c0560b4ff7f6cdf7ae226120e4a99c07e2d9b68b275bb");
