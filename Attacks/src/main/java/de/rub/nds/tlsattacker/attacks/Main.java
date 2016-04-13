@@ -45,8 +45,6 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * 
@@ -55,10 +53,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
-	// ECC does not work properly in the NSS provider
-	Security.removeProvider("SunPKCS11-NSS");
-	Security.addProvider(new BouncyCastleProvider());
 
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);
@@ -127,7 +121,7 @@ public class Main {
 		throw new ConfigurationException("No command found");
 	}
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initializeGeneralConfig(generalConfig);
+	configHandler.initialize(generalConfig);
 
 	if (configHandler.printHelpForCommand(jc, attacker.getConfig())) {
 	    return;

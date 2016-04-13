@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.30</version>
+            <version>1.35</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.jmockit</groupId>
@@ -77,7 +77,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

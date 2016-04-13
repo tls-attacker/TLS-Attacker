@@ -1,24 +1,24 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.misc;
 
+import java.lang.reflect.Field;
 import java.security.InvalidKeyException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -32,7 +32,10 @@ import org.junit.Test;
 /**
  * If you run on an Oracle Java platform, it is possible that strong algorithms
  * are not allowed. In this case, you have to install a so called Unlimited
- * Strength Jurisdiction Policy
+ * Strength Jurisdiction Policy.
+ * 
+ * We try to remove this limitation programmatically (see the field setters),
+ * but it is possible that this does not work on all platforms.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -43,6 +46,10 @@ public class UnlimitedStrengthTest {
     @Test
     public void testAES256() throws Exception {
 	try {
+	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+	    field.setAccessible(true);
+	    field.set(null, java.lang.Boolean.FALSE);
+
 	    Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
 	    IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
 	    SecretKey encryptKey = new SecretKeySpec(new byte[32], "AES");
