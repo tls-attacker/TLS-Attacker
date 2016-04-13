@@ -45,7 +45,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class SniTest extends Attacker<SniTestCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(SniTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(SniTest.class);
 
     public SniTest(SniTestCommandConfig config) {
 	super(config);

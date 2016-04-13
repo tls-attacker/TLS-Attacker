@@ -27,7 +27,7 @@ import com.beust.jcommander.Parameter;
  */
 public class MultiFuzzerConfig {
 
-    public static final String ATTACK_COMMAND = "clever_multi_fuzzer";
+    public static final String ATTACK_COMMAND = "multi_fuzzer";
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints help")
     protected boolean help;

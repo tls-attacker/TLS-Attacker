@@ -6,9 +6,6 @@
             <includeInDigest>true</includeInDigest>
             <extensions>
                 <EllipticCurves>
-                    <supportedCurvesConfig>SECP192R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP384R1</supportedCurvesConfig>
                     <supportedCurvesConfig>SECP521R1</supportedCurvesConfig>
                 </EllipticCurves>
                 <ECPointFormat>
@@ -48,10 +45,8 @@
                 <CompressionMethod>NULL</CompressionMethod>
             </supportedCompressionMethods>
             <supportedCipherSuites>
-                <CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
-                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA256</CipherSuite>
+                <CipherSuite>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</CipherSuite>
+                <CipherSuite>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</CipherSuite>
             </supportedCipherSuites>
         </ClientHello>
         <ServerHello>
@@ -60,15 +55,15 @@
         <Certificate>
             <messageIssuer>SERVER</messageIssuer>
         </Certificate>
+        <ECDHEServerKeyExchange>
+            <messageIssuer>SERVER</messageIssuer>
+        </ECDHEServerKeyExchange>
         <ServerHelloDone>
             <messageIssuer>SERVER</messageIssuer>
         </ServerHelloDone>
-        <ServerHello>
+        <ECDHClientKeyExchange>
             <messageIssuer>CLIENT</messageIssuer>
-        </ServerHello>
-        <RSAClientKeyExchange>
-            <messageIssuer>CLIENT</messageIssuer>
-        </RSAClientKeyExchange>
+        </ECDHClientKeyExchange>
         <ChangeCipherSpec>
             <messageIssuer>CLIENT</messageIssuer>
         </ChangeCipherSpec>

@@ -57,7 +57,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttack.class);
+    private static Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttack.class);
 
     private TlsContext tlsContext;
 

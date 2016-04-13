@@ -30,9 +30,9 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EllipticCurveAttackFullCommandConfig extends ClientCommandConfig {
+public class InvalidCurveAttackFullCommandConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "elliptic";
+    public static final String ATTACK_COMMAND = "invalid_curve_full";
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
     protected int additionalEquations;
@@ -40,7 +40,7 @@ public class EllipticCurveAttackFullCommandConfig extends ClientCommandConfig {
     @Parameter(names = "-server_type", description = "Allows to switch between a normal vulnerable server type and an Oracle server type (for oracle a slightly different algorithm is needed).")
     protected ICEAttacker.ServerType serverType;
 
-    public EllipticCurveAttackFullCommandConfig() {
+    public InvalidCurveAttackFullCommandConfig() {
 	cipherSuites.clear();
 	cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
 	cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);

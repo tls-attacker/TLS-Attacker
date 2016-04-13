@@ -31,20 +31,20 @@ import java.math.BigInteger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EllipticCurveAttackCommandConfig extends ClientCommandConfig {
+public class InvalidCurveAttackCommandConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "elliptic_test";
+    public static final String ATTACK_COMMAND = "invalid_curve";
 
-    @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class, required = true)
+    @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
     BigInteger premasterSecret;
 
-    @Parameter(names = "-public_point_base_x", description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class, required = true)
+    @Parameter(names = "-public_point_base_x", description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
     BigInteger publicPointBaseX;
 
-    @Parameter(names = "-public_point_base_y", description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class, required = true)
+    @Parameter(names = "-public_point_base_y", description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
     BigInteger publicPointBaseY;
 
-    public EllipticCurveAttackCommandConfig() {
+    public InvalidCurveAttackCommandConfig() {
 	cipherSuites.clear();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);

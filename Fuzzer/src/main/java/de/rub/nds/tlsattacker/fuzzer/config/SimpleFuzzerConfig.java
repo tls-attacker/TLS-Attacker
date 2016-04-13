@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.fuzzer.config;
 
@@ -67,14 +66,14 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
     Integer addRecordPercentage = 50;
 
-    @Parameter(names = "-variable_modification_iter", description = "Number of modifications made to each field while executing a systematic fuzzing in step 1.")
+    @Parameter(names = "-variable_modification_iter", description = "Number of modifications made to each field while executing a systematic fuzzing in phase 1.")
     Integer variableModificationIter = 1000;
 
-    @Parameter(names = "-random_modification_iter", description = "Number of random modifications made to a handshake while executing a systematic fuzzing in step 2.")
-    Integer randomModificationIter = 10000;
+    @Parameter(names = "-random_modification_iter", description = "Number of random modifications made to a handshake while executing a systematic fuzzing in phase 2.")
+    Integer randomModificationIter = 100000;
 
-    @Parameter(names = "-handshake_modification_iter", description = "Number of random modifications to the handshake made while fuzzing in step 3.")
-    Integer handshakeModificationIter = 10000;
+    @Parameter(names = "-handshake_modification_iter", description = "Number of random modifications to the handshake made while fuzzing in phase 3.")
+    Integer handshakeModificationIter = 100000;
 
     @Parameter(names = "-restart_server", description = "Indicates whether the server is restarted in each fuzzing iteration.")
     boolean restartServerInEachInteration = false;
@@ -85,11 +84,21 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-workflow_folder", description = "Folder with tested workflows.")
     String workflowFolder;
 
+    @Parameter(names = "-stage1", description = "Crypto Fuzzing with all crypto attacks")
+    boolean stage1;
+
+    @Parameter(names = "-stage2", description = "Random protocol fuzzing for boundary violations")
+    boolean stage2;
+
     public SimpleFuzzerConfig() {
 	modifiableVariableTypes = new LinkedList<>();
 	modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
 	modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
 	modifiableVariableTypes.add(ModifiableVariableProperty.Type.PADDING);
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.COOKIE);
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.KEY_MATERIAL);
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.SIGNATURE);
+	modifiableVariableTypes.add(ModifiableVariableProperty.Type.TLS_CONSTANT);
 
 	modifiableVariableFormats = new LinkedList<>();
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
@@ -97,6 +106,11 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
 
 	outputFolder = "/tmp/";
+
+	tlsTimeout = 80;
+
+	stage1 = true;
+	stage2 = true;
     }
 
     public String getServerCommand() {
@@ -254,4 +268,21 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
 	    return serverCommandFromFile;
 	}
     }
+
+    public boolean isStage1() {
+	return stage1;
+    }
+
+    public void setStage1(boolean stage1) {
+	this.stage1 = stage1;
+    }
+
+    public boolean isStage2() {
+	return stage2;
+    }
+
+    public void setStage2(boolean stage2) {
+	this.stage2 = stage2;
+    }
+
 }

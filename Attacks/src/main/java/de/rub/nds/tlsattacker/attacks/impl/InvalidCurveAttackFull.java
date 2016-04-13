@@ -19,7 +19,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.EllipticCurveAttackFullCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.tls.Attacker;
@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,11 +36,11 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EllipticCurveAttackFull extends Attacker<EllipticCurveAttackFullCommandConfig> {
+public class InvalidCurveAttackFull extends Attacker<InvalidCurveAttackFullCommandConfig> {
 
-    static Logger LOGGER = LogManager.getLogger(EllipticCurveAttackFull.class);
+    private static final Logger LOGGER = LogManager.getLogger(InvalidCurveAttackFull.class);
 
-    public EllipticCurveAttackFull(EllipticCurveAttackFullCommandConfig config) {
+    public InvalidCurveAttackFull(InvalidCurveAttackFullCommandConfig config) {
 	super(config);
     }
 
@@ -56,6 +57,8 @@ public class EllipticCurveAttackFull extends Attacker<EllipticCurveAttackFullCom
 	ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
 	attacker.attack();
 	BigInteger result = attacker.getResult();
+
+	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Result found: {}", result);
     }
 
 }

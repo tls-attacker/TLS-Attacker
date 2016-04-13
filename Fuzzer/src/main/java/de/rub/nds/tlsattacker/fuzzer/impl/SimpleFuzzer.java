@@ -1,29 +1,50 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.fuzzer.impl;
 
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
+import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttack;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
+import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
+import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
+import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.SniTest;
+import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
+import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper;
 import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.MAX_MODIFICATION_COUNT;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -167,16 +188,48 @@ public class SimpleFuzzer extends Fuzzer {
     private void startFuzzing(String logFolder) throws IOException, ConfigurationException, JAXBException,
 	    IllegalAccessException, IllegalArgumentException {
 	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting fuzzing {}", fuzzingName);
-	phase1(logFolder);
-	LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-		"The following variables do not influence handshake (check manually for false-positives): {} ",
-		variablesWithoutHandshakeInfluence);
-	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 1 is over, starting phase 2");
-	phase23(2, logFolder);
-	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 2 is over, starting phase 3");
-	phase23(3, logFolder);
-	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 3 finished");
-	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Total protocol flows: {}", totalProtocolFlows);
+	if (fuzzerConfig.isStage1()) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting stage 1: crypto fuzzing ");
+	    startCryptoFuzzing();
+	}
+	if (fuzzerConfig.isStage2()) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting stage 2: tls fuzzing for boundary violations");
+	    phase1(logFolder);
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "The following variables do not influence handshake (check manually for false-positives): {} ",
+		    variablesWithoutHandshakeInfluence);
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 1 is over, starting phase 2");
+	    phase23(2, logFolder);
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 2 is over, starting phase 3");
+	    phase23(3, logFolder);
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Phase 3 finished");
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Total protocol flows: {}", totalProtocolFlows);
+	}
+    }
+
+    private void startCryptoFuzzing() {
+	Attacker attacker;
+
+	BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
+	bb.setConnect(fuzzerConfig.getConnect());
+	attacker = new BleichenbacherAttack(bb);
+	attacker.executeAttack(configHandler);
+
+	InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
+	icea.setConnect(fuzzerConfig.getConnect());
+	attacker = new InvalidCurveAttack(icea);
+	attacker.executeAttack(configHandler);
+
+	PoodleCommandConfig poodle = new PoodleCommandConfig();
+	poodle.setConnect(fuzzerConfig.getConnect());
+	attacker = new PoodleAttack(poodle);
+	attacker.executeAttack(configHandler);
+
+	PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
+	po.setConnect(fuzzerConfig.getConnect());
+	attacker = new PaddingOracleAttack(po);
+	attacker.executeAttack(configHandler);
+
     }
 
     /**
