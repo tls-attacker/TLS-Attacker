@@ -21,6 +21,8 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import java.util.LinkedList;
 
 /**
  * 
@@ -32,6 +34,17 @@ public class PaddingOracleCommandConfig extends ClientCommandConfig {
 
     @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
     Integer blockSize = 16;
+
+    public PaddingOracleCommandConfig() {
+	cipherSuites = new LinkedList<>();
+	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256);
+	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
+	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
+    }
 
     public Integer getBlockSize() {
 	return blockSize;
