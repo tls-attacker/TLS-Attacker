@@ -66,8 +66,8 @@ public class Main {
 	jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 	DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig();
 	jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
-	EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig();
-	jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
+//	EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig();
+//	jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
 	InvalidCurveAttackCommandConfig ellipticTest = new InvalidCurveAttackCommandConfig();
 	jc.addCommand(InvalidCurveAttackCommandConfig.ATTACK_COMMAND, ellipticTest);
 	InvalidCurveAttackFullCommandConfig elliptic = new InvalidCurveAttackFullCommandConfig();
@@ -78,8 +78,8 @@ public class Main {
 	jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
 	PoodleCommandConfig poodle = new PoodleCommandConfig();
 	jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
-	SniTestCommandConfig sniTest = new SniTestCommandConfig();
-	jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
+//	SniTestCommandConfig sniTest = new SniTestCommandConfig();
+//	jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
 	WinshockCommandConfig winshock = new WinshockCommandConfig();
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
 
@@ -98,9 +98,9 @@ public class Main {
 	    case BleichenbacherCommandConfig.ATTACK_COMMAND:
 		attacker = new BleichenbacherAttack(bleichenbacherTest);
 		break;
-	    case EarlyCCSCommandConfig.ATTACK_COMMAND:
-		attacker = new EarlyCCSAttack(earlyCCS);
-		break;
+//	    case EarlyCCSCommandConfig.ATTACK_COMMAND:
+//		attacker = new EarlyCCSAttack(earlyCCS);
+//		break;
 	    case InvalidCurveAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new InvalidCurveAttack(ellipticTest);
 		break;
@@ -122,9 +122,9 @@ public class Main {
 	    case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
 		break;
-	    case SniTestCommandConfig.ATTACK_COMMAND:
-		attacker = new SniTest(sniTest);
-		break;
+//	    case SniTestCommandConfig.ATTACK_COMMAND:
+//		attacker = new SniTest(sniTest);
+//		break;
 	    default:
 		throw new ConfigurationException("No command found");
 	}

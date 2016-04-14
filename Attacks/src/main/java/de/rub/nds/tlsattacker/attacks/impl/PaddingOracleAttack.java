@@ -37,7 +37,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -121,6 +120,10 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	}
 
 	lastMessages.add(trace.getLastProtocolMesssage());
+	if (trace.getLastProtocolMesssage() == null) {
+	    System.out.println(trace.getLastProtocolMesssage());
+
+	}
 
 	transportHandler.closeConnection();
     }
