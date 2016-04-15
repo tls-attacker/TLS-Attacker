@@ -60,7 +60,6 @@ public class MultiFuzzer extends Fuzzer {
 	    int port = holder.getServerPort();
 	    String types = holder.getModifiedVariableTypes();
 	    for (StartupCommand command : holder.getStartupCommands()) {
-		port++;
 		String fullServerCommand = null;
 		if (holder.getServerCommand() != null && !holder.getServerCommand().isEmpty()) {
 		    fullServerCommand = holder.getServerCommand() + " " + command.getServerCommandParameters();
@@ -89,6 +88,7 @@ public class MultiFuzzer extends Fuzzer {
 		fuzzer.setFuzzingName(command.getShortName());
 
 		new FuzzerStarter(fuzzer, command.getShortName()).start();
+		port++;
 	    }
 	} catch (FileNotFoundException | JAXBException | XMLStreamException ex) {
 	    throw new ConfigurationException("Unmarshaling failed", ex);
