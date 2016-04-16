@@ -120,10 +120,6 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	}
 
 	lastMessages.add(trace.getLastProtocolMesssage());
-	if (trace.getLastProtocolMesssage() == null) {
-	    System.out.println(trace.getLastProtocolMesssage());
-
-	}
 
 	transportHandler.closeConnection();
     }
@@ -147,7 +143,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
 		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
 		(byte) 255, (byte) 255, (byte) 255 });
-	records.add(r);
+	// records.add(r);
 	return records;
     }
 
