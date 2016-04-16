@@ -19,7 +19,6 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
@@ -31,8 +30,7 @@ public class ByteArrayAdapter extends XmlAdapter<String, byte[]> {
     @Override
     public byte[] unmarshal(String value) {
 	value = value.replaceAll("\\s", "");
-	BigInteger i = new BigInteger(value, 16);
-	return i.toByteArray();
+	return ArrayConverter.hexStringToByteArray(value);
     }
 
     @Override

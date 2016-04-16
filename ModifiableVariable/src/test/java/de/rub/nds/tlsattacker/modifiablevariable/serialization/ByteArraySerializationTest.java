@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayXorModificat
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.AccessModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.ModificationFilterFactory;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
@@ -66,7 +67,7 @@ public class ByteArraySerializationTest {
     @Before
     public void setUp() throws JAXBException {
 	start = new ModifiableByteArray();
-	start.setOriginalValue(new byte[] { 1, 2, 3 });
+	start.setOriginalValue(new byte[] { (byte) 0xff, 1, 2, 3 });
 	expectedResult = null;
 	result = null;
 
@@ -90,7 +91,7 @@ public class ByteArraySerializationTest {
 	um = context.createUnmarshaller();
 	ModifiableByteArray mba = (ModifiableByteArray) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = new byte[] { 1, 2, 3 };
+	expectedResult = new byte[] { (byte) 0xff, 1, 2, 3 };
 	result = mba.getValue();
 	assertArrayEquals(expectedResult, result);
 	assertNotSame(expectedResult, result);
@@ -110,7 +111,7 @@ public class ByteArraySerializationTest {
 	um = context.createUnmarshaller();
 	ModifiableByteArray mba = (ModifiableByteArray) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = new byte[] { 1, 2, 1, 9, 8, 7, 2, 3 };
+	expectedResult = new byte[] { 1, 2, (byte) 0xff, 9, 8, 7, 1, 2, 3 };
 	result = mba.getValue();
 	assertArrayEquals(expectedResult, result);
 	assertNotSame(expectedResult, result);
@@ -134,12 +135,16 @@ public class ByteArraySerializationTest {
 	um = context.createUnmarshaller();
 	ModifiableByteArray mv = (ModifiableByteArray) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = new byte[] { 1, 2, 3 };
+	// it happens nothing, because the first modification is filtered
+	expectedResult = new byte[] { (byte) 0xff, 1, 2, 3 };
 	result = mv.getValue();
 	assertArrayEquals(expectedResult, result);
 	assertNotSame(expectedResult, result);
 
-	expectedResult = new byte[] { 1, 2 };
+	// there we have a modification
+	// first, 1 is deleted
+	// then, 2 is xored with 1, resulting in 3
+	expectedResult = new byte[] { (byte) 0xff, 3, 3 };
 	result = mv.getValue();
 	assertArrayEquals(expectedResult, result);
 	assertNotSame(expectedResult, result);
