@@ -17,7 +17,7 @@ TLS-Attacker consists of several (maven) projects:
 - ModifiableVariable: one of the basic modules. It contains modifiable variables that allow one to execute (specific as well as random) variable modifications during the protocol flow. You can for example execute a XOR operation on a byte array, while using this byte array to construct your TLS protocol message. ModifiableVariables are used in the protocol messages.
 - TLS: protocol implementation, currently (D)TLS1.2 compatible. 
 - Attacks: Implementation of some well-known attacks and tests for these attacks.
-- TLS-Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
+- Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
 
 ![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker-Development/blob/master/resources/design.png)
 
@@ -60,7 +60,7 @@ $ java -jar target/TLS-Attacker-1.0.jar client -connect localhost:4433 -cipher T
 
 Client-based authentication is also supported, just use it as follows. First, start the openssl s_server:
 ```bash
-$cd resources
+$ cd resources
 $ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem -verify ec256cert.pem
 ```
 
