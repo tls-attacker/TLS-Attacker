@@ -34,12 +34,16 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
     @Parameter(names = "-port", description = "ServerPort")
     protected String port = "4433";
 
+    // path for the HTTP GET transaction, that should be authenticated by the
+    // victim client
     @Parameter(names = "-cert_secure_folder", description = "Cert secure folder on target server. Standard value = certsecure")
     protected String certSecure = "certsecure";
 
+    // not implemented yet
     @Parameter(names = "-session_ticket", description = "Enable if the server uses Session Tickets for Session Resumption")
     protected boolean sessionTicket = false;
 
+    // handle client software, which initiates multiple connections
     @Parameter(names = "-pause_after_FullHs", description = "Enable if there should be a pause between initial and Rehandshake")
     protected boolean pause = false;
 
