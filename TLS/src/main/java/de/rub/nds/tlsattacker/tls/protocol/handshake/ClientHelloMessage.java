@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
