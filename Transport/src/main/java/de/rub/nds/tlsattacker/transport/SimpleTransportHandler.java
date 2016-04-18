@@ -54,8 +54,6 @@ public class SimpleTransportHandler implements TransportHandler {
 
     private BufferedInputStream bis;
 
-    private int timeout;
-
     private int maxResponseWait;
 
     public SimpleTransportHandler() {
