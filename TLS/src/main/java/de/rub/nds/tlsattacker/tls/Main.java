@@ -85,8 +85,8 @@ public class Main {
 	// }
 
 	transportHandler.closeConnection();
-        
-        //setting and executing the session resumption workflow trace 
+
+	// setting and executing the session resumption workflow trace
 	if (config.isSessionResumption()) {
 	    TransportHandler transportHandlerSR = configHandler.initializeTransportHandler(config);
 
