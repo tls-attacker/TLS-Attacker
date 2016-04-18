@@ -139,12 +139,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
 		(byte) 255, (byte) 255, (byte) 255 });
 	records.add(r);
-	r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255 });
-	// records.add(r);
+
 	return records;
     }
 
