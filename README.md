@@ -315,7 +315,7 @@ As you can see, we explicitly increased the payload length of the Heartbeat mess
 
 Further examples on attacks and fuzzing are in the Wiki.
 
-# Acknowledgements
+## Acknowledgements
 The following people have contributed code to the TLS-Attacker Project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
