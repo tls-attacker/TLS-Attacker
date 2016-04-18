@@ -29,7 +29,7 @@ import java.util.Arrays;
 /**
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class HelloRequestHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
+public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
     public HelloRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
