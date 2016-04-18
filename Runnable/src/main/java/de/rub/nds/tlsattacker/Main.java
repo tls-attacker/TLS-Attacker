@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.rub.nds.tlsattacker.fuzzer;
+package de.rub.nds.tlsattacker;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
@@ -39,10 +39,20 @@ import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
 import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
 import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import javax.xml.bind.JAXBException;
 
 /**
  * 
@@ -62,8 +72,6 @@ public class Main {
 	jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 	DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig();
 	jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
-	// EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig();
-	// jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
 	InvalidCurveAttackCommandConfig ellipticTest = new InvalidCurveAttackCommandConfig();
 	jc.addCommand(InvalidCurveAttackCommandConfig.ATTACK_COMMAND, ellipticTest);
 	InvalidCurveAttackFullCommandConfig elliptic = new InvalidCurveAttackFullCommandConfig();
@@ -74,10 +82,12 @@ public class Main {
 	jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
 	PoodleCommandConfig poodle = new PoodleCommandConfig();
 	jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
-	// SniTestCommandConfig sniTest = new SniTestCommandConfig();
-	// jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
 	WinshockCommandConfig winshock = new WinshockCommandConfig();
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
+	ServerCommandConfig server = new ServerCommandConfig();
+	jc.addCommand(ServerCommandConfig.COMMAND, server);
+	ClientCommandConfig client = new ClientCommandConfig();
+	jc.addCommand(ClientCommandConfig.COMMAND, client);
 
 	jc.parse(args);
 
@@ -91,12 +101,15 @@ public class Main {
 	    case MultiFuzzerConfig.ATTACK_COMMAND:
 		startMultiFuzzer(cmconfig, generalConfig, jc);
 		return;
+	    case ServerCommandConfig.COMMAND:
+		startSimpleTls(generalConfig, server, jc);
+		return;
+	    case ClientCommandConfig.COMMAND:
+		startSimpleTls(generalConfig, client, jc);
+		return;
 	    case BleichenbacherCommandConfig.ATTACK_COMMAND:
 		attacker = new BleichenbacherAttack(bleichenbacherTest);
 		break;
-	    // case EarlyCCSCommandConfig.ATTACK_COMMAND:
-	    // attacker = new EarlyCCSAttack(earlyCCS);
-	    // break;
 	    case InvalidCurveAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new InvalidCurveAttack(ellipticTest);
 		break;
@@ -118,9 +131,6 @@ public class Main {
 	    case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
 		break;
-	    // case SniTestCommandConfig.ATTACK_COMMAND:
-	    // attacker = new SniTest(sniTest);
-	    // break;
 	    default:
 		throw new ConfigurationException("No command found");
 	}
@@ -142,5 +152,28 @@ public class Main {
 	    return;
 	}
 	fuzzer.startFuzzer();
+    }
+
+    private static void startSimpleTls(GeneralConfig generalConfig, CommandConfig config, JCommander jc)
+	    throws JAXBException, IOException {
+	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
+	configHandler.initialize(generalConfig);
+
+	if (configHandler.printHelpForCommand(jc, config)) {
+	    return;
+	}
+
+	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+
+	workflowExecutor.executeWorkflow();
+
+	transportHandler.closeConnection();
+
+	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
+	    FileOutputStream fos = new FileOutputStream(config.getWorkflowTraceOutputFile());
+	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
+	}
     }
 }

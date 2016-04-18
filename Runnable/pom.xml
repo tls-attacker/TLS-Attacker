@@ -6,8 +6,15 @@
         <artifactId>TLS-Attacker</artifactId>
         <version>1.0</version>
     </parent>
-    <artifactId>TLS-Server</artifactId>
+    <artifactId>Runnable</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TLS-Fuzzer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
     
     <build>
         <plugins>
@@ -17,11 +24,12 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
+                    <finalName>TLS-Attacker-${project.version}</finalName> 
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.tlsserver.TLSServer</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -44,18 +52,6 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-    </dependencies>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>

@@ -50,9 +50,7 @@ public abstract class ConfigHandler {
      * @param config
      */
     public void initialize(GeneralConfig config) {
-	// Remove BC, it is possible that there is an older version on the
-	// system installed
-	Security.removeProvider("BC");
+
 	// ECC does not work properly in the NSS provider
 	Security.removeProvider("SunPKCS11-NSS");
 	Security.addProvider(new BouncyCastleProvider());
