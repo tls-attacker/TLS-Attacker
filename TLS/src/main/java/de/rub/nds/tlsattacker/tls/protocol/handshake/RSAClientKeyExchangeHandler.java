@@ -72,6 +72,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	ArrayConverter.makeArrayNonZero(padding);
 
 	byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+        //forward the PMS with the key of the target server during MitM and THS Attack
 	if (tlsContext.isMitMAttack() || tlsContext.isTHSAttack()) {
 	    premasterSecret = protocolMessage.getPremasterSecret().getValue();
 	} else {
