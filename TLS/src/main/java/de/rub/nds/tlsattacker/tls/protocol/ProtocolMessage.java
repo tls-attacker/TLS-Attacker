@@ -73,7 +73,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      */
     private boolean onlyForward = false;
     /**
-     * Defines if the message should not be modified during the MitMworkflow.
+     * Defines if the message should be modified during a workflow execution
+     * with MitMworkflowExecutor
      */
     private boolean modify = false;
     /**
