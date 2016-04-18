@@ -149,7 +149,8 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	    premasterSecret = TlsDHUtils.calculateDHBasicAgreement(tlsContext.getServerDHParameters().getPublicKey(),
 		    newDhPrivate);
 	}
-
+	// exchange the client's public key with the group generator for THS
+	// Attack
 	else {
 	    premasterSecret = BigIntegers.asUnsignedByteArray(tlsContext.getServerDHParameters().getPublicKey().getY());
 	    protocolMessage.setY(tlsContext.getServerDHParameters().getPublicKey().getParameters().getG());
