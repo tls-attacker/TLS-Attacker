@@ -81,12 +81,12 @@ $ java -jar target/TLS-Attacker-1.0.jar padding_oracle
 
 In case you are a more experienced developer, you can create your own TLS message flow. For example:
 ```java
-	GeneralConfig generalConfig = new GeneralConfig();
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initialize(generalConfig);
+        GeneralConfig generalConfig = new GeneralConfig();
+        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+        configHandler.initialize(generalConfig);
 
-	ClientCommandConfig config = new ClientCommandConfig();
-	config.setConnect("localhost:" + PORT);
+        ClientCommandConfig config = new ClientCommandConfig();
+        config.setConnect("localhost:" + PORT);
         config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
         
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
@@ -102,10 +102,10 @@ In case you are a more experienced developer, you can create your own TLS messag
         trace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
         trace.add(new FinishedMessage(ConnectionEnd.SERVER));
         
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         workflowExecutor.executeWorkflow();
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
 ```
 
 I know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
