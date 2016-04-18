@@ -48,6 +48,7 @@ public class ManInTheMiddleAttack extends Attacker<ManInTheMiddleAttackCommandCo
 
     @Override
     public void executeAttack(ConfigHandler clientConfigHandler) {
+	// create server objects
 	ServerCommandConfig serverCommandConfig = new ServerCommandConfig();
 	serverCommandConfig.setPort(config.getPort());
 	serverCommandConfig.setCipherSuites(config.getCipherSuites());
@@ -62,20 +63,26 @@ public class ManInTheMiddleAttack extends Attacker<ManInTheMiddleAttackCommandCo
 	TransportHandler serverTransportHandler = serverConfigHandler.initializeTransportHandler(serverCommandConfig);
 	TlsContext serverTlsContext = serverConfigHandler.initializeTlsContext(serverCommandConfig);
 
+	// create client objects
 	TransportHandler clientTransportHandler = clientConfigHandler.initializeTransportHandler(config);
 	TlsContext clientTlsContext = clientConfigHandler.initializeTlsContext(config);
 
+	// load workflow into the tlsContext objects
 	RSAExampleMitMWorkflowConfiguration clientwf = new RSAExampleMitMWorkflowConfiguration(clientTlsContext, config);
 	clientwf.createWorkflow();
 
 	RSAExampleMitMWorkflowConfiguration serverwf = new RSAExampleMitMWorkflowConfiguration(serverTlsContext, config);
 	serverwf.createWorkflow();
 
+	// should the whole workflow trace be modified
 	boolean mod = config.isModify();
 
 	MitMWorkflowExecutor mitmWorkflowExecutor = new MitMWorkflowExecutor(clientTransportHandler,
 		serverTransportHandler, clientTlsContext, serverTlsContext, mod);
 
 	mitmWorkflowExecutor.executeWorkflow();
+
+	clientTransportHandler.closeConnection();
+	serverTransportHandler.closeConnection();
     }
 }
