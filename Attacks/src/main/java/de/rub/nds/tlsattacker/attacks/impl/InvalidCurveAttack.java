@@ -116,6 +116,8 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
 
 	workflowExecutor.executeWorkflow();
 
+	tlsContexts.add(tlsContext);
+
 	transportHandler.closeConnection();
 
 	return trace;

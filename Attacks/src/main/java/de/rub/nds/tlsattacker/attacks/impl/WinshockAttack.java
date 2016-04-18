@@ -76,6 +76,8 @@ public class WinshockAttack extends Attacker<WinshockCommandConfig> {
 
 	workflowExecutor.executeWorkflow();
 
+	tlsContexts.add(tlsContext);
+
 	transportHandler.closeConnection();
     }
 }

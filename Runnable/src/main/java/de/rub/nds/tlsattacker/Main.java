@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker;
 
@@ -50,8 +49,10 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -143,6 +144,10 @@ public class Main {
 
 	attacker.executeAttack(configHandler);
 
+	CommandConfig config = attacker.getConfig();
+	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
+	    logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowTraceOutputFile());
+	}
     }
 
     private static void startMultiFuzzer(MultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
@@ -174,6 +179,16 @@ public class Main {
 	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
 	    FileOutputStream fos = new FileOutputStream(config.getWorkflowTraceOutputFile());
 	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
+	}
+    }
+
+    private static void logWorkflowTraces(List<TlsContext> tlsContexts, String fileName) throws JAXBException,
+	    FileNotFoundException, IOException {
+	int i = 0;
+	for (TlsContext context : tlsContexts) {
+	    i++;
+	    FileOutputStream fos = new FileOutputStream(fileName + i);
+	    WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
 	}
     }
 }

@@ -130,6 +130,9 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 	}
 
 	workflowExecutor.executeWorkflow();
+
+	tlsContexts.add(tlsContext);
+
 	transportHandler.closeConnection();
 	return trace.getProtocolMessages().get(trace.getProtocolMessages().size() - 1);
     }

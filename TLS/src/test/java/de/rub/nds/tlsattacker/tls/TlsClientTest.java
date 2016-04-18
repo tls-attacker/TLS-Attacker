@@ -24,8 +24,17 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tlsserver.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.tlsserver.TLSServer;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -53,7 +62,7 @@ public class TlsClientTest {
 
     private TLSServer tlsServer;
 
-    private final int PORT = 56789;
+    private static final int PORT = 56789;
 
     public TlsClientTest() {
 	Security.addProvider(new BouncyCastleProvider());
@@ -93,12 +102,44 @@ public class TlsClientTest {
 		testExecuteWorkflow(configHandler, config);
 	    }
 	}
+
+	testCustomWorkflow();
     }
 
     private void testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config) {
 
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+	workflowExecutor.executeWorkflow();
+
+	transportHandler.closeConnection();
+
+	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+    }
+
+    private void testCustomWorkflow() {
+	GeneralConfig generalConfig = new GeneralConfig();
+	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+	configHandler.initialize(generalConfig);
+
+	ClientCommandConfig config = new ClientCommandConfig();
+	config.setConnect("localhost:" + PORT);
+	config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
+
+	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+
+	WorkflowTrace trace = tlsContext.getWorkflowTrace();
+	trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	trace.add(new CertificateMessage(ConnectionEnd.SERVER));
+	trace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	trace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	trace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+	trace.add(new FinishedMessage(ConnectionEnd.CLIENT));
+	trace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
+	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
+
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	workflowExecutor.executeWorkflow();
 
