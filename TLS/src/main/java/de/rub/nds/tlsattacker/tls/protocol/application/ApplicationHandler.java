@@ -43,6 +43,8 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     @Override
     public byte[] prepareMessageAction() {
 	String responseBody;
+	// Response body for a normal handshake and one for specific for session
+	// resumption
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
 	    String status = "Handshake successful!";
 	    if (tlsContext.isSessionResumption()) {
@@ -53,6 +55,8 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 		    + "<title>HTTP</TITLE>\n" + "</head>\n" + "<body>\n" + "<p>" + status + "</p>\n" + "</body>\n"
 		    + "</html>";
 	} else {
+	    // construction for the injection of a HTTP transaction during THS
+	    // Attack
 	    if (tlsContext.getCertSecure() == null) {
 		responseBody = "GET / HTTP/1.1\r\n" + "Host: " + tlsContext.getHost() + "\r\n\r\n";
 	    } else {
@@ -71,7 +75,9 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
 	String application = new String(message);
+	// output of the message
 	System.out.println(application);
+	// set data for forwarding this message during MitM Attack
 	protocolMessage.setData(message);
 	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, message.length));
 	pointer = message.length;
