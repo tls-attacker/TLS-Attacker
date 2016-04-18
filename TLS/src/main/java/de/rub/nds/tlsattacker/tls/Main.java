@@ -29,7 +29,6 @@ import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tls.workflow.SessionResumptionWorkflowConfiguration;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -85,7 +84,8 @@ public class Main {
 	// }
 
 	transportHandler.closeConnection();
-
+        
+        //setting and executing the session resumption workflow trace 
 	if (config.isSessionResumption()) {
 	    TransportHandler transportHandlerSR = configHandler.initializeTransportHandler(config);
 
