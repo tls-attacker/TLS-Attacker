@@ -35,7 +35,7 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
     protected String port = "4433";
 
     // path for the HTTP GET transaction, that should be authenticated by the
-    // victim client
+    // victim client during renegotiation
     @Parameter(names = "-cert_secure_folder", description = "Cert secure folder on target server. Standard value = certsecure")
     protected String certSecure = "certsecure";
 
