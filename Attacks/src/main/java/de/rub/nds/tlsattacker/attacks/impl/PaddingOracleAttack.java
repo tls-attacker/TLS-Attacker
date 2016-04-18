@@ -120,6 +120,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	}
 
 	lastMessages.add(trace.getLastProtocolMesssage());
+	tlsContexts.add(tlsContext);
 
 	transportHandler.closeConnection();
     }

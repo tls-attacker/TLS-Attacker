@@ -82,6 +82,8 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 		    "The server does not respond with a heartbeat message, it is not vulnerable");
 	}
 
+	tlsContexts.add(tlsContext);
+
 	transportHandler.closeConnection();
     }
 }

@@ -91,6 +91,8 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 		    "Vulnerable(?). The protocol message flow was incomplete, analyze the message flow");
 	}
 
+	tlsContexts.add(tlsContext);
+
 	transportHandler.closeConnection();
     }
 }
