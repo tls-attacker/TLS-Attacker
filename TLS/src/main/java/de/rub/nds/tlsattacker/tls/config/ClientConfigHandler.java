@@ -103,6 +103,7 @@ public class ClientConfigHandler extends ConfigHandler {
 	    }
 
 	}
+	// host for application data
 	String[] hp = ccConfig.getConnect().split(":");
 	String host = hp[0];
 	tlsContext.setHost(host);
