@@ -50,7 +50,7 @@ public class CertificateRequestHandler<HandshakeMessage extends CertificateReque
     @Override
     public byte[] prepareMessageAction() {
 	// TODO parse Arguments from Console and set properties with
-	// Confighandler
+	// Confighandler to support more Certificate types
 
 	byte[] clientCertificateTypes = { ClientCertificateType.RSA_SIGN.getValue() };
 	protocolMessage.setClientCertificateTypes(clientCertificateTypes);
