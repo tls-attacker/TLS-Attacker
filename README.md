@@ -320,6 +320,7 @@ The following people have contributed code to the TLS-Attacker Project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
 
+Further contributions pull requests are welcome.
 
 ## TLS-Attacker Projects
 TLS-Attacker has been used in the following scientific papers and projects:
@@ -328,3 +329,7 @@ TLS-Attacker has been used in the following scientific papers and projects:
 - Quellcode-basierte Untersuchung von kryptographisch relevanten Aspekten der OpenSSL-Bibliothek. https://www.bsi.bund.de/DE/Publikationen/Studien/OpenSSL-Bibliothek/opensslbibliothek.html
 
 It was furthermore used to discover bugs in various TLS implementations, see the Wiki.
+
+If you have any research ideas or need support by using TLS-Attacker (e.g. you want to include it in your test suite), feel free to contact http://www.hackmanit.de/.
+
+If TLS-Attacker helps you to find a bug in a TLS implementation, please acknowledge this tool. Thank you!
