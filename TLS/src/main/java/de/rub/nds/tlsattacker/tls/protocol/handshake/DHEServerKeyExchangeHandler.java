@@ -174,9 +174,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
         
         DHPublicKeyParameters dhPublic;
         
+        //autmatic modification for synchronizing DHE during Triple Handshake Attack
         if (tlsContext.isTHSAttack()) {
             BigInteger pubKeyServer = protocolMessage.getPublicKey().getValue();
-            BigInteger pubKeyServer1 = pubKeyServer.min(BigInteger.ONE);
+            BigInteger pubKeyServer1 = pubKeyServer.subtract(BigInteger.ONE);
             BigInteger pModified = pubKeyServer.multiply(pubKeyServer1);
             protocolMessage.setP(pModified);
         }
@@ -237,7 +238,8 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	    tlsContext.setServerDHParameters(publicKeyParameters);
 
 	    KeyStore ks = tlsContext.getKeyStore();
-
+            
+            //could be extended to choose the algorithms depending on the certificate
 	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
 		    HashAlgorithm.SHA1);
 	    protocolMessage.setSignatureAlgorithm(selectedSignatureHashAlgo.getSignatureAlgorithm().getValue());
