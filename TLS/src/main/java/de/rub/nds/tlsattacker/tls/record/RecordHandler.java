@@ -187,6 +187,8 @@ public class RecordHandler {
 	    LOGGER.debug("Raw protocol bytes from the current record:  {}",
 		    ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
+	    // store Finished raw bytes to set TLS Record Cipher before parsing
+	    // them into a record
 	    if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
 		finishedBytes = Arrays.copyOfRange(rawRecordData, lastByte, rawRecordData.length);
 		lastByte = rawRecordData.length;
