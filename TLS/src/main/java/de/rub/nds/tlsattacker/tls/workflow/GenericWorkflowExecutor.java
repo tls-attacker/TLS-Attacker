@@ -303,6 +303,7 @@ public abstract class GenericWorkflowExecutor implements WorkflowExecutor {
      */
     protected List<Record> fetchRecords() throws IOException {
 	List<Record> records;
+	// parse stored Finished bytes into a record
 	if (recordHandler.getFinishedBytes() != null) {
 	    records = recordHandler.parseRecords(recordHandler.getFinishedBytes());
 	    recordHandler.setFinishedBytes(null);
