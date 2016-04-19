@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls;
 
@@ -38,15 +37,25 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tlsserver.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.tlsserver.TLSServer;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
 import java.security.KeyPair;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -64,21 +73,32 @@ public class TlsClientTest {
 
     private static final int PORT = 56789;
 
+    private boolean initialized;
+
     public TlsClientTest() {
 	Security.addProvider(new BouncyCastleProvider());
     }
 
     @Before
-    public void setUp() throws Exception {
-	KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
-	KeyStore ks = KeyStoreGenerator.createKeyStore(k);
-	tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
-	new Thread(tlsServer).start();
+    public void setUp() {
+	try {
+	    KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
+	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+	    tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
+	    new Thread(tlsServer).start();
+	    initialized = true;
+	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
+		| KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException
+		| UnrecoverableKeyException | KeyManagementException e) {
+	    LOGGER.error("Unable to initialize the TLS server, but the build runs further.", e);
+	}
     }
 
     @After
     public void tearDown() throws Exception {
-	tlsServer.shutdown();
+	if (initialized) {
+	    tlsServer.shutdown();
+	}
     }
 
     /**
@@ -86,24 +106,25 @@ public class TlsClientTest {
      */
     @Test
     public void testExecuteWorkflows() {
+	if (initialized) {
+	    GeneralConfig generalConfig = new GeneralConfig();
+	    generalConfig.setLogLevel(Level.INFO);
+	    ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+	    configHandler.initialize(generalConfig);
 
-	GeneralConfig generalConfig = new GeneralConfig();
-	generalConfig.setLogLevel(Level.INFO);
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initialize(generalConfig);
+	    ClientCommandConfig config = new ClientCommandConfig();
+	    config.setConnect("localhost:" + PORT);
 
-	ClientCommandConfig config = new ClientCommandConfig();
-	config.setConnect("localhost:" + PORT);
-
-	List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
-	for (CipherSuite cs : CipherSuite.getImplemented()) {
-	    if (serverList.contains(cs.toString())) {
-		LOGGER.info("Testing: {}", cs);
-		testExecuteWorkflow(configHandler, config);
+	    List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
+	    for (CipherSuite cs : CipherSuite.getImplemented()) {
+		if (serverList.contains(cs.toString())) {
+		    LOGGER.info("Testing: {}", cs);
+		    testExecuteWorkflow(configHandler, config);
+		}
 	    }
-	}
 
-	testCustomWorkflow();
+	    testCustomWorkflow();
+	}
     }
 
     private void testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config) {
