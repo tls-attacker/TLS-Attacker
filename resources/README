@@ -39,3 +39,6 @@ openssl pkcs12 -in ec256.p12 -out ec256key.pem -nocerts
 
 - Remove password from the key file:
 openssl ec -in ec256key.pem -out ec256key.pem
+
+
+For more information on the different formats, see: http://web-in-security.blogspot.de/2015/11/playing-with-certificates-from.html
