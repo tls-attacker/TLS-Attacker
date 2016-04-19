@@ -2,7 +2,7 @@
 [![release](https://img.shields.io/badge/Release-v1.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 
-TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an oportunity to easily define a custom TLS protocol flow and test it against his TLS library.
+TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an opportunity to easily define a custom TLS protocol flow and test it against his TLS library.
 
 **Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights. It is the first version and can contain some bugs.*
 
@@ -18,9 +18,9 @@ $ mvn clean package -DskipTests=true
 ```
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
-- Utils: contains utilities for Array handling or for deep object copying
-- ModifiableVariable: one of the basic modules. It contains modifiable variables that allow one to execute (specific as well as random) variable modifications during the protocol flow. You can for example execute a XOR operation on a byte array, while using this byte array to construct your TLS protocol message. ModifiableVariables are used in the protocol messages.
-- TLS: protocol implementation, currently (D)TLS1.2 compatible. 
+- Transport: Transport utilities for TCP and UDP.
+- ModifiableVariable: Contains modifiable variables that allow one to execute (specific as well as random) variable modifications during the protocol flow. ModifiableVariables are used in the protocol messages.
+- TLS: Protocol implementation, currently (D)TLS1.2 compatible. 
 - Attacks: Implementation of some well-known attacks and tests for these attacks.
 - Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
 
@@ -35,7 +35,7 @@ Currently, the following features are supported:
 - (EC)DH and RSA key exchange algorithms
 - AES CBC cipher suites
 - Extensions: EC, EC point format, Heartbeat, Max fragment length, Server name, Signature and Hash algorithms
-- TLS client (server comming soon)
+- TLS client (server coming soon)
 
 ## Usage
 In the following, we present some very simple examples on using TLS-Attacker.
@@ -224,41 +224,6 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         <ClientHello>
             <messageIssuer>CLIENT</messageIssuer>
             <extensions>
-                <EllipticCurves>
-                    <supportedCurvesConfig>SECP192R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP384R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP521R1</supportedCurvesConfig>
-                </EllipticCurves>
-                <ECPointFormat>
-                    <pointFormatsConfig>UNCOMPRESSED</pointFormatsConfig>
-                </ECPointFormat>
-                <SignatureAndHashAlgorithmsExtension>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA512</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA512</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA256</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA256</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA1</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA1</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                </SignatureAndHashAlgorithmsExtension>
                 <HeartbeatExtension>
                     <heartbeatModeConfig>PEER_ALLOWED_TO_SEND</heartbeatModeConfig>
                 </HeartbeatExtension>
@@ -322,6 +287,7 @@ Further examples on attacks and fuzzing are in the Wiki.
 The following people have contributed code to the TLS-Attacker Project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
+- Christian Mainka: Design support and many implementation suggestions.
 
 Further contributions pull requests are welcome.
 
