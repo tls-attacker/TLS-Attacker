@@ -4,6 +4,8 @@
 
 TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an oportunity to easily define a custom TLS protocol flow and test it against his TLS library.
 
+**Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights. It is the first version and can contain some bugs.*
+
 ## Compilation
 In order to compile and use TLS-Attacker, you need to have Java and maven installed. Run the maven command from the TLS-Attacker directory:
 ```bash
