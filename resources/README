@@ -1,4 +1,16 @@
-RSA key pair generation (password is password):
+Java keystores have the password password and the alias alias, see e.g.:
+```bash
+$ keytool -list -keystore rsa1024.jks
+```
+
+Pem keys are without password:
+```bash
+$ openssl rsa -in rsa1024key.pem -text
+$ openssl x509 -in rsa1024cert.pem -text
+```
+
+
+The following commands were used for RSA key pair generation (password is password):
 
 - Generate JKS:
 keytool -keystore rsa1024.jks -genkeypair -alias alias -validity 3650 -keysize 1024 -keyalg rsa
@@ -20,7 +32,7 @@ openssl rsa -in rsa1024key.pem -out rsa1024key.pem
 
 
 
-EC key pair generation (password is password):
+The following commands were used for RSA key pair generation EC key pair generation (password is password):
 
 - Generate JKS:
 keytool -keystore ec256.jks -genkeypair -alias alias -validity 3650 -keysize 256 -keyalg ec
