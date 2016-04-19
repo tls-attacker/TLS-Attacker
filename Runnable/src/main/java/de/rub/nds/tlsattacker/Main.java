@@ -46,6 +46,8 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -54,12 +56,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import javax.xml.bind.JAXBException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
+
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -172,7 +178,13 @@ public class Main {
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	workflowExecutor.executeWorkflow();
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (WorkflowExecutionException ex) {
+	    LOGGER.info(ex.getLocalizedMessage(), ex);
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+		    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+	}
 
 	transportHandler.closeConnection();
 

@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
@@ -30,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -70,16 +70,27 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 	hb.setPayload(payload);
 	hb.setPayloadLength(payloadLength);
 
-	workflowExecutor.executeWorkflow();
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (WorkflowExecutionException ex) {
+	    LOGGER.info(
+		    "The TLS protocol flow was not executed completely, follow the debug messages for more information.",
+		    ex);
+	}
 
-	HeartbeatMessage lastMessage = (HeartbeatMessage) trace.getProtocolMessages().get(
-		trace.getProtocolMessages().size() - 1);
-	if (lastMessage.getMessageIssuer() == ConnectionEnd.SERVER) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-		    "The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
+	if (trace.containsServerFinished()) {
+	    HeartbeatMessage lastMessage = (HeartbeatMessage) trace.getProtocolMessages().get(
+		    trace.getProtocolMessages().size() - 1);
+	    if (lastMessage.getMessageIssuer() == ConnectionEnd.SERVER) {
+		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+			"Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
+	    } else {
+		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+			"(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
+	    }
 	} else {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-		    "The server does not respond with a heartbeat message, it is not vulnerable");
+		    "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
 	}
 
 	tlsContexts.add(tlsContext);
