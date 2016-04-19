@@ -37,7 +37,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.ECPrivateKey;
 import java.util.Arrays;
-import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -107,15 +106,14 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	    protocolMessage.setSignature(signature);
 	    protocolMessage.setSignatureLength(protocolMessage.getSignature().getValue().length);
 
-	    byte[] result = ArrayConverter.concatenate(selectedSignatureHashAlgo.getValue(), ArrayConverter.intToBytes(
-		    protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
+	    byte[] result = ArrayConverter.concatenate(selectedSignatureHashAlgo.getByteValue(), ArrayConverter
+		    .intToBytes(protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
 		    protocolMessage.getSignature().getValue());
 
-	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-	    protocolMessageFields.setLength(result.length);
+	    protocolMessage.setLength(result.length);
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessageFields.getLength().getValue();
+		    + protocolMessage.getLength().getValue();
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));
 
@@ -131,20 +129,18 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE_VERIFY.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a Certificate Verify message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 	currentPointer = nextPointer;
 
 	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
 	SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(Arrays
 		.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getValue());
+	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getByteValue());
 	currentPointer = nextPointer;
 
 	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;

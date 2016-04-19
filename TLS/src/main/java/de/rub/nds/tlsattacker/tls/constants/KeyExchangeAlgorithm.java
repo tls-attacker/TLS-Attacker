@@ -31,24 +31,4 @@ public enum KeyExchangeAlgorithm {
     DH_DSS,
     DH_RSA,
     EC_DIFFIE_HELLMAN;
-
-    public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.startsWith("TLS_RSA")) {
-	    return RSA;
-	} else if (cipher.startsWith("TLS_DH_DSS")) {
-	    return DH_DSS;
-	} else if (cipher.startsWith("TLS_DH_RSA")) {
-	    return DH_RSA;
-	} else if (cipher.startsWith("TLS_DHE_DSS")) {
-	    return DHE_DSS;
-	} else if (cipher.startsWith("TLS_DHE_RSA")) {
-	    return DHE_RSA;
-	} else if (cipher.startsWith("TLS_DH_ANON")) {
-	    return DH_ANON;
-	} else if (cipher.startsWith("TLS_ECDH")) {
-	    return EC_DIFFIE_HELLMAN;
-	}
-	throw new UnsupportedOperationException("The key exchange algorithm is not supported yet.");
-    }
 }

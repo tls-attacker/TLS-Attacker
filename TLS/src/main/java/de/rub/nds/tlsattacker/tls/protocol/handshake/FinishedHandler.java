@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
@@ -57,19 +58,17 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
 	byte[] handshakeMessagesHash = tlsContext.getDigest().digest();
 
-	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
 
 	byte[] verifyData;
 
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
-	    verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
-		    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
-		    prfAlgorithm.getJavaName());
+	    verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+		    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
 	} else {
-	    verifyData = PseudoRandomFunction.compute(tlsContext.getProtocolVersion(), masterSecret,
-		    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA,
-		    prfAlgorithm.getJavaName());
+	    verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+		    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
 	}
 	protocolMessage.setVerifyData(verifyData);
 	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
@@ -82,12 +81,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
 	    byte[] result = protocolMessage.getVerifyData().getValue();
 
-	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
-	    protocolMessageFields.setLength(result.length);
+	    protocolMessage.setLength(result.length);
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessageFields.getLength().getValue();
+		    + protocolMessage.getLength().getValue();
 
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));
@@ -111,14 +108,12 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	if (message[pointer] != HandshakeMessageType.FINISHED.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a server finished message");
 	}
-	HandshakeMessageFields finishedMessageFields = protocolMessage.getMessageFields();
-
 	finishedMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	finishedMessageFields.setLength(length);
+	finishedMessage.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + length;

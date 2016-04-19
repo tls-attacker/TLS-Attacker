@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.BulkCipherAlgorithm;
@@ -31,7 +32,6 @@ import de.rub.nds.tlsattacker.tls.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -82,7 +82,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
     /**
      * encryption IV
      */
-    private final IvParameterSpec encryptIv;
+    private IvParameterSpec encryptIv;
 
     /**
      * decryption IV
@@ -109,6 +109,10 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
      */
     private final byte[] serverWriteKey;
 
+    private SecretKey encryptKey;
+
+    private SecretKey decryptKey;
+
     /**
      * TLS context
      */
@@ -124,12 +128,12 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    useExplicitIv = true;
 	}
 	bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
-	CipherAlgorithm cipherAlg = CipherAlgorithm.getCipher(cipherSuite);
+	CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
 	int keySize = cipherAlg.getKeySize();
 	encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
 	decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
 
-	MacAlgorithm macAlg = MacAlgorithm.getMacAlgorithm(cipherSuite);
+	MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
 	readMac = Mac.getInstance(macAlg.getJavaName());
 	writeMac = Mac.getInstance(macAlg.getJavaName());
 
@@ -142,17 +146,17 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	byte[] masterSecret = tlsContext.getMasterSecret();
 	byte[] seed = tlsContext.getServerClientRandom();
 
-	PRFAlgorithm prfAlgorithm = PRFAlgorithm.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());
-	byte[] keyBlock = PseudoRandomFunction.compute(protocolVersion, masterSecret,
-		PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize, prfAlgorithm.getJavaName());
+	byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+		PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
 
 	LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
 
 	int offset = 0;
 	byte[] clientMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + readMac.getMacLength());
 	offset += readMac.getMacLength();
-	LOGGER.debug("Client MAC write Secret:  {}", ArrayConverter.bytesToHexString(clientMacWriteSecret));
+	LOGGER.debug("Client MAC write Secret: {}", ArrayConverter.bytesToHexString(clientMacWriteSecret));
 
 	byte[] serverMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + writeMac.getMacLength());
 	offset += writeMac.getMacLength();
@@ -160,11 +164,11 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 
 	clientWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
 	offset += keySize;
-	LOGGER.debug("Client write key:  {}", ArrayConverter.bytesToHexString(clientWriteKey));
+	LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
 
 	serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
 	offset += keySize;
-	LOGGER.debug("Server write key:  {}", ArrayConverter.bytesToHexString(serverWriteKey));
+	LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
 
 	byte[] clientWriteIv, serverWriteIv;
 	if (useExplicitIv) {
@@ -175,17 +179,17 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	} else {
 	    clientWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + encryptCipher.getBlockSize());
 	    offset += encryptCipher.getBlockSize();
-	    LOGGER.debug("Client write IV: \n  {}", ArrayConverter.bytesToHexString(clientWriteIv));
+	    LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
 	    serverWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + decryptCipher.getBlockSize());
 	    offset += decryptCipher.getBlockSize();
-	    LOGGER.debug("Server write IV: \n  {}", ArrayConverter.bytesToHexString(serverWriteIv));
+	    LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
 	}
 
 	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
 	    encryptIv = new IvParameterSpec(clientWriteIv);
 	    decryptIv = new IvParameterSpec(serverWriteIv);
-	    SecretKey encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-	    SecretKey decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
+	    encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
+	    decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
 	    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
 	    decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);
 	    readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
@@ -236,12 +240,12 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(HDR);
 	writeMac.update(data);
 
-	LOGGER.debug("The MAC was caluculated over the following data: \n  {}",
+	LOGGER.debug("The MAC was caluculated over the following data: {}",
 		ArrayConverter.bytesToHexString(ArrayConverter.concatenate(SQN, HDR, data)));
 
 	byte[] result = writeMac.doFinal();
 
-	LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
+	LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
 
 	// we increment sequence number for the sent records
 	sequenceNumber++;
@@ -262,7 +266,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(data);
 
 	if (LOGGER.isDebugEnabled()) {
-	    LOGGER.debug("The MAC will be caluculated over the following data: \n  {}", ArrayConverter
+	    LOGGER.debug("The MAC will be caluculated over the following data: {}", ArrayConverter
 		    .bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
 			    ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
 	}
@@ -270,7 +274,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	byte[] result = writeMac.doFinal();
 
 	if (LOGGER.isDebugEnabled()) {
-	    LOGGER.debug("MAC result: \n  {}", ArrayConverter.bytesToHexString(result));
+	    LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
 	}
 
 	return result;
@@ -315,10 +319,14 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    if (useExplicitIv) {
 		ciphertext = ArrayConverter.concatenate(encryptIv.getIV(), encryptCipher.doFinal(data));
 	    } else {
+		encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
 		ciphertext = encryptCipher.doFinal(data);
+		encryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
+			ciphertext.length - decryptCipher.getBlockSize(), ciphertext.length));
 	    }
 	    return ciphertext;
-	} catch (BadPaddingException | IllegalBlockSizeException ex) {
+	} catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
+		| InvalidKeyException ex) {
 	    throw new CryptoException(ex);
 	}
     }
@@ -336,16 +344,20 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    byte[] plaintext;
 	    if (useExplicitIv) {
 		decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
-		if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
-		    decryptCipher.init(Cipher.DECRYPT_MODE,
-			    new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
-		} else {
-		    decryptCipher.init(Cipher.DECRYPT_MODE,
-			    new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
-		}
+	    }
+	    if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+		decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
+			decryptIv);
+	    } else {
+		decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()),
+			decryptIv);
+	    }
+	    if (useExplicitIv) {
 		plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
 	    } else {
-		throw new UnsupportedOperationException("not supported yet");
+		plaintext = decryptCipher.doFinal(data);
+		decryptIv = new IvParameterSpec(Arrays.copyOfRange(data, data.length - decryptCipher.getBlockSize(),
+			data.length));
 	    }
 	    return plaintext;
 	} catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException

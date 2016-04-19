@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
@@ -88,7 +89,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "record") })
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
+	    @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
     public List<Record> getRecords() {
 	return records;
     }

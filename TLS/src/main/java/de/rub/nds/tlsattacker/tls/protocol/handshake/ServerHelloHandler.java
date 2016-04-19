@@ -57,14 +57,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	if (message[pointer] != HandshakeMessageType.SERVER_HELLO.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a server hello message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
@@ -99,10 +97,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	CipherSuite selectedCipher = CipherSuite.getCipherSuite(Arrays
 		.copyOfRange(message, currentPointer, nextPointer));
 	// System.out.println(selectedCipher);
-	protocolMessage.setSelectedCipherSuite(selectedCipher.getValue());
+	protocolMessage.setSelectedCipherSuite(selectedCipher.getByteValue());
 
 	tlsContext.setSelectedCipherSuite(CipherSuite.getCipherSuite(protocolMessage.getSelectedCipherSuite()
 		.getValue()));
+	tlsContext.setProtocolVersion(serverProtocolVersion);
+	tlsContext.initiliazeTlsMessageDigest();
 
 	currentPointer = nextPointer;
 	byte compression = message[currentPointer];
@@ -154,7 +154,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 		.getRandom().getValue()));
 
 	CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-	protocolMessage.setSelectedCipherSuite(selectedCipherSuite.getValue());
+	protocolMessage.setSelectedCipherSuite(selectedCipherSuite.getByteValue());
 
 	CompressionMethod selectedCompressionMethod = tlsContext.getCompressionMethod();
 	protocolMessage.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
@@ -178,12 +178,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
 	}
 
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+	protocolMessage.setLength(result.length);
 
-	protocolMessageFields.setLength(result.length);
-
-	long header = (HandshakeMessageType.SERVER_HELLO.getValue() << 24)
-		+ protocolMessageFields.getLength().getValue();
+	long header = (HandshakeMessageType.SERVER_HELLO.getValue() << 24) + protocolMessage.getLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		ArrayConverter.longToUint32Bytes(header), result));

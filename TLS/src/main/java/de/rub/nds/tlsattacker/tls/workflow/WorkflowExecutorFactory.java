@@ -30,8 +30,10 @@ public class WorkflowExecutorFactory {
     public static WorkflowExecutor createWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
 	WorkflowExecutor we;
 	switch (tlsContext.getProtocolVersion()) {
+	    case TLS10:
+	    case TLS11:
 	    case TLS12:
-		we = new TLS12WorkflowExecutor(transportHandler, tlsContext);
+		we = new GenericWorkflowExecutor(transportHandler, tlsContext);
 		return we;
 	    case DTLS12:
 		we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);

@@ -33,8 +33,6 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,17 +57,13 @@ public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactor
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = new LinkedList<>();
-
 	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
+	workflowTrace.add(ch);
 
 	ch.setSupportedCipherSuites(config.getCipherSuites());
 	ch.setSupportedCompressionMethods(config.getCompressionMethods());
 
 	initializeClientHelloExtensions(config, ch);
-
-	workflowTrace.setProtocolMessages(protocolMessages);
 
 	context.setWorkflowTrace(workflowTrace);
 	initializeProtocolMessageOrder(context);
@@ -80,29 +74,27 @@ public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactor
     @Override
     public TlsContext createHandshakeTlsContext() {
 	TlsContext context = this.createClientHelloTlsContext();
+	WorkflowTrace workflowTrace = context.getWorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
-	    protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
 
-	    protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
-	    protocolMessages.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	    protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
 	} else {
-	    protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-
-	    protocolMessages.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
 	}
 
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
+	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+	workflowTrace.add(new FinishedMessage(ConnectionEnd.CLIENT));
 
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new FinishedMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
+	workflowTrace.add(new FinishedMessage(ConnectionEnd.SERVER));
 
 	initializeProtocolMessageOrder(context);
 
@@ -112,14 +104,13 @@ public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactor
     @Override
     public TlsContext createFullTlsContext() {
 	TlsContext context = this.createHandshakeTlsContext();
+	WorkflowTrace workflowTrace = context.getWorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.CLIENT));
+	workflowTrace.add(new ApplicationMessage(ConnectionEnd.CLIENT));
 
 	if (config.getHeartbeatMode() != null) {
-	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.SERVER));
+	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
+	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
 	}
 
 	initializeProtocolMessageOrder(context);

@@ -22,7 +22,6 @@ package de.rub.nds.tlsattacker.tls.config.converters;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import java.util.Arrays;
 
 /**
  * Converts a protocol version string to a protocol Version enum (for command
@@ -34,12 +33,10 @@ public class ProtocolVersionConverter implements IStringConverter<ProtocolVersio
 
     @Override
     public ProtocolVersion convert(String value) {
-	ProtocolVersion convertedValue = ProtocolVersion.fromString(value);
-
-	if (convertedValue == null) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a protocol version. "
-		    + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
+	try {
+	    return ProtocolVersion.fromString(value);
+	} catch (IllegalArgumentException ex) {
+	    throw new ParameterException(ex);
 	}
-	return convertedValue;
     }
 }

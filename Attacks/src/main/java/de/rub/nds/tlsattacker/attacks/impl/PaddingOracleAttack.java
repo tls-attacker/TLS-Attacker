@@ -1,20 +1,21 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
- * Bochum (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security,
+ *                    Ruhr University Bochum
+ *                    (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
@@ -30,11 +31,13 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -48,9 +51,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(PaddingOracleAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttack.class);
 
-    private List<ProtocolMessage> lastMessages;
+    private final List<ProtocolMessage> lastMessages;
 
     public PaddingOracleAttack(PaddingOracleCommandConfig config) {
 	super(config);
@@ -72,14 +75,26 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
 	LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
 
+	LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet();
 	for (int i = 0; i < lastMessages.size(); i++) {
 	    ProtocolMessage pm = lastMessages.get(i);
+	    pmSet.add(pm);
 	    Record r = records.get(i);
-	    LOGGER.info("----- NEXT HANDSHAKE WITH MODIFIED APPLICATION DATA RECORD -----");
+	    LOGGER.info("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
 	    LOGGER.info("Plain record bytes of the modified record: ");
 	    LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
 	    LOGGER.info("Last protocol message in the protocol flow");
 	    LOGGER.info(pm.toString());
+	}
+	List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
+
+	if (pmSet.size() == 1) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
+		    pmSetList);
+
+	} else {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
+		    config.getConnect(), pmSetList);
 	}
     }
 
@@ -105,6 +120,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	}
 
 	lastMessages.add(trace.getLastProtocolMesssage());
+	tlsContexts.add(tlsContext);
 
 	transportHandler.closeConnection();
     }
@@ -123,12 +139,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
 		(byte) 255, (byte) 255, (byte) 255 });
 	records.add(r);
-	r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255 });
-	records.add(r);
+
 	return records;
     }
 

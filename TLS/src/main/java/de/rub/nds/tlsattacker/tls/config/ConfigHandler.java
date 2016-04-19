@@ -25,11 +25,15 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.lang.reflect.Field;
+import java.security.Provider;
+import java.security.Security;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * 
@@ -37,7 +41,25 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  */
 public abstract class ConfigHandler {
 
-    public void initializeGeneralConfig(GeneralConfig config) {
+    static final Logger LOGGER = LogManager.getLogger(ConfigHandler.class);
+
+    /**
+     * Initializes TLS Attacker according to the config file. In addition, it
+     * adds the Bouncy Castle provider and removes the PKCS#11 security provider
+     * since there are some problems when handling ECC.
+     * 
+     * @param config
+     */
+    public void initialize(GeneralConfig config) {
+
+	// ECC does not work properly in the NSS provider
+	Security.removeProvider("SunPKCS11-NSS");
+	Security.addProvider(new BouncyCastleProvider());
+	LOGGER.debug("Using the following security providers");
+	for (Provider p : Security.getProviders()) {
+	    LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
+	}
+
 	LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 	Configuration ctxConfig = ctx.getConfiguration();
 	LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
@@ -76,12 +98,5 @@ public abstract class ConfigHandler {
 
     public abstract TlsContext initializeTlsContext(CommandConfig config);
 
-    // public ProtocolController initializeProtocolController(TransportHandler
-    // transportHandler, TlsContext tlsContext) {
-    // ProtocolController pc = ProtocolController.createInstance();
-    // pc.setTransportHandler(transportHandler);
-    // pc.setTlsContext(tlsContext);
-    // return pc;
-    // }
     public abstract WorkflowExecutor initializeWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext);
 }

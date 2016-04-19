@@ -1,30 +1,30 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
- * Bochum (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security,
+ *                    Ruhr University Bochum
+ *                    (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
-import de.rub.nds.tlsattacker.attacks.config.BleichenbacherTestCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.Random;
@@ -34,7 +34,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
@@ -59,7 +58,7 @@ public final class PKCS1VectorGenerator {
      * @param type
      * @return
      */
-    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherTestCommandConfig.Type type) {
+    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
 
 	// we do not need secure random here
 	Random random = new Random();
@@ -69,7 +68,7 @@ public final class PKCS1VectorGenerator {
 
 	// compute the number of all vectors that are being generated
 	int vectorSize = STATIC_VECTOR_SIZE;
-	if (type == BleichenbacherTestCommandConfig.Type.FULL) {
+	if (type == BleichenbacherCommandConfig.Type.FULL) {
 	    vectorSize += rsaKeyLength - 2;
 	}
 
@@ -88,13 +87,12 @@ public final class PKCS1VectorGenerator {
 	// correct key (with invalid TLS version number)
 	plainPaddedKeys[10] = getPaddedKey(rsaKeyLength, keyBytes);
 
-	if (type == BleichenbacherTestCommandConfig.Type.FULL) {
+	if (type == BleichenbacherCommandConfig.Type.FULL) {
 	    byte[][] additionalPaddedKeys = getEK_DifferentPositionsOf0x00(rsaKeyLength, keyBytes);
 	    System.arraycopy(additionalPaddedKeys, 0, plainPaddedKeys, STATIC_VECTOR_SIZE, additionalPaddedKeys.length);
 	}
 
 	try {
-	    Security.addProvider(new BouncyCastleProvider());
 	    Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
 	    rsa.init(Cipher.ENCRYPT_MODE, publicKey);
 	    byte[][] encryptedKeys = new byte[vectorSize][];

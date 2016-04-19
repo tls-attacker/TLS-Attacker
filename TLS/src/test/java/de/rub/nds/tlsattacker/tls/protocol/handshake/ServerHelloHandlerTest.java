@@ -19,8 +19,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageFields;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
@@ -31,7 +29,6 @@ import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.ArrayList;
@@ -72,11 +69,10 @@ public class ServerHelloHandlerTest {
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 70", new Integer(70), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
 	assertArrayEquals(
 		"Server Session ID",
@@ -103,11 +99,10 @@ public class ServerHelloHandlerTest {
 
 	int endPointer = handler.parseMessageAction(serverKeyExchangeWithHeartbeatBytes, 0);
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
-	HandshakeMessageFields handshakeMessageFields = message.getMessageFields();
 
 	assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
 		message.getHandshakeMessageType());
-	assertEquals("Message length must be 77", new Integer(77), handshakeMessageFields.getLength().getValue());
+	assertEquals("Message length must be 77", new Integer(77), message.getLength().getValue());
 	assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
 	assertArrayEquals(
 		"Server Session ID",
@@ -136,15 +131,18 @@ public class ServerHelloHandlerTest {
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
 
 	tlsContext.setCompressionMethod(CompressionMethod.NULL);
+	tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
 
 	byte[] returned = handler.prepareMessageAction();
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x46 }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), new byte[] { 0x20 }, message.getSessionId().getValue(),
-		CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA.getValue(),
+		CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(),
 		new byte[] { CompressionMethod.NULL.getValue() });
 
 	assertNotNull("Confirm function didn't return 'NULL'", returned);
+	System.out.println(ArrayConverter.bytesToHexString(returned));
+	System.out.println(ArrayConverter.bytesToHexString(expected));
 	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
@@ -159,6 +157,7 @@ public class ServerHelloHandlerTest {
 	ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
 
 	tlsContext.setCompressionMethod(CompressionMethod.NULL);
+	tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
 
 	HeartbeatExtensionMessage heart;
 	heart = new HeartbeatExtensionMessage();
@@ -180,7 +179,7 @@ public class ServerHelloHandlerTest {
 	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO.getValue() },
 		new byte[] { 0x00, 0x00, 0x57 }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
 		message.getRandom().getValue(), new byte[] { 0x20 }, message.getSessionId().getValue(),
-		CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA.getValue(),
+		CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue(),
 		new byte[] { CompressionMethod.NULL.getValue() }, new byte[] { 0x00, 0x0F },
 		ExtensionType.HEARTBEAT.getValue(),
 		new byte[] { 0x00, 0x01, HeartbeatMode.PEER_ALLOWED_TO_SEND.getValue() },

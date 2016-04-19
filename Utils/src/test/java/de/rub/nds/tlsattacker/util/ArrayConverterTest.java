@@ -148,6 +148,9 @@ public class ArrayConverterTest {
 	hex = "FF";
 	assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff },
 		ArrayConverter.hexStringToByteArray(hex));
+	hex = "FFFFFF";
+	assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff },
+		ArrayConverter.hexStringToByteArray(hex));
     }
 
     @Test

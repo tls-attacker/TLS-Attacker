@@ -79,21 +79,22 @@ public abstract class CommandConfig {
     @Parameter(names = "-timeout", description = "Timeout for socket connection")
     protected int timeout;
 
-    @Parameter(names = "-nextprotoneg", description = "Enables NPN extension, considering named protocols supported "
-	    + "(comma-separated list), not supported yet TODO.")
-    protected List<String> nextProtoNeg;
+    // @Parameter(names = "-nextprotoneg", description =
+    // "Enables NPN extension, considering named protocols supported "
+    // + "(comma-separated list), not supported yet TODO.")
+    // protected List<String> nextProtoNeg;
 
     @Parameter(names = "-legacy_renegotiation", description = "Enables use of legacy renegotiation")
     protected boolean legacyRenegotiation;
 
     @Parameter(names = "-transport_handler_type", description = "Transport Handler type")
-    protected TransportHandlerType transportHandlerType = TransportHandlerType.SIMPLE;
+    protected TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
 
-    @Parameter(names = "-workflow_trace_config_file", description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
-    protected String workflowTraceConfigFile;
+    @Parameter(names = "-workflow_input", description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
+    protected String workflowInput;
 
-    @Parameter(names = "-workflow_trace_output_file", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")
-    protected String workflowTraceOutputFile;
+    @Parameter(names = "-workflow_output", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")
+    protected String workflowOutput;
 
     @Parameter(names = "-heartbeat_mode", description = "Sets the heartbeat mode (PEER_ALLOWED_TO_SEND or PEER_NOT_ALLOWED_TO_SEND)", converter = HeartbeatModeConverter.class)
     protected HeartbeatMode heartbeatMode;
@@ -111,8 +112,8 @@ public abstract class CommandConfig {
     @Parameter(names = "-max_fragment_length", description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
     protected Integer maxFragmentLength;
 
-    @Parameter(names = "-max_transport_response_wait", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
-    protected Integer maxTransportResponseWait;
+    @Parameter(names = "-tls_timeout", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
+    protected Integer tlsTimeout;
 
     @Parameter(names = "-client_authentication", description = "YES or NO")
     protected boolean clientAuthentication = false;
@@ -133,8 +134,8 @@ public abstract class CommandConfig {
 	namedCurves.add(NamedCurve.SECP256R1);
 	namedCurves.add(NamedCurve.SECP384R1);
 	namedCurves.add(NamedCurve.SECP521R1);
-	nextProtoNeg = new LinkedList<>();
-	maxTransportResponseWait = 150;
+	// nextProtoNeg = new LinkedList<>();
+	tlsTimeout = 400;
 	alias = "";
 	signatureAndHashAlgorithms = new LinkedList<>();
 	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
@@ -210,13 +211,13 @@ public abstract class CommandConfig {
 	this.timeout = timeout;
     }
 
-    public List<String> getNextProtoNeg() {
-	return nextProtoNeg;
-    }
-
-    public void setNextProtoNeg(List<String> nextProtoNeg) {
-	this.nextProtoNeg = nextProtoNeg;
-    }
+    // public List<String> getNextProtoNeg() {
+    // return nextProtoNeg;
+    // }
+    //
+    // public void setNextProtoNeg(List<String> nextProtoNeg) {
+    // this.nextProtoNeg = nextProtoNeg;
+    // }
 
     public boolean isLegacyRenegotiation() {
 	return legacyRenegotiation;
@@ -235,19 +236,19 @@ public abstract class CommandConfig {
     }
 
     public String getWorkflowTraceConfigFile() {
-	return workflowTraceConfigFile;
+	return workflowInput;
     }
 
     public void setWorkflowTraceConfigFile(String workflowTraceConfigFile) {
-	this.workflowTraceConfigFile = workflowTraceConfigFile;
+	this.workflowInput = workflowTraceConfigFile;
     }
 
     public String getWorkflowTraceOutputFile() {
-	return workflowTraceOutputFile;
+	return workflowOutput;
     }
 
     public void setWorkflowTraceOutputFile(String workflowTraceOutputFile) {
-	this.workflowTraceOutputFile = workflowTraceOutputFile;
+	this.workflowOutput = workflowTraceOutputFile;
     }
 
     public List<CompressionMethod> getCompressionMethods() {
@@ -306,12 +307,12 @@ public abstract class CommandConfig {
 	this.maxFragmentLength = maxFragmentLength;
     }
 
-    public Integer getMaxTransportResponseWait() {
-	return maxTransportResponseWait;
+    public Integer getTlsTimeout() {
+	return tlsTimeout;
     }
 
-    public void setMaxTransportResponseWait(Integer maxTransportResponseWait) {
-	this.maxTransportResponseWait = maxTransportResponseWait;
+    public void setTlsTimeout(Integer tlsTimeout) {
+	this.tlsTimeout = tlsTimeout;
     }
 
     public String getAlias() {

@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import java.util.List;
@@ -36,11 +37,11 @@ public class CipherSuiteFilter {
      * @param cipherSuites
      */
     public static void filterCipherSuites(List<CipherSuite> cipherSuites) {
-	KeyExchangeAlgorithm algorithm = KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cipherSuites.get(0));
+	KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuites.get(0));
 	boolean ephemeral = cipherSuites.get(0).isEphemeral();
 	for (int i = cipherSuites.size() - 1; i > 0; i--) {
 	    CipherSuite cs = cipherSuites.get(i);
-	    if (KeyExchangeAlgorithm.getKeyExchangeAlgorithm(cs) != algorithm || cs.isEphemeral() != ephemeral) {
+	    if (AlgorithmResolver.getKeyExchangeAlgorithm(cs) != algorithm || cs.isEphemeral() != ephemeral) {
 		cipherSuites.remove(i);
 	    }
 	}

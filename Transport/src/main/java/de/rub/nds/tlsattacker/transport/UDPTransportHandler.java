@@ -35,9 +35,9 @@ public class UDPTransportHandler implements TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(UDPTransportHandler.class);
 
-    private static final int DEFAULT_RESPONSE_WAIT = 3000;
+    private static final int DEFAULT_TLS_TIMEOUT = 3000;
 
-    private int maxResponseWait = DEFAULT_RESPONSE_WAIT;
+    private int tlsTimeout = DEFAULT_TLS_TIMEOUT;
 
     private DatagramSocket datagramSocket;
 
@@ -50,7 +50,7 @@ public class UDPTransportHandler implements TransportHandler {
     @Override
     public void initialize(String remoteAddress, int remotePort) throws IOException {
 	datagramSocket = new DatagramSocket();
-	datagramSocket.setSoTimeout(DEFAULT_RESPONSE_WAIT);
+	datagramSocket.setSoTimeout(DEFAULT_TLS_TIMEOUT);
 	datagramSocket.connect(InetAddress.getByName(remoteAddress), remotePort);
 
 	sentPacket = new DatagramPacket(new byte[0], 0, datagramSocket.getInetAddress(), datagramSocket.getPort());
@@ -90,15 +90,15 @@ public class UDPTransportHandler implements TransportHandler {
 	LOGGER.debug("Socket closed.");
     }
 
-    public int getMaxResponseWait() {
-	return maxResponseWait;
+    public int getTlsTimeout() {
+	return tlsTimeout;
     }
 
-    public void setMaxResponseWait(int maxResponseWait) {
-	this.maxResponseWait = maxResponseWait;
+    public void setTlsTimeout(int tlsTimeout) {
+	this.tlsTimeout = tlsTimeout;
 	if (datagramSocket != null) {
 	    try {
-		datagramSocket.setSoTimeout(this.maxResponseWait);
+		datagramSocket.setSoTimeout(this.tlsTimeout);
 	    } catch (SocketException e) {
 		LOGGER.debug("Failed to set socket timeout. Exception:\n{}", e.getMessage());
 	    }
