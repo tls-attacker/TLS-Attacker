@@ -94,13 +94,11 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	    // BC implicitly includes the certificates length of all the
 	    // certificates, so we only need to set the protocol message length
 
-	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
-	    protocolMessageFields.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
+	    protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
 	    byte[] result = protocolMessage.getX509CertificateBytes().getValue();
 
 	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessageFields.getLength().getValue();
+		    + protocolMessage.getLength().getValue();
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));
 
@@ -116,14 +114,12 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	if (message[pointer] != HandshakeMessageType.CERTIFICATE.getValue()) {
 	    throw new InvalidMessageTypeException("This is not a certificate message");
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.CERTIFICATES_LENGTH;
@@ -145,36 +141,6 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	} catch (IOException | CertificateParsingException ex) {
 	    throw new WorkflowExecutionException(ex.getLocalizedMessage(), ex);
 	}
-
-	// int parsedCertLength = 0;
-	// int startCertificatesPointer = nextPointer;
-	// while (parsedCertLength != certificatesLength) {
-	// currentPointer = parsedCertLength + startCertificatesPointer;
-	// nextPointer = currentPointer +
-	// HandshakeByteLength.CERTIFICATE_LENGTH;
-	// int certificateLength =
-	// ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
-	// nextPointer));
-	// protocolMessage.addCertificateLength(certificateLength);
-	//
-	// currentPointer = nextPointer;
-	// nextPointer = currentPointer + certificateLength;
-	// byte[] cert = Arrays.copyOfRange(message, currentPointer,
-	// nextPointer);
-	//
-	// // System.out.println(ArrayConverter.bytesToHexString(cert));
-	//
-	// try {
-	// CertificateFactory cf = CertificateFactory.getInstance("X.509");
-	// Certificate c = cf.generateCertificate(new
-	// ByteArrayInputStream(cert));
-	// protocolMessage.addCertificate(c);
-	// } catch (CertificateException ce) {
-	// throw new WorkflowExecutionException(ce.getLocalizedMessage());
-	// }
-	// parsedCertLength += certificateLength +
-	// HandshakeByteLength.CERTIFICATE_LENGTH;
-	// }
 	nextPointer = nextPointer + protocolMessage.getCertificatesLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));

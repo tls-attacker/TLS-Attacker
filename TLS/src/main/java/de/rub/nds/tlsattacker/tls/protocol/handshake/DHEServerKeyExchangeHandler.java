@@ -51,7 +51,6 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.KeyGenerationParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
-import org.bouncycastle.crypto.generators.DHParametersGenerator;
 import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
 import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
@@ -81,14 +80,12 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	if (message[pointer] != HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue()) {
 	    throw new InvalidMessageTypeException(HandshakeMessageType.SERVER_KEY_EXCHANGE);
 	}
-	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessageFields.setLength(length);
+	protocolMessage.setLength(length);
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.DH_PARAM_LENGTH;
@@ -255,12 +252,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 			    protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
 		    protocolMessage.getSignature().getValue());
 
-	    HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
-
-	    protocolMessageFields.setLength(result.length);
+	    protocolMessage.setLength(result.length);
 
 	    long header = (HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue() << 24)
-		    + protocolMessageFields.getLength().getValue();
+		    + protocolMessage.getLength().getValue();
 
 	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
 		    ArrayConverter.longToUint32Bytes(header), result));

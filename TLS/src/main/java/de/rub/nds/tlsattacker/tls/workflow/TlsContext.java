@@ -20,6 +20,7 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
@@ -27,6 +28,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
@@ -71,7 +73,7 @@ public class TlsContext {
     /**
      * selected cipher suite
      */
-    private CipherSuite selectedCipherSuite = CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA;
+    private CipherSuite selectedCipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
     /**
      * compression algorithm
      */
@@ -149,7 +151,7 @@ public class TlsContext {
      */
     private byte[] finishedRecords;
 
-    private final TlsMessageDigest digest;
+    private TlsMessageDigest digest;
 
     private LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
 
@@ -160,18 +162,23 @@ public class TlsContext {
      */
     private byte[] dtlsHandshakeCookie = new byte[0];
 
-    public TlsContext(ProtocolVersion pv) {
+    public TlsContext() {
+	digest = new TlsMessageDigest();
 	ecContext = new TlsECContext();
+    }
+
+    public TlsContext(ProtocolVersion pv) {
+	this();
 	protocolVersion = pv;
+    }
+
+    public void initiliazeTlsMessageDigest() {
 	try {
-	    digest = new TlsMessageDigest(this.protocolVersion);
+	    DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(protocolVersion, selectedCipherSuite);
+	    digest.initializeDigestAlgorithm(algorithm);
 	} catch (NoSuchAlgorithmException ex) {
 	    throw new CryptoException(ex);
 	}
-    }
-
-    public TlsContext() {
-	this(ProtocolVersion.TLS12);
     }
 
     public byte[] getMasterSecret() {

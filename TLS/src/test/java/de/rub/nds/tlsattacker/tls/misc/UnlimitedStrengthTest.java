@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.misc;
 
+import java.lang.reflect.Field;
 import java.security.InvalidKeyException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -32,7 +33,10 @@ import org.junit.Test;
 /**
  * If you run on an Oracle Java platform, it is possible that strong algorithms
  * are not allowed. In this case, you have to install a so called Unlimited
- * Strength Jurisdiction Policy
+ * Strength Jurisdiction Policy.
+ * 
+ * We try to remove this limitation programmatically (see the field setters),
+ * but it is possible that this does not work on all platforms.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -43,6 +47,10 @@ public class UnlimitedStrengthTest {
     @Test
     public void testAES256() throws Exception {
 	try {
+	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+	    field.setAccessible(true);
+	    field.set(null, java.lang.Boolean.FALSE);
+
 	    Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
 	    IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
 	    SecretKey encryptKey = new SecretKeySpec(new byte[32], "AES");

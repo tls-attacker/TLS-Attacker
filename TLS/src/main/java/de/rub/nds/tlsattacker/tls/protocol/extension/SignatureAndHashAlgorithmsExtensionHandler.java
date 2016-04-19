@@ -21,8 +21,6 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
@@ -54,7 +52,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     public void initializeClientHelloExtension(SignatureAndHashAlgorithmsExtensionMessage extension) {
 	byte[] algorithms = null;
 	for (SignatureAndHashAlgorithm algorithm : extension.getSignatureAndHashAlgorithmsConfig()) {
-	    algorithms = ArrayConverter.concatenate(algorithms, algorithm.getValue());
+	    algorithms = ArrayConverter.concatenate(algorithms, algorithm.getByteValue());
 	}
 
 	extension.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());

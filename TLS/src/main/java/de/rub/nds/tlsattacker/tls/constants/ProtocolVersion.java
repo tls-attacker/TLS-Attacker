@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,6 +85,7 @@ public enum ProtocolVersion {
 		return pv;
 	    }
 	}
-	return null;
+	throw new IllegalArgumentException("Value " + protocolVersion + " cannot be converted to a protocol version. "
+		+ "Available values are: " + Arrays.toString(ProtocolVersion.values()));
     }
 }

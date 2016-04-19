@@ -19,7 +19,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeMessageDtlsFields;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -88,15 +87,13 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
     private byte[] prepareDtlsHandshakeMessageParse(byte[] message, int pointer) {
 	dtlsAllMessageBytes = message;
-	HandshakeMessageDtlsFields messageFields = new HandshakeMessageDtlsFields();
 	byte[] parsePmBytes;
 
-	messageFields.setMessageSeq((message[pointer + 4] << 8) + (message[pointer + 5] & 0xFF));
-	messageFields.setFragmentOffset((message[pointer + 6] << 16) + (message[pointer + 7] << 8)
+	protocolMessage.setMessageSeq((message[pointer + 4] << 8) + (message[pointer + 5] & 0xFF));
+	protocolMessage.setFragmentOffset((message[pointer + 6] << 16) + (message[pointer + 7] << 8)
 		+ (message[pointer + 8] & 0xFF));
-	messageFields.setFragmentLength((message[pointer + 9] << 16) + (message[pointer + 10] << 8)
+	protocolMessage.setFragmentLength((message[pointer + 9] << 16) + (message[pointer + 10] << 8)
 		+ (message[pointer + 11] & 0xFF));
-	protocolMessage.setMessageFields(messageFields);
 
 	parsePmBytes = new byte[message.length - 8];
 	System.arraycopy(message, 0, parsePmBytes, 0, pointer);
@@ -107,18 +104,16 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
     }
 
     private byte[] finishDtlsHandshakeMessagePrepare(byte[] messageBytes) {
-	HandshakeMessageDtlsFields messageFields = (HandshakeMessageDtlsFields) protocolMessage.getMessageFields();
-
-	messageFields.setFragmentLength(messageBytes.length - 4);
+	protocolMessage.setFragmentLength(messageBytes.length - 4);
 	byte[] preparePmBytes = new byte[messageBytes.length + 8];
 
 	System.arraycopy(messageBytes, 0, preparePmBytes, 0, 4);
-	System.arraycopy(ArrayConverter.intToBytes(messageFields.getMessageSeq().getValue(), 2), 0, preparePmBytes, 4,
-		2);
-	System.arraycopy(ArrayConverter.intToBytes(messageFields.getFragmentOffset().getValue(), 3), 0, preparePmBytes,
-		6, 3);
-	System.arraycopy(ArrayConverter.intToBytes(messageFields.getFragmentLength().getValue(), 3), 0, preparePmBytes,
-		9, 3);
+	System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getMessageSeq().getValue(), 2), 0, preparePmBytes,
+		4, 2);
+	System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getFragmentOffset().getValue(), 3), 0,
+		preparePmBytes, 6, 3);
+	System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getFragmentLength().getValue(), 3), 0,
+		preparePmBytes, 9, 3);
 	System.arraycopy(messageBytes, 4, preparePmBytes, 12, messageBytes.length - 4);
 
 	return preparePmBytes;

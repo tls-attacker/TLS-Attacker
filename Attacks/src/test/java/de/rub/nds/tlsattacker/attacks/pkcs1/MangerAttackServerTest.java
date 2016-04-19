@@ -66,7 +66,7 @@ public class MangerAttackServerTest {
 	cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 	byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-	config.setMaxTransportResponseWait(50);
+	config.setTlsTimeout(50);
 	Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
 
 	long start = System.currentTimeMillis();

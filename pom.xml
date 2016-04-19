@@ -3,9 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
+    <name>TLS-Attacker</name>
+    <url>https://github.com/RUB-NDS/TLS-Attacker</url>
+    <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/) and the Hackmanit GmbH (http://hackmanit.de/). </description>
     
     <developers>
         <developer>
@@ -30,17 +33,15 @@
     </repositories>
     
     <modules>
+        <module>Utils</module>
         <module>ModifiableVariable</module>
-        <module>TLS-Server</module>
         <module>Transport</module>
+        <module>EAP</module>
+        <module>TLS-Server</module>
         <module>TLS</module>
         <module>Attacks</module>
-        <module>Utils</module>
-        <module>EAP</module>
         <module>Fuzzer</module>
-        <module>MITM-TLS-Server</module>
-        <module>RandomTester</module>
-        <module>ModifiableCertificate</module>
+        <module>Runnable</module>
     </modules>
 
     <dependencies>
@@ -63,7 +64,7 @@
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.30</version>
+            <version>1.35</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.jmockit</groupId>
@@ -80,8 +81,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.54</version>
         </dependency>
     </dependencies>
     

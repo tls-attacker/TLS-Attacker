@@ -19,6 +19,7 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import java.util.Random;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -70,9 +71,19 @@ public class PseudoRandomFunctionTest {
 	int size = 48;
 
 	byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+	byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
 
-	byte[] result2 = PseudoRandomFunction.compute(de.rub.nds.tlsattacker.tls.constants.ProtocolVersion.TLS12,
-		secret, label, seed, size, "HmacSHA256");
+	assertArrayEquals(result1, result2);
+
+	new NonStrictExpectations() {
+	    {
+		mockedParameters.getPrfAlgorithm();
+		result = 2;
+	    }
+	};
+
+	result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+	result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
 
 	assertArrayEquals(result1, result2);
     }
@@ -91,8 +102,7 @@ public class PseudoRandomFunctionTest {
 
 	byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
 
-	byte[] result2 = PseudoRandomFunction.compute(de.rub.nds.tlsattacker.tls.constants.ProtocolVersion.TLS11,
-		secret, label, seed, size, "HmacSHA256");
+	byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
 
 	assertArrayEquals(result1, result2);
     }

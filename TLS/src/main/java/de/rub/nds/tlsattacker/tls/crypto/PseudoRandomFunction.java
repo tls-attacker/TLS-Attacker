@@ -19,8 +19,8 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -56,27 +56,22 @@ public final class PseudoRandomFunction {
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      * 
-     * @param protocolVersion
+     * @param prfAlgorithm
      * @param secret
      * @param label
      * @param seed
      * @param size
-     *            size of the output
-     * @param macAlgorithm
      * @return
      */
-    public static byte[] compute(ProtocolVersion protocolVersion, byte[] secret, String label, byte[] seed, int size,
-	    String macAlgorithm) {
+    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) {
 
-	switch (protocolVersion) {
-	    case TLS12:
-	    case DTLS12:
-		return computeTls12(secret, label, seed, size, macAlgorithm);
-	    case TLS11:
-	    case TLS10:
+	switch (prfAlgorithm) {
+	    case TLS_PRF_SHA256:
+	    case TLS_PRF_SHA384:
+		return computeTls12(secret, label, seed, size, prfAlgorithm.getMacAlgorithm().getJavaName());
+	    case TLS_PRF_LEGACY:
 		// prf legacy is the prf computation function for older protocol
-		// versions
-		// it works by default with sha1 and md5
+		// versions, it works by default with sha1 and md5
 		return TlsUtils.PRF_legacy(secret, label, seed, size);
 	    default:
 		throw new UnsupportedOperationException("PRF computation for different"

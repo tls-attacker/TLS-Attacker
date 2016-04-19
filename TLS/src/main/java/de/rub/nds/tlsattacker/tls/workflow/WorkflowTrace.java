@@ -1,23 +1,26 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
- * Bochum (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security,
+ *                    Ruhr University Bochum
+ *                    (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -51,6 +54,9 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * A wrapper class over a list of protocol messages maintained in the TLS
+ * context.
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement
@@ -67,6 +73,8 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
 	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
 	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+	    @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
+	    @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
 	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
 	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
 	    @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
@@ -83,6 +91,27 @@ public class WorkflowTrace implements Serializable {
 
     private String name;
 
+    /**
+     * Initializes the workflow trace with an empty list of protocol messages
+     */
+    public WorkflowTrace() {
+	this.protocolMessages = new LinkedList<>();
+    }
+
+    /**
+     * Adds protocol message to the list
+     * 
+     * @param pm
+     * @return Returns true if the list was changed
+     */
+    public boolean add(ProtocolMessage pm) {
+	return protocolMessages.add(pm);
+    }
+
+    public ProtocolMessage remove(int index) {
+	return protocolMessages.remove(index);
+    }
+
     public List<ProtocolMessage> getProtocolMessages() {
 	return protocolMessages;
     }
@@ -91,6 +120,12 @@ public class WorkflowTrace implements Serializable {
 	this.protocolMessages = protocolMessages;
     }
 
+    /**
+     * Returns a list of protocol messages of a specific type
+     * 
+     * @param type
+     * @return
+     */
     public List<Integer> getProtocolMessagePositions(ProtocolMessageType type) {
 	List<Integer> positions = new LinkedList<>();
 	int position = 0;
@@ -103,6 +138,33 @@ public class WorkflowTrace implements Serializable {
 	return positions;
     }
 
+    public boolean containsProtocolMessage(ProtocolMessageType type) {
+	return !getProtocolMessagePositions(type).isEmpty();
+    }
+
+    /**
+     * Returns the first protocol message of a specified type, which is
+     * contained in the list of protocol messages. Throws an
+     * IllegalArgumentException if no message is found.
+     * 
+     * @param type
+     * @return
+     */
+    public ProtocolMessage getFirstProtocolMessage(ProtocolMessageType type) {
+	for (ProtocolMessage pm : protocolMessages) {
+	    if (pm.getProtocolMessageType() == type) {
+		return pm;
+	    }
+	}
+	throw new IllegalArgumentException("The Workflow does not contain any " + type);
+    }
+
+    /**
+     * Returns a list of handshake messages of a given type.
+     * 
+     * @param type
+     * @return
+     */
     public List<Integer> getHandshakeMessagePositions(HandshakeMessageType type) {
 	List<Integer> positions = new LinkedList<>();
 	int position = 0;
@@ -118,15 +180,18 @@ public class WorkflowTrace implements Serializable {
 	return positions;
     }
 
-    public ProtocolMessage getFirstProtocolMessage(ProtocolMessageType type) {
-	for (ProtocolMessage pm : protocolMessages) {
-	    if (pm.getProtocolMessageType() == type) {
-		return pm;
-	    }
-	}
-	return null;
+    public boolean containsHandshakeMessage(HandshakeMessageType type) {
+	return !getHandshakeMessagePositions(type).isEmpty();
     }
 
+    /**
+     * Returns the first handshake message of a specified type, which is
+     * contained in the list of protocol messages. Throws an
+     * IllegalArgumentException if no message is found.
+     * 
+     * @param type
+     * @return
+     */
     public HandshakeMessage getFirstHandshakeMessage(HandshakeMessageType type) {
 	for (ProtocolMessage pm : protocolMessages) {
 	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
@@ -136,7 +201,7 @@ public class WorkflowTrace implements Serializable {
 		}
 	    }
 	}
-	return null;
+	throw new IllegalArgumentException("The Workflow does not contain any " + type);
     }
 
     public ProtocolMessage getLastProtocolMesssage() {

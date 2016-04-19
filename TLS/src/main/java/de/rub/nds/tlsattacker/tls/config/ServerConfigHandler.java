@@ -40,6 +40,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Enumeration;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +56,7 @@ public class ServerConfigHandler extends ConfigHandler {
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
 	ServerCommandConfig ccConfig = (ServerCommandConfig) config;
 	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-		config.getMaxTransportResponseWait());
+		config.getTlsTimeout());
 	try {
 	    String host = "server";
 	    int port = Integer.parseInt(ccConfig.getPort());
@@ -80,7 +81,7 @@ public class ServerConfigHandler extends ConfigHandler {
 		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowTraceConfigFile());
 		WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
 		tlsContext.setWorkflowTrace(workflowTrace);
-	    } catch (IOException | JAXBException ex) {
+	    } catch (IOException | JAXBException | XMLStreamException ex) {
 		throw new ConfigurationException("The workflow trace could not be loaded from "
 			+ ccConfig.getWorkflowTraceConfigFile(), ex);
 	    }
