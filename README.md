@@ -80,7 +80,7 @@ $ java -jar target/TLS-Attacker-1.0.jar client -help
 
 The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
-$ cd Attacks/target
+$ cd Runnable
 $ java -jar target/TLS-Attacker-1.0.jar padding_oracle 
 ```
 
@@ -314,6 +314,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
 </workflowTrace>
 ```
 As you can see, we explicitly increased the payload length of the Heartbeat message by 2000.
+If you run the attack against the vulnerable server (e.g., OpenSSL 1.0.1f), you should see a valid Heartbeat response.
 
 Further examples on attacks and fuzzing are in the Wiki.
 

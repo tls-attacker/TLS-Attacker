@@ -1,1 +1,0 @@
-../../../servers/mbedtls-1.3.10/programs/ssl/ssl_server2 server_port=51626 auth_mode=required key_file=../resources/rsa1024key.pem crt_file=../resources/rsa1024cert.pem
