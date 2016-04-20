@@ -40,8 +40,11 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
     protected String certSecure = "certsecure";
 
     // not implemented yet
-    @Parameter(names = "-session_ticket", description = "Enable if the server uses Session Tickets for Session Resumption")
-    protected boolean sessionTicket = false;
+    /*
+     * @Parameter(names = "-session_ticket", description =
+     * "Enable if the server uses Session Tickets for Session Resumption")
+     * protected boolean sessionTicket = false;
+     */
 
     // handle client software, which initiates multiple connections
     @Parameter(names = "-pause_after_FullHs", description = "Enable if there should be a pause between initial and Rehandshake")
@@ -67,13 +70,12 @@ public class TripleHandshakeAttackCommandConfig extends ClientCommandConfig {
 	this.certSecure = certSecure;
     }
 
-    public boolean isSessionTicket() {
-	return sessionTicket;
-    }
-
-    public void setSessionTicket(boolean sessionTicket) {
-	this.sessionTicket = sessionTicket;
-    }
+    /*
+     * public boolean isSessionTicket() { return sessionTicket; }
+     * 
+     * public void setSessionTicket(boolean sessionTicket) { this.sessionTicket
+     * = sessionTicket; }
+     */
 
     public boolean isPause() {
 	return pause;
