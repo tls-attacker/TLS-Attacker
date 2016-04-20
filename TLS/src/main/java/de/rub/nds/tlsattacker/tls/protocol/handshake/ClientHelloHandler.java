@@ -67,7 +67,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 
 	// automatic forwarding parts of the message within the Triple Handshake
 	// attack
-	if (tlsContext.isTHSAttack()) {
+	if (tlsContext.isTHSAttack() || tlsContext.isMitMAttack()) {
 	    protocolMessage.setUnixTime(protocolMessage.getUnixTime());
 	    protocolMessage.setRandom(protocolMessage.getRandom());
 	} else {
@@ -123,7 +123,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	byte[] extensionBytes = null;
 	// automatic forwarding parts of the message within the Triple Handshake
 	// attack
-	if (tlsContext.isTHSAttack()) {
+	if (tlsContext.isTHSAttack() || tlsContext.isMitMAttack()) {
 	    extensionBytes = protocolMessage.getExtensionBytes();
 	    result = ArrayConverter.concatenate(result, extensionBytes);
 	} else {
