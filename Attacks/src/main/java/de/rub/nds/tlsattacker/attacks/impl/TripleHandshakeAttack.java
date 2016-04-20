@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Triple Handshake attack against a target server using a client
- * with legitimate cert.
+ * with a legitimate certificate
  * 
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -80,7 +80,7 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 		serverTlsContext, config);
 	serverwf.createWorkflow();
 
-	// no manually modification necessary
+	// no manual modification necessary
 	boolean mod = false;
 
 	MitMWorkflowExecutor mitmWorkflowExecutor = new MitMWorkflowExecutor(clientTransportHandler,
