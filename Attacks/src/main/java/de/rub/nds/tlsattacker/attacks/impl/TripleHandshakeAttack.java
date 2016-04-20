@@ -93,7 +93,9 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 
 	// handle client software, which initiates multiple connections
 	if (config.isPause()) {
-	    System.out.println("Press a Button to continue, if Browser has terminated loading.");
+	    System.out.println("Press a Button to continue, if the browser has terminated loading.");
+	    System.out
+		    .println("Make sure that the browser does send a new GET request after the session Resumption by adding e.g. /? to the URL.");
 	    try {
 		System.in.read();
 	    } catch (IOException e) {
