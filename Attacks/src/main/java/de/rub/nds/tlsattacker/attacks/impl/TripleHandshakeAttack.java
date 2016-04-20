@@ -122,7 +122,7 @@ public class TripleHandshakeAttack extends Attacker<TripleHandshakeAttackCommand
 
 	mitmWorkflowExecutor2.executeWorkflow();
 
-	LOGGER.info("The renegotiation was not aborted, so the server and the client are vulnerable");
+	LOGGER.info("The renegotiation was not aborted, if the server and the client are vulnerable, the client software displays the protected resource.");
 
 	clientTransportHandler.closeConnection();
 	serverTransportHandler.closeConnection();
