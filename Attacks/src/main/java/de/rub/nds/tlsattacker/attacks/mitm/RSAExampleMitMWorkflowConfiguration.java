@@ -42,7 +42,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Creates an example-workflowtrace for Man-in-the-Middle Attack
+ * Creates an RSA example-workflowtrace to for Man-in-the-Middle Attack This
+ * workflow automatically synchronizes the master secret
  * 
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -90,6 +91,10 @@ public class RSAExampleMitMWorkflowConfiguration {
 
 	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(ch);
+	ch.setGoingToBeSent(false);
+
+	ch.setSupportedCipherSuites(config.getCipherSuites());
+	ch.setSupportedCompressionMethods(config.getCompressionMethods());
 
 	ServerHelloMessage sh = new ServerHelloMessage(ConnectionEnd.SERVER);
 	protocolMessages.add(sh);
