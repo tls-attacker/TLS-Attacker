@@ -44,8 +44,8 @@ import java.util.List;
 
 /**
  * Creates a workflow for synchronizing the verify data (session resumption),
- * sending a GET request on certificate secured file, handling Man-in-the-Middle
- * renegotiation
+ * sending a GET request on certificate secured resource, handling
+ * Man-in-the-Middle renegotiation
  * 
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -79,6 +79,7 @@ public class TripleHandshakeWorkflowConfiguration {
 	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
 	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
 
+	// automatic modification GET on specified path within certSecure
 	ApplicationMessage cam = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(cam);
 	cam.setGoingToBeSent(false);
@@ -88,8 +89,7 @@ public class TripleHandshakeWorkflowConfiguration {
 	protocolMessages.add(hrm);
 	hrm.setOnlyForward(true);
 
-	// renegotiation
-
+	// forward renegotiation
 	ApplicationMessage cam2 = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(cam2);
 	cam2.setOnlyForward(true);
@@ -98,6 +98,7 @@ public class TripleHandshakeWorkflowConfiguration {
 	protocolMessages.add(sam);
 	sam.setOnlyForward(true);
 
+	// it is possible to parse and prepare messages until ServerHelloDone
 	// protocolMessages.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	//
 	// protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
@@ -113,10 +114,13 @@ public class TripleHandshakeWorkflowConfiguration {
 	// protocolMessages.add(new
 	// ServerHelloDoneMessage(ConnectionEnd.SERVER));
 
+	// only forward ClientCertificate, ClientKeyExchange, CertificateVerify,
+	// CCS and ClientFinished
 	ApplicationMessage cam3 = new ApplicationMessage(ConnectionEnd.CLIENT);
 	protocolMessages.add(cam3);
 	cam3.setOnlyForward(true);
 
+	// forward CCS, ServerFinished and ApplicationMessage
 	ApplicationMessage sam2 = new ApplicationMessage(ConnectionEnd.SERVER);
 	protocolMessages.add(sam2);
 	sam2.setOnlyForward(true);
