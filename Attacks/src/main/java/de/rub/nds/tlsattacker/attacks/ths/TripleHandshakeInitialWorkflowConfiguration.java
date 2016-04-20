@@ -21,12 +21,9 @@ package de.rub.nds.tlsattacker.attacks.ths;
 
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
-import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
-import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
@@ -159,18 +156,6 @@ public class TripleHandshakeInitialWorkflowConfiguration {
 	ApplicationMessage sam = new ApplicationMessage(ConnectionEnd.SERVER);
 	protocolMessages.add(sam);
 
-	/**
-	 * AlertMessage alertMessage = new AlertMessage(ConnectionEnd.SERVER);
-	 * alertMessage.setConfig(AlertLevel.WARNING,
-	 * AlertDescription.CLOSE_NOTIFY); protocolMessages.add(alertMessage);
-	 * alertMessage.setGoingToBeSent(false);
-	 * **/
-	/**
-	 * AlertMessage alertMessage1 = new AlertMessage(ConnectionEnd.CLIENT);
-	 * alertMessage1.setConfig(AlertLevel.WARNING,
-	 * AlertDescription.CLOSE_NOTIFY); protocolMessages.add(alertMessage1);
-	 * alertMessage1.setGoingToBeSent(false);
-	 * */
 	workflowTrace.setProtocolMessages(protocolMessages);
 
 	return workflowTrace;
