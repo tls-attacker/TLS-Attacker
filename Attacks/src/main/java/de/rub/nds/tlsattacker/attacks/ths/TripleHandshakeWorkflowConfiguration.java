@@ -25,16 +25,9 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
@@ -124,31 +117,6 @@ public class TripleHandshakeWorkflowConfiguration {
 	ApplicationMessage sam2 = new ApplicationMessage(ConnectionEnd.SERVER);
 	protocolMessages.add(sam2);
 	sam2.setOnlyForward(true);
-
-	/**
-	 * ApplicationMessage sAm2 = new
-	 * ApplicationMessage(ConnectionEnd.SERVER); protocolMessages.add(sAm2);
-	 * hrm.setOnlyForward(true); /
-	 * 
-	 * /** protocolMessages.add(new
-	 * CertificateMessage(ConnectionEnd.CLIENT));
-	 * 
-	 * if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
-	 * protocolMessages.add(new
-	 * DHClientKeyExchangeMessage(ConnectionEnd.CLIENT)); } else {
-	 * protocolMessages.add(new
-	 * RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT)); }
-	 * 
-	 * protocolMessages.add(new
-	 * CertificateVerifyMessage(ConnectionEnd.CLIENT));
-	 * protocolMessages.add(new
-	 * ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	 * protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
-	 * 
-	 * protocolMessages.add(new
-	 * ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	 * protocolMessages.add(new FinishedMessage(ConnectionEnd.SERVER));
-	 */
 
 	workflowTrace.setProtocolMessages(protocolMessages);
 
