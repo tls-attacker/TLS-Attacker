@@ -24,7 +24,7 @@ TLS-Attacker consists of several (maven) projects:
 - Attacks: Implementation of some well-known attacks and tests for these attacks.
 - Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
 
-![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker-Development/blob/master/resources/design.png)
+![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/design.png)
 
 You can find more information about these modules in the Wiki.
 
