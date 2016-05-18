@@ -42,7 +42,7 @@ public class IntegerShiftRightModification extends VariableModification<Integer>
 
     @Override
     protected Integer modifyImplementationHook(final Integer input) {
-	return input >> shift;
+	return (input == null) ? 0 : input >> shift;
     }
 
     public int getShift() {

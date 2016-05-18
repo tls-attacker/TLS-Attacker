@@ -42,7 +42,7 @@ public class LongXorModification extends VariableModification<Long> {
 
     @Override
     protected Long modifyImplementationHook(final Long input) {
-	return input ^ xor;
+	return (input == null) ? xor : input ^ xor;
     }
 
     public Long getXor() {

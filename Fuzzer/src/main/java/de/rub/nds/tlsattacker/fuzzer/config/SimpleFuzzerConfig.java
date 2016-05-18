@@ -85,10 +85,10 @@ public class SimpleFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-workflow_folder", description = "Folder with tested workflows.")
     String workflowFolder;
 
-    @Parameter(names = "-stage1", description = "Crypto Fuzzing with all crypto attacks")
+    @Parameter(names = "-stage1", description = "Crypto Fuzzing with all crypto attacks", arity = 1)
     boolean stage1;
 
-    @Parameter(names = "-stage2", description = "Random protocol fuzzing for boundary violations")
+    @Parameter(names = "-stage2", description = "Random protocol fuzzing for boundary violations", arity = 1)
     boolean stage2;
 
     public SimpleFuzzerConfig() {
