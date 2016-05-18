@@ -42,8 +42,8 @@ public class BigIntegerAddModification extends VariableModification<BigInteger> 
     }
 
     @Override
-    protected BigInteger modifyImplementationHook(final BigInteger input) {
-	return input.add(summand);
+    protected BigInteger modifyImplementationHook(BigInteger input) {
+	return (input == null) ? summand : input.add(summand);
     }
 
     public BigInteger getSummand() {

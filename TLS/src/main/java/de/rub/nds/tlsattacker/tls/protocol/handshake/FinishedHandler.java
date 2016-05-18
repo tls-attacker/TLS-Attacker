@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.LogManager;
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
-    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(FinishedHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(FinishedHandler.class);
 
     public FinishedHandler(TlsContext tlsContext) {
 	super(tlsContext);

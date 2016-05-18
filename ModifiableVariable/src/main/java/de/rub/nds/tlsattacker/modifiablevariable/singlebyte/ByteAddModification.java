@@ -41,7 +41,10 @@ public class ByteAddModification extends VariableModification<Byte> {
     }
 
     @Override
-    protected Byte modifyImplementationHook(final Byte input) {
+    protected Byte modifyImplementationHook(Byte input) {
+	if (input == null) {
+	    input = 0;
+	}
 	return (byte) (input + summand);
     }
 
