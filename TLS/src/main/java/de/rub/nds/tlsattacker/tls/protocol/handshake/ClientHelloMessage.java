@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -82,6 +81,10 @@ public class ClientHelloMessage extends HelloMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray compressions;
+    /**
+     * array of all extension bytes to forward them as MitM
+     */
+    byte[] extensionBytes;
 
     public ClientHelloMessage() {
 	super(HandshakeMessageType.CLIENT_HELLO);
@@ -151,6 +154,14 @@ public class ClientHelloMessage extends HelloMessage {
 
     public List<CompressionMethod> getSupportedCompressionMethods() {
 	return supportedCompressionMethods;
+    }
+
+    public byte[] getExtensionBytes() {
+	return extensionBytes;
+    }
+
+    public void setExtensionBytes(byte[] extensionBytes) {
+	this.extensionBytes = extensionBytes;
     }
 
     // public void addExtension(ExtensionConfig extension) {

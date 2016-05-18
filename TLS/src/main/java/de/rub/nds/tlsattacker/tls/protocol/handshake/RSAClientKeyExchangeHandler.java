@@ -73,9 +73,16 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	ArrayConverter.makeArrayNonZero(padding);
 
 	byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-	RandomHelper.getRandom().nextBytes(premasterSecret);
-	premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
-	premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
+	// forward the PMS with the key of the target server during MitM and THS
+	// Attack
+	if (tlsContext.isMitMAttack() || tlsContext.isTHSAttack()) {
+	    premasterSecret = protocolMessage.getPremasterSecret().getValue();
+	} else {
+	    RandomHelper.getRandom().nextBytes(premasterSecret);
+	    premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
+	    premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
+	}
+
 	protocolMessage.setPremasterSecret(premasterSecret);
 	LOGGER.debug("Computed PreMaster Secret: {}",
 		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
@@ -161,6 +168,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	LOGGER.debug("Resulting premaster secret: {}", ArrayConverter.bytesToHexString(premasterSecret));
 
 	protocolMessage.setPremasterSecret(premasterSecret);
+	tlsContext.setPreMasterSecret(premasterSecret);
 
 	byte[] random = tlsContext.getClientServerRandom();
 

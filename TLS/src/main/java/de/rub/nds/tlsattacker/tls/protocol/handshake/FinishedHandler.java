@@ -22,19 +22,13 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -73,33 +67,17 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	protocolMessage.setVerifyData(verifyData);
 	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
 
-	try {
-	    if (tlsContext.getRecordHandler().getRecordCipher() == null) {
-		TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
-		tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
-	    }
+	byte[] result = protocolMessage.getVerifyData().getValue();
 
-	    byte[] result = protocolMessage.getVerifyData().getValue();
+	protocolMessage.setLength(result.length);
 
-	    protocolMessage.setLength(result.length);
-
-	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
+	long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
 		    + protocolMessage.getLength().getValue();
 
-	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-		    ArrayConverter.longToUint32Bytes(header), result));
+	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+		ArrayConverter.longToUint32Bytes(header), result));
 
-	    return protocolMessage.getCompleteResultingMessage().getValue();
-	} catch (InvalidKeyException ex) {
-	    throw new CryptoException(
-		    "It was not possible to initialize an algorithm from "
-			    + tlsContext.getSelectedCipherSuite()
-			    + ". Most probably your platform does not support unlimited policy strength and you have to "
-			    + "install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files. Stupid, I know.",
-		    ex);
-	} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
-	    throw new CryptoException(ex);
-	}
+	return protocolMessage.getCompleteResultingMessage().getValue();
     }
 
     @Override

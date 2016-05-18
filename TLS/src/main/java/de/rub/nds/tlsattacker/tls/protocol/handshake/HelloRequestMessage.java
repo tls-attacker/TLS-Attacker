@@ -17,16 +17,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.rub.nds.tlsattacker.tls.workflow;
+package de.rub.nds.tlsattacker.tls.protocol.handshake;
+
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 
 /**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public enum WorkflowTraceType {
-    FULL_SERVER_RESPONSE,
-    FULL,
-    HANDSHAKE,
-    CLIENT_HELLO;
+public class HelloRequestMessage extends HandshakeMessage {
+
+    public HelloRequestMessage() {
+	super(HandshakeMessageType.HELLO_REQUEST);
+	this.messageIssuer = ConnectionEnd.SERVER;
+	setIncludeInDigest(false);
+    }
+
+    public HelloRequestMessage(ConnectionEnd messageIssuer) {
+	super(HandshakeMessageType.HELLO_REQUEST);
+	this.messageIssuer = messageIssuer;
+	setIncludeInDigest(false);
+    }
 }

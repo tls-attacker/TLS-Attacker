@@ -27,23 +27,24 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
+public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
-    public ServerHelloDoneHandler(TlsContext tlsContext) {
+    public HelloRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = ServerHelloDoneMessage.class;
+	this.correctProtocolMessageClass = HelloRequestMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
 
-	protocolMessage.setLength(0);
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
 
-	long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
-		+ protocolMessage.getLength().getValue();
+	protocolMessageFields.setLength(0);
+
+	long header = (HandshakeMessageType.HELLO_REQUEST.getValue() << 24)
+		+ protocolMessageFields.getLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
 
@@ -52,15 +53,17 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	if (message[pointer] != HandshakeMessageType.SERVER_HELLO_DONE.getValue()) {
-	    throw new InvalidMessageTypeException("This is not a Server Hello Done message");
+	if (message[pointer] != HandshakeMessageType.HELLO_REQUEST.getValue()) {
+	    throw new InvalidMessageTypeException("This is not a Hello Request message");
 	}
+	HandshakeMessageFields protocolMessageFields = protocolMessage.getMessageFields();
+
 	protocolMessage.setType(message[pointer]);
 
 	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
 	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+	protocolMessageFields.setLength(length);
 	// should always be null
 
 	currentPointer = nextPointer;
