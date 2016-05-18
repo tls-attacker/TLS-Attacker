@@ -99,7 +99,7 @@ public class DtlsDhWorkflowConfigurationFactory extends WorkflowConfigurationFac
 	if (config.getCipherSuites().get(0).isEphemeral()) {
 	    workflowTrace.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
 	}
-	if (config.getKeystore() != null) {
+	if (config.getKeystore() != null && config.isClientAuthentication()) {
 	    workflowTrace.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
 	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
 	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
