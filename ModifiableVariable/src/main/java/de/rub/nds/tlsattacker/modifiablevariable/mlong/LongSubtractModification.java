@@ -42,7 +42,7 @@ public class LongSubtractModification extends VariableModification<Long> {
 
     @Override
     protected Long modifyImplementationHook(final Long input) {
-	return input - subtrahend;
+	return (input == null) ? -subtrahend : input - subtrahend;
     }
 
     public Long getSubtrahend() {

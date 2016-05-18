@@ -22,7 +22,6 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
@@ -100,7 +99,7 @@ public class DtlsEcdhWorkflowConfigurationFactory extends WorkflowConfigurationF
 	    workflowTrace.add(new ECDHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
 	}
 
-	if (config.getKeystore() != null) {
+	if (config.getKeystore() != null && config.isClientAuthentication()) {
 	    workflowTrace.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
 	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
 

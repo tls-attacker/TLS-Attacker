@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -76,7 +77,11 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 	trace.getProtocolMessages().add(applicationMessage);
 	trace.getProtocolMessages().add(allertMessage);
 
-	workflowExecutor.executeWorkflow();
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (WorkflowExecutionException ex) {
+	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+	}
 
 	TlsContextAnalyzer.AnalyzerResponse analyzerResponse = TlsContextAnalyzer
 		.containsAlertAfterModifiedMessage(tlsContext);
