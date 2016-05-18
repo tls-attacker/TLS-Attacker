@@ -11,7 +11,7 @@
             <shortName>openssl-rsa</shortName>
         </startupCommands>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias </fuzzerCommand>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias -client_authentication </fuzzerCommand>
             <serverCommandParameters>s_server -quiet -accept $PORT -key ../resources/rsa1024key.pem -cert ../resources/rsa1024cert.pem -verify ../resources/server-cert1024.pem</serverCommandParameters>
             <shortName>openssl-rsa-auth</shortName>
         </startupCommands>
