@@ -27,14 +27,13 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
+public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
-    public ServerHelloDoneHandler(TlsContext tlsContext) {
+    public HelloRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = ServerHelloDoneMessage.class;
+	this.correctProtocolMessageClass = HelloRequestMessage.class;
     }
 
     @Override
@@ -42,8 +41,7 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
 	protocolMessage.setLength(0);
 
-	long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
-		+ protocolMessage.getLength().getValue();
+	long header = (HandshakeMessageType.HELLO_REQUEST.getValue() << 24) + protocolMessage.getLength().getValue();
 
 	protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
 
@@ -52,8 +50,8 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	if (message[pointer] != HandshakeMessageType.SERVER_HELLO_DONE.getValue()) {
-	    throw new InvalidMessageTypeException("This is not a Server Hello Done message");
+	if (message[pointer] != HandshakeMessageType.HELLO_REQUEST.getValue()) {
+	    throw new InvalidMessageTypeException("This is not a Hello Request message");
 	}
 	protocolMessage.setType(message[pointer]);
 

@@ -21,7 +21,6 @@ package de.rub.nds.tlsattacker.tls.protocol.application;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 
 /**

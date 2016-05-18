@@ -41,6 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * TLS Protocol message is the message included in the Record message.
  * 
  * @author juraj
+ * @author Philip Riese <philip.riese@rub.de>
  */
 @XmlRootElement
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements ProtocolMessageHandlerBearer,
@@ -67,6 +68,16 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      * it is executed to initialize specific variables.
      */
     private boolean goingToBeSent = true;
+    /**
+     * Defines if the message should not be parsed and only forwarded during the
+     * MitMworkflow.
+     */
+    private boolean onlyForward = false;
+    /**
+     * Defines if the message should be modified during a workflow execution
+     * with MitMworkflowExecutor
+     */
+    private boolean modify = false;
     /**
      * resulting message
      */
@@ -112,6 +123,22 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public void setGoingToBeSent(boolean goingToBeSent) {
 	this.goingToBeSent = goingToBeSent;
+    }
+
+    public boolean isOnlyForward() {
+	return onlyForward;
+    }
+
+    public void setOnlyForward(boolean onlyForward) {
+	this.onlyForward = onlyForward;
+    }
+
+    public boolean isModify() {
+	return modify;
+    }
+
+    public void setModify(boolean modify) {
+	this.modify = modify;
     }
 
     @Override
