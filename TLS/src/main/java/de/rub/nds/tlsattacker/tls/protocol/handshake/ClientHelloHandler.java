@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
@@ -53,18 +54,32 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
     public byte[] prepareMessageAction() {
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
-	// by default we do not use a session id
-	protocolMessage.setSessionId(new byte[0]);
+	// supporting Session Resumption with Session IDs
+	if (tlsContext.isSessionResumption()) {
+	    protocolMessage.setSessionId(tlsContext.getSessionID());
+	} else {
+	    // by default we do not use a session id
+	    protocolMessage.setSessionId(new byte[0]);
+	}
+
 	int length = protocolMessage.getSessionId().getValue().length;
 	protocolMessage.setSessionIdLength(length);
 
-	// random handling
-	final long unixTime = Time.getUnixTime();
-	protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+	// automatic forwarding parts of the message within the Triple Handshake
+	// attack
+	if (tlsContext.isTHSAttack() || tlsContext.isMitMAttack()) {
+	    protocolMessage.setUnixTime(protocolMessage.getUnixTime());
+	    protocolMessage.setRandom(protocolMessage.getRandom());
+	} else {
+	    // random handling
+	    final long unixTime = Time.getUnixTime();
+	    protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
 
-	byte[] random = new byte[HandshakeByteLength.RANDOM];
-	RandomHelper.getRandom().nextBytes(random);
-	protocolMessage.setRandom(random);
+	    byte[] random = new byte[HandshakeByteLength.RANDOM];
+	    RandomHelper.getRandom().nextBytes(random);
+	    protocolMessage.setRandom(random);
+
+	}
 
 	tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
 		.getRandom().getValue()));
@@ -106,16 +121,24 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 			HandshakeByteLength.COMPRESSION), protocolMessage.getCompressions().getValue());
 
 	byte[] extensionBytes = null;
-	for (ExtensionMessage extension : protocolMessage.getExtensions()) {
-	    ExtensionHandler handler = extension.getExtensionHandler();
-	    handler.initializeClientHelloExtension(extension);
-	    extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
-	}
+	// automatic forwarding parts of the message within the Triple Handshake
+	// attack
+	if (tlsContext.isTHSAttack() || tlsContext.isMitMAttack()) {
+	    extensionBytes = protocolMessage.getExtensionBytes();
+	    result = ArrayConverter.concatenate(result, extensionBytes);
+	} else {
+	    for (ExtensionMessage extension : protocolMessage.getExtensions()) {
+		ExtensionHandler handler = extension.getExtensionHandler();
+		handler.initializeClientHelloExtension(extension);
+		extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
+	    }
 
-	if (extensionBytes != null && extensionBytes.length != 0) {
-	    byte[] extensionLength = ArrayConverter.intToBytes(extensionBytes.length, ExtensionByteLength.EXTENSIONS);
+	    if (extensionBytes != null && extensionBytes.length != 0) {
+		byte[] extensionLength = ArrayConverter.intToBytes(extensionBytes.length,
+			ExtensionByteLength.EXTENSIONS);
 
-	    result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
+		result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
+	    }
 	}
 
 	protocolMessage.setLength(result.length);
@@ -166,6 +189,12 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	nextPointer += sessionIdLength;
 	protocolMessage.setSessionId(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
+	// handle unknown SessionID during Session resumption
+	if (!tlsContext.isTHSAttack() && tlsContext.isSessionResumption()
+		&& !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
+	    throw new WorkflowExecutionException("Session ID is unknown to the Server");
+	}
+
 	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
 		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
 	    de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage) protocolMessage;
@@ -203,6 +232,14 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	currentPointer = nextPointer;
 	if ((currentPointer - pointer) < length) {
 	    currentPointer += ExtensionByteLength.EXTENSIONS;
+	    // store extensions for automatic forwarding parts of the message
+	    // within the Triple Handshake attack
+	    if (tlsContext.isTHSAttack()) {
+		int extensionLength = ArrayConverter.bytesToInt(Arrays
+			.copyOfRange(message, nextPointer, currentPointer));
+		int helpPointer = currentPointer + extensionLength;
+		protocolMessage.setExtensionBytes(Arrays.copyOfRange(message, nextPointer, helpPointer));
+	    }
 	    while ((currentPointer - pointer) < length) {
 		nextPointer = currentPointer + ExtensionByteLength.TYPE;
 		byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);

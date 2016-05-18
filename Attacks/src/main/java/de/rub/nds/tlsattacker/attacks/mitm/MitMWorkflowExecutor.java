@@ -1,23 +1,22 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-package de.rub.nds.tlsattacker.tls.workflow;
+package de.rub.nds.tlsattacker.attacks.mitm;
 
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
@@ -29,6 +28,10 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
+import de.rub.nds.tlsattacker.tls.workflow.RenegotiationWorkflowConfiguration;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
@@ -39,59 +42,102 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class GenericWorkflowExecutor implements WorkflowExecutor {
+public class MitMWorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(GenericWorkflowExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger(MitMWorkflowExecutor.class);
 
     /**
      * indicates if the workflow was already executed
      */
     protected boolean executed = false;
-
+    /**
+     * indicates if workflow should be modified
+     */
+    protected boolean modify = false;
     /**
      * indicates if the peer requests renegotiation
      */
     protected boolean renegotiation = false;
 
-    protected RecordHandler recordHandler;
+    RecordHandler recordHandler;
 
-    protected final TlsContext tlsContext;
+    protected RecordHandler clientRecordHandler;
 
-    protected final TransportHandler transportHandler;
+    protected RecordHandler serverRecordHandler;
+
+    TlsContext tlsContext;
+
+    protected final TlsContext clientTlsContext;
+
+    protected final TlsContext serverTlsContext;
+
+    TransportHandler transportHandler;
+
+    protected final TransportHandler clientTransportHandler;
+
+    protected final TransportHandler serverTransportHandler;
 
     MessageBytesCollector messageBytesCollector;
 
-    protected WorkflowContext workflowContext;
+    WorkflowContext workflowContext;
 
-    public GenericWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-	this.tlsContext = tlsContext;
-	this.transportHandler = transportHandler;
-	this.recordHandler = new RecordHandler(tlsContext);
-	tlsContext.setRecordHandler(recordHandler);
+    protected WorkflowContext clientWorkflowContext;
+
+    protected WorkflowContext serverWorkflowContext;
+
+    public MitMWorkflowExecutor(TransportHandler clientTransportHandler, TransportHandler serverTransportHandler,
+	    TlsContext clientTlsContext, TlsContext serverTlsContext, boolean mod) {
+	this.clientTlsContext = clientTlsContext;
+	this.serverTlsContext = serverTlsContext;
+	this.clientTransportHandler = clientTransportHandler;
+	this.serverTransportHandler = serverTransportHandler;
+	this.clientRecordHandler = new RecordHandler(clientTlsContext);
+	clientTlsContext.setRecordHandler(clientRecordHandler);
+	this.serverRecordHandler = new RecordHandler(serverTlsContext);
+	serverTlsContext.setRecordHandler(serverRecordHandler);
 	this.messageBytesCollector = new MessageBytesCollector();
-	this.workflowContext = new WorkflowContext();
+	this.clientWorkflowContext = new WorkflowContext();
+	this.serverWorkflowContext = new WorkflowContext();
+	modify = mod;
     }
 
-    @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 	if (executed) {
 	    throw new IllegalStateException("The workflow has already been" + " executed. Create a new Workflow.");
 	}
 	executed = true;
 
-	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
+	serverTlsContext.setMitMAttack(true);
+	clientTlsContext.setMitMAttack(true);
+
+	List<ProtocolMessage> protocolMessages = clientTlsContext.getWorkflowTrace().getProtocolMessages();
 	ensureMyLastProtocolMessagesHaveRecords(protocolMessages);
 	try {
-	    while (workflowContext.getProtocolMessagePointer() < protocolMessages.size()
-		    && workflowContext.isProceedWorkflow()) {
-		ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
-		if (pm.getMessageIssuer() == tlsContext.getMyConnectionEnd()) {
-		    handleMyProtocolMessage(protocolMessages);
+	    while (clientWorkflowContext.getProtocolMessagePointer() < protocolMessages.size()
+		    && clientWorkflowContext.isProceedWorkflow()) {
+		ProtocolMessage pm = protocolMessages.get(clientWorkflowContext.getProtocolMessagePointer());
+		if (pm.isOnlyForward()) {
+		    forwardMessage(pm);
 		} else {
-		    handleProtocolMessagesFromPeer(protocolMessages);
+		    if (pm.getMessageIssuer() == ConnectionEnd.CLIENT) {
+			setServer();
+			handleProtocolMessagesFromPeer(protocolMessages);
+			setClient();
+			while (clientWorkflowContext.getProtocolMessagePointer() != serverWorkflowContext
+				.getProtocolMessagePointer()) {
+			    handleMyProtocolMessage(protocolMessages);
+			}
+		    } else {
+			setClient();
+			handleProtocolMessagesFromPeer(protocolMessages);
+			setServer();
+			while (clientWorkflowContext.getProtocolMessagePointer() != serverWorkflowContext
+				.getProtocolMessagePointer()) {
+			    handleMyProtocolMessage(protocolMessages);
+			}
+		    }
 		}
 	    }
 	} catch (WorkflowExecutionException | CryptoException | IOException e) {
@@ -100,6 +146,52 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
 	    // remove all unused protocol messages
 	    this.removeNextProtocolMessages(protocolMessages, workflowContext.getProtocolMessagePointer());
 	}
+	serverTlsContext.setMitMAttack(false);
+	clientTlsContext.setMitMAttack(false);
+    }
+
+    // currently acting as client
+    private void setClient() {
+	LOGGER.debug("Currently acting as client:");
+	recordHandler = clientRecordHandler;
+	tlsContext = clientTlsContext;
+	transportHandler = clientTransportHandler;
+	workflowContext = clientWorkflowContext;
+    }
+
+    // currently acting as server
+    private void setServer() {
+	LOGGER.debug("Currently acting as server:");
+	recordHandler = serverRecordHandler;
+	tlsContext = serverTlsContext;
+	transportHandler = serverTransportHandler;
+	workflowContext = serverWorkflowContext;
+
+    }
+
+    // forward Message without parse
+    private void forwardMessage(ProtocolMessage pm) {
+	TransportHandler fetch;
+	TransportHandler send;
+	if (pm.getMessageIssuer() == ConnectionEnd.CLIENT) {
+	    tlsContext = clientTlsContext;
+	    fetch = serverTransportHandler;
+	    send = clientTransportHandler;
+	} else {
+	    tlsContext = serverTlsContext;
+	    fetch = clientTransportHandler;
+	    send = serverTransportHandler;
+	}
+	try {
+	    byte[] data = fetch.fetchData();
+	    LOGGER.debug("Forwarded Data:  {}", ArrayConverter.bytesToHexString(data));
+	    send.sendData(data);
+	} catch (IOException e) {
+	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+	}
+
+	serverWorkflowContext.incrementProtocolMessagePointer();
+	clientWorkflowContext.incrementProtocolMessagePointer();
     }
 
     private void handleMyProtocolMessage(List<ProtocolMessage> protocolMessages) throws IOException {
@@ -118,7 +210,36 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
     protected void prepareMyProtocolMessageBytes(ProtocolMessage pm) {
 	LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
 	ProtocolMessageHandler handler = pm.getProtocolMessageHandler(tlsContext);
-	byte[] pmBytes = handler.prepareMessage();
+	byte[] pmBytes;
+	boolean finished = pm.getClass().toString()
+		.equals("class de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage");
+	boolean ccs = pm.getClass().toString()
+		.equals("class de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage");
+	if (ccs || finished || !pm.isGoingToBeSent()) {
+	    pmBytes = handler.prepareMessage();
+	} else {
+	    pmBytes = pm.getCompleteResultingMessage().getValue();
+	}
+
+	// if message needs to be modified manually
+	if ((pm.isModify() || modify) && !ccs) {
+	    javax.swing.JFrame frame = new javax.swing.JFrame();
+	    MitM_Dialog dialog = new MitM_Dialog(frame, true, pm, tlsContext.getMyConnectionEnd().toString());
+	    dialog.setVisible(true);
+	    dialog.setVisible(false);
+	    dialog.dispose();
+	    frame.setVisible(false);
+	    frame.dispose();
+	    pmBytes = pm.getCompleteResultingMessage().getValue();
+	}
+
+	if (!finished && pm.isGoingToBeSent()) {
+	    int dataPointer = 0;
+	    dataPointer = handler.parseMessage(pmBytes, dataPointer);
+	}
+
+	pm.setGoingToBeSent(true);
+
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug(pm.toString());
 	}
@@ -180,6 +301,9 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
 	    } else {
 		handleRenegotiation();
 	    }
+	}
+	if (recordHandler.getFinishedBytes() != null) {
+	    handleProtocolMessagesFromPeer(protocolMessages);
 	}
     }
 
@@ -304,7 +428,6 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      */
     protected List<Record> fetchRecords() throws IOException {
 	List<Record> records;
-	// parse stored Finished bytes into a record
 	if (recordHandler.getFinishedBytes() != null) {
 	    records = recordHandler.parseRecords(recordHandler.getFinishedBytes());
 	    recordHandler.setFinishedBytes(null);
@@ -348,7 +471,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
     protected boolean handlingMyLastProtocolMessageWithContentType(List<ProtocolMessage> protocolMessages, int pointer) {
 	ProtocolMessage currentProtocolMessage = protocolMessages.get(pointer);
 	return ((protocolMessages.size() == (pointer + 1))
-		|| (protocolMessages.get(pointer + 1).getMessageIssuer() != tlsContext.getMyConnectionEnd()) || currentProtocolMessage
+		|| (protocolMessages.get(pointer + 1).getMessageIssuer() != currentProtocolMessage.getMessageIssuer()) || currentProtocolMessage
 		    .getProtocolMessageType() != (protocolMessages.get(pointer + 1).getProtocolMessageType()));
     }
 
@@ -363,8 +486,9 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      * @return
      */
     protected boolean handlingMyLastProtocolMessage(List<ProtocolMessage> protocolMessages, int pointer) {
-	return ((protocolMessages.size() == (pointer + 1)) || (protocolMessages.get(pointer + 1).getMessageIssuer() != tlsContext
-		.getMyConnectionEnd()));
+	return ((protocolMessages.size() == (pointer + 1))
+		|| (protocolMessages.get(pointer + 1).getMessageIssuer() != tlsContext.getMyConnectionEnd()) || (protocolMessages
+		.get(pointer + 1).getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA));
     }
 
     /**
@@ -388,24 +512,23 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      * Handles a renegotiation request.
      */
     protected void handleRenegotiation() {
-	workflowContext.setProtocolMessagePointer(0);
-	tlsContext.getDigest().reset();
+	clientWorkflowContext.setProtocolMessagePointer(0);
+	serverWorkflowContext.setProtocolMessagePointer(0);
+	clientTlsContext.getDigest().reset();
+	serverTlsContext.getDigest().reset();
+	clientTlsContext.setClientAuthentication(true);
+	serverTlsContext.setClientAuthentication(true);
+	RenegotiationWorkflowConfiguration clientReneWorkflowConfig = new RenegotiationWorkflowConfiguration(
+		clientTlsContext);
+	clientReneWorkflowConfig.createWorkflow();
+	RenegotiationWorkflowConfiguration serverReneWorkflowConfig = new RenegotiationWorkflowConfiguration(
+		serverTlsContext);
+	serverReneWorkflowConfig.createWorkflow();
 
-	/*
-	 * if there is no keystore file we can not authenticate per certificate
-	 * and if isClientauthentication is true, we do not need to change the
-	 * WorkflowTrace
-	 */
-	if (tlsContext.getKeyStore() != null && !tlsContext.isClientAuthentication()) {
-	    tlsContext.setClientAuthentication(true);
-	    RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
-	    reneWorkflowConfig.createWorkflow();
-	} else if (tlsContext.getKeyStore() == null && tlsContext.isSessionResumption()) {
-	    RenegotiationWorkflowConfiguration reneWorkflowConfig = new RenegotiationWorkflowConfiguration(tlsContext);
-	    reneWorkflowConfig.createWorkflow();
-	}
-
-	tlsContext.setSessionResumption(false);
+	clientTlsContext.setSessionResumption(false);
+	serverTlsContext.setSessionResumption(false);
+	clientTlsContext.setRenegotiation(true);
+	serverTlsContext.setRenegotiation(true);
 	renegotiation = false;
 	executed = false;
 	executeWorkflow();

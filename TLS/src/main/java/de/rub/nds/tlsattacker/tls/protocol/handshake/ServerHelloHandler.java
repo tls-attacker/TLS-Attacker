@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -92,6 +93,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	byte[] sessionId = Arrays.copyOfRange(message, currentPointer, nextPointer);
 	protocolMessage.setSessionId(sessionId);
 
+	// handle unknown SessionID during Session resumption
+	if (!tlsContext.isTHSAttack() && tlsContext.isSessionResumption()
+		&& !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
+	    throw new WorkflowExecutionException("Session ID is unknown to the Client");
+	}
+
+	tlsContext.setSessionID(sessionId);
+
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.CIPHER_SUITE;
 	CipherSuite selectedCipher = CipherSuite.getCipherSuite(Arrays
@@ -112,18 +121,28 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	tlsContext.setCompressionMethod(CompressionMethod.getCompressionMethod(protocolMessage
 		.getSelectedCompressionMethod().getValue()));
 
-	if (currentPointer < length) {
-	    // we have to handle extensions
-	    nextPointer = currentPointer + ExtensionByteLength.EXTENSIONS;
-	    int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-
-	    currentPointer = nextPointer;
-	    while (currentPointer < length) {
+	if ((currentPointer - pointer) < length) {
+	    currentPointer += ExtensionByteLength.EXTENSIONS;
+	    while ((currentPointer - pointer) < length) {
 		nextPointer = currentPointer + ExtensionByteLength.TYPE;
 		byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
-		ExtensionHandler eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
-		currentPointer = eh.parseExtension(message, currentPointer);
-		protocolMessage.addExtension(eh.getExtensionMessage());
+		// Not implemented/unknown extensions will generate an Exception
+		// ...
+		try {
+		    ExtensionHandler eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
+		    currentPointer = eh.parseExtension(message, currentPointer);
+		    protocolMessage.addExtension(eh.getExtensionMessage());
+		}
+		// ... which we catch, then disregard that extension and carry
+		// on.
+		catch (Exception ex) {
+		    currentPointer = nextPointer;
+		    nextPointer += 2;
+		    currentPointer += ArrayConverter.bytesToInt(Arrays
+			    .copyOfRange(message, currentPointer, nextPointer));
+		    nextPointer += 2;
+		    currentPointer += 2;
+		}
 	    }
 	}
 
@@ -136,9 +155,16 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     public byte[] prepareMessageAction() {
 	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
-	// TODO try to find a way to set proper Session-IDs
-	protocolMessage.setSessionId(ArrayConverter
-		.hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
+	// supporting Session Resumption with Session IDs
+	if (tlsContext.isSessionResumption()) {
+	    protocolMessage.setSessionId(tlsContext.getSessionID());
+	} else {
+	    // since the server cannot handle more than one Client at once a
+	    // static Session-ID is set
+	    protocolMessage.setSessionId(ArrayConverter
+		    .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
+	    tlsContext.setSessionID(protocolMessage.getSessionId().getValue());
+	}
 	int length = protocolMessage.getSessionId().getValue().length;
 	protocolMessage.setSessionIdLength(length);
 
@@ -165,6 +191,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 		protocolMessage.getSelectedCipherSuite().getValue(), new byte[] { protocolMessage
 			.getSelectedCompressionMethod().getValue() });
 
+	// extensions have to be added to the protocol message before the
+	// workflow trace is generated
 	byte[] extensionBytes = null;
 	for (ExtensionMessage extension : protocolMessage.getExtensions()) {
 	    ExtensionHandler handler = extension.getExtensionHandler();
