@@ -122,4 +122,17 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
 
 	return context;
     }
+
+    @Override
+    public TlsContext createFullServerResponseTlsContext() {
+	TlsContext context = this.createFullTlsContext();
+
+	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
+
+	protocolMessages.add(new ApplicationMessage(ConnectionEnd.SERVER));
+
+	initializeProtocolMessageOrder(context);
+
+	return context;
+    }
 }

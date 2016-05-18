@@ -31,9 +31,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -88,6 +85,9 @@ public class ServerConfigHandler extends ConfigHandler {
 	} else {
 	    WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
 	    switch (ccConfig.getWorkflowTraceType()) {
+		case FULL_SERVER_RESPONSE:
+		    tlsContext = factory.createFullServerResponseTlsContext();
+		    break;
 		case FULL:
 		    tlsContext = factory.createFullTlsContext();
 		    break;

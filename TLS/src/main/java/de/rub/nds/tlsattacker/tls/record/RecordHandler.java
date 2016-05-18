@@ -34,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class RecordHandler {
 
@@ -42,6 +43,8 @@ public class RecordHandler {
     protected final TlsContext tlsContext;
 
     protected TlsRecordBlockCipher recordCipher;
+
+    protected byte[] finishedBytes = null;
 
     public RecordHandler(TlsContext tlsContext) {
 	this.tlsContext = tlsContext;
@@ -184,6 +187,13 @@ public class RecordHandler {
 	    LOGGER.debug("Raw protocol bytes from the current record:  {}",
 		    ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
+	    // store Finished raw bytes to set TLS Record Cipher before parsing
+	    // them into a record
+	    if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC && lastByte < rawRecordData.length) {
+		finishedBytes = Arrays.copyOfRange(rawRecordData, lastByte, rawRecordData.length);
+		lastByte = rawRecordData.length;
+	    }
+
 	    if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
 		    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
 		record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
@@ -223,5 +233,13 @@ public class RecordHandler {
 
     public void setRecordCipher(TlsRecordBlockCipher recordCipher) {
 	this.recordCipher = recordCipher;
+    }
+
+    public byte[] getFinishedBytes() {
+	return finishedBytes;
+    }
+
+    public void setFinishedBytes(byte[] finishedBytes) {
+	this.finishedBytes = finishedBytes;
     }
 }
