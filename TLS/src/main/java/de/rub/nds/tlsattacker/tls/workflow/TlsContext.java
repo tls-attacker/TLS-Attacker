@@ -63,6 +63,10 @@ public class TlsContext {
      */
     private byte[] masterSecret = new byte[HandshakeByteLength.MASTER_SECRET];
     /**
+     * premaster secret established during the handshake
+     */
+    private byte[] preMasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+    /**
      * client random, including unix time
      */
     private byte[] clientRandom = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
@@ -78,6 +82,10 @@ public class TlsContext {
      * compression algorithm
      */
     private CompressionMethod compressionMethod;
+    /**
+     * session ID
+     */
+    private byte[] sessionID = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
     /**
      * server certificate parsed from the server certificate message
      */
@@ -134,22 +142,25 @@ public class TlsContext {
      */
     private String password;
     /**
-     * ServerHandshakeStatus for fetching Records: 0 = ServerHelloDone has not
-     * been prepared yet or Finished Message is handled -> normal fetch and
-     * parse records 1 = ServerHelloDone has been prepared yet and
-     * Clientauthentication 2 = ServerHelloDone has been prepared yet and no
-     * Clientauthentication -> save Finished for later parsing 3 =
-     * ClientKeyExchange has been parsed -> Parse Saved FinishedRecord
+     * host to connect
      */
-    private int serverHandshakeStatus = 0;
+    private String host;
     /**
      * Client Authentication YES or NO
      */
     private boolean clientAuthentication = false;
     /**
-     * Client Finished Raw Bytes
+     * SessionResumptionWorkflow
      */
-    private byte[] finishedRecords;
+    private boolean sessionResumption = false;
+    /**
+     * RenegotiationWorkflow
+     */
+    private boolean renegotiation = false;
+    /**
+     * Man_in_the_Middle_Workflow
+     */
+    private boolean mitm = false;
 
     private TlsMessageDigest digest;
 
@@ -205,6 +216,14 @@ public class TlsContext {
 	return ArrayConverter.concatenate(clientRandom, serverRandom);
     }
 
+    public byte[] getPreMasterSecret() {
+	return preMasterSecret;
+    }
+
+    public void setPreMasterSecret(byte[] preMasterSecret) {
+	this.preMasterSecret = preMasterSecret;
+    }
+
     public ProtocolVersion getProtocolVersion() {
 	return protocolVersion;
     }
@@ -243,6 +262,14 @@ public class TlsContext {
 
     public void setCompressionMethod(CompressionMethod compressionMethod) {
 	this.compressionMethod = compressionMethod;
+    }
+
+    public byte[] getSessionID() {
+	return sessionID;
+    }
+
+    public void setSessionID(byte[] sessionID) {
+	this.sessionID = sessionID;
     }
 
     public WorkflowTrace getWorkflowTrace() {
@@ -341,6 +368,14 @@ public class TlsContext {
 	this.password = password;
     }
 
+    public String getHost() {
+	return host;
+    }
+
+    public void setHost(String host) {
+	this.host = host;
+    }
+
     public TlsMessageDigest getDigest() {
 	return digest;
     }
@@ -390,14 +425,6 @@ public class TlsContext {
 	this.recordHandler = recordHandler;
     }
 
-    public int getServerHandshakeStatus() {
-	return serverHandshakeStatus;
-    }
-
-    public void setServerHandshakeStatus(int status) {
-	this.serverHandshakeStatus = status;
-    }
-
     public boolean isClientAuthentication() {
 	return clientAuthentication;
     }
@@ -406,11 +433,27 @@ public class TlsContext {
 	this.clientAuthentication = status;
     }
 
-    public void setFinishedRecords(byte[] finishedRecord) {
-	this.finishedRecords = finishedRecord;
+    public boolean isSessionResumption() {
+	return sessionResumption;
     }
 
-    public byte[] getFinishedRecords() {
-	return finishedRecords;
+    public void setSessionResumption(boolean sessionResumption) {
+	this.sessionResumption = sessionResumption;
+    }
+
+    public boolean isRenegotiation() {
+	return renegotiation;
+    }
+
+    public void setRenegotiation(boolean renegotiation) {
+	this.renegotiation = renegotiation;
+    }
+
+    public boolean isMitMAttack() {
+	return mitm;
+    }
+
+    public void setMitMAttack(boolean mitm) {
+	this.mitm = mitm;
     }
 }

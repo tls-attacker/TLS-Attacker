@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.SessionResumptionWorkflowConfiguration;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -34,6 +35,7 @@ import java.io.FileOutputStream;
 
 /**
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public class Main {
 
@@ -79,6 +81,22 @@ public class Main {
 	// }
 
 	transportHandler.closeConnection();
+
+	// setting and executing the session resumption workflow trace
+	if (config.isSessionResumption()) {
+	    TransportHandler transportHandlerSR = configHandler.initializeTransportHandler(config);
+
+	    SessionResumptionWorkflowConfiguration SRworkflow = new SessionResumptionWorkflowConfiguration(tlsContext,
+		    config);
+	    SRworkflow.createWorkflow();
+
+	    WorkflowExecutor workflowExecutorSR = configHandler.initializeWorkflowExecutor(transportHandlerSR,
+		    tlsContext);
+
+	    workflowExecutorSR.executeWorkflow();
+
+	    transportHandlerSR.closeConnection();
+	}
 
 	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
 	    FileOutputStream fos = new FileOutputStream(config.getWorkflowTraceOutputFile());

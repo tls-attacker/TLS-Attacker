@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -71,12 +70,13 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	BigInteger publicKey = new BigInteger(1, Arrays.copyOfRange(message, currentPointer, nextPointer));
 	protocolMessage.setY(publicKey);
 
+	byte[] premasterSecret;
+
 	DHPublicKeyParameters clientPubParameters = new DHPublicKeyParameters(protocolMessage.getY().getValue(),
 		tlsContext.getServerDHParameters().getPublicKey().getParameters());
 
-	byte[] premasterSecret = TlsDHUtils.calculateDHBasicAgreement(clientPubParameters,
+	premasterSecret = TlsDHUtils.calculateDHBasicAgreement(clientPubParameters,
 		tlsContext.getServerDHPrivateKeyParameters());
-	protocolMessage.setPremasterSecret(premasterSecret);
 
 	LOGGER.debug("Resulting premaster secret: {}", ArrayConverter.bytesToHexString(premasterSecret));
 
@@ -116,7 +116,10 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	    }
 	}
 
-	// generate client's original dh public and private key, based on the
+	byte[] premasterSecret;
+
+	// generate client's original dh public and private key, based on
+	// the
 	// server's public parameters
 	AsymmetricCipherKeyPair kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext
 		.getServerDHParameters().getPublicKey().getParameters());
@@ -134,6 +137,13 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	// DHPublicKeyParameters(dhMessage.getY().getValue(), newParams);
 	DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(protocolMessage.getX().getValue(), newParams);
 
+	premasterSecret = TlsDHUtils.calculateDHBasicAgreement(tlsContext.getServerDHParameters().getPublicKey(),
+		newDhPrivate);
+
+	protocolMessage.setPremasterSecret(premasterSecret);
+	LOGGER.debug("Computed PreMaster Secret: {}",
+		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
+
 	byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(protocolMessage.getY().getValue());
 	protocolMessage.setSerializedPublicKey(serializedPublicKey);
 	protocolMessage.setSerializedPublicKeyLength(serializedPublicKey.length);
@@ -141,12 +151,6 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	byte[] result = ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage
 		.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PARAM_LENGTH), protocolMessage
 		.getSerializedPublicKey().getValue());
-
-	byte[] premasterSecret = TlsDHUtils.calculateDHBasicAgreement(
-		tlsContext.getServerDHParameters().getPublicKey(), newDhPrivate);
-	protocolMessage.setPremasterSecret(premasterSecret);
-	LOGGER.debug("Computed PreMaster Secret: {}",
-		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
 	byte[] random = tlsContext.getClientServerRandom();
 

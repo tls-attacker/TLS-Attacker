@@ -11,7 +11,7 @@
             <shortName>mbedtls-rsa</shortName>
         </startupCommands>
         <startupCommands>
-            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias </fuzzerCommand>
+            <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias -client_authentication </fuzzerCommand>
             <serverCommandParameters>server_port=$PORT key_file=../resources/rsa1024key.pem crt_file=../resources/rsa1024cert.pem auth_mode=required</serverCommandParameters>
             <shortName>mbedtls-rsa-auth</shortName>
         </startupCommands>
