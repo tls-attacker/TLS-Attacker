@@ -48,7 +48,10 @@ public class ByteArrayInsertModification extends VariableModification<byte[]> {
     }
 
     @Override
-    protected byte[] modifyImplementationHook(final byte[] input) {
+    protected byte[] modifyImplementationHook(byte[] input) {
+	if (input == null) {
+	    input = new byte[0];
+	}
 	byte[] result = input.clone();
 	int start = startPosition;
 	if (start < 0) {

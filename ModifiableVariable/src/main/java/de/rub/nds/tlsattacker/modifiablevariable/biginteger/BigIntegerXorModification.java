@@ -42,7 +42,10 @@ public class BigIntegerXorModification extends VariableModification<BigInteger> 
     }
 
     @Override
-    protected BigInteger modifyImplementationHook(final BigInteger input) {
+    protected BigInteger modifyImplementationHook(BigInteger input) {
+	if (input == null) {
+	    input = BigInteger.ZERO;
+	}
 	return input.xor(xor);
     }
 

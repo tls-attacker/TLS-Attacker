@@ -259,7 +259,7 @@ public class SimpleFuzzer extends Fuzzer {
 		    tlsContext.setServerCertificate(certificate);
 		    try {
 			workflowExecutor.executeWorkflow();
-		    } catch (Exception ex) {
+		    } catch (WorkflowExecutionException ex) {
 			LOGGER.debug(ex.getLocalizedMessage(), ex);
 		    }
 		    transportHandler.closeConnection();
@@ -312,7 +312,7 @@ public class SimpleFuzzer extends Fuzzer {
 		tlsContext.setServerCertificate(certificate);
 		try {
 		    workflowExecutor.executeWorkflow();
-		} catch (Exception ex) {
+		} catch (WorkflowExecutionException ex) {
 		    LOGGER.debug(ex.getLocalizedMessage(), ex);
 		}
 		transportHandler.closeConnection();
@@ -327,8 +327,8 @@ public class SimpleFuzzer extends Fuzzer {
 		// write them to a file
 		analyzeResultingTlsContextAndWriteFile(tlsContext, logFolder, "", validWorkflow.getName(), iter);
 		totalProtocolFlows++;
-	    } catch (Exception e) {
-
+	    } catch (ConfigurationException | IOException | JAXBException ex) {
+		LOGGER.debug(ex.getLocalizedMessage(), ex);
 	    }
 	}
     }
@@ -411,7 +411,7 @@ public class SimpleFuzzer extends Fuzzer {
 			tlsContext.setServerCertificate(certificate);
 			try {
 			    workflowExecutor.executeWorkflow();
-			} catch (Exception ex) {
+			} catch (WorkflowExecutionException ex) {
 			    LOGGER.debug(ex.getLocalizedMessage(), ex);
 			}
 			transportHandler.closeConnection();

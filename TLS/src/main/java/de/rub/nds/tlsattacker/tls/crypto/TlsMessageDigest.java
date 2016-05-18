@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Computes message digest for two algorithms at once, typically for MD5 and
@@ -34,6 +36,8 @@ import java.util.Arrays;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public final class TlsMessageDigest {
+
+    private static final Logger LOGGER = LogManager.getLogger(TlsMessageDigest.class);
 
     private MessageDigest hash1;
 
@@ -71,7 +75,8 @@ public final class TlsMessageDigest {
      */
     public void initializeDigestAlgorithm(DigestAlgorithm digestAlgorithm) throws NoSuchAlgorithmException {
 	if (initialized) {
-	    throw new IllegalStateException("The TLS message digest algorithm has already been set");
+	    LOGGER.warn("The TLS message digest algorithm has already been set");
+	    return;
 	}
 	if (digestAlgorithm == DigestAlgorithm.LEGACY) {
 	    this.hash1 = MessageDigest.getInstance("MD5");
