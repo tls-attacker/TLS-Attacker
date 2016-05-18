@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeHandle
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -42,6 +43,7 @@ import java.util.Map;
  * Also called Handshake Type
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Philip Riese <philip.riese@rub.de>
  */
 public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
@@ -49,7 +51,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
 	@Override
 	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
-	    throw new UnsupportedOperationException("Not supported yet.");
+	    return new HelloRequestHandler(tlsContext);
 	}
     },
     CLIENT_HELLO((byte) 1) {

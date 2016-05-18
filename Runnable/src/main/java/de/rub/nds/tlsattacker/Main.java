@@ -1,21 +1,20 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS.
  *
- * Copyright (C) 2015 Chair for Network and Data Security,
- *                    Ruhr University Bochum
- *                    (juraj.somorovsky@rub.de)
+ * Copyright (C) 2015 Chair for Network and Data Security, Ruhr University
+ * Bochum (juraj.somorovsky@rub.de)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package de.rub.nds.tlsattacker;
 
@@ -25,6 +24,7 @@ import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfi
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
+import de.rub.nds.tlsattacker.attacks.impl.ManInTheMiddleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
@@ -44,6 +45,7 @@ import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -91,10 +93,12 @@ public class Main {
 	jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
 	WinshockCommandConfig winshock = new WinshockCommandConfig();
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
-	// ServerCommandConfig server = new ServerCommandConfig();
-	// jc.addCommand(ServerCommandConfig.COMMAND, server);
+	ServerCommandConfig server = new ServerCommandConfig();
+	jc.addCommand(ServerCommandConfig.COMMAND, server);
 	ClientCommandConfig client = new ClientCommandConfig();
 	jc.addCommand(ClientCommandConfig.COMMAND, client);
+	ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
+	jc.addCommand(ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND, MitM_Attack);
 
 	jc.parse(args);
 
@@ -108,9 +112,9 @@ public class Main {
 	    case MultiFuzzerConfig.ATTACK_COMMAND:
 		startMultiFuzzer(cmconfig, generalConfig, jc);
 		return;
-		// case ServerCommandConfig.COMMAND:
-		// startSimpleTls(generalConfig, server, jc);
-		// return;
+	    case ServerCommandConfig.COMMAND:
+		startSimpleTls(generalConfig, server, jc);
+		return;
 	    case ClientCommandConfig.COMMAND:
 		startSimpleTls(generalConfig, client, jc);
 		return;
@@ -137,6 +141,9 @@ public class Main {
 		break;
 	    case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
+		break;
+	    case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
+		attacker = new ManInTheMiddleAttack(MitM_Attack);
 		break;
 	    default:
 		throw new ConfigurationException("No command found");

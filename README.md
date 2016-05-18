@@ -35,7 +35,7 @@ Currently, the following features are supported:
 - (EC)DH and RSA key exchange algorithms
 - AES CBC cipher suites
 - Extensions: EC, EC point format, Heartbeat, Max fragment length, Server name, Signature and Hash algorithms
-- TLS client (server coming soon)
+- TLS client and server
 
 ## Usage
 In the following, we present some very simple examples on using TLS-Attacker.
@@ -71,7 +71,7 @@ $ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem -verify ec256cert.p
 
 Then start the client with:
 ```bash
-$ java -jar target/TLS-Attacker-1.0.jar client -connect localhost:4433 -cipher TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA -keystore ../resources/ec256.jks -password password -alias alias
+$ java -jar target/TLS-Attacker-1.0.jar client -connect localhost:4433 -cipher TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA -keystore ../resources/ec256.jks -password password -alias alias -client_authentication
 ```
 For more parameters, run:
 ```bash
