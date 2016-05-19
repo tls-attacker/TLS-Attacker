@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>

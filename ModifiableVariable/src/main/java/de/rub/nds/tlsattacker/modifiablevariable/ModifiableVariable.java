@@ -69,8 +69,8 @@ public abstract class ModifiableVariable<E> {
     public abstract boolean isOriginalValueModified();
 
     public abstract boolean validateAssertions();
-    
+
     public boolean containsAssertion() {
-        return (assertEquals != null);
+	return (assertEquals != null);
     }
 }
