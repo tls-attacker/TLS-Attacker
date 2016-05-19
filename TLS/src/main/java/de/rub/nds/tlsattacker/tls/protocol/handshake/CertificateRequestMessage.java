@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * import java.util.LinkedList;

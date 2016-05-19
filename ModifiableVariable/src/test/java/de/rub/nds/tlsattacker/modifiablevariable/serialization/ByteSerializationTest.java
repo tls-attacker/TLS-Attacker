@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.serialization;
 
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ByteAddModification;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -16,6 +18,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +32,7 @@ public class ByteSerializationTest {
 
     private ModifiableByte start;
 
-    private byte expectedResult, result;
+    private Byte expectedResult, result;
 
     private StringWriter writer;
 
@@ -44,12 +47,30 @@ public class ByteSerializationTest {
 
     @Before
     public void setUp() throws JAXBException {
-	// todo
+	start = new ModifiableByte();
+	start.setOriginalValue((byte) 10);
+
+	writer = new StringWriter();
+	context = JAXBContext.newInstance(ModifiableByte.class, ByteAddModification.class);
+	m = context.createMarshaller();
+	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	um = context.createUnmarshaller();
     }
 
     @Test
     public void testSerializeDeserializeSimple() throws Exception {
-	// TODO
+	start.setModification(null);
+	m.marshal(start, writer);
+
+	String xmlString = writer.toString();
+	System.out.println(xmlString);
+
+	um = context.createUnmarshaller();
+	ModifiableByte mv = (ModifiableByte) um.unmarshal(new StringReader(xmlString));
+
+	expectedResult = 10;
+	result = mv.getValue();
+	assertEquals(expectedResult, result);
     }
 
     @Test

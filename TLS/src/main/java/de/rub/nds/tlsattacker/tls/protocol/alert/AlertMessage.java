@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.alert;
 
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
@@ -16,7 +17,6 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.protocol.alert.AlertHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Objects;
 
@@ -55,10 +55,11 @@ public class AlertMessage extends ProtocolMessage {
     }
 
     public void setLevel(byte level) {
-	if (this.level == null) {
-	    this.level = new ModifiableByte();
-	}
-	this.level.setOriginalValue(level);
+	this.level = ModifiableVariableFactory.safelySetValue(this.level, level);
+    }
+
+    public void setLevel(ModifiableByte level) {
+	this.level = level;
     }
 
     public ModifiableByte getDescription() {
@@ -66,10 +67,11 @@ public class AlertMessage extends ProtocolMessage {
     }
 
     public void setDescription(byte description) {
-	if (this.description == null) {
-	    this.description = new ModifiableByte();
-	}
-	this.description.setOriginalValue(description);
+	this.description = ModifiableVariableFactory.safelySetValue(this.description, description);
+    }
+
+    public void setDescription(ModifiableByte description) {
+	this.description = description;
     }
 
     public byte[] getConfig() {

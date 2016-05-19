@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlSeeAlso({ BigIntegerAddModification.class, BigIntegerExplicitValueModification.class,
 	BigIntegerSubtractModification.class, BigIntegerXorModification.class })
-@XmlType(propOrder = { "originalValue", "modification" })
+@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableBigInteger extends ModifiableVariable<BigInteger> implements Serializable {
 
     @Override
@@ -41,6 +41,14 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
 	this.originalValue = value;
     }
 
+    public BigInteger getAssertEquals() {
+	return assertEquals;
+    }
+
+    public void setAssertEquals(BigInteger assertEquals) {
+	this.assertEquals = assertEquals;
+    }
+
     @Override
     public boolean isOriginalValueModified() {
 	return originalValue != null && (originalValue.compareTo(getValue()) != 0);
@@ -52,5 +60,16 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
 
     public byte[] getByteArray(int size) {
 	return ArrayConverter.bigIntegerToByteArray(getValue(), size, true);
+    }
+
+    @Override
+    public boolean validateAssertions() {
+	boolean valid = true;
+	if (assertEquals != null) {
+	    if (assertEquals.compareTo(getValue()) != 0) {
+		valid = false;
+	    }
+	}
+	return valid;
     }
 }
