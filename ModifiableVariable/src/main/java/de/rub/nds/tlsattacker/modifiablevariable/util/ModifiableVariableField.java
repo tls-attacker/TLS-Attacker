@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.util;
 
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import java.lang.reflect.Field;
 
 /**
@@ -44,6 +45,11 @@ public class ModifiableVariableField {
 
     public void setField(Field field) {
 	this.field = field;
+    }
+
+    public ModifiableVariable getModifiableVariable() throws IllegalArgumentException, IllegalAccessException {
+	field.setAccessible(true);
+	return (ModifiableVariable) field.get(object);
     }
 
 }

@@ -31,10 +31,9 @@ public abstract class ModifiableVariable<E> {
 
     private VariableModification<E> modification = null;
 
-    /**
-     *
-     */
     private boolean createRandomModification;
+
+    protected E assertEquals;
 
     public ModifiableVariable() {
 
@@ -68,4 +67,10 @@ public abstract class ModifiableVariable<E> {
     }
 
     public abstract boolean isOriginalValueModified();
+
+    public abstract boolean validateAssertions();
+    
+    public boolean containsAssertion() {
+        return (assertEquals != null);
+    }
 }

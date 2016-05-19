@@ -41,6 +41,7 @@
         <module>TLS</module>
         <module>Attacks</module>
         <module>Fuzzer</module>
+        <module>TestSuite</module>
         <module>Runnable</module>
     </modules>
 
