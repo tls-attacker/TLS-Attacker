@@ -100,12 +100,14 @@ public class ServerTestSuite extends TestSuite {
 		    for (ModifiableVariableField mvf : mvfs) {
 			ModifiableVariable mv = mvf.getModifiableVariable();
 			if (mv != null && mv.containsAssertion()) {
-                            if(mv.validateAssertions()) {
-                                LOGGER.info("Assertion in {}.{} succesfully validated", mvf.getObject().getClass().getSimpleName(), mvf.getField().getName());
-                            } else {
-                                LOGGER.info("Assertion in {}.{} invalid", mvf.getObject().getClass().getSimpleName(), mvf.getField().getName());
-                                succesful = false;
-                            }
+			    if (mv.validateAssertions()) {
+				LOGGER.info("Assertion in {}.{} succesfully validated", mvf.getObject().getClass()
+					.getSimpleName(), mvf.getField().getName());
+			    } else {
+				LOGGER.info("Assertion in {}.{} invalid", mvf.getObject().getClass().getSimpleName(),
+					mvf.getField().getName());
+				succesful = false;
+			    }
 			}
 		    }
 		} else {
