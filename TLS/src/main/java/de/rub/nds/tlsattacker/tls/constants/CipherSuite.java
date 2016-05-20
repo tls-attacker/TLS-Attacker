@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -149,6 +148,22 @@ public enum CipherSuite {
      */
     public boolean isAEAD() {
 	return (this.name().contains("_GCM") || this.name().contains("_CCM") || this.name().contains("_OCB"));
+    }
+
+    /**
+     * Returns true if the cipher suite is supported by the specified protocol
+     * version.
+     * 
+     * TODO: this is still very imprecise and must be improved with new ciphers.
+     * 
+     * @param version
+     * @return
+     */
+    public boolean isSupportedInProtocol(ProtocolVersion version) {
+	if (this.name().endsWith("256") || this.name().endsWith("384")) {
+	    return (version == ProtocolVersion.TLS12);
+	}
+	return true;
     }
 
     public static List<CipherSuite> getImplemented() {
