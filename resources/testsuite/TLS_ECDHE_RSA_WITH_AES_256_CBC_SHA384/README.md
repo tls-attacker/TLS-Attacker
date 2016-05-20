@@ -1,0 +1,1 @@
+If TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 is supported, it should be accepted only with TLS12

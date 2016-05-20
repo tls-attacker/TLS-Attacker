@@ -27,16 +27,12 @@ import java.security.cert.CertificateException;
 import java.util.Enumeration;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * 
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class ServerConfigHandler extends ConfigHandler {
-
-    private static Logger LOGGER = LogManager.getLogger(ServerConfigHandler.class);
 
     @Override
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
@@ -61,15 +57,18 @@ public class ServerConfigHandler extends ConfigHandler {
     public TlsContext initializeTlsContext(CommandConfig config) {
 	ServerCommandConfig ccConfig = (ServerCommandConfig) config;
 	TlsContext tlsContext;
-	if (ccConfig.getWorkflowTraceConfigFile() != null) {
+	if (ccConfig.getWorkflowInput() != null) {
 	    try {
 		tlsContext = new TlsContext();
-		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowTraceConfigFile());
+		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowInput());
 		WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
 		tlsContext.setWorkflowTrace(workflowTrace);
+		if (workflowTrace.getProtocolVersion() != null) {
+		    tlsContext.setProtocolVersion(workflowTrace.getProtocolVersion());
+		}
 	    } catch (IOException | JAXBException | XMLStreamException ex) {
 		throw new ConfigurationException("The workflow trace could not be loaded from "
-			+ ccConfig.getWorkflowTraceConfigFile(), ex);
+			+ ccConfig.getWorkflowInput(), ex);
 	    }
 	} else {
 	    WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);

@@ -27,8 +27,6 @@ import java.security.cert.CertificateException;
 import java.util.Enumeration;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * 
@@ -36,8 +34,6 @@ import org.apache.logging.log4j.Logger;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class ClientConfigHandler extends ConfigHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger(ClientConfigHandler.class);
 
     @Override
     public TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException {
@@ -64,16 +60,19 @@ public class ClientConfigHandler extends ConfigHandler {
 	ClientCommandConfig ccConfig = (ClientCommandConfig) config;
 	TlsContext tlsContext;
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
-	if (ccConfig.getWorkflowTraceConfigFile() != null) {
+	if (ccConfig.getWorkflowInput() != null) {
 	    try {
 		tlsContext = new TlsContext(config.getProtocolVersion());
-		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowTraceConfigFile());
+		FileInputStream fis = new FileInputStream(ccConfig.getWorkflowInput());
 		WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
 		tlsContext.setWorkflowTrace(workflowTrace);
+		if (workflowTrace.getProtocolVersion() != null) {
+		    tlsContext.setProtocolVersion(workflowTrace.getProtocolVersion());
+		}
 		WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
 	    } catch (IOException | JAXBException | XMLStreamException ex) {
 		throw new ConfigurationException("The workflow trace could not be loaded from "
-			+ ccConfig.getWorkflowTraceConfigFile(), ex);
+			+ ccConfig.getWorkflowInput(), ex);
 	    }
 	} else {
 	    switch (ccConfig.getWorkflowTraceType()) {
@@ -99,10 +98,7 @@ public class ClientConfigHandler extends ConfigHandler {
 	String host = hp[0];
 	tlsContext.setHost(host);
 	tlsContext.setMyConnectionEnd(ConnectionEnd.CLIENT);
-
-	if (config.isClientAuthentication()) {
-	    tlsContext.setClientAuthentication(true);
-	}
+	tlsContext.setClientAuthentication(config.isClientAuthentication());
 
 	if (config.getKeystore() != null) {
 	    try {

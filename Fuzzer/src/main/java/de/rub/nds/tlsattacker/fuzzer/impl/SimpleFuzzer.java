@@ -137,7 +137,7 @@ public class SimpleFuzzer extends Fuzzer {
 	for (File file : xmlFiles) {
 	    try {
 		LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Executing the TLS workflow according to {}", file.getPath());
-		fuzzerConfig.setWorkflowTraceConfigFile(file.getAbsolutePath());
+		fuzzerConfig.setWorkflowInput(file.getAbsolutePath());
 		TransportHandler transportHandler = configHandler.initializeTransportHandler(fuzzerConfig);
 		TlsContext tlsContext = configHandler.initializeTlsContext(fuzzerConfig);
 		WorkflowTrace tmpTrace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tlsContext.getWorkflowTrace());
