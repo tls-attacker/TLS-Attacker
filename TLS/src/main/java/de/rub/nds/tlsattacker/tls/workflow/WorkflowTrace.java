@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
@@ -79,6 +80,8 @@ public class WorkflowTrace implements Serializable {
     private List<ProtocolMessage> protocolMessages;
 
     private String name;
+
+    private ProtocolVersion protocolVersion;
 
     /**
      * Initializes the workflow trace with an empty list of protocol messages
@@ -246,4 +249,11 @@ public class WorkflowTrace implements Serializable {
 	this.name = name;
     }
 
+    public ProtocolVersion getProtocolVersion() {
+	return protocolVersion;
+    }
+
+    public void setProtocolVersion(ProtocolVersion protocolVersion) {
+	this.protocolVersion = protocolVersion;
+    }
 }

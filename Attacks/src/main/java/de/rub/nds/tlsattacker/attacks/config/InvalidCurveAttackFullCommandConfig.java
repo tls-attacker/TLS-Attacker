@@ -33,8 +33,6 @@ public class InvalidCurveAttackFullCommandConfig extends ClientCommandConfig {
 	cipherSuites.clear();
 	cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
 	cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
 	namedCurves.clear();
 	namedCurves.add(NamedCurve.SECP256R1);
 	workflowTraceType = WorkflowTraceType.HANDSHAKE;

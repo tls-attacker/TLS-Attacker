@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -59,10 +60,12 @@ public class ServerTestSuite extends TestSuite {
 	    File[] testCases = testFolder.listFiles();
 	    boolean successfulTest = false;
 	    for (File testCase : testCases) {
-		LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Running {}", testCase.getName());
-		if (startTestCase(testCase)) {
-		    // one of our test cases was successful
-		    successfulTest = true;
+		if (testCase.isDirectory()) {
+		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "  Running {}", testCase.getName());
+		    if (startTestCase(testCase)) {
+			// one of our test cases was successful
+			successfulTest = true;
+		    }
 		}
 	    }
 	    if (successfulTest) {
@@ -76,17 +79,16 @@ public class ServerTestSuite extends TestSuite {
     private boolean startTestCase(File testFolder) {
 	boolean succesful = true;
 
-	File[] listOfFiles = testFolder.listFiles();
-	List<File> xmlFiles = new LinkedList<>();
-	for (File file : listOfFiles) {
-	    if (file.isFile() && file.getName().endsWith(".xml")) {
-		xmlFiles.add(file);
+	File[] xmlFiles = testFolder.listFiles(new FilenameFilter() {
+	    @Override
+	    public boolean accept(File dir, String name) {
+		return name.toLowerCase().endsWith(".xml");
 	    }
-	}
+	});
 
 	for (File xmlFile : xmlFiles) {
 	    try {
-		testConfig.setWorkflowTraceConfigFile(xmlFile.getAbsolutePath());
+		testConfig.setWorkflowInput(xmlFile.getAbsolutePath());
 		TransportHandler transportHandler = configHandler.initializeTransportHandler(testConfig);
 		TlsContext tlsContext = configHandler.initializeTlsContext(testConfig);
 		WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
@@ -94,29 +96,29 @@ public class ServerTestSuite extends TestSuite {
 		workflowExecutor.executeWorkflow();
 		transportHandler.closeConnection();
 		if (TlsContextAnalyzer.containsFullWorkflow(tlsContext)) {
-		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Successfully executed {}", xmlFile.getName());
+		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "    {} passed", xmlFile.getName());
 		    List<ModifiableVariableField> mvfs = ModifiableVariableAnalyzer
 			    .getAllModifiableVariableFieldsRecursively(tlsContext.getWorkflowTrace());
 		    for (ModifiableVariableField mvf : mvfs) {
 			ModifiableVariable mv = mvf.getModifiableVariable();
 			if (mv != null && mv.containsAssertion()) {
 			    if (mv.validateAssertions()) {
-				LOGGER.info("Assertion in {}.{} succesfully validated", mvf.getObject().getClass()
+				LOGGER.info("    Assertion in {}.{} succesfully validated", mvf.getObject().getClass()
 					.getSimpleName(), mvf.getField().getName());
 			    } else {
-				LOGGER.info("Assertion in {}.{} invalid", mvf.getObject().getClass().getSimpleName(),
-					mvf.getField().getName());
+				LOGGER.info("    Assertion in {}.{} invalid", mvf.getObject().getClass()
+					.getSimpleName(), mvf.getField().getName());
 				succesful = false;
 			    }
 			}
 		    }
 		} else {
-		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not successful: {}", xmlFile.getName());
+		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "    {} failed", xmlFile.getName());
 		    succesful = false;
 		}
 	    } catch (WorkflowExecutionException | ConfigurationException | IllegalArgumentException
 		    | IllegalAccessException ex) {
-		LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not successful: {}", xmlFile.getName());
+		LOGGER.log(LogLevel.CONSOLE_OUTPUT, "    {} failed", xmlFile.getName());
 		LOGGER.info(ex);
 		succesful = false;
 	    }

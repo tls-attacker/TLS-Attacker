@@ -38,8 +38,7 @@ public abstract class CommandConfig {
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints help")
     protected boolean help;
 
-    @Parameter(names = "-version", description = "Protocol version to use (it is also the only"
-	    + " currently supported protocol version)", converter = ProtocolVersionConverter.class)
+    @Parameter(names = "-version", description = "Protocol version to use", converter = ProtocolVersionConverter.class)
     protected ProtocolVersion protocolVersion = ProtocolVersion.TLS12;
 
     @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate. In case TLS Client is used, the client sends ClientCertificate in the TLS handshake. Use keyword empty to enforce an empty ClientCertificate message.")
@@ -227,20 +226,20 @@ public abstract class CommandConfig {
 	this.transportHandlerType = transportHandlerType;
     }
 
-    public String getWorkflowTraceConfigFile() {
+    public String getWorkflowInput() {
 	return workflowInput;
     }
 
-    public void setWorkflowTraceConfigFile(String workflowTraceConfigFile) {
-	this.workflowInput = workflowTraceConfigFile;
+    public void setWorkflowInput(String workflowInput) {
+	this.workflowInput = workflowInput;
     }
 
-    public String getWorkflowTraceOutputFile() {
+    public String getWorkflowOutput() {
 	return workflowOutput;
     }
 
-    public void setWorkflowTraceOutputFile(String workflowTraceOutputFile) {
-	this.workflowOutput = workflowTraceOutputFile;
+    public void setWorkflowOutput(String workflowOutput) {
+	this.workflowOutput = workflowOutput;
     }
 
     public List<CompressionMethod> getCompressionMethods() {
