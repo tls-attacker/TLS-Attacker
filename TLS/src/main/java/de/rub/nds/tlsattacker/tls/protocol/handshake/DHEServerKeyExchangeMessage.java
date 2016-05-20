@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -265,10 +264,16 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	StringBuilder sb = new StringBuilder();
 	sb.append(super.toString()).append("\n  Modulus p: ").append(p.getValue().toString(16))
 		.append("\n  Generator g: ").append(g.getValue().toString(16)).append("\n  Public Key: ")
-		.append(publicKey.getValue().toString(16)).append("\n  Signature Algorithm: ")
-		.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ")
-		.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()))
-		.append("\n  Signature: ").append(ArrayConverter.bytesToHexString(this.signature.getValue()));
+		.append(publicKey.getValue().toString(16)).append("\n  Signature Algorithm: ");
+	// signature and hash algorithms are provided only while working with
+	// (D)TLS 1.2
+	if (this.getHashAlgorithm() != null) {
+	    sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ");
+	}
+	if (this.getSignatureAlgorithm() != null) {
+	    sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
+	}
+	sb.append("\n  Signature: ").append(ArrayConverter.bytesToHexString(this.signature.getValue()));
 
 	return sb.toString();
     }
