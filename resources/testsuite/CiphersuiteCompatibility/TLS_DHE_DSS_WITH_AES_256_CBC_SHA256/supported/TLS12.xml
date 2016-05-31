@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <protocolVersion>TLS12</protocolVersion>
+    <protocolMessages>
+        <ClientHello>
+            <messageIssuer>CLIENT</messageIssuer>
+            <supportedCompressionMethods>
+                <CompressionMethod>NULL</CompressionMethod>
+            </supportedCompressionMethods>
+            <supportedCipherSuites>
+                <CipherSuite>TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</CipherSuite>
+            </supportedCipherSuites>
+        </ClientHello>
+        <ServerHello>
+            <messageIssuer>SERVER</messageIssuer>
+        </ServerHello>
+        <Certificate>
+            <messageIssuer>SERVER</messageIssuer>
+        </Certificate>
+        <ServerHelloDone>
+            <messageIssuer>SERVER</messageIssuer>
+        </ServerHelloDone>
+        <DHClientKeyExchange>
+            <messageIssuer>CLIENT</messageIssuer>
+        </DHClientKeyExchange>
+        <ChangeCipherSpec>
+            <messageIssuer>CLIENT</messageIssuer>
+        </ChangeCipherSpec>
+        <Finished>
+            <messageIssuer>CLIENT</messageIssuer>
+        </Finished>
+        <ChangeCipherSpec>
+            <messageIssuer>SERVER</messageIssuer>
+        </ChangeCipherSpec>
+        <Finished>
+            <messageIssuer>SERVER</messageIssuer>
+        </Finished>
+    </protocolMessages>
+</workflowTrace>
