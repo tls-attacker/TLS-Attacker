@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,30 +51,46 @@ public class ServerTestSuite extends TestSuite {
 	configHandler = ConfigHandlerFactory.createConfigHandler("client");
 	configHandler.initialize(generalConfig);
 
-	int successfulTests = 0;
+	List<String> successfulTests = new LinkedList<>();
+	List<String> failedTests = new LinkedList<>();
 
 	File folder = new File(testConfig.getFolder());
-	File[] tests = folder.listFiles();
-	for (File testFolder : tests) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Test Suite {} (one of these has to be succesful)",
-		    testFolder.getName());
-	    File[] testCases = testFolder.listFiles();
-	    boolean successfulTest = false;
-	    for (File testCase : testCases) {
-		if (testCase.isDirectory()) {
-		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "  Running {}", testCase.getName());
+	File[] testsuites = folder.listFiles(new DirectoryFilter());
+	for (File testsuite : testsuites) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting {} Test Suite", testsuite.getName());
+	    File[] tests = testsuite.listFiles(new DirectoryFilter());
+	    for (File test : tests) {
+		LOGGER.info("Testing {} (one of these has to be succesful)", test.getName());
+		File[] testCases = test.listFiles(new DirectoryFilter());
+		boolean successfulTest = false;
+		for (File testCase : testCases) {
+		    LOGGER.info("  Running {}", testCase.getName());
 		    if (startTestCase(testCase)) {
 			// one of our test cases was successful
 			successfulTest = true;
 		    }
 		}
-	    }
-	    if (successfulTest) {
-		successfulTests++;
+		if (successfulTest) {
+		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{} SUCCESSFUL ", test.getName());
+		    successfulTests.add(test.getName());
+		} else {
+		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{} FAILED ", test.getName());
+		    failedTests.add(test.getName());
+		}
 	    }
 	}
+	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Summary of successful tests");
+	for (String s : successfulTests) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "  {}", s);
+	}
+	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Summary of failed tests");
+	for (String s : failedTests) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "  {}", s);
+	}
+	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Successful tests: {}", successfulTests.size());
+	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Failed tests: {}", failedTests.size());
 
-	return (successfulTests > 0);
+	return (failedTests.isEmpty());
     }
 
     private boolean startTestCase(File testFolder) {
@@ -96,7 +113,7 @@ public class ServerTestSuite extends TestSuite {
 		workflowExecutor.executeWorkflow();
 		transportHandler.closeConnection();
 		if (TlsContextAnalyzer.containsFullWorkflow(tlsContext)) {
-		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "    {} passed", xmlFile.getName());
+		    LOGGER.info("    {} passed", xmlFile.getName());
 		    List<ModifiableVariableField> mvfs = ModifiableVariableAnalyzer
 			    .getAllModifiableVariableFieldsRecursively(tlsContext.getWorkflowTrace());
 		    for (ModifiableVariableField mvf : mvfs) {
@@ -113,12 +130,12 @@ public class ServerTestSuite extends TestSuite {
 			}
 		    }
 		} else {
-		    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "    {} failed", xmlFile.getName());
+		    LOGGER.info("    {} failed", xmlFile.getName());
 		    succesful = false;
 		}
 	    } catch (WorkflowExecutionException | ConfigurationException | IllegalArgumentException
 		    | IllegalAccessException ex) {
-		LOGGER.log(LogLevel.CONSOLE_OUTPUT, "    {} failed", xmlFile.getName());
+		LOGGER.info("    {} failed", xmlFile.getName());
 		LOGGER.info(ex);
 		succesful = false;
 	    }
@@ -126,5 +143,14 @@ public class ServerTestSuite extends TestSuite {
 
 	return succesful;
     }
+
+    class DirectoryFilter implements FileFilter {
+
+	@Override
+	public boolean accept(File f) {
+	    return f.isDirectory();
+	}
+
+    };
 
 }
