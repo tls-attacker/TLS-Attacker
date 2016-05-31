@@ -293,6 +293,7 @@ Further examples on attacks and fuzzing are in the Wiki.
 The following people have contributed code to the TLS-Attacker Project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
+- Philip Riese: Server implementation, TLS Man-in-the-Middle handling
 - Christian Mainka: Design support and many implementation suggestions.
 
 Further contributions pull requests are welcome.
