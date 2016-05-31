@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlSeeAlso({ ByteAddModification.class, ByteExplicitValueModification.class, ByteSubtractModification.class,
 	ByteXorModification.class })
-@XmlType(propOrder = { "originalValue", "modification" })
+@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableByte extends ModifiableVariable<Byte> implements Serializable {
 
     @Override
@@ -39,8 +39,27 @@ public class ModifiableByte extends ModifiableVariable<Byte> implements Serializ
 	this.originalValue = originalValue;
     }
 
+    public Byte getAssertEquals() {
+	return assertEquals;
+    }
+
+    public void setAssertEquals(Byte assertEquals) {
+	this.assertEquals = assertEquals;
+    }
+
     @Override
     public boolean isOriginalValueModified() {
 	return originalValue != null && originalValue.compareTo(getValue()) != 0;
+    }
+
+    @Override
+    public boolean validateAssertions() {
+	boolean valid = true;
+	if (assertEquals != null) {
+	    if (assertEquals.compareTo(getValue()) != 0) {
+		valid = false;
+	    }
+	}
+	return valid;
     }
 }

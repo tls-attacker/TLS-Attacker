@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -16,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -94,15 +94,18 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 
 	    tlsContext.getEcContext().setServerPublicKeyParameters(publicKeyParameters);
 
-	    currentPointer = nextPointer;
-	    nextPointer++;
-	    HashAlgorithm ha = HashAlgorithm.getHashAlgorithm(message[currentPointer]);
-	    protocolMessage.setHashAlgorithm(ha.getValue());
+	    if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
+		    || tlsContext.getProtocolVersion() == ProtocolVersion.TLS12) {
+		currentPointer = nextPointer;
+		nextPointer++;
+		HashAlgorithm ha = HashAlgorithm.getHashAlgorithm(message[currentPointer]);
+		protocolMessage.setHashAlgorithm(ha.getValue());
 
-	    currentPointer = nextPointer;
-	    nextPointer++;
-	    SignatureAlgorithm sa = SignatureAlgorithm.getSignatureAlgorithm(message[currentPointer]);
-	    protocolMessage.setSignatureAlgorithm(sa.getValue());
+		currentPointer = nextPointer;
+		nextPointer++;
+		SignatureAlgorithm sa = SignatureAlgorithm.getSignatureAlgorithm(message[currentPointer]);
+		protocolMessage.setSignatureAlgorithm(sa.getValue());
+	    }
 
 	    currentPointer = nextPointer;
 	    nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;

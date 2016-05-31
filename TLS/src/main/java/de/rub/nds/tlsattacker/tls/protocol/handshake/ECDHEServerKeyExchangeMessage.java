@@ -102,10 +102,16 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 	sb.append(super.toString()).append("\n  Curve Type: ")
 		.append(EllipticCurveType.getCurveType(this.curveType.getValue())).append("\n  Named Curve: ")
 		.append(NamedCurve.getNamedCurve(this.namedCurve.getValue())).append("\n  Public Key: ")
-		.append(ArrayConverter.bytesToHexString(this.publicKey.getValue())).append("\n  Signature Algorithm: ")
-		.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ")
-		.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()))
-		.append("\n  Signature: ").append(ArrayConverter.bytesToHexString(this.signature.getValue()));
+		.append(ArrayConverter.bytesToHexString(this.publicKey.getValue())).append("\n  Signature Algorithm: ");
+	// signature and hash algorithms are provided only while working with
+	// (D)TLS 1.2
+	if (this.getHashAlgorithm() != null) {
+	    sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ");
+	}
+	if (this.getSignatureAlgorithm() != null) {
+	    sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
+	}
+	sb.append("\n  Signature: ").append(ArrayConverter.bytesToHexString(this.signature.getValue()));
 
 	return sb.toString();
     }

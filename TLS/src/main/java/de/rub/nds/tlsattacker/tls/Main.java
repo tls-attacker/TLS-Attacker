@@ -87,8 +87,8 @@ public class Main {
 	    transportHandlerSR.closeConnection();
 	}
 
-	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
-	    FileOutputStream fos = new FileOutputStream(config.getWorkflowTraceOutputFile());
+	if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+	    FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
 	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
 	}
     }
