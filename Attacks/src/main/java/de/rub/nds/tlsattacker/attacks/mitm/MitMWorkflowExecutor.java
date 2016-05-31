@@ -428,7 +428,7 @@ public class MitMWorkflowExecutor {
 	    }
 	    if (records.isEmpty()) {
 		throw new WorkflowExecutionException("The configured protocol message was not found, "
-			+ "the server does not send any data.");
+			+ "the TLS peer does not send any data.");
 	    }
 	}
 	return records;

@@ -78,6 +78,12 @@ For more parameters, run:
 $ java -jar target/TLS-Attacker-1.0.jar client -help
 ```
 
+You can now also use the TLS server:
+```bash
+$ java -jar target/TLS-Attacker-1.1.jar server -port 4444 -keystore ../resources/rsa1024.jks -password password -alias alias
+```
+Currently, only one TLS handshake will be produced, afterwards you need to restart the server again.
+
 The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
 $ cd Runnable
