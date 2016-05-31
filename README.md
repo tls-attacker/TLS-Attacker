@@ -1,5 +1,5 @@
 # TLS-Attacker
-[![release](https://img.shields.io/badge/Release-v1.0-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v1.1-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 
 TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an opportunity to easily define a custom TLS protocol flow and test it against his TLS library.
