@@ -45,14 +45,14 @@ public class Main {
 	JCommander jc = new JCommander(generalConfig);
 
 	MultiFuzzerConfig cmconfig = new MultiFuzzerConfig();
-	jc.addCommand(MultiFuzzerConfig.ATTACK_COMMAND, cmconfig);
+	jc.addCommand(MultiFuzzerConfig.COMMAND, cmconfig);
 
 	BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig();
 	jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
 	DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig();
 	jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
 	// EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig();
-	// jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
+	// jc.addCommand(EarlyCCSCommandConfig.COMMAND, earlyCCS);
 	InvalidCurveAttackCommandConfig ellipticTest = new InvalidCurveAttackCommandConfig();
 	jc.addCommand(InvalidCurveAttackCommandConfig.ATTACK_COMMAND, ellipticTest);
 	InvalidCurveAttackFullCommandConfig elliptic = new InvalidCurveAttackFullCommandConfig();
@@ -64,7 +64,7 @@ public class Main {
 	PoodleCommandConfig poodle = new PoodleCommandConfig();
 	jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
 	// SniTestCommandConfig sniTest = new SniTestCommandConfig();
-	// jc.addCommand(SniTestCommandConfig.ATTACK_COMMAND, sniTest);
+	// jc.addCommand(SniTestCommandConfig.COMMAND, sniTest);
 	WinshockCommandConfig winshock = new WinshockCommandConfig();
 	jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
 
@@ -77,13 +77,13 @@ public class Main {
 
 	Attacker attacker;
 	switch (jc.getParsedCommand()) {
-	    case MultiFuzzerConfig.ATTACK_COMMAND:
+	    case MultiFuzzerConfig.COMMAND:
 		startMultiFuzzer(cmconfig, generalConfig, jc);
 		return;
 	    case BleichenbacherCommandConfig.ATTACK_COMMAND:
 		attacker = new BleichenbacherAttack(bleichenbacherTest);
 		break;
-	    // case EarlyCCSCommandConfig.ATTACK_COMMAND:
+	    // case EarlyCCSCommandConfig.COMMAND:
 	    // attacker = new EarlyCCSAttack(earlyCCS);
 	    // break;
 	    case InvalidCurveAttackCommandConfig.ATTACK_COMMAND:
@@ -107,7 +107,7 @@ public class Main {
 	    case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
 		attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
 		break;
-	    // case SniTestCommandConfig.ATTACK_COMMAND:
+	    // case SniTestCommandConfig.COMMAND:
 	    // attacker = new SniTest(sniTest);
 	    // break;
 	    default:
@@ -127,7 +127,7 @@ public class Main {
     private static void startMultiFuzzer(MultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
 	MultiFuzzer fuzzer = new MultiFuzzer(fuzzerConfig, generalConfig);
 	if (fuzzerConfig.isHelp()) {
-	    jc.usage(MultiFuzzerConfig.ATTACK_COMMAND);
+	    jc.usage(MultiFuzzerConfig.COMMAND);
 	    return;
 	}
 	fuzzer.startFuzzer();

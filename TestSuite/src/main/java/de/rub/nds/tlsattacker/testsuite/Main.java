@@ -26,7 +26,7 @@ public class Main {
 	JCommander jc = new JCommander(generalConfig);
 
 	ServerTestConfig stconfig = new ServerTestConfig();
-	jc.addCommand(ServerTestConfig.ATTACK_COMMAND, stconfig);
+	jc.addCommand(ServerTestConfig.COMMAND, stconfig);
 
 	jc.parse(args);
 
@@ -36,7 +36,7 @@ public class Main {
 	}
 
 	switch (jc.getParsedCommand()) {
-	    case ServerTestConfig.ATTACK_COMMAND:
+	    case ServerTestConfig.COMMAND:
 		ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
 		st.startTests();
 		return;

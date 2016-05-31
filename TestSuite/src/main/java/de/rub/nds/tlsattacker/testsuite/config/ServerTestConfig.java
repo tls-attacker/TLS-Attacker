@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
  */
 public class ServerTestConfig extends ClientCommandConfig {
 
-    public static final String ATTACK_COMMAND = "testsuite_server";
+    public static final String COMMAND = "testsuite_server";
 
     @Parameter(names = "-folder", description = "Root folder including the test cases.")
     String folder;
