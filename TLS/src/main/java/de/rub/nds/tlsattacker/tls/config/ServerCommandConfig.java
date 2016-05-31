@@ -24,7 +24,7 @@ public class ServerCommandConfig extends CommandConfig {
     protected String port = "4433";
 
     @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace (FULL or HANDSHAKE)")
-    protected WorkflowTraceType workflowTraceType = WorkflowTraceType.FULL;
+    protected WorkflowTraceType workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
     @Parameter(names = "-servername_fatal", description = "On mismatch in the server name the server sends a fatal "
 	    + "alert")
