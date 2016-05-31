@@ -144,7 +144,7 @@ public class RSAExampleMitMWorkflowConfiguration {
 
 	ApplicationMessage sam = new ApplicationMessage(ConnectionEnd.SERVER);
 	protocolMessages.add(sam);
-	sam.setModify(true);
+	sam.setGoingToBeModified(true);
 
 	workflowTrace.setProtocolMessages(protocolMessages);
 

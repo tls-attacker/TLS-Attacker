@@ -148,8 +148,8 @@ public class Main {
 	attacker.executeAttack(configHandler);
 
 	CommandConfig config = attacker.getConfig();
-	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
-	    logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowTraceOutputFile());
+	if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+	    logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowOutput());
 	}
     }
 
@@ -185,8 +185,8 @@ public class Main {
 
 	transportHandler.closeConnection();
 
-	if (config.getWorkflowTraceOutputFile() != null && !config.getWorkflowTraceOutputFile().isEmpty()) {
-	    FileOutputStream fos = new FileOutputStream(config.getWorkflowTraceOutputFile());
+	if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+	    FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
 	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
 	}
     }

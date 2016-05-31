@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <protocolMessages>
+        <ClientHello>
+            <messageIssuer>CLIENT</messageIssuer>
+            <extensions>
+                <EllipticCurves>
+                    <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
+                </EllipticCurves>
+            </extensions>
+            <supportedCompressionMethods>
+                <CompressionMethod>NULL</CompressionMethod>
+            </supportedCompressionMethods>
+            <supportedCipherSuites>
+                <CipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
+                <CipherSuite>TLS_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
+            </supportedCipherSuites>
+        </ClientHello>
+        <ServerHello>
+            <messageIssuer>SERVER</messageIssuer>
+        </ServerHello>
+        <Certificate>
+            <messageIssuer>SERVER</messageIssuer>
+        </Certificate>
+        <ServerHelloDone>
+            <messageIssuer>SERVER</messageIssuer>
+        </ServerHelloDone>
+        <RSAClientKeyExchange>
+            <messageIssuer>CLIENT</messageIssuer>
+        </RSAClientKeyExchange>
+        <ChangeCipherSpec>
+            <messageIssuer>CLIENT</messageIssuer>
+        </ChangeCipherSpec>
+        <Finished>
+            <messageIssuer>CLIENT</messageIssuer>
+            <records>
+            <Record>
+            <plainRecordBytes>
+            	<byteArrayExplicitValueModification>
+                        <explicitValue>
+  3F 3F 3F 3F 3F 3F 3F 3F  3F 3F 3F 3F 3F 3F 3F 3F
+  3F 3F 3F 3F 3F 3F 3F 3F  3F 3F 3F 3F 3F 3F 3F 3F
+   			</explicitValue>
+  		</byteArrayExplicitValueModification>
+            </plainRecordBytes>
+            </Record>
+            </records>
+        </Finished>
+        <Alert>
+            <messageIssuer>SERVER</messageIssuer>
+            <level>
+               <assertEquals>2</assertEquals>
+            </level>
+            <description>
+               <assertEquals>20</assertEquals>
+            </description>
+        </Alert>
+    </protocolMessages>
+</workflowTrace>

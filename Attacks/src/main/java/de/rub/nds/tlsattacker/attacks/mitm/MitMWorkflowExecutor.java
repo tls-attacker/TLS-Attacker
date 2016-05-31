@@ -108,7 +108,7 @@ public class MitMWorkflowExecutor {
 	    while (clientWorkflowContext.getProtocolMessagePointer() < protocolMessages.size()
 		    && clientWorkflowContext.isProceedWorkflow()) {
 		ProtocolMessage pm = protocolMessages.get(clientWorkflowContext.getProtocolMessagePointer());
-		if (pm.isOnlyForward()) {
+		if (!pm.isGoingToBeParsed()) {
 		    forwardMessage(pm);
 		} else {
 		    if (pm.getMessageIssuer() == ConnectionEnd.CLIENT) {
@@ -212,7 +212,7 @@ public class MitMWorkflowExecutor {
 	}
 
 	// if message needs to be modified manually
-	if ((pm.isModify() || modify) && !ccs) {
+	if ((pm.isGoingToBeModified() || modify) && !ccs) {
 	    javax.swing.JFrame frame = new javax.swing.JFrame();
 	    MitM_Dialog dialog = new MitM_Dialog(frame, true, pm, tlsContext.getMyConnectionEnd().toString());
 	    dialog.setVisible(true);

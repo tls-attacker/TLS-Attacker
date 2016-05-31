@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
     </parent>
     <artifactId>Runnable</artifactId>
     <packaging>jar</packaging>
@@ -12,6 +12,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>TLS-Fuzzer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TestSuite</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

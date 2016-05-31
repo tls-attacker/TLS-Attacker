@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement
 @XmlSeeAlso({ ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class,
 	ByteArrayInsertModification.class, ByteArrayXorModification.class })
-@XmlType(propOrder = { "originalValue", "modification" })
+@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableByteArray extends ModifiableVariable<byte[]> implements Serializable {
 
     @Override
@@ -43,8 +43,28 @@ public class ModifiableByteArray extends ModifiableVariable<byte[]> implements S
 	this.originalValue = value;
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    public byte[] getAssertEquals() {
+	return assertEquals;
+    }
+
+    public void setAssertEquals(byte[] assertEquals) {
+	this.assertEquals = assertEquals;
+    }
+
     @Override
     public boolean isOriginalValueModified() {
 	return originalValue != null && !Arrays.equals(originalValue, getValue());
+    }
+
+    @Override
+    public boolean validateAssertions() {
+	boolean valid = true;
+	if (assertEquals != null) {
+	    if (!Arrays.equals(assertEquals, getValue())) {
+		valid = false;
+	    }
+	}
+	return valid;
     }
 }

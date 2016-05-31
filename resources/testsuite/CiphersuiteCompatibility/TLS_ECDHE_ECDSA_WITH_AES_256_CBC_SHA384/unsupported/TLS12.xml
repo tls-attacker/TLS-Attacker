@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <protocolVersion>TLS12</protocolVersion>
+    <protocolMessages>
+        <ClientHello>
+            <messageIssuer>CLIENT</messageIssuer>
+            <supportedCompressionMethods>
+                <CompressionMethod>NULL</CompressionMethod>
+            </supportedCompressionMethods>
+            <supportedCipherSuites>
+                <CipherSuite>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</CipherSuite>
+            </supportedCipherSuites>
+        </ClientHello>
+        <Alert>
+            <messageIssuer>SERVER</messageIssuer>
+        </Alert>
+    </protocolMessages>
+</workflowTrace>

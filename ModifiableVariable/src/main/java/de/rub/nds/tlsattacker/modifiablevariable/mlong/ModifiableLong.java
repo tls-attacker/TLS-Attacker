@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 @XmlSeeAlso({ LongAddModification.class, LongExplicitValueModification.class, LongSubtractModification.class,
 	LongXorModification.class })
-@XmlType(propOrder = { "originalValue", "modification" })
+@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableLong extends ModifiableVariable<Long> implements Serializable {
 
     @Override
@@ -40,6 +40,14 @@ public class ModifiableLong extends ModifiableVariable<Long> implements Serializ
 	this.originalValue = originalValue;
     }
 
+    public Long getAssertEquals() {
+	return assertEquals;
+    }
+
+    public void setAssertEquals(Long assertEquals) {
+	this.assertEquals = assertEquals;
+    }
+
     @Override
     public boolean isOriginalValueModified() {
 	return originalValue != null && originalValue.compareTo(getValue()) != 0;
@@ -47,5 +55,16 @@ public class ModifiableLong extends ModifiableVariable<Long> implements Serializ
 
     public byte[] getByteArray(int size) {
 	return ArrayConverter.longToBytes(getValue(), size);
+    }
+
+    @Override
+    public boolean validateAssertions() {
+	boolean valid = true;
+	if (assertEquals != null) {
+	    if (assertEquals.compareTo(getValue()) != 0) {
+		valid = false;
+	    }
+	}
+	return valid;
     }
 }

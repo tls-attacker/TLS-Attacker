@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <CustomLevels>
+        <CustomLevel name="CONSOLE" intLevel="150" />
+    </CustomLevels>
+    <Appenders>
+        <!--        <Console name="ConsoleSimple" target="SYSTEM_OUT">
+            <PatternLayout pattern="%C{1} - %msg%n"/>
+        </Console>-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+        </Root>
+<!--        <Root level="console_output">
+            <AppenderRef ref="ConsoleSimple" level="CONSOLE_OUTPUT"/>
+        </Root>-->
+    </Loggers>
+</Configuration>

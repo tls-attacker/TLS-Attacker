@@ -3,11 +3,12 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -95,6 +96,35 @@ public class AlgorithmResolver {
 	    return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
 	}
 	throw new UnsupportedOperationException("The key exchange algorithm is not supported yet.");
+    }
+
+    /**
+     * Depending on the provided cipher suite, the server needs to be
+     * initialized with proper public key(s). Depending on the cipher suite,
+     * there are possibly more than one cipher suites needed.
+     * 
+     * This function returns a list of public key algorithms needed when running
+     * a server with a cipher suite.
+     * 
+     * @param cipherSuite
+     * @return
+     */
+    public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
+	String cipher = cipherSuite.toString().toUpperCase();
+	Set<PublicKeyAlgorithm> result = new HashSet<>();
+	if (cipher.contains("RSA")) {
+	    result.add(PublicKeyAlgorithm.RSA);
+	} else if (cipher.contains("ECDSA")) {
+	    result.add(PublicKeyAlgorithm.EC);
+	} else if (cipher.contains("DSS")) {
+	    result.add(PublicKeyAlgorithm.DH);
+	}
+	if (cipher.contains("_ECDH_")) {
+	    result.add(PublicKeyAlgorithm.EC);
+	} else if (cipher.contains("_DH_")) {
+	    result.add(PublicKeyAlgorithm.DH);
+	}
+	return result;
     }
 
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {

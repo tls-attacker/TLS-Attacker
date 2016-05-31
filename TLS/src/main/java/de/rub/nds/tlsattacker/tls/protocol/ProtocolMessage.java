@@ -61,12 +61,12 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      * Defines if the message should not be parsed and only forwarded during the
      * MitMworkflow.
      */
-    private boolean onlyForward = false;
+    private boolean goingToBeParsed = true;
     /**
      * Defines if the message should be modified during a workflow execution
      * with MitMworkflowExecutor
      */
-    private boolean modify = false;
+    private boolean goingToBeModified = false;
     /**
      * resulting message
      */
@@ -114,20 +114,20 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 	this.goingToBeSent = goingToBeSent;
     }
 
-    public boolean isOnlyForward() {
-	return onlyForward;
+    public boolean isGoingToBeParsed() {
+	return goingToBeParsed;
     }
 
-    public void setOnlyForward(boolean onlyForward) {
-	this.onlyForward = onlyForward;
+    public void setGoingToBeParsed(boolean goingToBeParsed) {
+	this.goingToBeParsed = goingToBeParsed;
     }
 
-    public boolean isModify() {
-	return modify;
+    public boolean isGoingToBeModified() {
+	return goingToBeModified;
     }
 
-    public void setModify(boolean modify) {
-	this.modify = modify;
+    public void setGoingToBeModified(boolean goingToBeModified) {
+	this.goingToBeModified = goingToBeModified;
     }
 
     @Override
