@@ -218,6 +218,18 @@ public class WorkflowTrace implements Serializable {
     public List<ProtocolMessage> getServerMessages() {
 	return getMessages(ConnectionEnd.SERVER);
     }
+    
+    public ProtocolMessage getLastClientMesssage() {
+        List<ProtocolMessage> clientMessages = getClientMessages();
+	int size = clientMessages.size();
+	return clientMessages.get(size - 1);
+    }
+    
+    public ProtocolMessage getLastServerMesssage() {
+        List<ProtocolMessage> serverMessages = getServerMessages();
+	int size = serverMessages.size();
+	return serverMessages.get(size - 1);
+    }
 
     private boolean containsFinishedMessage(ConnectionEnd peer) {
 	for (ProtocolMessage pm : protocolMessages) {
