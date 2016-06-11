@@ -150,6 +150,15 @@ public enum CipherSuite {
     public boolean isAEAD() {
 	return (this.name().contains("_GCM") || this.name().contains("_CCM") || this.name().contains("_OCB"));
     }
+    
+    /**
+     * Returns true in case the cipher suite is a CBC cipher suite.
+     * 
+     * @return
+     */
+    public boolean isCBC() {
+	return (this.name().contains("_CBC"));
+    }
 
     /**
      * Returns true if the cipher suite is supported by the specified protocol
