@@ -65,15 +65,16 @@ public class ECDHWorkflowConfigurationFactory extends WorkflowConfigurationFacto
 
 	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
 	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
+        CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
+        crm.setRequired(false);
 
 	if (config.getCipherSuites().get(0).isEphemeral()) {
 	    workflowTrace.add(new ECDHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
+            workflowTrace.add(crm);
 	}
 
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    workflowTrace.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
 	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-
 	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
 	    workflowTrace.add(new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
 	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
