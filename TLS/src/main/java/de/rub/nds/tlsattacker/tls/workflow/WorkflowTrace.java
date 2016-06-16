@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
@@ -59,6 +60,7 @@ public class WorkflowTrace implements Serializable {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
 	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
 	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
 	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
