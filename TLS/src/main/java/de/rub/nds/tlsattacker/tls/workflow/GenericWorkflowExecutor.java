@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -155,6 +156,17 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      */
     protected void handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages) throws IOException {
         List<Record> records = fetchRecords();
+        if (records.isEmpty()) {
+            ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
+            if (pm != null && pm.getClass() == ArbitraryMessage.class) {
+                protocolMessages.remove(workflowContext.getProtocolMessagePointer());
+                return;
+            } else {
+                throw new WorkflowExecutionException("The configured protocol message was not found, "
+                        + "the TLS peer does not send any data.");
+            }
+        }
+
         List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
 
         for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
@@ -224,11 +236,16 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
         if (workflowContext.getProtocolMessagePointer() < protocolMessages.size()) {
             pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
         }
-        if (pm != null && pmh.isCorrectProtocolMessage(pm)) {
+        if (pm != null && pm.getClass() == ArbitraryMessage.class) {
+            pmh.initializeProtocolMessage();
+            pm = pmh.getProtocolMessage();
+            pm.setMessageIssuer(tlsContext.getMyConnectionPeer());
+            protocolMessages.add(workflowContext.getProtocolMessagePointer(), pm);
+        } else if (pm != null && pmh.isCorrectProtocolMessage(pm)) {
             pmh.setProtocolMessage(pm);
         } else {
             if (pm == null || pm.isRequired()) {
-	    // the configured message is not the same as
+                // the configured message is not the same as
                 // the message being parsed, we clean the
                 // next protocol messages
                 LOGGER.debug("The configured protocol message is not equal to "
@@ -305,10 +322,6 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
             byte[] rawResponse = transportHandler.fetchData();
             while ((records = recordHandler.parseRecords(rawResponse)) == null) {
                 rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
-            }
-            if (records.isEmpty()) {
-                throw new WorkflowExecutionException("The configured protocol message was not found, "
-                        + "the TLS peer does not send any data.");
             }
         }
         return records;
