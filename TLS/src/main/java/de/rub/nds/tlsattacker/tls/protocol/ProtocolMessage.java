@@ -52,6 +52,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected List<Record> records;
 
     /**
+     * Defines whether this message is necessarily required in the workflow.
+     */
+    private boolean required = true;
+    /**
      * Defines if the message should be sent during the workflow. Using this
      * flag it is possible to omit a message is sent during the handshake while
      * it is executed to initialize specific variables.
@@ -104,6 +108,14 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 	    this.records = new LinkedList<>();
 	}
 	this.records.add(record);
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
     public boolean isGoingToBeSent() {

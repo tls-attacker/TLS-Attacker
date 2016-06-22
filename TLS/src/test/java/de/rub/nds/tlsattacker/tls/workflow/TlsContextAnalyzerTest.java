@@ -49,7 +49,7 @@ public class TlsContextAnalyzerTest {
 	ProtocolMessage pm = TlsContextAnalyzer.getNextProtocolMessageFromPeer(context, 1);
 	assertEquals(ProtocolMessageType.HANDSHAKE, pm.getProtocolMessageType());
 
-	pm = TlsContextAnalyzer.getNextProtocolMessageFromPeer(context, 4);
+	pm = TlsContextAnalyzer.getNextProtocolMessageFromPeer(context, 5);
 	assertEquals(ProtocolMessageType.CHANGE_CIPHER_SPEC, pm.getProtocolMessageType());
     }
 

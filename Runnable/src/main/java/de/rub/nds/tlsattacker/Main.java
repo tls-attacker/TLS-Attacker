@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
@@ -19,6 +20,7 @@ import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
+import de.rub.nds.tlsattacker.attacks.impl.Cve20162107;
 import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
@@ -83,6 +85,8 @@ public class Main {
         jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
         PoodleCommandConfig poodle = new PoodleCommandConfig();
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
+        Cve20162107CommandConfig cve20162107 = new Cve20162107CommandConfig();
+        jc.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
         WinshockCommandConfig winshock = new WinshockCommandConfig();
         jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
         ServerCommandConfig server = new ServerCommandConfig();
@@ -133,6 +137,9 @@ public class Main {
                 break;
             case PaddingOracleCommandConfig.ATTACK_COMMAND:
                 attacker = new PaddingOracleAttack(paddingOracle);
+                break;
+            case Cve20162107CommandConfig.ATTACK_COMMAND:
+                attacker = new Cve20162107(cve20162107);
                 break;
             case WinshockCommandConfig.ATTACK_COMMAND:
                 attacker = new WinshockAttack(winshock);

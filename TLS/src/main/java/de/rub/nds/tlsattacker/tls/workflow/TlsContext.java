@@ -225,6 +225,10 @@ public class TlsContext {
     public ConnectionEnd getMyConnectionEnd() {
 	return myConnectionEnd;
     }
+    
+    public ConnectionEnd getMyConnectionPeer() {
+	return myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
+    }
 
     public void setMyConnectionEnd(ConnectionEnd myConnectionEnd) {
 	this.myConnectionEnd = myConnectionEnd;

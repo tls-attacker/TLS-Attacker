@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
@@ -59,6 +60,7 @@ public class WorkflowTrace implements Serializable {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
 	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
 	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
 	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -217,6 +219,18 @@ public class WorkflowTrace implements Serializable {
 
     public List<ProtocolMessage> getServerMessages() {
 	return getMessages(ConnectionEnd.SERVER);
+    }
+    
+    public ProtocolMessage getLastClientMesssage() {
+        List<ProtocolMessage> clientMessages = getClientMessages();
+	int size = clientMessages.size();
+	return clientMessages.get(size - 1);
+    }
+    
+    public ProtocolMessage getLastServerMesssage() {
+        List<ProtocolMessage> serverMessages = getServerMessages();
+	int size = serverMessages.size();
+	return serverMessages.get(size - 1);
     }
 
     private boolean containsFinishedMessage(ConnectionEnd peer) {
