@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
@@ -88,15 +90,13 @@ public class SimpleMutator extends Mutator
         }
 
         WorkflowTrace trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempTrace);
-        System.out.println(tempTrace);
-        if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) == 1)
+        if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) < 10)
         {
             addRandomMessage(trace);
         }
-       
+
         if (r.nextInt(10000) == 1)
         {
-            System.out.println("Removing Random Message");
             removeRandomMessage(trace);
         }
 
@@ -107,11 +107,9 @@ public class SimpleMutator extends Mutator
             ModifiableVariableField field = variableList.get(r.nextInt(trace.getProtocolMessages().size()));
             String currentFieldName = field.getField().getName();
             String currentMessageName = field.getObject().getClass().getSimpleName();
-            System.out.println("Changing:" + currentFieldName + " in Message:" + currentMessageName);
             executeModifiableVariableModification((ModifiableVariableHolder) field.getObject(), field.getField());
         }
         //System.out.println("----------------------");
-
 
         return trace;
     }
@@ -153,28 +151,36 @@ public class SimpleMutator extends Mutator
                 m = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
                 LinkedList<CipherSuite> list = new LinkedList<>();
                 list.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-                ((ClientHelloDtlsMessage)m).setSupportedCipherSuites(list);
+                ArrayList<CompressionMethod> compressionList = new ArrayList<>();
+                compressionList.add(CompressionMethod.NULL);
+                ((ClientHelloDtlsMessage) m).setSupportedCipherSuites(list);
+                ((ClientHelloDtlsMessage) m).setSupportedCompressionMethods(compressionList);
+
                 break;
             case 7:
                 m = new ClientHelloMessage(ConnectionEnd.CLIENT);
-                 list = new LinkedList<>();
+                list = new LinkedList<>();
                 list.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-                ((ClientHelloMessage)m).setSupportedCipherSuites(list);
+                compressionList = new ArrayList<>();
+                compressionList.add(CompressionMethod.NULL);
+                ((ClientHelloMessage) m).setSupportedCipherSuites(list);
+                ((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
+
                 break;
             case 8:
-                m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+                //m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 9:
                 m = new HelloVerifyRequestMessage(ConnectionEnd.CLIENT);
                 break;
             case 10:
-             //   m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+                //   m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 11:
-                m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+                //m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 12:
-             //   m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+                //   m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 13:
                 m = new FinishedMessage(ConnectionEnd.CLIENT);
@@ -183,10 +189,11 @@ public class SimpleMutator extends Mutator
                 m = new HeartbeatMessage(ConnectionEnd.CLIENT);
                 break;
             case 15:
-                m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+                //m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 16:
                 m = new ServerHelloDoneMessage(ConnectionEnd.CLIENT);
+           
                 break;
             case 17:
                 m = new HelloRequestMessage(ConnectionEnd.CLIENT);
@@ -195,8 +202,8 @@ public class SimpleMutator extends Mutator
         }
         if (m != null)
         {
-            System.out.println("Adding: " + m.toCompactString());
             tempTrace.add(m);
+            tempTrace.add(new ArbitraryMessage());
         }
     }
 

@@ -95,6 +95,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	CipherSuite selectedCipher = CipherSuite.getCipherSuite(Arrays
 		.copyOfRange(message, currentPointer, nextPointer));
 	// System.out.println(selectedCipher);
+        //TODO If no cipherSuite?
+        if(selectedCipher == null)
+        {
+            selectedCipher = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
+        }
 	protocolMessage.setSelectedCipherSuite(selectedCipher.getByteValue());
 
 	tlsContext.setSelectedCipherSuite(CipherSuite.getCipherSuite(protocolMessage.getSelectedCipherSuite()

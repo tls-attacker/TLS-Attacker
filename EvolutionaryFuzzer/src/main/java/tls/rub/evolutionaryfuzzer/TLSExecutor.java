@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -116,7 +117,7 @@ public class TLSExecutor extends Executor
 
             tlsContext.setX509ServerCertificateObject(x509CertObject);
 //tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
-            WorkflowExecutor workflowExecutor = new FuzzerWorkflowExecutor(transportHandler, tlsContext);
+            WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext);
 
             //tlsContext.setServerCertificate(certificate);
             try
@@ -137,7 +138,7 @@ public class TLSExecutor extends Executor
 
             agent.onApplicationStop();
             Result r = agent.collectResults(new File("/home/ic0ns/Traces/openssl" + server.getID()), backupTrace);
-            System.out.println(r);
+        
             ResultContainer.getInstance().commit(r);
         }
         catch (Exception E)

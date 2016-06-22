@@ -71,7 +71,9 @@ public class ProcMon implements Runnable
     {
         ProcMon procMon = new ProcMon(proc);
         Thread t = new Thread(procMon);
+        t.setName("Process Monitor Thread");
         t.start();
+        
         return procMon;
     }
     private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());

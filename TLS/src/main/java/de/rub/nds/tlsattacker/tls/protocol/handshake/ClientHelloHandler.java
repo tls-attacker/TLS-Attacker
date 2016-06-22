@@ -87,7 +87,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	}
 	protocolMessage.setCipherSuites(cipherSuites);
 
-	int cipherSuiteLength = protocolMessage.getSupportedCipherSuites().size();//TODO ist das das gleiche?
+	int cipherSuiteLength = protocolMessage.getCipherSuites().getValue().length;
 	protocolMessage.setCipherSuiteLength(cipherSuiteLength);
 
 	byte[] compressionMethods = null;
@@ -96,7 +96,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 	}
 	protocolMessage.setCompressions(compressionMethods);
 
-	int compressionMethodLength = protocolMessage.getSupportedCompressionMethods().size();//Ist das das gleiche?
+	int compressionMethodLength = protocolMessage.getCompressions().getValue().length;
 	protocolMessage.setCompressionLength(compressionMethodLength);
 
 	byte[] result = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(), protocolMessage

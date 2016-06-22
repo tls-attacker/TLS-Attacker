@@ -68,7 +68,12 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + NamedCurve.LENGTH;
 	NamedCurve nc = NamedCurve.getNamedCurve(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setNamedCurve(nc.getValue());
+	//TODO ....
+        if(nc== null)
+        {
+            nc = NamedCurve.SECT163R1;
+        }
+        protocolMessage.setNamedCurve(nc.getValue());
 
 	currentPointer = nextPointer;
 	nextPointer++;

@@ -39,6 +39,7 @@ public class FuzzerController extends Controller
         mutator = new SimpleMutator(tmpTlsContext);
         pool = new ExecutorThreadPool(1, mutator);
         Thread t = new Thread(pool);
+        t.setName("Executor Thread Pool");
         t.start();
     }
 

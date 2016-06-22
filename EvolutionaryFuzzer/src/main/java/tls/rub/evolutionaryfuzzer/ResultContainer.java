@@ -87,6 +87,14 @@ public class ResultContainer
                 System.out.println(r);
                 //System.out.println("***********************************************************************");
             }
+            if(result.isHasCrashed())
+            {
+                System.out.println("CRASHED");
+            }
+            if(result.isDidTimeout())
+            {
+                System.out.println("TIMEOUT");
+            }
         }
         catch (FileNotFoundException ex)
         {
