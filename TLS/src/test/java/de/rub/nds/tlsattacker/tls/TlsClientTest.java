@@ -110,7 +110,7 @@ public class TlsClientTest {
      */
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
 	GeneralConfig generalConfig = new GeneralConfig();
-	generalConfig.setLogLevel(Level.INFO);
+	generalConfig.setLogLevel(Level.ALL);
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 	configHandler.initialize(generalConfig);
 
@@ -156,8 +156,8 @@ public class TlsClientTest {
 	workflowExecutor.executeWorkflow();
 
 	transportHandler.closeConnection();
-
-	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+        assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+        System.out.println("passed");
     }
 
     private void testCustomWorkflow(int port) {

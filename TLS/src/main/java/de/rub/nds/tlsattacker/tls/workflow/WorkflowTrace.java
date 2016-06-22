@@ -256,4 +256,17 @@ public class WorkflowTrace implements Serializable {
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
 	this.protocolVersion = protocolVersion;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("WorkflowTrace:");
+        for(ProtocolMessage pm : protocolMessages)
+        {
+            sb.append("\n").append(pm.toCompactString());
+        }
+        return sb.toString();
+    }
+    
 }

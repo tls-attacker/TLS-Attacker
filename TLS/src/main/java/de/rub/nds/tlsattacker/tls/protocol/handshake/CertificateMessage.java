@@ -116,8 +116,10 @@ public class CertificateMessage extends HandshakeMessage {
     @Override
     public String toString() {
 	StringBuilder sb = new StringBuilder(super.toString());
-	sb.append("\n  Certificates Length: ").append(certificatesLength.getValue());
-	sb.append("\n  Certificate:\n").append(x509CertificateObject.toString());
+	sb.append("\n  Certificates Length: ");
+        sb.append(certificatesLength.getValue());
+	sb.append("\n  Certificate:\n");
+        sb.append(x509CertificateObject);
 	return sb.toString();
     }
 

@@ -120,7 +120,14 @@ public class ModifiableVariableAnalyzer {
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersFromList(List<Object> list) {
 	List<ModifiableVariableListHolder> result = new LinkedList<>();
 	for (Object o : list) {
-	    result.addAll(getAllModifiableVariableHoldersRecursively(o));
+            if(o!=null) {
+                result.addAll(getAllModifiableVariableHoldersRecursively(o));
+            }
+            else
+            {
+                //TODO
+                System.out.println("Found null getAllModifiableVariableHoldersFromList");
+            }
 	}
 	return result;
     }

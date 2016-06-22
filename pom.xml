@@ -43,6 +43,7 @@
         <module>Fuzzer</module>
         <module>TestSuite</module>
         <module>Runnable</module>
+        <module>EvolutionaryFuzzer</module>
     </modules>
 
     <dependencies>
@@ -153,19 +154,19 @@
                         </execution>
                     </executions>
                 </plugin> 
-				<plugin>
-					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-					<artifactId>maven-java-formatter-plugin</artifactId>
-					<configuration>
-						<configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
-						<lineEnding>LF</lineEnding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>2.7</version>
-				</plugin>
-			</plugins>
+                <plugin>
+                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                    <artifactId>maven-java-formatter-plugin</artifactId>
+                    <configuration>
+                        <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
+                        <lineEnding>LF</lineEnding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+            </plugins>
         </pluginManagement> 
     </build>
 

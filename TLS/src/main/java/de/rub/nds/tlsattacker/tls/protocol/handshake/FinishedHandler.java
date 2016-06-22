@@ -10,14 +10,18 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,8 +43,20 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	// protocolMessage.setType(HandshakeMessageType.FINISHED.getValue());
 
 	byte[] masterSecret = tlsContext.getMasterSecret();
-
-	byte[] handshakeMessagesHash = tlsContext.getDigest().digest();
+        TlsMessageDigest digest =  tlsContext.getDigest();
+        if(!digest.isInitialised())
+        {
+            try
+            {
+                //TODO in Config auslagern und exception handling Ã¼bernehmen
+                digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
+            }
+            catch (NoSuchAlgorithmException ex)
+            {
+                java.util.logging.Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+	byte[] handshakeMessagesHash = digest.digest();
 
 	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
 		tlsContext.getSelectedCipherSuite());

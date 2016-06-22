@@ -52,9 +52,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     @Override
     byte[] prepareKeyExchangeMessage() {
 	RSAPublicKey publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
-
 	int keyByteLength = publicKey.getModulus().bitLength() / 8;
-
 	// the number of random bytes in the pkcs1 message
 	int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
 	byte[] padding = new byte[randomByteLength];
@@ -70,9 +68,10 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
 	    premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
 	}
-
+     
 	protocolMessage.setPremasterSecret(premasterSecret);
-	LOGGER.debug("Computed PreMaster Secret: {}",
+	
+        LOGGER.debug("Computed PreMaster Secret: {}",
 		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
 	protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding,

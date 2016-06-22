@@ -42,6 +42,7 @@ public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKe
 	    throw new UnsupportedOperationException("The selected key exchange algorithm (" + keyExchange
 		    + ") is not supported yet");
 	}
+        
 	byte[] result = this.prepareKeyExchangeMessage();
 	protocolMessage.setLength(result.length);
 	long header = (protocolMessage.getType().getValue() << 24) + protocolMessage.getLength().getValue();

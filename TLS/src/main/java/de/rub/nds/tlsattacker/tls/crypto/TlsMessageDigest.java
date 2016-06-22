@@ -76,7 +76,10 @@ public final class TlsMessageDigest {
 	initialized = true;
 	updateDigest(rawBytes);
     }
-
+    public boolean isInitialised()
+    {
+        return initialized;
+    }
     public String getAlgorithm() {
 	String algorithm = hash1.getAlgorithm();
 	if (hash2 != null) {

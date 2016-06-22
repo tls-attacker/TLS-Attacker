@@ -74,4 +74,10 @@ public enum AlertDescription {
     public byte[] getArrayValue() {
 	return new byte[] { value };
     }
+
+    @Override
+    public String toString()
+    {
+        return "AlertDescription{" + "value=" + getAlertDescription(value).name() + '}';
+    }
 }

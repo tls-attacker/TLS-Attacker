@@ -78,11 +78,13 @@ public class ClientHelloMessage extends HelloMessage {
     public ClientHelloMessage() {
 	super(HandshakeMessageType.CLIENT_HELLO);
 	this.messageIssuer = ConnectionEnd.CLIENT;
+      
     }
 
     public ClientHelloMessage(ConnectionEnd messageIssuer) {
 	super(HandshakeMessageType.CLIENT_HELLO);
 	this.messageIssuer = messageIssuer;
+     
     }
 
     public ModifiableInteger getCompressionLength() {

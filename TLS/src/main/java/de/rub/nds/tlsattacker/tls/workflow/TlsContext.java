@@ -165,6 +165,7 @@ public class TlsContext {
     public TlsContext() {
 	digest = new TlsMessageDigest();
 	ecContext = new TlsECContext();
+        supportedSignatureAndHashAlgorithms = new LinkedList<>();
     }
 
     public TlsContext(ProtocolVersion pv) {
@@ -392,7 +393,7 @@ public class TlsContext {
 	}
 	return ecAlgorithms;
     }
-
+    //TODO Sollte mit addSupported.. ergÃ¤nzt werden
     public void setSupportedSignatureAndHashAlgorithms(
 	    LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
 	this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;

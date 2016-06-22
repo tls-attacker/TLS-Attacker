@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -18,37 +17,49 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class FinishedMessage extends HandshakeMessage {
+public class FinishedMessage extends HandshakeMessage
+{
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     ModifiableByteArray verifyData;
 
-    public FinishedMessage() {
-	super(HandshakeMessageType.FINISHED);
+    public FinishedMessage()
+    {
+        super(HandshakeMessageType.FINISHED);
     }
 
-    public FinishedMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.FINISHED);
-	this.messageIssuer = messageIssuer;
+    public FinishedMessage(ConnectionEnd messageIssuer)
+    {
+        super(HandshakeMessageType.FINISHED);
+        this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableByteArray getVerifyData() {
-	return verifyData;
+    public ModifiableByteArray getVerifyData()
+    {
+        return verifyData;
     }
 
-    public void setVerifyData(ModifiableByteArray verifyData) {
-	this.verifyData = verifyData;
+    public void setVerifyData(ModifiableByteArray verifyData)
+    {
+        this.verifyData = verifyData;
     }
 
-    public void setVerifyData(byte[] value) {
-	this.verifyData = ModifiableVariableFactory.safelySetValue(this.verifyData, value);
+    public void setVerifyData(byte[] value)
+    {
+        this.verifyData = ModifiableVariableFactory.safelySetValue(this.verifyData, value);
     }
 
     @Override
-    public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nFinished message:").append(super.toString()).append("\n  Verify Data: ")
-		.append(ArrayConverter.bytesToHexString(verifyData.getValue()));
-	return sb.toString();
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nFinished message:");
+        sb.append(super.toString());
+        sb.append("\n  Verify Data: ");
+        if (verifyData.getOriginalValue() != null)
+        {
+            sb.append(ArrayConverter.bytesToHexString(verifyData.getValue()));
+        }
+        return sb.toString();
     }
 }
