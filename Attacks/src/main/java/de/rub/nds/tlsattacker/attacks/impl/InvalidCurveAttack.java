@@ -66,6 +66,7 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
 		    WorkflowTrace trace = executeProtocolFlow(configHandler);
 		    if (trace.containsServerFinished()) {
 			LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable to the invalid curve attack.");
+                        vulnerable = true;
 			return;
 		    }
 		} catch (WorkflowExecutionException ex) {

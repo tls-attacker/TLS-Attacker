@@ -47,7 +47,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> {
 
-    private static Logger LOGGER = LogManager.getLogger(BleichenbacherAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(BleichenbacherAttack.class);
 
     public BleichenbacherAttack(BleichenbacherCommandConfig config) {
 	super(config);
@@ -91,9 +91,11 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 	if (protocolMessageSet.size() == 1) {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
 		    sb.toString());
+            vulnerable = false;
 	} else {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
 		    sb.toString());
+            vulnerable = true;
 	}
 
     }

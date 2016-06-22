@@ -74,9 +74,11 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 	    if (lastMessage.getMessageIssuer() == ConnectionEnd.SERVER) {
 		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
 			"Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
+                vulnerable = true;
 	    } else {
 		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
 			"(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
+                vulnerable = false;
 	    }
 	} else {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,

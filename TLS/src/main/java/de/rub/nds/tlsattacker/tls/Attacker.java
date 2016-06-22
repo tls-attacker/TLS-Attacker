@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls;
 
@@ -15,13 +14,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Config>
  */
 public abstract class Attacker<Config extends CommandConfig> {
 
     protected Config config;
+    
+    protected boolean vulnerable;
 
     /**
      * Tls Contexts stored for logging purposes
@@ -29,30 +30,38 @@ public abstract class Attacker<Config extends CommandConfig> {
     protected List<TlsContext> tlsContexts;
 
     public Attacker(Config config) {
-	this.config = config;
-	tlsContexts = new LinkedList<>();
+        this.config = config;
+        tlsContexts = new LinkedList<>();
     }
 
     /**
-     * Executes a given attack
-     * 
+     * Executes a given attack.
+     *
      * @param configHandler
      */
     public abstract void executeAttack(ConfigHandler configHandler);
 
     public Config getConfig() {
-	return config;
+        return config;
     }
 
     public void setConfig(Config config) {
-	this.config = config;
+        this.config = config;
     }
 
     public List<TlsContext> getTlsContexts() {
-	return tlsContexts;
+        return tlsContexts;
     }
 
     public void setTlsContexts(List<TlsContext> tlsContexts) {
-	this.tlsContexts = tlsContexts;
+        this.tlsContexts = tlsContexts;
+    }
+
+    public boolean isVulnerable() {
+        return vulnerable;
+    }
+
+    public void setVulnerable(boolean vulnerable) {
+        this.vulnerable = vulnerable;
     }
 }
