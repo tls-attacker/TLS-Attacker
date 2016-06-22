@@ -82,10 +82,11 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	if (pmSet.size() == 1) {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
 		    pmSetList);
-
+            vulnerable = false;
 	} else {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
 		    config.getConnect(), pmSetList);
+            vulnerable  = true;
 	}
     }
 

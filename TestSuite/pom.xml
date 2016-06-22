@@ -11,7 +11,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>TLS</artifactId>
+            <artifactId>Attacks</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
