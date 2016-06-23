@@ -14,8 +14,7 @@ import java.io.File;
  * This class summarizes a the Results of FuzzingVector. It contains information
  * about a potential timeout, or crash. It containts information about the Time
  * the Vector took to Execute, the Controlflow Branches that were executed by
- * the Vector and the Vector that was executed. //TODO, Workflow trace should
- * also Contain the TLS Messages send by the testes implementation?
+ * the Vector and the Vector that was executed.
  *
  * @author Robert Merget - robert.merget@rub.de
  */

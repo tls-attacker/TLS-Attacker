@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -57,7 +58,7 @@ public class ProcMon implements Runnable
         }
         catch (InterruptedException ex)
         {
-            //TODO LOGGER
+            LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
         }
     }
 

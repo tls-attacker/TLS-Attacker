@@ -90,22 +90,20 @@ public class ResultContainer
         }
         catch (FileNotFoundException ex)
         {
-            //TODO debug
-            System.out.println("Could not find File provided in Result, skipping");
-            ex.printStackTrace();
+            LOG.log(Level.SEVERE, "Received a Result Object wich Points to a non-existant File! Was the File deleted at Runtime? Skipping Result");
+            return;
         }
         catch (IOException ex)
         {
-            //TODO debug
-            System.out.println("Could not read File provided in Result, skipping");
-            ex.printStackTrace();
-
+            LOG.log(Level.SEVERE, "Received a Result Object wich Points to a File we cant Read! Does the Fuzzer have the rights to read the Files provided by the Agent? Skipping Result");
+            return;
         }
         if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0))
         {
+            LOG.log(Level.INFO, "Found a GoodTrace:" + r.toString());
             goodTrace.add(result.getTrace());
             File f = new File("good/" + result.getId());
-            
+
             try
             {
                 f.createNewFile();
@@ -113,20 +111,14 @@ public class ResultContainer
             }
             catch (JAXBException | IOException E)
             {
-                System.out.println("Could not serialize WorkflowTrace!");
-                E.printStackTrace();
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
             }
-
-            //TODO LOG TRACE
-            //System.out.println("***********************************************************************");
-            System.out.println(r);
-            //System.out.println("***********************************************************************");
         }
         if (result.hasCrashed())
         {
-            System.out.println("CRASHED");
+            LOG.log(Level.INFO, "Found a Crash:" + r.toString());
             File f = new File("crashed/" + result.getId());
-            
+
             try
             {
                 f.createNewFile();
@@ -134,16 +126,15 @@ public class ResultContainer
             }
             catch (JAXBException | IOException E)
             {
-                System.out.println("Could not serialize WorkflowTrace!");
-                E.printStackTrace();
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
             }
         }
         if (result.didTimeout())
         {
 
-            System.out.println("TIMEOUT");
+            LOG.log(Level.INFO, "Found a Timeout:" + r.toString());
             File f = new File("timeout/" + result.getId());
-            
+
             try
             {
                 f.createNewFile();
@@ -151,8 +142,7 @@ public class ResultContainer
             }
             catch (JAXBException | IOException E)
             {
-                System.out.println("Could not serialize WorkflowTrace!");
-                E.printStackTrace();
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
             }
         }
 
