@@ -62,7 +62,7 @@ public class ProbeVertex
 
     /**
      * Returns a String representation of the Object
-     * @return String of the form: CountVertice{probeID=XXX}
+     * @return String of the form: CountVertice{probeID=}
      */
     @Override
     public String toString()
