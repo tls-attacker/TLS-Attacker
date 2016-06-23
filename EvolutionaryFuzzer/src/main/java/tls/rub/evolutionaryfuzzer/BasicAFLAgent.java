@@ -69,7 +69,6 @@ public class BasicAFLAgent extends Agent
     @Override
     public Result collectResults(File branchTrace, WorkflowTrace trace)
     {
-        //TODO change exception Type.
         if (running)
         {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
