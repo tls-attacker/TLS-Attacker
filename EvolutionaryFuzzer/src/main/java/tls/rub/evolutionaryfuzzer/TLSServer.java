@@ -83,8 +83,8 @@ public class TLSServer
     }
 
     /**
-     *
-     * @return
+     * Returns True if the Server is currently free to use
+     * @return True if the Server is currently free to use
      */
     public synchronized boolean isFree()
     {
@@ -92,7 +92,7 @@ public class TLSServer
     }
 
     /**
-     *
+     * Releases an occupied Server, so that it can be used further for other Testvectors
      */
     public synchronized void release()
     {
@@ -104,7 +104,7 @@ public class TLSServer
     }
 
     /**
-     *
+     * Starts the Server by executing the restart Server command
      */
     public synchronized void start()
     {   
@@ -126,7 +126,7 @@ public class TLSServer
     }
 
     /**
-     *
+     *  Restarts the Server by executing the restart Server command
      */
     public synchronized void restart()
     {    
@@ -172,20 +172,20 @@ public class TLSServer
         }
         else
         {
-            throw new RuntimeException("Cant restart a not marked Server. Occupie it first!");
+            throw new IllegalStateException("Cant restart a not marked Server. Occupie it first!");
         }
 
     }
 
     /**
-     *
-     * @return
+     * Returns True if the Process the Server started has exited
+     * @return True if the Process the Server started has exited
      */
     public synchronized boolean exited()
     {
         if (procmon == null)
         {
-            throw new RuntimeException("Server not yet Started!");
+            throw new IllegalStateException("Server not yet Started!");
         }
         else
         {
@@ -195,8 +195,8 @@ public class TLSServer
     }
 
     /**
-     *
-     * @return
+     * Returns the ID assigned to the currently started Server, the ID changes after every restart
+     * @returnID assigned to the currently started Server
      */
     public synchronized int getID()
     {
