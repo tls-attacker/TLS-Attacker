@@ -77,12 +77,15 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 	if (analyzerResponse == TlsContextAnalyzer.AnalyzerResponse.ALERT) {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
 		    "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
+            vulnerable = false;
 	} else if (analyzerResponse == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT) {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
 		    "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
+            vulnerable = true;
 	} else {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
 		    "Vulnerable(?). The protocol message flow was incomplete, analyze the message flow");
+            vulnerable = false;
 	}
 
 	tlsContexts.add(tlsContext);

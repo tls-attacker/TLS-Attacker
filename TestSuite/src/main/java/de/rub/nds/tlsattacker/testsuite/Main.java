@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.testsuite.config.ServerTestConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * 
@@ -21,6 +23,8 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+        
+        Security.addProvider(new BouncyCastleProvider());
 
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);

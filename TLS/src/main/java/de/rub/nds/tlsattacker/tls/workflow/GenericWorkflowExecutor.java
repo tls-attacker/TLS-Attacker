@@ -83,7 +83,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
                     handleProtocolMessagesFromPeer(protocolMessages);
                 }
             }
-        } catch (WorkflowExecutionException | CryptoException | IOException e) {
+        } catch (WorkflowExecutionException | CryptoException | IOException | UnsupportedOperationException e) {
             throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
         } finally {
             // remove all unused protocol messages
