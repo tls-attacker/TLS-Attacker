@@ -142,7 +142,6 @@ public class BranchTrace
                 if (to == null)
                 {
                     to = new ProbeVertex(parsedNumber);
-                    //TODO does this make even sense?
                     graph.addVertex(to);
                     map.put(parsedNumber, to);
                     newVertices++;
