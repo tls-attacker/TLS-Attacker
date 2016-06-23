@@ -12,18 +12,18 @@
         </startupCommands>
         <!--<startupCommands>
             <fuzzerCommand>simple_fuzzer -connect localhost:$PORT -keystore ../resources/rsa1024.jks -password password -alias alias -client_authentication </fuzzerCommand>
-            <serverCommandParameters>tls_server ../resources/rsa1024key.pem ../resources/rsa1024cert.pem  -port=$PORT</serverCommandParameters>
+            <serverCommandParameters>tls_server ../resources/rsa1024cert.pem ../resources/rsa1024key.pem  -port=$PORT</serverCommandParameters>
             <shortName>botan-rsa-auth</shortName>
-        </startupCommands>-->
+        </startupCommands>
         <startupCommands>
             <fuzzerCommand>simple_fuzzer -connect localhost:$PORT </fuzzerCommand>
-            <serverCommandParameters>tls_server ../resources/ec256key.pem ../resources/ec256cert.pem  --port=$PORT</serverCommandParameters>
+            <serverCommandParameters>tls_server ../resources/ec256cert.pem ../resources/ec256key.pem  -port=$PORT</serverCommandParameters>
             <shortName>botan-ecdhe-ecdsa</shortName>
         </startupCommands>
         <startupCommands>
             <fuzzerCommand>simple_fuzzer -connect localhost:$PORT</fuzzerCommand>
-            <serverCommandParameters>tls_server ../resources/dsakey.pem ../resources/dsacert.pem  --port=$PORT</serverCommandParameters>
+            <serverCommandParameters>tls_server ../resources/dsacert.pem ../resources/dsakey.pem  -port=$PORT</serverCommandParameters>
             <shortName>botan-dsa</shortName>
-        </startupCommands>
+        </startupCommands>-->
     </startupCommandsList>
 </startupCommandsHolder>

@@ -85,7 +85,7 @@ final public class ByteArrayModificationFactory {
 	    modifiedArrayLength = MODIFIED_ARRAY_LENGTH_ESTIMATION;
 	} else {
 	    modifiedArrayLength = originalValue.length;
-	    if (originalValue.length == 0) {
+	    if (originalValue.length == 0 || originalValue.length == 1) {
 		r = BYTE_ARRAY_EXPLICIT_VALUE_MODIFICATION;
 	    }
 	}
