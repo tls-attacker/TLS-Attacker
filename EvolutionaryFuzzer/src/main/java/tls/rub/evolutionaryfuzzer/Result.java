@@ -35,8 +35,9 @@ class Result
     private final File edges;
     //Workflowtrace that was Executed
     private final WorkflowTrace trace;
-
-    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace)
+    //Each Result get an id for easier referencing, the id is also in 
+    private int id;
+    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace, int id)
     {
         this.hasCrashed = hasCrashed;
         this.didTimeout = didTimeout;
@@ -44,14 +45,23 @@ class Result
         this.stopTime = stopTime;
         this.edges = edges;
         this.trace = trace;
+        this.id = id;
     }
-
+    /**
+     * Returns the ID of the Result
+     * @return ID of the result
+     */
+    public int getId()
+    {
+        return id;
+    }
+    
     /**
      * Returns if the Implementation did Crash
      *
      * @return if the Implementation did Crash
      */
-    public boolean isHasCrashed()
+    public boolean hasCrashed()
     {
         return hasCrashed;
     }
@@ -61,7 +71,7 @@ class Result
      *
      * @return if the Implementation did Timeout
      */
-    public boolean isDidTimeout()
+    public boolean didTimeout()
     {
         return didTimeout;
     }
