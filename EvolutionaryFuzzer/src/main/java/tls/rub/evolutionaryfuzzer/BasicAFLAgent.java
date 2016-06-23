@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -48,7 +49,7 @@ public class BasicAFLAgent extends Agent
     {
         if (running)
         {
-            throw new RuntimeException("Cannot start a running AFL Agent");
+            throw new IllegalStateException("Cannot start a running AFL Agent");
         }
         startTime = System.currentTimeMillis();
         running = true;
@@ -59,7 +60,7 @@ public class BasicAFLAgent extends Agent
     {
         if (!running)
         {
-            throw new RuntimeException("Cannot stop a stopped AFL Agent");
+            throw new IllegalStateException("Cannot stop a stopped AFL Agent");
         }
         stopTime = System.currentTimeMillis();
         running = false;
@@ -71,18 +72,18 @@ public class BasicAFLAgent extends Agent
         //TODO change exception Type.
         if (running)
         {
-            throw new RuntimeException("Can't collect Results, Agent still running!");
+            throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
 
         String tail = tail(branchTrace);
         if (tail.equals("CRASH"))
         {
-            System.out.println("CRASH");
+            LOG.log(Level.INFO, "Found a Crash!");
             crash = true;
         }
         else if (tail.equals("TIMEOUT"))
         {
-            System.out.println("TIMEOUT");
+            LOG.log(Level.INFO, "Found a Timeout!");
             timeout = true;
         }
         Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace,LogFileIDManager.getInstance().getID());
