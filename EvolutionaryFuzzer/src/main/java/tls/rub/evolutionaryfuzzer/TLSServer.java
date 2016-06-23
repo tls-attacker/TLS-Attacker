@@ -77,7 +77,7 @@ public class TLSServer
     {
         if (this.free == false)
         {
-            throw new RuntimeException("Trying to occupie an already occupied Server");
+            throw new IllegalStateException("Trying to occupie an already occupied Server");
         }
         this.free = false;
     }
@@ -98,7 +98,7 @@ public class TLSServer
     {
         if (this.free == true)
         {
-            throw new RuntimeException("Trying to release an already released Server");
+            throw new IllegalStateException("Trying to release an already released Server");
         }
         this.free = true;
     }
@@ -121,7 +121,7 @@ public class TLSServer
         }
         else
         {
-            throw new RuntimeException("Cant start a not marked Server. Occupie it first!");
+            throw new IllegalStateException("Cant start a not marked Server. Occupie it first!");
         }
     }
 

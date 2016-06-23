@@ -10,7 +10,9 @@ package GlobalBranchTreeTests;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,6 +73,7 @@ public class TLSServerTest
         //TODO Test if really started
         server.occupie();
         server.start();
+        
     }
 
     /**
@@ -100,22 +103,23 @@ public class TLSServerTest
     @Test
     public void testRelease()
     {
-         //TODO Test if really started
+        
         server.occupie();
         server.release();
+        assertTrue(server.isFree());
     }
 
     /**
      *
      */
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalStateException.class)
     public void testWrongOccupie()
     {
         server.occupie();
         server.occupie();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalStateException.class)
     public void testWrongRelease()
     {
         server.release();
@@ -124,7 +128,7 @@ public class TLSServerTest
     /**
      *
      */
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalStateException.class)
     public void testExitedNotStarted()
     {
         server.exited();
