@@ -7,20 +7,31 @@
  */
 package tls.branchtree;
 
+import Exceptions.InstrumentationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
+/**
+ * This Class tries to build a graph containing all possible Paths threw a target
+ * Program
+ *
+ * @author Robert Merget - robert.merget@rub.de
+ */
 public class GlobalBranchTree
 {
-
+    //TODO Does not work yet
     /**
+     * Trys to generate a Path which contains all Paths threw a Program. The
+     * Function needs the Debug Information provided by the AFL DebugTree Output
      *
-     * @param file
-     * @return
+     * @param file File which contains the Instrumented Locations in a List
+     * @return A Directed Graph 
      */
     public static DirectedGraph<BranchVertex, CountEdge> buildGraph(File file)
     {
@@ -64,7 +75,7 @@ public class GlobalBranchTree
                         type = Blocktype.FUNCTIONLABEL;
                         break;
                     default:
-                        throw new RuntimeException("UNKNOWN BRANCH TYPE");
+                        throw new InstrumentationException("UNKNOWN BRANCH TYPE");
                 }
                 graph.addVertex(new BranchVertex(probeID, type));
             }
@@ -89,7 +100,6 @@ public class GlobalBranchTree
                         target = getVertex(split[3], graph);
                         if (target == null)
                         {
-                            //   System.out.println("Skipping Call:"+line);
                             continue;
                         }
                         graph.addEdge(vertex, target);
@@ -102,7 +112,7 @@ public class GlobalBranchTree
                         break;
                     case "RET": //RET 965475 	ret
                         //Not much we can do, when we reach a return we have to link all probeids back, we do this in another step
-                       
+
                         break;
                     case "LABEL": //LABEL 965475 .L306:
                         if (last != null)
@@ -115,7 +125,6 @@ public class GlobalBranchTree
                         target = getVertex(split[3], graph);
                         if (target == null)
                         {
-                            //    System.out.println("Skipping CNDJMP:"+ line);
                             continue;
                         }
                         graph.addEdge(vertex, target);
@@ -188,13 +197,13 @@ public class GlobalBranchTree
                 count++;
                 if (count > 1)
                 {
-                    System.out.println("Multiple Label:" + count + " Label:" + label);
+                    LOG.log(Level.INFO, "Label appears more than once:{0}", label);
                 }
             }
         }
         if (v == null)
         {
-            System.out.println("Label not Found:" + label);
+            LOG.log(Level.INFO, "Vertex not found:{0}", label);
         }
         return v;
     }
@@ -219,16 +228,13 @@ public class GlobalBranchTree
                 count++;
                 if (count > 1)
                 {
-                    //TODO Debug
-                    System.out.println("Multiple ProbeID:" + count + " ProbeID:" + probeID);
-                    throw new Exception("ProbeID appears more than once in Tree");
+                    throw new InstrumentationException("ProbeID: " + probeID + " appears more than once(" + count + ") in Tree");
                 }
             }
         }
         if (v == null)
         {
-            //TODO Debug
-            System.out.println("Label not found:" + probeID);
+            LOG.log(Level.INFO, "Vertex not found:{0}", probeID);
         }
         return v;
     }
@@ -236,4 +242,6 @@ public class GlobalBranchTree
     private GlobalBranchTree()
     {
     }
+    private static final Logger LOG = Logger.getLogger(GlobalBranchTree.class.getName());
+
 }
