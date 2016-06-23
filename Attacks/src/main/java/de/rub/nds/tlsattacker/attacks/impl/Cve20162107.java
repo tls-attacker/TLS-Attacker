@@ -47,8 +47,6 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
     private final List<ProtocolMessage> lastMessages;
 
-    private boolean vulnerable;
-
     public Cve20162107(Cve20162107CommandConfig config) {
         super(config);
         lastMessages = new LinkedList<>();
