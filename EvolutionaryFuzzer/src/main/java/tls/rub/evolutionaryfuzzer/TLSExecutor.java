@@ -158,7 +158,6 @@ public class TLSExecutor extends Executor
             }
             transportHandler.closeConnection();
 
-            transportHandler.closeConnection();
             //TODO What if server never exited?
             while (!server.exited())
             {
