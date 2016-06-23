@@ -1,1 +1,5 @@
 /target/
+/crash/
+/faulty/
+/good/
+/timeout/

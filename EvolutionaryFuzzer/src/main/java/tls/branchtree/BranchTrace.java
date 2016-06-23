@@ -122,7 +122,7 @@ public class BranchTrace
                     graph.addVertex(vertice);
                     newVertices++;
                 }
-                CountEdge edge = (CountEdge) graph.getEdge(entryPoint, vertice);
+                CountEdge edge = graph.getEdge(entryPoint, vertice);
                 if (edge == null)
                 {
                     graph.addEdge(entryPoint, vertice);
