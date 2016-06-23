@@ -287,6 +287,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
      * @return
      */
     public byte[] calculatePadding(int paddingLength) {
+        paddingLength = Math.abs(paddingLength);
 	byte[] padding = new byte[paddingLength];
 	for (int i = 0; i < paddingLength; i++) {
 	    padding[i] = (byte) (paddingLength - 1);

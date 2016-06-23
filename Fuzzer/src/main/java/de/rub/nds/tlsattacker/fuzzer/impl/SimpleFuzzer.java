@@ -104,7 +104,7 @@ public class SimpleFuzzer extends Fuzzer {
 	    try {
 		gatherWorkflowsAndCertificate();
 	    } catch (ConfigurationException ex) {
-		LOGGER.info(ex.getLocalizedMessage());
+		LOGGER.error(ex.getLocalizedMessage());
 	    }
 
 	    startFuzzing(logFolder);
@@ -112,7 +112,7 @@ public class SimpleFuzzer extends Fuzzer {
 	} catch (ConfigurationException | JAXBException | IOException | IllegalAccessException
 		| IllegalArgumentException ex) {
 	    // throw new ConfigurationException(ex.getLocalizedMessage(), ex);
-	    LOGGER.info(ex.getLocalizedMessage());
+	    LOGGER.error(ex.getLocalizedMessage(), ex);
 	} finally {
 	    if (fuzzerConfig.containsServerCommand() && !sce.isServerTerminated()) {
 		sce.terminateServer();
