@@ -67,10 +67,6 @@ public class NodeTest
         node = null;
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-
     /**
      *
      */
