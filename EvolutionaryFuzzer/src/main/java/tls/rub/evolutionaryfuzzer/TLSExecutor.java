@@ -106,10 +106,10 @@ public class TLSExecutor extends Executor
                     //TODO what if it really is a configuration exception?
                     //It may happen that the implementation is not ready yet
                 }
-            }
+            }//TODO Change to config
             TlsContext tlsContext = new TlsContext();
             tlsContext.setWorkflowTrace(trace);
-            KeyStore ks = KeystoreHandler.loadKeyStore("/home/ic0ns/master2/TLS-Attacker-Development/resources/rsa1024.jks", "password");
+            KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
             tlsContext.setKeyStore(ks);
             tlsContext.setPassword("password");
             tlsContext.setAlias("alias");
