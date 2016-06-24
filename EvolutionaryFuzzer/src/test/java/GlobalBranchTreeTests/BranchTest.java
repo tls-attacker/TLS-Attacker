@@ -42,8 +42,6 @@ public class BranchTest {
 
     private BranchTrace tree;
 
-    //TODO Filenames from testcases
-
     /**
      *
      */
