@@ -84,7 +84,6 @@ public class BranchTest {
     @Test(expected = NullPointerException.class)
     public void testMergeNull() throws FileNotFoundException, IOException {
         //Test with null
-        tree.merge(new File("/home/ic0ns/Traces/TestCases/openssl"));
         tree.merge(null);
     }
 
@@ -95,7 +94,7 @@ public class BranchTest {
      */
     @Test(expected = FileNotFoundException.class)
     public void testMergeNotExistentFile() throws FileNotFoundException, IOException {
-        tree.merge(new File("/home/ic0ns/Traces/TestCases/openssl"));
+        tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
         tree.merge(new File(""));
     }
 
@@ -106,7 +105,7 @@ public class BranchTest {
      */
     @Test(expected = NumberFormatException.class)
     public void testMergeInvalid() throws FileNotFoundException, IOException {
-        tree.merge(new File("/home/ic0ns/Traces/TestCases/openssl3"));
+        tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl3"));
     }
 
     /**
@@ -118,14 +117,11 @@ public class BranchTest {
         Exception e = null;
         try
         {
-            //TODO Hardcoded File
-            tree.merge(new File("/home/ic0ns/Traces/TestCases/openssl"));
-            //TODO Hardcoded File
-            MergeResult r = tree.merge(new File("/home/ic0ns/Traces/TestCases/openssl2"));
+            tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
+            MergeResult r = tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
             assertTrue("Failure: The Test File contains exactly 2 new Branches, we found:"+r.getNewBranches(),r.getNewBranches() == 2);
             assertTrue("Failure: The Test File contains exactly 1 new Vertice, we found:"+r.getNewVertices(),r.getNewVertices()== 1);
-            //TODO Hardcoded File
-            r = tree.merge(new File("/home/ic0ns/Traces/TestCases/openssl2"));
+            r = tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
             assertTrue("Failure: After merging the same File twice, no new Branches should be found, we found:"+r.getNewBranches(),r.getNewBranches() == 0);
             assertTrue("Failure: After merging the same File twice, no new Vertices should be found, we found:"+r.getNewBranches(),r.getNewVertices() == 0);
         }

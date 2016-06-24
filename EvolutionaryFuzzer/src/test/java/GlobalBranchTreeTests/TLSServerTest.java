@@ -93,8 +93,8 @@ public class TLSServerTest
     @Test
     public void testOccupie()
     {
-         //TODO Test if really started
         server.occupie();
+        assertFalse(server.isFree());
     }
 
     /**
