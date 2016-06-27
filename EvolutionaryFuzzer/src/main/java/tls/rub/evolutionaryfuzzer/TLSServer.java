@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -28,7 +29,70 @@ public class TLSServer
     private final String restartServerCommand;
     private boolean exited = false;
     private String accepted;
-    ProcMon procmon = null;
+    private File traces; //Temporary Folder which contains currently executed traces
+    private File crashedFolder; //Contains Traces which crashed the Implementation
+    private File timeoutFolder; //Contains Traces which timedout
+    private File goodTracesFolder; //Contains Traces which look promising
+    private File faultyFolder; //Contains Traces which caused an exception on our end
+
+    private ProcMon procmon = null;
+
+    /**
+     * Returns a Folder in which the Agent saves the Traces
+     *
+     * @return Folder in which the Agent saves the Traces
+     */
+    public File getTracesFolder()
+    {
+        return traces;
+    }
+
+    /**
+     * Returns a Folder which contains the WorkflowTraces that crashed the
+     * Implementation
+     *
+     * @return Folder which contains the WorkflowTraces that crashed the
+     * Implementation
+     */
+    public File getCrashedFolder()
+    {
+        return crashedFolder;
+    }
+
+    /**
+     * Returns a Folder which contains the WorkflowTraces that timedout the
+     * Implementation
+     *
+     * @return Folder which contains the WorkflowTraces that crashed the
+     * Implementation
+     */
+    public File getTimeoutFolder()
+    {
+        return timeoutFolder;
+    }
+
+    /**
+     * Returns a Folder which contains the WorkflowTraces that looked promising
+     *
+     * @return Folder which contains the WorkflowTraces that crashed the
+     * Implementation
+     */
+    public File getGoodTracesFolder()
+    {
+        return goodTracesFolder;
+    }
+
+    /**
+     * Returns a Folder which contains the WorkflowTraces that threw an
+     * Exception on our end.
+     *
+     * @return Folder which contains the WorkflowTraces that crashed the
+     * Implementation
+     */
+    public File getFaultyFolder()
+    {
+        return faultyFolder;
+    }
 
     /**
      * Creates a new TLSServer. TLSServers should be used in the
@@ -41,12 +105,37 @@ public class TLSServer
      * @param accepted The String which the Server prints to the console when
      * the Server is fully started
      */
-    public TLSServer(String ip, int port, String restartServerCommand, String accepted)
+    public TLSServer(String ip, int port, String restartServerCommand, String accepted, String outputFolder)
     {
         this.ip = ip;
         this.port = port;
         this.restartServerCommand = restartServerCommand;
         this.accepted = accepted;
+        this.crashedFolder = new File(outputFolder + "crash/");
+        this.faultyFolder = new File(outputFolder + "faulty/");
+        this.goodTracesFolder = new File(outputFolder + "good/");
+        this.traces = new File(outputFolder + "traces/");
+        this.timeoutFolder = new File(outputFolder + "timeout/");
+        if(!crashedFolder.exists()&&!crashedFolder.mkdirs())
+        {
+            throw new RuntimeException("Could not Create Output Folder!");
+        }
+        if(!faultyFolder.exists()&&!faultyFolder.mkdirs())
+        {
+            throw new RuntimeException("Could not Create Output Folder!");
+        }
+        if(!goodTracesFolder.exists()&&!goodTracesFolder.mkdirs())
+        {
+            throw new RuntimeException("Could not Create Output Folder!");
+        }
+        if(!traces.exists()&&!traces.mkdirs())
+        {
+            throw new RuntimeException("Could not Create Output Folder!");
+        }
+        if(!timeoutFolder.exists()&&!timeoutFolder.mkdirs())
+        {
+            throw new RuntimeException("Could not Create Output Folder!");
+        }
     }
 
     /**
@@ -84,6 +173,7 @@ public class TLSServer
 
     /**
      * Returns True if the Server is currently free to use
+     *
      * @return True if the Server is currently free to use
      */
     public synchronized boolean isFree()
@@ -92,7 +182,8 @@ public class TLSServer
     }
 
     /**
-     * Releases an occupied Server, so that it can be used further for other Testvectors
+     * Releases an occupied Server, so that it can be used further for other
+     * Testvectors
      */
     public synchronized void release()
     {
@@ -107,8 +198,8 @@ public class TLSServer
      * Starts the Server by executing the restart Server command
      */
     public synchronized void start()
-    {   
-        
+    {
+
         //You have to ooccupie a Server to start it
         if (!this.isFree())
         {
@@ -126,10 +217,10 @@ public class TLSServer
     }
 
     /**
-     *  Restarts the Server by executing the restart Server command
+     * Restarts the Server by executing the restart Server command
      */
     public synchronized void restart()
-    {    
+    {
         if (!this.isFree())
         {
             exited = false;
@@ -141,7 +232,7 @@ public class TLSServer
             {
                 id = LogFileIDManager.getInstance().getID();
                 String command = restartServerCommand.replace("[id]", "" + id);
-               // System.out.println(command);
+                // System.out.println(command);
 
                 Runtime rt = Runtime.getRuntime();
                 Process proc = rt.exec(command);
@@ -179,6 +270,7 @@ public class TLSServer
 
     /**
      * Returns True if the Process the Server started has exited
+     *
      * @return True if the Process the Server started has exited
      */
     public synchronized boolean exited()
@@ -195,7 +287,9 @@ public class TLSServer
     }
 
     /**
-     * Returns the ID assigned to the currently started Server, the ID changes after every restart
+     * Returns the ID assigned to the currently started Server, the ID changes
+     * after every restart
+     *
      * @returnID assigned to the currently started Server
      */
     public synchronized int getID()

@@ -163,7 +163,7 @@ public class TLSExecutor extends Executor
             }
 
             agent.onApplicationStop();
-            Result r = agent.collectResults(new File("tracelogs/" + server.getID()), backupTrace);
+            Result r = agent.collectResults(new File(server.getTracesFolder().getAbsolutePath() +"/"+ server.getID()), backupTrace);
 
             ResultContainer.getInstance().commit(r);
         }
@@ -188,7 +188,7 @@ public class TLSExecutor extends Executor
             int id = server.getID();
             server.release();
             //Cleanup
-            File file = new File("tracelogs/" + id);
+            File file = new File(server.getTracesFolder().getAbsolutePath()+"/" + id);
             if(file.exists())
             {
                 file.delete();

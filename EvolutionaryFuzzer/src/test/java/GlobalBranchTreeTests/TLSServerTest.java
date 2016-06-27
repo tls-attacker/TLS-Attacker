@@ -52,7 +52,7 @@ public class TLSServerTest
     @Before
     public void setUp()
     {
-        server = new TLSServer("127.0.0.1", 4433, "/home/ic0ns/Downloads/afl/afl-2.10b/afl-showmap -m none -o /home/ic0ns/Traces/openssl[id] /home/ic0ns/Downloads/afl/afl-2.10b/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept 4433", "ACCEPT");
+        server = new TLSServer("127.0.0.1", 4433, "/home/ic0ns/Downloads/afl/afl-2.10b/afl-showmap -m none -o /home/ic0ns/Traces/openssl[id] /home/ic0ns/Downloads/afl/afl-2.10b/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept 4433", "ACCEPT","./");
     }
 
     /**
