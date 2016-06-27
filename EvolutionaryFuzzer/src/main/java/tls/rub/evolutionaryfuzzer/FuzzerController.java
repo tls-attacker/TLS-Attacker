@@ -10,7 +10,11 @@ package tls.rub.evolutionaryfuzzer;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -20,20 +24,33 @@ import java.util.logging.Logger;
  */
 public class FuzzerController extends Controller
 {
+
     //Chosen Mutator
     private final Mutator mutator;
     //ThreadPool to start or stop
     private final ExecutorThreadPool pool;
 
     /**
-     *  Basic Constructor, initializes the Server List, generates the necessary Config Files and Contexts and also commints to a mutation Engine
+     * Basic Constructor, initializes the Server List, generates the necessary
+     * Config Files and Contexts and also commints to a mutation Engine
      */
     public FuzzerController()
     {
         ServerManager serverManager = ServerManager.getInstance();
-        //TODO StartCommand Insert
-        serverManager.addServer(new TLSServer("127.0.0.1", 4433, "AFL/afl-showmap -m none -o traces/[id] AFL/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept 4433","ACCEPT","./"));
-        //This is akward
+        for (File f : new File("server/").listFiles())
+        {
+            try
+            {
+                TLSServer server = ServerSerializer.read(f);
+                serverManager.addServer(server);
+
+            }
+            catch (Exception ex)
+            {
+                LOG.log(Level.SEVERE, "Could not read Server!", ex);
+            }
+        }
+
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
         mutator = new SimpleMutator(tmpTlsContext);

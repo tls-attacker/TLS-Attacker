@@ -17,17 +17,17 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class TLSServer
+public final class TLSServer
 {
 
-    private final Process p = null;
+    private Process p = null;
     private boolean free = true;
-    private final String ip;
+    private String ip;
 
-    private final int port;
+    private int port;
     private int id = -1;
-    private final String restartServerCommand;
-    private boolean exited = false;
+    private String restartServerCommand;
+    private String outputFolder;
     private String accepted;
     private File traces; //Temporary Folder which contains currently executed traces
     private File crashedFolder; //Contains Traces which crashed the Implementation
@@ -94,6 +94,29 @@ public class TLSServer
         return faultyFolder;
     }
 
+    public String getOutputFolder()
+    {
+        return outputFolder;
+    }
+
+    public String getAccepted()
+    {
+        return accepted;
+    }
+
+    public TLSServer()
+    {
+        ip = null;
+        port = 0;
+        restartServerCommand = null;
+        outputFolder = null;
+    }
+
+    public String getRestartServerCommand()
+    {
+        return restartServerCommand;
+    }
+
     /**
      * Creates a new TLSServer. TLSServers should be used in the
      * TLSServerManager
@@ -104,35 +127,43 @@ public class TLSServer
      * the Server
      * @param accepted The String which the Server prints to the console when
      * the Server is fully started
+     * @param outputFolder
      */
     public TLSServer(String ip, int port, String restartServerCommand, String accepted, String outputFolder)
     {
+        this.outputFolder = outputFolder;
         this.ip = ip;
         this.port = port;
         this.restartServerCommand = restartServerCommand;
         this.accepted = accepted;
+        this.setOutputFolder(outputFolder);
+    }
+
+    public void setOutputFolder(String outputFolder)
+    {
+        this.outputFolder = outputFolder;
         this.crashedFolder = new File(outputFolder + "crash/");
         this.faultyFolder = new File(outputFolder + "faulty/");
         this.goodTracesFolder = new File(outputFolder + "good/");
         this.traces = new File(outputFolder + "traces/");
         this.timeoutFolder = new File(outputFolder + "timeout/");
-        if(!crashedFolder.exists()&&!crashedFolder.mkdirs())
+        if (!crashedFolder.exists() && !crashedFolder.mkdirs())
         {
             throw new RuntimeException("Could not Create Output Folder!");
         }
-        if(!faultyFolder.exists()&&!faultyFolder.mkdirs())
+        if (!faultyFolder.exists() && !faultyFolder.mkdirs())
         {
             throw new RuntimeException("Could not Create Output Folder!");
         }
-        if(!goodTracesFolder.exists()&&!goodTracesFolder.mkdirs())
+        if (!goodTracesFolder.exists() && !goodTracesFolder.mkdirs())
         {
             throw new RuntimeException("Could not Create Output Folder!");
         }
-        if(!traces.exists()&&!traces.mkdirs())
+        if (!traces.exists() && !traces.mkdirs())
         {
             throw new RuntimeException("Could not Create Output Folder!");
         }
-        if(!timeoutFolder.exists()&&!timeoutFolder.mkdirs())
+        if (!timeoutFolder.exists() && !timeoutFolder.mkdirs())
         {
             throw new RuntimeException("Could not Create Output Folder!");
         }
@@ -156,6 +187,29 @@ public class TLSServer
     public int getPort()
     {
         return port;
+    }
+
+    public void setIp(String ip)
+    {
+        this.ip = ip;
+    }
+
+    public void setPort(int port)
+    {
+        this.port = port;
+    }
+
+    public void setRestartServerCommand(String restartServerCommand)
+    {
+        this.restartServerCommand = restartServerCommand;
+        this.restartServerCommand = this.restartServerCommand.replace("[output]", traces.getAbsolutePath());
+        this.restartServerCommand = this.restartServerCommand.replace("[port]", ""+port);
+        
+    }
+
+    public void setAccepted(String accepted)
+    {
+        this.accepted = accepted;
     }
 
     /**
@@ -203,7 +257,6 @@ public class TLSServer
         //You have to ooccupie a Server to start it
         if (!this.isFree())
         {
-            exited = false;
             if (p != null)
             {
                 p.destroy();
@@ -223,7 +276,6 @@ public class TLSServer
     {
         if (!this.isFree())
         {
-            exited = false;
             if (p != null)
             {
                 p.destroy();
@@ -232,8 +284,8 @@ public class TLSServer
             {
                 id = LogFileIDManager.getInstance().getID();
                 String command = restartServerCommand.replace("[id]", "" + id);
-                // System.out.println(command);
-
+                //System.out.println(command);
+                
                 Runtime rt = Runtime.getRuntime();
                 Process proc = rt.exec(command);
 
