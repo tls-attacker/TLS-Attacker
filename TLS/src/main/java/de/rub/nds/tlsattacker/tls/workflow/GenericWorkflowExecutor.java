@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -162,6 +163,8 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
                 protocolMessages.remove(workflowContext.getProtocolMessagePointer());
                 return;
             } else {
+                //TODO
+                LOGGER.log(Level.INFO, "Protocol Message:"+pm.toCompactString());
                 throw new WorkflowExecutionException("The configured protocol message was not found, "
                         + "the TLS peer does not send any data.");
             }
