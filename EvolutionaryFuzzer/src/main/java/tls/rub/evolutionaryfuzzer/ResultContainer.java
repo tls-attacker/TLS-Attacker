@@ -26,17 +26,16 @@ import tls.branchtree.MergeResult;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ResultContainer
-{
+public class ResultContainer {
 
     //BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
     //List of old Results
     private final ArrayList<Result> results;
     private final ArrayList<WorkflowTrace> goodTrace;
+    private boolean saveGood = true;
 
-    private ResultContainer()
-    {
+    private ResultContainer() {
         branch = new BranchTrace();
         results = new ArrayList<>();
         goodTrace = new ArrayList<>();
@@ -47,19 +46,16 @@ public class ResultContainer
      *
      * @return Instance of the ResultContainer
      */
-    public static ResultContainer getInstance()
-    {
+    public static ResultContainer getInstance() {
         return ResultContainerHolder.INSTANCE;
     }
 
     //Singleton
-    private static class ResultContainerHolder
-    {
+    private static class ResultContainerHolder {
 
         private static final ResultContainer INSTANCE = new ResultContainer();
 
-        private ResultContainerHolder()
-        {
+        private ResultContainerHolder() {
         }
     }
 
@@ -68,9 +64,16 @@ public class ResultContainer
      *
      * @return ArrayList of good WorkflowTraces
      */
-    public ArrayList<WorkflowTrace> getGoodTraces()
-    {
+    public ArrayList<WorkflowTrace> getGoodTraces() {
         return goodTrace;
+    }
+
+    public boolean isSaveGood() {
+        return saveGood;
+    }
+
+    public void setSaveGood(boolean saveResults) {
+        this.saveGood = saveResults;
     }
 
     /**
@@ -79,69 +82,54 @@ public class ResultContainer
      *
      * @param result Result to be added in the Container
      */
-    public void commit(Result result)
-    {
+    public void commit(Result result) {
         results.add(result);
         MergeResult r = null;
-        try
-        {
+        try {
             r = branch.merge(result.getEdges());
 
-        }
-        catch (FileNotFoundException ex)
-        {
+        } catch (FileNotFoundException ex) {
             LOG.log(Level.SEVERE, "Received a Result Object wich Points to a non-existant File! Was the File deleted at Runtime? Skipping Result");
             return;
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Received a Result Object wich Points to a File we cant Read! Does the Fuzzer have the rights to read the Files provided by the Agent? Skipping Result");
             return;
         }
-        if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0))
-        {
+        if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
             LOG.log(Level.INFO, "Found a GoodTrace:" + r.toString());
             goodTrace.add(result.getTrace());
-            File f = new File("good/" + result.getId());
+            //It may be that we dont want to safe good Traces, for example if we execute already saved Traces 
+            if (saveGood) {
+                File f = new File("good/" + result.getId());
 
-            try
-            {
-                f.createNewFile();
-                WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-            }
-            catch (JAXBException | IOException E)
-            {
-                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
+                try {
+                    f.createNewFile();
+                    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+                } catch (JAXBException | IOException E) {
+                    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
+                }
             }
         }
-        if (result.hasCrashed())
-        {
+        if (result.hasCrashed()) {
             LOG.log(Level.INFO, "Found a Crash:" + r.toString());
             File f = new File("crashed/" + result.getId());
 
-            try
-            {
+            try {
                 f.createNewFile();
                 WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-            }
-            catch (JAXBException | IOException E)
-            {
+            } catch (JAXBException | IOException E) {
                 LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
             }
         }
-        if (result.didTimeout())
-        {
+        if (result.didTimeout()) {
 
             LOG.log(Level.INFO, "Found a Timeout:" + r.toString());
             File f = new File("timeout/" + result.getId());
 
-            try
-            {
+            try {
                 f.createNewFile();
                 WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-            }
-            catch (JAXBException | IOException E)
-            {
+            } catch (JAXBException | IOException E) {
                 LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
             }
         }

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
@@ -40,33 +41,59 @@ import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class SimpleMutator extends Mutator
-{
+public class SimpleMutator extends Mutator {
 
     //private final Node<WorkflowTrace> tree;
     private final ArrayList<WorkflowTrace> list;
     private final TlsContext context;
+    private int goodIndex = 0;
 
     /**
      *
      * @param context
      */
-    public SimpleMutator(TlsContext context)
-    {
+    public SimpleMutator(TlsContext context) {
         //tree = new Node<>(new WorkflowTrace());
         list = new ArrayList<>();
-
+        //read all good traces
+        File f = new File("good/");//TODO
+        System.out.println("Reading good Traces in:");
+        for (File file : f.listFiles()) {
+            if (file.getName().startsWith(".")) {
+                continue;
+            }
+            try {
+                WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                list.add(trace);
+            } catch (JAXBException ex) {
+                System.out.println(file.getAbsolutePath());
+                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+            } catch (IOException ex) {
+                System.out.println(file.getAbsolutePath());
+                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+            } catch (XMLStreamException ex) {
+                System.out.println(file.getAbsolutePath());
+                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+            }
+        }
         this.context = context;
+        LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
     }
 
     /**
@@ -74,61 +101,67 @@ public class SimpleMutator extends Mutator
      * @return
      */
     @Override
-    public WorkflowTrace getNewMutation()
-    {
-        Random r = new Random();
-        //wähle ein zufälligen trace aus der liste
-        WorkflowTrace tempTrace;
-        if (ResultContainer.getInstance().getGoodTraces().isEmpty())
-        {
-            tempTrace = new WorkflowTrace();
-            ResultContainer.getInstance().getGoodTraces().add(tempTrace);
-        }
-        else
-        {
-            tempTrace = ResultContainer.getInstance().getGoodTraces().get(r.nextInt(ResultContainer.getInstance().getGoodTraces().size()));
-        }
+    public WorkflowTrace getNewMutation() {
+        //Execute all previously found good WorkflowTraces
+        if (goodIndex < list.size() && goodIndex != -1) {
+            //TODO can make an off by one error
+            ResultContainer.getInstance().setSaveGood(false);
+            WorkflowTrace t = list.get(goodIndex);
+            goodIndex++;
+            if (goodIndex == list.size()) {
+                goodIndex = -1;
+                LOG.log(Level.INFO, "Executed all old good Traces!");
+            }
+            return t;
+        }//Start with the actual Mutating
+        else {
+            //TODO can make an off by one error
+            ResultContainer.getInstance().setSaveGood(true);
+            Random r = new Random();
+            //wähle ein zufälligen trace aus der liste
+            WorkflowTrace tempTrace;
+            if (ResultContainer.getInstance().getGoodTraces().isEmpty()) {
+                tempTrace = new WorkflowTrace();
+                ResultContainer.getInstance().getGoodTraces().add(tempTrace);
+            } else {
+                tempTrace = ResultContainer.getInstance().getGoodTraces().get(r.nextInt(ResultContainer.getInstance().getGoodTraces().size()));
+            }
 
-        WorkflowTrace trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempTrace);
-        if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) < 10)
-        {
-            addRandomMessage(trace);
-        }
+            WorkflowTrace trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempTrace);
+            if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) < 10) {
+                addRandomMessage(trace);
+            }
 
-        if (r.nextInt(10000) == 1)
-        {
-            removeRandomMessage(trace);
-        }
+            if (r.nextInt(10000) == 1) {
+                removeRandomMessage(trace);
+            }
 
-        List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace, ConnectionEnd.CLIENT);
-        //LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
-        if (variableList.size() > 0)
-        {
-            ModifiableVariableField field = variableList.get(r.nextInt(trace.getProtocolMessages().size()));
-            String currentFieldName = field.getField().getName();
-            String currentMessageName = field.getObject().getClass().getSimpleName();
-            executeModifiableVariableModification((ModifiableVariableHolder) field.getObject(), field.getField());
-        }
-        //System.out.println("----------------------");
+            List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace, ConnectionEnd.CLIENT);
+            //LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
+            if (variableList.size() > 0) {
+                ModifiableVariableField field = variableList.get(r.nextInt(trace.getProtocolMessages().size()));
+                String currentFieldName = field.getField().getName();
+                String currentMessageName = field.getObject().getClass().getSimpleName();
+                executeModifiableVariableModification((ModifiableVariableHolder) field.getObject(), field.getField());
+            }
+            //System.out.println("----------------------");
 
-        return trace;
+            return trace;
+        }
     }
 
     //TODO Unit Test
-    private void removeRandomMessage(WorkflowTrace tempTrace)
-    {
+    private void removeRandomMessage(WorkflowTrace tempTrace) {
         Random r = new Random();
         List<ProtocolMessage> messages = tempTrace.getProtocolMessages();
         messages.remove(r.nextInt(messages.size()));
     }
 
     //TODO Unit Test
-    private void addRandomMessage(WorkflowTrace tempTrace)
-    {
+    private void addRandomMessage(WorkflowTrace tempTrace) {
         ProtocolMessage m = null;
         Random r = new Random();
-        switch (r.nextInt(19))
-        {
+        switch (r.nextInt(19)) {
             case 0:
                 m = new AlertMessage(ConnectionEnd.CLIENT);
                 break;
@@ -191,25 +224,22 @@ public class SimpleMutator extends Mutator
                 break;
             case 16:
                 m = new ServerHelloDoneMessage(ConnectionEnd.CLIENT);
-           
+
                 break;
             case 17:
                 m = new HelloRequestMessage(ConnectionEnd.CLIENT);
                 break;
 
         }
-        if (m != null)
-        {
+        if (m != null) {
             tempTrace.add(m);
             tempTrace.add(new ArbitraryMessage());
         }
     }
 
-    private ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields)
-    {
+    private ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
         Random r = new Random();
-        while (true)
-        {
+        while (true) {
             int fieldNumber = r.nextInt(fields.size());
             return fields.get(fieldNumber);
         }
