@@ -107,7 +107,7 @@ public class ResultContainer
             try
             {
                 f.createNewFile();
-                WorkflowTraceSerializer.write(f, result.getTrace());
+                WorkflowTraceSerializer.write(f, result.getExecutedTrace());
             }
             catch (JAXBException | IOException E)
             {
@@ -122,7 +122,7 @@ public class ResultContainer
             try
             {
                 f.createNewFile();
-                WorkflowTraceSerializer.write(f, result.getTrace());
+                WorkflowTraceSerializer.write(f, result.getExecutedTrace());
             }
             catch (JAXBException | IOException E)
             {
@@ -138,7 +138,7 @@ public class ResultContainer
             try
             {
                 f.createNewFile();
-                WorkflowTraceSerializer.write(f, result.getTrace());
+                WorkflowTraceSerializer.write(f, result.getExecutedTrace());
             }
             catch (JAXBException | IOException E)
             {

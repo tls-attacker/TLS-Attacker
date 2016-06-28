@@ -43,5 +43,5 @@ public abstract class Agent
      * @return Result Object which contains all Information of the executed
      * Fuzzingvector.
      */
-    public abstract Result collectResults(File branchTrace, WorkflowTrace trace);
+    public abstract Result collectResults(File branchTrace, WorkflowTrace trace,WorkflowTrace executedTrace);
 }

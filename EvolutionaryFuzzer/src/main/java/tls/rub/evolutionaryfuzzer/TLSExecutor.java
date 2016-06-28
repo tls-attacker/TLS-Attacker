@@ -80,7 +80,7 @@ public class TLSExecutor extends Executor
             ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 
             GeneralConfig gc = new GeneralConfig();
-            gc.setLogLevel(Level.INFO);
+            gc.setLogLevel(Level.DEBUG);
             configHandler.initialize(gc);
             gc.setLogLevel(org.apache.logging.log4j.Level.OFF);
             EvolutionaryFuzzerConfig fc = new EvolutionaryFuzzerConfig();
@@ -131,7 +131,7 @@ public class TLSExecutor extends Executor
             X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 
             tlsContext.setX509ServerCertificateObject(x509CertObject);
-//tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
+            //tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
             WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext);
 
             //tlsContext.setServerCertificate(certificate);
@@ -163,7 +163,7 @@ public class TLSExecutor extends Executor
             }
 
             agent.onApplicationStop();
-            Result r = agent.collectResults(new File(server.getTracesFolder().getAbsolutePath() +"/"+ server.getID()), backupTrace);
+            Result r = agent.collectResults(new File(server.getTracesFolder().getAbsolutePath() +"/"+ server.getID()), backupTrace,trace);
 
             ResultContainer.getInstance().commit(r);
         }

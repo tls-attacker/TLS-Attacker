@@ -32,11 +32,13 @@ class Result
     private final long stopTime;
     //File Containing all the ProbeIDs
     private final File edges;
-    //Workflowtrace that was Executed
+    //Workflowtrace that should be Executed
     private final WorkflowTrace trace;
+    //Workflowtrace that was executed
+    private final WorkflowTrace executedTrace;
     //Each Result get an id for easier referencing, the id is also in 
     private int id;
-    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace, int id)
+    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace,WorkflowTrace executedTrace, int id)
     {
         this.hasCrashed = hasCrashed;
         this.didTimeout = didTimeout;
@@ -44,6 +46,7 @@ class Result
         this.stopTime = stopTime;
         this.edges = edges;
         this.trace = trace;
+        this.executedTrace = executedTrace;
         this.id = id;
     }
     /**
@@ -53,6 +56,11 @@ class Result
     public int getId()
     {
         return id;
+    }
+
+    public WorkflowTrace getExecutedTrace()
+    {
+        return executedTrace;
     }
     
     /**

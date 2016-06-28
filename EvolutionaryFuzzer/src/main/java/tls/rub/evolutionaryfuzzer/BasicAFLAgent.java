@@ -67,7 +67,7 @@ public class BasicAFLAgent extends Agent
     }
 
     @Override
-    public Result collectResults(File branchTrace, WorkflowTrace trace)
+    public Result collectResults(File branchTrace, WorkflowTrace trace, WorkflowTrace executedTrace)
     {
         if (running)
         {
@@ -85,7 +85,7 @@ public class BasicAFLAgent extends Agent
             LOG.log(Level.INFO, "Found a Timeout!");
             timeout = true;
         }
-        Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace,LogFileIDManager.getInstance().getID());
+        Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace, executedTrace, LogFileIDManager.getInstance().getID());
 
         return result;
     }

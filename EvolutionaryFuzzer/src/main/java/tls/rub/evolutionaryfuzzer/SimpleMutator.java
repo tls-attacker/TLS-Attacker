@@ -155,7 +155,6 @@ public class SimpleMutator extends Mutator
                 compressionList.add(CompressionMethod.NULL);
                 ((ClientHelloDtlsMessage) m).setSupportedCipherSuites(list);
                 ((ClientHelloDtlsMessage) m).setSupportedCompressionMethods(compressionList);
-
                 break;
             case 7:
                 m = new ClientHelloMessage(ConnectionEnd.CLIENT);
@@ -165,22 +164,21 @@ public class SimpleMutator extends Mutator
                 compressionList.add(CompressionMethod.NULL);
                 ((ClientHelloMessage) m).setSupportedCipherSuites(list);
                 ((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
-
                 break;
             case 8:
-                //m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+                m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 9:
                 m = new HelloVerifyRequestMessage(ConnectionEnd.CLIENT);
                 break;
             case 10:
-                //   m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+                m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 11:
-                //m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+                m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 12:
-                //   m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+                m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 13:
                 m = new FinishedMessage(ConnectionEnd.CLIENT);
@@ -189,7 +187,7 @@ public class SimpleMutator extends Mutator
                 m = new HeartbeatMessage(ConnectionEnd.CLIENT);
                 break;
             case 15:
-                //m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+                m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
                 break;
             case 16:
                 m = new ServerHelloDoneMessage(ConnectionEnd.CLIENT);
