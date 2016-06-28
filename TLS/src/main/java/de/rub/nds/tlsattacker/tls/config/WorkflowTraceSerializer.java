@@ -61,7 +61,7 @@ public final class WorkflowTraceSerializer
         return context;
     }
 
-    //TODO UnitTest schreiben!
+    
     /**
      * Writes a WorkflowTrace to a File
      *
