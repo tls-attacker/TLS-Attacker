@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -96,13 +97,21 @@ public enum CipherSuite {
     TLS_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384(0xC077),
     TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256(0xC08A),
     TLS_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384(0xC08B);
-
     private int value;
 
     private static final Map<Integer, CipherSuite> MAP;
-
+  
     private CipherSuite(int value) {
 	this.value = value;
+    }
+    public static CipherSuite getRandom()
+    {
+        CipherSuite c = null;
+        while(c == null)
+        {
+            c = getCipherSuite(new Random().nextInt(0xFFFF));
+        }
+        return c;
     }
 
     static {
@@ -117,7 +126,8 @@ public enum CipherSuite {
     }
 
     public static CipherSuite getCipherSuite(byte[] value) {
-	return MAP.get(valueToInt(value));
+        CipherSuite c = MAP.get(valueToInt(value));
+	return c;
     }
 
     public static CipherSuite getCipherSuite(int value) {
@@ -125,7 +135,8 @@ public enum CipherSuite {
     }
 
     public byte[] getByteValue() {
-	return ArrayConverter.intToBytes(value, 2);
+	byte[] bytes =  ArrayConverter.intToBytes(value, 2);
+        return bytes;
     }
 
     public int getValue() {
@@ -170,7 +181,7 @@ public enum CipherSuite {
      * @return
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
-	if (this.name().endsWith("256") || this.name().endsWith("384")) {
+        if (this.name().endsWith("256") || this.name().endsWith("384")) {
 	    return (version == ProtocolVersion.TLS12);
 	}
 	return true;
