@@ -1,16 +1,11 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package tls.rub.evolutionaryfuzzer;
 
-import static Helper.FuzzingHelper.executeModifiableVariableModification;
-import static Helper.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
+
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
+import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.executeModifiableVariableModification;
+import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
 
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
@@ -27,13 +22,11 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
@@ -58,6 +51,7 @@ import javax.xml.stream.XMLStreamException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class SimpleMutator extends Mutator {
+    private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 
     //private final Node<WorkflowTrace> tree;
     private final ArrayList<WorkflowTrace> list;
@@ -190,8 +184,8 @@ public class SimpleMutator extends Mutator {
                 }
                 ArrayList<CompressionMethod> compressionList = new ArrayList<>();
                 compressionList.add(CompressionMethod.NULL);
-                ((ClientHelloDtlsMessage) m).setSupportedCipherSuites(list);
-                ((ClientHelloDtlsMessage) m).setSupportedCompressionMethods(compressionList);
+                ((ClientHelloMessage) m).setSupportedCipherSuites(list);
+                ((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
                 break;
             case 7:
                 m = new ClientHelloMessage(ConnectionEnd.CLIENT);
@@ -252,6 +246,5 @@ public class SimpleMutator extends Mutator {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 
 }

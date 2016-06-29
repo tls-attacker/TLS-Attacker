@@ -9,29 +9,20 @@ package tls.rub.evolutionaryfuzzer;
 
 import java.util.ArrayList;
 
-/**
- * The Server Manager keeps Track of the different TLS Server Processes. The
- * Executor can ask the ServerManager for a free Server, and the ServerManager
- * returns a currently unused Server. This Asymmetric Design was chosen to
- * support TLS Implementation with longer Bootup Times. Just add more Servers to
- * the ServerManager than you got Threads in the ThreadPool.
- *
- * @author Robert Merget - robert.merget@rub.de
- */
+
 public class ServerManager
 {
-
-    private ArrayList<TLSServer> serverList;
 
     /**
      * Singleton
      *
      * @return Instance of the ServerManager
      */
-    public static ServerManager getInstance()
-    {
+    public static ServerManager getInstance() {
         return ServerManagerHolder.INSTANCE;
     }
+
+    private ArrayList<TLSServer> serverList;
 
     private ServerManager()
     {
@@ -93,6 +84,7 @@ public class ServerManager
     {
         serverList = new ArrayList<>();
     }
+
 
     //Singleton
 

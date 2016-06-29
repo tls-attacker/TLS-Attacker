@@ -9,6 +9,7 @@ package tls.rub.evolutionaryfuzzer;
 
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * This class summarizes a the Results of FuzzingVector. It contains information
@@ -37,8 +38,8 @@ class Result
     //Workflowtrace that was executed
     private final WorkflowTrace executedTrace;
     //Each Result get an id for easier referencing, the id is also in 
-    private int id;
-    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace,WorkflowTrace executedTrace, int id)
+    private final int id;
+    Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace,WorkflowTrace executedTrace, int id)
     {
         this.hasCrashed = hasCrashed;
         this.didTimeout = didTimeout;
@@ -125,5 +126,6 @@ class Result
     {
         return trace;
     }
+    private static final Logger LOG = Logger.getLogger(Result.class.getName());
 
 }

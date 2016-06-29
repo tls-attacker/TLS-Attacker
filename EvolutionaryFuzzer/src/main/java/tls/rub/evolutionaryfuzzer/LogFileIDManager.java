@@ -16,6 +16,16 @@ import java.util.logging.Logger;
  */
 public class LogFileIDManager
 {
+    private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
+
+    /**
+     * Singleton: Return the Instance of the LogFileIDManager
+     *
+     * @return Instance of the LogFileIDManager
+     */
+    public static LogFileIDManager getInstance() {
+        return LogFileIDManagerHolder.INSTANCE;
+    }
 
     private int id = 0;
 
@@ -27,13 +37,14 @@ public class LogFileIDManager
     }
 
     /**
-     * Singleton: Return the Instance of the LogFileIDManager
+     * Generates a new UniqueID
      *
-     * @return Instance of the LogFileIDManager
+     * @return Unique ID
      */
-    public static LogFileIDManager getInstance()
+    public synchronized int getID()
     {
-        return LogFileIDManagerHolder.INSTANCE;
+        id++;
+        return id;
     }
 
     /**
@@ -49,15 +60,4 @@ public class LogFileIDManager
         }
     }
 
-    /**
-     * Generates a new UniqueID
-     *
-     * @return Unique ID
-     */
-    public synchronized int getID()
-    {
-        id++;
-        return id;
-    }
-    private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
 }

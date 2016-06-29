@@ -1,22 +1,10 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package tls.rub.evolutionaryfuzzer;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyFormatConverter;
-import de.rub.nds.tlsattacker.fuzzer.config.converters.PropertyTypeConverter;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -31,6 +19,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
      *
      */
     public static final String ATTACK_COMMAND = "simple_fuzzer";
+    private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
     @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given file.", converter = FileConverter.class)
     String serverCommandFromFile;
@@ -163,5 +152,4 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
         this.outputFolder = outputFolder;
     }
 
-    private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 }

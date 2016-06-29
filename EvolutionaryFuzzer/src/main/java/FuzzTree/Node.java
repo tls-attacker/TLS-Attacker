@@ -23,6 +23,7 @@ import java.util.logging.Logger;
  */
 public class Node<T>
 {
+    private static final Logger LOG = Logger.getLogger(Node.class.getName());
 
     private final T data;
     private Node<T> parent = null;
@@ -117,5 +118,4 @@ public class Node<T>
     {
         return parent;
     }
-    private static final Logger LOG = Logger.getLogger(Node.class.getName());
 }

@@ -42,6 +42,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSExecutor extends Executor {
+    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 
     private final WorkflowTrace trace;
     private final TLSServer server;
@@ -173,5 +174,4 @@ public class TLSExecutor extends Executor {
 
     }
 
-    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 }

@@ -7,6 +7,8 @@
  */
 package Exceptions;
 
+import java.util.logging.Logger;
+
 /**
  * This Exception should be thrown if a Bug in the Instrumentation is suspected!
  * @author Robert Merget - robert.merget@rub.de
@@ -14,10 +16,15 @@ package Exceptions;
 public class InstrumentationException extends RuntimeException
 {
 
+    /**
+     *
+     * @param message
+     */
     public InstrumentationException(String message)
     {
         super(message);
     }
+    private static final Logger LOG = Logger.getLogger(InstrumentationException.class.getName());
 
     
 }

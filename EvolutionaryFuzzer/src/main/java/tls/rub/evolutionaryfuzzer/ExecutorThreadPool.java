@@ -108,4 +108,5 @@ public class ExecutorThreadPool implements Runnable
     {
         this.stopped = stopped;
     }
+    private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 }

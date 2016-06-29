@@ -18,6 +18,22 @@ import java.util.logging.Logger;
  */
 public class ProcMon implements Runnable
 {
+    private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());
+
+    /**
+     * Creates a new ProcessMonitor for a Process
+     *
+     * @param proc Process that should be monitored
+     * @return new ProcessMonitor Object
+     */
+    public static ProcMon create(Process proc) {
+        ProcMon procMon = new ProcMon(proc);
+        Thread t = new Thread(procMon);
+        t.setName("Process Monitor Thread");
+        t.start();
+        
+        return procMon;
+    }
 
     //
 
@@ -62,20 +78,4 @@ public class ProcMon implements Runnable
         }
     }
 
-    /**
-     * Creates a new ProcessMonitor for a Process
-     *
-     * @param proc Process that should be monitored
-     * @return new ProcessMonitor Object
-     */
-    public static ProcMon create(Process proc)
-    {
-        ProcMon procMon = new ProcMon(proc);
-        Thread t = new Thread(procMon);
-        t.setName("Process Monitor Thread");
-        t.start();
-        
-        return procMon;
-    }
-    private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());
 }

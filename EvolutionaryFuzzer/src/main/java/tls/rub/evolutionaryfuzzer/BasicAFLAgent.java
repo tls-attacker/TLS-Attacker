@@ -22,6 +22,7 @@ import java.util.logging.Logger;
  */
 public class BasicAFLAgent extends Agent
 {
+    private static final Logger LOG = Logger.getLogger(BasicAFLAgent.class.getName());
 
     //Is a fuzzing Progress Running?
     protected boolean running = false;
@@ -75,15 +76,15 @@ public class BasicAFLAgent extends Agent
         }
 
         String tail = tail(branchTrace);
-        if (tail.equals("CRASH"))
-        {
-            LOG.log(Level.INFO, "Found a Crash!");
-            crash = true;
-        }
-        else if (tail.equals("TIMEOUT"))
-        {
-            LOG.log(Level.INFO, "Found a Timeout!");
-            timeout = true;
+        switch (tail) {
+            case "CRASH":
+                LOG.log(Level.INFO, "Found a Crash!");
+                crash = true;
+                break;
+            case "TIMEOUT":
+                LOG.log(Level.INFO, "Found a Timeout!");
+                timeout = true;
+                break;
         }
         Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace, executedTrace, LogFileIDManager.getInstance().getID());
 
@@ -153,6 +154,5 @@ public class BasicAFLAgent extends Agent
             }
         }
     }
-    private static final Logger LOG = Logger.getLogger(BasicAFLAgent.class.getName());
 
 }

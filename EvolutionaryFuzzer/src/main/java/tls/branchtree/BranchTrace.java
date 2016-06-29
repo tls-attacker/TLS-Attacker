@@ -33,6 +33,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  */
 public class BranchTrace
 {
+    private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 
     //A Map which maps ProbeIDs to Vertices to better Acess the Vertices in the Graph
     private HashMap<Long, ProbeVertex> map = null;
@@ -146,7 +147,7 @@ public class BranchTrace
                     map.put(parsedNumber, to);
                     newVertices++;
                 }
-                CountEdge edge = (CountEdge) graph.getEdge(from, to);
+                CountEdge edge = graph.getEdge(from, to);
                 if (edge == null)
                 {
                     graph.addEdge(from, to);
@@ -162,5 +163,4 @@ public class BranchTrace
 
         return new MergeResult(newVertices, newEdges, hitVertices);
     }
-    private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 }

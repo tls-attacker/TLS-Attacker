@@ -17,16 +17,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.LogFileIDManager;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class LogFileIDManagerTest
 {
-
-    /**
-     *
-     */
-    public LogFileIDManagerTest()
-    {
-    }
+    private static final Logger LOG = Logger.getLogger(LogFileIDManagerTest.class.getName());
 
     /**
      *
@@ -41,6 +38,13 @@ public class LogFileIDManagerTest
      */
     @AfterClass
     public static void tearDownClass()
+    {
+    }
+
+    /**
+     *
+     */
+    public LogFileIDManagerTest()
     {
     }
 
@@ -69,5 +73,4 @@ public class LogFileIDManagerTest
         
         assertTrue("Failure: Incrementing the LogFileIDs failed",LogFileIDManager.getInstance().getID()==LogFileIDManager.getInstance().getID()-1);
     }
-    private static final Logger LOG = Logger.getLogger(LogFileIDManagerTest.class.getName());
 }

@@ -1,17 +1,10 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package tls.rub.evolutionaryfuzzer;
 
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -27,6 +20,16 @@ import tls.branchtree.MergeResult;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ResultContainer {
+    private static final Logger LOG = Logger.getLogger(ResultContainer.class.getName());
+
+    /**
+     * Singleton
+     *
+     * @return Instance of the ResultContainer
+     */
+    public static ResultContainer getInstance() {
+        return ResultContainerHolder.INSTANCE;
+    }
 
     //BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
@@ -42,24 +45,6 @@ public class ResultContainer {
     }
 
     /**
-     * Singleton
-     *
-     * @return Instance of the ResultContainer
-     */
-    public static ResultContainer getInstance() {
-        return ResultContainerHolder.INSTANCE;
-    }
-
-    //Singleton
-    private static class ResultContainerHolder {
-
-        private static final ResultContainer INSTANCE = new ResultContainer();
-
-        private ResultContainerHolder() {
-        }
-    }
-
-    /**
      * Returns a list of WorkflowTraces that found new Branches or Vertices
      *
      * @return ArrayList of good WorkflowTraces
@@ -67,6 +52,7 @@ public class ResultContainer {
     public ArrayList<WorkflowTrace> getGoodTraces() {
         return goodTrace;
     }
+
 
     public boolean isSaveGood() {
         return saveGood;
@@ -96,44 +82,47 @@ public class ResultContainer {
             return;
         }
         if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
-            LOG.log(Level.INFO, "Found a GoodTrace:" + r.toString());
+            LOG.log(Level.INFO, "Found a GoodTrace:{0}", r.toString());
             goodTrace.add(result.getTrace());
             //It may be that we dont want to safe good Traces, for example if we execute already saved Traces 
             if (saveGood) {
                 File f = new File("good/" + result.getId());
-
                 try {
                     f.createNewFile();
                     WorkflowTraceSerializer.write(f, result.getExecutedTrace());
                 } catch (JAXBException | IOException E) {
-                    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
+                    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}", f.getAbsolutePath());
                 }
             }
         }
         if (result.hasCrashed()) {
-            LOG.log(Level.INFO, "Found a Crash:" + r.toString());
+            LOG.log(Level.INFO, "Found a Crash:{0}", r.toString());
             File f = new File("crashed/" + result.getId());
-
             try {
                 f.createNewFile();
                 WorkflowTraceSerializer.write(f, result.getExecutedTrace());
             } catch (JAXBException | IOException E) {
-                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}", f.getAbsolutePath());
             }
         }
         if (result.didTimeout()) {
-
-            LOG.log(Level.INFO, "Found a Timeout:" + r.toString());
+            LOG.log(Level.INFO, "Found a Timeout:{0}", r.toString());
             File f = new File("timeout/" + result.getId());
-
             try {
                 f.createNewFile();
                 WorkflowTraceSerializer.write(f, result.getExecutedTrace());
             } catch (JAXBException | IOException E) {
-                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to " + f.getAbsolutePath());
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}", f.getAbsolutePath());
             }
         }
-
     }
-    private static final Logger LOG = Logger.getLogger(ResultContainer.class.getName());
+
+    //Singleton
+    private static class ResultContainerHolder {
+        
+        private static final ResultContainer INSTANCE = new ResultContainer();
+
+        private ResultContainerHolder() {
+        }
+    }
 }

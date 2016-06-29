@@ -17,14 +17,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.branchtree.CountEdge;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class CountEdgeTest {
-
-    /**
-     *
-     */
-    public CountEdgeTest() {
-    }
+    private static final Logger LOG = Logger.getLogger(CountEdgeTest.class.getName());
 
     /**
      *
@@ -38,6 +36,12 @@ public class CountEdgeTest {
      */
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    /**
+     *
+     */
+    public CountEdgeTest() {
     }
 
     /**
@@ -64,5 +68,4 @@ public class CountEdgeTest {
         edge.increment();
         assertTrue("Failure: After Incrementing the Edgecount, the Edgecount should be 2",edge.getCount()==2);
     }
-    private static final Logger LOG = Logger.getLogger(CountEdgeTest.class.getName());
 }

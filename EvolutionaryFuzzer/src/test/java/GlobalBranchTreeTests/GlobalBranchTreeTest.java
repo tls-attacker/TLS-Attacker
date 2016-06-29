@@ -1,42 +1,29 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package GlobalBranchTreeTests;
 
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.DirectedGraph;
-import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import tls.branchtree.Blocktype;
 import tls.branchtree.BranchVertex;
 import tls.branchtree.CountEdge;
 import tls.branchtree.GlobalBranchTree;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class GlobalBranchTreeTest {
-
-    /**
-     *
-     */
-    public GlobalBranchTreeTest() {
-    }
+    private static final Logger LOG = Logger.getLogger(GlobalBranchTreeTest.class.getName());
 
     /**
      *
@@ -50,6 +37,12 @@ public class GlobalBranchTreeTest {
      */
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    /**
+     *
+     */
+    public GlobalBranchTreeTest() {
     }
 
     /**
@@ -114,5 +107,4 @@ public class GlobalBranchTreeTest {
             fail("Failure: No Exception should be thrown when working with the GlobalBranchTree");
         }
     }
-    private static final Logger LOG = Logger.getLogger(GlobalBranchTreeTest.class.getName());
 }

@@ -1,20 +1,12 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package tls.rub.evolutionaryfuzzer;
 
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -24,6 +16,7 @@ import javax.xml.bind.JAXBException;
  */
 public class FuzzerController extends Controller
 {
+    private static final Logger LOG = Logger.getLogger(FuzzerController.class.getName());
 
     //Chosen Mutator
     private final Mutator mutator;
@@ -79,6 +72,5 @@ public class FuzzerController extends Controller
         this.isRunning = false;
         pool.setStopped(true);
     }
-    private static final Logger LOG = Logger.getLogger(FuzzerController.class.getName());
 
 }

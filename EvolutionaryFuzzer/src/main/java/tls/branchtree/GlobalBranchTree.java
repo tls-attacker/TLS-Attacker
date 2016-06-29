@@ -25,6 +25,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  */
 public class GlobalBranchTree
 {
+    private static final Logger LOG = Logger.getLogger(GlobalBranchTree.class.getName());
     //TODO Does not work yet
     /**
      * Trys to generate a Path which contains all Paths threw a Program. The
@@ -242,6 +243,5 @@ public class GlobalBranchTree
     private GlobalBranchTree()
     {
     }
-    private static final Logger LOG = Logger.getLogger(GlobalBranchTree.class.getName());
 
 }

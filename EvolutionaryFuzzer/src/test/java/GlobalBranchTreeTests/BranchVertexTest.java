@@ -8,6 +8,7 @@
  */
 package GlobalBranchTreeTests;
 
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +19,10 @@ import org.junit.Test;
 import tls.branchtree.Blocktype;
 import tls.branchtree.BranchVertex;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class BranchVertexTest {
     
     /**
@@ -79,4 +83,5 @@ public class BranchVertexTest {
         assertFalse("Failure: Two Vertices with different ProbeID should be unequal",vertex.equals(vertex3));
         
     }
+    private static final Logger LOG = Logger.getLogger(BranchVertexTest.class.getName());
 }

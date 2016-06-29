@@ -19,6 +19,7 @@ import java.util.logging.Logger;
  */
 public final class TLSServer
 {
+    private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 
     private Process p = null;
     private boolean free = true;
@@ -36,6 +37,36 @@ public final class TLSServer
     private File faultyFolder; //Contains Traces which caused an exception on our end
 
     private ProcMon procmon = null;
+
+    public TLSServer()
+    {
+        ip = null;
+        port = 0;
+        restartServerCommand = null;
+        outputFolder = null;
+    }
+
+    /**
+     * Creates a new TLSServer. TLSServers should be used in the
+     * TLSServerManager
+     *
+     * @param ip The IP of the Implementation
+     * @param port The Port of the Implementation
+     * @param restartServerCommand The command which should be executed to start
+     * the Server
+     * @param accepted The String which the Server prints to the console when
+     * the Server is fully started
+     * @param outputFolder
+     */
+    public TLSServer(String ip, int port, String restartServerCommand, String accepted, String outputFolder)
+    {
+        this.outputFolder = outputFolder;
+        this.ip = ip;
+        this.port = port;
+        this.restartServerCommand = restartServerCommand;
+        this.accepted = accepted;
+        this.setOutputFolder(outputFolder);
+    }
 
     /**
      * Returns a Folder in which the Agent saves the Traces
@@ -104,39 +135,9 @@ public final class TLSServer
         return accepted;
     }
 
-    public TLSServer()
-    {
-        ip = null;
-        port = 0;
-        restartServerCommand = null;
-        outputFolder = null;
-    }
-
     public String getRestartServerCommand()
     {
         return restartServerCommand;
-    }
-
-    /**
-     * Creates a new TLSServer. TLSServers should be used in the
-     * TLSServerManager
-     *
-     * @param ip The IP of the Implementation
-     * @param port The Port of the Implementation
-     * @param restartServerCommand The command which should be executed to start
-     * the Server
-     * @param accepted The String which the Server prints to the console when
-     * the Server is fully started
-     * @param outputFolder
-     */
-    public TLSServer(String ip, int port, String restartServerCommand, String accepted, String outputFolder)
-    {
-        this.outputFolder = outputFolder;
-        this.ip = ip;
-        this.port = port;
-        this.restartServerCommand = restartServerCommand;
-        this.accepted = accepted;
-        this.setOutputFolder(outputFolder);
     }
 
     public void setOutputFolder(String outputFolder)
@@ -348,6 +349,5 @@ public final class TLSServer
     {
         return id;
     }
-    private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 
 }

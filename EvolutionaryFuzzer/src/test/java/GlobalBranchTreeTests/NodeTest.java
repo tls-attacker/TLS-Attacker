@@ -19,9 +19,27 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class NodeTest
 {
+    private static final Logger LOG = Logger.getLogger(NodeTest.class.getName());
+
+    /**
+     *
+     */
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    /**
+     *
+     */
+    @AfterClass
+    public static void tearDownClass() {
+    }
 
     Node<Object> node = null;
 
@@ -29,23 +47,6 @@ public class NodeTest
      *
      */
     public NodeTest()
-    {
-    }
-
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass()
-    {
-
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass()
     {
     }
 
@@ -70,7 +71,7 @@ public class NodeTest
     /**
      *
      */
-        @Test
+    @Test
     public void testConstructor()
     {
         node = new Node<>(null);
@@ -127,5 +128,5 @@ public class NodeTest
         assertEquals("Failure: Recieved Parent and Real Parent are not equal", node3, node);
 
     }
-    private static final Logger LOG = Logger.getLogger(NodeTest.class.getName());
+
 }

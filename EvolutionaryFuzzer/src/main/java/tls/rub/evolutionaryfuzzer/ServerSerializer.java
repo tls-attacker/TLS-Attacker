@@ -1,43 +1,18 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package tls.rub.evolutionaryfuzzer;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Robert Merget <robert.merget@rub.de>
- */
-public final class ServerSerializer
+
+public class ServerSerializer
 {
 
     /**
@@ -50,6 +25,12 @@ public final class ServerSerializer
 
     }
 
+    /**
+     *
+     * @param f
+     * @param file
+     * @throws Exception
+     */
     public static void write(TLSServer f, File file) throws Exception
     {
         XMLEncoder encoder
@@ -60,6 +41,12 @@ public final class ServerSerializer
         encoder.close();
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws Exception
+     */
     public static TLSServer read(File file) throws Exception
     {
         XMLDecoder decoder
@@ -69,4 +56,5 @@ public final class ServerSerializer
         decoder.close();
         return o;
     }
+    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
 }

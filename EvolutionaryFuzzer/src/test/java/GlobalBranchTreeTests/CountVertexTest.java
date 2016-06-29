@@ -18,14 +18,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.branchtree.ProbeVertex;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class CountVertexTest {
-    
-    /**
-     *
-     */
-    public CountVertexTest() {
-    }
+    private static final Logger LOG = Logger.getLogger(CountVertexTest.class.getName());
     
     /**
      *
@@ -39,6 +37,12 @@ public class CountVertexTest {
      */
     @AfterClass
     public static void tearDownClass() {
+    }
+    
+    /**
+     *
+     */
+    public CountVertexTest() {
     }
     
     /**
@@ -72,5 +76,4 @@ public class CountVertexTest {
         assertFalse("Failure: Vertices with different ProbeIDs should not be equal",vertex.equals(vertex3));
         
     }
-    private static final Logger LOG = Logger.getLogger(CountVertexTest.class.getName());
 }

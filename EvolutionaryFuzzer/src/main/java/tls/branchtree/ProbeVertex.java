@@ -29,6 +29,10 @@ public class ProbeVertex
         this.probeID = probeID;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode()
     {

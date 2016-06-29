@@ -19,16 +19,13 @@ import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.EvolutionaryFuzzerConfig;
 import tls.rub.evolutionaryfuzzer.SimpleMutator;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class SimpleMutatorTest
 {
-
-    /**
-     *
-     */
-    public SimpleMutatorTest()
-    {
-    }
+    private static final Logger LOG = Logger.getLogger(SimpleMutatorTest.class.getName());
 
     /**
      *
@@ -43,6 +40,13 @@ public class SimpleMutatorTest
      */
     @AfterClass
     public static void tearDownClass()
+    {
+    }
+
+    /**
+     *
+     */
+    public SimpleMutatorTest()
     {
     }
 
@@ -74,5 +78,4 @@ public class SimpleMutatorTest
         SimpleMutator mutator = new SimpleMutator(tmpTlsContext);
         mutator.getNewMutation();
     }
-    private static final Logger LOG = Logger.getLogger(SimpleMutatorTest.class.getName());
 }

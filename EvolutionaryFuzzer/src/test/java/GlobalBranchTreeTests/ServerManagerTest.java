@@ -1,22 +1,20 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package GlobalBranchTreeTests;
 
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.ServerManager;
 import tls.rub.evolutionaryfuzzer.TLSServer;
 
+/**
+ *
+ * @author ic0ns
+ */
 public class ServerManagerTest {
 
     /**
@@ -78,6 +76,7 @@ public class ServerManagerTest {
         TLSServer server = manager.getFreeServer();
         assertNotNull("Failure: Could not get a free Server", server);
     }
+    private static final Logger LOG = Logger.getLogger(ServerManagerTest.class.getName());
 
     /**
      *

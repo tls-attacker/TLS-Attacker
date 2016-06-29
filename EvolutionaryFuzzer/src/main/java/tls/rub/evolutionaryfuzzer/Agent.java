@@ -40,6 +40,7 @@ public abstract class Agent
      *
      * @param branchTrace File containing the Branch Information
      * @param trace Workflowtrace which was executed (Fuzzingvector)
+     * @param executedTrace
      * @return Result Object which contains all Information of the executed
      * Fuzzingvector.
      */

@@ -15,6 +15,7 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BranchVertex {
+    private static final Logger LOG = Logger.getLogger(BranchVertex.class.getName());
 
     private long probeID;
     private Blocktype type;
@@ -89,5 +90,4 @@ public class BranchVertex {
     public String toString() {
         return "CountVertice{" + "probeID=" + probeID + '}';
     }
-    private static final Logger LOG = Logger.getLogger(BranchVertex.class.getName());
 }

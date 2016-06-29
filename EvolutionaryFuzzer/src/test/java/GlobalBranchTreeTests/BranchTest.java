@@ -11,6 +11,7 @@ package GlobalBranchTreeTests;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNull;
@@ -21,7 +22,10 @@ import org.junit.Test;
 import tls.branchtree.BranchTrace;
 import tls.branchtree.MergeResult;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class BranchTest {
 
     /**
@@ -129,6 +133,7 @@ public class BranchTest {
         }
         assertNull("Failure: The Test should not Throw an Exception. Might indicate that it could not find the Testfiles. ",e);
     }
+    private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
 
 }

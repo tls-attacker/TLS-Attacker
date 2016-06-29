@@ -1,16 +1,9 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
- */
+
 package GlobalBranchTreeTests;
 
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -18,8 +11,27 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.TLSServer;
 
+/**
+ *
+ * @author ic0ns
+ */
 public class TLSServerTest
 {
+    private static final Logger LOG = Logger.getLogger(TLSServerTest.class.getName());
+
+    /**
+     *
+     */
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    /**
+     *
+     */
+    @AfterClass
+    public static void tearDownClass() {
+    }
 
     private TLSServer server = null;
 
@@ -27,22 +39,6 @@ public class TLSServerTest
      *
      */
     public TLSServerTest()
-    {
-    }
-
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass()
-    {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass()
     {
     }
 
@@ -82,7 +78,7 @@ public class TLSServerTest
     @Test
     public void testRestart()
     {
-         //TODO Test if really started
+        //TODO Test if really started
         server.occupie();
         server.restart();
     }
@@ -144,5 +140,5 @@ public class TLSServerTest
         server.start();
         assertFalse("Failure:Server started but should not have exited yet", server.exited());
     }
-    private static final Logger LOG = Logger.getLogger(TLSServerTest.class.getName());
+
 }

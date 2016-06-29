@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 class StreamGobbler extends Thread
 {
+    private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
 
     private InputStream is;
     private String type;
@@ -96,5 +97,4 @@ class StreamGobbler extends Thread
     {
         return hasAccepted;
     }
-    private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
 }

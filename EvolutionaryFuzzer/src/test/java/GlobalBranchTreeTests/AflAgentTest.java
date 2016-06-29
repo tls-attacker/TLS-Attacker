@@ -8,6 +8,7 @@
  */
 package GlobalBranchTreeTests;
 
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +16,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.BasicAFLAgent;
 
-
+/**
+ *
+ * @author ic0ns
+ */
 public class AflAgentTest
 {
 
@@ -103,5 +107,6 @@ public class AflAgentTest
 
     }
     //TODO Collect Results Test
+    private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
     
 }
