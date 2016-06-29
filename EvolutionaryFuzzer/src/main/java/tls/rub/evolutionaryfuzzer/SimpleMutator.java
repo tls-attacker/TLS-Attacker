@@ -79,17 +79,18 @@ public class SimpleMutator extends Mutator {
                 continue;
             }
             try {
+
                 WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
                 list.add(trace);
             } catch (JAXBException ex) {
-                System.out.println(file.getAbsolutePath());
                 Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
             } catch (IOException ex) {
-                System.out.println(file.getAbsolutePath());
                 Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
             } catch (XMLStreamException ex) {
-                System.out.println(file.getAbsolutePath());
                 Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+            } catch (Throwable E) {
+                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
+
             }
         }
         this.context = context;
@@ -118,7 +119,7 @@ public class SimpleMutator extends Mutator {
             //TODO can make an off by one error
             ResultContainer.getInstance().setSaveGood(true);
             Random r = new Random();
-            //wähle ein zufälligen trace aus der liste
+            //chose a random trace from the list
             WorkflowTrace tempTrace;
             if (ResultContainer.getInstance().getGoodTraces().isEmpty()) {
                 tempTrace = new WorkflowTrace();
@@ -142,9 +143,9 @@ public class SimpleMutator extends Mutator {
                 ModifiableVariableField field = variableList.get(r.nextInt(trace.getProtocolMessages().size()));
                 String currentFieldName = field.getField().getName();
                 String currentMessageName = field.getObject().getClass().getSimpleName();
+                //LOG.log(Level.INFO, "Fieldname:{0} Message:{1}", new Object[]{currentFieldName, currentMessageName});
                 executeModifiableVariableModification((ModifiableVariableHolder) field.getObject(), field.getField());
             }
-            //System.out.println("----------------------");
 
             return trace;
         }
@@ -183,7 +184,10 @@ public class SimpleMutator extends Mutator {
             case 6:
                 m = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
                 LinkedList<CipherSuite> list = new LinkedList<>();
-                list.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+                int limit = new Random().nextInt(0xFF);
+                for (int i = 0; i < limit; i++) {
+                    list.add(CipherSuite.getRandom());
+                }
                 ArrayList<CompressionMethod> compressionList = new ArrayList<>();
                 compressionList.add(CompressionMethod.NULL);
                 ((ClientHelloDtlsMessage) m).setSupportedCipherSuites(list);
@@ -192,7 +196,10 @@ public class SimpleMutator extends Mutator {
             case 7:
                 m = new ClientHelloMessage(ConnectionEnd.CLIENT);
                 list = new LinkedList<>();
-                list.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+                limit = new Random().nextInt(0xFF);
+                for (int i = 0; i < limit; i++) {
+                    list.add(CipherSuite.getRandom());
+                }
                 compressionList = new ArrayList<>();
                 compressionList.add(CompressionMethod.NULL);
                 ((ClientHelloMessage) m).setSupportedCipherSuites(list);
