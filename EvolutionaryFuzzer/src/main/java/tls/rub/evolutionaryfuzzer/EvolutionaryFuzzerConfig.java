@@ -20,313 +20,148 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * A Config File which controls the EvolutionaryFuzzer.
- * TODO Implement
+ * A Config File which controls the EvolutionaryFuzzer. TODO Implement
+ *
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EvolutionaryFuzzerConfig extends ClientCommandConfig
-{
+public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 
     /**
      *
      */
     public static final String ATTACK_COMMAND = "simple_fuzzer";
 
-    @Parameter(names = "-server_command", description = "Command for starting the server")
-    String serverCommand;
-
     @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given file.", converter = FileConverter.class)
     String serverCommandFromFile;
 
     @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100), in steps 2 and 3", validateWith = PercentageValidator.class)
-    Integer modifyVariablePercentage = 50;
-
-    @Parameter(names = "-modified_variable_whitelist", description = "Pattern for modifiable variables that are going to be modified randomly (e.g., defining *length consideres only variables ending with length")
-    String modifiedVariableWhitelist;
-
-    @Parameter(names = "-modified_variable_blacklist", description = "Pattern for modifiable variables that are NOT going to be modified randomly (e.g., defining *length consideres variables ending with length are out of modification scope.")
-    String modifiedVariableBlacklist;
-
-    @Parameter(names = "-modified_variable_types", description = "Type of modifiable variables that are going to be modified randomly (e.g., defining LENGTH consideres only length variables)", converter = PropertyTypeConverter.class)
-    List<ModifiableVariableProperty.Type> modifiableVariableTypes;
-
-    @Parameter(names = "-modified_variable_formats", description = "Format of modifiable variables that are going to be modified randomly (e.g., defining ASN1 consideres only variables with ASN.1 formats)", converter = PropertyFormatConverter.class)
-    List<ModifiableVariableProperty.Format> modifiableVariableFormats;
+    Integer modifyVariablePercentage = 100;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
     Integer addRecordPercentage = 50;
 
-    @Parameter(names = "-restart_server", description = "Indicates whether the server is restarted in each fuzzing iteration.")
-    boolean restartServerInEachInteration = false;
+    @Parameter(names = "-add_message", description = "Probability of adding a random message to a WorkflowTrace", validateWith = PercentageValidator.class)
+    Integer addMessagePercentage = 10;
 
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.")
     String outputFolder;
 
-    @Parameter(names = "-workflow_folder", description = "Folder with tested workflows.")
-    String workflowFolder;
-
     /**
-     *
+     * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
+     * and serverCommandFromFile to server/server.config
      */
-    public EvolutionaryFuzzerConfig()
-    {
-        modifiableVariableTypes = new LinkedList<>();
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.COUNT);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.LENGTH);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.PADDING);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.COOKIE);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.KEY_MATERIAL);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.SIGNATURE);
-        modifiableVariableTypes.add(ModifiableVariableProperty.Type.TLS_CONSTANT);
-
-        modifiableVariableFormats = new LinkedList<>();
-        modifiableVariableFormats.add(ModifiableVariableProperty.Format.NONE);
-        modifiableVariableFormats.add(ModifiableVariableProperty.Format.ASN1);
-        modifiableVariableFormats.add(ModifiableVariableProperty.Format.PKCS1);
-
-        outputFolder = "/tmp/";
-
-	//tlsTimeout = 80;
+    public EvolutionaryFuzzerConfig() {
+        outputFolder = ".";
+        serverCommandFromFile = "server/server.config";
     }
 
     /**
+     * Returns the path to the ServerConfig File
      *
-     * @return
+     * @return Path to the ServerConfig File
      */
-    public String getServerCommand()
-    {
-        return serverCommand;
-    }
-
-    /**
-     *
-     * @param serverCommand
-     */
-    public void setServerCommand(String serverCommand)
-    {
-        this.serverCommand = serverCommand;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getServerCommandFromFile()
-    {
+    public String getServerCommandFromFile() {
         return serverCommandFromFile;
     }
 
     /**
+     * Sets the path to the ServerConfig File
      *
      * @param serverCommandFromFile
      */
-    public void setServerCommandFromFile(String serverCommandFromFile)
-    {
+    public void setServerCommandFromFile(String serverCommandFromFile) {
         this.serverCommandFromFile = serverCommandFromFile;
     }
 
     /**
+     * Returns an Integer representing the chance that a Variable Modification
+     * occurs in a Workflow Trace, 0 representing 0% and 100 representing 100%
      *
      * @return
      */
-    public Integer getModifyVariablePercentage()
-    {
+    public Integer getModifyVariablePercentage() {
         return modifyVariablePercentage;
     }
 
     /**
+     * Sets an Integer representing the chance that a Variable Modification
+     * occurs in a Workflow Trace, 0 representing 0% and 100 representing 100%
      *
      * @param modifyVariablePercentage
      */
-    public void setModifyVariablePercentage(Integer modifyVariablePercentage)
-    {
+    public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
         this.modifyVariablePercentage = modifyVariablePercentage;
-    }
-
-    // public String getModifiedVariablePattern() {
-    // return modifiedVariableWhitelist;
-    // }
-    //
-    // public void setModifiedVariablePattern(String modifiedVariableWhitelist)
-    // {
-    // this.modifiedVariableWhitelist = modifiedVariableWhitelist;
-    // }
-    /**
-     *
-     * @return
-     */
-    public List<ModifiableVariableProperty.Type> getModifiableVariableTypes()
-    {
-        return Collections.unmodifiableList(modifiableVariableTypes);
+        if (modifyVariablePercentage > 100) {
+            throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
+        }
     }
 
     /**
+     * Gets an Integer representing the Chance that a record is added to a
+     * Message, 0 representing 0% and 100 representing 100%
      *
-     * @param modifiableVariableTypes
+     * @return Integer representing the Chance that a record is added to a
+     * Message
      */
-    public void setModifiableVariableTypes(List<ModifiableVariableProperty.Type> modifiableVariableTypes)
-    {
-        this.modifiableVariableTypes = modifiableVariableTypes;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<ModifiableVariableProperty.Format> getModifiableVariableFormats()
-    {
-        return Collections.unmodifiableList(modifiableVariableFormats);
-    }
-
-    /**
-     *
-     * @param modifiableVariableFormats
-     */
-    public void setModifiableVariableFormats(List<ModifiableVariableProperty.Format> modifiableVariableFormats)
-    {
-        this.modifiableVariableFormats = modifiableVariableFormats;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Integer getAddRecordPercentage()
-    {
+    public Integer getAddRecordPercentage() {
         return addRecordPercentage;
+
     }
 
     /**
+     * Sets an Integer representing the Chance that a record is added to a
+     * Message, 0 representing 0% and 100 representing 100%
      *
      * @param addRecordPercentage
      */
-    public void setAddRecordPercentage(Integer addRecordPercentage)
-    {
+    public void setAddRecordPercentage(Integer addRecordPercentage) {
         this.addRecordPercentage = addRecordPercentage;
-    }
-
-    // public boolean isInterruptAfterFirstFinding() {
-    // return interruptAfterFirstFinding;
-    // }
-    //
-    // public void setInterruptAfterFirstFinding(boolean
-    // interruptAfterFirstFinding) {
-    // this.interruptAfterFirstFinding = interruptAfterFirstFinding;
-    // }
-    /**
-     *
-     * @return
-     */
-    public String getModifiedVariableWhitelist()
-    {
-        return modifiedVariableWhitelist;
+        if (addRecordPercentage > 100) {
+            throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
+        }
     }
 
     /**
+     * Gets an Integer representing the Chance that a Message is added to
+     * WorkflowTrace, 0 representing 0% and 100 representing 100%
      *
-     * @param modifiedVariableWhitelist
+     * @return Integer representing the Chance that a Message is added to
+     * WorkflowTrace
      */
-    public void setModifiedVariableWhitelist(String modifiedVariableWhitelist)
-    {
-        this.modifiedVariableWhitelist = modifiedVariableWhitelist;
+    public Integer getAddMessagePercentage() {
+        return addMessagePercentage;
     }
 
     /**
+     * Sets an Integer representing the Chance that a Message is added to
+     * WorkflowTrace, 0 representing 0% and 100 representing 100%
      *
-     * @return
+     * @param addMessagePercentage
      */
-    public String getModifiedVariableBlacklist()
-    {
-        return modifiedVariableBlacklist;
+    public void setAddMessagePercentage(Integer addMessagePercentage) {
+        this.addMessagePercentage = addMessagePercentage;
     }
 
     /**
+     * Returns the Path to the Folder in which the Fuzzer will save its output
+     * to. The Server will genereate several Folder in the Output Folder.
      *
-     * @param modifiedVariableBlacklist
+     * @return Path to the Folder in which the Fuzzer will save its output to
      */
-    public void setModifiedVariableBlacklist(String modifiedVariableBlacklist)
-    {
-        this.modifiedVariableBlacklist = modifiedVariableBlacklist;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isRestartServerInEachInteration()
-    {
-        return restartServerInEachInteration;
-    }
-
-    /**
-     *
-     * @param restartServerInEachInteration
-     */
-    public void setRestartServerInEachInteration(boolean restartServerInEachInteration)
-    {
-        this.restartServerInEachInteration = restartServerInEachInteration;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getOutputFolder()
-    {
+    public String getOutputFolder() {
         return outputFolder;
     }
 
     /**
+     * Sets the Path to the Folder in which the Fuzzer will save its output to.
+     * The Server will genereate several Folder in the Output Folder.
      *
      * @param outputFolder
      */
-    public void setOutputFolder(String outputFolder)
-    {
+    public void setOutputFolder(String outputFolder) {
         this.outputFolder = outputFolder;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getWorkflowFolder()
-    {
-        return workflowFolder;
-    }
-
-    /**
-     *
-     * @param workflowFolder
-     */
-    public void setWorkflowFolder(String workflowFolder)
-    {
-        this.workflowFolder = workflowFolder;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean containsServerCommand()
-    {
-        return serverCommand != null || serverCommandFromFile != null;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getResultingServerCommand()
-    {
-        if (serverCommand != null)
-        {
-            return serverCommand;
-        }
-        else
-        {
-            return serverCommandFromFile;
-        }
-    }
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 }
