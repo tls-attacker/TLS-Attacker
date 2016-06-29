@@ -126,7 +126,6 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 
 	    return nextPointer;
 	} catch (IOException ex) {
-	    ex.printStackTrace();
 	    throw new WorkflowExecutionException("EC public key parsing failed", ex);
 	}
     }
