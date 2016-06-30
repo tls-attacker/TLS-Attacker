@@ -93,7 +93,7 @@ public class SimpleMutator extends Mutator {
             List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace, ConnectionEnd.CLIENT);
             //LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
             if (variableList.size() > 0) {
-                ModifiableVariableField field = variableList.get(r.nextInt(trace.getProtocolMessages().size()));
+                ModifiableVariableField field = variableList.get(r.nextInt(variableList.size()));
                 String currentFieldName = field.getField().getName();
                 String currentMessageName = field.getObject().getClass().getSimpleName();
                 //LOG.log(Level.INFO, "Fieldname:{0} Message:{1}", new Object[]{currentFieldName, currentMessageName});
