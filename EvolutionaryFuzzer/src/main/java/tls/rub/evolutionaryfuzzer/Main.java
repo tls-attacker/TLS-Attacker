@@ -7,9 +7,22 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import WorkFlowType.WorkFlowTraceType;
+import WorkFlowType.WorkflowTraceTypeManager;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 /**
  *
@@ -30,6 +43,7 @@ public class Main {
         EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
         JCommander jc = new JCommander(evoConfig);
         jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
+        jc.addCommand("tracetypes", new Object());
         jc.parse(args);
 
         if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
@@ -40,6 +54,47 @@ public class Main {
             case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
                 Controller controller = new FuzzerController(evoConfig);
                 controller.startFuzzer();
+                break;
+            case "tracetypes":
+                File f = new File(evoConfig.getOutputFolder() + "good/");
+                ArrayList<WorkflowTrace> list = new ArrayList<>();
+                LOG.log(Level.INFO, "Reading good Traces in:");
+
+                for (File file : f.listFiles()) {
+                    if (file.getName().startsWith(".")) {
+                        //We ignore the .gitignore File
+                        continue;
+                    }
+                    try {
+
+                        WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                        list.add(trace);
+                    } catch (JAXBException ex) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+                    } catch (XMLStreamException ex) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+                    } catch (Throwable E) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
+
+                    }
+                }
+                LOG.log(Level.INFO, "Fininshed reading.");
+                Set<WorkFlowTraceType> set = WorkflowTraceTypeManager.generateTypeList(list);
+                
+                LOG.log(Level.INFO, "Found "+set.size() + " different TraceTypes");
+                for(WorkFlowTraceType type:set)
+                {
+                    System.out.println(type);
+                }
+                set = WorkflowTraceTypeManager.generateCleanTypeList(list);
+                
+                LOG.log(Level.INFO, "Found "+set.size() + " different clean TraceTypes");
+                for(WorkFlowTraceType type:set)
+                {
+                    System.out.println(type);
+                }
                 break;
             default:
                 jc.usage();
