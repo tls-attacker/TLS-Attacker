@@ -6,7 +6,6 @@ import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.executeModifiable
 import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
 
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
@@ -32,17 +31,11 @@ import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 /**
  *
