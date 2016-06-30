@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.tls.crypto;
 
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
@@ -78,9 +82,9 @@ public class ECCUtilsBCWrapper {
 	input.read(point);
 
 	short[] pointFormats = convertPointFormats(ECPointFormat.values());
-
-	return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
+        return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
     }
+    private static final Logger LOG = Logger.getLogger(ECCUtilsBCWrapper.class.getName());
 
     /**
      * Converts named curves into BC style notation
