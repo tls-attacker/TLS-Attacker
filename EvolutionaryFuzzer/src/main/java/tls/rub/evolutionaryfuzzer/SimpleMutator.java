@@ -1,6 +1,4 @@
-
 package tls.rub.evolutionaryfuzzer;
-
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
@@ -51,44 +49,23 @@ import javax.xml.stream.XMLStreamException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class SimpleMutator extends Mutator {
+
     private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 
     //private final Node<WorkflowTrace> tree;
-    private final ArrayList<WorkflowTrace> list;
     private final TlsContext context;
     private int goodIndex = 0;
 
     /**
      *
      * @param context
+     * @param config
      */
-    public SimpleMutator(TlsContext context) {
-        //tree = new Node<>(new WorkflowTrace());
-        list = new ArrayList<>();
-        //read all good traces
-        File f = new File("good/");//TODO
-        System.out.println("Reading good Traces in:");
-        for (File file : f.listFiles()) {
-            if (file.getName().startsWith(".")) {
-                continue;
-            }
-            try {
+    public SimpleMutator(TlsContext context, EvolutionaryFuzzerConfig config) {
+        super(config);
 
-                WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-                list.add(trace);
-            } catch (JAXBException ex) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-            } catch (IOException ex) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-            } catch (XMLStreamException ex) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-            } catch (Throwable E) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
-
-            }
-        }
         this.context = context;
-        LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
+
     }
 
     /**
@@ -97,40 +74,29 @@ public class SimpleMutator extends Mutator {
      */
     @Override
     public WorkflowTrace getNewMutation() {
-        //Execute all previously found good WorkflowTraces
-        if (goodIndex < list.size() && goodIndex != -1) {
-            //TODO can make an off by one error
-            ResultContainer.getInstance().setSaveGood(false);
-            WorkflowTrace t = list.get(goodIndex);
-            goodIndex++;
-            if (goodIndex == list.size()) {
-                goodIndex = -1;
-                LOG.log(Level.INFO, "Executed all old good Traces!");
-            }
-            return t;
-        }//Start with the actual Mutating
-        else {
-            //TODO can make an off by one error
-            ResultContainer.getInstance().setSaveGood(true);
-            Random r = new Random();
-            //chose a random trace from the list
-            WorkflowTrace tempTrace;
-            if (ResultContainer.getInstance().getGoodTraces().isEmpty()) {
-                tempTrace = new WorkflowTrace();
-                ResultContainer.getInstance().getGoodTraces().add(tempTrace);
-            } else {
-                tempTrace = ResultContainer.getInstance().getGoodTraces().get(r.nextInt(ResultContainer.getInstance().getGoodTraces().size()));
-            }
 
-            WorkflowTrace trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempTrace);
-            if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) < 10) {
-                addRandomMessage(trace);
-            }
+        Random r = new Random();
+        //chose a random trace from the list
+        WorkflowTrace tempTrace;
+        if (ResultContainer.getInstance().getGoodTraces().isEmpty()) {
+            tempTrace = new WorkflowTrace();
+            ResultContainer.getInstance().getGoodTraces().add(tempTrace);
+        } else {
+            //Choose a random Trace to modify
+            tempTrace = ResultContainer.getInstance().getGoodTraces().get(r.nextInt(ResultContainer.getInstance().getGoodTraces().size()));
+        }
 
-            if (r.nextInt(10000) == 1) {
-                removeRandomMessage(trace);
-            }
-
+        WorkflowTrace trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempTrace);
+        //perhaps add a message
+        if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) < config.getAddMessagePercentage()) {
+            addRandomMessage(trace);
+        }
+        //perhaps remove a message
+        if (r.nextInt(100) <= config.getRemoveMessagePercentage()) {
+            removeRandomMessage(trace);
+        }
+        //Modify a random field:
+        if (r.nextInt(100) >= config.getModifyVariablePercentage()) {
             List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace, ConnectionEnd.CLIENT);
             //LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
             if (variableList.size() > 0) {
@@ -140,9 +106,9 @@ public class SimpleMutator extends Mutator {
                 //LOG.log(Level.INFO, "Fieldname:{0} Message:{1}", new Object[]{currentFieldName, currentMessageName});
                 executeModifiableVariableModification((ModifiableVariableHolder) field.getObject(), field.getField());
             }
-
-            return trace;
         }
+        return trace;
+
     }
 
     //TODO Unit Test
@@ -245,6 +211,5 @@ public class SimpleMutator extends Mutator {
             return fields.get(fieldNumber);
         }
     }
-
 
 }

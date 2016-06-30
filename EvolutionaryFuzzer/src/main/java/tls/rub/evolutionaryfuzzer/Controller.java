@@ -16,9 +16,14 @@ package tls.rub.evolutionaryfuzzer;
  */
 public abstract class Controller
 {
-
+    public Controller(EvolutionaryFuzzerConfig config)
+    {
+        this.config = config;
+    }
+    //The config used by the Fuzzer
+    protected EvolutionaryFuzzerConfig config;
+    
     //Is the Fuzzing Process running?
-
     protected boolean isRunning;
 
     /**

@@ -1,4 +1,3 @@
-
 package tls.rub.evolutionaryfuzzer;
 
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -14,8 +13,8 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class FuzzerController extends Controller
-{
+public class FuzzerController extends Controller {
+
     private static final Logger LOG = Logger.getLogger(FuzzerController.class.getName());
 
     //Chosen Mutator
@@ -26,28 +25,43 @@ public class FuzzerController extends Controller
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
+     *
+     * @param config Configuration used by the Controller
      */
-    public FuzzerController()
-    {
+    public FuzzerController(EvolutionaryFuzzerConfig config) {
+        super(config);
         ServerManager serverManager = ServerManager.getInstance();
-        for (File f : new File("server/").listFiles())
-        {
-            try
-            {
-                TLSServer server = ServerSerializer.read(f);
+        File file = new File(config.getServerCommandFromFile());
+        if (file.isDirectory()) {
+            //ServerConfig is a Folder
+            for (File f : file.listFiles()) {
+                try {
+                    TLSServer server = ServerSerializer.read(f);
+                    serverManager.addServer(server);
+
+                } catch (Exception ex) {
+                    LOG.log(Level.SEVERE, "Could not read Server!", ex);
+                }
+            }
+        } else {
+            //ServerConfig is a File
+            try {
+                TLSServer server = ServerSerializer.read(file);
                 serverManager.addServer(server);
 
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 LOG.log(Level.SEVERE, "Could not read Server!", ex);
             }
         }
 
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
-        mutator = new SimpleMutator(tmpTlsContext);
-        pool = new ExecutorThreadPool(1, mutator);
+        mutator = new SimpleMutator(tmpTlsContext, config);
+        int threads = config.getThreads();
+        if (threads == -1) {
+            threads = serverManager.getNumberOfServers();
+        }
+        pool = new ExecutorThreadPool(threads, mutator, config);
         Thread t = new Thread(pool);
         t.setName("Executor Thread Pool");
         t.start();
@@ -57,8 +71,7 @@ public class FuzzerController extends Controller
      * Starts the Fuzzer
      */
     @Override
-    public void startFuzzer()
-    {
+    public void startFuzzer() {
         this.isRunning = false;
         pool.setStopped(false);
     }
@@ -67,8 +80,7 @@ public class FuzzerController extends Controller
      * Stops the Fuzzer
      */
     @Override
-    public void stopFuzzer()
-    {
+    public void stopFuzzer() {
         this.isRunning = false;
         pool.setStopped(true);
     }

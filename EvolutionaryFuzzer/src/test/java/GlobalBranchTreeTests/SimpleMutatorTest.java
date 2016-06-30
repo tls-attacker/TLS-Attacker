@@ -74,8 +74,8 @@ public class SimpleMutatorTest
     {
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
-
-        SimpleMutator mutator = new SimpleMutator(tmpTlsContext);
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        SimpleMutator mutator = new SimpleMutator(tmpTlsContext,config);
         mutator.getNewMutation();
     }
 }

@@ -18,6 +18,13 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
  */
 public abstract class Mutator
 {
+    
+    protected EvolutionaryFuzzerConfig config;
+    
+    public Mutator(EvolutionaryFuzzerConfig config)
+    {
+        this.config= config;
+    }
 
     /**
      * Generates a new WorkflowTrace to Fuzz the Application

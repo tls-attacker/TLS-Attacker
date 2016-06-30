@@ -77,14 +77,22 @@ public class ServerManager
     }
 
     /**
-     * Removes all Server from the ServerList. This method is mostly Implemented
+     * Removes all Server from the ServerList. This method is mostly implemented
      * for UnitTesting purposes.
      */
     public void clear()
     {
         serverList = new ArrayList<>();
     }
-
+    
+    /**
+     * Returns the Number of Servers the Fuzzer controls
+     * @return Number of Servers the Fuzzer controls
+     */
+    public int getNumberOfServers()
+    {
+        return serverList.size();
+    }
 
     //Singleton
 

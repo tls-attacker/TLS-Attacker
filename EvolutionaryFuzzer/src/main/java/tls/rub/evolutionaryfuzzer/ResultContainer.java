@@ -1,4 +1,3 @@
-
 package tls.rub.evolutionaryfuzzer;
 
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
@@ -20,6 +19,7 @@ import tls.branchtree.MergeResult;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ResultContainer {
+
     private static final Logger LOG = Logger.getLogger(ResultContainer.class.getName());
 
     /**
@@ -36,7 +36,6 @@ public class ResultContainer {
     //List of old Results
     private final ArrayList<Result> results;
     private final ArrayList<WorkflowTrace> goodTrace;
-    private boolean saveGood = true;
 
     private ResultContainer() {
         branch = new BranchTrace();
@@ -51,15 +50,6 @@ public class ResultContainer {
      */
     public ArrayList<WorkflowTrace> getGoodTraces() {
         return goodTrace;
-    }
-
-
-    public boolean isSaveGood() {
-        return saveGood;
-    }
-
-    public void setSaveGood(boolean saveResults) {
-        this.saveGood = saveResults;
     }
 
     /**
@@ -85,14 +75,13 @@ public class ResultContainer {
             LOG.log(Level.INFO, "Found a GoodTrace:{0}", r.toString());
             goodTrace.add(result.getTrace());
             //It may be that we dont want to safe good Traces, for example if we execute already saved Traces 
-            if (saveGood) {
-                File f = new File("good/" + result.getId());
-                try {
-                    f.createNewFile();
-                    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-                } catch (JAXBException | IOException E) {
-                    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}", f.getAbsolutePath());
-                }
+
+            File f = new File("good/" + result.getId());
+            try {
+                f.createNewFile();
+                WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+            } catch (JAXBException | IOException E) {
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}", f.getAbsolutePath());
             }
         }
         if (result.hasCrashed()) {
@@ -119,7 +108,7 @@ public class ResultContainer {
 
     //Singleton
     private static class ResultContainerHolder {
-        
+
         private static final ResultContainer INSTANCE = new ResultContainer();
 
         private ResultContainerHolder() {

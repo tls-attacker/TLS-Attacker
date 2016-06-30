@@ -2,6 +2,7 @@
 package tls.rub.evolutionaryfuzzer;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.validators.PositiveInteger;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
@@ -18,33 +19,53 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     /**
      *
      */
-    public static final String ATTACK_COMMAND = "simple_fuzzer";
+    public static final String ATTACK_COMMAND = "evolutionary_fuzzer";
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
-    @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given file.", converter = FileConverter.class)
-    String serverCommandFromFile;
+    @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given File or Folder.", converter = FileConverter.class)
+    private String serverCommandFromFile = "server/";
 
     @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100), in steps 2 and 3", validateWith = PercentageValidator.class)
-    Integer modifyVariablePercentage = 100;
+    private Integer modifyVariablePercentage = 100;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
-    Integer addRecordPercentage = 50;
+    private Integer addRecordPercentage = 50;
 
     @Parameter(names = "-add_message", description = "Probability of adding a random message to a WorkflowTrace", validateWith = PercentageValidator.class)
-    Integer addMessagePercentage = 10;
+    private Integer addMessagePercentage = 10;
+    @Parameter(names = "-remove_message", description = "Probability of removing a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
+    private Integer removeMessagePercentage = 1;
 
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.")
-    String outputFolder;
+    private String outputFolder ="./";
+    @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
+    private Integer threads = -1;
 
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
      * and serverCommandFromFile to server/server.config
      */
     public EvolutionaryFuzzerConfig() {
-        outputFolder = ".";
-        serverCommandFromFile = "server/server.config";
+        outputFolder = "./";
+        serverCommandFromFile = "server/";
     }
 
+    public Integer getThreads() {
+        return threads;
+    }
+
+    public void setThreads(Integer threads) {
+        this.threads = threads;
+    }
+    
+    public Integer getRemoveMessagePercentage() {
+        return removeMessagePercentage;
+    }
+
+    public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
+        this.removeMessagePercentage = removeMessagePercentage;
+    }
+    
     /**
      * Returns the path to the ServerConfig File
      *
