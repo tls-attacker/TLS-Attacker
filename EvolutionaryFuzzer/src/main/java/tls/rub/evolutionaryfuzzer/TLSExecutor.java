@@ -130,16 +130,17 @@ public class TLSExecutor extends Executor {
             try {
                 workflowExecutor.executeWorkflow();
             } catch (WorkflowExecutionException ex) {
-                File f = new File("faulty/" + LogFileIDManager.getInstance().getID());
+                File f = new File("faulty/" + LogFileIDManager.getInstance().getFilename());
 
                 try {
                     f.createNewFile();
                     WorkflowTraceSerializer.write(f, trace);
                 } catch (JAXBException | IOException Ex) {
                     System.out.println("Could not serialize WorkflowTrace!");
-                    Ex.printStackTrace();
                 }
+                //TODO vermutlich aktivieren
                 ex.printStackTrace();
+                
             }
             transportHandler.closeConnection();
 
@@ -153,7 +154,7 @@ public class TLSExecutor extends Executor {
             ResultContainer.getInstance().commit(r);
         } catch (Exception E) {
             //TODO
-            File f = new File("faulty/" + LogFileIDManager.getInstance().getID());
+            File f = new File("faulty/" + LogFileIDManager.getInstance().getFilename());
 
             try {
                 f.createNewFile();

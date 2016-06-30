@@ -26,13 +26,13 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private String serverCommandFromFile = "server/";
 
     @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100), in steps 2 and 3", validateWith = PercentageValidator.class)
-    private Integer modifyVariablePercentage = 100;
+    private Integer modifyVariablePercentage = 20;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
     private Integer addRecordPercentage = 50;
 
     @Parameter(names = "-add_message", description = "Probability of adding a random message to a WorkflowTrace", validateWith = PercentageValidator.class)
-    private Integer addMessagePercentage = 10;
+    private Integer addMessagePercentage = 100;
     @Parameter(names = "-remove_message", description = "Probability of removing a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
     private Integer removeMessagePercentage = 1;
 

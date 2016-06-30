@@ -38,8 +38,8 @@ class Result
     //Workflowtrace that was executed
     private final WorkflowTrace executedTrace;
     //Each Result get an id for easier referencing, the id is also in 
-    private final int id;
-    Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace,WorkflowTrace executedTrace, int id)
+    private final String id;
+    Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace,WorkflowTrace executedTrace, String id)
     {
         this.hasCrashed = hasCrashed;
         this.didTimeout = didTimeout;
@@ -54,7 +54,7 @@ class Result
      * Returns the ID of the Result
      * @return ID of the result
      */
-    public int getId()
+    public String getId()
     {
         return id;
     }

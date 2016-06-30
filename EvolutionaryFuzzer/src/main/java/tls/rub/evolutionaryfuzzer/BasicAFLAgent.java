@@ -86,7 +86,7 @@ public class BasicAFLAgent extends Agent
                 timeout = true;
                 break;
         }
-        Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace, executedTrace, LogFileIDManager.getInstance().getID());
+        Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace, executedTrace, LogFileIDManager.getInstance().getFilename());
 
         return result;
     }

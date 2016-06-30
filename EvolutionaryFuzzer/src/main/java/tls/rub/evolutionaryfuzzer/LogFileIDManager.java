@@ -7,6 +7,12 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -14,8 +20,8 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class LogFileIDManager
-{
+public class LogFileIDManager {
+
     private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
 
     /**
@@ -28,12 +34,33 @@ public class LogFileIDManager
     }
 
     private int id = 0;
-
+    private int run = 0;
     /**
      * Private Constructor since its a Singleton
      */
-    private LogFileIDManager()
-    {
+    private LogFileIDManager() {
+        FileWriter w = null;
+        try {
+            File f = new File("file.id");
+            if (f.exists()) {
+                BufferedReader r = new BufferedReader(new FileReader(f));
+                String s = r.readLine();
+                run = Integer.parseInt(s);
+                run++;
+                f.delete();
+            }   f.createNewFile();
+            w = new FileWriter(f);
+            w.write(""+run);
+        } catch (IOException ex) {
+            Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                w.close();
+            } catch (IOException ex) {
+                Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 
     /**
@@ -41,22 +68,23 @@ public class LogFileIDManager
      *
      * @return Unique ID
      */
-    public synchronized int getID()
-    {
+    public synchronized int getID() {
         id++;
         return id;
     }
-
+    public synchronized String getFilename()
+    {
+        id++;
+        return ""+run+"."+id;
+    }
     /**
      * Singleton
      */
-    private static class LogFileIDManagerHolder
-    {
+    private static class LogFileIDManagerHolder {
 
         private static final LogFileIDManager INSTANCE = new LogFileIDManager();
 
-        private LogFileIDManagerHolder()
-        {
+        private LogFileIDManagerHolder() {
         }
     }
 
