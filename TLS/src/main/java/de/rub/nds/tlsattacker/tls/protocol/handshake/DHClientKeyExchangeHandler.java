@@ -136,7 +136,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
 	byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(protocolMessage.getY().getValue());
 	protocolMessage.setSerializedPublicKey(serializedPublicKey);
-	protocolMessage.setSerializedPublicKeyLength(serializedPublicKey.length);
+	protocolMessage.setSerializedPublicKeyLength(protocolMessage.getSerializedPublicKey().getValue().length);
 
 	byte[] result = ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage
 		.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PARAM_LENGTH), protocolMessage
