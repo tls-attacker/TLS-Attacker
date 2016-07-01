@@ -31,28 +31,7 @@ public class FuzzerController extends Controller {
     public FuzzerController(EvolutionaryFuzzerConfig config) {
         super(config);
         ServerManager serverManager = ServerManager.getInstance();
-        File file = new File(config.getServerCommandFromFile());
-        if (file.isDirectory()) {
-            //ServerConfig is a Folder
-            for (File f : file.listFiles()) {
-                try {
-                    TLSServer server = ServerSerializer.read(f);
-                    serverManager.addServer(server);
-
-                } catch (Exception ex) {
-                    LOG.log(Level.SEVERE, "Could not read Server!", ex);
-                }
-            }
-        } else {
-            //ServerConfig is a File
-            try {
-                TLSServer server = ServerSerializer.read(file);
-                serverManager.addServer(server);
-
-            } catch (Exception ex) {
-                LOG.log(Level.SEVERE, "Could not read Server!", ex);
-            }
-        }
+        serverManager.init(config);
 
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());

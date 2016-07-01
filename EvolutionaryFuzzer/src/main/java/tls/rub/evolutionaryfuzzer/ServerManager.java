@@ -7,7 +7,10 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ServerManager
@@ -39,6 +42,31 @@ public class ServerManager
         serverList.add(server);
     }
 
+    public void init(EvolutionaryFuzzerConfig config)
+    {
+        File file = new File(config.getServerCommandFromFile());
+        if (file.isDirectory()) {
+            //ServerConfig is a Folder
+            for (File f : file.listFiles()) {
+                try {
+                    TLSServer server = ServerSerializer.read(f);
+                    addServer(server);
+
+                } catch (Exception ex) {
+                    LOG.log(Level.SEVERE, "Could not read Server!", ex);
+                }
+            }
+        } else {
+            //ServerConfig is a File
+            try {
+                TLSServer server = ServerSerializer.read(file);
+                addServer(server);
+
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "Could not read Server!", ex);
+            }
+        }
+    }
     /**
      * Trys to get an unused Server from the ServerList. Starts over if there is
      * no free Server available. If it still searches for a free Server after 10
@@ -94,8 +122,10 @@ public class ServerManager
         return serverList.size();
     }
 
-    //Singleton
+    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 
+    //Singleton
+    
     private static class ServerManagerHolder
     {
 

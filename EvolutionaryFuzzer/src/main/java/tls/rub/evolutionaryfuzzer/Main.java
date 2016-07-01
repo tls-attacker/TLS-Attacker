@@ -44,6 +44,9 @@ public class Main {
         JCommander jc = new JCommander(evoConfig);
         jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
         jc.addCommand("tracetypes", new Object());
+        jc.addCommand("clean", new Object());
+        jc.addCommand("clean-all", new Object());
+        jc.addCommand("execute-faulty", new Object());
         jc.parse(args);
 
         if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
@@ -82,20 +85,51 @@ public class Main {
                 }
                 LOG.log(Level.INFO, "Fininshed reading.");
                 Set<WorkFlowTraceType> set = WorkflowTraceTypeManager.generateTypeList(list);
-                
-                LOG.log(Level.INFO, "Found "+set.size() + " different TraceTypes");
-                for(WorkFlowTraceType type:set)
-                {
+
+                LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
+                for (WorkFlowTraceType type : set) {
                     System.out.println(type);
                 }
                 set = WorkflowTraceTypeManager.generateCleanTypeList(list);
-                
-                LOG.log(Level.INFO, "Found "+set.size() + " different clean TraceTypes");
-                for(WorkFlowTraceType type:set)
-                {
+
+                LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");
+                for (WorkFlowTraceType type : set) {
                     System.out.println(type);
                 }
                 break;
+            case "clean":
+                break;
+            case "clean-all":
+                break;
+            case "execute-faulty":
+                ServerManager manager = ServerManager.getInstance();
+                manager.init(evoConfig);
+                f = new File(evoConfig.getOutputFolder() + "faulty/");
+                
+                for (File file : f.listFiles()) {
+                    if (file.getName().startsWith(".")) {
+                        //We ignore the .gitignore File
+                        continue;
+                    }
+                    try {
+
+                        WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                        LOG.log(Level.INFO, "Trace:"+file.getAbsolutePath());
+                        DebugExecutor.execute(trace);
+                    } catch (JAXBException ex) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+                    } catch (XMLStreamException ex) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
+                    } catch (Throwable E) {
+                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
+
+                    }
+                }
+
+                break;
+
             default:
                 jc.usage();
                 return;
