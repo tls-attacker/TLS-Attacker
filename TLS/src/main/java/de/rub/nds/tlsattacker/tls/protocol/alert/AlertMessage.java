@@ -139,7 +139,7 @@ public class AlertMessage extends ProtocolMessage
             sb.append("null");
         }
         sb.append(", ");
-        if (description != null)
+        if (description != null && description.getValue() != null)
         {
             sb.append(AlertDescription.getAlertDescription(description.getValue()).toString());
         }
