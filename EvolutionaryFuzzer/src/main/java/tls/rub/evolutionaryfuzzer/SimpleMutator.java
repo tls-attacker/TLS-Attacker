@@ -1,5 +1,6 @@
 package tls.rub.evolutionaryfuzzer;
 
+import Helper.FuzzingHelper;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.executeModifiableVariableModification;
@@ -88,6 +89,15 @@ public class SimpleMutator extends Mutator {
         if (r.nextInt(100) <= config.getRemoveMessagePercentage()) {
             removeRandomMessage(trace);
         }
+        if(trace.getProtocolMessages().isEmpty())
+        {
+            addRandomMessage(trace);
+        }
+        //perhaps add records
+        if (r.nextInt(100) <= config.getAddRecordPercentage()) {
+            FuzzingHelper.addRecordsAtRandom(trace, ConnectionEnd.CLIENT);
+        }
+        
         //Modify a random field:
         if (r.nextInt(100) >= config.getModifyVariablePercentage()) {
             List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace, ConnectionEnd.CLIENT);
