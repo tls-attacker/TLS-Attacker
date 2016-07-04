@@ -76,59 +76,48 @@ final public class ByteArrayModificationFactory
         return new ByteArrayExplicitValueModification(explicitValue);
     }
 
-    public static VariableModification<byte[]> createRandomModification(byte[] originalValue)
-    {
-        Random random = RandomHelper.getRandom();
-        int r = random.nextInt(MODIFICATION_COUNT);
-        VariableModification<byte[]> vm = null;
-        int modifiedArrayLength;
-        if (originalValue == null)
-        {
-            modifiedArrayLength = MODIFIED_ARRAY_LENGTH_ESTIMATION;
-        }
-        else
-        {
-            modifiedArrayLength = originalValue.length;
-            if (originalValue.length == 0)
-            {
-                r = BYTE_ARRAY_EXPLICIT_VALUE_MODIFICATION;
-            }
-        }
-        switch (r)
-        {
-            case BYTE_ARRAY_XOR_MODIFICATION:
-                int modificationArrayLength = random.nextInt(modifiedArrayLength);
-                byte[] xor = new byte[modificationArrayLength];
-                random.nextBytes(xor);
-                int startPosition = random.nextInt(modifiedArrayLength - modificationArrayLength);
-                vm = new ByteArrayXorModification(xor, startPosition);
-                return vm;
-            case BYTE_ARRAY_INSERT_MODIFICATION:
-                modificationArrayLength = random.nextInt(MAX_BYTE_ARRAY_LENGTH);
-                byte[] bytesToInsert = new byte[modificationArrayLength];
-                random.nextBytes(bytesToInsert);
-                int insertPosition = random.nextInt(modifiedArrayLength);
-                vm = new ByteArrayInsertModification(bytesToInsert, insertPosition);
-                return vm;
-            case BYTE_ARRAY_DELETE_MODIFICATION:
-                //TODO can be negative if modifiedArrayLength is 0, rethink
-                if (modifiedArrayLength > 1)
-                {
-                    startPosition = random.nextInt(modifiedArrayLength - 1);
-                    int count = random.nextInt(modifiedArrayLength - startPosition);
-                    count++;
-                    vm = new ByteArrayDeleteModification(startPosition, count);
-                    return vm;
-                }
-                //If we cannot delete we fall through
-            case BYTE_ARRAY_EXPLICIT_VALUE_MODIFICATION:
-                modificationArrayLength = random.nextInt(MAX_BYTE_ARRAY_LENGTH);
-                byte[] explicitValue = new byte[modificationArrayLength];
-                random.nextBytes(explicitValue);
-                vm = new ByteArrayExplicitValueModification(explicitValue);
-                return vm;
-        }
-        return vm;
+    public static VariableModification<byte[]> createRandomModification(byte[] originalValue) {
+	Random random = RandomHelper.getRandom();
+	int r = random.nextInt(MODIFICATION_COUNT);
+	VariableModification<byte[]> vm = null;
+	int modifiedArrayLength;
+	if (originalValue == null) {
+	    modifiedArrayLength = MODIFIED_ARRAY_LENGTH_ESTIMATION;
+	} else {
+	    modifiedArrayLength = originalValue.length;
+	    if (originalValue.length == 0 || originalValue.length == 1) {
+		r = BYTE_ARRAY_EXPLICIT_VALUE_MODIFICATION;
+	    }
+	}
+	switch (r) {
+	    case BYTE_ARRAY_XOR_MODIFICATION:
+		int modificationArrayLength = random.nextInt(modifiedArrayLength);
+		byte[] xor = new byte[modificationArrayLength];
+		random.nextBytes(xor);
+		int startPosition = random.nextInt(modifiedArrayLength - modificationArrayLength);
+		vm = new ByteArrayXorModification(xor, startPosition);
+		return vm;
+	    case BYTE_ARRAY_INSERT_MODIFICATION:
+		modificationArrayLength = random.nextInt(MAX_BYTE_ARRAY_LENGTH);
+		byte[] bytesToInsert = new byte[modificationArrayLength];
+		random.nextBytes(bytesToInsert);
+		int insertPosition = random.nextInt(modifiedArrayLength);
+		vm = new ByteArrayInsertModification(bytesToInsert, insertPosition);
+		return vm;
+	    case BYTE_ARRAY_DELETE_MODIFICATION:
+		startPosition = random.nextInt(modifiedArrayLength - 1);
+		int count = random.nextInt(modifiedArrayLength - startPosition);
+		count++;
+		vm = new ByteArrayDeleteModification(startPosition, count);
+		return vm;
+	    case BYTE_ARRAY_EXPLICIT_VALUE_MODIFICATION:
+		modificationArrayLength = random.nextInt(MAX_BYTE_ARRAY_LENGTH);
+		byte[] explicitValue = new byte[modificationArrayLength];
+		random.nextBytes(explicitValue);
+		vm = new ByteArrayExplicitValueModification(explicitValue);
+		return vm;
+	}
+	return vm;
     }
 
 }
