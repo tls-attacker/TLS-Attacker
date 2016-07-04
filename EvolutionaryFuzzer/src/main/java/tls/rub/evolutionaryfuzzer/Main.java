@@ -16,16 +16,10 @@ import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 /**
  *
@@ -63,16 +57,14 @@ public class Main {
                 controller.startFuzzer();
                 break;
             case "tracetypes":
-                File f = new File(evoConfig.getOutputFolder() + "good/");
+                File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/");
                 List<WorkflowTrace> traces = WorkflowTraceSerializer.readFolder(f);
                 
                 LOG.log(Level.INFO, "Fininshed reading.");
                 Set<WorkFlowTraceType> set = WorkflowTraceTypeManager.generateTypeList(traces);
 
                 LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
-                for (WorkFlowTraceType type : set) {
-                    System.out.println(type);
-                }
+                
                 set = WorkflowTraceTypeManager.generateCleanTypeList(traces);
 
                 LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");

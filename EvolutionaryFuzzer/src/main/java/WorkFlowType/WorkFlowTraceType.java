@@ -60,7 +60,7 @@ public class WorkFlowTraceType {
             if (flow.getIssuer() == ConnectionEnd.CLIENT) {
                 flows.remove(i);
             } else {
-                return;
+                break;
             }
         }
     }
