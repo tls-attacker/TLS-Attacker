@@ -85,7 +85,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
         currentPointer = nextPointer;
         nextPointer = currentPointer + protocolMessage.getpLength().getValue();
-        BigInteger p = new BigInteger(1, Arrays.copyOfRange(message, currentPointer, nextPointer));
+        byte[] pBytes = Arrays.copyOfRange(message, currentPointer, nextPointer);
+        protocolMessage.setSerializedP(pBytes);
+        protocolMessage.setSerializedPLength(protocolMessage.getSerializedP().getValue().length);
+        BigInteger p = new BigInteger(1, pBytes);
         protocolMessage.setP(p);
 
         currentPointer = nextPointer;
@@ -95,7 +98,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
         currentPointer = nextPointer;
         nextPointer = currentPointer + protocolMessage.getgLength().getValue();
-        BigInteger g = new BigInteger(1, Arrays.copyOfRange(message, currentPointer, nextPointer));
+        byte[] gBytes = Arrays.copyOfRange(message, currentPointer, nextPointer);
+        protocolMessage.setSerializedG(gBytes);
+        protocolMessage.setSerializedGLength(protocolMessage.getSerializedG().getValue().length);
+        BigInteger g = new BigInteger(1, gBytes);
         protocolMessage.setG(g);
 
         currentPointer = nextPointer;
@@ -105,7 +111,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
         currentPointer = nextPointer;
         nextPointer = currentPointer + protocolMessage.getPublicKeyLength().getValue();
-        BigInteger publicKey = new BigInteger(1, Arrays.copyOfRange(message, currentPointer, nextPointer));
+        byte[] pkBytes = Arrays.copyOfRange(message, currentPointer, nextPointer);
+        protocolMessage.setSerializedPublicKey(pkBytes);
+        protocolMessage.setSerializedPublicKeyLength(protocolMessage.getSerializedPublicKey().getValue().length);
+        BigInteger publicKey = new BigInteger(1, pkBytes);
         protocolMessage.setPublicKey(publicKey);
 
         byte[] dhParams = ArrayConverter
@@ -196,15 +205,15 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
         byte[] serializedP = BigIntegers.asUnsignedByteArray(protocolMessage.getP().getValue());
         protocolMessage.setSerializedP(serializedP);
-        protocolMessage.setSerializedPLength(serializedP.length);
+        protocolMessage.setSerializedPLength(protocolMessage.getSerializedP().getValue().length);
 
         byte[] serializedG = BigIntegers.asUnsignedByteArray(protocolMessage.getG().getValue());
         protocolMessage.setSerializedG(serializedG);
-        protocolMessage.setSerializedGLength(serializedG.length);
+        protocolMessage.setSerializedGLength(protocolMessage.getSerializedG().getValue().length);
 
         byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(protocolMessage.getPublicKey().getValue());
         protocolMessage.setSerializedPublicKey(serializedPublicKey);
-        protocolMessage.setSerializedPublicKeyLength(serializedPublicKey.length);
+        protocolMessage.setSerializedPublicKeyLength(protocolMessage.getSerializedPublicKey().getValue().length);
 
         byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage.getSerializedPLength()
                 .getValue(), HandshakeByteLength.DH_PARAM_LENGTH), protocolMessage.getSerializedP().getValue(),
