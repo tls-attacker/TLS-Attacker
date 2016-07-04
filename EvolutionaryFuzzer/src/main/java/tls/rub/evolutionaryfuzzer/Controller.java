@@ -7,6 +7,8 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
+
 /**
  * The Controller controls the genereal Programm. It links the Components
  * together and starts and stop the Fuzzing Process. I am unsure if it is ever

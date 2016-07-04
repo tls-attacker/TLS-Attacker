@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
 import Helper.Cleaner;
 import WorkFlowType.WorkFlowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
@@ -55,6 +56,7 @@ public class Main {
             jc.usage();
             return;
         }
+        Config.ConfigManager.getInstance().setConfig(evoConfig);
         switch (jc.getParsedCommand()) {
             case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
                 Controller controller = new FuzzerController(evoConfig);

@@ -1,5 +1,5 @@
 
-package tls.rub.evolutionaryfuzzer;
+package Config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.validators.PositiveInteger;

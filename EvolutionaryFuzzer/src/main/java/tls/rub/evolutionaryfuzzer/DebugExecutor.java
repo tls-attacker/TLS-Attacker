@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;

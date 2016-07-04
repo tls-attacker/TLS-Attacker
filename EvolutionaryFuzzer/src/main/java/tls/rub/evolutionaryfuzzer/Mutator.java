@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 
 /**

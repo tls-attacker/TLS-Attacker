@@ -31,11 +31,7 @@ public class WorkflowTraceTypeManager {
     public static Set<WorkFlowTraceType> generateTypeList(List<WorkflowTrace> traces) {
         Set<WorkFlowTraceType> set = new HashSet<>();
         for (WorkflowTrace trace : traces) {
-            WorkFlowTraceType type = new WorkFlowTraceType();
-            for (ProtocolMessage m : trace.getProtocolMessages()) {
-                MessageFlow flow = new MessageFlow(m.getClass(), m.getMessageIssuer());
-                type.addMessageFlow(flow);
-            }
+            WorkFlowTraceType type = generateWorkflowTraceType(trace);
             set.add(type);
         }
         return set;
@@ -55,14 +51,24 @@ public class WorkflowTraceTypeManager {
     public static Set<WorkFlowTraceType> generateCleanTypeList(List<WorkflowTrace> traces) {
         Set<WorkFlowTraceType> set = new HashSet<>();
         for (WorkflowTrace trace : traces) {
-            WorkFlowTraceType type = new WorkFlowTraceType();
-            for (ProtocolMessage m : trace.getProtocolMessages()) {
-                MessageFlow flow = new MessageFlow(m.getClass(), m.getMessageIssuer());
-                type.addMessageFlow(flow);
-            }
+            WorkFlowTraceType type = generateWorkflowTraceType(trace);
             type.clean();
             set.add(type);
         }
         return set;
+    }
+
+    /**
+     * Generates a WorkflowTraceType for a WorkflowTrace.
+     * @param trace Trace for which the WorkflowTraceType should be generated
+     * @return 
+     */
+    public static WorkFlowTraceType generateWorkflowTraceType(WorkflowTrace trace) {
+        WorkFlowTraceType type = new WorkFlowTraceType();
+        for (ProtocolMessage m : trace.getProtocolMessages()) {
+            MessageFlow flow = new MessageFlow(m.getClass(), m.getMessageIssuer());
+            type.addMessageFlow(flow);
+        }
+        return type;
     }
 }

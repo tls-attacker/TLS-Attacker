@@ -1,5 +1,6 @@
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
 import Helper.FuzzingHelper;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;

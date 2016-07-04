@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;

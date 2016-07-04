@@ -8,7 +8,7 @@
 package Helper;
 
 import java.io.File;
-import tls.rub.evolutionaryfuzzer.EvolutionaryFuzzerConfig;
+import Config.EvolutionaryFuzzerConfig;
 
 /**
  *

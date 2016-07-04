@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
@@ -57,6 +58,9 @@ public class ExecutorThreadPool implements Runnable {
         LOG.log(Level.INFO, "Reading good Traces in:");
 
         list = WorkflowTraceSerializer.readFolder(f);
+        f = new File(config.getOutputFolder() + "uniqueFlows/");
+        
+        list.addAll(WorkflowTraceSerializer.readFolder(f));
         LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
     }
 
@@ -74,6 +78,8 @@ public class ExecutorThreadPool implements Runnable {
      */
     @Override
     public void run() {
+        //Dont save old results
+        ResultContainer.getInstance().setSerialize(false);
         for (int i = 0; i < list.size(); i++) {
             if (!stopped) {
                 TLSServer server = ServerManager.getInstance().getFreeServer();
@@ -88,6 +94,8 @@ public class ExecutorThreadPool implements Runnable {
                 }
             }
         }
+        //Save new results
+        ResultContainer.getInstance().setSerialize(true);
         while (true) {
             if (!stopped) {
                 TLSServer server = ServerManager.getInstance().getFreeServer();
