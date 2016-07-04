@@ -98,14 +98,62 @@ public class Main {
                 }
                 break;
             case "clean":
+                f = new File(evoConfig.getOutputFolder() + "traces/");
+                for(File file : f.listFiles())
+                {
+                    if(file.getName().startsWith("."))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        file.delete();
+                    }
+                }
                 break;
             case "clean-all":
+                f = new File(evoConfig.getOutputFolder() + "faulty/");
+                for(File file : f.listFiles())
+                {
+                    if(file.getName().startsWith("."))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        file.delete();
+                    }
+                }
+                f = new File(evoConfig.getOutputFolder() + "traces/");
+                for(File file : f.listFiles())
+                {
+                    if(file.getName().startsWith("."))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        file.delete();
+                    }
+                }
+                f = new File(evoConfig.getOutputFolder() + "good/");
+                for(File file : f.listFiles())
+                {
+                    if(file.getName().startsWith("."))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        file.delete();
+                    }
+                }
                 break;
             case "execute-faulty":
                 ServerManager manager = ServerManager.getInstance();
                 manager.init(evoConfig);
                 f = new File(evoConfig.getOutputFolder() + "faulty/");
-                
+
                 for (File file : f.listFiles()) {
                     if (file.getName().startsWith(".")) {
                         //We ignore the .gitignore File
@@ -114,7 +162,7 @@ public class Main {
                     try {
 
                         WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-                        LOG.log(Level.INFO, "Trace:"+file.getAbsolutePath());
+                        LOG.log(Level.INFO, "Trace:" + file.getAbsolutePath());
                         DebugExecutor.execute(trace);
                     } catch (JAXBException ex) {
                         Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
