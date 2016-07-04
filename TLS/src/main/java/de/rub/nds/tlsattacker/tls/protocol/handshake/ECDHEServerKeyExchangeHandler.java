@@ -112,7 +112,6 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
         }
         catch (TlsFatalAlert ex)
         {
-            ex.getCause().printStackTrace();
             ex.printStackTrace();
         }
         catch (IOException ex)
@@ -134,18 +133,14 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
             SignatureAlgorithm sa = SignatureAlgorithm.getSignatureAlgorithm(message[currentPointer]);
             protocolMessage.setSignatureAlgorithm(sa.getValue());
         }
-
         currentPointer = nextPointer;
         nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
         int signatureLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
         protocolMessage.setSignatureLength(signatureLength);
-
         currentPointer = nextPointer;
         nextPointer = currentPointer + signatureLength;
         protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
-
         protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
-
         return nextPointer;
 
     }

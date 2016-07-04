@@ -204,7 +204,9 @@ public class SimpleMutator extends Mutator {
         }
         if (m != null) {
             tempTrace.add(m);
-            tempTrace.add(new ArbitraryMessage());
+            m = new ArbitraryMessage();
+            m.setMessageIssuer(ConnectionEnd.SERVER);
+            tempTrace.add(m);
         }
     }
 

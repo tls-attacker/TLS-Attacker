@@ -215,6 +215,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
         InputStream is = new ByteArrayInputStream(dhParams);
 
         try {
+            //TODO can throw a EOFException
             ServerDHParams publicKeyParameters = ServerDHParams.parse(is);
 
             tlsContext.setServerDHParameters(publicKeyParameters);

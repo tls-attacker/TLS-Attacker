@@ -14,11 +14,16 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -61,7 +66,6 @@ public final class WorkflowTraceSerializer
         return context;
     }
 
-    
     /**
      * Writes a WorkflowTrace to a File
      *
@@ -119,4 +123,50 @@ public final class WorkflowTraceSerializer
         inputStream.close();
         return wt;
     }
+
+    public static List<WorkflowTrace> readFolder(File f)
+    {
+        if (f.isDirectory())
+        {
+            ArrayList<WorkflowTrace> list = new ArrayList<>();
+            for (File file : f.listFiles())
+            {
+                if (file.getName().startsWith("."))
+                {
+                    //We ignore the .gitignore File
+                    continue;
+                }
+                WorkflowTrace trace;
+                try
+                {
+                    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                    list.add(trace);
+                }
+                catch (JAXBException ex)
+                {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                catch (IOException ex)
+                {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                catch (XMLStreamException ex)
+                {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                catch (Throwable ex)
+                {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            return list;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
+        }
+
+    }
+    private static final Logger LOG = Logger.getLogger(WorkflowTraceSerializer.class.getName());
+
 }

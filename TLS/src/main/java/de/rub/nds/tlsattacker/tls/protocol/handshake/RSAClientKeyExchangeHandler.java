@@ -95,6 +95,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 	    LOGGER.debug("Encrypting the following padded premaster secret: {}",
 		    ArrayConverter.bytesToHexString(paddedPremasterSecret));
+            //TODO can throw a tooMuchData for RSA Block exception
 	    byte[] encrypted = cipher.doFinal(paddedPremasterSecret);
 	    protocolMessage.setEncryptedPremasterSecret(encrypted);
 	    protocolMessage
