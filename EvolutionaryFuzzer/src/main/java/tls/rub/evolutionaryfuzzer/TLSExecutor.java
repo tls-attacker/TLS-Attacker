@@ -50,6 +50,7 @@ public class TLSExecutor extends Executor {
     private final TLSServer server;
     private final WorkflowTrace backupTrace;
     private final Agent agent;
+
     /**
      * Constructor for the TLSExecutor
      *
@@ -68,13 +69,12 @@ public class TLSExecutor extends Executor {
      */
     @Override
     public void run() {
-        
+
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         TransportHandler transportHandler = null;
 
         try {
 
-            
             server.start();
 
             agent.onApplicationStart();
@@ -129,8 +129,9 @@ public class TLSExecutor extends Executor {
 
             //tlsContext.setServerCertificate(certificate);
             workflowExecutor.executeWorkflow();
-
-        } catch (Exception E) {
+        } catch (UnsupportedOperationException E) {
+            //TODO what do with unsupported operations?
+        } catch (Throwable E) {
             //TODO
             File f = new File("faulty/" + LogFileIDManager.getInstance().getFilename());
 
@@ -141,6 +142,7 @@ public class TLSExecutor extends Executor {
                 System.out.println("Could not serialize WorkflowTrace!");
                 E.printStackTrace();
             }
+            System.out.println("File:" + f.getName());
             E.printStackTrace();
         } finally {
             if (transportHandler != null) {
