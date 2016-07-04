@@ -129,6 +129,7 @@ public class ResultContainer {
             }
         }
         WorkFlowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
+        type.clean();
         if (set.add(type) && serialize) {
             LOG.log(Level.INFO, "Found a new WorkFlowTraceType");
             LOG.log(Level.FINER, type.toString());
