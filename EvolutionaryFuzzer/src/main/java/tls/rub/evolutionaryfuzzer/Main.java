@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Helper.Cleaner;
 import WorkFlowType.WorkFlowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
 import com.beust.jcommander.JCommander;
@@ -98,56 +99,10 @@ public class Main {
                 }
                 break;
             case "clean":
-                f = new File(evoConfig.getOutputFolder() + "traces/");
-                for(File file : f.listFiles())
-                {
-                    if(file.getName().startsWith("."))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        file.delete();
-                    }
-                }
+                Cleaner.cleanTraces(evoConfig);
                 break;
             case "clean-all":
-                f = new File(evoConfig.getOutputFolder() + "faulty/");
-                for(File file : f.listFiles())
-                {
-                    if(file.getName().startsWith("."))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        file.delete();
-                    }
-                }
-                f = new File(evoConfig.getOutputFolder() + "traces/");
-                for(File file : f.listFiles())
-                {
-                    if(file.getName().startsWith("."))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        file.delete();
-                    }
-                }
-                f = new File(evoConfig.getOutputFolder() + "good/");
-                for(File file : f.listFiles())
-                {
-                    if(file.getName().startsWith("."))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        file.delete();
-                    }
-                }
+                Cleaner.cleanAll(evoConfig);
                 break;
             case "execute-faulty":
                 ServerManager manager = ServerManager.getInstance();
