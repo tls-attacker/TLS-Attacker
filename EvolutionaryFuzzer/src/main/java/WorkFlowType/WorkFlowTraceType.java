@@ -9,8 +9,6 @@ package WorkFlowType;
 
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Objects;
 
 /**
  *
@@ -68,12 +66,10 @@ public class WorkFlowTraceType {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("WorkflowTraceType:\n");
-        for(MessageFlow flow : flows)
-        {
+        for (MessageFlow flow : flows) {
             sb.append(flow.toString() + "\n");
         }
         return sb.toString();
     }
-    
 
 }
