@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -61,37 +62,16 @@ public class Main {
                 break;
             case "tracetypes":
                 File f = new File(evoConfig.getOutputFolder() + "good/");
-                ArrayList<WorkflowTrace> list = new ArrayList<>();
-                LOG.log(Level.INFO, "Reading good Traces in:");
-
-                for (File file : f.listFiles()) {
-                    if (file.getName().startsWith(".")) {
-                        //We ignore the .gitignore File
-                        continue;
-                    }
-                    try {
-
-                        WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-                        list.add(trace);
-                    } catch (JAXBException ex) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-                    } catch (XMLStreamException ex) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-                    } catch (Throwable E) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
-
-                    }
-                }
+                List<WorkflowTrace> traces = WorkflowTraceSerializer.readFolder(f);
+                
                 LOG.log(Level.INFO, "Fininshed reading.");
-                Set<WorkFlowTraceType> set = WorkflowTraceTypeManager.generateTypeList(list);
+                Set<WorkFlowTraceType> set = WorkflowTraceTypeManager.generateTypeList(traces);
 
                 LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
                 for (WorkFlowTraceType type : set) {
                     System.out.println(type);
                 }
-                set = WorkflowTraceTypeManager.generateCleanTypeList(list);
+                set = WorkflowTraceTypeManager.generateCleanTypeList(traces);
 
                 LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");
                 for (WorkFlowTraceType type : set) {
@@ -108,29 +88,10 @@ public class Main {
                 ServerManager manager = ServerManager.getInstance();
                 manager.init(evoConfig);
                 f = new File(evoConfig.getOutputFolder() + "faulty/");
-
-                for (File file : f.listFiles()) {
-                    if (file.getName().startsWith(".")) {
-                        //We ignore the .gitignore File
-                        continue;
-                    }
-                    try {
-
-                        WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-                        LOG.log(Level.INFO, "Trace:" + file.getAbsolutePath());
-                        DebugExecutor.execute(trace);
-                    } catch (JAXBException ex) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-                    } catch (XMLStreamException ex) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-                    } catch (Throwable E) {
-                        Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
-
-                    }
+                traces = WorkflowTraceSerializer.readFolder(f);
+                for (WorkflowTrace trace : traces) {
+                    DebugExecutor.execute(trace);
                 }
-
                 break;
 
             default:

@@ -10,15 +10,12 @@ package tls.rub.evolutionaryfuzzer;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
@@ -39,7 +36,7 @@ public class ExecutorThreadPool implements Runnable {
     //Counts the number of executed Tasks for statisticall purposes.
     private long runs = 0;
     //List of Workflowtraces that should be executed before we start generating new Workflows
-    private final ArrayList<WorkflowTrace> list;
+    private final List<WorkflowTrace> list;
     //The Config the ExecutorThreadPool uses
     private EvolutionaryFuzzerConfig config;
 
@@ -54,32 +51,12 @@ public class ExecutorThreadPool implements Runnable {
         this.config = config;
         this.poolSize = poolSize;
         this.mutator = mutator;
-        list = new ArrayList<>();
         File f = new File(config.getOutputFolder() + "good/");
         executor = Executors.newFixedThreadPool(poolSize);
 
         LOG.log(Level.INFO, "Reading good Traces in:");
 
-        for (File file : f.listFiles()) {
-            if (file.getName().startsWith(".")) {
-                //We ignore the .gitignore File
-                continue;
-            }
-            try {
-
-                WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-                list.add(trace);
-            } catch (JAXBException ex) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-            } catch (IOException ex) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-            } catch (XMLStreamException ex) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), ex);
-            } catch (Throwable E) {
-                Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, "Could not Read:" + file.getName(), E);
-
-            }
-        }
+        list = WorkflowTraceSerializer.readFolder(f);
         LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
     }
 
