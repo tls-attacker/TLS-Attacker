@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
@@ -78,7 +79,9 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = AlertMessage.class, name = "Alert"),
 	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
 	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
+	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") ,
+	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest") })
+    
     private List<ProtocolMessage> protocolMessages;
 
     private String name;
