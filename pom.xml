@@ -140,10 +140,9 @@
                         </includes>
                         <properties>
                             <year>${project.inceptionYear}</year>
-                            <owner>Chair for Network and Data Security, Ruhr University Bochum</owner>
+                            <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
                         </properties>
                     </configuration>
-
                     <executions>
                         <execution>
                             <phase>format</phase>
@@ -153,19 +152,11 @@
                         </execution>
                     </executions>
                 </plugin> 
-				<plugin>
-					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-					<artifactId>maven-java-formatter-plugin</artifactId>
-					<configuration>
-						<configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
-						<lineEnding>LF</lineEnding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>2.7</version>
-				</plugin>
-			</plugins>
+                <plugin>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+            </plugins>
         </pluginManagement> 
     </build>
 
@@ -196,7 +187,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <licenseOwner>Chair for Network and Data Security, Ruhr University Bochum</licenseOwner>
+        <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
     </properties>
 </project>
