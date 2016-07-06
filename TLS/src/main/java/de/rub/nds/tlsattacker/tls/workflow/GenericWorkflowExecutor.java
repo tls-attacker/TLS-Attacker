@@ -93,7 +93,9 @@ public class GenericWorkflowExecutor implements WorkflowExecutor
                     handleProtocolMessagesFromPeer(protocolMessages);
                 }
             }
-        } catch (WorkflowExecutionException | CryptoException | IOException | UnsupportedOperationException e) {
+        }
+        catch (WorkflowExecutionException | CryptoException | IOException e)
+        {
             throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
         }
         finally
@@ -387,7 +389,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor
             while ((records = recordHandler.parseRecords(rawResponse)) == null)
             {
                 rawResponse = ArrayConverter.concatenate(rawResponse, transportHandler.fetchData());
-            }
+            }   
         }
         return records;
     }

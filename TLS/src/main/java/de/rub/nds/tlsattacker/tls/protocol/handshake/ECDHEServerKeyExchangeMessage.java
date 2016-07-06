@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -158,5 +160,13 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
+    {
+        ProtocolMessageHandler handler = new ECDHEServerKeyExchangeHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

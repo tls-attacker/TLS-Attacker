@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -24,5 +26,13 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     public ServerHelloDoneMessage(ConnectionEnd messageIssuer) {
 	super(HandshakeMessageType.SERVER_HELLO_DONE);
 	this.messageIssuer = messageIssuer;
+    }
+
+    @Override
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
+    {
+        ProtocolMessageHandler handler = new ServerHelloDoneHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

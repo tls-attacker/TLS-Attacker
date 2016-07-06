@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  * import java.util.LinkedList; import java.util.List; import
@@ -235,6 +237,14 @@ public class CertificateRequestMessage extends HandshakeMessage
         }
         // sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
+    }
+
+    @Override
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
+    {
+        ProtocolMessageHandler handler = new CertificateRequestHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 
 }

@@ -140,23 +140,25 @@ public final class WorkflowTraceSerializer
                 try
                 {
                     trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                    trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 }
                 catch (JAXBException ex)
                 {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                    
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
                 }
                 catch (IOException ex)
                 {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
                 }
                 catch (XMLStreamException ex)
                 {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
                 }
                 catch (Throwable ex)
                 {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
                 }
             }
             return list;

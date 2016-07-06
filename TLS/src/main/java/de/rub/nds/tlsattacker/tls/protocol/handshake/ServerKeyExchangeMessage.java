@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ServerKeyExchangeMessage extends HandshakeMessage {
+public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /**
      * hash algorithm

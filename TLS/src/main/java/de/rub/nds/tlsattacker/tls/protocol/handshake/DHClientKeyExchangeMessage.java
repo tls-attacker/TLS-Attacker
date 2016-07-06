@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
 /**
@@ -171,5 +173,13 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
+    {
+        ProtocolMessageHandler handler = new DHClientKeyExchangeHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }
