@@ -59,7 +59,7 @@ public class ExecutorThreadPool implements Runnable {
 
         list = WorkflowTraceSerializer.readFolder(f);
         f = new File(config.getOutputFolder() + "uniqueFlows/");
-        
+
         list.addAll(WorkflowTraceSerializer.readFolder(f));
         LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
     }
@@ -97,20 +97,27 @@ public class ExecutorThreadPool implements Runnable {
         //Save new results
         ResultContainer.getInstance().setSerialize(true);
         while (true) {
-            if (!stopped) {
-                TLSServer server = ServerManager.getInstance().getFreeServer();
+            try {
+                if (!stopped) {
+                    TLSServer server = ServerManager.getInstance().getFreeServer();
 
-                Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, new BasicAFLAgent());
-                executor.execute(worker);
-                runs++;
+                    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, new BasicAFLAgent());
+                    executor.execute(worker);
+                    runs++;
 
-            } else {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE, "Thread interruiped while the ThreadPool is paused.", ex);
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE, "Thread interruiped while the ThreadPool is paused.", ex);
+                    }
                 }
             }
+            catch(Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+
         }
         /*
          executor.shutdown();
