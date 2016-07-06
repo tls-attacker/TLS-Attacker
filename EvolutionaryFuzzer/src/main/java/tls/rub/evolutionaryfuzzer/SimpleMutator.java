@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -90,15 +91,14 @@ public class SimpleMutator extends Mutator {
         if (r.nextInt(100) <= config.getRemoveMessagePercentage()) {
             removeRandomMessage(trace);
         }
-        if(trace.getProtocolMessages().isEmpty())
-        {
+        if (trace.getProtocolMessages().isEmpty()) {
             addRandomMessage(trace);
         }
         //perhaps add records
         if (r.nextInt(100) <= config.getAddRecordPercentage()) {
             FuzzingHelper.addRecordsAtRandom(trace, ConnectionEnd.CLIENT);
         }
-        
+
         //Modify a random field:
         if (r.nextInt(100) >= config.getModifyVariablePercentage()) {
             List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace, ConnectionEnd.CLIENT);
@@ -149,8 +149,16 @@ public class SimpleMutator extends Mutator {
                 m = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
                 LinkedList<CipherSuite> list = new LinkedList<>();
                 int limit = new Random().nextInt(0xFF);
+
                 for (int i = 0; i < limit; i++) {
-                    list.add(CipherSuite.getRandom());
+                    CipherSuite suite = null;
+
+                    do {
+
+                        suite = CipherSuite.getRandom();
+
+                    } while (suite == null);
+                    list.add(suite);
                 }
                 ArrayList<CompressionMethod> compressionList = new ArrayList<>();
                 compressionList.add(CompressionMethod.NULL);
@@ -162,7 +170,11 @@ public class SimpleMutator extends Mutator {
                 list = new LinkedList<>();
                 limit = new Random().nextInt(0xFF);
                 for (int i = 0; i < limit; i++) {
-                    list.add(CipherSuite.getRandom());
+                    CipherSuite suite = null;
+                    do {
+                        suite = CipherSuite.getRandom();
+                    } while (suite == null);
+                    list.add(suite);
                 }
                 compressionList = new ArrayList<>();
                 compressionList.add(CompressionMethod.NULL);
