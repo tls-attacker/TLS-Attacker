@@ -7,6 +7,7 @@
  */
 package tls.rub.evolutionaryfuzzer;
 
+import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
@@ -124,6 +125,7 @@ public class TLSExecutor extends Executor {
             X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 
             tlsContext.setX509ServerCertificateObject(x509CertObject);
+            tlsContext.setServerCertificate(cert);
             //tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
             WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext);
 
@@ -133,7 +135,7 @@ public class TLSExecutor extends Executor {
             //TODO what do with unsupported operations?
         } catch (Throwable E) {
             //TODO
-            File f = new File("faulty/" + LogFileIDManager.getInstance().getFilename());
+            File f = new File(ConfigManager.getInstance().getConfig().getOutputFolder()+"faulty/" + LogFileIDManager.getInstance().getFilename());
 
             try {
                 f.createNewFile();
