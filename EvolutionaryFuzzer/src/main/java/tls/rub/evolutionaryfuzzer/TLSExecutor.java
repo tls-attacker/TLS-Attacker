@@ -13,8 +13,11 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -76,6 +79,14 @@ public class TLSExecutor extends Executor {
 
         try {
 
+            for (ProtocolMessage pm : trace.getProtocolMessages()) {
+                if (pm.getMessageIssuer() == ConnectionEnd.SERVER) {
+                    if(pm.getClass() != ArbitraryMessage.class)
+                    {
+                        System.out.println("Wrong message class from server");
+                    }
+                }
+            }
             server.start();
 
             agent.onApplicationStart();
@@ -135,7 +146,7 @@ public class TLSExecutor extends Executor {
             //TODO what do with unsupported operations?
         } catch (Throwable E) {
             //TODO
-            File f = new File(ConfigManager.getInstance().getConfig().getOutputFolder()+"faulty/" + LogFileIDManager.getInstance().getFilename());
+            File f = new File(ConfigManager.getInstance().getConfig().getOutputFolder() + "faulty/" + LogFileIDManager.getInstance().getFilename());
 
             try {
                 f.createNewFile();

@@ -45,6 +45,7 @@ public class ResultContainer {
     private final Set<WorkFlowTraceType> set;
     private boolean serialize = true;
     private EvolutionaryFuzzerConfig evoConfig;
+
     public boolean isSerialize() {
         return serialize;
     }
@@ -59,7 +60,7 @@ public class ResultContainer {
         goodTrace = new ArrayList<>();
         set = new HashSet<>();
         evoConfig = Config.ConfigManager.getInstance().getConfig();
-        
+
     }
 
     /**
@@ -92,10 +93,9 @@ public class ResultContainer {
         }
         if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
             LOG.log(Level.INFO, "Found a GoodTrace:{0}", r.toString());
-            goodTrace.add(result.getTrace());
             //It may be that we dont want to safe good Traces, for example if we execute already saved Traces 
             if (serialize) {
-                File f = new File(evoConfig.getOutputFolder()+"good/" + result.getId());
+                File f = new File(evoConfig.getOutputFolder() + "good/" + result.getId());
                 try {
                     f.createNewFile();
                     WorkflowTraceSerializer.write(f, result.getExecutedTrace());
@@ -103,11 +103,14 @@ public class ResultContainer {
                     LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}", f.getAbsolutePath());
                 }
             }
+            result.getTrace().makeGeneric();
+            goodTrace.add(result.getTrace());
+
         }
         if (result.hasCrashed()) {
             LOG.log(Level.INFO, "Found a Crash:{0}", r.toString());
             if (serialize) {
-                File f = new File(evoConfig.getOutputFolder()+"crashed/" + result.getId());
+                File f = new File(evoConfig.getOutputFolder() + "crashed/" + result.getId());
                 try {
                     f.createNewFile();
                     WorkflowTraceSerializer.write(f, result.getExecutedTrace());
@@ -119,7 +122,7 @@ public class ResultContainer {
         if (result.didTimeout()) {
             LOG.log(Level.INFO, "Found a Timeout:{0}", r.toString());
             if (serialize) {
-                File f = new File(evoConfig.getOutputFolder()+"timeout/" + result.getId());
+                File f = new File(evoConfig.getOutputFolder() + "timeout/" + result.getId());
                 try {
                     f.createNewFile();
                     WorkflowTraceSerializer.write(f, result.getExecutedTrace());
@@ -133,7 +136,7 @@ public class ResultContainer {
         if (set.add(type) && serialize) {
             LOG.log(Level.INFO, "Found a new WorkFlowTraceType");
             LOG.log(Level.FINER, type.toString());
-            File f = new File(evoConfig.getOutputFolder()+"uniqueFlows/" + result.getId());
+            File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/" + result.getId());
             try {
                 f.createNewFile();
                 WorkflowTraceSerializer.write(f, result.getExecutedTrace());

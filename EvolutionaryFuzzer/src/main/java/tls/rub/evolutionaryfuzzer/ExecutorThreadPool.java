@@ -9,6 +9,9 @@ package tls.rub.evolutionaryfuzzer;
 
 import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.util.ArrayList;
@@ -62,6 +65,11 @@ public class ExecutorThreadPool implements Runnable {
 
         list.addAll(WorkflowTraceSerializer.readFolder(f));
         LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
+        //We need to fix Server responses before we can use the workflowtraces for mutation
+        LOG.log(Level.INFO, "Preparing Traces:{0}", list.size());
+        for (WorkflowTrace trace : list) {
+            trace.makeGeneric();
+        }
     }
 
     /**
@@ -112,9 +120,7 @@ public class ExecutorThreadPool implements Runnable {
                         Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE, "Thread interruiped while the ThreadPool is paused.", ex);
                     }
                 }
-            }
-            catch(Throwable ex)
-            {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
             }
 
