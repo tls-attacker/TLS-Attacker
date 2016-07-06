@@ -84,6 +84,7 @@ public class Main {
                 f = new File(evoConfig.getOutputFolder() + "faulty/");
                 traces = WorkflowTraceSerializer.readFolder(f);
                 for (WorkflowTrace trace : traces) {
+                    LOG.log(Level.INFO,"Trace:"+trace.getName());
                     DebugExecutor.execute(trace);
                 }
                 break;
