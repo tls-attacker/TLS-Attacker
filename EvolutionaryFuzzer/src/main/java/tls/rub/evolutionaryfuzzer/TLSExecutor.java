@@ -95,7 +95,7 @@ public class TLSExecutor extends Executor {
             configHandler.initialize(gc);
 
             EvolutionaryFuzzerConfig fc = new EvolutionaryFuzzerConfig();
-
+            fc.setFuzzingMode(true);
             long time = System.currentTimeMillis();
             while (transportHandler == null) {
                 try {
