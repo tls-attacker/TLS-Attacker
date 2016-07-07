@@ -119,6 +119,11 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
             LOGGER.debug("  Base point: {} ", parameters.getParameters().getG());
             LOGGER.debug("  Public key point Q: {} ", parameters.getQ());
         }
+        else
+        {
+            kp = TlsECCUtils.generateECKeyPair(new SecureRandom(), tlsContext.getEcContext()
+                            .getServerPublicKeyParameters().getParameters());
+        }
 
         ECPublicKeyParameters ecPublicKey = (ECPublicKeyParameters) kp.getPublic();
         ECPrivateKeyParameters ecPrivateKey = (ECPrivateKeyParameters) kp.getPrivate();
