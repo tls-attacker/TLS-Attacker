@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
@@ -61,7 +60,7 @@ public class WorkflowTrace implements Serializable {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
+	    @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
 	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
 	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
 	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -79,14 +78,28 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = AlertMessage.class, name = "Alert"),
 	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
 	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") ,
+	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
 	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest") })
-    
     private List<ProtocolMessage> protocolMessages;
 
     private String name;
 
     private ProtocolVersion protocolVersion;
+
+    /**
+     * Swaps Server Messages with ArbitaryMessages
+     */
+    public void makeGeneric() {
+	List<ProtocolMessage> tempList = getProtocolMessages();
+
+	for (int i = 0; i < tempList.size(); i++) {
+	    ArbitraryMessage arbitraryMessage = new ArbitraryMessage();
+	    arbitraryMessage.setMessageIssuer(ConnectionEnd.SERVER);
+	    if (tempList.get(i).getMessageIssuer() == ConnectionEnd.SERVER) {
+		tempList.set(i, arbitraryMessage);
+	    }
+	}
+    }
 
     /**
      * Initializes the workflow trace with an empty list of protocol messages
@@ -223,15 +236,15 @@ public class WorkflowTrace implements Serializable {
     public List<ProtocolMessage> getServerMessages() {
 	return getMessages(ConnectionEnd.SERVER);
     }
-    
+
     public ProtocolMessage getLastClientMesssage() {
-        List<ProtocolMessage> clientMessages = getClientMessages();
+	List<ProtocolMessage> clientMessages = getClientMessages();
 	int size = clientMessages.size();
 	return clientMessages.get(size - 1);
     }
-    
+
     public ProtocolMessage getLastServerMesssage() {
-        List<ProtocolMessage> serverMessages = getServerMessages();
+	List<ProtocolMessage> serverMessages = getServerMessages();
 	int size = serverMessages.size();
 	return serverMessages.get(size - 1);
     }
@@ -275,15 +288,13 @@ public class WorkflowTrace implements Serializable {
     }
 
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("WorkflowTrace:");
-        for(ProtocolMessage pm : protocolMessages)
-        {
-            sb.append("\n").append(pm.toCompactString());
-        }
-        return sb.toString();
+    public String toString() {
+	StringBuilder sb = new StringBuilder();
+	sb.append("WorkflowTrace:");
+	for (ProtocolMessage pm : protocolMessages) {
+	    sb.append("\n").append(pm.toCompactString());
+	}
+	return sb.toString();
     }
-    
+
 }
