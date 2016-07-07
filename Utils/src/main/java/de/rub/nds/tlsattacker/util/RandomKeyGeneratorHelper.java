@@ -7,12 +7,18 @@
  */
 package de.rub.nds.tlsattacker.util;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
 import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
+import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -23,14 +29,25 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  */
 public class RandomKeyGeneratorHelper {
 
-    public static ECPublicKeyParameters generateECPublicKeyParameters() {
+    public static AsymmetricCipherKeyPair generateECPublicKey() {
 	// Should we also generate random curves?
 	X9ECParameters ecp = SECNamedCurves.getByName(getRandomCurveName());
 	ECKeyPairGenerator keygen = new ECKeyPairGenerator();
 	ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(), ecp.getG(), ecp.getN(), ecp.getH(),
 		ecp.getSeed());
 	keygen.init(new ECKeyGenerationParameters(domainParams, new SecureRandom()));
-	return (ECPublicKeyParameters) keygen.generateKeyPair().getPublic();
+	return keygen.generateKeyPair();
+    }
+
+    public static AsymmetricCipherKeyPair generateDHPublicKey() {
+	// TODO generate better keys
+	Random r = new Random();
+	BigInteger val1 = new BigInteger(r.nextInt(4097), r);
+	BigInteger val2 = new BigInteger(r.nextInt(4097), r);
+	BigInteger val3 = new BigInteger(r.nextInt(4097), r);
+	DHKeyPairGenerator keygen = new DHKeyPairGenerator();
+	keygen.init(new DHKeyGenerationParameters(new SecureRandom(), new DHParameters(val1, val2, val3)));
+	return keygen.generateKeyPair();
     }
 
     private static String getRandomCurveName() {

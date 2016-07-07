@@ -80,8 +80,18 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     /**
      * If fuzzing Mode is enabled
      */
-    private boolean fuzzingMode = false;
+    protected static boolean fuzzingMode = false;
 
+    public boolean isFuzzingMode()
+    {
+        return ProtocolMessage.fuzzingMode;
+    }
+
+    public static void setFuzzingMode(boolean fuzzingMode)
+    {
+        ProtocolMessage.fuzzingMode = fuzzingMode;
+    }
+    
     @Override
     public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
 

@@ -47,111 +47,141 @@ import org.bouncycastle.util.Arrays;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage> {
+public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage>
+{
 
     private static final Logger LOGGER = LogManager.getLogger(ECDHClientKeyExchangeHandler.class);
 
-    public ECDHClientKeyExchangeHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = ECDHClientKeyExchangeMessage.class;
-	this.keyExchangeAlgorithm = KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
+    public ECDHClientKeyExchangeHandler(TlsContext tlsContext)
+    {
+        super(tlsContext);
+        this.correctProtocolMessageClass = ECDHClientKeyExchangeMessage.class;
+        this.keyExchangeAlgorithm = KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
     }
 
     @Override
-    public int parseKeyExchangeMessage(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+    public int parseKeyExchangeMessage(byte[] message, int pointer)
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    byte[] prepareKeyExchangeMessage() {
-	if (tlsContext.getEcContext().getServerPublicKeyParameters() == null) {
-	    // we are probably handling a simple ECDH ciphersuite, we try to
-	    // establish server public key parameters from the server
-	    // certificate message
-	    Certificate x509Cert = tlsContext.getServerCertificate();
+    byte[] prepareKeyExchangeMessage()
+    {
+        ECPublicKeyParameters parameters = null;
+        AsymmetricCipherKeyPair kp = null;
+        if (tlsContext.getEcContext().getServerPublicKeyParameters() == null)
+        {
+            // we are probably handling a simple ECDH ciphersuite, we try to
+            // establish server public key parameters from the server
+            // certificate message
+            Certificate x509Cert = tlsContext.getServerCertificate();
 
-	    SubjectPublicKeyInfo keyInfo = x509Cert.getSubjectPublicKeyInfo();
-	    ECPublicKeyParameters parameters = null;
-	    if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey)) {
+            SubjectPublicKeyInfo keyInfo = x509Cert.getSubjectPublicKeyInfo();
 
-		parameters = RandomKeyGeneratorHelper.generateECPublicKeyParameters();
-		LOGGER.debug("Generating EC domain parameters on the fly: ");
-	    } else {
-		try {
-		    parameters = (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
+            if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey))
+            {
+                if (protocolMessage.isFuzzingMode())
+                {
+                    kp = RandomKeyGeneratorHelper.generateECPublicKey();
+                    parameters = (ECPublicKeyParameters) kp.getPublic();
+                    LOGGER.debug("Generating EC domain parameters on the fly: ");
+                }
+                else
+                {
+                    throw new WorkflowExecutionException("Invalid KeyType, not in FuzzingMode so no Keys are generated on the fly");
+                }
+            }
+            else
+            {
+                try
+                {
+                    parameters = (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
+                    kp = TlsECCUtils.generateECKeyPair(new SecureRandom(), tlsContext.getEcContext()
+                            .getServerPublicKeyParameters().getParameters());
 
-		} catch (NoSuchMethodError e) {
-		    LOGGER.debug("The method was not found. It is possible that it is because an older bouncy castle"
-			    + " library was used. We try to proceed the workflow.", e);
-		} catch (IOException e) {
-		    throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate", e);
-		}
-	    }
-	    tlsContext.getEcContext().setServerPublicKeyParameters(parameters);
-	    LOGGER.debug("Parsed the following EC domain parameters from the certificate: ");
-	    LOGGER.debug("  Curve order: {}", parameters.getParameters().getCurve().getOrder());
-	    LOGGER.debug("  Parameter A: {}", parameters.getParameters().getCurve().getA());
-	    LOGGER.debug("  Parameter B: {}", parameters.getParameters().getCurve().getB());
-	    LOGGER.debug("  Base point: {} ", parameters.getParameters().getG());
-	    LOGGER.debug("  Public key point Q: {} ", parameters.getQ());
-	}
+                }
+                catch (NoSuchMethodError e)
+                {
+                    LOGGER.debug("The method was not found. It is possible that it is because an older bouncy castle"
+                            + " library was used. We try to proceed the workflow.", e);
+                }
+                catch (IOException e)
+                {
+                    throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate", e);
+                }
+            }
+            tlsContext.getEcContext().setServerPublicKeyParameters(parameters);
+            LOGGER.debug("Parsed the following EC domain parameters from the certificate: ");
+            LOGGER.debug("  Curve order: {}", parameters.getParameters().getCurve().getOrder());
+            LOGGER.debug("  Parameter A: {}", parameters.getParameters().getCurve().getA());
+            LOGGER.debug("  Parameter B: {}", parameters.getParameters().getCurve().getB());
+            LOGGER.debug("  Base point: {} ", parameters.getParameters().getG());
+            LOGGER.debug("  Public key point Q: {} ", parameters.getQ());
+        }
 
-	AsymmetricCipherKeyPair kp = TlsECCUtils.generateECKeyPair(new SecureRandom(), tlsContext.getEcContext()
-		.getServerPublicKeyParameters().getParameters());
+        ECPublicKeyParameters ecPublicKey = (ECPublicKeyParameters) kp.getPublic();
+        ECPrivateKeyParameters ecPrivateKey = (ECPrivateKeyParameters) kp.getPrivate();
 
-	ECPublicKeyParameters ecPublicKey = (ECPublicKeyParameters) kp.getPublic();
-	ECPrivateKeyParameters ecPrivateKey = (ECPrivateKeyParameters) kp.getPrivate();
+        // do some ec point modification
+        protocolMessage.setPublicKeyBaseX(ecPublicKey.getQ().getAffineXCoord().toBigInteger());
+        protocolMessage.setPublicKeyBaseY(ecPublicKey.getQ().getAffineYCoord().toBigInteger());
 
-	// do some ec point modification
-	protocolMessage.setPublicKeyBaseX(ecPublicKey.getQ().getAffineXCoord().toBigInteger());
-	protocolMessage.setPublicKeyBaseY(ecPublicKey.getQ().getAffineYCoord().toBigInteger());
+        ECCurve curve = ecPublicKey.getParameters().getCurve();
+        ECPoint point = curve.createPoint(protocolMessage.getPublicKeyBaseX().getValue(), protocolMessage
+                .getPublicKeyBaseY().getValue());
 
-	ECCurve curve = ecPublicKey.getParameters().getCurve();
-	ECPoint point = curve.createPoint(protocolMessage.getPublicKeyBaseX().getValue(), protocolMessage
-		.getPublicKeyBaseY().getValue());
+        LOGGER.debug("Using the following point:");
+        LOGGER.debug("X: " + protocolMessage.getPublicKeyBaseX().getValue().toString());
+        LOGGER.debug("Y: " + protocolMessage.getPublicKeyBaseY().getValue().toString());
 
-	LOGGER.debug("Using the following point:");
-	LOGGER.debug("X: " + protocolMessage.getPublicKeyBaseX().getValue().toString());
-	LOGGER.debug("Y: " + protocolMessage.getPublicKeyBaseY().getValue().toString());
+        // System.out.println("-----------------\nUsing the following point:");
+        // System.out.println("X: " + point.getAffineXCoord());
+        // System.out.println("Y: " + point.getAffineYCoord());
+        // System.out.println("-----------------\n");
+        ECPointFormat[] pointFormats = tlsContext.getEcContext().getServerPointFormats();
 
-	// System.out.println("-----------------\nUsing the following point:");
-	// System.out.println("X: " + point.getAffineXCoord());
-	// System.out.println("Y: " + point.getAffineYCoord());
-	// System.out.println("-----------------\n");
-	ECPointFormat[] pointFormats = tlsContext.getEcContext().getServerPointFormats();
+        try
+        {
+            byte[] serializedPoint = ECCUtilsBCWrapper.serializeECPoint(pointFormats, point);
+            protocolMessage.setEcPointFormat(serializedPoint[0]);
+            protocolMessage.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
+            protocolMessage.setPublicKeyLength(serializedPoint.length);
 
-	try {
-	    byte[] serializedPoint = ECCUtilsBCWrapper.serializeECPoint(pointFormats, point);
-	    protocolMessage.setEcPointFormat(serializedPoint[0]);
-	    protocolMessage.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
-	    protocolMessage.setPublicKeyLength(serializedPoint.length);
+            byte[] result = ArrayConverter.concatenate(new byte[]
+            {
+                protocolMessage.getPublicKeyLength().getValue()
+                .byteValue()
+            }, new byte[]
+            {
+                protocolMessage.getEcPointFormat().getValue()
+            }, protocolMessage
+                    .getEcPointEncoded().getValue());
 
-	    byte[] result = ArrayConverter.concatenate(new byte[] { protocolMessage.getPublicKeyLength().getValue()
-		    .byteValue() }, new byte[] { protocolMessage.getEcPointFormat().getValue() }, protocolMessage
-		    .getEcPointEncoded().getValue());
+            byte[] premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(tlsContext.getEcContext()
+                    .getServerPublicKeyParameters(), ecPrivateKey);
+            byte[] random = tlsContext.getClientServerRandom();
+            protocolMessage.setPremasterSecret(premasterSecret);
+            LOGGER.debug("Computed PreMaster Secret: {}",
+                    ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
+            LOGGER.debug("Client Server Random: {}", ArrayConverter.bytesToHexString(random));
 
-	    byte[] premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(tlsContext.getEcContext()
-		    .getServerPublicKeyParameters(), ecPrivateKey);
-	    byte[] random = tlsContext.getClientServerRandom();
-	    protocolMessage.setPremasterSecret(premasterSecret);
-	    LOGGER.debug("Computed PreMaster Secret: {}",
-		    ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
-	    LOGGER.debug("Client Server Random: {}", ArrayConverter.bytesToHexString(random));
+            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+                    tlsContext.getSelectedCipherSuite());
+            byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
+                    .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
+            LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
 
-	    PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
-		    tlsContext.getSelectedCipherSuite());
-	    byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
-		    .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
-	    LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
+            protocolMessage.setMasterSecret(masterSecret);
+            tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
 
-	    protocolMessage.setMasterSecret(masterSecret);
-	    tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
+            return result;
 
-	    return result;
-
-	} catch (IOException ex) {
-	    throw new WorkflowExecutionException("EC point serialization failure", ex);
-	}
+        }
+        catch (IOException ex)
+        {
+            throw new WorkflowExecutionException("EC point serialization failure", ex);
+        }
     }
 
 }

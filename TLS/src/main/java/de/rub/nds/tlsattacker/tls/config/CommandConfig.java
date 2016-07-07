@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,6 +112,17 @@ public abstract class CommandConfig {
 
     @Parameter(names = "-fuzzing", description = "If sets, supresses Value and generates invalid Data for Cryptographic operations on the FLY. Throws Exceptions otherwise.")
     protected boolean fuzzingMode = false;
+
+    public boolean isFuzzingMode()
+    {
+        return fuzzingMode;
+    }
+
+    public void setFuzzingMode(boolean fuzzingMode)
+    {
+        ProtocolMessage.setFuzzingMode(fuzzingMode);
+        this.fuzzingMode = fuzzingMode;
+    }
 
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
