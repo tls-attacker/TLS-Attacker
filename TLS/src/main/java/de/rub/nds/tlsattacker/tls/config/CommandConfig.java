@@ -108,6 +108,9 @@ public abstract class CommandConfig {
 
     @Parameter(names = "-session_resumption", description = "YES or NO")
     protected boolean sessionResumption = false;
+    
+    @Parameter(names = "-fuzzing", description = "If sets, supresses Value and generates invalid Data for Cryptographic operations on the FLY. Throws Exceptions otherwise.")
+    protected boolean  fuzzingMode = false;
 
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;

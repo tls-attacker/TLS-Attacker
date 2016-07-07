@@ -76,7 +76,12 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
-
+    
+    /**
+     * If fuzzing Mode is enabled
+     */
+    private boolean fuzzingMode = false;
+    
     @Override
     public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
 
