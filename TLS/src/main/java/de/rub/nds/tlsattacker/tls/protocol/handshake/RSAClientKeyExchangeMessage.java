@@ -92,10 +92,9 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        ProtocolMessageHandler handler = new RSAClientKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler handler = new RSAClientKeyExchangeHandler(tlsContext);
+	handler.setProtocolMessage(this);
+	return handler;
     }
 }

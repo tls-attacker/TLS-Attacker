@@ -69,12 +69,12 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
 
 	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
 	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
-        CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
-        crm.setRequired(false);
+	CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
+	crm.setRequired(false);
 
 	if (config.getCipherSuites().get(0).isEphemeral()) {
 	    workflowTrace.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
-            workflowTrace.add(crm);
+	    workflowTrace.add(crm);
 	}
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
 	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));

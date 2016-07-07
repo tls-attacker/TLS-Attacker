@@ -68,10 +68,10 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
 	    premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
 	}
-     
+
 	protocolMessage.setPremasterSecret(premasterSecret);
-	
-        LOGGER.debug("Computed PreMaster Secret: {}",
+
+	LOGGER.debug("Computed PreMaster Secret: {}",
 		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
 	protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding,
@@ -95,7 +95,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 	    LOGGER.debug("Encrypting the following padded premaster secret: {}",
 		    ArrayConverter.bytesToHexString(paddedPremasterSecret));
-            //TODO can throw a tooMuchData for RSA Block exception
+	    // TODO can throw a tooMuchData for RSA Block exception
 	    byte[] encrypted = cipher.doFinal(paddedPremasterSecret);
 	    protocolMessage.setEncryptedPremasterSecret(encrypted);
 	    protocolMessage

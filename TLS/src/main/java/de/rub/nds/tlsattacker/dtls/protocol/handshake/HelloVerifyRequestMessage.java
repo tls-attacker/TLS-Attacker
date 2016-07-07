@@ -87,10 +87,9 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        ProtocolMessageHandler handler = new HelloVerifyRequestHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler handler = new HelloVerifyRequestHandler(tlsContext);
+	handler.setProtocolMessage(this);
+	return handler;
     }
 }

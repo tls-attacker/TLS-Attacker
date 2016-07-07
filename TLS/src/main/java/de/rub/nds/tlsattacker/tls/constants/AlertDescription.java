@@ -76,8 +76,7 @@ public enum AlertDescription {
     }
 
     @Override
-    public String toString()
-    {
-        return "AlertDescription{" + "value=" + getAlertDescription(value).name() + '}';
+    public String toString() {
+	return "AlertDescription{" + "value=" + getAlertDescription(value).name() + '}';
     }
 }

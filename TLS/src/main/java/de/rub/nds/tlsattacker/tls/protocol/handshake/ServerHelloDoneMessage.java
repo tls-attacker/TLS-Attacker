@@ -29,10 +29,9 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        ProtocolMessageHandler handler = new ServerHelloDoneHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler handler = new ServerHelloDoneHandler(tlsContext);
+	handler.setProtocolMessage(this);
+	return handler;
     }
 }

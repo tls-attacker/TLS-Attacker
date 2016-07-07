@@ -165,7 +165,7 @@ public class TlsContext {
     public TlsContext() {
 	digest = new TlsMessageDigest();
 	ecContext = new TlsECContext();
-        supportedSignatureAndHashAlgorithms = new LinkedList<>();
+	supportedSignatureAndHashAlgorithms = new LinkedList<>();
     }
 
     public TlsContext(ProtocolVersion pv) {
@@ -225,7 +225,7 @@ public class TlsContext {
     public ConnectionEnd getMyConnectionEnd() {
 	return myConnectionEnd;
     }
-    
+
     public ConnectionEnd getMyConnectionPeer() {
 	return myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
     }
@@ -397,7 +397,8 @@ public class TlsContext {
 	}
 	return ecAlgorithms;
     }
-    //TODO Sollte mit addSupported.. ergÃ¤nzt werden
+
+    // TODO Sollte mit addSupported.. ergÃ¤nzt werden
     public void setSupportedSignatureAndHashAlgorithms(
 	    LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
 	this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;

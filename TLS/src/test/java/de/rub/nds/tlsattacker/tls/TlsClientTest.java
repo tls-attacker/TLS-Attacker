@@ -156,8 +156,8 @@ public class TlsClientTest {
 	workflowExecutor.executeWorkflow();
 
 	transportHandler.closeConnection();
-        assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
-        System.out.println("passed");
+	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+	System.out.println("passed");
     }
 
     private void testCustomWorkflow(int port) {

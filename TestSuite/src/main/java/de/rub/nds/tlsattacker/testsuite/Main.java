@@ -23,8 +23,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        
-        Security.addProvider(new BouncyCastleProvider());
+
+	Security.addProvider(new BouncyCastleProvider());
 
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);

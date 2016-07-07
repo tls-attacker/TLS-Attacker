@@ -82,8 +82,9 @@ public class ECCUtilsBCWrapper {
 	input.read(point);
 
 	short[] pointFormats = convertPointFormats(ECPointFormat.values());
-        return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
+	return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
     }
+
     private static final Logger LOG = Logger.getLogger(ECCUtilsBCWrapper.class.getName());
 
     /**

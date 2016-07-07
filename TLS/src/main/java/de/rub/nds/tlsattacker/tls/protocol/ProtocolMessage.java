@@ -76,12 +76,12 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
-    
+
     /**
      * If fuzzing Mode is enabled
      */
     private boolean fuzzingMode = false;
-    
+
     @Override
     public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
 
@@ -116,11 +116,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isRequired() {
-        return required;
+	return required;
     }
 
     public void setRequired(boolean required) {
-        this.required = required;
+	this.required = required;
     }
 
     public boolean isGoingToBeSent() {

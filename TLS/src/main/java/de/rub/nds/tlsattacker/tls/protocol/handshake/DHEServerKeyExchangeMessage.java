@@ -25,8 +25,7 @@ import java.math.BigInteger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage
-{
+public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /**
      * DH modulus length
@@ -94,274 +93,217 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     ModifiableByteArray serializedPublicKey;
 
-    public DHEServerKeyExchangeMessage()
-    {
-        super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-        this.messageIssuer = ConnectionEnd.SERVER;
+    public DHEServerKeyExchangeMessage() {
+	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+	this.messageIssuer = ConnectionEnd.SERVER;
     }
 
-    public DHEServerKeyExchangeMessage(ConnectionEnd messageIssuer)
-    {
-        super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-        this.messageIssuer = messageIssuer;
+    public DHEServerKeyExchangeMessage(ConnectionEnd messageIssuer) {
+	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableInteger getpLength()
-    {
-        return pLength;
+    public ModifiableInteger getpLength() {
+	return pLength;
     }
 
-    public void setpLength(ModifiableInteger pLength)
-    {
-        this.pLength = pLength;
+    public void setpLength(ModifiableInteger pLength) {
+	this.pLength = pLength;
     }
 
-    public void setpLength(Integer pLength)
-    {
-        this.pLength = ModifiableVariableFactory.safelySetValue(this.pLength, pLength);
+    public void setpLength(Integer pLength) {
+	this.pLength = ModifiableVariableFactory.safelySetValue(this.pLength, pLength);
     }
 
-    public ModifiableBigInteger getP()
-    {
-        return p;
+    public ModifiableBigInteger getP() {
+	return p;
     }
 
-    public void setP(ModifiableBigInteger p)
-    {
-        this.p = p;
+    public void setP(ModifiableBigInteger p) {
+	this.p = p;
     }
 
-    public void setP(BigInteger p)
-    {
-        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
+    public void setP(BigInteger p) {
+	this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
     }
 
-    public ModifiableInteger getgLength()
-    {
-        return gLength;
+    public ModifiableInteger getgLength() {
+	return gLength;
     }
 
-    public void setgLength(ModifiableInteger gLength)
-    {
-        this.gLength = gLength;
+    public void setgLength(ModifiableInteger gLength) {
+	this.gLength = gLength;
     }
 
-    public void setgLength(Integer gLength)
-    {
-        this.gLength = ModifiableVariableFactory.safelySetValue(this.gLength, gLength);
+    public void setgLength(Integer gLength) {
+	this.gLength = ModifiableVariableFactory.safelySetValue(this.gLength, gLength);
     }
 
-    public ModifiableBigInteger getG()
-    {
-        return g;
+    public ModifiableBigInteger getG() {
+	return g;
     }
 
-    public void setG(ModifiableBigInteger g)
-    {
-        this.g = g;
+    public void setG(ModifiableBigInteger g) {
+	this.g = g;
     }
 
-    public void setG(BigInteger g)
-    {
-        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
+    public void setG(BigInteger g) {
+	this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
-    public ModifiableBigInteger getPublicKey()
-    {
-        return publicKey;
+    public ModifiableBigInteger getPublicKey() {
+	return publicKey;
     }
 
-    public void setPublicKey(ModifiableBigInteger publicKey)
-    {
-        this.publicKey = publicKey;
+    public void setPublicKey(ModifiableBigInteger publicKey) {
+	this.publicKey = publicKey;
     }
 
-    public void setPublicKey(BigInteger publicKey)
-    {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+    public void setPublicKey(BigInteger publicKey) {
+	this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 
-    public ModifiableInteger getPublicKeyLength()
-    {
-        return publicKeyLength;
+    public ModifiableInteger getPublicKeyLength() {
+	return publicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength)
-    {
-        this.publicKeyLength = publicKeyLength;
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
+	this.publicKeyLength = publicKeyLength;
     }
 
-    public void setPublicKeyLength(int length)
-    {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
+    public void setPublicKeyLength(int length) {
+	this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
     }
 
-    public ModifiableBigInteger getPrivateKey()
-    {
-        return privateKey;
+    public ModifiableBigInteger getPrivateKey() {
+	return privateKey;
     }
 
-    public void setPrivateKey(ModifiableBigInteger privateKey)
-    {
-        this.privateKey = privateKey;
+    public void setPrivateKey(ModifiableBigInteger privateKey) {
+	this.privateKey = privateKey;
     }
 
-    public void setPrivateKey(BigInteger privateKey)
-    {
-        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
+    public void setPrivateKey(BigInteger privateKey) {
+	this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
-    public ModifiableInteger getSerializedPLength()
-    {
-        return serializedPLength;
+    public ModifiableInteger getSerializedPLength() {
+	return serializedPLength;
     }
 
-    public void setSerializedPLength(ModifiableInteger serializedPLength)
-    {
-        this.serializedPLength = serializedPLength;
+    public void setSerializedPLength(ModifiableInteger serializedPLength) {
+	this.serializedPLength = serializedPLength;
     }
 
-    public void setSerializedPLength(Integer pLength)
-    {
-        this.serializedPLength = ModifiableVariableFactory.safelySetValue(this.serializedPLength, pLength);
+    public void setSerializedPLength(Integer pLength) {
+	this.serializedPLength = ModifiableVariableFactory.safelySetValue(this.serializedPLength, pLength);
     }
 
-    public ModifiableByteArray getSerializedP()
-    {
-        return serializedP;
+    public ModifiableByteArray getSerializedP() {
+	return serializedP;
     }
 
-    public void setSerializedP(ModifiableByteArray serializedP)
-    {
-        this.serializedP = serializedP;
+    public void setSerializedP(ModifiableByteArray serializedP) {
+	this.serializedP = serializedP;
     }
 
-    public void setSerializedP(byte[] serializedP)
-    {
-        this.serializedP = ModifiableVariableFactory.safelySetValue(this.serializedP, serializedP);
+    public void setSerializedP(byte[] serializedP) {
+	this.serializedP = ModifiableVariableFactory.safelySetValue(this.serializedP, serializedP);
     }
 
-    public ModifiableInteger getSerializedGLength()
-    {
-        return serializedGLength;
+    public ModifiableInteger getSerializedGLength() {
+	return serializedGLength;
     }
 
-    public void setSerializedGLength(ModifiableInteger serializedGLength)
-    {
-        this.serializedGLength = serializedGLength;
+    public void setSerializedGLength(ModifiableInteger serializedGLength) {
+	this.serializedGLength = serializedGLength;
     }
 
-    public void setSerializedGLength(Integer gLength)
-    {
-        this.serializedGLength = ModifiableVariableFactory.safelySetValue(this.serializedGLength, gLength);
+    public void setSerializedGLength(Integer gLength) {
+	this.serializedGLength = ModifiableVariableFactory.safelySetValue(this.serializedGLength, gLength);
     }
 
-    public ModifiableByteArray getSerializedG()
-    {
-        return serializedG;
+    public ModifiableByteArray getSerializedG() {
+	return serializedG;
     }
 
-    public void setSerializedG(ModifiableByteArray serializedG)
-    {
-        this.serializedG = serializedG;
+    public void setSerializedG(ModifiableByteArray serializedG) {
+	this.serializedG = serializedG;
     }
 
-    public void setSerializedG(byte[] serializedG)
-    {
-        this.serializedG = ModifiableVariableFactory.safelySetValue(this.serializedG, serializedG);
+    public void setSerializedG(byte[] serializedG) {
+	this.serializedG = ModifiableVariableFactory.safelySetValue(this.serializedG, serializedG);
     }
 
-    public ModifiableInteger getSerializedPublicKeyLength()
-    {
-        return serializedPublicKeyLength;
+    public ModifiableInteger getSerializedPublicKeyLength() {
+	return serializedPublicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength)
-    {
-        this.serializedPublicKeyLength = serializedPublicKeyLength;
+    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
+	this.serializedPublicKeyLength = serializedPublicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(Integer publicKeyLength)
-    {
-        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-                publicKeyLength);
+    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
+	this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
+		publicKeyLength);
     }
 
-    public ModifiableByteArray getSerializedPublicKey()
-    {
-        return serializedPublicKey;
+    public ModifiableByteArray getSerializedPublicKey() {
+	return serializedPublicKey;
     }
 
-    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey)
-    {
-        this.serializedPublicKey = serializedPublicKey;
+    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
+	this.serializedPublicKey = serializedPublicKey;
     }
 
-    public void setSerializedPublicKey(byte[] serializedPublicKey)
-    {
-        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-                serializedPublicKey);
+    public void setSerializedPublicKey(byte[] serializedPublicKey) {
+	this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
+		serializedPublicKey);
     }
 
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append("\n  Modulus p: ");
-        if (p != null)
-        {
-            sb.append(p.getValue().toString(16));
-        }
-        else
-        {
-            sb.append("null");
-        }
-        sb.append("\n  Generator g: ");
-        if (g != null)
-        {
-            sb.append(g.getValue().toString(16));
-        }
-        else
-        {
-            sb.append("null");
-        }
-        sb.append("\n  Public Key: ");
-        if (publicKey != null)
-        {
-            sb.append(publicKey.getValue().toString(16));
-        }
-        else
-        {
-            sb.append("null");
-        }
-        sb.append("\n  Signature Algorithm: ");
-        // signature and hash algorithms are provided only while working with
-        // (D)TLS 1.2
-        if (this.getHashAlgorithm() != null)
-        {
-            sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ");
-        }
-        if (this.getSignatureAlgorithm() != null)
-        {
-            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
-        }
-        sb.append("\n  Signature: ");
-        if (signature != null)
-        {
-            sb.append(ArrayConverter.bytesToHexString(this.signature.getValue()));
-        }
-        else
-        {
-            sb.append("null");
-        }
-        return sb.toString();
+    public String toString() {
+	StringBuilder sb = new StringBuilder();
+	sb.append(super.toString()).append("\n  Modulus p: ");
+	if (p != null) {
+	    sb.append(p.getValue().toString(16));
+	} else {
+	    sb.append("null");
+	}
+	sb.append("\n  Generator g: ");
+	if (g != null) {
+	    sb.append(g.getValue().toString(16));
+	} else {
+	    sb.append("null");
+	}
+	sb.append("\n  Public Key: ");
+	if (publicKey != null) {
+	    sb.append(publicKey.getValue().toString(16));
+	} else {
+	    sb.append("null");
+	}
+	sb.append("\n  Signature Algorithm: ");
+	// signature and hash algorithms are provided only while working with
+	// (D)TLS 1.2
+	if (this.getHashAlgorithm() != null) {
+	    sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ");
+	}
+	if (this.getSignatureAlgorithm() != null) {
+	    sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
+	}
+	sb.append("\n  Signature: ");
+	if (signature != null) {
+	    sb.append(ArrayConverter.bytesToHexString(this.signature.getValue()));
+	} else {
+	    sb.append("null");
+	}
+	return sb.toString();
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        ProtocolMessageHandler handler = new DHEServerKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler handler = new DHEServerKeyExchangeHandler(tlsContext);
+	handler.setProtocolMessage(this);
+	return handler;
     }
 }

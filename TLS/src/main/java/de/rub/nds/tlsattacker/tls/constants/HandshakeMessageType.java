@@ -82,7 +82,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	@Override
 	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
 	    CipherSuite cs = tlsContext.getSelectedCipherSuite();
-            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
+	    switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
 		case EC_DIFFIE_HELLMAN:
 		    return new ECDHEServerKeyExchangeHandler(tlsContext);
 		case DHE_DSS:
@@ -92,7 +92,8 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 		case DH_RSA:
 		    return new DHEServerKeyExchangeHandler(tlsContext);
 		default:
-                    throw new UnsupportedOperationException(AlgorithmResolver.getKeyExchangeAlgorithm(cs) + " not supported yet.");
+		    throw new UnsupportedOperationException(AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+			    + " not supported yet.");
 	    }
 	}
     },
@@ -122,7 +123,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 	@Override
 	ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
 	    CipherSuite cs = tlsContext.getSelectedCipherSuite();
-           
+
 	    switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
 		case RSA:
 		    return new RSAClientKeyExchangeHandler(tlsContext);
@@ -135,7 +136,8 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 		case DH_RSA:
 		    return new DHClientKeyExchangeHandler(tlsContext);
 		default:
-		    throw new UnsupportedOperationException(AlgorithmResolver.getKeyExchangeAlgorithm(cs)+ " not supported yet.");
+		    throw new UnsupportedOperationException(AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+			    + " not supported yet.");
 	    }
 	}
     },

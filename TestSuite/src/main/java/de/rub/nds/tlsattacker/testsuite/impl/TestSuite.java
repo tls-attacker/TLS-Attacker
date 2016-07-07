@@ -24,13 +24,13 @@ import java.util.List;
 public abstract class TestSuite {
 
     GeneralConfig generalConfig;
-    
+
     List<String> successfulTests = new LinkedList<>();
     List<String> failedTests = new LinkedList<>();
 
     public TestSuite(GeneralConfig config) {
 	this.generalConfig = config;
-        successfulTests = new LinkedList<>();
+	successfulTests = new LinkedList<>();
 	failedTests = new LinkedList<>();
     }
 

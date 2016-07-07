@@ -15,19 +15,19 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class ArbitraryMessage extends ProtocolMessage {
-    
+
     public ArbitraryMessage() {
-        this.setRequired(false);
+	this.setRequired(false);
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+	throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public String toCompactString() {
-        return "Arbitrary Protocol Message";
+	return "Arbitrary Protocol Message";
     }
-    
+
 }

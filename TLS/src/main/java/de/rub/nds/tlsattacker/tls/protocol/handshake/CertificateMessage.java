@@ -119,9 +119,9 @@ public class CertificateMessage extends HandshakeMessage {
     public String toString() {
 	StringBuilder sb = new StringBuilder(super.toString());
 	sb.append("\n  Certificates Length: ");
-        sb.append(certificatesLength.getValue());
+	sb.append(certificatesLength.getValue());
 	sb.append("\n  Certificate:\n");
-        sb.append(x509CertificateObject);
+	sb.append(x509CertificateObject);
 	return sb.toString();
     }
 
@@ -131,10 +131,9 @@ public class CertificateMessage extends HandshakeMessage {
     // }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        ProtocolMessageHandler handler = new CertificateHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler handler = new CertificateHandler(tlsContext);
+	handler.setProtocolMessage(this);
+	return handler;
     }
 }

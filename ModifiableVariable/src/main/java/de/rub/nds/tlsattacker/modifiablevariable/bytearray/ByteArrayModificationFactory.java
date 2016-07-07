@@ -11,8 +11,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.Random;
 
-final public class ByteArrayModificationFactory
-{
+final public class ByteArrayModificationFactory {
 
     private static final int BYTE_ARRAY_EXPLICIT_VALUE_MODIFICATION = 3;
 
@@ -28,52 +27,52 @@ final public class ByteArrayModificationFactory
 
     private static final int MODIFIED_ARRAY_LENGTH_ESTIMATION = 50;
 
-    private ByteArrayModificationFactory()
-    {
+    private ByteArrayModificationFactory() {
     }
 
     /**
      * *
-     *
-     * @param xor bytes to xor
-     * @param startPosition , negative numbers mean that the position is taken
-     * from the end
+     * 
+     * @param xor
+     *            bytes to xor
+     * @param startPosition
+     *            , negative numbers mean that the position is taken from the
+     *            end
      * @return
      */
-    public static VariableModification<byte[]> xor(final byte[] xor, final int startPosition)
-    {
-        return new ByteArrayXorModification(xor, startPosition);
+    public static VariableModification<byte[]> xor(final byte[] xor, final int startPosition) {
+	return new ByteArrayXorModification(xor, startPosition);
     }
 
     /**
      * *
-     *
-     * @param bytesToInsert bytes to xor
-     * @param startPosition , negative numbers mean that the position is taken
-     * from the end
+     * 
+     * @param bytesToInsert
+     *            bytes to xor
+     * @param startPosition
+     *            , negative numbers mean that the position is taken from the
+     *            end
      * @return
      */
-    public static VariableModification<byte[]> insert(final byte[] bytesToInsert, final int startPosition)
-    {
-        return new ByteArrayInsertModification(bytesToInsert, startPosition);
+    public static VariableModification<byte[]> insert(final byte[] bytesToInsert, final int startPosition) {
+	return new ByteArrayInsertModification(bytesToInsert, startPosition);
     }
 
     /**
      * * Deletes $count bytes from the input array beginning at $startPosition
-     *
-     * @param startPosition , negative numbers mean that the position is taken
-     * from the end
+     * 
+     * @param startPosition
+     *            , negative numbers mean that the position is taken from the
+     *            end
      * @param count
      * @return
      */
-    public static VariableModification<byte[]> delete(final int startPosition, final int count)
-    {
-        return new ByteArrayDeleteModification(startPosition, count);
+    public static VariableModification<byte[]> delete(final int startPosition, final int count) {
+	return new ByteArrayDeleteModification(startPosition, count);
     }
 
-    public static VariableModification<byte[]> explicitValue(final byte[] explicitValue)
-    {
-        return new ByteArrayExplicitValueModification(explicitValue);
+    public static VariableModification<byte[]> explicitValue(final byte[] explicitValue) {
+	return new ByteArrayExplicitValueModification(explicitValue);
     }
 
     public static VariableModification<byte[]> createRandomModification(byte[] originalValue) {

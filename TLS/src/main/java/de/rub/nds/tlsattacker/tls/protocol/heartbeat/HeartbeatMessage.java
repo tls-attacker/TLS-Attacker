@@ -24,8 +24,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class HeartbeatMessage extends ProtocolMessage
-{
+public class HeartbeatMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte heartbeatMessageType;
@@ -39,126 +38,100 @@ public class HeartbeatMessage extends ProtocolMessage
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
     ModifiableByteArray padding;
 
-    public HeartbeatMessage()
-    {
-        this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
+    public HeartbeatMessage() {
+	this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
     }
 
-    public HeartbeatMessage(ConnectionEnd messageIssuer)
-    {
-        this();
-        this.messageIssuer = messageIssuer;
+    public HeartbeatMessage(ConnectionEnd messageIssuer) {
+	this();
+	this.messageIssuer = messageIssuer;
     }
 
-    public ModifiableByte getHeartbeatMessageType()
-    {
-        return heartbeatMessageType;
+    public ModifiableByte getHeartbeatMessageType() {
+	return heartbeatMessageType;
     }
 
-    public void setHeartbeatMessageType(ModifiableByte heartbeatMessageType)
-    {
-        this.heartbeatMessageType = heartbeatMessageType;
+    public void setHeartbeatMessageType(ModifiableByte heartbeatMessageType) {
+	this.heartbeatMessageType = heartbeatMessageType;
     }
 
-    public void setHeartbeatMessageType(byte heartbeatMessageType)
-    {
-        this.heartbeatMessageType = ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType,
-                heartbeatMessageType);
+    public void setHeartbeatMessageType(byte heartbeatMessageType) {
+	this.heartbeatMessageType = ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType,
+		heartbeatMessageType);
     }
 
-    public ModifiableInteger getPayloadLength()
-    {
-        return payloadLength;
+    public ModifiableInteger getPayloadLength() {
+	return payloadLength;
     }
 
-    public void setPayloadLength(ModifiableInteger payloadLength)
-    {
-        this.payloadLength = payloadLength;
+    public void setPayloadLength(ModifiableInteger payloadLength) {
+	this.payloadLength = payloadLength;
     }
 
-    public void setPayloadLength(int payloadLength)
-    {
-        this.payloadLength = ModifiableVariableFactory.safelySetValue(this.payloadLength, payloadLength);
+    public void setPayloadLength(int payloadLength) {
+	this.payloadLength = ModifiableVariableFactory.safelySetValue(this.payloadLength, payloadLength);
     }
 
-    public ModifiableByteArray getPayload()
-    {
-        return payload;
+    public ModifiableByteArray getPayload() {
+	return payload;
     }
 
-    public void setPayload(ModifiableByteArray payload)
-    {
-        this.payload = payload;
+    public void setPayload(ModifiableByteArray payload) {
+	this.payload = payload;
     }
 
-    public void setPayload(byte[] payload)
-    {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+    public void setPayload(byte[] payload) {
+	this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public ModifiableByteArray getPadding()
-    {
-        return padding;
+    public ModifiableByteArray getPadding() {
+	return padding;
     }
 
-    public void setPadding(ModifiableByteArray padding)
-    {
-        this.padding = padding;
+    public void setPadding(ModifiableByteArray padding) {
+	this.padding = padding;
     }
 
-    public void setPadding(byte[] padding)
-    {
-        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+    public void setPadding(byte[] padding) {
+	this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        HeartbeatHandler hmh = new HeartbeatHandler(tlsContext);
-        hmh.setProtocolMessage(this);
-        return hmh;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	HeartbeatHandler hmh = new HeartbeatHandler(tlsContext);
+	hmh.setProtocolMessage(this);
+	return hmh;
     }
 
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nHeartbeat message:\n  Type: ");
-        sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
-        sb.append("\n  Payload Length: ");
-        if (payloadLength != null)
-        {
-            sb.append(payloadLength.getValue());
-        }
-        else
-        {
-            sb.append("null");
-        }
-        sb.append("\n  Payload: ");
-        if (payload != null)
-        {
-            sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
-        }
-        else
-        {
-            sb.append("null");
-        }
-        sb.append("\n  Padding: ");
-        if (padding != null)
-        {
-            sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
-        }
-        else
-        {
-            sb.append("null");
-        }
-        return sb.toString();
+    public String toString() {
+	StringBuilder sb = new StringBuilder();
+	sb.append("\nHeartbeat message:\n  Type: ");
+	sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
+	sb.append("\n  Payload Length: ");
+	if (payloadLength != null) {
+	    sb.append(payloadLength.getValue());
+	} else {
+	    sb.append("null");
+	}
+	sb.append("\n  Payload: ");
+	if (payload != null) {
+	    sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
+	} else {
+	    sb.append("null");
+	}
+	sb.append("\n  Padding: ");
+	if (padding != null) {
+	    sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
+	} else {
+	    sb.append("null");
+	}
+	return sb.toString();
     }
 
     @Override
-    public String toCompactString()
-    {
-        return "Heartbeat";
+    public String toCompactString() {
+	return "Heartbeat";
     }
 
 }

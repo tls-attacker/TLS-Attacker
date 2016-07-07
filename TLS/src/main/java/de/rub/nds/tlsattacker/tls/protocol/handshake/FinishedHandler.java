@@ -43,19 +43,15 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 	// protocolMessage.setType(HandshakeMessageType.FINISHED.getValue());
 
 	byte[] masterSecret = tlsContext.getMasterSecret();
-        TlsMessageDigest digest =  tlsContext.getDigest();
-        if(!digest.isInitialised())
-        {
-            try
-            {
-                //TODO in Config auslagern und exception handling Ã¼bernehmen
-                digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
-            }
-            catch (NoSuchAlgorithmException ex)
-            {
-                java.util.logging.Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+	TlsMessageDigest digest = tlsContext.getDigest();
+	if (!digest.isInitialised()) {
+	    try {
+		// TODO in Config auslagern und exception handling Ã¼bernehmen
+		digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
+	    } catch (NoSuchAlgorithmException ex) {
+		java.util.logging.Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
 	byte[] handshakeMessagesHash = digest.digest();
 
 	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),

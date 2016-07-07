@@ -33,142 +33,126 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public final class WorkflowTraceSerializer
-{
+public final class WorkflowTraceSerializer {
 
     /**
      * context initialization is expensive, we need to do that only once
      */
     private static JAXBContext context;
 
-    private WorkflowTraceSerializer()
-    {
+    private WorkflowTraceSerializer() {
 
     }
 
     /**
      * Returns an initialized JaxbContext
-     *
+     * 
      * @return
      * @throws JAXBException
      * @throws IOException
      */
-    private static JAXBContext getJAXBContext() throws JAXBException, IOException
-    {
-        if (context == null)
-        {
-            context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
-                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class);
-        }
-        return context;
+    private static JAXBContext getJAXBContext() throws JAXBException, IOException {
+	if (context == null) {
+	    context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
+		    ModificationFilter.class, VariableModification.class, ModifiableVariable.class);
+	}
+	return context;
     }
 
     /**
      * Writes a WorkflowTrace to a File
-     *
-     * @param file File to which the WorkflowTrace should be written
-     * @param trace WorkflowTrace that should be written
-     * @throws FileNotFoundException Is thrown if the File cannot be found
-     * @throws JAXBException TODO
-     * @throws IOException Is thrown if the Process doesn't have the rights to
-     * write to the File
+     * 
+     * @param file
+     *            File to which the WorkflowTrace should be written
+     * @param trace
+     *            WorkflowTrace that should be written
+     * @throws FileNotFoundException
+     *             Is thrown if the File cannot be found
+     * @throws JAXBException
+     *             TODO
+     * @throws IOException
+     *             Is thrown if the Process doesn't have the rights to write to
+     *             the File
      */
-    public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException
-    {
-        FileOutputStream fos = new FileOutputStream(file);
+    public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
+	FileOutputStream fos = new FileOutputStream(file);
 
-        WorkflowTraceSerializer.write(fos, trace);
+	WorkflowTraceSerializer.write(fos, trace);
 
     }
 
     /**
-     *
+     * 
      * @param outputStream
      * @param workflowTrace
      * @throws JAXBException
      * @throws IOException
      */
-    public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException
-    {
-        context = getJAXBContext();
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
+	context = getJAXBContext();
+	Marshaller m = context.createMarshaller();
+	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        m.marshal(workflowTrace, outputStream);
-        outputStream.close();
+	m.marshal(workflowTrace, outputStream);
+	outputStream.close();
     }
 
     /**
-     *
+     * 
      * @param inputStream
      * @return
      * @throws JAXBException
      * @throws IOException
      * @throws XMLStreamException
      */
-    public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException
-    {
-        context = getJAXBContext();
-        Unmarshaller m = context.createUnmarshaller();
+    public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
+	context = getJAXBContext();
+	Unmarshaller m = context.createUnmarshaller();
 
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+	XMLInputFactory xif = XMLInputFactory.newFactory();
+	xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+	xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+	XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
 
-        WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
-        inputStream.close();
-        return wt;
+	WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
+	inputStream.close();
+	return wt;
     }
 
-    public static List<WorkflowTrace> readFolder(File f)
-    {
-        if (f.isDirectory())
-        {
-            ArrayList<WorkflowTrace> list = new ArrayList<>();
-            for (File file : f.listFiles())
-            {
-                if (file.getName().startsWith("."))
-                {
-                    //We ignore the .gitignore File
-                    continue;
-                }
-                WorkflowTrace trace;
-                try
-                {
-                    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-                    trace.setName(file.getAbsolutePath());
-                    list.add(trace);
-                }
-                catch (JAXBException ex)
-                {
-                    
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                }
-                catch (IOException ex)
-                {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                }
-                catch (XMLStreamException ex)
-                {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                }
-                catch (Throwable ex)
-                {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                }
-            }
-            return list;
-        }
-        else
-        {
-            throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
-        }
+    public static List<WorkflowTrace> readFolder(File f) {
+	if (f.isDirectory()) {
+	    ArrayList<WorkflowTrace> list = new ArrayList<>();
+	    for (File file : f.listFiles()) {
+		if (file.getName().startsWith(".")) {
+		    // We ignore the .gitignore File
+		    continue;
+		}
+		WorkflowTrace trace;
+		try {
+		    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+		    trace.setName(file.getAbsolutePath());
+		    list.add(trace);
+		} catch (JAXBException ex) {
+
+		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		} catch (IOException ex) {
+		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		} catch (XMLStreamException ex) {
+		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		} catch (Throwable ex) {
+		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		}
+	    }
+	    return list;
+	} else {
+	    throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
+	}
 
     }
+
     private static final Logger LOG = Logger.getLogger(WorkflowTraceSerializer.class.getName());
 
 }

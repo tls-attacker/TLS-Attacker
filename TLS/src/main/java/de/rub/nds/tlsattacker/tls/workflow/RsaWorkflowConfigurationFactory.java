@@ -66,9 +66,9 @@ public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactor
 
 	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
 	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
-        CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
-        crm.setRequired(false);
-        workflowTrace.add(crm);
+	CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
+	crm.setRequired(false);
+	workflowTrace.add(crm);
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
 	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
 	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
