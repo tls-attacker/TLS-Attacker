@@ -113,15 +113,13 @@ public abstract class CommandConfig {
     @Parameter(names = "-fuzzing", description = "If sets, supresses Value and generates invalid Data for Cryptographic operations on the FLY. Throws Exceptions otherwise.")
     protected boolean fuzzingMode = false;
 
-    public boolean isFuzzingMode()
-    {
-        return fuzzingMode;
+    public boolean isFuzzingMode() {
+	return fuzzingMode;
     }
 
-    public void setFuzzingMode(boolean fuzzingMode)
-    {
-        ProtocolMessage.setFuzzingMode(fuzzingMode);
-        this.fuzzingMode = fuzzingMode;
+    public void setFuzzingMode(boolean fuzzingMode) {
+	ProtocolMessage.setFuzzingMode(fuzzingMode);
+	this.fuzzingMode = fuzzingMode;
     }
 
     // todo define parameter
