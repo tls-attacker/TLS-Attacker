@@ -4,7 +4,11 @@ import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,6 +68,51 @@ public class FuzzerController extends Controller {
     public void stopFuzzer() {
 	this.isRunning = false;
 	pool.setStopped(true);
+    }
+
+    @Override
+    public void startConsoleInput() {
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	while (true) {
+	    String s = null;
+	    try {
+		System.out.print(">");
+		s = br.readLine();
+	    } catch (IOException ex) {
+		Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	    switch (s) {
+		case "start":
+		    startFuzzer();
+		    break;
+		case "stop":
+		    stopFuzzer();
+		    break;
+		case "status":
+		    ResultContainer con = ResultContainer.getInstance();
+		    int goodTraces = con.getGoodTraces().size();
+		    int hitVertices = con.getBranch().getVerticesCount();
+		    int hitBranches = con.getBranch().getBranchCount();
+		    System.out
+			    .println("Traces succesful executed:" + ResultContainer.getInstance().getResults().size());
+		    System.out.println("Crashed:" + con.getCrashedCount() + " Timeout:" + con.getTimeoutCount()
+			    + " WorkflowTypes:" + con.getTypeCount());
+		    System.out.println("Good Traces:" + goodTraces + " Hit Vertices:" + hitVertices + " Hit Branches:"
+			    + hitBranches);
+		    System.out.println("Servers:" + ServerManager.getInstance().getServerCount() + " Currently Free:"
+			    + ServerManager.getInstance().getFreeServerCount());
+		    break;
+		case "server":
+		    List<TLSServer> serverList = ServerManager.getInstance().getAllServers();
+		    for (TLSServer server : serverList) {
+			System.out.println(server);
+		    }
+		    break;
+		default:
+		    System.out.println("Commands: start, stop, status, server");
+		    break;
+	    }
+	}
     }
 
 }

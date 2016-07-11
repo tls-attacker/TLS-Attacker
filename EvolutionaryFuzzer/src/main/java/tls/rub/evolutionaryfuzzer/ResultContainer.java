@@ -42,9 +42,11 @@ public class ResultContainer {
     // List of old Results
     private final ArrayList<Result> results;
     private final ArrayList<WorkflowTrace> goodTrace;
-    private final Set<WorkFlowTraceType> set;
+    private final Set<WorkFlowTraceType> typeSet;
     private boolean serialize = true;
     private EvolutionaryFuzzerConfig evoConfig;
+    private int crashed = 0;
+    private int timeout = 0;
 
     public boolean isSerialize() {
 	return serialize;
@@ -58,7 +60,7 @@ public class ResultContainer {
 	branch = new BranchTrace();
 	results = new ArrayList<>();
 	goodTrace = new ArrayList<>();
-	set = new HashSet<>();
+	typeSet = new HashSet<>();
 	evoConfig = Config.ConfigManager.getInstance().getConfig();
 
     }
@@ -95,7 +97,7 @@ public class ResultContainer {
 	    return;
 	}
 	if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
-	    LOG.log(Level.INFO, "Found a GoodTrace:{0}", r.toString());
+	    LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
 	    // It may be that we dont want to safe good Traces, for example if
 	    // we execute already saved Traces
 	    if (serialize) {
@@ -114,6 +116,7 @@ public class ResultContainer {
 
 	}
 	if (result.hasCrashed()) {
+	    crashed++;
 	    LOG.log(Level.INFO, "Found a Crash:{0}", r.toString());
 	    if (serialize) {
 		File f = new File(evoConfig.getOutputFolder() + "crashed/" + result.getId());
@@ -128,6 +131,7 @@ public class ResultContainer {
 	    }
 	}
 	if (result.didTimeout()) {
+	    timeout++;
 	    LOG.log(Level.INFO, "Found a Timeout:{0}", r.toString());
 	    if (serialize) {
 		File f = new File(evoConfig.getOutputFolder() + "timeout/" + result.getId());
@@ -143,7 +147,7 @@ public class ResultContainer {
 	}
 	WorkFlowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
 	type.clean();
-	if (set.add(type) && serialize) {
+	if (typeSet.add(type) && serialize) {
 	    LOG.log(Level.INFO, "Found a new WorkFlowTraceType");
 	    LOG.log(Level.FINER, type.toString());
 	    File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/" + result.getId());
@@ -156,6 +160,26 @@ public class ResultContainer {
 			f.getAbsolutePath());
 	    }
 	}
+    }
+
+    public BranchTrace getBranch() {
+	return branch;
+    }
+
+    public ArrayList<Result> getResults() {
+	return results;
+    }
+
+    public int getCrashedCount() {
+	return crashed;
+    }
+
+    public int getTimeoutCount() {
+	return timeout;
+    }
+
+    public int getTypeCount() {
+	return typeSet.size();
     }
 
     // Singleton

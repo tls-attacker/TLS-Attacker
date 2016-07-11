@@ -309,4 +309,12 @@ public final class TLSServer {
 	return id;
     }
 
+    @Override
+    public String toString() {
+	return "TLSServer{free=" + free + ", ip=" + ip + ", port=" + port + ", id=" + id + ", restartServerCommand="
+		+ restartServerCommand + ", outputFolder=" + outputFolder + ", accepted=" + accepted + ", traces="
+		+ traces + ", crashedFolder=" + crashedFolder + ", timeoutFolder=" + timeoutFolder
+		+ ", goodTracesFolder=" + goodTracesFolder + ", faultyFolder=" + faultyFolder + '}';
+    }
+
 }

@@ -145,4 +145,13 @@ public class BranchTrace {
 
 	return new MergeResult(newVertices, newEdges, hitVertices);
     }
+
+    public int getVerticesCount() {
+	return map.size();
+    }
+
+    public int getBranchCount() {
+	return graph.edgeSet().size();
+    }
+
 }

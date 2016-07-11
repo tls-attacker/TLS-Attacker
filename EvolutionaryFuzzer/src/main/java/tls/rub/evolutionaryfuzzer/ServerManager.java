@@ -10,6 +10,7 @@ package tls.rub.evolutionaryfuzzer;
 import Config.EvolutionaryFuzzerConfig;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -112,6 +113,24 @@ public class ServerManager {
      */
     public int getNumberOfServers() {
 	return serverList.size();
+    }
+
+    public int getServerCount() {
+	return serverList.size();
+    }
+
+    public int getFreeServerCount() {
+	int count = 0;
+	for (TLSServer server : serverList) {
+	    if (server.isFree()) {
+		count++;
+	    }
+	}
+	return serverList.size();
+    }
+
+    public List<TLSServer> getAllServers() {
+	return serverList;
     }
 
     private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());

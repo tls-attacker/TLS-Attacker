@@ -115,18 +115,21 @@ public class TLSExecutor extends Executor {
 		    // It may happen that the implementation is not ready yet
 		}
 	    }// TODO Change to config
-	    TlsContext tlsContext = new TlsContext();
-	    tlsContext.setWorkflowTrace(trace);
+
 	    if (fc.getKeystore() == null) {
 		fc.setKeystore("../resources/rsa1024.jks");
 	    }
 	    if (fc.getPassword() == null) {
 		fc.setPassword("password");
 	    }
-	    if (fc.getAlias() == null) {
-		tlsContext.setAlias("alias");
+	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
+		fc.setAlias("alias");
 	    }
+
 	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
+	    TlsContext tlsContext = new TlsContext();
+
+	    tlsContext.setWorkflowTrace(trace);
 	    tlsContext.setKeyStore(ks);
 	    tlsContext.setAlias(fc.getAlias());
 	    tlsContext.setPassword(fc.getPassword());

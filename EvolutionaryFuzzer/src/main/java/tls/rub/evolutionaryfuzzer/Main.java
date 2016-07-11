@@ -55,6 +55,7 @@ public class Main {
 	    case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
 		Controller controller = new FuzzerController(evoConfig);
 		controller.startFuzzer();
+		controller.startConsoleInput();
 		break;
 	    case "tracetypes":
 		File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/");
