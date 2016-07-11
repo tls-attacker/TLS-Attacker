@@ -148,7 +148,7 @@ public class ResultContainer {
 	WorkFlowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
 	type.clean();
 	if (typeSet.add(type) && serialize) {
-	    LOG.log(Level.INFO, "Found a new WorkFlowTraceType");
+	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
 	    LOG.log(Level.FINER, type.toString());
 	    File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/" + result.getId());
 	    try {
