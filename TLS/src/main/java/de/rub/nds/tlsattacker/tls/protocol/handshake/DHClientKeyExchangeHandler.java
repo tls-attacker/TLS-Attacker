@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -15,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomKeyGeneratorHelper;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
@@ -90,6 +91,8 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     byte[] prepareKeyExchangeMessage() {
+	AsymmetricCipherKeyPair kp = null;
+	byte[] premasterSecret = null;
 	if (tlsContext.getServerDHParameters() == null) {
 	    // we are probably handling a simple DH ciphersuite, we try to
 	    // establish server public key parameters from the server
@@ -98,21 +101,35 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
 	    SubjectPublicKeyInfo keyInfo = x509Cert.getSubjectPublicKeyInfo();
 	    DHPublicKeyParameters parameters;
-	    try {
-		parameters = (DHPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
-		tlsContext.setServerDHParameters(new ServerDHParams(parameters));
-	    } catch (IOException e) {
-		throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate", e);
+	    if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.dhpublicnumber)) {
+		if (protocolMessage.isFuzzingMode()) {
+		    kp = RandomKeyGeneratorHelper.generateDHPublicKey();
+		    parameters = (DHPublicKeyParameters) kp.getPublic();
+		} else {
+		    throw new WorkflowExecutionException(
+			    "Invalid KeyType, not in FuzzingMode so no Keys are generated on the fly");
+		}
+	    } else {
+		try {
+		    // generate client's original dh public and private key,
+		    // based on
+		    // the
+		    // server's public parameters
+		    parameters = (DHPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
+		    kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext.getServerDHParameters()
+			    .getPublicKey().getParameters());
+		} catch (IOException e) {
+		    throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate", e);
+		}
 	    }
+	    tlsContext.setServerDHParameters(new ServerDHParams(parameters));
+
+	} else {
+	    kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext.getServerDHParameters().getPublicKey()
+		    .getParameters());
+
 	}
 
-	byte[] premasterSecret;
-
-	// generate client's original dh public and private key, based on
-	// the
-	// server's public parameters
-	AsymmetricCipherKeyPair kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext
-		.getServerDHParameters().getPublicKey().getParameters());
 	DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) kp.getPublic();
 	DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) kp.getPrivate();
 
@@ -126,10 +143,16 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	// DHPublicKeyParameters newDhPublic = new
 	// DHPublicKeyParameters(dhMessage.getY().getValue(), newParams);
 	DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(protocolMessage.getX().getValue(), newParams);
-
-	premasterSecret = TlsDHUtils.calculateDHBasicAgreement(tlsContext.getServerDHParameters().getPublicKey(),
-		newDhPrivate);
-
+	try {
+	    premasterSecret = TlsDHUtils.calculateDHBasicAgreement(tlsContext.getServerDHParameters().getPublicKey(),
+		    newDhPrivate);
+	} catch (IllegalArgumentException e) {
+	    if (protocolMessage.isFuzzingMode()) {
+		premasterSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublic, newDhPrivate);
+	    } else {
+		throw new IllegalArgumentException(e);
+	    }
+	}
 	protocolMessage.setPremasterSecret(premasterSecret);
 	LOGGER.debug("Computed PreMaster Secret: {}",
 		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
