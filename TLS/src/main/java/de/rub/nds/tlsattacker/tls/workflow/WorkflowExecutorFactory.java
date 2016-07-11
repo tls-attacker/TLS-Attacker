@@ -28,7 +28,7 @@ public class WorkflowExecutorFactory {
 		we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
 		return we;
 	    default:
-		throw new UnsupportedOperationException("not yet implemented");
+		throw new UnsupportedOperationException(tlsContext.getProtocolVersion().name() + " not yet implemented");
 	}
     }
 }
