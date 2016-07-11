@@ -12,10 +12,9 @@ package tls.rub.evolutionaryfuzzer;
  * Executor itself has to make sure that the Agent is up and running. The
  * Executor should implement all the logic in the run, method, so that parallel
  * fuzzing can be supported. method,
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Executor implements Runnable
-{
-    //TODO Should this be an interface?
+public abstract class Executor implements Runnable {
+    // TODO Should this be an interface?
 }

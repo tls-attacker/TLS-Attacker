@@ -1,4 +1,3 @@
-
 package GlobalBranchTreeTests;
 
 import java.util.logging.Logger;
@@ -12,11 +11,10 @@ import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.TLSServer;
 
 /**
- *
+ * 
  * @author ic0ns
  */
-public class TLSServerTest
-{
+public class TLSServerTest {
     private static final Logger LOG = Logger.getLogger(TLSServerTest.class.getName());
 
     /**
@@ -38,107 +36,100 @@ public class TLSServerTest
     /**
      *
      */
-    public TLSServerTest()
-    {
+    public TLSServerTest() {
     }
 
     /**
      *
      */
     @Before
-    public void setUp()
-    {
-        server = new TLSServer("127.0.0.1", 4433, "/home/ic0ns/Downloads/afl/afl-2.10b/afl-showmap -m none -o /home/ic0ns/Traces/openssl[id] /home/ic0ns/Downloads/afl/afl-2.10b/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept 4433", "ACCEPT","./");
+    public void setUp() {
+	server = new TLSServer(
+		"127.0.0.1",
+		4433,
+		"/home/ic0ns/Downloads/afl/afl-2.10b/afl-showmap -m none -o /home/ic0ns/Traces/openssl[id] /home/ic0ns/Downloads/afl/afl-2.10b/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept 4433",
+		"ACCEPT", "./");
     }
 
     /**
      *
      */
     @After
-    public void tearDown()
-    {
-        server = null;
+    public void tearDown() {
+	server = null;
     }
 
     /**
      *
      */
     @Test
-    public void testStart()
-    {
-        //TODO Test if really started
-        server.occupie();
-        server.start();
-        
+    public void testStart() {
+	// TODO Test if really started
+	server.occupie();
+	server.start();
+
     }
 
     /**
      *
      */
     @Test
-    public void testRestart()
-    {
-        //TODO Test if really started
-        server.occupie();
-        server.restart();
+    public void testRestart() {
+	// TODO Test if really started
+	server.occupie();
+	server.restart();
     }
 
     /**
      *
      */
     @Test
-    public void testOccupie()
-    {
-        server.occupie();
-        assertFalse(server.isFree());
+    public void testOccupie() {
+	server.occupie();
+	assertFalse(server.isFree());
     }
 
     /**
      *
      */
     @Test
-    public void testRelease()
-    {
-        
-        server.occupie();
-        server.release();
-        assertTrue(server.isFree());
+    public void testRelease() {
+
+	server.occupie();
+	server.release();
+	assertTrue(server.isFree());
     }
 
     /**
      *
      */
     @Test(expected = IllegalStateException.class)
-    public void testWrongOccupie()
-    {
-        server.occupie();
-        server.occupie();
+    public void testWrongOccupie() {
+	server.occupie();
+	server.occupie();
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testWrongRelease()
-    {
-        server.release();
+    public void testWrongRelease() {
+	server.release();
     }
 
     /**
      *
      */
     @Test(expected = IllegalStateException.class)
-    public void testExitedNotStarted()
-    {
-        server.exited();
+    public void testExitedNotStarted() {
+	server.exited();
     }
 
     /**
      *
      */
     @Test
-    public void testExitedStarted()
-    {
-        server.occupie();
-        server.start();
-        assertFalse("Failure:Server started but should not have exited yet", server.exited());
+    public void testExitedStarted() {
+	server.occupie();
+	server.start();
+	assertFalse("Failure:Server started but should not have exited yet", server.exited());
     }
 
 }

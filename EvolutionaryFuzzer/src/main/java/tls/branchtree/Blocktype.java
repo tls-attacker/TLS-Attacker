@@ -13,11 +13,10 @@ package tls.branchtree;
  * to Branch to. Generally speaking all Instructions are Instrumented which are
  * able to Change the Controlflow of the Progam, therefore not necessarily the
  * next instruction is executed.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public enum Blocktype
-{
+public enum Blocktype {
 
     /**
      * Represents the RETN Instruction in Assembly.

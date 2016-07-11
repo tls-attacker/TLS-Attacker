@@ -19,39 +19,39 @@ import org.junit.Test;
 import tls.branchtree.ProbeVertex;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class CountVertexTest {
     private static final Logger LOG = Logger.getLogger(CountVertexTest.class.getName());
-    
+
     /**
      *
      */
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     /**
      *
      */
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     /**
      *
      */
     public CountVertexTest() {
     }
-    
+
     /**
      *
      */
     @Before
     public void setUp() {
     }
-    
+
     /**
      *
      */
@@ -59,21 +59,19 @@ public class CountVertexTest {
     public void tearDown() {
     }
 
-
     /**
      *
      */
-        @Test
-    public void testCountVertex() 
-    {
-        ProbeVertex vertex = new ProbeVertex(1);
-        assertTrue("Failure: GetProbeID returend different ProbeID",vertex.getProbeID()==1);
-      
-        ProbeVertex vertex2 = new ProbeVertex(1);
-   
-        ProbeVertex vertex3 = new ProbeVertex(2);
-        assertTrue("Failure: Vertices with the same ProbeID should equal",vertex.equals(vertex2));
-        assertFalse("Failure: Vertices with different ProbeIDs should not be equal",vertex.equals(vertex3));
-        
+    @Test
+    public void testCountVertex() {
+	ProbeVertex vertex = new ProbeVertex(1);
+	assertTrue("Failure: GetProbeID returend different ProbeID", vertex.getProbeID() == 1);
+
+	ProbeVertex vertex2 = new ProbeVertex(1);
+
+	ProbeVertex vertex3 = new ProbeVertex(2);
+	assertTrue("Failure: Vertices with the same ProbeID should equal", vertex.equals(vertex2));
+	assertFalse("Failure: Vertices with different ProbeIDs should not be equal", vertex.equals(vertex3));
+
     }
 }

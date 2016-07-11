@@ -20,62 +20,55 @@ import Config.EvolutionaryFuzzerConfig;
 import tls.rub.evolutionaryfuzzer.SimpleMutator;
 
 /**
- *
+ * 
  * @author ic0ns
  */
-public class SimpleMutatorTest
-{
+public class SimpleMutatorTest {
     private static final Logger LOG = Logger.getLogger(SimpleMutatorTest.class.getName());
 
     /**
      *
      */
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     /**
      *
      */
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 
     /**
      *
      */
-    public SimpleMutatorTest()
-    {
+    public SimpleMutatorTest() {
     }
 
     /**
      *
      */
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
 
     /**
      *
      */
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      *
      */
     @Test
-    public void testMutation()
-    {
-        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
-        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        SimpleMutator mutator = new SimpleMutator(tmpTlsContext,config);
-        mutator.getNewMutation();
+    public void testMutation() {
+	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+	TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
+	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	SimpleMutator mutator = new SimpleMutator(tmpTlsContext, config);
+	mutator.getNewMutation();
     }
 }

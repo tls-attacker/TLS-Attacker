@@ -18,59 +18,53 @@ import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.LogFileIDManager;
 
 /**
- *
+ * 
  * @author ic0ns
  */
-public class LogFileIDManagerTest
-{
+public class LogFileIDManagerTest {
     private static final Logger LOG = Logger.getLogger(LogFileIDManagerTest.class.getName());
 
     /**
      *
      */
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     /**
      *
      */
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 
     /**
      *
      */
-    public LogFileIDManagerTest()
-    {
+    public LogFileIDManagerTest() {
     }
 
     /**
      *
      */
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
 
     /**
      *
      */
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      *
      */
     @Test
-    public void testIncrementingIDs()
-    {
-        
-        assertTrue("Failure: Incrementing the LogFileIDs failed",LogFileIDManager.getInstance().getID()==LogFileIDManager.getInstance().getID()-1);
+    public void testIncrementingIDs() {
+
+	assertTrue("Failure: Incrementing the LogFileIDs failed",
+		LogFileIDManager.getInstance().getID() == LogFileIDManager.getInstance().getID() - 1);
     }
 }

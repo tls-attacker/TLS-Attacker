@@ -13,26 +13,26 @@ import java.util.logging.Logger;
 /**
  * A Processmonitor which can tell you, when a command has finished in a non
  * blocking way. //TODO got this tool from the internet, do i need to mark it?
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ProcMon implements Runnable
-{
+public class ProcMon implements Runnable {
     private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());
 
     /**
      * Creates a new ProcessMonitor for a Process
-     *
-     * @param proc Process that should be monitored
+     * 
+     * @param proc
+     *            Process that should be monitored
      * @return new ProcessMonitor Object
      */
     public static ProcMon create(Process proc) {
-        ProcMon procMon = new ProcMon(proc);
-        Thread t = new Thread(procMon);
-        t.setName("Process Monitor Thread");
-        t.start();
-        
-        return procMon;
+	ProcMon procMon = new ProcMon(proc);
+	Thread t = new Thread(procMon);
+	t.setName("Process Monitor Thread");
+	t.start();
+
+	return procMon;
     }
 
     //
@@ -43,39 +43,33 @@ public class ProcMon implements Runnable
     /**
      * Private Constructor, Objects should be created with the createProcMon
      * Method
-     *
+     * 
      * @param p
      */
-    private ProcMon(Process p)
-    {
-        _proc = p;
+    private ProcMon(Process p) {
+	_proc = p;
     }
 
     /**
      * Returns true, if the Process is finished
-     *
+     * 
      * @return If the process is Completed
      */
-    public boolean isComplete()
-    {
-        return _complete;
+    public boolean isComplete() {
+	return _complete;
     }
 
     /**
      * Starts the Process monitor
      */
     @Override
-    public void run()
-    {
-        try
-        {
-            _proc.waitFor();
-            _complete = true;
-        }
-        catch (InterruptedException ex)
-        {
-            LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
-        }
+    public void run() {
+	try {
+	    _proc.waitFor();
+	    _complete = true;
+	} catch (InterruptedException ex) {
+	    LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
+	}
     }
 
 }

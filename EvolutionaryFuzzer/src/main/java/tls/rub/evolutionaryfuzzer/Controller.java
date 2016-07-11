@@ -13,19 +13,18 @@ import Config.EvolutionaryFuzzerConfig;
  * The Controller controls the genereal Programm. It links the Components
  * together and starts and stop the Fuzzing Process. I am unsure if it is ever
  * necessarry to create more than one Implementation.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Controller
-{
-    public Controller(EvolutionaryFuzzerConfig config)
-    {
-        this.config = config;
+public abstract class Controller {
+    public Controller(EvolutionaryFuzzerConfig config) {
+	this.config = config;
     }
-    //The config used by the Fuzzer
+
+    // The config used by the Fuzzer
     protected EvolutionaryFuzzerConfig config;
-    
-    //Is the Fuzzing Process running?
+
+    // Is the Fuzzing Process running?
     protected boolean isRunning;
 
     /**
@@ -40,12 +39,11 @@ public abstract class Controller
 
     /**
      * Is the Fuzzer currently running?
-     *
+     * 
      * @return if the Fuzzer is running
      */
-    public boolean isRunning()
-    {
-        return isRunning;
+    public boolean isRunning() {
+	return isRunning;
     }
 
 }

@@ -8,29 +8,30 @@
 package Config;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ConfigManager {
-    
+
     private EvolutionaryFuzzerConfig config;
 
     public EvolutionaryFuzzerConfig getConfig() {
-        return config;
+	return config;
     }
 
     public void setConfig(EvolutionaryFuzzerConfig config) {
-        this.config = config;
+	this.config = config;
     }
+
     private ConfigManager() {
     }
-    
+
     public static ConfigManager getInstance() {
-        return ConfigManagerHolder.INSTANCE;
+	return ConfigManagerHolder.INSTANCE;
     }
-    
+
     private static class ConfigManagerHolder {
 
-        private static final ConfigManager INSTANCE = new ConfigManager();
+	private static final ConfigManager INSTANCE = new ConfigManager();
     }
 }

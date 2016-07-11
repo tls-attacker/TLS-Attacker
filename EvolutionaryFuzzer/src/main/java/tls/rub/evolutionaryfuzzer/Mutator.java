@@ -14,21 +14,20 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
  * The Mutator is the generator of new FuzzingVectors, different Implementations
  * should implement different Strategies to generate new Workflowtraces to be
  * executed.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Mutator
-{
-    
+public abstract class Mutator {
+
     protected EvolutionaryFuzzerConfig config;
-    
-    public Mutator(EvolutionaryFuzzerConfig config)
-    {
-        this.config= config;
+
+    public Mutator(EvolutionaryFuzzerConfig config) {
+	this.config = config;
     }
 
     /**
      * Generates a new WorkflowTrace to Fuzz the Application
+     * 
      * @return
      */
     public abstract WorkflowTrace getNewMutation();

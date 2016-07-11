@@ -11,7 +11,7 @@ package tls.branchtree;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BranchVertex {
@@ -22,72 +22,73 @@ public class BranchVertex {
     private String label;
 
     /**
-     *
+     * 
      * @param probeID
      * @param type
      */
     public BranchVertex(long probeID, Blocktype type) {
-        this.probeID = probeID;
-        this.type = type;
-        label = "";
+	this.probeID = probeID;
+	this.type = type;
+	label = "";
     }
 
     /**
-     *
+     * 
      * @param probeID
      * @param type
      * @param label
      */
     public BranchVertex(long probeID, Blocktype type, String label) {
-        this.probeID = probeID;
-        this.type = type;
-        this.label = label;
+	this.probeID = probeID;
+	this.type = type;
+	this.label = label;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getLabel() {
-        return label;
+	return label;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public long getProbeID() {
-        return probeID;
+	return probeID;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Blocktype getType() {
-        return type;
+	return type;
     }
 
     /**
-     *
+     * 
      * @param other
      * @return
      */
     @Override
     public boolean equals(Object other) {
-        if (other.getClass().equals(this.getClass())) {
-            BranchVertex vertice = (BranchVertex) other;
-            return vertice.getProbeID() == this.probeID && vertice.label.equals(this.label) && vertice.getType().equals(this.type);
-        }
-        return false;
+	if (other.getClass().equals(this.getClass())) {
+	    BranchVertex vertice = (BranchVertex) other;
+	    return vertice.getProbeID() == this.probeID && vertice.label.equals(this.label)
+		    && vertice.getType().equals(this.type);
+	}
+	return false;
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public String toString() {
-        return "CountVertice{" + "probeID=" + probeID + '}';
+	return "CountVertice{" + "probeID=" + probeID + '}';
     }
 }

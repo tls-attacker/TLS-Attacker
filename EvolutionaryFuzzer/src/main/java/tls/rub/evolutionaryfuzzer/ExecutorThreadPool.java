@@ -24,61 +24,66 @@ import java.util.logging.Logger;
 /**
  * This ThreadPool manages the Threads for the different Executors and is
  * responsible for the continious exectution of new Fuzzingvectors.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ExecutorThreadPool implements Runnable {
 
-    //Number of Threads which execute FuzzingVectors 
+    // Number of Threads which execute FuzzingVectors
     private final int poolSize;
     //
     private final ExecutorService executor;
-    //The Mutator used by the ExecutorPool to fetch new Tasks
+    // The Mutator used by the ExecutorPool to fetch new Tasks
     private final Mutator mutator;
-    //The Executor thread pool will continuasly fetch and execute new Tasks while this is false
+    // The Executor thread pool will continuasly fetch and execute new Tasks
+    // while this is false
     private boolean stopped = false;
-    //Counts the number of executed Tasks for statisticall purposes.
+    // Counts the number of executed Tasks for statisticall purposes.
     private long runs = 0;
-    //List of Workflowtraces that should be executed before we start generating new Workflows
+    // List of Workflowtraces that should be executed before we start generating
+    // new Workflows
     private final List<WorkflowTrace> list;
-    //The Config the ExecutorThreadPool uses
+    // The Config the ExecutorThreadPool uses
     private EvolutionaryFuzzerConfig config;
 
     /**
      * Constructor for the ExecutorThreadPool
-     *
-     * @param poolSize Number of Threads the pool Manages
-     * @param mutator Mutator which is used for the Generation of new
-     * FuzzingVectors.
+     * 
+     * @param poolSize
+     *            Number of Threads the pool Manages
+     * @param mutator
+     *            Mutator which is used for the Generation of new
+     *            FuzzingVectors.
      */
     public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config) {
-        this.config = config;
-        this.poolSize = poolSize;
-        this.mutator = mutator;
-        File f = new File(config.getOutputFolder() + "good/");
-        executor = Executors.newFixedThreadPool(poolSize);
+	this.config = config;
+	this.poolSize = poolSize;
+	this.mutator = mutator;
+	File f = new File(config.getOutputFolder() + "good/");
+	executor = Executors.newFixedThreadPool(poolSize);
 
-        LOG.log(Level.INFO, "Reading good Traces in:");
+	LOG.log(Level.INFO, "Reading good Traces in:");
 
-        list = WorkflowTraceSerializer.readFolder(f);
-        f = new File(config.getOutputFolder() + "uniqueFlows/");
+	list = WorkflowTraceSerializer.readFolder(f);
+	f = new File(config.getOutputFolder() + "uniqueFlows/");
 
-        list.addAll(WorkflowTraceSerializer.readFolder(f));
-        LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
-        //We need to fix Server responses before we can use the workflowtraces for mutation
-        LOG.log(Level.INFO, "Preparing Traces:{0}", list.size());
-        for (WorkflowTrace trace : list) {
-            trace.makeGeneric();
-        }
+	list.addAll(WorkflowTraceSerializer.readFolder(f));
+	LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
+	// We need to fix Server responses before we can use the workflowtraces
+	// for mutation
+	LOG.log(Level.INFO, "Preparing Traces:{0}", list.size());
+	for (WorkflowTrace trace : list) {
+	    trace.makeGeneric();
+	}
     }
 
     /**
      * Returns the Number of executed FuzzingVectors
-     *
+     * 
      * @return Number of executed FuzzingVectors
      */
     public long getRuns() {
-        return runs;
+	return runs;
     }
 
     /**
@@ -86,69 +91,70 @@ public class ExecutorThreadPool implements Runnable {
      */
     @Override
     public void run() {
-        //Dont save old results
-        ResultContainer.getInstance().setSerialize(false);
-        for (int i = 0; i < list.size(); i++) {
-            if (!stopped) {
-                TLSServer server = ServerManager.getInstance().getFreeServer();
-                Runnable worker = new TLSExecutor(list.get(i), server, new BasicAFLAgent());
-                executor.execute(worker);
-            } else {
-                i--;
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE, "Thread interruiped while the ThreadPool is paused.", ex);
-                }
-            }
-        }
-        //Save new results
-        ResultContainer.getInstance().setSerialize(true);
-        while (true) {
-            try {
-                if (!stopped) {
-                    TLSServer server = ServerManager.getInstance().getFreeServer();
+	// Dont save old results
+	ResultContainer.getInstance().setSerialize(false);
+	for (int i = 0; i < list.size(); i++) {
+	    if (!stopped) {
+		TLSServer server = ServerManager.getInstance().getFreeServer();
+		Runnable worker = new TLSExecutor(list.get(i), server, new BasicAFLAgent());
+		executor.execute(worker);
+	    } else {
+		i--;
+		try {
+		    Thread.sleep(1000);
+		} catch (InterruptedException ex) {
+		    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+			    "Thread interruiped while the ThreadPool is paused.", ex);
+		}
+	    }
+	}
+	// Save new results
+	ResultContainer.getInstance().setSerialize(true);
+	while (true) {
+	    try {
+		if (!stopped) {
+		    TLSServer server = ServerManager.getInstance().getFreeServer();
 
-                    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, new BasicAFLAgent());
-                    executor.execute(worker);
-                    runs++;
+		    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, new BasicAFLAgent());
+		    executor.execute(worker);
+		    runs++;
 
-                } else {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE, "Thread interruiped while the ThreadPool is paused.", ex);
-                    }
-                }
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-            }
+		} else {
+		    try {
+			Thread.sleep(1000);
+		    } catch (InterruptedException ex) {
+			Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+				"Thread interruiped while the ThreadPool is paused.", ex);
+		    }
+		}
+	    } catch (Throwable ex) {
+		ex.printStackTrace();
+	    }
 
-        }
-        /*
-         executor.shutdown();
-         while (!executor.isTerminated()) {
-         }
-         System.out.println('ExecutorThread Pool Shutdown');
-         */
+	}
+	/*
+	 * executor.shutdown(); while (!executor.isTerminated()) { }
+	 * System.out.println('ExecutorThread Pool Shutdown');
+	 */
     }
 
     /**
      * Returns if the ThreadPool is currently stopped.
-     *
+     * 
      * @return if the ThreadPool is currently stopped
      */
     public synchronized boolean isStopped() {
-        return stopped;
+	return stopped;
     }
 
     /**
      * Starts of stops the Threadpool
-     *
+     * 
      * @param stopped
      */
     public synchronized void setStopped(boolean stopped) {
-        this.stopped = stopped;
+	this.stopped = stopped;
     }
+
     private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 }

@@ -23,8 +23,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
 
-class StreamGobbler extends Thread
-{
+class StreamGobbler extends Thread {
     private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
 
     private InputStream is;
@@ -33,68 +32,54 @@ class StreamGobbler extends Thread
     private volatile boolean hasAccepted = false;
     private String accepted;
 
-    StreamGobbler(InputStream is, String type, String accepted)
-    {
-        this(is, type, null, accepted);
+    StreamGobbler(InputStream is, String type, String accepted) {
+	this(is, type, null, accepted);
 
     }
 
-    StreamGobbler(InputStream is, String type, OutputStream redirect, String accepted)
-    {
-        this.is = is;
-        this.type = type;
-        this.os = redirect;
-        this.accepted = accepted;
+    StreamGobbler(InputStream is, String type, OutputStream redirect, String accepted) {
+	this.is = is;
+	this.type = type;
+	this.os = redirect;
+	this.accepted = accepted;
     }
 
     @Override
-    public void run()
-    {
-        try
-        {
-            PrintWriter pw = null;
-            if (os != null)
-            {
-                pw = new PrintWriter(os);
-            }
+    public void run() {
+	try {
+	    PrintWriter pw = null;
+	    if (os != null) {
+		pw = new PrintWriter(os);
+	    }
 
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ((line = br.readLine()) != null)
-            {
-                if (pw != null)
-                {
-                    pw.println(line);
-                }
-                if (line.equals(accepted))
-                {
-                    hasAccepted = true;
-                }
-                else
-                {
-                    //  System.out.println(type + "> " + line);
+	    InputStreamReader isr = new InputStreamReader(is);
+	    BufferedReader br = new BufferedReader(isr);
+	    String line = null;
+	    while ((line = br.readLine()) != null) {
+		if (pw != null) {
+		    pw.println(line);
+		}
+		if (line.equals(accepted)) {
+		    hasAccepted = true;
+		} else {
+		    // System.out.println(type + "> " + line);
 
-                }
-            }
-            if (pw != null)
-            {
-                pw.flush();
-            }
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-        }
+		}
+	    }
+	    if (pw != null) {
+		pw.flush();
+	    }
+	} catch (IOException ioe) {
+	    ioe.printStackTrace();
+	}
     }
 
     /**
      * Returns if the Streamreader has seen the Specified "accepted" String yet
-     *
+     * 
      * @return If the Streamreader has seen the Specified "accepted" String yet
      */
-    public synchronized boolean accepted()
-    {
-        return hasAccepted;
+    public synchronized boolean accepted() {
+	return hasAccepted;
     }
 }

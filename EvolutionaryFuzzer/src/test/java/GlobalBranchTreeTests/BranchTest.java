@@ -23,7 +23,7 @@ import tls.branchtree.BranchTrace;
 import tls.branchtree.MergeResult;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class BranchTest {
@@ -32,16 +32,14 @@ public class BranchTest {
      *
      */
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     /**
      *
      */
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 
     private BranchTrace tree;
@@ -49,24 +47,24 @@ public class BranchTest {
     /**
      *
      */
-        public BranchTest() {
-        tree = new BranchTrace();
+    public BranchTest() {
+	tree = new BranchTrace();
     }
 
     /**
      *
      */
-        @Before
-        public void setUp() {
-            tree = new BranchTrace();
-        }
+    @Before
+    public void setUp() {
+	tree = new BranchTrace();
+    }
 
     /**
      *
      */
     @After
     public void tearDown() {
-        tree = null;
+	tree = null;
     }
 
     /**
@@ -75,39 +73,39 @@ public class BranchTest {
     @Test
     public void testConstructor() {
 
-        tree = new BranchTrace();
+	tree = new BranchTrace();
     }
 
     /**
-     *
+     * 
      * @throws FileNotFoundException
      * @throws IOException
      */
     @Test(expected = NullPointerException.class)
     public void testMergeNull() throws FileNotFoundException, IOException {
-        //Test with null
-        tree.merge(null);
+	// Test with null
+	tree.merge(null);
     }
 
     /**
-     *
+     * 
      * @throws FileNotFoundException
      * @throws IOException
      */
     @Test(expected = FileNotFoundException.class)
     public void testMergeNotExistentFile() throws FileNotFoundException, IOException {
-        tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
-        tree.merge(new File(""));
+	tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
+	tree.merge(new File(""));
     }
 
     /**
-     *
+     * 
      * @throws FileNotFoundException
      * @throws IOException
      */
     @Test(expected = NumberFormatException.class)
     public void testMergeInvalid() throws FileNotFoundException, IOException {
-        tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl3"));
+	tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl3"));
     }
 
     /**
@@ -115,25 +113,30 @@ public class BranchTest {
      */
     @Test
     public void testMergeValid() {
-        //Test with valid
-        Exception e = null;
-        try
-        {
-            tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
-            MergeResult r = tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
-            assertTrue("Failure: The Test File contains exactly 2 new Branches, we found:"+r.getNewBranches(),r.getNewBranches() == 2);
-            assertTrue("Failure: The Test File contains exactly 1 new Vertice, we found:"+r.getNewVertices(),r.getNewVertices()== 1);
-            r = tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
-            assertTrue("Failure: After merging the same File twice, no new Branches should be found, we found:"+r.getNewBranches(),r.getNewBranches() == 0);
-            assertTrue("Failure: After merging the same File twice, no new Vertices should be found, we found:"+r.getNewBranches(),r.getNewVertices() == 0);
-        }
-        catch (IOException E)
-        {
-            e = E;
-        }
-        assertNull("Failure: The Test should not Throw an Exception. Might indicate that it could not find the Testfiles. ",e);
+	// Test with valid
+	Exception e = null;
+	try {
+	    tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
+	    MergeResult r = tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
+	    assertTrue("Failure: The Test File contains exactly 2 new Branches, we found:" + r.getNewBranches(),
+		    r.getNewBranches() == 2);
+	    assertTrue("Failure: The Test File contains exactly 1 new Vertice, we found:" + r.getNewVertices(),
+		    r.getNewVertices() == 1);
+	    r = tree.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
+	    assertTrue(
+		    "Failure: After merging the same File twice, no new Branches should be found, we found:"
+			    + r.getNewBranches(), r.getNewBranches() == 0);
+	    assertTrue(
+		    "Failure: After merging the same File twice, no new Vertices should be found, we found:"
+			    + r.getNewBranches(), r.getNewVertices() == 0);
+	} catch (IOException E) {
+	    e = E;
+	}
+	assertNull(
+		"Failure: The Test should not Throw an Exception. Might indicate that it could not find the Testfiles. ",
+		e);
     }
-    private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
+    private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
 }

@@ -1,4 +1,3 @@
-
 package Config;
 
 import com.beust.jcommander.Parameter;
@@ -10,7 +9,7 @@ import java.util.logging.Logger;
 
 /**
  * A Config File which controls the EvolutionaryFuzzer. TODO Implement
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -37,7 +36,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private Integer removeMessagePercentage = 1;
 
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.")
-    private String outputFolder ="./";
+    private String outputFolder = "./";
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
 
@@ -46,131 +45,131 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
      * and serverCommandFromFile to server/server.config
      */
     public EvolutionaryFuzzerConfig() {
-        outputFolder = "./";
-        serverCommandFromFile = "server/";
+	outputFolder = "./";
+	serverCommandFromFile = "server/";
     }
 
     public Integer getThreads() {
-        return threads;
+	return threads;
     }
 
     public void setThreads(Integer threads) {
-        this.threads = threads;
+	this.threads = threads;
     }
-    
+
     public Integer getRemoveMessagePercentage() {
-        return removeMessagePercentage;
+	return removeMessagePercentage;
     }
 
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
-        this.removeMessagePercentage = removeMessagePercentage;
+	this.removeMessagePercentage = removeMessagePercentage;
     }
-    
+
     /**
      * Returns the path to the ServerConfig File
-     *
+     * 
      * @return Path to the ServerConfig File
      */
     public String getServerCommandFromFile() {
-        return serverCommandFromFile;
+	return serverCommandFromFile;
     }
 
     /**
      * Sets the path to the ServerConfig File
-     *
+     * 
      * @param serverCommandFromFile
      */
     public void setServerCommandFromFile(String serverCommandFromFile) {
-        this.serverCommandFromFile = serverCommandFromFile;
+	this.serverCommandFromFile = serverCommandFromFile;
     }
 
     /**
      * Returns an Integer representing the chance that a Variable Modification
      * occurs in a Workflow Trace, 0 representing 0% and 100 representing 100%
-     *
+     * 
      * @return
      */
     public Integer getModifyVariablePercentage() {
-        return modifyVariablePercentage;
+	return modifyVariablePercentage;
     }
 
     /**
      * Sets an Integer representing the chance that a Variable Modification
      * occurs in a Workflow Trace, 0 representing 0% and 100 representing 100%
-     *
+     * 
      * @param modifyVariablePercentage
      */
     public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
-        this.modifyVariablePercentage = modifyVariablePercentage;
-        if (modifyVariablePercentage > 100) {
-            throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
-        }
+	this.modifyVariablePercentage = modifyVariablePercentage;
+	if (modifyVariablePercentage > 100) {
+	    throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	}
     }
 
     /**
      * Gets an Integer representing the Chance that a record is added to a
      * Message, 0 representing 0% and 100 representing 100%
-     *
+     * 
      * @return Integer representing the Chance that a record is added to a
-     * Message
+     *         Message
      */
     public Integer getAddRecordPercentage() {
-        return addRecordPercentage;
+	return addRecordPercentage;
 
     }
 
     /**
      * Sets an Integer representing the Chance that a record is added to a
      * Message, 0 representing 0% and 100 representing 100%
-     *
+     * 
      * @param addRecordPercentage
      */
     public void setAddRecordPercentage(Integer addRecordPercentage) {
-        this.addRecordPercentage = addRecordPercentage;
-        if (addRecordPercentage > 100) {
-            throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
-        }
+	this.addRecordPercentage = addRecordPercentage;
+	if (addRecordPercentage > 100) {
+	    throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	}
     }
 
     /**
      * Gets an Integer representing the Chance that a Message is added to
      * WorkflowTrace, 0 representing 0% and 100 representing 100%
-     *
+     * 
      * @return Integer representing the Chance that a Message is added to
-     * WorkflowTrace
+     *         WorkflowTrace
      */
     public Integer getAddMessagePercentage() {
-        return addMessagePercentage;
+	return addMessagePercentage;
     }
 
     /**
      * Sets an Integer representing the Chance that a Message is added to
      * WorkflowTrace, 0 representing 0% and 100 representing 100%
-     *
+     * 
      * @param addMessagePercentage
      */
     public void setAddMessagePercentage(Integer addMessagePercentage) {
-        this.addMessagePercentage = addMessagePercentage;
+	this.addMessagePercentage = addMessagePercentage;
     }
 
     /**
      * Returns the Path to the Folder in which the Fuzzer will save its output
      * to. The Server will genereate several Folder in the Output Folder.
-     *
+     * 
      * @return Path to the Folder in which the Fuzzer will save its output to
      */
     public String getOutputFolder() {
-        return outputFolder;
+	return outputFolder;
     }
 
     /**
      * Sets the Path to the Folder in which the Fuzzer will save its output to.
      * The Server will genereate several Folder in the Output Folder.
-     *
+     * 
      * @param outputFolder
      */
     public void setOutputFolder(String outputFolder) {
-        this.outputFolder = outputFolder;
+	this.outputFolder = outputFolder;
     }
 
 }

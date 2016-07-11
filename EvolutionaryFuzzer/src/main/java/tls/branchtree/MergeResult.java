@@ -11,7 +11,7 @@ package tls.branchtree;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MergeResult {
@@ -22,49 +22,48 @@ public class MergeResult {
     private int hitVertices = 0;
 
     /**
-     *
+     * 
      * @param newVertices
      * @param newBranches
      * @param hitVertices
      */
     public MergeResult(int newVertices, int newBranches, int hitVertices) {
-        this.hitVertices = hitVertices;
-        this.newBranches = newBranches;
-        this.newVertices = newVertices;
+	this.hitVertices = hitVertices;
+	this.newBranches = newBranches;
+	this.newVertices = newVertices;
 
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getNewVertices() {
-        return newVertices;
+	return newVertices;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getNewBranches() {
-        return newBranches;
+	return newBranches;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getHitVertices() {
-        return hitVertices;
+	return hitVertices;
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
-    public String toString()
-    {
-        return "New Vertices:"+ newVertices+ "  New Branches:" +newBranches+"  Hit Verticies:"+hitVertices;
+    public String toString() {
+	return "New Vertices:" + newVertices + "  New Branches:" + newBranches + "  Hit Verticies:" + hitVertices;
     }
 }

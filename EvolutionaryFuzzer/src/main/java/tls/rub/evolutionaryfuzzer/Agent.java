@@ -17,11 +17,10 @@ import java.io.File;
  * controlflow of the Program is differently recorded. Other Programms might
  * need a different method to track if the Target Programm has crashed. The
  * Agent itself does not execute the Fuzzingvector.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Agent
-{
+public abstract class Agent {
     /**
      * This method should be called, before the Fuzzingvector is sent to the
      * Application.
@@ -37,12 +36,14 @@ public abstract class Agent
     /**
      * This method is used to receive the Results of the current Fuzzingvector
      * //TODO should the Agent really get the Workflow trace?
-     *
-     * @param branchTrace File containing the Branch Information
-     * @param trace Workflowtrace which was executed (Fuzzingvector)
+     * 
+     * @param branchTrace
+     *            File containing the Branch Information
+     * @param trace
+     *            Workflowtrace which was executed (Fuzzingvector)
      * @param executedTrace
      * @return Result Object which contains all Information of the executed
-     * Fuzzingvector.
+     *         Fuzzingvector.
      */
-    public abstract Result collectResults(File branchTrace, WorkflowTrace trace,WorkflowTrace executedTrace);
+    public abstract Result collectResults(File branchTrace, WorkflowTrace trace, WorkflowTrace executedTrace);
 }

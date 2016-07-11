@@ -11,40 +11,41 @@ import java.util.logging.Logger;
 /**
  * Currently only Implementation of the Controller Interface which controls the
  * complete executions
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzerController extends Controller {
 
     private static final Logger LOG = Logger.getLogger(FuzzerController.class.getName());
 
-    //Chosen Mutator
+    // Chosen Mutator
     private final Mutator mutator;
-    //ThreadPool to start or stop
+    // ThreadPool to start or stop
     private final ExecutorThreadPool pool;
 
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
-     *
-     * @param config Configuration used by the Controller
+     * 
+     * @param config
+     *            Configuration used by the Controller
      */
     public FuzzerController(EvolutionaryFuzzerConfig config) {
-        super(config);
-        ServerManager serverManager = ServerManager.getInstance();
-        serverManager.init(config);
+	super(config);
+	ServerManager serverManager = ServerManager.getInstance();
+	serverManager.init(config);
 
-        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
-        mutator = new SimpleMutator(tmpTlsContext, config);
-        int threads = config.getThreads();
-        if (threads == -1) {
-            threads = serverManager.getNumberOfServers();
-        }
-        pool = new ExecutorThreadPool(threads, mutator, config);
-        Thread t = new Thread(pool);
-        t.setName("Executor Thread Pool");
-        t.start();
+	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+	TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
+	mutator = new SimpleMutator(tmpTlsContext, config);
+	int threads = config.getThreads();
+	if (threads == -1) {
+	    threads = serverManager.getNumberOfServers();
+	}
+	pool = new ExecutorThreadPool(threads, mutator, config);
+	Thread t = new Thread(pool);
+	t.setName("Executor Thread Pool");
+	t.start();
     }
 
     /**
@@ -52,8 +53,8 @@ public class FuzzerController extends Controller {
      */
     @Override
     public void startFuzzer() {
-        this.isRunning = false;
-        pool.setStopped(false);
+	this.isRunning = false;
+	pool.setStopped(false);
     }
 
     /**
@@ -61,8 +62,8 @@ public class FuzzerController extends Controller {
      */
     @Override
     public void stopFuzzer() {
-        this.isRunning = false;
-        pool.setStopped(true);
+	this.isRunning = false;
+	pool.setStopped(true);
     }
 
 }

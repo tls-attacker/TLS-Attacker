@@ -17,26 +17,23 @@ import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.BasicAFLAgent;
 
 /**
- *
+ * 
  * @author ic0ns
  */
-public class AflAgentTest
-{
+public class AflAgentTest {
 
     /**
      *
      */
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     /**
      *
      */
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 
     BasicAFLAgent agent = null;
@@ -44,69 +41,63 @@ public class AflAgentTest
     /**
      *
      */
-    public AflAgentTest()
-    {
+    public AflAgentTest() {
     }
 
     /**
      *
      */
     @Before
-    public void setUp()
-    {
-        agent = new BasicAFLAgent();
+    public void setUp() {
+	agent = new BasicAFLAgent();
     }
 
     /**
      *
      */
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      *
      */
     @Test
-    public void testStartStop()
-    {
+    public void testStartStop() {
 
-        agent.onApplicationStart();
-        agent.onApplicationStop();
+	agent.onApplicationStart();
+	agent.onApplicationStop();
     }
 
     /**
      *
      */
     @Test(expected = RuntimeException.class)
-    public void testDoubleStart()
-    {
-        agent.onApplicationStart();
-        agent.onApplicationStart();
+    public void testDoubleStart() {
+	agent.onApplicationStart();
+	agent.onApplicationStart();
     }
 
     /**
      *
      */
     @Test(expected = RuntimeException.class)
-    public void testNotStarted()
-    {
-        agent.onApplicationStop();
+    public void testNotStarted() {
+	agent.onApplicationStop();
     }
 
     /**
      *
      */
     @Test(expected = RuntimeException.class)
-    public void testDoubleStop()
-    {
-        agent.onApplicationStart();
-        agent.onApplicationStop();
-        agent.onApplicationStop();
+    public void testDoubleStop() {
+	agent.onApplicationStart();
+	agent.onApplicationStop();
+	agent.onApplicationStop();
 
     }
-    //TODO Collect Results Test
+
+    // TODO Collect Results Test
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
-    
+
 }

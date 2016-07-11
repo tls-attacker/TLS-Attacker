@@ -1,4 +1,3 @@
-
 package GlobalBranchTreeTests;
 
 import java.io.File;
@@ -9,59 +8,52 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 
-
-public class AFLTest
-{
+public class AFLTest {
 
     /**
      *
      */
-    public AFLTest()
-    {
+    public AFLTest() {
     }
 
     /**
      *
      */
     @BeforeClass
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
     }
 
     /**
      *
      */
     @AfterClass
-    public static void tearDownClass()
-    {
+    public static void tearDownClass() {
     }
 
     /**
      *
      */
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
 
     /**
      *
      */
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
      *
      */
-    public void testIsCompiled()
-    {
-        File f = new File("AFL/afl-as");
-        assertTrue(f.exists());
-        f = new File("AFL/afl-showmap");
-        assertTrue(f.exists());
-        
+    public void testIsCompiled() {
+	File f = new File("AFL/afl-as");
+	assertTrue(f.exists());
+	f = new File("AFL/afl-showmap");
+	assertTrue(f.exists());
+
     }
+
     private static final Logger LOG = Logger.getLogger(AFLTest.class.getName());
 }

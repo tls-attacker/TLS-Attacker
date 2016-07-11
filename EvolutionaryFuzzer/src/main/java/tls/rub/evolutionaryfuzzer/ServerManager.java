@@ -13,123 +13,113 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-public class ServerManager
-{
+public class ServerManager {
 
     /**
      * Singleton
-     *
+     * 
      * @return Instance of the ServerManager
      */
     public static ServerManager getInstance() {
-        return ServerManagerHolder.INSTANCE;
+	return ServerManagerHolder.INSTANCE;
     }
 
     private ArrayList<TLSServer> serverList;
 
-    private ServerManager()
-    {
-        serverList = new ArrayList<>();
+    private ServerManager() {
+	serverList = new ArrayList<>();
     }
 
     /**
      * Adds a TLSServer to the List of TLSServers
-     *
+     * 
      * @param server
      */
-    public void addServer(TLSServer server)
-    {
-        serverList.add(server);
+    public void addServer(TLSServer server) {
+	serverList.add(server);
     }
 
-    public void init(EvolutionaryFuzzerConfig config)
-    {
-        File file = new File(config.getServerCommandFromFile());
-        if (file.isDirectory()) {
-            //ServerConfig is a Folder
-            for (File f : file.listFiles()) {
-                try {
-                    TLSServer server = ServerSerializer.read(f);
-                    addServer(server);
+    public void init(EvolutionaryFuzzerConfig config) {
+	File file = new File(config.getServerCommandFromFile());
+	if (file.isDirectory()) {
+	    // ServerConfig is a Folder
+	    for (File f : file.listFiles()) {
+		try {
+		    TLSServer server = ServerSerializer.read(f);
+		    addServer(server);
 
-                } catch (Exception ex) {
-                    LOG.log(Level.SEVERE, "Could not read Server!", ex);
-                }
-            }
-        } else {
-            //ServerConfig is a File
-            try {
-                TLSServer server = ServerSerializer.read(file);
-                addServer(server);
+		} catch (Exception ex) {
+		    LOG.log(Level.SEVERE, "Could not read Server!", ex);
+		}
+	    }
+	} else {
+	    // ServerConfig is a File
+	    try {
+		TLSServer server = ServerSerializer.read(file);
+		addServer(server);
 
-            } catch (Exception ex) {
-                LOG.log(Level.SEVERE, "Could not read Server!", ex);
-            }
-        }
+	    } catch (Exception ex) {
+		LOG.log(Level.SEVERE, "Could not read Server!", ex);
+	    }
+	}
     }
+
     /**
      * Trys to get an unused Server from the ServerList. Starts over if there is
      * no free Server available. If it still searches for a free Server after 10
      * seconds, it throws an Exception. If a server is found, the Server is
      * reserved. Its the caller duty to release the Server once it is finished.
-     *
+     * 
      * @return A Free Server
      */
-    public synchronized TLSServer getFreeServer()
-    {
-        //System.out.println("Getting Server");
-        long startSearch = System.currentTimeMillis();
-        if (serverList.isEmpty())
-        {
-            return null;
-        }
-        int i = 0;
-        while (true)
-        {
-            TLSServer server = serverList.get(i % serverList.size());
-            if (server.isFree())
-            {
-                //Try to get a free Server
+    public synchronized TLSServer getFreeServer() {
+	// System.out.println("Getting Server");
+	long startSearch = System.currentTimeMillis();
+	if (serverList.isEmpty()) {
+	    return null;
+	}
+	int i = 0;
+	while (true) {
+	    TLSServer server = serverList.get(i % serverList.size());
+	    if (server.isFree()) {
+		// Try to get a free Server
 
-                server.occupie();
-                //System.out.println("Got:"+server.toString());
-                return server;
-            }
-            i++;
-            if (startSearch < System.currentTimeMillis() - 60000)
-            {
-                //Searched longer than a minute and didnt find a free Server
-                throw new RuntimeException("Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");
-            }
-        }
+		server.occupie();
+		// System.out.println("Got:"+server.toString());
+		return server;
+	    }
+	    i++;
+	    if (startSearch < System.currentTimeMillis() - 60000) {
+		// Searched longer than a minute and didnt find a free Server
+		throw new RuntimeException(
+			"Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");
+	    }
+	}
     }
 
     /**
      * Removes all Server from the ServerList. This method is mostly implemented
      * for UnitTesting purposes.
      */
-    public void clear()
-    {
-        serverList = new ArrayList<>();
+    public void clear() {
+	serverList = new ArrayList<>();
     }
-    
+
     /**
      * Returns the Number of Servers the Fuzzer controls
+     * 
      * @return Number of Servers the Fuzzer controls
      */
-    public int getNumberOfServers()
-    {
-        return serverList.size();
+    public int getNumberOfServers() {
+	return serverList.size();
     }
 
     private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 
-    //Singleton
-    
-    private static class ServerManagerHolder
-    {
+    // Singleton
 
-        private static final ServerManager INSTANCE = new ServerManager();
+    private static class ServerManagerHolder {
+
+	private static final ServerManager INSTANCE = new ServerManager();
     }
 }
