@@ -8,6 +8,7 @@
  */
 package GlobalBranchTreeTests;
 
+import java.io.File;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,10 +37,27 @@ public class AflAgentTest {
      */
     @AfterClass
     public static void tearDownClass() {
+	File f = new File("JUNIT");
+	deleteFolder(f);
+
     }
 
     BasicAFLAgent agent = null;
     TLSServer server = null;
+
+    public static void deleteFolder(File folder) {
+	File[] files = folder.listFiles();
+	if (files != null) { // some JVMs return null for empty dirs
+	    for (File f : files) {
+		if (f.isDirectory()) {
+		    deleteFolder(f);
+		} else {
+		    f.delete();
+		}
+	    }
+	}
+	folder.delete();
+    }
 
     /**
      *
@@ -62,7 +80,7 @@ public class AflAgentTest {
 				"127.0.0.1",
 				4433,
 				"AFL/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept [port]",
-				"ACCEPT", "JUNIT"));
+				"ACCEPT", "JUNIT/"));
 	server = ServerManager.getInstance().getFreeServer();
 
     }
