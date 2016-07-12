@@ -187,9 +187,6 @@ public final class TLSServer {
 
     public void setRestartServerCommand(String restartServerCommand) {
 	this.restartServerCommand = restartServerCommand;
-	this.restartServerCommand = this.restartServerCommand.replace("[output]", traces.getAbsolutePath());
-	this.restartServerCommand = this.restartServerCommand.replace("[port]", "" + port);
-
     }
 
     public void setAccepted(String accepted) {
@@ -230,14 +227,14 @@ public final class TLSServer {
     /**
      * Starts the Server by executing the restart Server command
      */
-    public synchronized void start() {
+    public synchronized void start(String prefix) {
 
 	// You have to ooccupie a Server to start it
 	if (!this.isFree()) {
 	    if (p != null) {
 		p.destroy();
 	    }
-	    restart();
+	    restart(prefix);
 	} else {
 	    throw new IllegalStateException("Cant start a not marked Server. Occupie it first!");
 	}
@@ -246,14 +243,16 @@ public final class TLSServer {
     /**
      * Restarts the Server by executing the restart Server command
      */
-    public synchronized void restart() {
+    public synchronized void restart(String prefix) {
 	if (!this.isFree()) {
 	    if (p != null) {
 		p.destroy();
 	    }
 	    try {
 		id = LogFileIDManager.getInstance().getID();
-		String command = restartServerCommand.replace("[id]", "" + id);
+		String command = (prefix + restartServerCommand).replace("[id]", "" + id);
+		command = command.replace("[output]", traces.getAbsolutePath());
+		command = command.replace("[port]", "" + port);
 		// System.out.println(command);
 
 		Runtime rt = Runtime.getRuntime();

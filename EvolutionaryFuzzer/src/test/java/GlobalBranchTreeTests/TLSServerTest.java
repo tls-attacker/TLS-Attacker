@@ -65,8 +65,9 @@ public class TLSServerTest {
     @Test
     public void testStart() {
 	// TODO Test if really started
+	// TODO
 	server.occupie();
-	server.start();
+	server.start("AFL/afl-showmap -m none -o [output]/[id] ");
 
     }
 
@@ -77,7 +78,7 @@ public class TLSServerTest {
     public void testRestart() {
 	// TODO Test if really started
 	server.occupie();
-	server.restart();
+	server.restart("AFL/afl-showmap -m none -o [output]/[id] ");
     }
 
     /**
@@ -128,7 +129,7 @@ public class TLSServerTest {
     @Test
     public void testExitedStarted() {
 	server.occupie();
-	server.start();
+	server.start("AFL/afl-showmap -m none -o [output]/[id] ");
 	assertFalse("Failure:Server started but should not have exited yet", server.exited());
     }
 

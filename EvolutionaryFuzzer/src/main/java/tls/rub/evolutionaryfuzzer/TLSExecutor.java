@@ -89,9 +89,8 @@ public class TLSExecutor extends Executor {
 		    }
 		}
 	    }
-	    server.start();
 
-	    agent.onApplicationStart();
+	    agent.applicationStart(server);
 	    GeneralConfig gc = new GeneralConfig();
 	    gc.setLogLevel(Level.OFF);
 	    configHandler.initialize(gc);
@@ -108,7 +107,8 @@ public class TLSExecutor extends Executor {
 		    // TODO Timeout spezifizieren
 		    if (time + 10000 < System.currentTimeMillis()) {
 			System.out.println("Could not start Server! Trying to Restart it!");
-			server.restart();
+			agent.applicationStop(server);
+			agent.applicationStart(server);
 			time = System.currentTimeMillis();
 		    }
 		    // TODO what if it really is a configuration exception?
@@ -188,7 +188,7 @@ public class TLSExecutor extends Executor {
 	    while (!server.exited()) {
 	    }
 
-	    agent.onApplicationStop();
+	    agent.applicationStop(server);
 	    Result r = agent.collectResults(
 		    new File(server.getTracesFolder().getAbsolutePath() + "/" + server.getID()), backupTrace, trace);
 

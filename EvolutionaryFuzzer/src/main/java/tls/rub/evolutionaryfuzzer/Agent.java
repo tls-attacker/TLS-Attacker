@@ -24,14 +24,18 @@ public abstract class Agent {
     /**
      * This method should be called, before the Fuzzingvector is sent to the
      * Application.
+     * 
+     * @param server
      */
-    public abstract void onApplicationStart();
+    public abstract void applicationStart(TLSServer server);
 
     /**
      * This method should be called, after the Fuzzingvector is sent to the
      * Application.
+     * 
+     * @param server
      */
-    public abstract void onApplicationStop();
+    public abstract void applicationStop(TLSServer server);
 
     /**
      * This method is used to receive the Results of the current Fuzzingvector

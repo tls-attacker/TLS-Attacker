@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import tls.rub.evolutionaryfuzzer.BasicAFLAgent;
+import tls.rub.evolutionaryfuzzer.ServerManager;
+import tls.rub.evolutionaryfuzzer.TLSServer;
 
 /**
  * 
@@ -37,6 +39,7 @@ public class AflAgentTest {
     }
 
     BasicAFLAgent agent = null;
+    TLSServer server = null;
 
     /**
      *
@@ -50,6 +53,18 @@ public class AflAgentTest {
     @Before
     public void setUp() {
 	agent = new BasicAFLAgent();
+	// TODO
+	ServerManager.getInstance().clear();
+	ServerManager
+		.getInstance()
+		.addServer(
+			new TLSServer(
+				"127.0.0.1",
+				4433,
+				"AFL/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept [port]",
+				"ACCEPT", "JUNIT"));
+	server = ServerManager.getInstance().getFreeServer();
+
     }
 
     /**
@@ -64,9 +79,8 @@ public class AflAgentTest {
      */
     @Test
     public void testStartStop() {
-
-	agent.onApplicationStart();
-	agent.onApplicationStop();
+	agent.applicationStart(server);
+	agent.applicationStop(server);
     }
 
     /**
@@ -74,8 +88,8 @@ public class AflAgentTest {
      */
     @Test(expected = RuntimeException.class)
     public void testDoubleStart() {
-	agent.onApplicationStart();
-	agent.onApplicationStart();
+	agent.applicationStart(server);
+	agent.applicationStart(server);
     }
 
     /**
@@ -83,7 +97,7 @@ public class AflAgentTest {
      */
     @Test(expected = RuntimeException.class)
     public void testNotStarted() {
-	agent.onApplicationStop();
+	agent.applicationStop(server);
     }
 
     /**
@@ -91,9 +105,9 @@ public class AflAgentTest {
      */
     @Test(expected = RuntimeException.class)
     public void testDoubleStop() {
-	agent.onApplicationStart();
-	agent.onApplicationStop();
-	agent.onApplicationStop();
+	agent.applicationStart(server);
+	agent.applicationStop(server);
+	agent.applicationStop(server);
 
     }
 

@@ -33,6 +33,7 @@ public class BasicAFLAgent extends Agent {
     protected boolean timeout;
     // If the Application did Crash
     protected boolean crash;
+    private final String prefix = "AFL/afl-showmap -m none -o [output]/[id] ";
 
     /**
      * Default Constructor
@@ -44,16 +45,17 @@ public class BasicAFLAgent extends Agent {
     }
 
     @Override
-    public void onApplicationStart() {
+    public void applicationStart(TLSServer server) {
 	if (running) {
 	    throw new IllegalStateException("Cannot start a running AFL Agent");
 	}
 	startTime = System.currentTimeMillis();
 	running = true;
+	server.start(prefix);
     }
 
     @Override
-    public void onApplicationStop() {
+    public void applicationStop(TLSServer server) {
 	if (!running) {
 	    throw new IllegalStateException("Cannot stop a stopped AFL Agent");
 	}
