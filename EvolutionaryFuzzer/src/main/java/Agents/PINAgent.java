@@ -30,7 +30,7 @@ import Server.TLSServer;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-class PinAgent extends Agent {
+public class PINAgent extends Agent {
 
     // Is a fuzzing Progress Running?
     protected boolean running = false;
@@ -43,12 +43,12 @@ class PinAgent extends Agent {
     // If the Application did Crash
     protected boolean crash;
     private final String prefix = "PIN/pin.sh -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
-    private static final Logger LOG = Logger.getLogger(PinAgent.class.getName());
+    private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
     /**
      * Default Constructor
      */
-    public PinAgent() {
+    public PINAgent() {
 	timeout = false;
 	crash = false;
 
@@ -129,7 +129,7 @@ class PinAgent extends Agent {
 		}
 	    }
 	} catch (IOException ex) {
-	    Logger.getLogger(PinAgent.class.getName()).log(Level.SEVERE, null, ex);
+	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
 	}
 	BranchTrace t = new BranchTrace(graph);
 	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
