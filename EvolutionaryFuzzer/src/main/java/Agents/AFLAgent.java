@@ -7,7 +7,6 @@
  */
 package Agents;
 
-import Agents.PinAgent;
 import Agents.Agent;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
@@ -91,7 +90,7 @@ public class AFLAgent extends Agent {
 	    // TODO das sollt
 	    t.merge(branchTrace);
 	} catch (IOException ex) {
-	    Logger.getLogger(PinAgent.class.getName()).log(Level.SEVERE, null, ex);
+	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
 	}
 
 	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
