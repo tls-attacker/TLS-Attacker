@@ -32,13 +32,13 @@ public final class TLSServer {
     private String outputFolder;
     private String accepted;
     private File traces; // Temporary Folder which contains currently executed
-			 // traces
+    // traces
     private File crashedFolder; // Contains Traces which crashed the
-				// Implementation
+    // Implementation
     private File timeoutFolder; // Contains Traces which timedout
     private File goodTracesFolder; // Contains Traces which look promising
     private File faultyFolder; // Contains Traces which caused an exception on
-			       // our end
+    // our end
 
     private ProcMon procmon = null;
 
