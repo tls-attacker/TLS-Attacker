@@ -32,7 +32,7 @@ public class Result {
     // The Unixtime @ which the Vector finished executing
     private final long stopTime;
     // File Containing all the ProbeIDs
-    private final BranchTrace edges;
+    private final BranchTrace branchTrace;
     // Workflowtrace that should be Executed
     private final WorkflowTrace trace;
     // Workflowtrace that was executed
@@ -40,13 +40,13 @@ public class Result {
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
 
-    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace edges,
+    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
 	    WorkflowTrace trace, WorkflowTrace executedTrace, String id) {
 	this.hasCrashed = hasCrashed;
 	this.didTimeout = didTimeout;
 	this.startTime = startTime;
 	this.stopTime = stopTime;
-	this.edges = edges;
+	this.branchTrace = branchTrace;
 	this.trace = trace;
 	this.executedTrace = executedTrace;
 	this.id = id;
@@ -106,14 +106,14 @@ public class Result {
      * 
      * @return File containing a List of ProbeIDs
      */
-    public BranchTrace getEdges() {
-	return edges;
+    public BranchTrace getBranchTrace() {
+	return branchTrace;
     }
 
     @Override
     public String toString() {
 	return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime
-		+ ", stopTime=" + stopTime + ", edges=" + edges.toString() + '}';
+		+ ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
     }
 
     /**

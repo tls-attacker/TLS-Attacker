@@ -84,7 +84,7 @@ public class ResultContainer {
 	results.add(result);
 	MergeResult r = null;
 
-	r = branch.merge(result.getEdges());
+	r = branch.merge(result.getBranchTrace());
 
 	if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
 	    LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
