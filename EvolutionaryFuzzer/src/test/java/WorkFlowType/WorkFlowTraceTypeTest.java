@@ -31,14 +31,14 @@ public class WorkFlowTraceTypeTest {
 	WorkFlowTraceType instance = new WorkFlowTraceType();
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	WorkFlowTraceType instance2 = new WorkFlowTraceType();
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
+	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
 	assertNotSame(instance, instance2);
 	instance2 = new WorkFlowTraceType();
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	assertSame(instance, instance2);
 	instance2 = new WorkFlowTraceType();
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	assertNotSame(instance, instance2);
 
     }
