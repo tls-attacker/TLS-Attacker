@@ -21,7 +21,7 @@ public class AgentFactory {
 	    case "AFL":
 		return new AFLAgent();
 	    case "PIN":
-		return new PinAgent();
+		return new PINAgent();
 	    default:
 		throw new RuntimeException("Could not find Agent!");
 	}
