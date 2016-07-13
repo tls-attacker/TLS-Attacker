@@ -43,7 +43,7 @@ public class ExecutorThreadPool implements Runnable {
     private final Mutator mutator;
     // The Executor thread pool will continuasly fetch and execute new Tasks
     // while this is false
-    private boolean stopped = false;
+    private boolean stopped = true;
     // Counts the number of executed Tasks for statisticall purposes.
     private long runs = 0;
     // List of Workflowtraces that should be executed before we start generating
@@ -97,6 +97,7 @@ public class ExecutorThreadPool implements Runnable {
      */
     @Override
     public void run() {
+	stopped = false;
 	// Dont save old results
 	ResultContainer.getInstance().setSerialize(false);
 	for (int i = 0; i < list.size(); i++) {
