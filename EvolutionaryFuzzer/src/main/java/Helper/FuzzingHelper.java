@@ -7,7 +7,7 @@
  */
 package Helper;
 
-import FuzzTree.Node;
+import Graphs.Node;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
