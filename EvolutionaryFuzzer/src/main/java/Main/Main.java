@@ -7,6 +7,7 @@
  */
 package Main;
 
+import Config.ConfigManager;
 import Server.ServerManager;
 import Controller.FuzzerController;
 import Executor.DebugExecutor;
@@ -41,7 +42,7 @@ public class Main {
 	// TODO write a console interface
 	GeneralConfig generalConfig = new GeneralConfig();
 
-	EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
+	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
 	JCommander jc = new JCommander(evoConfig);
 	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
 	jc.addCommand("tracetypes", new Object());
@@ -54,7 +55,7 @@ public class Main {
 	    jc.usage();
 	    return;
 	}
-	Config.ConfigManager.getInstance().setConfig(evoConfig);
+
 	switch (jc.getParsedCommand()) {
 	    case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
 		Controller controller = new FuzzerController(evoConfig);

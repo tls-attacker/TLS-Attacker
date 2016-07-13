@@ -24,6 +24,7 @@ public class ConfigManager {
     }
 
     private ConfigManager() {
+	config = new EvolutionaryFuzzerConfig();
     }
 
     public static ConfigManager getInstance() {
