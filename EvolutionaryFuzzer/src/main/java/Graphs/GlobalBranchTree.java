@@ -90,8 +90,8 @@ public class GlobalBranchTree {
 		switch (split[0]) {
 		    case "JMP": // JMP 965766 jmp .Lsqr_tail
 		    case "CALL":// CALL 965767 call __rsaz_512_reduce
-			// Place an edge between ProbeID and label
-			// And place an Edge from last to vertex
+				// Place an edge between ProbeID and label
+				// And place an Edge from last to vertex
 
 			target = getVertex(split[3], graph);
 			if (target == null) {
@@ -105,8 +105,10 @@ public class GlobalBranchTree {
 			last = null;
 			break;
 		    case "RET": // RET 965475 ret
-			// Not much we can do, when we reach a return we have to
-			// link all probeids back, we do this in another step
+				// Not much we can do, when we reach a return we
+				// have to
+				// link all probeids back, we do this in another
+				// step
 
 			break;
 		    case "LABEL": // LABEL 965475 .L306:
