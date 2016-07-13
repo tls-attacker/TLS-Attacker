@@ -10,6 +10,7 @@ package Server;
 import Helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -255,7 +256,7 @@ public final class TLSServer {
 		command = command.replace("[output]", traces.getAbsolutePath());
 		command = command.replace("[port]", "" + port);
 		// System.out.println(command);
-
+		long time = System.currentTimeMillis();
 		Runtime rt = Runtime.getRuntime();
 		Process proc = rt.exec(command);
 
@@ -270,7 +271,16 @@ public final class TLSServer {
 		outputGobbler.start();
 		procmon = ProcMon.create(proc);
 		while (!outputGobbler.accepted()) {
-		    // TODO Timeout
+
+		    try {
+			Thread.sleep(50);
+		    } catch (InterruptedException ex) {
+			Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+		    // TODO Timeout in Config and Handle TimeoutException
+		    if (System.currentTimeMillis() - time == 60000) {
+			throw new RuntimeException("Timeout in StreamGobler, Server never finished");
+		    }
 		}
 		// TODO fix for other implementations
 
