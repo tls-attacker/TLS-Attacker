@@ -8,20 +8,34 @@
 package Helper;
 
 import Graphs.Node;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableListHolder;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ModificationException;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
@@ -33,6 +47,7 @@ import de.rub.nds.tlsattacker.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -54,161 +69,10 @@ public class FuzzingHelper {
 
     }
 
-    /**
-     * 
-     * @param percentage
-     * @return
-     */
-    public static boolean executeFuzzingUnit(int percentage) {
-	int random = RandomHelper.getRandom().nextInt(100);
-	return (percentage > random);
-    }
-
-    /**
-     * Picks a random workflow message, picks a random variable and executes a
-     * modification. In a case a pattern was used, it matches the picked
-     * variable contains this pattern.
-     * 
-     * @param workflow
-     * @param connectionEnd
-     * @param pattern
-     */
-    public static void executeRandomModifiableVariableModification(WorkflowTrace workflow, ConnectionEnd connectionEnd,
-	    String pattern) {
-	Field f = null;
-	ModifiableVariableHolder holder = null;
-	while (f == null) {
-	    holder = getRandomModifiableVariableHolder(workflow, connectionEnd);
-	    Field randomField = holder.getRandomModifiableVariableField();
-	    if (pattern == null || randomField.getName().toLowerCase().contains(pattern)) {
-		f = randomField;
-	    }
-	}
-	executeModifiableVariableModification(holder, f);
-    }
-
-    /**
-     * Picks a random workflow message, picks a random variable and executes a
-     * modification.
-     * 
-     * @param workflow
-     * @param connectionEnd
-     * @param allowedTypes
-     * @param allowedFormats
-     * @param whitelistRegex
-     * @param blacklistRegex
-     */
-    public static void executeRandomModifiableVariableModification(WorkflowTrace workflow, ConnectionEnd connectionEnd,
-	    List<ModifiableVariableProperty.Type> allowedTypes, List<ModifiableVariableProperty.Format> allowedFormats,
-	    String whitelistRegex, String blacklistRegex) {
-	Field f = null;
-	ModifiableVariableHolder holder = null;
-	if (workflow.getClientMessages().isEmpty()) {
-	    return;
-	}
-	while (f == null) {
-	    holder = getRandomModifiableVariableHolder(workflow, connectionEnd);
-	    Field randomField = holder.getRandomModifiableVariableField();
-	    if (isModifiableVariableModificationAllowed(randomField, allowedTypes, allowedFormats, whitelistRegex,
-		    blacklistRegex)) {
-		f = randomField;
-	    }
-	}
-	executeModifiableVariableModification(holder, f);
-    }
-
-    /**
-     * 
-     * @param randomField
-     * @param allowedTypes
-     * @param allowedFormats
-     * @param whitelistRegex
-     * @param blacklistRegex
-     * @return
-     */
-    public static boolean isModifiableVariableModificationAllowed(Field randomField,
-	    List<ModifiableVariableProperty.Type> allowedTypes, List<ModifiableVariableProperty.Format> allowedFormats,
-	    String whitelistRegex, String blacklistRegex) {
-	ModifiableVariableProperty property = randomField.getAnnotation(ModifiableVariableProperty.class);
-	if (property != null) {
-	    if ((allowedTypes == null || allowedTypes.contains(property.type()))
-		    && (allowedFormats == null || allowedFormats.contains(property.format()))
-		    && (whitelistRegex == null || randomField.getName().matches(whitelistRegex))
-		    && (blacklistRegex == null || !randomField.getName().matches(blacklistRegex))) {
-		return true;
-	    }
-	}
-	return false;
-    }
-
-    /**
-     * 
-     * @param field
-     * @param peer
-     * @return
-     */
-    public static boolean isModifiableVariableFromMyPeer(ModifiableVariableField field, ConnectionEnd peer) {
-	if (field.getObject() instanceof ProtocolMessage) {
-	    System.out.print("test");
-	}
-	// TODO What
-	return false;
-    }
-
-    /**
-     * Picks a random modifiable variable and executes a random modification on
-     * this variable.
-     * 
-     * @param object
-     */
-    public static void executeRandomModifiableVariableModification(ModifiableVariableHolder object) {
-	Field field = object.getRandomModifiableVariableField();
-	executeModifiableVariableModification(object, field);
-    }
-
-    /**
-     * Executes a random modification on a defined field. Source:
-     * http://stackoverflow.com/questions/1868333/how-can-i-determine-the
-     * -type-of-a-generic-field-in-java
-     * 
-     * @param object
-     * @param field
-     */
-    public static void executeModifiableVariableModification(ModifiableVariableHolder object, Field field) {
-	try {
-	    // Type type = field.getGenericType();
-	    // ParameterizedType pType = (ParameterizedType) type;
-	    // String typeString = ((Class)
-	    // pType.getActualTypeArguments()[0]).getSimpleName();
-	    // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
-	    // field.getName(), typeString,
-	    // object.getClass().getSimpleName());
-	    field.setAccessible(true);
-	    ModifiableVariable mv = (ModifiableVariable) field.get(object);
-	    if (mv == null) {
-		mv = (ModifiableVariable) field.getType().getDeclaredConstructors()[0].newInstance();
-	    }
-	    mv.createRandomModificationAtRuntime();
-	    field.set(object, mv);
-	} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
-	    throw new ModificationException(ex.getLocalizedMessage(), ex);
-	}
-    }
-
-    /**
-     * Returns a list of all Modifiable variable holders from the workflow
-     * trace. Currently, it returns all protocol messages.
-     * 
-     * @param trace
-     * @return
-     */
-    public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
-	List<ModifiableVariableHolder> result = new LinkedList<>();
-	for (ProtocolMessage pm : protocolMessages) {
-	    result.addAll(pm.getAllModifiableVariableHolders());
-	}
-	return result;
+    public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
+	Random r = new Random();
+	int fieldNumber = r.nextInt(fields.size());
+	return fields.get(fieldNumber);
     }
 
     /**
@@ -229,20 +93,6 @@ public class FuzzingHelper {
 	    }
 	}
 	return result;
-    }
-
-    /**
-     * Returns a random Modifiable variable holder from the workflow trace
-     * 
-     * @param trace
-     * @param messageIssuer
-     * @return
-     */
-    public static ModifiableVariableHolder getRandomModifiableVariableHolder(WorkflowTrace trace,
-	    ConnectionEnd messageIssuer) {
-	List<ModifiableVariableHolder> holders = getModifiableVariableHolders(trace, messageIssuer);
-	int randomHolder = RandomHelper.getRandom().nextInt(holders.size());
-	return holders.get(randomHolder);
     }
 
     /**
@@ -269,68 +119,112 @@ public class FuzzingHelper {
 	}
     }
 
-    /**
-     * 
-     * @param trace
-     * @param messageIssuer
-     */
-    public static void removeRandomProtocolMessage(WorkflowTrace trace, ConnectionEnd messageIssuer) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
-	Random random = RandomHelper.getRandom();
-	int i = 0;
-	while (i < MAX_MODIFICATION_COUNT) {
-	    i++;
-	    int position = random.nextInt(protocolMessages.size());
-	    if (trace.getProtocolMessages().get(position).getMessageIssuer() == messageIssuer) {
-		trace.getProtocolMessages().remove(position);
-		return;
-	    }
-	}
+    public static void removeRandomMessage(WorkflowTrace tempTrace) {
+	Random r = new Random();
+	List<ProtocolMessage> messages = tempTrace.getProtocolMessages();
+	messages.remove(r.nextInt(messages.size()));
     }
 
-    /**
-     * 
-     * @param trace
-     * @param messageIssuer
-     */
-    public static void addRandomProtocolMessage(WorkflowTrace trace, ConnectionEnd messageIssuer) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
-	Random random = RandomHelper.getRandom();
-	int position = random.nextInt(protocolMessages.size());
-	int protocolMessageType = random.nextInt(8);
-	ProtocolMessage pm = null;
-	switch (protocolMessageType) {
+    public static void addRandomMessage(WorkflowTrace tempTrace) {
+	ProtocolMessage m = null;
+	Random r = new Random();
+	switch (r.nextInt(18)) {
 	    case 0:
-		pm = new ClientHelloMessage(messageIssuer);
+		m = new AlertMessage(ConnectionEnd.CLIENT);
 		break;
 	    case 1:
-		pm = new RSAClientKeyExchangeMessage(messageIssuer);
+		m = new ApplicationMessage(ConnectionEnd.CLIENT);
 		break;
 	    case 2:
-		pm = new ChangeCipherSpecMessage(messageIssuer);
+		m = new CertificateMessage(ConnectionEnd.CLIENT);
 		break;
 	    case 3:
-		pm = new FinishedMessage(messageIssuer);
+		m = new CertificateRequestMessage(ConnectionEnd.CLIENT);
 		break;
 	    case 4:
-		pm = new ApplicationMessage(messageIssuer);
+		m = new CertificateVerifyMessage(ConnectionEnd.CLIENT);
 		break;
 	    case 5:
-		pm = new HeartbeatMessage(messageIssuer);
+		m = new ChangeCipherSpecMessage(ConnectionEnd.CLIENT);
 		break;
 	    case 6:
-		pm = new ServerHelloMessage(messageIssuer);
+		m = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
+		LinkedList<CipherSuite> list = new LinkedList<>();
+		int limit = new Random().nextInt(0xFF);
+
+		for (int i = 0; i < limit; i++) {
+		    CipherSuite suite = null;
+
+		    do {
+
+			suite = CipherSuite.getRandom();
+
+		    } while (suite == null);
+		    list.add(suite);
+		}
+		ArrayList<CompressionMethod> compressionList = new ArrayList<>();
+		compressionList.add(CompressionMethod.NULL);
+		((ClientHelloMessage) m).setSupportedCipherSuites(list);
+		((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
 		break;
 	    case 7:
-		pm = new ServerHelloDoneMessage(messageIssuer);
+		m = new ClientHelloMessage(ConnectionEnd.CLIENT);
+		list = new LinkedList<>();
+		limit = new Random().nextInt(0xFF);
+		for (int i = 0; i < limit; i++) {
+		    CipherSuite suite = null;
+		    do {
+			suite = CipherSuite.getRandom();
+		    } while (suite == null);
+		    list.add(suite);
+		}
+		compressionList = new ArrayList<>();
+		compressionList.add(CompressionMethod.NULL);
+		((ClientHelloMessage) m).setSupportedCipherSuites(list);
+		((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
+		break;
+	    case 8:
+		m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 9:
+		m = new HelloVerifyRequestMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 10:
+		m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 11:
+		m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 12:
+		m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 13:
+		m = new FinishedMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 14:
+		m = new HeartbeatMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 15:
+		m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+		break;
+	    case 16:
+		m = new ServerHelloDoneMessage(ConnectionEnd.CLIENT);
+
+		break;
+	    case 17:
+		m = new HelloRequestMessage(ConnectionEnd.CLIENT);
 		break;
 	}
-	if (pm != null) {
-	    protocolMessages.add(position, pm);
+	if (m != null) {
+	    tempTrace.add(m);
+	    m = new ArbitraryMessage();
+	    m.setMessageIssuer(ConnectionEnd.SERVER);
+	    tempTrace.add(m);
 	}
     }
 
     /**
+     * TODO use in Mutator
      * 
      * @param trace
      * @param messageIssuer
@@ -347,47 +241,6 @@ public class FuzzingHelper {
 	    }
 	}
 	protocolMessages.add(insertPosition, pm);
-    }
-
-    /**
-     * 
-     * @param trace
-     * @param messageIssuer
-     * @return
-     */
-    public static ProtocolMessage getRandomProtocolMessage(WorkflowTrace trace, ConnectionEnd messageIssuer) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
-	Random random = RandomHelper.getRandom();
-	ProtocolMessage pm = null;
-	while (true) {
-	    int position = random.nextInt(protocolMessages.size());
-	    if (protocolMessages.get(position).getMessageIssuer() == messageIssuer) {
-		return protocolMessages.get(position);
-	    }
-	}
-    }
-
-    /**
-     * Returns a list of all ModifiableVariableFields (object-field
-     * representations) for a given object.
-     * 
-     * @param object
-     * @param myPeer
-     * @return
-     */
-    public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object,
-	    ConnectionEnd myPeer) {
-	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object, myPeer);
-	List<ModifiableVariableField> fields = new LinkedList<>();
-	for (ModifiableVariableListHolder holder : holders) {
-	    if (!(holder.getObject() instanceof ProtocolMessage)
-		    || ((ProtocolMessage) holder.getObject()).getMessageIssuer() == myPeer) {
-		for (Field f : holder.getFields()) {
-		    fields.add(new ModifiableVariableField(holder.getObject(), f));
-		}
-	    }
-	}
-	return fields;
     }
 
     /**

@@ -72,7 +72,7 @@ public class SimpleMutator extends Mutator {
      */
     @Override
     public WorkflowTrace getNewMutation() {
-
+	// TODO make sure we modified sth
 	Random r = new Random();
 	// chose a random trace from the list
 	WorkflowTrace tempTrace;
@@ -88,14 +88,14 @@ public class SimpleMutator extends Mutator {
 	WorkflowTrace trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempTrace);
 	// perhaps add a message
 	if (trace.getProtocolMessages().isEmpty() || r.nextInt(100) < config.getAddMessagePercentage()) {
-	    addRandomMessage(trace);
+	    FuzzingHelper.addRandomMessage(trace);
 	}
 	// perhaps remove a message
 	if (r.nextInt(100) <= config.getRemoveMessagePercentage()) {
-	    removeRandomMessage(trace);
+	    FuzzingHelper.removeRandomMessage(trace);
 	}
 	if (trace.getProtocolMessages().isEmpty()) {
-	    addRandomMessage(trace);
+	    FuzzingHelper.addRandomMessage(trace);
 	}
 	// perhaps add records
 	if (r.nextInt(100) <= config.getAddRecordPercentage()) {
@@ -103,7 +103,7 @@ public class SimpleMutator extends Mutator {
 	}
 
 	// Modify a random field:
-	if (r.nextInt(100) >= config.getModifyVariablePercentage()) {
+	if (r.nextInt(100) <= config.getModifyVariablePercentage()) {
 	    List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace,
 		    ConnectionEnd.CLIENT);
 	    // LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
@@ -118,121 +118,6 @@ public class SimpleMutator extends Mutator {
 	}
 	return trace;
 
-    }
-
-    // TODO Unit Test
-    private void removeRandomMessage(WorkflowTrace tempTrace) {
-	Random r = new Random();
-	List<ProtocolMessage> messages = tempTrace.getProtocolMessages();
-	messages.remove(r.nextInt(messages.size()));
-    }
-
-    // TODO Unit Test
-    private void addRandomMessage(WorkflowTrace tempTrace) {
-	ProtocolMessage m = null;
-	Random r = new Random();
-	switch (r.nextInt(19)) {
-	    case 0:
-		m = new AlertMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 1:
-		m = new ApplicationMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 2:
-		m = new CertificateMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 3:
-		m = new CertificateRequestMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 4:
-		m = new CertificateVerifyMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 5:
-		m = new ChangeCipherSpecMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 6:
-		m = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
-		LinkedList<CipherSuite> list = new LinkedList<>();
-		int limit = new Random().nextInt(0xFF);
-
-		for (int i = 0; i < limit; i++) {
-		    CipherSuite suite = null;
-
-		    do {
-
-			suite = CipherSuite.getRandom();
-
-		    } while (suite == null);
-		    list.add(suite);
-		}
-		ArrayList<CompressionMethod> compressionList = new ArrayList<>();
-		compressionList.add(CompressionMethod.NULL);
-		((ClientHelloMessage) m).setSupportedCipherSuites(list);
-		((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
-		break;
-	    case 7:
-		m = new ClientHelloMessage(ConnectionEnd.CLIENT);
-		list = new LinkedList<>();
-		limit = new Random().nextInt(0xFF);
-		for (int i = 0; i < limit; i++) {
-		    CipherSuite suite = null;
-		    do {
-			suite = CipherSuite.getRandom();
-		    } while (suite == null);
-		    list.add(suite);
-		}
-		compressionList = new ArrayList<>();
-		compressionList.add(CompressionMethod.NULL);
-		((ClientHelloMessage) m).setSupportedCipherSuites(list);
-		((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
-		break;
-	    case 8:
-		m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 9:
-		m = new HelloVerifyRequestMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 10:
-		m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 11:
-		m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 12:
-		m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 13:
-		m = new FinishedMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 14:
-		m = new HeartbeatMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 15:
-		m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
-		break;
-	    case 16:
-		m = new ServerHelloDoneMessage(ConnectionEnd.CLIENT);
-
-		break;
-	    case 17:
-		m = new HelloRequestMessage(ConnectionEnd.CLIENT);
-		break;
-
-	}
-	if (m != null) {
-	    tempTrace.add(m);
-	    m = new ArbitraryMessage();
-	    m.setMessageIssuer(ConnectionEnd.SERVER);
-	    tempTrace.add(m);
-	}
-    }
-
-    private ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
-	Random r = new Random();
-	while (true) {
-	    int fieldNumber = r.nextInt(fields.size());
-	    return fields.get(fieldNumber);
-	}
     }
 
 }
