@@ -1,4 +1,4 @@
-package AgentTests;
+package Agent;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -47,7 +47,7 @@ public class AFLTest {
     /**
      *
      */
-    public void testIsCompiled() {
+    public void testAflexists() {
 	File f = new File("AFL/afl-as");
 	assertTrue(f.exists());
 	f = new File("AFL/afl-showmap");

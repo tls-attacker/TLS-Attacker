@@ -1,4 +1,4 @@
-package GraphTests;
+package Graph;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

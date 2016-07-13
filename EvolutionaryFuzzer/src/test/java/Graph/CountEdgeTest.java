@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package HelperTests;
+package Graph;
 
 import java.util.logging.Logger;
 import org.junit.After;
@@ -15,14 +15,14 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import Helper.LogFileIDManager;
+import Graphs.CountEdge;
 
 /**
  * 
  * @author ic0ns
  */
-public class LogFileIDManagerTest {
-    private static final Logger LOG = Logger.getLogger(LogFileIDManagerTest.class.getName());
+public class CountEdgeTest {
+    private static final Logger LOG = Logger.getLogger(CountEdgeTest.class.getName());
 
     /**
      *
@@ -41,7 +41,7 @@ public class LogFileIDManagerTest {
     /**
      *
      */
-    public LogFileIDManagerTest() {
+    public CountEdgeTest() {
     }
 
     /**
@@ -62,9 +62,10 @@ public class LogFileIDManagerTest {
      *
      */
     @Test
-    public void testIncrementingIDs() {
-
-	assertTrue("Failure: Incrementing the LogFileIDs failed",
-		LogFileIDManager.getInstance().getID() == LogFileIDManager.getInstance().getID() - 1);
+    public void testCountEdge() {
+	CountEdge edge = new CountEdge();
+	assertTrue("Failure: New generated Edges should have an EdgeCount of 1", edge.getCount() == 1);
+	edge.increment();
+	assertTrue("Failure: After Incrementing the Edgecount, the Edgecount should be 2", edge.getCount() == 2);
     }
 }

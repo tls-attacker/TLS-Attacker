@@ -1,4 +1,4 @@
-package GraphTests;
+package Graph;
 
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
@@ -21,6 +21,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import Graphs.BranchTrace;
 import Result.MergeResult;
+import java.util.logging.Level;
+import org.junit.Assert;
 
 /**
  * 
@@ -133,8 +135,21 @@ public class BranchTest {
 	    e = E;
 	}
 	assertNull(
-		"Failure: The Test should not Throw an Exception. Might indicate that it could not find the Testfiles. ",
+		"Failure: The Test should not Throw an Exception. Might indicate that it could not find the Testfiles.",
 		e);
+    }
+
+    @Test
+    public void testMergeBranch() {
+	try {
+	    BranchTrace trace = new BranchTrace();
+	    trace.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
+	    BranchTrace trace2 = new BranchTrace();
+	    trace2.merge(new File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl4"));
+	    trace.merge(trace2);
+	} catch (IOException ex) {
+	    Assert.fail("Could not find TestFiles");
+	}
     }
 
     private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());

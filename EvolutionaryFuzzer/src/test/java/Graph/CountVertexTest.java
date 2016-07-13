@@ -6,23 +6,24 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package GraphTests;
+package Graph;
 
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import Graphs.CountEdge;
+import Graphs.ProbeVertex;
 
 /**
  * 
  * @author ic0ns
  */
-public class CountEdgeTest {
-    private static final Logger LOG = Logger.getLogger(CountEdgeTest.class.getName());
+public class CountVertexTest {
+    private static final Logger LOG = Logger.getLogger(CountVertexTest.class.getName());
 
     /**
      *
@@ -41,7 +42,7 @@ public class CountEdgeTest {
     /**
      *
      */
-    public CountEdgeTest() {
+    public CountVertexTest() {
     }
 
     /**
@@ -62,10 +63,15 @@ public class CountEdgeTest {
      *
      */
     @Test
-    public void testCountEdge() {
-	CountEdge edge = new CountEdge();
-	assertTrue("Failure: New generated Edges should have an EdgeCount of 1", edge.getCount() == 1);
-	edge.increment();
-	assertTrue("Failure: After Incrementing the Edgecount, the Edgecount should be 2", edge.getCount() == 2);
+    public void testCountVertex() {
+	ProbeVertex vertex = new ProbeVertex(1);
+	assertTrue("Failure: GetProbeID returend different ProbeID", vertex.getProbeID() == 1);
+
+	ProbeVertex vertex2 = new ProbeVertex(1);
+
+	ProbeVertex vertex3 = new ProbeVertex(2);
+	assertTrue("Failure: Vertices with the same ProbeID should equal", vertex.equals(vertex2));
+	assertFalse("Failure: Vertices with different ProbeIDs should not be equal", vertex.equals(vertex3));
+
     }
 }

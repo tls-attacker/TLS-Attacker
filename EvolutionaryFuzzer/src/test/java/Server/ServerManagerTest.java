@@ -1,4 +1,4 @@
-package ServerTests;
+package Server;
 
 import java.util.logging.Logger;
 import org.junit.After;

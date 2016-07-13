@@ -6,24 +6,23 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package GraphTests;
+package Helper;
 
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import Graphs.ProbeVertex;
+import Helper.LogFileIDManager;
 
 /**
  * 
  * @author ic0ns
  */
-public class CountVertexTest {
-    private static final Logger LOG = Logger.getLogger(CountVertexTest.class.getName());
+public class LogFileIDManagerTest {
+    private static final Logger LOG = Logger.getLogger(LogFileIDManagerTest.class.getName());
 
     /**
      *
@@ -42,7 +41,7 @@ public class CountVertexTest {
     /**
      *
      */
-    public CountVertexTest() {
+    public LogFileIDManagerTest() {
     }
 
     /**
@@ -63,15 +62,9 @@ public class CountVertexTest {
      *
      */
     @Test
-    public void testCountVertex() {
-	ProbeVertex vertex = new ProbeVertex(1);
-	assertTrue("Failure: GetProbeID returend different ProbeID", vertex.getProbeID() == 1);
+    public void testIncrementingIDs() {
 
-	ProbeVertex vertex2 = new ProbeVertex(1);
-
-	ProbeVertex vertex3 = new ProbeVertex(2);
-	assertTrue("Failure: Vertices with the same ProbeID should equal", vertex.equals(vertex2));
-	assertFalse("Failure: Vertices with different ProbeIDs should not be equal", vertex.equals(vertex3));
-
+	assertTrue("Failure: Incrementing the LogFileIDs failed",
+		LogFileIDManager.getInstance().getID() == LogFileIDManager.getInstance().getID() - 1);
     }
 }

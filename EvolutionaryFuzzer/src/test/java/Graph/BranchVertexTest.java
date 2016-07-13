@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package GraphTests;
+package Graph;
 
 import java.util.logging.Logger;
 import org.junit.After;
