@@ -29,11 +29,11 @@ public class MessageFlowTest {
     public void testEquals() {
 	MessageFlow instance = new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT);
 	MessageFlow instance2 = new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT);
-	assertEquals("Failure: Both MessageFlows are Equal",instance, instance2);
+	assertEquals("Failure: Both MessageFlows are Equal", instance, instance2);
 	instance2 = new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER);
-	assertNotSame("Failure: MessageFlows have different MessageIssuers",instance, instance2);
+	assertNotSame("Failure: MessageFlows have different MessageIssuers", instance, instance2);
 	instance2 = new MessageFlow(ServerHelloDoneMessage.class, ConnectionEnd.CLIENT);
-	assertNotSame("Failure: MessageFlows have different MessageClasses",instance, instance2);
+	assertNotSame("Failure: MessageFlows have different MessageClasses", instance, instance2);
     }
 
 }

@@ -38,7 +38,7 @@ public class FuzzingHelperTest {
 	fields.add(new ModifiableVariableField());
 	fields.add(new ModifiableVariableField());
 	ModifiableVariableField result = FuzzingHelper.pickRandomField(fields);
-	assertNotNull("Failure: Should return a Field",result);
+	assertNotNull("Failure: Should return a Field", result);
     }
 
     /**
@@ -49,7 +49,7 @@ public class FuzzingHelperTest {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	List<ModifiableVariableHolder> result = FuzzingHelper.getModifiableVariableHolders(trace, ConnectionEnd.CLIENT);
-	assertTrue("Failure: WorkflowTrace should contain atleast one Holder",result.size() > 0);
+	assertTrue("Failure: WorkflowTrace should contain atleast one Holder", result.size() > 0);
     }
 
     /**
@@ -73,7 +73,8 @@ public class FuzzingHelperTest {
 	tempTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
 
 	FuzzingHelper.removeRandomMessage(tempTrace);
-	assertTrue("Failure: Workflow should contain only one Message after.",tempTrace.getProtocolMessages().size() == 1);
+	assertTrue("Failure: Workflow should contain only one Message after.",
+		tempTrace.getProtocolMessages().size() == 1);
     }
 
     /**
@@ -83,7 +84,9 @@ public class FuzzingHelperTest {
     public void testAddRandomMessage() {
 	WorkflowTrace tempTrace = new WorkflowTrace();
 	FuzzingHelper.addRandomMessage(tempTrace);
-	assertTrue("A Workflowtrace should contain 2 Messages after we added one at Random. (The arbitary Message for the Server is always added)",tempTrace.getProtocolMessages().size() == 2);
+	assertTrue(
+		"A Workflowtrace should contain 2 Messages after we added one at Random. (The arbitary Message for the Server is always added)",
+		tempTrace.getProtocolMessages().size() == 2);
     }
 
     /**
@@ -95,7 +98,8 @@ public class FuzzingHelperTest {
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	ConnectionEnd messageIssuer = ConnectionEnd.CLIENT;
 	FuzzingHelper.duplicateRandomProtocolMessage(trace, messageIssuer);
-	assertTrue("Failure: After Duplicating the Trace should contain 2 Messages",trace.getProtocolMessages().size() == 2);
+	assertTrue("Failure: After Duplicating the Trace should contain 2 Messages",
+		trace.getProtocolMessages().size() == 2);
     }
 
     /**
@@ -109,7 +113,7 @@ public class FuzzingHelperTest {
 	ConnectionEnd myPeer = ConnectionEnd.CLIENT;
 	List<ModifiableVariableListHolder> result = FuzzingHelper.getAllModifiableVariableHoldersRecursively(trace,
 		myPeer);
-	assertTrue("Failure: Trace should contain more than zero Holders",result.size() > 0);
+	assertTrue("Failure: Trace should contain more than zero Holders", result.size() > 0);
     }
 
 }
