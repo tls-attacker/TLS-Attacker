@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tls.branchtree.BranchTrace;
 
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class BasicAFLAgent extends Agent {
-    private static final Logger LOG = Logger.getLogger(BasicAFLAgent.class.getName());
+public class AFLAgent extends Agent {
+    private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
     // Is a fuzzing Progress Running?
     protected boolean running = false;
@@ -38,7 +39,7 @@ public class BasicAFLAgent extends Agent {
     /**
      * Default Constructor
      */
-    public BasicAFLAgent() {
+    public AFLAgent() {
 	timeout = false;
 	crash = false;
 
@@ -80,8 +81,16 @@ public class BasicAFLAgent extends Agent {
 		timeout = true;
 		break;
 	}
-	Result result = new Result(crash, timeout, startTime, stopTime, branchTrace, trace, executedTrace,
-		LogFileIDManager.getInstance().getFilename());
+	BranchTrace t = new BranchTrace();
+	try {
+	    // TODO das sollt
+	    t.merge(branchTrace);
+	} catch (IOException ex) {
+	    Logger.getLogger(PinAgent.class.getName()).log(Level.SEVERE, null, ex);
+	}
+
+	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
+		.getInstance().getFilename());
 
 	return result;
     }

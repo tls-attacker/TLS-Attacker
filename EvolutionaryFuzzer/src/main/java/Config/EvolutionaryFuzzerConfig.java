@@ -35,10 +35,20 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-remove_message", description = "Probability of removing a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
     private Integer removeMessagePercentage = 1;
 
-    @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.")
+    @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./";
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
+    @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
+    private String agent = "AFL";
+
+    public String getAgent() {
+	return agent;
+    }
+
+    public void setAgent(String agent) {
+	this.agent = agent;
+    }
 
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."

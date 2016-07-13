@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
@@ -32,6 +33,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BranchTrace {
+
     private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 
     // A Map which maps ProbeIDs to Vertices to better Acess the Vertices in the
@@ -48,6 +50,14 @@ public class BranchTrace {
 	graph = new DefaultDirectedGraph<>(CountEdge.class);
     }
 
+    public BranchTrace(DirectedGraph<ProbeVertex, CountEdge> graph) {
+	map = new HashMap<>();
+	this.graph = graph;
+	for (ProbeVertex v : graph.vertexSet()) {
+	    map.put(v.getProbeID(), v);
+	}
+    }
+
     /**
      * Returns the DirectedGraph of the Trace
      * 
@@ -55,6 +65,37 @@ public class BranchTrace {
      */
     public DirectedGraph<ProbeVertex, CountEdge> getGraph() {
 	return graph;
+    }
+
+    public MergeResult merge(BranchTrace trace) {
+	int newVertices = 0;
+	int hitVertices = trace.map.size();
+	int newEdges = 0;
+	for (ProbeVertex v : trace.map.values()) {
+	    if (map.get(v.getProbeID()) == null) {
+		ProbeVertex temp = new ProbeVertex(v.getProbeID());
+		map.put(v.getProbeID(), temp);
+		graph.addVertex(temp);
+		newVertices++;
+	    }
+
+	}
+	Graphs.addAllVertices(graph, trace.graph.vertexSet());
+	newVertices = map.size() - newVertices;
+	for (CountEdge edge : trace.graph.edgeSet()) {
+	    int count = edge.getCount();
+	    ProbeVertex source = trace.graph.getEdgeSource(edge);
+	    ProbeVertex target = trace.graph.getEdgeTarget(edge);
+	    source = map.get(source.getProbeID());
+	    target = map.get(target.getProbeID());
+	    CountEdge tempEdge = graph.getEdge(source, target);
+	    if (tempEdge == null) {
+		tempEdge = graph.addEdge(source, target);
+		newEdges++;
+	    }
+	    tempEdge.add(count);
+	}
+	return new MergeResult(newVertices, newEdges, hitVertices);
     }
 
     /**

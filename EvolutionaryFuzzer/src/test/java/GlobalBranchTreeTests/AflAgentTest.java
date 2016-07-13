@@ -15,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import tls.rub.evolutionaryfuzzer.BasicAFLAgent;
+import tls.rub.evolutionaryfuzzer.AFLAgent;
 import tls.rub.evolutionaryfuzzer.ServerManager;
 import tls.rub.evolutionaryfuzzer.TLSServer;
 
@@ -42,7 +42,7 @@ public class AflAgentTest {
 
     }
 
-    BasicAFLAgent agent = null;
+    AFLAgent agent = null;
     TLSServer server = null;
 
     public static void deleteFolder(File folder) {
@@ -70,7 +70,7 @@ public class AflAgentTest {
      */
     @Before
     public void setUp() {
-	agent = new BasicAFLAgent();
+	agent = new AFLAgent();
 	// TODO
 	ServerManager.getInstance().clear();
 	ServerManager

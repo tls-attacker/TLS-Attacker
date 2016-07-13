@@ -84,7 +84,7 @@ public class BranchTest {
     @Test(expected = NullPointerException.class)
     public void testMergeNull() throws FileNotFoundException, IOException {
 	// Test with null
-	tree.merge(null);
+	tree.merge((File) null);
     }
 
     /**

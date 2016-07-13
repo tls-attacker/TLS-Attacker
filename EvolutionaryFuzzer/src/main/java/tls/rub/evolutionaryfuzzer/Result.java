@@ -10,6 +10,7 @@ package tls.rub.evolutionaryfuzzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.util.logging.Logger;
+import tls.branchtree.BranchTrace;
 
 /**
  * This class summarizes a the Results of FuzzingVector. It contains information
@@ -31,7 +32,7 @@ class Result {
     // The Unixtime @ which the Vector finished executing
     private final long stopTime;
     // File Containing all the ProbeIDs
-    private final File edges;
+    private final BranchTrace edges;
     // Workflowtrace that should be Executed
     private final WorkflowTrace trace;
     // Workflowtrace that was executed
@@ -39,8 +40,8 @@ class Result {
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
 
-    Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, File edges, WorkflowTrace trace,
-	    WorkflowTrace executedTrace, String id) {
+    Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace edges,
+	    WorkflowTrace trace, WorkflowTrace executedTrace, String id) {
 	this.hasCrashed = hasCrashed;
 	this.didTimeout = didTimeout;
 	this.startTime = startTime;
@@ -105,14 +106,14 @@ class Result {
      * 
      * @return File containing a List of ProbeIDs
      */
-    public File getEdges() {
+    public BranchTrace getEdges() {
 	return edges;
     }
 
     @Override
     public String toString() {
 	return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime
-		+ ", stopTime=" + stopTime + ", edges=" + edges.getAbsolutePath() + '}';
+		+ ", stopTime=" + stopTime + ", edges=" + edges.toString() + '}';
     }
 
     /**

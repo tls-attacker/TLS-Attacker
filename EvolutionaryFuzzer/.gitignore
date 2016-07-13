@@ -1,2 +1,6 @@
 /target/
-file.id
+/PIN/
+/openssl/
+/file.id
+/server(afl)/
+/.pin.log

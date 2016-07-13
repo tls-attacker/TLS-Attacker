@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class StreamGobbler extends Thread {
@@ -62,8 +63,7 @@ class StreamGobbler extends Thread {
 		if (line.equals(accepted)) {
 		    hasAccepted = true;
 		} else {
-		    // System.out.println(type + "> " + line);
-
+		    LOG.log(Level.FINEST, line);
 		}
 	    }
 	    if (pw != null) {

@@ -96,7 +96,8 @@ public class ExecutorThreadPool implements Runnable {
 	for (int i = 0; i < list.size(); i++) {
 	    if (!stopped) {
 		TLSServer server = ServerManager.getInstance().getFreeServer();
-		Runnable worker = new TLSExecutor(list.get(i), server, new BasicAFLAgent());
+		Agent agent = AgentFactory.generateAgent(config);
+		Runnable worker = new TLSExecutor(list.get(i), server, agent);
 		executor.execute(worker);
 	    } else {
 		i--;
@@ -114,8 +115,8 @@ public class ExecutorThreadPool implements Runnable {
 	    try {
 		if (!stopped) {
 		    TLSServer server = ServerManager.getInstance().getFreeServer();
-
-		    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, new BasicAFLAgent());
+		    Agent agent = AgentFactory.generateAgent(config);
+		    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, agent);
 		    executor.execute(worker);
 		    runs++;
 

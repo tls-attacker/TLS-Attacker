@@ -27,6 +27,10 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
 	count++;
     }
 
+    public void add(int count) {
+	this.count += count;
+    }
+
     /**
      * Returns the Count value of the Edge
      * 

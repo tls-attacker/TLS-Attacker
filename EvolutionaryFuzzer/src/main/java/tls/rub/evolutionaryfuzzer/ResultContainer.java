@@ -84,18 +84,9 @@ public class ResultContainer {
     public void commit(Result result) {
 	results.add(result);
 	MergeResult r = null;
-	try {
-	    r = branch.merge(result.getEdges());
 
-	} catch (FileNotFoundException ex) {
-	    LOG.log(Level.SEVERE,
-		    "Received a Result Object wich Points to a non-existant File! Was the File deleted at Runtime? Skipping Result");
-	    return;
-	} catch (IOException ex) {
-	    LOG.log(Level.SEVERE,
-		    "Received a Result Object wich Points to a File we cant Read! Does the Fuzzer have the rights to read the Files provided by the Agent? Skipping Result");
-	    return;
-	}
+	r = branch.merge(result.getEdges());
+
 	if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
 	    LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
 	    // It may be that we dont want to safe good Traces, for example if
