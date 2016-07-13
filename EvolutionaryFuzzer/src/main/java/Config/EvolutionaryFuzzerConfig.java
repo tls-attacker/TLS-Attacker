@@ -25,13 +25,13 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private String serverCommandFromFile = "server/";
 
     @Parameter(names = "-modify_variable", description = "Probability of a random variable modification (0-100), in steps 2 and 3", validateWith = PercentageValidator.class)
-    private Integer modifyVariablePercentage = 20;
+    private Integer modifyVariablePercentage = 90;
 
     @Parameter(names = "-add_record", description = "Probability of adding a random record to a random protocol message (may cause the message is split into more records)", validateWith = PercentageValidator.class)
     private Integer addRecordPercentage = 50;
 
     @Parameter(names = "-add_message", description = "Probability of adding a random message to a WorkflowTrace", validateWith = PercentageValidator.class)
-    private Integer addMessagePercentage = 100;
+    private Integer addMessagePercentage = 50;
     @Parameter(names = "-remove_message", description = "Probability of removing a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
     private Integer removeMessagePercentage = 1;
 
@@ -73,6 +73,9 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
 	this.removeMessagePercentage = removeMessagePercentage;
+	if (removeMessagePercentage > 100) {
+	    throw new IllegalArgumentException("RemoveMessagePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	}
     }
 
     /**
@@ -137,7 +140,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     public void setAddRecordPercentage(Integer addRecordPercentage) {
 	this.addRecordPercentage = addRecordPercentage;
 	if (addRecordPercentage > 100) {
-	    throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	    throw new IllegalArgumentException("AddRecordPercentage cannot be >100:" + verifyWorkflowCorrectness);
 	}
     }
 
@@ -160,6 +163,9 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
      */
     public void setAddMessagePercentage(Integer addMessagePercentage) {
 	this.addMessagePercentage = addMessagePercentage;
+	if (addMessagePercentage > 100) {
+	    throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	}
     }
 
     /**
