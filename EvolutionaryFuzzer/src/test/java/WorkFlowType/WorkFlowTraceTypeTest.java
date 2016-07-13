@@ -35,7 +35,7 @@ public class WorkFlowTraceTypeTest {
 	assertNotSame(instance, instance2);
 	instance2 = new WorkFlowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	assertSame(instance, instance2);
+	assertEquals(instance, instance2);
 	instance2 = new WorkFlowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
