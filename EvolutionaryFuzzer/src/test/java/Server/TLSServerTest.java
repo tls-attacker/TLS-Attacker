@@ -130,7 +130,7 @@ public class TLSServerTest {
     public void testExitedStarted() {
 	server.occupie();
 	server.start("AFL/afl-showmap -m none -o [output]/[id] ");
-	assertFalse("Failure:Server started but should not have exited yet", server.exited());
+	assertFalse("Failure: Server started but should not have exited yet", server.exited());
     }
 
 }

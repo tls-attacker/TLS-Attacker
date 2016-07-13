@@ -27,7 +27,6 @@ public class CleanerTest {
     @Test
     public void testCleanTraces() {
 
-	System.out.println("cleanTraces");
 	EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
 
 	evoConfig.setOutputFolder("JUNIT");
@@ -41,7 +40,6 @@ public class CleanerTest {
      */
     @Test
     public void testCleanAll() {
-	System.out.println("cleanAll");
 	EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
 
 	evoConfig.setOutputFolder("JUNIT");

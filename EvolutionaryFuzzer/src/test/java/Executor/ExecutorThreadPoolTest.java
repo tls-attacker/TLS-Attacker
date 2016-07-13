@@ -31,6 +31,6 @@ public class ExecutorThreadPoolTest {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
 	TlsContext context = new TlsContext();
 	ExecutorThreadPool pool = new ExecutorThreadPool(5, new SimpleMutator(context, config), config);
-	assertTrue(pool.isStopped());
+	assertTrue("Failure: Pool is not stopped on creation",pool.isStopped());
     }
 }

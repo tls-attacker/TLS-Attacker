@@ -39,27 +39,27 @@ public class EvolutionaryFuzzerConfigTest {
 	} catch (Exception ex) {
 	    E = ex;
 	}
-	assertNotNull(E);
+	assertNotNull("Failure: AddMessagePercentage can be risen above 100%", E);
 	E = null;
 	try {
 	    config.setAddRecordPercentage(101);
 	} catch (Exception ex) {
 	    E = ex;
 	}
-	assertNotNull(E);
+	assertNotNull("Failure: setAddRecordPercentage can be risen above 100%", E);
 	E = null;
 	try {
 	    config.setModifyVariablePercentage(101);
 	} catch (Exception ex) {
 	    E = ex;
 	}
-	assertNotNull(E);
+	assertNotNull("Failure: setModifyVariablePercentage can be risen above 100%", E);
 	E = null;
 	try {
 	    config.setRemoveMessagePercentage(101);
 	} catch (Exception ex) {
 	    E = ex;
 	}
-	assertNotNull(E);
+	assertNotNull("Failure: setRemoveMessagePercentage can be risen above 100%", E);
     }
 }

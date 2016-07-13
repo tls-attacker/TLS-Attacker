@@ -37,7 +37,7 @@ public class ConfigManagerTest {
 
     @Test
     public void testGetConfig() {
-	assertNotNull(ConfigManager.getInstance().getConfig());
+	assertNotNull("Failure: Could get a ConfigManager Instance", ConfigManager.getInstance().getConfig());
     }
 
 }

@@ -28,6 +28,7 @@ public class ResultContainerTest {
     @Test
     public void testGetInstance() {
 	ResultContainer result = ResultContainer.getInstance();
+        assertNotNull(result);
     }
 
     /**

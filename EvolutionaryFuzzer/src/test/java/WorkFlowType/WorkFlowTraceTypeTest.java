@@ -32,14 +32,14 @@ public class WorkFlowTraceTypeTest {
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	WorkFlowTraceType instance2 = new WorkFlowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
-	assertNotSame(instance, instance2);
+	assertNotSame("Failure: Messageflows have Different Connection Ends, the WorkFlowType should not be equal",instance, instance2);
 	instance2 = new WorkFlowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	assertEquals(instance, instance2);
+	assertEquals("Failure: MessageFlows are should be equal",instance, instance2);
 	instance2 = new WorkFlowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	assertNotSame(instance, instance2);
+	assertNotSame("Failure: WorkFlowTraceTypes have different number of MessageFlows",instance, instance2);
 
     }
 

@@ -109,8 +109,8 @@ public class PinAgentTest {
 	WorkflowTrace t = new WorkflowTrace();
 	Result r = agent
 		.collectResults(new File("../resources/testsuite/EvolutionaryFuzzer/PinTest/graph.trace"), t, t);
-	assertTrue(r.getBranchTrace().getGraph().vertexSet().size() == 4);
-	assertTrue(r.getBranchTrace().getGraph().edgeSet().size() == 6);
+	assertTrue("Failure: Test result should have exactly 4 Vertices", r.getBranchTrace().getGraph().vertexSet().size() == 4);
+	assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getGraph().edgeSet().size() == 6);
 
     }
 

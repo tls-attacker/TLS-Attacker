@@ -33,9 +33,9 @@ public class PINTest {
     @Test
     public void testPinExists() {
 	File f = new File("PIN/pin.sh");
-	assertTrue(f.exists());
+	assertTrue("Failure: Could not find PIN implementation", f.exists());
 	f = new File("PinScripts/MyPinTool.cpp");
-	assertTrue(f.exists());
+	assertTrue("Failure: Could not find PIN script", f.exists());
 
     }
 }
