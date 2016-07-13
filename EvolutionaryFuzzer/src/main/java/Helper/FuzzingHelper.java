@@ -95,6 +95,51 @@ public class FuzzingHelper {
 	return result;
     }
 
+    public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object,
+	    ConnectionEnd myPeer) {
+	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object, myPeer);
+	List<ModifiableVariableField> fields = new LinkedList<>();
+	for (ModifiableVariableListHolder holder : holders) {
+	    if (!(holder.getObject() instanceof ProtocolMessage)
+		    || ((ProtocolMessage) holder.getObject()).getMessageIssuer() == myPeer) {
+		for (Field f : holder.getFields()) {
+		    fields.add(new ModifiableVariableField(holder.getObject(), f));
+		}
+	    }
+	}
+	return fields;
+    }
+
+    /**
+     * Executes a random modification on a defined field. Source:
+     * http://stackoverflow.com/questions/1868333/how-can-i-determine-the
+     * -type-of-a-generic-field-in-java
+     * 
+     * @param object
+     * @param field
+     */
+    public static void executeModifiableVariableModification(ModifiableVariableHolder object, Field field) {
+	try {
+	    // Type type = field.getGenericType();
+	    // ParameterizedType pType = (ParameterizedType) type;
+	    // String typeString = ((Class)
+	    // pType.getActualTypeArguments()[0]).getSimpleName();
+	    // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
+	    // field.getName(), typeString,
+	    // object.getClass().getSimpleName());
+	    field.setAccessible(true);
+	    ModifiableVariable mv = (ModifiableVariable) field.get(object);
+	    if (mv == null) {
+		mv = (ModifiableVariable) field.getType().getDeclaredConstructors()[0].newInstance();
+	    }
+	    mv.createRandomModificationAtRuntime();
+
+	    field.set(object, mv);
+	} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
+	    throw new ModificationException(ex.getLocalizedMessage(), ex);
+	}
+    }
+
     /**
      * Adds random records to the workflow trace
      * 
