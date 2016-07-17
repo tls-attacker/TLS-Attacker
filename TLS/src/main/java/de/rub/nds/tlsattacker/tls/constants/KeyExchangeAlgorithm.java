@@ -23,5 +23,9 @@ public enum KeyExchangeAlgorithm {
     KRB5,
     SRP,
     PSK,
-    EC_DIFFIE_HELLMAN;
+    EC_DIFFIE_HELLMAN,
+    GOSTR341001,
+    GOSTR341094,
+    CECPQ1;
+
 }
