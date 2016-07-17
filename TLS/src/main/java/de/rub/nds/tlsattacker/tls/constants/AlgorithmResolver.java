@@ -80,28 +80,36 @@ public class AlgorithmResolver {
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.startsWith("TLS_RSA")) {
+        if (cipher.startsWith("TLS_RSA_")) {
             return KeyExchangeAlgorithm.RSA;
-        } else if (cipher.startsWith("TLS_DH_DSS")) {
+        } else if (cipher.startsWith("TLS_DH_DSS_")) {
             return KeyExchangeAlgorithm.DH_DSS;
-        } else if (cipher.startsWith("TLS_DH_RSA")) {
+        } else if (cipher.startsWith("TLS_DH_RSA_")) {
             return KeyExchangeAlgorithm.DH_RSA;
-        } else if (cipher.startsWith("TLS_DHE_DSS")) {
+        } else if (cipher.startsWith("TLS_DHE_DSS_")) {
             return KeyExchangeAlgorithm.DHE_DSS;
-        } else if (cipher.startsWith("TLS_DHE_RSA")) {
+        } else if (cipher.startsWith("TLS_DHE_RSA_")) {
             return KeyExchangeAlgorithm.DHE_RSA;
-        } else if (cipher.startsWith("TLS_DH_ANON")) {
+        } else if (cipher.startsWith("TLS_DH_ANON_")) {
             return KeyExchangeAlgorithm.DH_ANON;
-        } else if (cipher.startsWith("TLS_ECDH")) {
+        } else if (cipher.startsWith("TLS_ECDH_")) {
             return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
-        } else if (cipher.startsWith("TLS_NULL")) {
+        } else if (cipher.startsWith("TLS_ECDHE_")) {
+            return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
+        } else if (cipher.startsWith("TLS_NULL_")) {
             return KeyExchangeAlgorithm.NULL;
-        } else if (cipher.startsWith("TLS_KRB5")) {
+        } else if (cipher.startsWith("TLS_KRB5_")) {
             return KeyExchangeAlgorithm.KRB5;
-        } else if (cipher.startsWith("TLS_PSK")) {
+        } else if (cipher.startsWith("TLS_PSK_")) {
             return KeyExchangeAlgorithm.PSK;
-        } else if (cipher.startsWith("TLS_SRP")) {
+        } else if (cipher.startsWith("TLS_SRP_")) {
             return KeyExchangeAlgorithm.SRP;
+        } else if (cipher.startsWith("TLS_GOSTR341001_")) {
+            return KeyExchangeAlgorithm.GOSTR341001;
+        } else if (cipher.startsWith("TLS_GOSTR341094_")) {
+            return KeyExchangeAlgorithm.GOSTR341094;
+        } else if (cipher.startsWith("TLS_CECPQ1_")) {
+            return KeyExchangeAlgorithm.CECPQ1;
         }
         throw new UnsupportedOperationException("The key exchange algorithm is not supported yet.");
     }
