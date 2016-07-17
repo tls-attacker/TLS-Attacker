@@ -147,6 +147,10 @@ public class AlgorithmResolver {
         String cipher = cipherSuite.toString().toUpperCase();
         if (cipher.contains("NULL")) {
             return CipherAlgorithm.NULL;
+        } else if (cipher.contains("IDEA")) {
+            return CipherAlgorithm.IDEA_128;
+        } else if (cipher.contains("RC2")) {
+            return CipherAlgorithm.RC2_128;
         } else if (cipher.contains("RC4")) {
             return CipherAlgorithm.RC4_128;
         } else if (cipher.contains("DES_EDE_CBC")) {
@@ -159,6 +163,10 @@ public class AlgorithmResolver {
             return CipherAlgorithm.AES_128_GCM;
         } else if (cipher.contains("AES_256_GCM")) {
             return CipherAlgorithm.AES_256_GCM;
+        } else if (cipher.contains("CAMELLIA_128_CBC")) {
+            return CipherAlgorithm.CAMELLIA_128_CBC;
+        } else if (cipher.contains("CAMELLIA_256_CBC")) {
+            return CipherAlgorithm.CAMELLIA_256_CBC;
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }
