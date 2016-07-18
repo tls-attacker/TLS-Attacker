@@ -15,24 +15,25 @@ package FlowVisualisation;
 //import org.jgrapht.graph.DirectedMultigraph;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AutomataWindow
-{
-//
-//    public static void showWindow(CompactDFA<MessageFlow> incomingGraph)
-//    {
-//
-//        try 
-//        { // true indicates that the dialog is modal
-//            Writer w = DOT.createDotWriter(true);
-//            GraphDOT.write(incomingGraph, w); // Requires handling of IOException!
-//        } // The automatic close() invocation causes the visualization window to appear. Note that
-//        // since the dialog was set to be modal, this call will block until the window is closed.
-//        catch(Exception E)
-//        {
-//            
-//        }
-//    }
+public class AutomataWindow {
+    //
+    // public static void showWindow(CompactDFA<MessageFlow> incomingGraph)
+    // {
+    //
+    // try
+    // { // true indicates that the dialog is modal
+    // Writer w = DOT.createDotWriter(true);
+    // GraphDOT.write(incomingGraph, w); // Requires handling of IOException!
+    // } // The automatic close() invocation causes the visualization window to
+    // appear. Note that
+    // // since the dialog was set to be modal, this call will block until the
+    // window is closed.
+    // catch(Exception E)
+    // {
+    //
+    // }
+    // }
 }
