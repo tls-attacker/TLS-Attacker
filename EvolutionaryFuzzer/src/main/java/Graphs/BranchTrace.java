@@ -81,7 +81,6 @@ public class BranchTrace {
 	    }
 
 	}
-	Graphs.addAllVertices(graph, trace.graph.vertexSet());
 	newVertices = map.size() - newVertices;
 	for (CountEdge edge : trace.graph.edgeSet()) {
 	    int count = edge.getCount();
