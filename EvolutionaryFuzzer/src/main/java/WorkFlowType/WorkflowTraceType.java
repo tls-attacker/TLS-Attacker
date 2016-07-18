@@ -18,9 +18,8 @@ public class WorkflowTraceType {
 
     private ArrayList<MessageFlow> flows;
 
-    public ArrayList<MessageFlow> getFlows()
-    {
-        return flows;
+    public ArrayList<MessageFlow> getFlows() {
+	return flows;
     }
 
     public WorkflowTraceType() {

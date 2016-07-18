@@ -22,8 +22,8 @@ public class WorkflowTraceTypeManager {
 
     /**
      * Generates a Set of WorkFlowTraceTypes, each WorkflowTraceType represents
- a Category of Workflowtraces which reached a new Branch in the
- Implementation at some Point.
+     * a Category of Workflowtraces which reached a new Branch in the
+     * Implementation at some Point.
      * 
      * @param traces
      * @return
@@ -39,8 +39,8 @@ public class WorkflowTraceTypeManager {
 
     /**
      * Generates a Set of WorkFlowTraceTypes, each WorkflowTraceType represents
- a Category of Workflowtraces which reached a new Branch in the
- Implementation at some Point. WorkflowTraces that didn't end with a
+     * a Category of Workflowtraces which reached a new Branch in the
+     * Implementation at some Point. WorkflowTraces that didn't end with a
      * Message from the Server are scrapped from the Client Messages to that
      * Point. The List then represents all WorkflowTraceTypes which bring the
      * Server in different States.
