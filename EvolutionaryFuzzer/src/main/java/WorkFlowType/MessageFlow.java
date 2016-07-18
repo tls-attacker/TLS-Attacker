@@ -14,9 +14,18 @@ import java.util.Objects;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class MessageFlow {
+public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     private final Class<? extends Object> message;
     private final ConnectionEnd issuer;
+    private int uniquer = 0;
+
+    public int getUniquer() {
+	return uniquer;
+    }
+
+    public void setUniquer(int uniquer) {
+	this.uniquer = uniquer;
+    }
 
     public MessageFlow(Class<? extends Object> message, ConnectionEnd issuer) {
 	this.message = message;
@@ -36,6 +45,7 @@ public class MessageFlow {
 	int hash = 7;
 	hash = 47 * hash + Objects.hashCode(this.message);
 	hash = 47 * hash + Objects.hashCode(this.issuer);
+	hash *= (1 + uniquer);
 	return hash;
     }
 
@@ -54,12 +64,15 @@ public class MessageFlow {
 	if (this.issuer != other.issuer) {
 	    return false;
 	}
+	if (uniquer != other.getUniquer()) {
+	    return false;
+	}
 	return true;
     }
 
     @Override
     public String toString() {
-	return "MessageFlow{" + "message=" + message + ", issuer=" + issuer + '}';
+	return "" + message.getSimpleName() + ":" + issuer;
     }
 
 }
