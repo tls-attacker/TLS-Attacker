@@ -4,6 +4,8 @@ import Executor.ExecutorThreadPool;
 import Mutator.Mutator;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
+import Graphs.CountEdge;
+import Graphs.ProbeVertex;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -18,6 +20,12 @@ import Result.ResultContainer;
 import Server.ServerManager;
 import Mutator.SimpleMutator;
 import Server.TLSServer;
+import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Set;
+import org.jgrapht.DirectedGraph;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -115,8 +123,53 @@ public class FuzzerController extends Controller {
 			System.out.println(server);
 		    }
 		    break;
+		case "edges":
+		    LOG.log(Level.INFO, "Dumping Edge Information to edges.dump");
+		    try {
+			Thread.sleep(1000);
+		    } catch (InterruptedException ex) {
+			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+
+		    DirectedGraph<ProbeVertex, CountEdge> graph = ResultContainer.getInstance().getBranch().getGraph();
+		    PrintWriter writer;
+		    try {
+			writer = new PrintWriter("edges.dump", "UTF-8");
+			Set<CountEdge> set = graph.edgeSet();
+			for (CountEdge edge : set) {
+			    writer.println(graph.getEdgeSource(edge).getProbeID() + " "
+				    + graph.getEdgeTarget(edge).getProbeID());
+			}
+			writer.close();
+		    } catch (FileNotFoundException ex) {
+			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+		    } catch (UnsupportedEncodingException ex) {
+			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+		    LOG.log(Level.INFO, "Dump finished");
+
+		    break;
+		case "vertices":
+		    LOG.log(Level.INFO, "Dumping Vertex Information to vertices.dump");
+		    graph = ResultContainer.getInstance().getBranch().getGraph();
+		    writer = null;
+		    try {
+			writer = new PrintWriter("vertices.dump", "UTF-8");
+			Set<ProbeVertex> set = graph.vertexSet();
+			for (ProbeVertex vertex : set) {
+			    writer.println(vertex.getProbeID());
+			}
+			writer.close();
+		    } catch (FileNotFoundException ex) {
+			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+		    } catch (UnsupportedEncodingException ex) {
+			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+		    LOG.log(Level.INFO, "Dump finished");
+
+		    break;
 		default:
-		    System.out.println("Commands: start, stop, status, server");
+		    System.out.println("Commands: start, stop, status, server, edges, vertices");
 		    break;
 	    }
 	}
