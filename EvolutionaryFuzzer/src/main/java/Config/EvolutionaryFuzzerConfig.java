@@ -8,7 +8,7 @@ import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 import java.util.logging.Logger;
 
 /**
- * A Config File which controls the EvolutionaryFuzzer. TODO Implement
+ * A Config File which controls the EvolutionaryFuzzer.
  * 
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -34,6 +34,8 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private Integer addMessagePercentage = 50;
     @Parameter(names = "-remove_message", description = "Probability of removing a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
     private Integer removeMessagePercentage = 1;
+    @Parameter(names = "-duplicate_message", description = "Probability of duplicating a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
+    private Integer duplicateMessagePercentage = 1;
 
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./";
@@ -41,6 +43,16 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private Integer threads = -1;
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
     private String agent = "AFL";
+
+    /**
+     * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
+     * and serverCommandFromFile to server/server.config
+     */
+    public EvolutionaryFuzzerConfig() {
+	outputFolder = "./";
+	serverCommandFromFile = "server/";
+	this.timeout = 60000;
+    }
 
     public String getAgent() {
 	return agent;
@@ -50,13 +62,12 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	this.agent = agent;
     }
 
-    /**
-     * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
-     * and serverCommandFromFile to server/server.config
-     */
-    public EvolutionaryFuzzerConfig() {
-	outputFolder = "./";
-	serverCommandFromFile = "server/";
+    public Integer getDuplicateMessagePercentage() {
+	return duplicateMessagePercentage;
+    }
+
+    public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
+	this.duplicateMessagePercentage = duplicateMessagePercentage;
     }
 
     public Integer getThreads() {
