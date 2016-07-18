@@ -31,6 +31,7 @@ import Server.TLSServer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
+    private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
     // Is a fuzzing Progress Running?
     protected boolean running = false;
@@ -43,7 +44,6 @@ public class PINAgent extends Agent {
     // If the Application did Crash
     protected boolean crash;
     private final String prefix = "PIN/pin.sh -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
-    private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
     /**
      * Default Constructor
@@ -78,12 +78,6 @@ public class PINAgent extends Agent {
 	if (running) {
 	    throw new IllegalStateException("Can't collect Results, Agent still running!");
 	}
-
-	String tail = tail(branchTrace);
-	if (tail.startsWith("S")) {
-	    LOG.log(Level.INFO, "Found a Crash!");
-	    crash = true;
-	}
 	DirectedGraph<ProbeVertex, CountEdge> graph = new DefaultDirectedGraph<>(CountEdge.class);
 	HashMap<Long, ProbeVertex> map = new HashMap<>();
 	try {
@@ -91,6 +85,13 @@ public class PINAgent extends Agent {
 	    try (BufferedReader br = new BufferedReader(new FileReader(branchTrace))) {
 
 		String line = br.readLine();
+		if (line.startsWith("S")) {
+		    crash = true;
+		    // Skip 2 lines
+		    line = br.readLine();
+		    line = br.readLine();
+
+		}
 		while ((line = br.readLine()) != null) {
 		    String[] split = line.split("\\s+");
 		    // TODO nur notlösung
