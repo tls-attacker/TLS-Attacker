@@ -7,14 +7,19 @@
  */
 package Main;
 
+import Automata.WorkflowAutomataBuilder;
 import Config.ConfigManager;
 import Server.ServerManager;
 import Controller.FuzzerController;
 import Executor.DebugExecutor;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
+import FlowVisualisation.AutomataWindow;
+import FlowVisualisation.GraphWindow;
 import Helper.Cleaner;
-import WorkFlowType.WorkFlowTraceType;
+import WorkFlowType.MessageFlow;
+import WorkFlowType.WorkflowGraphBuilder;
+import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -25,6 +30,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.DirectedMultigraph;
+import org.jgrapht.graph.ListenableDirectedGraph;
 
 /**
  * 
@@ -67,16 +75,16 @@ public class Main {
 		List<WorkflowTrace> traces = WorkflowTraceSerializer.readFolder(f);
 
 		LOG.log(Level.INFO, "Fininshed reading.");
-		Set<WorkFlowTraceType> set = WorkflowTraceTypeManager.generateTypeList(traces);
+		Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateTypeList(traces);
 
 		LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
 
 		set = WorkflowTraceTypeManager.generateCleanTypeList(traces);
 
 		LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");
-		for (WorkFlowTraceType type : set) {
-		    System.out.println(type);
-		}
+		// AutomataWindow.showWindow(WorkflowAutomataBuilder.generateWorkflowAutomata(set));
+		DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
+		GraphWindow.showWindow(graph);
 		break;
 	    case "clean":
 		Cleaner.cleanTraces(evoConfig);
