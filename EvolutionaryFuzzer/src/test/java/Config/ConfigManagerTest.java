@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
  */
 public class ConfigManagerTest {
 
-    public ConfigManagerTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public ConfigManagerTest() {
     }
 
     @Test

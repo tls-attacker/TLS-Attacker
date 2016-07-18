@@ -29,6 +29,7 @@ import org.junit.Assert;
  * @author ic0ns
  */
 public class BranchTest {
+    private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
     /**
      *
@@ -152,6 +153,5 @@ public class BranchTest {
 	}
     }
 
-    private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
 }

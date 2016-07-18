@@ -20,9 +20,6 @@ import static org.junit.Assert.*;
  */
 public class FuzzerControllerTest {
 
-    public FuzzerControllerTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
@@ -41,5 +38,9 @@ public class FuzzerControllerTest {
      * 
      * }
      */
+    
+    public FuzzerControllerTest() {
+    }
+
 
 }

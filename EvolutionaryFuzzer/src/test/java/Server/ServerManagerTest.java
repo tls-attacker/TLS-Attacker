@@ -1,5 +1,6 @@
 package Server;
 
+import Config.EvolutionaryFuzzerConfig;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -9,12 +10,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import Server.ServerManager;
 import Server.TLSServer;
+import static org.junit.Assert.assertNull;
 
 /**
  * 
  * @author ic0ns
  */
 public class ServerManagerTest {
+    private static final Logger LOG = Logger.getLogger(ServerManagerTest.class.getName());
 
     /**
      *
@@ -57,17 +60,18 @@ public class ServerManagerTest {
      */
     @After
     public void tearDown() {
+	Config.ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
 	manager.clear();
     }
 
-    /**
-     * 
-     * TODO
-     * 
-     * @Test(expected = RuntimeException.class, timeout = 120000) public void
-     *                TestOccupyAllServers() { while (true) {
-     *                manager.getFreeServer(); } }
-     */
+    @Test(expected = RuntimeException.class)
+    public void TestOccupyAllServers() {
+	Config.ConfigManager.getInstance().getConfig().setTimeout(10);
+	while (true) {
+	    manager.getFreeServer();
+	}
+    }
+
     /**
      *
      */
@@ -78,16 +82,10 @@ public class ServerManagerTest {
 	assertNotNull("Failure: Could not get a free Server", server);
     }
 
-    private static final Logger LOG = Logger.getLogger(ServerManagerTest.class.getName());
-
-    /**
-     * 
-     * TODO
-     * 
-     * @Test public void TestEmptyServer() { manager.clear(); TLSServer server =
-     *       manager.getFreeServer(); assertNull("Failure: Manager returned a
-     *       Server although he should not know any Servers",server); }
-     * 
-     * 
-     */
+    public void TestEmptyServer() {
+	Config.ConfigManager.getInstance().getConfig().setTimeout(10);
+	manager.clear();
+	TLSServer server = manager.getFreeServer();
+	assertNull("Failure: Manager returned a Server although he should not know any Servers", server);
+    }
 }

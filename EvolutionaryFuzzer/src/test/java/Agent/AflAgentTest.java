@@ -23,6 +23,8 @@ import Server.TLSServer;
  * @author ic0ns
  */
 public class AflAgentTest {
+    // TODO Collect Results Test
+    private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
 
     /**
      *
@@ -34,22 +36,23 @@ public class AflAgentTest {
 
     }
 
+    public static void deleteFolder(File folder)
+    {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteFolder(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        folder.delete();
+    }
+
     private AFLAgent agent = null;
     private TLSServer server = null;
-
-    public static void deleteFolder(File folder) {
-	File[] files = folder.listFiles();
-	if (files != null) {
-	    for (File f : files) {
-		if (f.isDirectory()) {
-		    deleteFolder(f);
-		} else {
-		    f.delete();
-		}
-	    }
-	}
-	folder.delete();
-    }
 
     /**
      *
@@ -62,13 +65,13 @@ public class AflAgentTest {
      */
     @Before
     public void setUp() {
-	agent = new AFLAgent();
-	server = new TLSServer(
-		"127.0.0.1",
-		4433,
-		"AFL/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept [port]",
-		"ACCEPT", "JUNIT/");
-	server.occupie();
+        agent = new AFLAgent();
+        server = new TLSServer(
+                "127.0.0.1",
+                4433,
+                "AFL/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept [port]",
+                "ACCEPT", "JUNIT/");
+        server.occupie();
     }
 
     /**
@@ -76,8 +79,8 @@ public class AflAgentTest {
      */
     @Test
     public void testStartStop() {
-	agent.applicationStart(server);
-	agent.applicationStop(server);
+        agent.applicationStart(server);
+        agent.applicationStop(server);
     }
 
     /**
@@ -85,7 +88,7 @@ public class AflAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testDoubleStart() {
-	agent.applicationStart(server);
+        agent.applicationStart(server);
 	agent.applicationStart(server);
     }
 
@@ -94,7 +97,7 @@ public class AflAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testNotStarted() {
-	agent.applicationStop(server);
+        agent.applicationStop(server);
     }
 
     /**
@@ -108,7 +111,5 @@ public class AflAgentTest {
 
     }
 
-    // TODO Collect Results Test
-    private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
 
 }

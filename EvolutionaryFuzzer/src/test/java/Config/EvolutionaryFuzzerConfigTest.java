@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
  */
 public class EvolutionaryFuzzerConfigTest {
 
-    public EvolutionaryFuzzerConfigTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public EvolutionaryFuzzerConfigTest() {
     }
 
     @Test

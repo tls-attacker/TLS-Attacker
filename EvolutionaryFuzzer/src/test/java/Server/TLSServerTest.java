@@ -64,11 +64,9 @@ public class TLSServerTest {
      */
     @Test
     public void testStart() {
-	// TODO Test if really started
-	// TODO
 	server.occupie();
 	server.start("AFL/afl-showmap -m none -o [output]/[id] ");
-
+	server.serverIsRunning();
     }
 
     /**
@@ -76,9 +74,9 @@ public class TLSServerTest {
      */
     @Test
     public void testRestart() {
-	// TODO Test if really started
 	server.occupie();
 	server.restart("AFL/afl-showmap -m none -o [output]/[id] ");
+	server.serverIsRunning();
     }
 
     /**

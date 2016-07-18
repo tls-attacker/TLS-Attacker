@@ -24,6 +24,7 @@ import Graphs.BranchVertex;
  * @author ic0ns
  */
 public class BranchVertexTest {
+    private static final Logger LOG = Logger.getLogger(BranchVertexTest.class.getName());
 
     /**
      *
@@ -82,5 +83,4 @@ public class BranchVertexTest {
 
     }
 
-    private static final Logger LOG = Logger.getLogger(BranchVertexTest.class.getName());
 }

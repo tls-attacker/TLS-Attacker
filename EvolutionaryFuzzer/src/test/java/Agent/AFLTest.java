@@ -9,12 +9,7 @@ import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 
 public class AFLTest {
-
-    /**
-     *
-     */
-    public AFLTest() {
-    }
+    private static final Logger LOG = Logger.getLogger(AFLTest.class.getName());
 
     /**
      *
@@ -28,6 +23,12 @@ public class AFLTest {
      */
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    /**
+     *
+     */
+    public AFLTest() {
     }
 
     /**
@@ -55,5 +56,4 @@ public class AFLTest {
 
     }
 
-    private static final Logger LOG = Logger.getLogger(AFLTest.class.getName());
 }

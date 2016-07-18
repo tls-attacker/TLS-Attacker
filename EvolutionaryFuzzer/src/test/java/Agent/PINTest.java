@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
  */
 public class PINTest {
 
-    public PINTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
     }
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    public PINTest() {
     }
 
     @Test
