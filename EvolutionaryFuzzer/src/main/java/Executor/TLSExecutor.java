@@ -41,6 +41,7 @@ import Helper.LogFileIDManager;
 import Result.Result;
 import Result.ResultContainer;
 import Server.TLSServer;
+import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 
 /**
  * This is an Implementation of an Executor. This Executor is specially designed
@@ -104,23 +105,26 @@ public class TLSExecutor extends Executor {
 	    EvolutionaryFuzzerConfig fc = new EvolutionaryFuzzerConfig();
 	    fc.setFuzzingMode(true);
 	    long time = System.currentTimeMillis();
+	    int counter = 0;
 	    while (transportHandler == null) {
 		try {
 
 		    transportHandler = configHandler.initializeTransportHandler(fc);
 
 		} catch (ConfigurationException E) {
-		    // TODO Timeout spezifizieren
-		    if (time + 10000 < System.currentTimeMillis()) {
+		    // It may happen that the implementation is not ready yet
+		    if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
 			System.out.println("Could not start Server! Trying to Restart it!");
 			agent.applicationStop(server);
 			agent.applicationStart(server);
 			time = System.currentTimeMillis();
+			counter++;
 		    }
-		    // TODO what if it really is a configuration exception?
-		    // It may happen that the implementation is not ready yet
+		    if (counter >= 5) {
+			throw new ConfigurationException("Could not start TLS Server, check your configuration Files!");
+		    }
 		}
-	    }// TODO Change to config
+	    }
 
 	    if (fc.getKeystore() == null) {
 		fc.setKeystore("../resources/rsa1024.jks");
@@ -165,15 +169,15 @@ public class TLSExecutor extends Executor {
 
 	    tlsContext.setX509ServerCertificateObject(x509CertObject);
 	    tlsContext.setServerCertificate(cert);
+	    tlsContext.setCompressionMethod(CompressionMethod.NULL);
 	    // tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
 	    WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext);
 
 	    // tlsContext.setServerCertificate(certificate);
 	    workflowExecutor.executeWorkflow();
 	} catch (UnsupportedOperationException E) {
-	    // TODO what do with unsupported operations?
+	    // Skip Workflows we dont support yet
 	} catch (Throwable E) {
-	    // TODO
 	    File f = new File(ConfigManager.getInstance().getConfig().getOutputFolder() + "faulty/"
 		    + LogFileIDManager.getInstance().getFilename());
 
@@ -190,8 +194,14 @@ public class TLSExecutor extends Executor {
 	    if (transportHandler != null) {
 		transportHandler.closeConnection();
 	    }
-	    // TODO What if server never exited?
+	    long t = System.currentTimeMillis();
 	    while (!server.exited()) {
+		if (t + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
+		    // TODO tell agent that server timeout
+		    server.stop();
+		    break;
+
+		}
 	    }
 
 	    agent.applicationStop(server);
