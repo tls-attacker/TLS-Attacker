@@ -1,7 +1,7 @@
 package Result;
 
 import Config.EvolutionaryFuzzerConfig;
-import WorkFlowType.WorkFlowTraceType;
+import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -41,7 +41,7 @@ public class ResultContainer {
     // List of old Results
     private final ArrayList<Result> results;
     private final ArrayList<WorkflowTrace> goodTrace;
-    private final Set<WorkFlowTraceType> typeSet;
+    private final Set<WorkflowTraceType> typeSet;
     private boolean serialize = true;
     private EvolutionaryFuzzerConfig evoConfig;
     private int crashed = 0;
@@ -135,7 +135,7 @@ public class ResultContainer {
 		}
 	    }
 	}
-	WorkFlowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
+	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
 	type.clean();
 	if (typeSet.add(type) && serialize) {
 	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
