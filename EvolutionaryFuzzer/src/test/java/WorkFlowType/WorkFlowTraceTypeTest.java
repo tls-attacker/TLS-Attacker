@@ -23,21 +23,21 @@ public class WorkFlowTraceTypeTest {
     }
 
     /**
-     * Test of equals method, of class WorkFlowTraceType.
+     * Test of equals method, of class WorkflowTraceType.
      */
     @Test
     public void testEquals() {
 
-	WorkFlowTraceType instance = new WorkFlowTraceType();
+	WorkflowTraceType instance = new WorkflowTraceType();
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	WorkFlowTraceType instance2 = new WorkFlowTraceType();
+	WorkflowTraceType instance2 = new WorkflowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
 	assertNotSame("Failure: Messageflows have Different Connection Ends, the WorkFlowType should not be equal",
 		instance, instance2);
-	instance2 = new WorkFlowTraceType();
+	instance2 = new WorkflowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	assertEquals("Failure: MessageFlows are should be equal", instance, instance2);
-	instance2 = new WorkFlowTraceType();
+	instance2 = new WorkflowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	assertNotSame("Failure: WorkFlowTraceTypes have different number of MessageFlows", instance, instance2);
@@ -45,16 +45,16 @@ public class WorkFlowTraceTypeTest {
     }
 
     /**
-     * Test of clean method, of class WorkFlowTraceType.
+     * Test of clean method, of class WorkflowTraceType.
      */
     @Test
     public void testClean() {
-	WorkFlowTraceType instance = new WorkFlowTraceType();
+	WorkflowTraceType instance = new WorkflowTraceType();
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	WorkFlowTraceType instance2 = new WorkFlowTraceType();
+	WorkflowTraceType instance2 = new WorkflowTraceType();
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
 	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
 	instance.clean();

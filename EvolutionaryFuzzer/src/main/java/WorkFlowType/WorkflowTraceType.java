@@ -14,11 +14,16 @@ import java.util.ArrayList;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class WorkFlowTraceType {
+public class WorkflowTraceType {
 
     private ArrayList<MessageFlow> flows;
 
-    public WorkFlowTraceType() {
+    public ArrayList<MessageFlow> getFlows()
+    {
+        return flows;
+    }
+
+    public WorkflowTraceType() {
 	flows = new ArrayList<>();
     }
 
@@ -40,7 +45,7 @@ public class WorkFlowTraceType {
 	if (getClass() != obj.getClass()) {
 	    return false;
 	}
-	final WorkFlowTraceType other = (WorkFlowTraceType) obj;
+	final WorkflowTraceType other = (WorkflowTraceType) obj;
 	if (flows.size() != other.flows.size()) {
 	    return false;
 	}
