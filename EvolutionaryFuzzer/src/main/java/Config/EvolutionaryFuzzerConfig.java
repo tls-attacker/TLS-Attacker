@@ -18,7 +18,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     /**
      *
      */
-    public static final String ATTACK_COMMAND = "evolutionary_fuzzer";
+    public static final String ATTACK_COMMAND = "fuzzer";
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
     @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given File or Folder.", converter = FileConverter.class)
