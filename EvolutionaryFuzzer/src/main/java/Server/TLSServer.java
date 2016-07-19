@@ -7,6 +7,7 @@
  */
 package Server;
 
+import Config.ConfigManager;
 import Helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,8 @@ public final class TLSServer {
     private File timeoutFolder; // Contains Traces which timedout
     private File goodTracesFolder; // Contains Traces which look promising
     private File faultyFolder; // Contains Traces which caused an exception on
+    private StreamGobbler errorGobbler;
+    private StreamGobbler outputGobbler;
     // our end
 
     private ProcMon procmon = null;
@@ -261,10 +264,10 @@ public final class TLSServer {
 		Process proc = rt.exec(command);
 
 		// any error message?
-		StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERR", accepted);
+		errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERR", accepted);
 
 		// any output?
-		StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), "OUT", accepted);
+		outputGobbler = new StreamGobbler(proc.getInputStream(), "OUT", accepted);
 
 		// kick them off
 		errorGobbler.start();
@@ -277,15 +280,10 @@ public final class TLSServer {
 		    } catch (InterruptedException ex) {
 			Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
 		    }
-		    // TODO Timeout in Config and Handle TimeoutException
-		    if (System.currentTimeMillis() - time == 60000) {
-			throw new RuntimeException("Timeout in StreamGobler, Server never finished");
+		    if (System.currentTimeMillis() - time >= ConfigManager.getInstance().getConfig().getTimeout()) {
+			throw new RuntimeException("Timeout in StreamGobler, Server never finished starting");
 		    }
 		}
-		// TODO fix for other implementations
-
-		// TODO Error
-		// System.out.println("ExitValue: " + exitVal);
 	    } catch (IOException t) {
 		t.printStackTrace();
 	    }
@@ -293,6 +291,10 @@ public final class TLSServer {
 	    throw new IllegalStateException("Cant restart a not marked Server. Occupie it first!");
 	}
 
+    }
+
+    public synchronized boolean serverIsRunning() {
+	return outputGobbler != null && outputGobbler.accepted() && p != null;
     }
 
     /**
@@ -325,6 +327,14 @@ public final class TLSServer {
 		+ restartServerCommand + ", outputFolder=" + outputFolder + ", accepted=" + accepted + ", traces="
 		+ traces + ", crashedFolder=" + crashedFolder + ", timeoutFolder=" + timeoutFolder
 		+ ", goodTracesFolder=" + goodTracesFolder + ", faultyFolder=" + faultyFolder + '}';
+    }
+
+    /**
+     * Stops the Server process
+     */
+    public void stop() {
+	p.destroy();
+
     }
 
 }
