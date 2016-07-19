@@ -39,13 +39,21 @@ public class ResultContainer {
     // BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
     // List of old Results
-    private final ArrayList<Result> results;
     private final ArrayList<WorkflowTrace> goodTrace;
     private final Set<WorkflowTraceType> typeSet;
     private boolean serialize = true;
-    private EvolutionaryFuzzerConfig evoConfig;
+    private final EvolutionaryFuzzerConfig evoConfig;
     private int crashed = 0;
     private int timeout = 0;
+    private int executed = 0;
+
+    private ResultContainer() {
+	branch = new BranchTrace();
+	goodTrace = new ArrayList<>();
+	typeSet = new HashSet<>();
+	evoConfig = Config.ConfigManager.getInstance().getConfig();
+
+    }
 
     public boolean isSerialize() {
 	return serialize;
@@ -53,15 +61,6 @@ public class ResultContainer {
 
     public void setSerialize(boolean serialize) {
 	this.serialize = serialize;
-    }
-
-    private ResultContainer() {
-	branch = new BranchTrace();
-	results = new ArrayList<>();
-	goodTrace = new ArrayList<>();
-	typeSet = new HashSet<>();
-	evoConfig = Config.ConfigManager.getInstance().getConfig();
-
     }
 
     /**
@@ -81,7 +80,7 @@ public class ResultContainer {
      *            Result to be added in the Container
      */
     public void commit(Result result) {
-	results.add(result);
+	executed++;
 	MergeResult r = null;
 
 	r = branch.merge(result.getBranchTrace());
@@ -108,32 +107,32 @@ public class ResultContainer {
 	if (result.hasCrashed()) {
 	    crashed++;
 	    LOG.log(Level.INFO, "Found a Crash:{0}", r.toString());
-	    if (serialize) {
-		File f = new File(evoConfig.getOutputFolder() + "crashed/" + result.getId());
-		try {
-		    f.createNewFile();
-		    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-		} catch (JAXBException | IOException E) {
-		    LOG.log(Level.SEVERE,
-			    "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			    f.getAbsolutePath());
-		}
+
+	    File f = new File(evoConfig.getOutputFolder() + "crash/" + result.getId());
+	    try {
+		f.createNewFile();
+		WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+	    } catch (JAXBException | IOException E) {
+		LOG.log(Level.SEVERE,
+			"Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
+			f.getAbsolutePath());
 	    }
+
 	}
 	if (result.didTimeout()) {
 	    timeout++;
 	    LOG.log(Level.INFO, "Found a Timeout:{0}", r.toString());
-	    if (serialize) {
-		File f = new File(evoConfig.getOutputFolder() + "timeout/" + result.getId());
-		try {
-		    f.createNewFile();
-		    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-		} catch (JAXBException | IOException E) {
-		    LOG.log(Level.SEVERE,
-			    "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			    f.getAbsolutePath());
-		}
+
+	    File f = new File(evoConfig.getOutputFolder() + "timeout/" + result.getId());
+	    try {
+		f.createNewFile();
+		WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+	    } catch (JAXBException | IOException E) {
+		LOG.log(Level.SEVERE,
+			"Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
+			f.getAbsolutePath());
 	    }
+
 	}
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
 	type.clean();
@@ -152,12 +151,12 @@ public class ResultContainer {
 	}
     }
 
-    public BranchTrace getBranch() {
-	return branch;
+    public int getExecuted() {
+	return executed;
     }
 
-    public ArrayList<Result> getResults() {
-	return results;
+    public BranchTrace getBranch() {
+	return branch;
     }
 
     public int getCrashedCount() {
