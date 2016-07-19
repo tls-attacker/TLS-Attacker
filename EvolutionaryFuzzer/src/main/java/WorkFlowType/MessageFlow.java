@@ -19,17 +19,17 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     private final ConnectionEnd issuer;
     private int uniquer = 0;
 
+    public MessageFlow(Class<? extends Object> message, ConnectionEnd issuer) {
+	this.message = message;
+	this.issuer = issuer;
+    }
+
     public int getUniquer() {
 	return uniquer;
     }
 
     public void setUniquer(int uniquer) {
 	this.uniquer = uniquer;
-    }
-
-    public MessageFlow(Class<? extends Object> message, ConnectionEnd issuer) {
-	this.message = message;
-	this.issuer = issuer;
     }
 
     public Class<?> getMessage() {

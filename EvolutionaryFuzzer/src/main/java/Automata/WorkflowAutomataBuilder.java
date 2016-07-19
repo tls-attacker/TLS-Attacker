@@ -18,57 +18,59 @@ package Automata;
 //import java.util.List;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class WorkflowAutomataBuilder
-{
-//    public static  CompactDFA<MessageFlow> generateWorkflowAutomata(Set<WorkflowTraceType> typeList)
-//    {
-//        SimpleAlphabet<MessageFlow> alpha = new SimpleAlphabet<>();
-//        CompactDFA<MessageFlow> dfa = new CompactDFA<>(alpha);
-//        int uniquer = 0;
-//        int start = dfa.addInitialState(false);
-//        
-//        for(WorkflowTraceType type:typeList)
-//        {
-//            int current = start;
-//            List<MessageFlow> flows = type.getFlows();
-//            for(MessageFlow flow : flows)
-//            {
-//                
-//                Collection<? extends Integer> temp = dfa.getTransitions(current, flow);
-//                if(temp.isEmpty())
-//                {
-//                    uniquer++;
-//                    flow.setUniquer(uniquer);
-//                    int newState = dfa.addState();
-//                    dfa.setAccepting(newState, true);
-//                    dfa.addTransition(start, flow, newState);
-//                    current = newState;
-//                }
-//                else
-//                {
-//                    if(temp.size()>1)
-//                    {
-//                        System.out.println("ERROR");
-//                    }
-//                    current = (int) temp.toArray()[0];
-//                }
-//            }
-//        }
-//   
-//        return dfa;
-//    }
-//    public static MessageFlow returnOutGoingFlow(DirectedMultigraph<Integer, MessageFlow> graph, MessageFlow flow, Integer current)
-//    {
-//        for(MessageFlow f : graph.outgoingEdgesOf(current))
-//        {
-//            if(f.getIssuer() == flow.getIssuer() && f.getMessage()==flow.getMessage())
-//            {
-//                return f;
-//            }
-//        }
-//        return null;
-//    }
+public class WorkflowAutomataBuilder {
+    // public static CompactDFA<MessageFlow>
+    // generateWorkflowAutomata(Set<WorkflowTraceType> typeList)
+    // {
+    // SimpleAlphabet<MessageFlow> alpha = new SimpleAlphabet<>();
+    // CompactDFA<MessageFlow> dfa = new CompactDFA<>(alpha);
+    // int uniquer = 0;
+    // int start = dfa.addInitialState(false);
+    //
+    // for(WorkflowTraceType type:typeList)
+    // {
+    // int current = start;
+    // List<MessageFlow> flows = type.getFlows();
+    // for(MessageFlow flow : flows)
+    // {
+    //
+    // Collection<? extends Integer> temp = dfa.getTransitions(current, flow);
+    // if(temp.isEmpty())
+    // {
+    // uniquer++;
+    // flow.setUniquer(uniquer);
+    // int newState = dfa.addState();
+    // dfa.setAccepting(newState, true);
+    // dfa.addTransition(start, flow, newState);
+    // current = newState;
+    // }
+    // else
+    // {
+    // if(temp.size()>1)
+    // {
+    // System.out.println("ERROR");
+    // }
+    // current = (int) temp.toArray()[0];
+    // }
+    // }
+    // }
+    //
+    // return dfa;
+    // }
+    // public static MessageFlow returnOutGoingFlow(DirectedMultigraph<Integer,
+    // MessageFlow> graph, MessageFlow flow, Integer current)
+    // {
+    // for(MessageFlow f : graph.outgoingEdgesOf(current))
+    // {
+    // if(f.getIssuer() == flow.getIssuer() &&
+    // f.getMessage()==flow.getMessage())
+    // {
+    // return f;
+    // }
+    // }
+    // return null;
+    // }
 }

@@ -17,9 +17,7 @@ public class ServerSerializer {
      */
     private static JAXBContext context;
 
-    private ServerSerializer() {
-
-    }
+    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
 
     /**
      * 
@@ -46,5 +44,6 @@ public class ServerSerializer {
 	return o;
     }
 
-    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
+    private ServerSerializer() {
+    }
 }

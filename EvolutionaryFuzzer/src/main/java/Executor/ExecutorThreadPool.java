@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import Result.ResultContainer;
 import Server.ServerManager;
 import Server.TLSServer;
+import java.util.concurrent.Future;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
@@ -34,6 +35,7 @@ import Server.TLSServer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ExecutorThreadPool implements Runnable {
+    private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 
     // Number of Threads which execute FuzzingVectors
     private final int poolSize;
@@ -67,7 +69,6 @@ public class ExecutorThreadPool implements Runnable {
 	this.mutator = mutator;
 	File f = new File(config.getOutputFolder() + "good/");
 	executor = Executors.newFixedThreadPool(poolSize);
-
 	LOG.log(Level.INFO, "Reading good Traces in:");
 
 	list = WorkflowTraceSerializer.readFolder(f);
@@ -105,7 +106,8 @@ public class ExecutorThreadPool implements Runnable {
 		TLSServer server = ServerManager.getInstance().getFreeServer();
 		Agent agent = AgentFactory.generateAgent(config);
 		Runnable worker = new TLSExecutor(list.get(i), server, agent);
-		executor.execute(worker);
+		executor.submit(worker);
+
 	    } else {
 		i--;
 		try {
@@ -124,7 +126,7 @@ public class ExecutorThreadPool implements Runnable {
 		    TLSServer server = ServerManager.getInstance().getFreeServer();
 		    Agent agent = AgentFactory.generateAgent(config);
 		    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, agent);
-		    executor.execute(worker);
+		    executor.submit(worker);
 		    runs++;
 
 		} else {
@@ -164,5 +166,4 @@ public class ExecutorThreadPool implements Runnable {
 	this.stopped = stopped;
     }
 
-    private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 }

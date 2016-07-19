@@ -1,6 +1,10 @@
 /target/
 /PIN/
 /openssl/
-/file.id
+/opensslvul/
+/openssltimeout/
+file.id
 /server(afl)/
-/.pin.log
+pin.log
+vertices.dump
+edges.dump

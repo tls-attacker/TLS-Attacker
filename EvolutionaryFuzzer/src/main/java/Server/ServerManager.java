@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ServerManager {
+    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 
     /**
      * Singleton
@@ -133,8 +134,6 @@ public class ServerManager {
     public List<TLSServer> getAllServers() {
 	return serverList;
     }
-
-    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 
     // Singleton
 

@@ -87,7 +87,7 @@ public class AFLAgent extends Agent {
 	}
 	BranchTrace t = new BranchTrace();
 	try {
-	    // TODO das sollt
+	    // TODO
 	    t.merge(branchTrace);
 	} catch (IOException ex) {
 	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);

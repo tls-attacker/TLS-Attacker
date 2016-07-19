@@ -21,6 +21,7 @@ import Graphs.BranchTrace;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Result {
+    private static final Logger LOG = Logger.getLogger(Result.class.getName());
 
     // If the Implementation has Crashed
 
@@ -124,7 +125,5 @@ public class Result {
     public WorkflowTrace getTrace() {
 	return trace;
     }
-
-    private static final Logger LOG = Logger.getLogger(Result.class.getName());
 
 }

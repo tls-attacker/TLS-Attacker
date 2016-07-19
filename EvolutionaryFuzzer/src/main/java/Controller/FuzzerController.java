@@ -108,8 +108,7 @@ public class FuzzerController extends Controller {
 		    int goodTraces = con.getGoodTraces().size();
 		    int hitVertices = con.getBranch().getVerticesCount();
 		    int hitBranches = con.getBranch().getBranchCount();
-		    System.out
-			    .println("Traces succesful executed:" + ResultContainer.getInstance().getResults().size());
+		    System.out.println("Traces succesful executed:" + ResultContainer.getInstance().getExecuted());
 		    System.out.println("Crashed:" + con.getCrashedCount() + " Timeout:" + con.getTimeoutCount()
 			    + " WorkflowTypes:" + con.getTypeCount());
 		    System.out.println("Good Traces:" + goodTraces + " Hit Vertices:" + hitVertices + " Hit Branches:"

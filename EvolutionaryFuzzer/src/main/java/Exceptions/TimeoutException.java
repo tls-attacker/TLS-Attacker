@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  */
 public class TimeoutException extends RuntimeException {
 
+    private static final Logger LOG = Logger.getLogger(TimeoutException.class.getName());
+
     /**
      * 
      * @param message
@@ -23,7 +25,5 @@ public class TimeoutException extends RuntimeException {
     public TimeoutException(String message) {
 	super(message);
     }
-
-    private static final Logger LOG = Logger.getLogger(TimeoutException.class.getName());
 
 }

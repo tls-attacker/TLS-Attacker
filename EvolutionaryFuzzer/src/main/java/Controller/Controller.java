@@ -17,15 +17,16 @@ import Config.EvolutionaryFuzzerConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Controller {
-    public Controller(EvolutionaryFuzzerConfig config) {
-	this.config = config;
-    }
 
     // The config used by the Fuzzer
     protected EvolutionaryFuzzerConfig config;
 
     // Is the Fuzzing Process running?
     protected boolean isRunning;
+
+    public Controller(EvolutionaryFuzzerConfig config) {
+	this.config = config;
+    }
 
     /**
      * Starts the Fuzzer

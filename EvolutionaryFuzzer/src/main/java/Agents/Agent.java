@@ -41,7 +41,6 @@ public abstract class Agent {
 
     /**
      * This method is used to receive the Results of the current Fuzzingvector
-     * //TODO should the Agent really get the Workflow trace?
      * 
      * @param branchTrace
      *            File containing the Branch Information

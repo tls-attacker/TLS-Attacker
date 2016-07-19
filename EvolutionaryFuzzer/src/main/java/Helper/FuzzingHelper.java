@@ -65,10 +65,6 @@ public class FuzzingHelper {
      */
     public static final int MAX_MODIFICATION_COUNT = 5;
 
-    private FuzzingHelper() {
-
-    }
-
     public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
 	Random r = new Random();
 	int fieldNumber = r.nextInt(fields.size());
@@ -269,7 +265,6 @@ public class FuzzingHelper {
     }
 
     /**
-     * TODO use in Mutator
      * 
      * @param trace
      * @param messageIssuer
@@ -328,10 +323,14 @@ public class FuzzingHelper {
 		    }
 		}
 	    } catch (IllegalAccessException | IllegalArgumentException ex) {
-		// TODO LOG
+		LOG.log(Level.SEVERE, "Could not access Field!", ex);
 	    }
 	}
 	return holders;
+    }
+
+    private FuzzingHelper() {
+
     }
 
 }

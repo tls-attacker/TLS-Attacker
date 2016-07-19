@@ -47,7 +47,6 @@ public class Main {
      * @param args
      */
     public static void main(String args[]) {
-	// TODO write a console interface
 	GeneralConfig generalConfig = new GeneralConfig();
 
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();

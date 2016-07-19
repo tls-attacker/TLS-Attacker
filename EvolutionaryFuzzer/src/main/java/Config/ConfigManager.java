@@ -13,7 +13,15 @@ package Config;
  */
 public class ConfigManager {
 
+    public static ConfigManager getInstance() {
+	return ConfigManagerHolder.INSTANCE;
+    }
+
     private EvolutionaryFuzzerConfig config;
+
+    private ConfigManager() {
+	config = new EvolutionaryFuzzerConfig();
+    }
 
     public EvolutionaryFuzzerConfig getConfig() {
 	return config;
@@ -21,14 +29,6 @@ public class ConfigManager {
 
     public void setConfig(EvolutionaryFuzzerConfig config) {
 	this.config = config;
-    }
-
-    private ConfigManager() {
-	config = new EvolutionaryFuzzerConfig();
-    }
-
-    public static ConfigManager getInstance() {
-	return ConfigManagerHolder.INSTANCE;
     }
 
     private static class ConfigManagerHolder {

@@ -27,6 +27,7 @@ public class FuzzerControllerTest {
     @AfterClass
     public static void tearDownClass() {
     }
+
     /*
      * This Test is probably not vialble TODO
      * 
@@ -38,9 +39,8 @@ public class FuzzerControllerTest {
      * 
      * }
      */
-    
+
     public FuzzerControllerTest() {
     }
-
 
 }

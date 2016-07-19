@@ -16,5 +16,4 @@ package Executor;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Executor implements Runnable {
-    // TODO Should this be an interface?
 }
