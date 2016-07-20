@@ -13,11 +13,15 @@ package de.rub.nds.tlsattacker.tls.constants;
  */
 public enum KeyExchangeAlgorithm {
 
+    NULL,
     DHE_DSS,
     DHE_RSA,
     DH_ANON,
     RSA,
     DH_DSS,
     DH_RSA,
+    KRB5,
+    SRP,
+    PSK,
     EC_DIFFIE_HELLMAN;
 }
