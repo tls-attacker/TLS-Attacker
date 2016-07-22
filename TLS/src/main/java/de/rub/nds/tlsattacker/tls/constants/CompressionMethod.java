@@ -16,7 +16,9 @@ import java.util.Map;
  */
 public enum CompressionMethod {
 
-    NULL((byte) 0x00);
+    NULL((byte) 0x00),
+    DEFLATE((byte) 0x01),
+    LZS((byte) 0x40);
 
     private byte value;
 
