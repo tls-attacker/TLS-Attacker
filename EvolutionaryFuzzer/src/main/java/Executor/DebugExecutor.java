@@ -58,7 +58,7 @@ public class DebugExecutor {
 	    gc.setLogLevel(Level.OFF);
 	    configHandler.initialize(gc);
 
-	    EvolutionaryFuzzerConfig fc = new EvolutionaryFuzzerConfig();
+	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
 
 	    TransportHandler transportHandler = null;
 	    long time = System.currentTimeMillis();
@@ -85,7 +85,16 @@ public class DebugExecutor {
 	    }
 	    TlsContext tlsContext = new TlsContext();
 	    tlsContext.setWorkflowTrace(trace);
-
+            
+	    if (fc.getKeystore() == null) {
+		fc.setKeystore("../resources/rsa1024.jks");
+	    }
+	    if (fc.getPassword() == null) {
+		fc.setPassword("password");
+	    }
+	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
+		fc.setAlias("alias");
+	    }
 	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
 	    tlsContext.setKeyStore(ks);
 	    tlsContext.setAlias(fc.getAlias());

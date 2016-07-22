@@ -21,6 +21,7 @@ import Result.ResultContainer;
 import Server.ServerManager;
 import Server.TLSServer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
@@ -67,7 +68,7 @@ public class ExecutorThreadPool implements Runnable {
 	this.config = config;
 	this.poolSize = poolSize;
 	this.mutator = mutator;
-	BlockingQueue workQueue = new SynchronousQueue<>();
+	BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize*5);
 	File f = new File(config.getOutputFolder() + "good/");
 	ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
 

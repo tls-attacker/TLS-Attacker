@@ -52,10 +52,11 @@ public class Main {
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
 	JCommander jc = new JCommander(evoConfig);
 	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
-	jc.addCommand("tracetypes", new Object());
-	jc.addCommand("clean", new Object());
-	jc.addCommand("clean-all", new Object());
-	jc.addCommand("execute-faulty", new Object());
+	jc.addCommand("tracetypes",evoConfig);
+	jc.addCommand("clean",evoConfig);
+	jc.addCommand("clean-all", evoConfig);
+	jc.addCommand("execute-faulty", evoConfig);
+        //TODO Configs cleanup
 	jc.parse(args);
 
 	if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
