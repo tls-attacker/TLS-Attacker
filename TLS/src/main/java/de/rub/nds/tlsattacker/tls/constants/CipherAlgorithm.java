@@ -16,12 +16,17 @@ package de.rub.nds.tlsattacker.tls.constants;
 public enum CipherAlgorithm {
 
     NULL(0, 0, 0, ""),
+    RC2_128(16, 0, 0, "RC2/CBC/NoPadding"),
     RC4_128(16, 0, 0, "RC4"),
+    DES_CBC(8, 8, 0, "DES/CBC/NoPadding"),
     DES_EDE_CBC(24, 8, 0, "DESede/CBC/NoPadding"),
     AES_128_CBC(16, 16, 0, "AES/CBC/NoPadding"),
     AES_256_CBC(32, 16, 0, "AES/CBC/NoPadding"),
     AES_128_GCM(16, 4, 8, "AES/GCM/NoPadding"),
-    AES_256_GCM(32, 4, 8, "AES/GCM/NoPadding");
+    AES_256_GCM(32, 4, 8, "AES/GCM/NoPadding"),
+    CAMELLIA_128_CBC(16, 16, 0, "Camellia/CBC/NoPadding"),
+    CAMELLIA_256_CBC(32, 16, 0, "Camellia/CBC/NoPadding"),
+    IDEA_128(16, 16, 0, "IDEA/CBC/NoPadding");
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, String javaName) {
 	this.keySize = keySize;
