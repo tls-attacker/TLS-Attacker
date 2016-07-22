@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public final class TLSServer {
+
     private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 
     private Process p = null;
@@ -287,6 +288,7 @@ public final class TLSServer {
 	    } catch (IOException t) {
 		t.printStackTrace();
 	    }
+
 	} else {
 	    throw new IllegalStateException("Cant restart a not marked Server. Occupie it first!");
 	}
@@ -333,8 +335,13 @@ public final class TLSServer {
      * Stops the Server process
      */
     public void stop() {
-	p.destroy();
-
+	try {
+	    if (p != null) {
+		p.destroy();
+	    }
+	} catch (Exception E) {
+	    E.printStackTrace();
+	}
     }
 
 }

@@ -71,6 +71,7 @@ public class PINAgent extends Agent {
 	}
 	stopTime = System.currentTimeMillis();
 	running = false;
+	server.stop();
     }
 
     @Override

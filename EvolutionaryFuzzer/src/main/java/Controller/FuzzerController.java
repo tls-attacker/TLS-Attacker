@@ -108,7 +108,7 @@ public class FuzzerController extends Controller {
 		    int goodTraces = con.getGoodTraces().size();
 		    int hitVertices = con.getBranch().getVerticesCount();
 		    int hitBranches = con.getBranch().getBranchCount();
-		    System.out.println("Traces succesful executed:" + ResultContainer.getInstance().getExecuted());
+		    System.out.println("Traces succesful executed:" + pool.getRuns());
 		    System.out.println("Crashed:" + con.getCrashedCount() + " Timeout:" + con.getTimeoutCount()
 			    + " WorkflowTypes:" + con.getTypeCount());
 		    System.out.println("Good Traces:" + goodTraces + " Hit Vertices:" + hitVertices + " Hit Branches:"
@@ -124,11 +124,14 @@ public class FuzzerController extends Controller {
 		    break;
 		case "edges":
 		    LOG.log(Level.INFO, "Dumping Edge Information to edges.dump");
-		    try {
-			Thread.sleep(1000);
-		    } catch (InterruptedException ex) {
-			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
-		    }
+		    stopFuzzer();
+		    do {
+			try {
+			    Thread.sleep(50);
+			} catch (InterruptedException ex) {
+			    Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		    } while (pool.hasRunningThreads());
 
 		    DirectedGraph<ProbeVertex, CountEdge> graph = ResultContainer.getInstance().getBranch().getGraph();
 		    PrintWriter writer;
@@ -146,10 +149,19 @@ public class FuzzerController extends Controller {
 			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
 		    }
 		    LOG.log(Level.INFO, "Dump finished");
-
+		    startFuzzer();
 		    break;
 		case "vertices":
 		    LOG.log(Level.INFO, "Dumping Vertex Information to vertices.dump");
+		    stopFuzzer();
+		    do {
+			try {
+			    Thread.sleep(50);
+			} catch (InterruptedException ex) {
+			    Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		    } while (pool.hasRunningThreads());
+
 		    graph = ResultContainer.getInstance().getBranch().getGraph();
 		    writer = null;
 		    try {
@@ -165,7 +177,7 @@ public class FuzzerController extends Controller {
 			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
 		    }
 		    LOG.log(Level.INFO, "Dump finished");
-
+		    startFuzzer();
 		    break;
 		default:
 		    System.out.println("Commands: start, stop, status, server, edges, vertices");

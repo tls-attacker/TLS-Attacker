@@ -186,7 +186,7 @@ public class TLSExecutor extends Executor {
 		WorkflowTraceSerializer.write(f, trace);
 	    } catch (JAXBException | IOException Ex) {
 		System.out.println("Could not serialize WorkflowTrace!");
-		E.printStackTrace();
+		Ex.printStackTrace();
 	    }
 	    System.out.println("File:" + f.getName());
 	    E.printStackTrace();
@@ -210,7 +210,7 @@ public class TLSExecutor extends Executor {
 
 	    ResultContainer.getInstance().commit(r);
 	    int id = server.getID();
-	    server.release();
+
 	    // Cleanup
 	    File file = new File(server.getTracesFolder().getAbsolutePath() + "/" + id);
 	    if (file.exists()) {

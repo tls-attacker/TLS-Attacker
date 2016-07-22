@@ -79,7 +79,7 @@ class StreamGobbler extends Thread {
      * 
      * @return If the Streamreader has seen the Specified "accepted" String yet
      */
-    public synchronized boolean accepted() {
+    public boolean accepted() {
 	return hasAccepted;
     }
 }

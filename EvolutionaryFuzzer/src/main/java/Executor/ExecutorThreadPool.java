@@ -12,21 +12,20 @@ import Agents.AgentFactory;
 import Agents.Agent;
 import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Result.ResultContainer;
 import Server.ServerManager;
 import Server.TLSServer;
-import java.util.concurrent.Future;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
@@ -35,12 +34,13 @@ import java.util.concurrent.Future;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ExecutorThreadPool implements Runnable {
+
     private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 
     // Number of Threads which execute FuzzingVectors
     private final int poolSize;
     //
-    private final ExecutorService executor;
+    private final ThreadPoolExecutor executor;
     // The Mutator used by the ExecutorPool to fetch new Tasks
     private final Mutator mutator;
     // The Executor thread pool will continuasly fetch and execute new Tasks
@@ -67,8 +67,13 @@ public class ExecutorThreadPool implements Runnable {
 	this.config = config;
 	this.poolSize = poolSize;
 	this.mutator = mutator;
+	BlockingQueue workQueue = new SynchronousQueue<>();
 	File f = new File(config.getOutputFolder() + "good/");
-	executor = Executors.newFixedThreadPool(poolSize);
+	ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
+
+	executor = new BlockingThreadPoolExecutor(poolSize, poolSize, config.getTimeout(), TimeUnit.MICROSECONDS,
+		workQueue, threadFactory);
+
 	LOG.log(Level.INFO, "Reading good Traces in:");
 
 	list = WorkflowTraceSerializer.readFolder(f);
@@ -102,28 +107,38 @@ public class ExecutorThreadPool implements Runnable {
 	// Dont save old results
 	ResultContainer.getInstance().setSerialize(false);
 	for (int i = 0; i < list.size(); i++) {
-	    if (!stopped) {
-		TLSServer server = ServerManager.getInstance().getFreeServer();
-		Agent agent = AgentFactory.generateAgent(config);
-		Runnable worker = new TLSExecutor(list.get(i), server, agent);
-		executor.submit(worker);
-
-	    } else {
-		i--;
-		try {
-		    Thread.sleep(1000);
-		} catch (InterruptedException ex) {
-		    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-			    "Thread interruiped while the ThreadPool is paused.", ex);
+	    TLSServer server = null;
+	    try {
+		if (!stopped) {
+		    server = ServerManager.getInstance().getFreeServer();
+		    Agent agent = AgentFactory.generateAgent(config);
+		    Runnable worker = new TLSExecutor(list.get(i), server, agent);
+		    executor.submit(worker);
+		    runs++;
+		} else {
+		    i--;
+		    try {
+			Thread.sleep(1000);
+		    } catch (InterruptedException ex) {
+			Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+				"Thread interruiped while the ThreadPool is paused.", ex);
+		    }
+		}
+	    } catch (Exception E) {
+		E.printStackTrace();
+	    } finally {
+		if (server != null) {
+		    server.release();
 		}
 	    }
 	}
 	// Save new results
 	ResultContainer.getInstance().setSerialize(true);
 	while (true) {
+	    TLSServer server = null;
 	    try {
 		if (!stopped) {
-		    TLSServer server = ServerManager.getInstance().getFreeServer();
+		    server = ServerManager.getInstance().getFreeServer();
 		    Agent agent = AgentFactory.generateAgent(config);
 		    Runnable worker = new TLSExecutor(mutator.getNewMutation(), server, agent);
 		    executor.submit(worker);
@@ -139,6 +154,10 @@ public class ExecutorThreadPool implements Runnable {
 		}
 	    } catch (Throwable ex) {
 		ex.printStackTrace();
+	    } finally {
+		if (server != null) {
+		    server.release();
+		}
 	    }
 
 	}
@@ -166,4 +185,7 @@ public class ExecutorThreadPool implements Runnable {
 	this.stopped = stopped;
     }
 
+    public synchronized boolean hasRunningThreads() {
+	return executor.getActiveCount() == 0;
+    }
 }

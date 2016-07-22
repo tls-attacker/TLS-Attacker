@@ -44,6 +44,9 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
     private String agent = "AFL";
 
+    // Are we currently in serialization mode?
+    private boolean serialize = false;
+
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
      * and serverCommandFromFile to server/server.config
@@ -52,6 +55,14 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	outputFolder = "./";
 	serverCommandFromFile = "server/";
 	this.timeout = 60000;
+    }
+
+    public boolean isSerialize() {
+	return serialize;
+    }
+
+    public void setSerialize(boolean serialize) {
+	this.serialize = serialize;
     }
 
     public String getAgent() {
