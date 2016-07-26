@@ -15,9 +15,19 @@ import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Graphs.BranchTrace;
+import Graphs.CountEdge;
+import Graphs.Edge;
+import Graphs.ProbeVertex;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
@@ -26,6 +36,7 @@ import Server.TLSServer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AFLAgent extends Agent {
+
     private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
     // Is a fuzzing Progress Running?
@@ -86,14 +97,8 @@ public class AFLAgent extends Agent {
 		timeout = true;
 		break;
 	}
-	BranchTrace t = new BranchTrace();
-	try {
-	    // TODO
-	    t.merge(branchTrace);
-	} catch (IOException ex) {
-	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
-	}
-
+	BranchTrace t = getBranchTrace(branchTrace);
+	branchTrace.delete();
 	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
 		.getInstance().getFilename());
 
@@ -144,6 +149,48 @@ public class AFLAgent extends Agent {
 		}
 	    }
 	}
+    }
+
+    private static BranchTrace getBranchTrace(File f) {
+	BufferedReader br = null;
+	Set<Long> verticesSet = new HashSet<>();
+	Map<Edge, Edge> edgeMap = new HashMap<>();
+	try {
+	    br = new BufferedReader(new FileReader(f));
+	    long previousNumber = Long.MIN_VALUE;
+	    String line = null;
+	    while ((line = br.readLine()) != null) {
+		// Check if the Line can be parsed
+		long parsedNumber;
+		try {
+		    parsedNumber = Long.parseLong(line, 16);
+		    verticesSet.add(parsedNumber);
+		} catch (NumberFormatException e) {
+		    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
+		}
+		if (previousNumber != Long.MIN_VALUE) {
+		    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
+		    if (e == null) {
+			e = new Edge(previousNumber, parsedNumber);
+			edgeMap.put(e, e);
+		    }
+		    e.addCounter(1l);
+
+		}
+		previousNumber = parsedNumber;
+	    }
+	    return new BranchTrace(verticesSet, edgeMap);
+	} catch (IOException ex) {
+	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
+		    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
+	} finally {
+	    try {
+		br.close();
+	    } catch (IOException ex) {
+		Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
+	return new BranchTrace();
     }
 
 }

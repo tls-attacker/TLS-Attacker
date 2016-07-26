@@ -50,18 +50,33 @@ public class Main {
 	GeneralConfig generalConfig = new GeneralConfig();
 
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
+
 	JCommander jc = new JCommander(evoConfig);
 	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
-	jc.addCommand("tracetypes",evoConfig);
-	jc.addCommand("clean",evoConfig);
+	jc.addCommand("tracetypes", evoConfig);
+	jc.addCommand("clean", evoConfig);
 	jc.addCommand("clean-all", evoConfig);
 	jc.addCommand("execute-faulty", evoConfig);
-        //TODO Configs cleanup
-	jc.parse(args);
-
+	// TODO Configs cleanup
+	try {
+	    jc.parse(args);
+	} catch (Exception E) {
+	    LOG.log(Level.FINE, E.getLocalizedMessage(), E);
+	    jc.usage();
+	}
 	if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
 	    jc.usage();
 	    return;
+	}
+	evoConfig.setFuzzingMode(true);
+	if (evoConfig.getKeystore() == null) {
+	    evoConfig.setKeystore("../resources/rsa1024.jks");
+	}
+	if (evoConfig.getPassword() == null) {
+	    evoConfig.setPassword("password");
+	}
+	if (evoConfig.getAlias() == null || evoConfig.getAlias().equals("")) {
+	    evoConfig.setAlias("alias");
 	}
 
 	switch (jc.getParsedCommand()) {
@@ -107,5 +122,6 @@ public class Main {
 		jc.usage();
 		return;
 	}
+
     }
 }

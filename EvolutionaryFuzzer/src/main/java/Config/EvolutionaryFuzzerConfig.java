@@ -43,6 +43,26 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private Integer threads = -1;
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
     private String agent = "AFL";
+    @Parameter(names = "-no_old", description = "The mutator wont run WorkflowTraces he finds in the Good WorkflowTrace Folder, before he starts generating new Mutations")
+    private boolean noOld = false;
+    @Parameter(names = "-start_stopped", description = "Starts the Fuzzer in a stopped state.")
+    private boolean startStopped = false;
+
+    public boolean isStartStopped() {
+	return startStopped;
+    }
+
+    public void setStartStopped(boolean startStopped) {
+	this.startStopped = startStopped;
+    }
+
+    public boolean isNoOld() {
+	return noOld;
+    }
+
+    public void setNoOld(boolean noOld) {
+	this.noOld = noOld;
+    }
 
     // Are we currently in serialization mode?
     private boolean serialize = false;

@@ -85,7 +85,7 @@ public class DebugExecutor {
 	    }
 	    TlsContext tlsContext = new TlsContext();
 	    tlsContext.setWorkflowTrace(trace);
-            
+
 	    if (fc.getKeystore() == null) {
 		fc.setKeystore("../resources/rsa1024.jks");
 	    }

@@ -7,7 +7,6 @@
  */
 package Agents;
 
-import Agents.Agent;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,20 +16,21 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import Graphs.BranchTrace;
-import Graphs.CountEdge;
-import Graphs.ProbeVertex;
+import Graphs.Edge;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
+
     private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
     // Is a fuzzing Progress Running?
@@ -79,61 +79,26 @@ public class PINAgent extends Agent {
 	if (running) {
 	    throw new IllegalStateException("Can't collect Results, Agent still running!");
 	}
-	DirectedGraph<ProbeVertex, CountEdge> graph = new DefaultDirectedGraph<>(CountEdge.class);
-	HashMap<Long, ProbeVertex> map = new HashMap<>();
+	BranchTrace t = null;
 	try {
+	    BufferedReader br = new BufferedReader(new FileReader(branchTrace));
 
-	    try (BufferedReader br = new BufferedReader(new FileReader(branchTrace))) {
+	    String line = br.readLine();
+	    if (line.startsWith("S")) {
+		crash = true;
+		// Skip 2 lines
+		line = br.readLine();
+		line = br.readLine();
 
-		String line = br.readLine();
-		if (line.startsWith("S")) {
-		    crash = true;
-		    // Skip 2 lines
-		    line = br.readLine();
-		    line = br.readLine();
-
-		}
-		while ((line = br.readLine()) != null) {
-		    String[] split = line.split("\\s+");
-		    // TODO nur notlösung
-		    long src;
-		    if (split[0].equals("0xffffffffffffffff")) {
-			src = Long.MAX_VALUE;
-		    } else {
-			src = Long.parseLong(split[0].substring(2), 16);
-		    }
-		    long dst;
-		    if (split[1].equals("0xffffffffffffffff")) {
-			dst = Long.MAX_VALUE;
-		    } else {
-			dst = Long.parseLong(split[1].substring(2), 16);
-		    }
-		    int count = Integer.parseInt(split[3]);
-		    ProbeVertex source = map.get(src);
-		    if (source == null) {
-			source = new ProbeVertex(src);
-			graph.addVertex(source);
-			map.put(src, source);
-		    }
-		    ProbeVertex destination = map.get(dst);
-		    if (destination == null) {
-			destination = new ProbeVertex(dst);
-			graph.addVertex(destination);
-			map.put(dst, destination);
-		    }
-
-		    CountEdge edge = graph.getEdge(new ProbeVertex(src), new ProbeVertex(dst));
-		    if (edge == null) {
-			edge = graph.addEdge(source, destination);
-		    }
-		    edge.add(count);
-
-		}
 	    }
+	    t = getBranchTrace(br);
+	    br.close();
+	    branchTrace.delete();
+
 	} catch (IOException ex) {
 	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
 	}
-	BranchTrace t = new BranchTrace(graph);
+
 	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
 		.getInstance().getFilename());
 
@@ -184,6 +149,42 @@ public class PINAgent extends Agent {
 		}
 	    }
 	}
+    }
+
+    private static BranchTrace getBranchTrace(BufferedReader br) {
+	try {
+	    Set<Long> verticesSet = new HashSet<>();
+	    Map<Edge, Edge> edgeMap = new HashMap<>();
+	    String line;
+	    while ((line = br.readLine()) != null) {
+		String[] split = line.split("\\s+");
+		// TODO nur notlösung
+		long src;
+		if (split[0].equals("0xffffffffffffffff")) {
+		    src = Long.MAX_VALUE;
+		} else {
+		    src = Long.parseLong(split[0].substring(2), 16);
+		}
+		long dst;
+		if (split[1].equals("0xffffffffffffffff")) {
+		    dst = Long.MAX_VALUE;
+		} else {
+		    dst = Long.parseLong(split[1].substring(2), 16);
+		}
+		int count = Integer.parseInt(split[3]);
+		verticesSet.add(src);
+		verticesSet.add(dst);
+		Edge e = new Edge(src, dst);
+		e.setCounter(count);
+		edgeMap.put(e, e);
+	    }
+	    return new BranchTrace(verticesSet, edgeMap);
+
+	} catch (IOException ex) {
+	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE,
+		    "Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
+	}
+	return new BranchTrace();
     }
 
 }

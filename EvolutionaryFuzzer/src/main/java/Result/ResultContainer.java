@@ -1,5 +1,6 @@
 package Result;
 
+import Analyzer.Analyzer;
 import Config.EvolutionaryFuzzerConfig;
 import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
@@ -36,31 +37,18 @@ public class ResultContainer {
 	return ResultContainerHolder.INSTANCE;
     }
 
-    // BranchTrace with which other Workflows are merged
-    private final BranchTrace branch;
     // List of old Results
     private final ArrayList<WorkflowTrace> goodTrace;
     private final Set<WorkflowTraceType> typeSet;
-    private boolean serialize = true;
     private final EvolutionaryFuzzerConfig evoConfig;
-    private int crashed = 0;
-    private int timeout = 0;
     private int executed = 0;
+    private Analyzer analyzer;
 
     private ResultContainer() {
-	branch = new BranchTrace();
 	goodTrace = new ArrayList<>();
 	typeSet = new HashSet<>();
 	evoConfig = Config.ConfigManager.getInstance().getConfig();
-
-    }
-
-    public boolean isSerialize() {
-	return serialize;
-    }
-
-    public void setSerialize(boolean serialize) {
-	this.serialize = serialize;
+	analyzer = new Analyzer(evoConfig);
     }
 
     /**
@@ -81,62 +69,10 @@ public class ResultContainer {
      */
     public void commit(Result result) {
 	executed++;
-	MergeResult r = null;
-
-	r = branch.merge(result.getBranchTrace());
-
-	if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
-	    LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
-	    // It may be that we dont want to safe good Traces, for example if
-	    // we execute already saved Traces
-	    if (serialize) {
-		File f = new File(evoConfig.getOutputFolder() + "good/" + result.getId());
-		try {
-		    f.createNewFile();
-		    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-		} catch (JAXBException | IOException E) {
-		    LOG.log(Level.SEVERE,
-			    "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			    f.getAbsolutePath());
-		}
-	    }
-	    result.getTrace().makeGeneric();
-	    goodTrace.add(result.getTrace());
-
-	}
-	if (result.hasCrashed()) {
-	    crashed++;
-	    LOG.log(Level.INFO, "Found a Crash:{0}", r.toString());
-
-	    File f = new File(evoConfig.getOutputFolder() + "crash/" + result.getId());
-	    try {
-		f.createNewFile();
-		WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-	    } catch (JAXBException | IOException E) {
-		LOG.log(Level.SEVERE,
-			"Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			f.getAbsolutePath());
-	    }
-
-	}
-	if (result.didTimeout()) {
-	    timeout++;
-	    LOG.log(Level.INFO, "Found a Timeout:{0}", r.toString());
-
-	    File f = new File(evoConfig.getOutputFolder() + "timeout/" + result.getId());
-	    try {
-		f.createNewFile();
-		WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-	    } catch (JAXBException | IOException E) {
-		LOG.log(Level.SEVERE,
-			"Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			f.getAbsolutePath());
-	    }
-
-	}
+	analyzer.analyze(result);
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
 	type.clean();
-	if (typeSet.add(type) && serialize) {
+	if (typeSet.add(type) && evoConfig.isSerialize()) {
 	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
 	    LOG.log(Level.FINER, type.toString());
 	    File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/" + result.getId());
@@ -155,20 +91,16 @@ public class ResultContainer {
 	return executed;
     }
 
-    public BranchTrace getBranch() {
-	return branch;
-    }
-
-    public int getCrashedCount() {
-	return crashed;
-    }
-
-    public int getTimeoutCount() {
-	return timeout;
-    }
-
     public int getTypeCount() {
 	return typeSet.size();
+    }
+
+    public void addGoodTrace(WorkflowTrace trace) {
+	goodTrace.add(trace);
+    }
+
+    public Analyzer getAnalyzer() {
+	return analyzer;
     }
 
     // Singleton

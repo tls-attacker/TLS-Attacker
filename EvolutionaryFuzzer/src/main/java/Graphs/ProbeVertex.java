@@ -36,7 +36,7 @@ public class ProbeVertex {
      */
     @Override
     public int hashCode() {
-	return super.hashCode();
+	return Long.valueOf(probeID).hashCode();
     }
 
     /**

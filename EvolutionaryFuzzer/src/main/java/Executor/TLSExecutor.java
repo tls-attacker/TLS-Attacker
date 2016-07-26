@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
@@ -102,8 +101,8 @@ public class TLSExecutor extends Executor {
 	    gc.setLogLevel(Level.OFF);
 	    configHandler.initialize(gc);
 
-	    EvolutionaryFuzzerConfig fc = new EvolutionaryFuzzerConfig();
-	    fc.setFuzzingMode(true);
+	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
+
 	    long time = System.currentTimeMillis();
 	    int counter = 0;
 	    while (transportHandler == null) {
@@ -124,16 +123,6 @@ public class TLSExecutor extends Executor {
 			throw new ConfigurationException("Could not start TLS Server, check your configuration Files!");
 		    }
 		}
-	    }
-
-	    if (fc.getKeystore() == null) {
-		fc.setKeystore("../resources/rsa1024.jks");
-	    }
-	    if (fc.getPassword() == null) {
-		fc.setPassword("password");
-	    }
-	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
-		fc.setAlias("alias");
 	    }
 
 	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());

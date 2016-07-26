@@ -68,7 +68,7 @@ public class ExecutorThreadPool implements Runnable {
 	this.config = config;
 	this.poolSize = poolSize;
 	this.mutator = mutator;
-	BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize*5);
+	BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize * 5);
 	File f = new File(config.getOutputFolder() + "good/");
 	ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
 
@@ -106,35 +106,38 @@ public class ExecutorThreadPool implements Runnable {
     public void run() {
 	stopped = false;
 	// Dont save old results
-	ResultContainer.getInstance().setSerialize(false);
-	for (int i = 0; i < list.size(); i++) {
-	    TLSServer server = null;
-	    try {
-		if (!stopped) {
-		    server = ServerManager.getInstance().getFreeServer();
-		    Agent agent = AgentFactory.generateAgent(config);
-		    Runnable worker = new TLSExecutor(list.get(i), server, agent);
-		    executor.submit(worker);
-		    runs++;
-		} else {
-		    i--;
-		    try {
-			Thread.sleep(1000);
-		    } catch (InterruptedException ex) {
-			Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-				"Thread interruiped while the ThreadPool is paused.", ex);
+	config.setSerialize(false);
+	if (!config.isNoOld()) {
+	    for (int i = 0; i < list.size(); i++) {
+		TLSServer server = null;
+		try {
+		    if (!stopped) {
+			server = ServerManager.getInstance().getFreeServer();
+			Agent agent = AgentFactory.generateAgent(config);
+			Runnable worker = new TLSExecutor(list.get(i), server, agent);
+			executor.submit(worker);
+			runs++;
+		    } else {
+			i--;
+			try {
+			    Thread.sleep(1000);
+			} catch (InterruptedException ex) {
+			    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+				    "Thread interruiped while the ThreadPool is paused.", ex);
+			}
 		    }
-		}
-	    } catch (Exception E) {
-		E.printStackTrace();
-	    } finally {
-		if (server != null) {
-		    server.release();
+		} catch (Throwable E) {
+		    E.printStackTrace();
+		} finally {
+		    if (server != null) {
+			server.release();
+		    }
 		}
 	    }
 	}
+
 	// Save new results
-	ResultContainer.getInstance().setSerialize(true);
+	config.setSerialize(true);
 	while (true) {
 	    TLSServer server = null;
 	    try {

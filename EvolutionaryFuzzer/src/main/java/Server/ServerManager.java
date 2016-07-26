@@ -92,7 +92,7 @@ public class ServerManager {
 		return server;
 	    }
 	    i++;
-	    if (startSearch < System.currentTimeMillis() - 60000) {
+	    if (startSearch < System.currentTimeMillis() - Config.ConfigManager.getInstance().getConfig().getTimeout()) {
 		// Searched longer than a minute and didnt find a free Server
 		throw new RuntimeException(
 			"Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");

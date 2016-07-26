@@ -1,16 +1,18 @@
 package Controller;
 
+import Analyzer.IsGoodRule;
 import Executor.ExecutorThreadPool;
 import Mutator.Mutator;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
+import Graphs.BranchTrace;
 import Graphs.CountEdge;
+import Graphs.Edge;
 import Graphs.ProbeVertex;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -20,10 +22,10 @@ import Result.ResultContainer;
 import Server.ServerManager;
 import Mutator.SimpleMutator;
 import Server.TLSServer;
-import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
 
@@ -96,92 +98,107 @@ public class FuzzerController extends Controller {
 	    } catch (IOException ex) {
 		Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
 	    }
-	    switch (s) {
-		case "start":
-		    startFuzzer();
-		    break;
-		case "stop":
-		    stopFuzzer();
-		    break;
-		case "status":
-		    ResultContainer con = ResultContainer.getInstance();
-		    int goodTraces = con.getGoodTraces().size();
-		    int hitVertices = con.getBranch().getVerticesCount();
-		    int hitBranches = con.getBranch().getBranchCount();
-		    System.out.println("Traces succesful executed:" + pool.getRuns());
-		    System.out.println("Crashed:" + con.getCrashedCount() + " Timeout:" + con.getTimeoutCount()
-			    + " WorkflowTypes:" + con.getTypeCount());
-		    System.out.println("Good Traces:" + goodTraces + " Hit Vertices:" + hitVertices + " Hit Branches:"
-			    + hitBranches);
-		    System.out.println("Servers:" + ServerManager.getInstance().getServerCount() + " Currently Free:"
-			    + ServerManager.getInstance().getFreeServerCount());
-		    break;
-		case "server":
-		    List<TLSServer> serverList = ServerManager.getInstance().getAllServers();
-		    for (TLSServer server : serverList) {
-			System.out.println(server);
-		    }
-		    break;
-		case "edges":
-		    LOG.log(Level.INFO, "Dumping Edge Information to edges.dump");
-		    stopFuzzer();
-		    do {
+	    String[] split = s.split(" ");
+	    if (split.length > 0) {
+		switch (split[0]) {
+		    case "start":
+			startFuzzer();
+
+			break;
+		    case "stop":
+			LOG.log(Level.INFO, "Stopping Fuzzer!");
+			stopFuzzer();
+			do {
+			    try {
+				Thread.sleep(50);
+			    } catch (InterruptedException ex) {
+				Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			    }
+			} while (pool.hasRunningThreads());
+			LOG.log(Level.INFO, "Fuzzer stopped!");
+			break;
+		    case "status":
+			ResultContainer con = ResultContainer.getInstance();
+			System.out.println(con.getAnalyzer().getReport());
+			break;
+		    case "server":
+			List<TLSServer> serverList = ServerManager.getInstance().getAllServers();
+			for (TLSServer server : serverList) {
+			    System.out.println(server);
+			}
+			break;
+		    case "edges":
+			String file = "edges.dump";
+			if (split.length == 2) {
+			    file = split[1];
+			}
+			LOG.log(Level.INFO, "Dumping Edge Information to " + file);
+			stopFuzzer();
+			do {
+			    try {
+				Thread.sleep(50);
+			    } catch (InterruptedException ex) {
+				Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			    }
+			} while (pool.hasRunningThreads());
+
+			BranchTrace trace = ((IsGoodRule) ((ResultContainer.getInstance().getAnalyzer()
+				.getRule(IsGoodRule.class)))).getBranchTrace();
+
+			PrintWriter writer;
 			try {
-			    Thread.sleep(50);
-			} catch (InterruptedException ex) {
+			    writer = new PrintWriter(file, "UTF-8");
+			    Map<Edge, Edge> set = trace.getEdgeMap();
+			    for (Edge edge : set.values()) {
+				writer.println(edge.getA() + " " + edge.getB());
+			    }
+			    writer.close();
+			} catch (FileNotFoundException ex) {
+			    Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (UnsupportedEncodingException ex) {
 			    Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
 			}
-		    } while (pool.hasRunningThreads());
-
-		    DirectedGraph<ProbeVertex, CountEdge> graph = ResultContainer.getInstance().getBranch().getGraph();
-		    PrintWriter writer;
-		    try {
-			writer = new PrintWriter("edges.dump", "UTF-8");
-			Set<CountEdge> set = graph.edgeSet();
-			for (CountEdge edge : set) {
-			    writer.println(graph.getEdgeSource(edge).getProbeID() + " "
-				    + graph.getEdgeTarget(edge).getProbeID());
+			LOG.log(Level.INFO, "Dump finished");
+			startFuzzer();
+			break;
+		    case "vertices":
+			file = "vertices.dump";
+			if (split.length == 2) {
+			    file = split[1];
 			}
-			writer.close();
-		    } catch (FileNotFoundException ex) {
-			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
-		    } catch (UnsupportedEncodingException ex) {
-			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
-		    }
-		    LOG.log(Level.INFO, "Dump finished");
-		    startFuzzer();
-		    break;
-		case "vertices":
-		    LOG.log(Level.INFO, "Dumping Vertex Information to vertices.dump");
-		    stopFuzzer();
-		    do {
+			LOG.log(Level.INFO, "Dumping Vertex Information to " + file);
+			stopFuzzer();
+			do {
+			    try {
+				Thread.sleep(50);
+			    } catch (InterruptedException ex) {
+				Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			    }
+			} while (pool.hasRunningThreads());
+
+			trace = ((IsGoodRule) ((ResultContainer.getInstance().getAnalyzer().getRule(IsGoodRule.class))))
+				.getBranchTrace();
+			writer = null;
 			try {
-			    Thread.sleep(50);
-			} catch (InterruptedException ex) {
+			    writer = new PrintWriter(file, "UTF-8");
+			    Set<Long> set = trace.getVerticesSet();
+			    for (Long vertex : set) {
+				writer.println(vertex);
+			    }
+			    writer.close();
+			} catch (FileNotFoundException ex) {
+			    Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (UnsupportedEncodingException ex) {
 			    Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
 			}
-		    } while (pool.hasRunningThreads());
-
-		    graph = ResultContainer.getInstance().getBranch().getGraph();
-		    writer = null;
-		    try {
-			writer = new PrintWriter("vertices.dump", "UTF-8");
-			Set<ProbeVertex> set = graph.vertexSet();
-			for (ProbeVertex vertex : set) {
-			    writer.println(vertex.getProbeID());
-			}
-			writer.close();
-		    } catch (FileNotFoundException ex) {
-			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
-		    } catch (UnsupportedEncodingException ex) {
-			Logger.getLogger(FuzzerController.class.getName()).log(Level.SEVERE, null, ex);
-		    }
-		    LOG.log(Level.INFO, "Dump finished");
-		    startFuzzer();
-		    break;
-		default:
-		    System.out.println("Commands: start, stop, status, server, edges, vertices");
-		    break;
+			LOG.log(Level.INFO, "Dump finished");
+			startFuzzer();
+			break;
+		    default:
+			System.out
+				.println("Commands: start, stop, status, server, edges <file>, vertices <file>, loadGraph <file>, saveGraph <file>");
+			break;
+		}
 	    }
 	}
     }
