@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -18,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -96,6 +96,13 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    LOGGER.debug("Encrypting the following padded premaster secret: {}",
 		    ArrayConverter.bytesToHexString(paddedPremasterSecret));
 	    // TODO can throw a tooMuchData for RSA Block exception
+	    if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
+		if (protocolMessage.isFuzzingMode()) {
+		    paddedPremasterSecret = masterSecret;
+		} else {
+		    throw new IllegalStateException("Trying to encrypt more data then modulus size!");
+		}
+	    }
 	    byte[] encrypted = cipher.doFinal(paddedPremasterSecret);
 	    protocolMessage.setEncryptedPremasterSecret(encrypted);
 	    protocolMessage

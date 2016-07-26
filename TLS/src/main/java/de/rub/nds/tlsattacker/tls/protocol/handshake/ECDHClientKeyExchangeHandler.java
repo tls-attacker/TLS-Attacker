@@ -86,8 +86,8 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 	    } else {
 		try {
 		    parameters = (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
-		    
-                    kp = TlsECCUtils.generateECKeyPair(new SecureRandom(), parameters.getParameters());
+
+		    kp = TlsECCUtils.generateECKeyPair(new SecureRandom(), parameters.getParameters());
 
 		} catch (NoSuchMethodError e) {
 		    LOGGER.debug("The method was not found. It is possible that it is because an older bouncy castle"

@@ -82,8 +82,8 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest") })
     private List<ProtocolMessage> protocolMessages;
 
-    private String name;
-
+    private String name = null;
+    private String description = null;
     private ProtocolVersion protocolVersion;
 
     /**
@@ -93,9 +93,10 @@ public class WorkflowTrace implements Serializable {
 	List<ProtocolMessage> tempList = getProtocolMessages();
 
 	for (int i = 0; i < tempList.size(); i++) {
-	    ArbitraryMessage arbitraryMessage = new ArbitraryMessage();
-	    arbitraryMessage.setMessageIssuer(ConnectionEnd.SERVER);
+
 	    if (tempList.get(i).getMessageIssuer() == ConnectionEnd.SERVER) {
+		ArbitraryMessage arbitraryMessage = new ArbitraryMessage();
+		arbitraryMessage.setMessageIssuer(ConnectionEnd.SERVER);
 		tempList.set(i, arbitraryMessage);
 	    }
 	}
@@ -106,6 +107,14 @@ public class WorkflowTrace implements Serializable {
      */
     public WorkflowTrace() {
 	this.protocolMessages = new LinkedList<>();
+    }
+
+    public String getDescription() {
+	return description;
+    }
+
+    public void setDescription(String description) {
+	this.description = description;
     }
 
     /**

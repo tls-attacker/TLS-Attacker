@@ -148,7 +148,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 		    newDhPrivate);
 	} catch (IllegalArgumentException e) {
 	    if (protocolMessage.isFuzzingMode()) {
-		premasterSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublic, newDhPrivate);
+		premasterSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublic, dhPrivate);
 	    } else {
 		throw new IllegalArgumentException(e);
 	    }
