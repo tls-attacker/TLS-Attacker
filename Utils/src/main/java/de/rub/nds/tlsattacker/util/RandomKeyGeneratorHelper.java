@@ -14,20 +14,25 @@ import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
+import org.bouncycastle.crypto.generators.DHParametersGenerator;
 import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
-import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
 import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.math.ec.WNafUtil;
+import org.bouncycastle.util.BigIntegers;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RandomKeyGeneratorHelper {
+
+    private static final BigInteger ONE = BigInteger.valueOf(1);
+    private static final BigInteger TWO = BigInteger.valueOf(2);
 
     public static AsymmetricCipherKeyPair generateECPublicKey() {
 	// Should we also generate random curves?
@@ -42,12 +47,67 @@ public class RandomKeyGeneratorHelper {
     public static AsymmetricCipherKeyPair generateDHPublicKey() {
 	// TODO generate better keys
 	Random r = new Random();
-	BigInteger val1 = new BigInteger(r.nextInt(4097), r);
-	BigInteger val2 = new BigInteger(r.nextInt(4097), r);
-	BigInteger val3 = new BigInteger(r.nextInt(4097), r);
-	DHKeyPairGenerator keygen = new DHKeyPairGenerator();
-	keygen.init(new DHKeyGenerationParameters(new SecureRandom(), new DHParameters(val1, val2, val3)));
-	return keygen.generateKeyPair();
+
+	BigInteger valP = new BigInteger(r.nextInt(4100), r);
+	BigInteger valG = new BigInteger(r.nextInt(4100), r);
+	DHParameters dhp;
+	BigInteger x;
+	BigInteger y;
+	try {
+	    dhp = new DHParameters(valP, valG);
+	    x = calculatePrivate(dhp);
+	    y = calculatePublic(dhp, x);
+	} catch (java.lang.IllegalArgumentException E) {
+	    // java.lang.IllegalArgumentException: 'min' may not be greater than
+	    // 'max'
+	    // at org.bouncycastle.util.BigIntegers.createRandomInRange(Unknown
+	    // Source)
+	    BigInteger swap = valP;
+	    valP = valG;
+	    valG = swap;
+	    dhp = new DHParameters(valP, valG);
+	    x = calculatePrivate(dhp);
+	    y = calculatePublic(dhp, x);
+	}
+	return new AsymmetricCipherKeyPair(new DHPublicKeyParameters(y, dhp), new DHPrivateKeyParameters(x, dhp));
+    }
+
+    private static BigInteger calculatePrivate(DHParameters dhParams) {
+	int limit = dhParams.getL();
+
+	if (limit != 0) {
+	    int minWeight = limit >>> 2;
+	    for (;;) {
+		BigInteger x = new BigInteger(limit, new BadRandom()).setBit(limit - 1);
+		if (WNafUtil.getNafWeight(x) >= minWeight) {
+		    return x;
+		}
+	    }
+	}
+
+	BigInteger min = TWO;
+	int m = dhParams.getM();
+	if (m != 0) {
+	    min = ONE.shiftLeft(m - 1);
+	}
+
+	BigInteger q = dhParams.getQ();
+	if (q == null) {
+	    q = dhParams.getP();
+	}
+	BigInteger max = q.subtract(TWO);
+
+	int minWeight = max.bitLength() >>> 2;
+	for (;;) {
+	    BigInteger x = BigIntegers.createRandomInRange(min, max, new BadRandom());
+	    if (WNafUtil.getNafWeight(x) >= minWeight) {
+		return x;
+	    }
+	}
+    }
+
+    private static BigInteger calculatePublic(DHParameters dhParams, BigInteger x) {
+	return dhParams.getG().modPow(x, dhParams.getP());
     }
 
     private static String getRandomCurveName() {
@@ -159,4 +219,5 @@ public class RandomKeyGeneratorHelper {
 	} while (curveName != null);
 	return curveName;
     }
+
 }
