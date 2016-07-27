@@ -65,6 +65,8 @@ public class TlsClientTest {
     private TLSServer tlsServer;
 
     private static final int PORT = 56789;
+    
+    private static final int TIMEOUT = 1000;
 
     public TlsClientTest() {
 	Security.addProvider(new BouncyCastleProvider());
@@ -116,6 +118,7 @@ public class TlsClientTest {
 
 	ClientCommandConfig config = new ClientCommandConfig();
 	config.setConnect("localhost:" + port);
+        config.setTlsTimeout(TIMEOUT);
 
 	List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
 
@@ -167,6 +170,7 @@ public class TlsClientTest {
 
 	ClientCommandConfig config = new ClientCommandConfig();
 	config.setConnect("localhost:" + port);
+        config.setTlsTimeout(TIMEOUT);
 	config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
 
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
