@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker;
 
@@ -118,8 +117,12 @@ public class Main {
                 return;
             case ServerTestConfig.COMMAND:
                 ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
-                st.startTests();
-                return;
+                boolean success = st.startTests();
+                if (success) {
+                    System.exit(0);
+                } else {
+                    System.exit(1);
+                }
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
                 attacker = new BleichenbacherAttack(bleichenbacherTest);
                 break;
