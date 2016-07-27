@@ -66,7 +66,7 @@ public class TlsClientTest {
 
     private static final int PORT = 56789;
     
-    private static final int TIMEOUT = 1000;
+    private static final int TIMEOUT = 2000;
 
     public TlsClientTest() {
 	Security.addProvider(new BouncyCastleProvider());
