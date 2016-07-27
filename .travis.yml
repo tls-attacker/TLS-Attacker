@@ -1,0 +1,18 @@
+language: java
+
+script: ./mvnw clean package
+
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk8
+  - openjdk7
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    recipients:
+    - juraj.somorovsky@hackmanit.de
