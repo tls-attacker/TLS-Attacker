@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -20,13 +22,15 @@ import static org.junit.Assert.*;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModifiableVariableTest {
+    
+    private static final Logger LOGGER = LogManager.getLogger(ModifiableVariableTest.class);
 
     @Test
     public void testRandomBigIntegerModification() {
 	ModifiableBigInteger bigInteger = ModifiableVariableFactory.createBigIntegerModifiableVariable();
 	bigInteger.setOriginalValue(BigInteger.ZERO);
 	bigInteger.createRandomModificationAtRuntime();
-	System.out.println("Randomly modified big integer: " + bigInteger.getValue());
+	LOGGER.info("Randomly modified big integer: " + bigInteger.getValue());
 	assertNotNull(bigInteger.getModification());
     }
 
@@ -35,16 +39,16 @@ public class ModifiableVariableTest {
 	ModifiableInteger integer = ModifiableVariableFactory.createIntegerModifiableVariable();
 	integer.setOriginalValue(0);
 	integer.createRandomModificationAtRuntime();
-	System.out.println("Randomly modified integer: " + integer.getValue());
+	LOGGER.info("Randomly modified integer: " + integer.getValue());
 	assertNotNull(integer.getModification());
     }
 
     @Test
-    public void testRandomByteArrayModification() {
+    public void testRandomByteArrayModification() throws Exception {
 	ModifiableByteArray array = ModifiableVariableFactory.createByteArrayModifiableVariable();
 	array.setOriginalValue(new byte[] { 0, 1, 2 });
 	array.createRandomModificationAtRuntime();
-	System.out.println("Randomly modified byte array: " + ArrayConverter.bytesToHexString(array.getValue()));
+	LOGGER.info("Randomly modified byte array: " + ArrayConverter.bytesToHexString(array.getValue()));
 	assertNotNull(array.getModification());
     }
 }

@@ -44,6 +44,8 @@ public class TLSServer extends Thread {
     private ServerSocket serverSocket;
 
     private boolean shutdown;
+    
+    private boolean initialized;
 
     public TLSServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
 	    IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException,
@@ -129,6 +131,7 @@ public class TLSServer extends Thread {
 	// serverSocket).setEnabledCipherSuites(cipherSuites);
 	// }
 	LOGGER.debug("|| presetup successful");
+        initialized = true;
     }
 
     public void shutdown() {
@@ -177,5 +180,9 @@ public class TLSServer extends Thread {
 
     public String[] getCipherSuites() {
 	return cipherSuites;
+    }
+    
+    public boolean isInitialized() {
+        return initialized;
     }
 }

@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.modifiablevariable.singlebyte;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import org.junit.Before;
@@ -89,6 +91,24 @@ public class ByteModificationTest {
 	assertEquals(expectedResult, result);
 	assertNotSame(expectedResult, result);
 	assertEquals(new Byte("10"), start.getOriginalValue());
+    }
+    
+    /**
+     * Test of explicitValue from file method
+     */
+    @Test
+    public void testExplicitValueFromFile() {
+	VariableModification<Byte> modifier = ByteModificationFactory.explicitValueFromFile(0);
+	start.setModification(modifier);
+	expectedResult = -128;
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+	
+        modifier = ByteModificationFactory.explicitValueFromFile(1);
+        start.setModification(modifier);
+	expectedResult = -1;
+	result = start.getValue();
+	assertEquals(expectedResult, result);
     }
 
 }
