@@ -1,0 +1,9 @@
+  -128           /* Overflow signed 8-bit when decremented  */ 
+  -1             /*                                         */ 
+   0             /*                                         */ 
+   1             /*                                         */ 
+   16            /* One-off with common buffer size         */ 
+   32            /* One-off with common buffer size         */ 
+   64            /* One-off with common buffer size         */ 
+   100           /* One-off with common buffer size         */ 
+   127           /* Overflow signed 8-bit when incremented  */

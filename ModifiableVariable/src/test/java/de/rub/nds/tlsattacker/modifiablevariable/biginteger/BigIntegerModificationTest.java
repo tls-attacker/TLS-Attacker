@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -124,5 +125,29 @@ public class BigIntegerModificationTest {
 	assertEquals(expectedResult, result);
 	assertNotSame(expectedResult, result);
 	assertEquals(BigInteger.TEN, start.getOriginalValue());
+    }
+    
+    /**
+     * Test of explicitValue from file method
+     */
+    @Test
+    public void testExplicitValueFromFile() {
+	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.explicitValueFromFile(0);
+	start.setModification(modifier);
+	expectedResult = BigInteger.valueOf(-128);
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+	
+        modifier = BigIntegerModificationFactory.explicitValueFromFile(1);
+        start.setModification(modifier);
+	expectedResult = BigInteger.valueOf(-1);
+	result = start.getValue();
+	assertEquals(expectedResult, result);
+        
+        modifier = BigIntegerModificationFactory.explicitValueFromFile(26);
+        start.setModification(modifier);
+	expectedResult = BigInteger.valueOf(2147483647);
+	result = start.getValue();
+	assertEquals(expectedResult, result);
     }
 }
