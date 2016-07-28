@@ -8,9 +8,17 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -18,11 +26,13 @@ import java.util.Random;
  */
 final public class BigIntegerModificationFactory {
 
-    private static final int MODIFICATION_COUNT = 6;
+    private static final int MODIFICATION_COUNT = 7;
 
     private static final int MAX_MODIFICATION_VALUE = 320000;
 
     private static final int MAX_MODIFICATION_SHIFT_VALUE = 50;
+    
+    private static List<VariableModification<BigInteger>> modificationsFromFile;
 
     private BigIntegerModificationFactory() {
     }
@@ -74,6 +84,31 @@ final public class BigIntegerModificationFactory {
     public static VariableModification<BigInteger> explicitValue(final BigInteger value) {
 	return new BigIntegerExplicitValueModification(value);
     }
+    
+    public static VariableModification<BigInteger> explicitValueFromFile(int value) {
+        List<VariableModification<BigInteger>> modifications = modificationsFromFile();
+        int pos = value % modifications.size();
+        return modifications.get(pos);
+    }
+
+    public static List<VariableModification<BigInteger>> modificationsFromFile() {
+        try {
+            if (modificationsFromFile == null) {
+                modificationsFromFile = new LinkedList<>();
+                ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
+                File file = new File(classLoader.getResource(IntegerModificationFactory.FILE_NAME).getFile());
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String value = line.trim().split(" ")[0];
+                    modificationsFromFile.add(explicitValue(value));
+                }
+            }
+            return modificationsFromFile;
+        } catch (IOException ex) {
+            throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
+        }
+    }
 
     public static VariableModification<BigInteger> createRandomModification() {
 	Random random = RandomHelper.getRandom();
@@ -100,6 +135,9 @@ final public class BigIntegerModificationFactory {
 	    case 5:
 		vm = new BigIntegerShiftRightModification(shiftModification);
 		return vm;
+            case 6:
+                vm = explicitValueFromFile(MAX_MODIFICATION_VALUE);
+                return vm;
 	}
 	return vm;
     }

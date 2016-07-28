@@ -8,9 +8,15 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.singlebyte;
 
-import de.rub.nds.tlsattacker.modifiablevariable.integer.*;
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,7 +32,11 @@ final public class ByteModificationFactory {
 
     private static final int BYTE_ADD_MODIFICATION = 0;
 
-    private static final int MODIFICATION_COUNT = 4;
+    private static final int MODIFICATION_COUNT = 5;
+    
+    private static List<VariableModification<Byte>> modificationsFromFile;
+
+    public static final String FILE_NAME = "byte.vec";
 
     private ByteModificationFactory() {
     }
@@ -62,6 +72,31 @@ final public class ByteModificationFactory {
     public static VariableModification<Byte> explicitValue(final Byte value) {
 	return new ByteExplicitValueModification(value);
     }
+    
+    public static VariableModification<Byte> explicitValueFromFile(int value) {
+        List<VariableModification<Byte>> modifications = modificationsFromFile();
+        int pos = value % modifications.size();
+        return modifications.get(pos);
+    }
+
+    public static List<VariableModification<Byte>> modificationsFromFile() {
+        try {
+            if (modificationsFromFile == null) {
+                modificationsFromFile = new LinkedList<>();
+                ClassLoader classLoader = ByteModificationFactory.class.getClassLoader();
+                InputStream is = classLoader.getResourceAsStream(FILE_NAME);
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String value = line.trim().split(" ")[0];
+                    modificationsFromFile.add(explicitValue(value));
+                }
+            }
+            return modificationsFromFile;
+        } catch (IOException ex) {
+            throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
+        }
+    }
 
     public static VariableModification<Byte> createRandomModification() {
 	Random random = RandomHelper.getRandom();
@@ -81,6 +116,9 @@ final public class ByteModificationFactory {
 	    case BYTE_EXPLICIT_VALUE_MODIFICATION:
 		vm = new ByteExplicitValueModification(modification);
 		return vm;
+            case 4:
+                vm = explicitValueFromFile(random.nextInt(Byte.MAX_VALUE));
+                return vm;
 	}
 	return vm;
     }

@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.modifiablevariable;
 
@@ -15,8 +14,10 @@ import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerShiftRight
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerSubtractModification;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerXorModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayDeleteModification;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayDuplicateModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayInsertModification;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayShuffleModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayXorModification;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.AccessModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerAddModification;
@@ -44,14 +45,15 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlRootElement
 @XmlTransient
-@XmlSeeAlso({ AccessModificationFilter.class, BigIntegerAddModification.class,
-	BigIntegerExplicitValueModification.class, BigIntegerSubtractModification.class,
-	BigIntegerXorModification.class, BigIntegerShiftLeftModification.class, BigIntegerShiftRightModification.class,
-	IntegerAddModification.class, IntegerExplicitValueModification.class, IntegerSubtractModification.class,
-	IntegerXorModification.class, IntegerShiftLeftModification.class, IntegerShiftRightModification.class,
-	ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class, ByteArrayInsertModification.class,
-	ByteArrayXorModification.class, ByteAddModification.class, ByteExplicitValueModification.class,
-	ByteSubtractModification.class, ByteXorModification.class })
+@XmlSeeAlso({AccessModificationFilter.class, BigIntegerAddModification.class,
+    BigIntegerExplicitValueModification.class, BigIntegerSubtractModification.class,
+    BigIntegerXorModification.class, BigIntegerShiftLeftModification.class, BigIntegerShiftRightModification.class,
+    IntegerAddModification.class, IntegerExplicitValueModification.class, IntegerSubtractModification.class,
+    IntegerXorModification.class, IntegerShiftLeftModification.class, IntegerShiftRightModification.class,
+    ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class, ByteArrayInsertModification.class,
+    ByteArrayXorModification.class, ByteArrayDuplicateModification.class, ByteArrayShuffleModification.class,
+    ByteAddModification.class, ByteExplicitValueModification.class,
+    ByteSubtractModification.class, ByteXorModification.class})
 public abstract class VariableModification<E> {
 
     private static final Logger LOGGER = LogManager.getLogger(VariableModification.class);
@@ -70,36 +72,35 @@ public abstract class VariableModification<E> {
 
     /**
      * Get the value of postModification
-     * 
+     *
      * @return the value of postModification
      */
     // http://stackoverflow.com/questions/5122296/jaxb-not-unmarshalling-xml-any-element-to-jaxbelement
     @XmlAnyElement(lax = true)
     final public VariableModification<E> getPostModification() {
-	return postModification;
+        return postModification;
     }
 
     /**
      * Set the value of postModification
-     * 
-     * @param postModification
-     *            new value of postModification
+     *
+     * @param postModification new value of postModification
      */
     final public void setPostModification(VariableModification<E> postModification) {
-	this.postModification = postModification;
+        this.postModification = postModification;
     }
 
     public E modify(E input) {
-	E modifiedValue = modifyImplementationHook(input);
-	if (postModification != null) {
-	    modifiedValue = postModification.modify(modifiedValue);
-	}
-	if ((modificationFilter == null) || (modificationFilter.filterModification() == false)) {
-	    debug(modifiedValue);
-	    return modifiedValue;
-	} else {
-	    return input;
-	}
+        E modifiedValue = modifyImplementationHook(input);
+        if (postModification != null) {
+            modifiedValue = postModification.modify(modifiedValue);
+        }
+        if ((modificationFilter == null) || (modificationFilter.filterModification() == false)) {
+            debug(modifiedValue);
+            return modifiedValue;
+        } else {
+            return input;
+        }
     }
 
     protected abstract E modifyImplementationHook(E input);
@@ -107,34 +108,34 @@ public abstract class VariableModification<E> {
     /**
      * Debugging modified variables. Getting stack trace can be time consuming,
      * thus we use isDebugEnabled() function
-     * 
+     *
      * @param value
      */
     protected void debug(E value) {
-	if (LOGGER.isDebugEnabled()) {
-	    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-	    int index = 0;
-	    for (int i = 0; i < stack.length; i++) {
-		if (stack[i].toString().contains("ModifiableVariable.getValue")) {
-		    index = i + 1;
-		}
-	    }
-	    String valueString;
-	    if (value.getClass().getSimpleName().equals("byte[]")) {
-		valueString = ArrayConverter.bytesToHexString((byte[]) value);
-	    } else {
-		valueString = value.toString();
-	    }
-	    LOGGER.debug("Using {} in function:\n  {}\n  New value: {}", this.getClass().getSimpleName(), stack[index],
-		    valueString);
-	}
+        if (LOGGER.isDebugEnabled()) {
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            int index = 0;
+            for (int i = 0; i < stack.length; i++) {
+                if (stack[i].toString().contains("ModifiableVariable.getValue")) {
+                    index = i + 1;
+                }
+            }
+            String valueString;
+            if (value.getClass().getSimpleName().equals("byte[]")) {
+                valueString = ArrayConverter.bytesToHexString((byte[]) value);
+            } else {
+                valueString = value.toString();
+            }
+            LOGGER.debug("Using {} in function:\n  {}\n  New value: {}", this.getClass().getSimpleName(), stack[index],
+                    valueString);
+        }
     }
 
     public ModificationFilter getModificationFilter() {
-	return modificationFilter;
+        return modificationFilter;
     }
 
     public void setModificationFilter(ModificationFilter modificationFilter) {
-	this.modificationFilter = modificationFilter;
+        this.modificationFilter = modificationFilter;
     }
 }

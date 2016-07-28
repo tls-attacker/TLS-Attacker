@@ -298,8 +298,8 @@ public class ArrayConverter {
      */
     public static byte[] hexStringToByteArray(String input) {
 	if ((input == null) || (input.length() % 2 != 0)) {
-	    throw new IllegalArgumentException("The input must not be null and"
-		    + "shall have an even number of hexadecimal characters.");
+	    throw new IllegalArgumentException("The input must not be null and "
+		    + "shall have an even number of hexadecimal characters. Found: " + input);
 	}
 	byte[] output = new byte[input.length() / 2];
 	for (int i = 0; i < output.length; i++) {
