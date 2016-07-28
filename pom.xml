@@ -101,6 +101,9 @@
                     <version>2.19.1</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
+                        <excludes>
+                            <exclude>${exclude.tests}</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
                 <!-- Specify Java Version -->
@@ -193,4 +196,13 @@
         <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
     </properties>
+    
+    <profiles>
+        <profile>
+            <id>travis</id>
+            <properties>
+                <exclude.tests>**/TlsClientTest.java</exclude.tests>
+            </properties>
+        </profile>
+    </profiles>
 </project>
