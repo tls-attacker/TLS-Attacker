@@ -41,6 +41,7 @@ public class Result {
     private final TestVector executedVector;
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
+    private Boolean goodTrace = null;
 
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
 	    TestVector vector, TestVector executedVector, String id) {
@@ -54,6 +55,17 @@ public class Result {
 	this.id = id;
     }
 
+    public Boolean isGoodTrace()
+    {
+        return goodTrace;
+    }
+
+    public void setGoodTrace(Boolean wasGoodTrace)
+    {
+        this.goodTrace = wasGoodTrace;
+    }
+
+    
     /**
      * Returns the ID of the Result
      * 

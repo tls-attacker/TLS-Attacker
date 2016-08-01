@@ -7,11 +7,13 @@
  */
 package Modification;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Modification {
+public abstract class Modification implements Serializable{
     private final ModificationType type;
 
     public Modification(ModificationType type) {

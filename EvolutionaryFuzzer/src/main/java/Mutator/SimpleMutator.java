@@ -116,7 +116,7 @@ public class SimpleMutator extends Mutator {
 		modified = true;
 	    }
 	} while (!modified || r.nextInt(100) <= config.getMultipleModifications());
-	return new TestVector(trace, keyCertPair, tempVector);
+	return newTestVector;
 
     }
 
