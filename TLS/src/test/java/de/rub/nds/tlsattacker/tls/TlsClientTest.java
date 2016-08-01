@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls;
 
@@ -55,7 +54,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class TlsClientTest {
@@ -66,128 +65,134 @@ public class TlsClientTest {
 
     private static final int PORT = 56789;
 
+    private static final int TIMEOUT = 2000;
+
     public TlsClientTest() {
-	Security.addProvider(new BouncyCastleProvider());
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
     public void testRSAWorkflows() {
-	try {
-	    KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
-	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
-	    tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
-	    new Thread(tlsServer).start();
-	    testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
-	    tlsServer.shutdown();
-	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-		| KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException
-		| UnrecoverableKeyException | KeyManagementException e) {
-	    LOGGER.error("Unable to initialize the TLS server with an RSA key, but the build runs further.", e);
-	}
+        try {
+            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+            tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
+            new Thread(tlsServer).start();
+            while (!tlsServer.isInitialized());
+            testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
+            tlsServer.shutdown();
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException |
+                KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException |
+                UnrecoverableKeyException | KeyManagementException e) {
+            LOGGER.error("Unable to initialize the TLS server with an RSA key, but the build runs further.", e);
+        }
     }
 
     @Test
     public void testECWorkflows() {
-	try {
-	    KeyPair k = KeyStoreGenerator.createECKeyPair(256);
-	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
-	    tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT + 1);
-	    new Thread(tlsServer).start();
-	    testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
-	    tlsServer.shutdown();
-	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-		| KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException
-		| UnrecoverableKeyException | KeyManagementException e) {
-	    LOGGER.error("Unable to initialize the TLS server with an EC key, but the build runs further.", e);
-	}
+        try {
+            KeyPair k = KeyStoreGenerator.createECKeyPair(256);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+            tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT + 1);
+            new Thread(tlsServer).start();
+            while (!tlsServer.isInitialized());
+            testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
+            tlsServer.shutdown();
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException |
+                KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException |
+                UnrecoverableKeyException | KeyManagementException e) {
+            LOGGER.error("Unable to initialize the TLS server with an EC key, but the build runs further.", e);
+        }
     }
 
     /**
      * Test of executeWorkflow method, of class WorkflowExecutor.
-     * 
+     *
      * @param algorithm
      * @param port
      */
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
-	GeneralConfig generalConfig = new GeneralConfig();
-	generalConfig.setLogLevel(Level.ALL);
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initialize(generalConfig);
+        GeneralConfig generalConfig = new GeneralConfig();
+        generalConfig.setLogLevel(Level.INFO);
+        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+        configHandler.initialize(generalConfig);
 
-	ClientCommandConfig config = new ClientCommandConfig();
-	config.setConnect("localhost:" + port);
+        ClientCommandConfig config = new ClientCommandConfig();
+        config.setConnect("localhost:" + port);
+        config.setTlsTimeout(TIMEOUT);
 
-	List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
+        List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
 
-	config.setProtocolVersion(ProtocolVersion.TLS10);
-	testProtocolCompatibility(serverList, configHandler, config, algorithm);
-	config.setProtocolVersion(ProtocolVersion.TLS11);
-	testProtocolCompatibility(serverList, configHandler, config, algorithm);
-	config.setProtocolVersion(ProtocolVersion.TLS12);
-	testProtocolCompatibility(serverList, configHandler, config, algorithm);
+        config.setProtocolVersion(ProtocolVersion.TLS10);
+        testProtocolCompatibility(serverList, configHandler, config, algorithm);
+        config.setProtocolVersion(ProtocolVersion.TLS11);
+        testProtocolCompatibility(serverList, configHandler, config, algorithm);
+        config.setProtocolVersion(ProtocolVersion.TLS12);
+        testProtocolCompatibility(serverList, configHandler, config, algorithm);
 
-	if (algorithm == PublicKeyAlgorithm.RSA) {
-	    testCustomWorkflow(port);
-	}
+        if (algorithm == PublicKeyAlgorithm.RSA) {
+            testCustomWorkflow(port);
+        }
     }
 
     private void testProtocolCompatibility(List<String> serverList, ConfigHandler configHandler,
-	    ClientCommandConfig config, PublicKeyAlgorithm algorithm) {
-	LOGGER.info(config.getProtocolVersion());
-	for (CipherSuite cs : CipherSuite.getImplemented()) {
-	    Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
-	    requiredAlgorithms.remove(algorithm);
-	    if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getProtocolVersion())
-		    && requiredAlgorithms.isEmpty()) {
-		LOGGER.info("Testing: {}", cs);
-		LinkedList<CipherSuite> cslist = new LinkedList<>();
-		cslist.add(cs);
-		config.setCipherSuites(cslist);
-		testExecuteWorkflow(configHandler, config);
-	    }
-	}
+            ClientCommandConfig config, PublicKeyAlgorithm algorithm) {
+        LOGGER.info(config.getProtocolVersion());
+        for (CipherSuite cs : CipherSuite.getImplemented()) {
+            Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
+            requiredAlgorithms.remove(algorithm);
+            if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getProtocolVersion())
+                    && requiredAlgorithms.isEmpty()) {
+                LOGGER.info("Testing: {}", cs);
+                LinkedList<CipherSuite> cslist = new LinkedList<>();
+                cslist.add(cs);
+                config.setCipherSuites(cslist);
+                testExecuteWorkflow(configHandler, config);
+            }
+        }
     }
 
     private void testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config) {
 
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-	workflowExecutor.executeWorkflow();
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        workflowExecutor.executeWorkflow();
+        transportHandler.closeConnection();
 
-	transportHandler.closeConnection();
-	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
-	System.out.println("passed");
+        assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+
     }
 
     private void testCustomWorkflow(int port) {
-	GeneralConfig generalConfig = new GeneralConfig();
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initialize(generalConfig);
+        GeneralConfig generalConfig = new GeneralConfig();
+        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+        configHandler.initialize(generalConfig);
 
-	ClientCommandConfig config = new ClientCommandConfig();
-	config.setConnect("localhost:" + port);
-	config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
+        ClientCommandConfig config = new ClientCommandConfig();
+        config.setConnect("localhost:" + port);
+        config.setTlsTimeout(TIMEOUT);
+        config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
 
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
-	trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	trace.add(new CertificateMessage(ConnectionEnd.SERVER));
-	trace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	trace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	trace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	trace.add(new FinishedMessage(ConnectionEnd.CLIENT));
-	trace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+        trace.add(new CertificateMessage(ConnectionEnd.SERVER));
+        trace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
+        trace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+        trace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+        trace.add(new FinishedMessage(ConnectionEnd.CLIENT));
+        trace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
+        trace.add(new FinishedMessage(ConnectionEnd.SERVER));
 
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-	workflowExecutor.executeWorkflow();
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        workflowExecutor.executeWorkflow();
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
 
-	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+        assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
     }
 
 }

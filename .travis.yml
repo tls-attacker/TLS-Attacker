@@ -1,0 +1,19 @@
+language: java
+
+sudo: false
+
+script: ./mvnw -Ptravis clean package
+
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    recipients:
+    - juraj.somorovsky@hackmanit.de

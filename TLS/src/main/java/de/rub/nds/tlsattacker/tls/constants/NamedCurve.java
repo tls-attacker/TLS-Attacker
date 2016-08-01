@@ -40,7 +40,17 @@ public enum NamedCurve {
     SECP256K1(new byte[] { (byte) 0, (byte) 22 }),
     SECP256R1(new byte[] { (byte) 0, (byte) 23 }),
     SECP384R1(new byte[] { (byte) 0, (byte) 24 }),
-    SECP521R1(new byte[] { (byte) 0, (byte) 25 });
+    SECP521R1(new byte[] { (byte) 0, (byte) 25 }),
+    BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }),
+    BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }),
+    BRAINPOOLP521R1(new byte[] { (byte) 0, (byte) 28 }),
+    ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }),
+    ECDH_X448(new byte[] { (byte) 0, (byte) 30 }),
+    FFDHE2048(new byte[] { (byte) 1, (byte) 0 }),
+    FFDHE3072(new byte[] { (byte) 1, (byte) 1 }),
+    FFDHE4096(new byte[] { (byte) 1, (byte) 2 }),
+    FFDHE6144(new byte[] { (byte) 1, (byte) 3 }),
+    FFDHE8192(new byte[] { (byte) 1, (byte) 4 });
 
     public static final int LENGTH = 2;
 
