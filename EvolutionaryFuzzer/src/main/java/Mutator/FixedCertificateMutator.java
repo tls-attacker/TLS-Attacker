@@ -29,86 +29,69 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class FixedCertificateMutator extends CertificateMutator
-{
+public class FixedCertificateMutator extends CertificateMutator {
 
     private List<X509CertificateObject> clientCertList;
     private List<ServerCertificateKeypair> serverPairList;
     private Random r;
 
-    public FixedCertificateMutator()
-    {
-        try
-        {
-            this.clientCertList = new ArrayList<>();
-            this.serverPairList = new ArrayList<>();
-            EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-            if (fc.getKeystore() == null)
-            {
-                fc.setKeystore("../resources/rsa1024.jks");
-            }
-            if (fc.getPassword() == null)
-            {
-                fc.setPassword("password");
-            }
-            if (fc.getAlias() == null || fc.getAlias().equals(""))
-            {
-                fc.setAlias("alias");
-            }
-            KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
+    public FixedCertificateMutator() {
+	try {
+	    this.clientCertList = new ArrayList<>();
+	    this.serverPairList = new ArrayList<>();
+	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
+	    if (fc.getKeystore() == null) {
+		fc.setKeystore("../resources/rsa1024.jks");
+	    }
+	    if (fc.getPassword() == null) {
+		fc.setPassword("password");
+	    }
+	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
+		fc.setAlias("alias");
+	    }
+	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
 
-            java.security.cert.Certificate sunCert = ks.getCertificate(fc.getAlias());
-            if (sunCert == null)
-            {
-                throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + "alias" + ")");
-            }
-            byte[] certBytes = sunCert.getEncoded();
+	    java.security.cert.Certificate sunCert = ks.getCertificate(fc.getAlias());
+	    if (sunCert == null) {
+		throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
+			+ "certificate alias and key? (Current alias: " + "alias" + ")");
+	    }
+	    byte[] certBytes = sunCert.getEncoded();
 
-            ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-            org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+	    ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+	    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
 
-            org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
-            certs[0] = cert;
-            org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs);
+	    org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
+	    certs[0] = cert;
+	    org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs);
 
-            X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-            r = new Random();
-            clientCertList.add(x509CertObject);
-            serverPairList.add(new ServerCertificateKeypair(new File("certificates/server/key.pem"), new File(
-                    "certificates/server/cert.pem")));
-        }
-        catch (KeyStoreException ex)
-        {
-            Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (NoSuchAlgorithmException ex)
-        {
-            Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch (CertificateException ex)
-        {
-            Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-        }
+	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
+	    r = new Random();
+	    clientCertList.add(x509CertObject);
+	    serverPairList.add(new ServerCertificateKeypair(new File("certificates/server/key.pem"), new File(
+		    "certificates/server/cert.pem")));
+	} catch (KeyStoreException ex) {
+	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (IOException ex) {
+	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (NoSuchAlgorithmException ex) {
+	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (CertificateException ex) {
+	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }
 
     @Override
-    public X509CertificateObject getClientCertificate()
-    {
-        return clientCertList.get(r.nextInt(clientCertList.size()));
+    public X509CertificateObject getClientCertificate() {
+	return clientCertList.get(r.nextInt(clientCertList.size()));
     }
 
     @Override
-    public ServerCertificateKeypair getServerCertificateKeypair()
-    {
-        return serverPairList.get(r.nextInt(serverPairList.size()));
+    public ServerCertificateKeypair getServerCertificateKeypair() {
+	return serverPairList.get(r.nextInt(serverPairList.size()));
     }
 
 }

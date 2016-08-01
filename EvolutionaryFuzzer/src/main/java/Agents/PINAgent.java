@@ -94,7 +94,6 @@ public class PINAgent extends Agent {
 	    }
 	    t = getBranchTrace(br);
 	    br.close();
-	   
 
 	} catch (IOException ex) {
 	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);

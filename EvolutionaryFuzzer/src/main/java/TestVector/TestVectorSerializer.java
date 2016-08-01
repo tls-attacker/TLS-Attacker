@@ -59,7 +59,7 @@ public final class TestVectorSerializer {
 	if (context == null) {
 	    context = JAXBContext.newInstance(TestVector.class, ExtensionMessage.class, WorkflowTrace.class,
 		    ProtocolMessage.class, ModificationFilter.class, VariableModification.class,
-		    ModifiableVariable.class,ServerCertificateKeypair.class,File.class);
+		    ModifiableVariable.class, ServerCertificateKeypair.class, File.class);
 	}
 	return context;
     }

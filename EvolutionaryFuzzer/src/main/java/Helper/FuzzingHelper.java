@@ -147,8 +147,7 @@ public class FuzzingHelper {
     public static AddRecordModification addRecordAtRandom(WorkflowTrace trace, ConnectionEnd messageIssuer) {
 	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
 	Random random = RandomHelper.getRandom();
-	for(int i = 0; i < protocolMessages.size(); i++)
-        {
+	for (int i = 0; i < protocolMessages.size(); i++) {
 	    int randomPM = random.nextInt(protocolMessages.size());
 	    ProtocolMessage pm = protocolMessages.get(randomPM);
 	    if (pm.getMessageIssuer() == messageIssuer) {
@@ -158,7 +157,7 @@ public class FuzzingHelper {
 		return new AddRecordModification(pm);
 	    }
 	}
-        return null;
+	return null;
     }
 
     public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {

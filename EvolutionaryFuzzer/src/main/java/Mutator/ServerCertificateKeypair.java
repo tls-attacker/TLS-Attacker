@@ -14,64 +14,57 @@ import java.io.Serializable;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerCertificateKeypair implements Serializable {//TODO
+public class ServerCertificateKeypair implements Serializable {// TODO
     private File keyFile;
     private File certificateFile;
     private String keyFilePath;
     private String certificateFilePath;
+
     public ServerCertificateKeypair(File keyFile, File certificateFile) {
 	this.keyFile = keyFile;
 	this.certificateFile = certificateFile;
-        this.keyFilePath = keyFile.getAbsolutePath();
-        this.certificateFilePath = certificateFile.getAbsolutePath();
+	this.keyFilePath = keyFile.getAbsolutePath();
+	this.certificateFilePath = certificateFile.getAbsolutePath();
     }
 
-    public ServerCertificateKeypair()
-    {
-    	this.keyFile = null;
+    public ServerCertificateKeypair() {
+	this.keyFile = null;
 	this.certificateFile = null;
-        this.keyFilePath = null;
-        this.certificateFilePath = null;
-    
+	this.keyFilePath = null;
+	this.certificateFilePath = null;
+
     }
+
     public File getKeyFile() {
 	return keyFile;
     }
 
     public File getCertificateFile() {
-        if(certificateFile == null && certificateFilePath!=null)
-        {
-            certificateFile = new File(certificateFilePath);
-        }
+	if (certificateFile == null && certificateFilePath != null) {
+	    certificateFile = new File(certificateFilePath);
+	}
 	return certificateFile;
     }
 
-    public String getKeyFilePath()
-    {
-        if(keyFile == null && keyFilePath!=null)
-        {
-            keyFile = new File(keyFilePath);
-        }
-        return keyFilePath;
+    public String getKeyFilePath() {
+	if (keyFile == null && keyFilePath != null) {
+	    keyFile = new File(keyFilePath);
+	}
+	return keyFilePath;
     }
 
-    public void setKeyFilePath(String keyFilePath)
-    {
-        this.keyFilePath = keyFilePath;
-        keyFile = new File(keyFilePath);
+    public void setKeyFilePath(String keyFilePath) {
+	this.keyFilePath = keyFilePath;
+	keyFile = new File(keyFilePath);
     }
 
-    public String getCertificateFilePath()
-    {
-        return certificateFilePath;
+    public String getCertificateFilePath() {
+	return certificateFilePath;
     }
 
-    public void setCertificateFilePath(String certificateFilePath)
-    {
-        this.certificateFilePath = certificateFilePath;
-        certificateFile = new File(certificateFilePath);
+    public void setCertificateFilePath(String certificateFilePath) {
+	this.certificateFilePath = certificateFilePath;
+	certificateFile = new File(certificateFilePath);
     }
-    
 
-    
 }

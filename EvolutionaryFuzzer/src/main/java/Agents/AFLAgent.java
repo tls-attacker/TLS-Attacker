@@ -96,7 +96,7 @@ public class AFLAgent extends Agent {
 		break;
 	}
 	BranchTrace t = getBranchTrace(branchTrace);
-	
+
 	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, executedVector, LogFileIDManager
 		.getInstance().getFilename());
 
