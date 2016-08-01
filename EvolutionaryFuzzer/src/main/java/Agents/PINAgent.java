@@ -21,6 +21,7 @@ import Graphs.Edge;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.TestVector;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class PINAgent extends Agent {
     }
 
     @Override
-    public Result collectResults(File branchTrace, WorkflowTrace trace, WorkflowTrace executedTrace) {
+    public Result collectResults(File branchTrace, TestVector vector, TestVector executedVector) {
 	if (running) {
 	    throw new IllegalStateException("Can't collect Results, Agent still running!");
 	}
@@ -93,13 +94,13 @@ public class PINAgent extends Agent {
 	    }
 	    t = getBranchTrace(br);
 	    br.close();
-	    branchTrace.delete();
+	   
 
 	} catch (IOException ex) {
 	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
 	}
 
-	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
+	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, executedVector, LogFileIDManager
 		.getInstance().getFilename());
 
 	return result;

@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.TestVector;
 
 /**
  * Agents are Applications which monitor the behavior of the Fuzzed program.
@@ -50,5 +51,5 @@ public abstract class Agent {
      * @return Result Object which contains all Information of the executed
      *         Fuzzingvector.
      */
-    public abstract Result collectResults(File branchTrace, WorkflowTrace trace, WorkflowTrace executedTrace);
+    public abstract Result collectResults(File branchTrace, TestVector vector, TestVector executedVector);
 }

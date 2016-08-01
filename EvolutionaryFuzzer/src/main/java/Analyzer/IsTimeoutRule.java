@@ -9,6 +9,7 @@ package Analyzer;
 
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
+import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +43,13 @@ public class IsTimeoutRule extends Rule {
 	found++;
 	File f = new File(evoConfig.getOutputFolder() + "interesting/" + result.getId());
 	try {
-	    result.getExecutedTrace().setDescription("WorkflowTrace did Timeout!");
+	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace did Timeout!");
 	    f.createNewFile();
-	    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+	    TestVectorSerializer.write(f, result.getExecutedVector());
 	} catch (JAXBException | IOException E) {
-	    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-		    f.getAbsolutePath());
+	    LOG.log(Level.SEVERE,
+		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+			    + f.getAbsolutePath(), E);
 	}
     }
 

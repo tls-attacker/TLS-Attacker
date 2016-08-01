@@ -3,8 +3,9 @@
 /openssl/
 /opensslvul/
 /openssltimeout/
-file.id
+
 /server(afl)/
 pin.log
 vertices.dump
 edges.dump
+file.id

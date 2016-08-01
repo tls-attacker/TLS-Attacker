@@ -14,6 +14,7 @@ import Graphs.ProbeVertex;
 import Result.MergeResult;
 import Result.Result;
 import Result.ResultContainer;
+import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.IOException;
@@ -62,15 +63,14 @@ public class IsGoodRule extends Rule {
 	    File f = new File(evoConfig.getOutputFolder() + "good/" + result.getId());
 	    try {
 		f.createNewFile();
-		WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+		TestVectorSerializer.write(f, result.getExecutedVector());
 	    } catch (JAXBException | IOException E) {
-		LOG.log(Level.SEVERE,
-			"Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			f.getAbsolutePath());
+		LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+			+ f.getAbsolutePath(), E);
 	    }
 	}
-	result.getTrace().makeGeneric();
-	ResultContainer.getInstance().addGoodTrace(result.getTrace());
+	result.getVector().getTrace().makeGeneric();
+	ResultContainer.getInstance().addGoodVector(result.getVector());
     }
 
     public BranchTrace getBranchTrace() {

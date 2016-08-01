@@ -37,7 +37,7 @@ public class ContainsInternalErrorRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	WorkflowTrace trace = result.getTrace();
+	WorkflowTrace trace = result.getVector().getTrace();
 	if (trace.containsProtocolMessage(ProtocolMessageType.ALERT)) {
 	    List<Integer> positions = trace.getProtocolMessagePositions(ProtocolMessageType.ALERT);
 	    for (Integer i : positions) {
@@ -56,12 +56,13 @@ public class ContainsInternalErrorRule extends Rule {
 	found++;
 	File f = new File(evoConfig.getOutputFolder() + "interesting/" + result.getId());
 	try {
-	    result.getExecutedTrace().setDescription("WorkflowTrace contains InternalError Alert Message");
+	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace contains InternalError Alert Message");
 	    f.createNewFile();
-	    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+	    WorkflowTraceSerializer.write(f, result.getExecutedVector().getTrace());
 	} catch (JAXBException | IOException E) {
-	    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-		    f.getAbsolutePath());
+	    LOG.log(Level.SEVERE,
+		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+			    + f.getAbsolutePath(), E);
 	}
 
     }

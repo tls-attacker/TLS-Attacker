@@ -34,8 +34,14 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private Integer addMessagePercentage = 50;
     @Parameter(names = "-remove_message", description = "Probability of removing a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
     private Integer removeMessagePercentage = 1;
+    @Parameter(names = "-change_server_cert", description = "Probability of changing the Certificate of the Server", validateWith = PercentageValidator.class)
+    private Integer changeServerCert = 1;
+    @Parameter(names = "-change_client_cert", description = "Probability of changing the Certificate in a ClientCertificate Message", validateWith = PercentageValidator.class)
+    private Integer changeClientCert = 1;
     @Parameter(names = "-duplicate_message", description = "Probability of duplicating a random message from a WorkflowTrace", validateWith = PercentageValidator.class)
     private Integer duplicateMessagePercentage = 1;
+    @Parameter(names = "-multiple_modification", description = "Probability of Modifiying a TestVector multiple times in a single Interation", validateWith = PercentageValidator.class)
+    private Integer multipleModifications = 1;
 
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./";
@@ -47,6 +53,30 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private boolean noOld = false;
     @Parameter(names = "-start_stopped", description = "Starts the Fuzzer in a stopped state.")
     private boolean startStopped = false;
+
+    public Integer getMultipleModifications() {
+	return multipleModifications;
+    }
+
+    public void setMultipleModifications(Integer multipleModifications) {
+	this.multipleModifications = multipleModifications;
+    }
+
+    public Integer getChangeServerCert() {
+	return changeServerCert;
+    }
+
+    public void setChangeServerCert(Integer changeServerCert) {
+	this.changeServerCert = changeServerCert;
+    }
+
+    public Integer getChangeClientCert() {
+	return changeClientCert;
+    }
+
+    public void setChangeClientCert(Integer changeClientCert) {
+	this.changeClientCert = changeClientCert;
+    }
 
     public boolean isStartStopped() {
 	return startStopped;
@@ -74,7 +104,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     public EvolutionaryFuzzerConfig() {
 	outputFolder = "./";
 	serverCommandFromFile = "server/";
-	this.timeout = 60000;
+	this.timeout = 10000;
     }
 
     public boolean isSerialize() {

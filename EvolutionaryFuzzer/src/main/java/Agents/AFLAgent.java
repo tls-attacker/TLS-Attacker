@@ -15,14 +15,12 @@ import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Graphs.BranchTrace;
-import Graphs.CountEdge;
 import Graphs.Edge;
-import Graphs.ProbeVertex;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.TestVector;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,7 +79,7 @@ public class AFLAgent extends Agent {
     }
 
     @Override
-    public Result collectResults(File branchTrace, WorkflowTrace trace, WorkflowTrace executedTrace) {
+    public Result collectResults(File branchTrace, TestVector vector, TestVector executedVector) {
 	if (running) {
 	    throw new IllegalStateException("Can't collect Results, Agent still running!");
 	}
@@ -98,8 +96,8 @@ public class AFLAgent extends Agent {
 		break;
 	}
 	BranchTrace t = getBranchTrace(branchTrace);
-	branchTrace.delete();
-	Result result = new Result(crash, timeout, startTime, stopTime, t, trace, executedTrace, LogFileIDManager
+	
+	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, executedVector, LogFileIDManager
 		.getInstance().getFilename());
 
 	return result;

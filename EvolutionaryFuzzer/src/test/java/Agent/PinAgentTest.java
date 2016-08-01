@@ -8,15 +8,13 @@
 package Agent;
 
 import static Agent.AflAgentTest.deleteFolder;
-import Agents.AFLAgent;
 import Agents.PINAgent;
 import Result.Result;
-import Server.ServerManager;
 import Server.TLSServer;
+import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -35,7 +33,7 @@ public class PinAgentTest {
      */
     @AfterClass
     public static void tearDownClass() {
-	File f = new File("JUNIT");
+	File f = new File("JUNIT/");
 	deleteFolder(f);
 
     }
@@ -96,7 +94,7 @@ public class PinAgentTest {
      */
     @Test
     public void testCollectResults() {
-	WorkflowTrace t = new WorkflowTrace();
+	TestVector t = new TestVector(null, null, null);
 	agent.collectResults(new File("../resources/testsuite/EvolutionaryFuzzer/PinTest/test.trace"), t, t);
     }
 
@@ -106,7 +104,7 @@ public class PinAgentTest {
      */
     @Test
     public void testCollectResultsGraph() {
-	WorkflowTrace t = new WorkflowTrace();
+	TestVector t = new TestVector(new WorkflowTrace(), null, null);
 	Result r = agent
 		.collectResults(new File("../resources/testsuite/EvolutionaryFuzzer/PinTest/graph.trace"), t, t);
 	assertTrue("Failure: Test result should have exactly 4 Vertices",

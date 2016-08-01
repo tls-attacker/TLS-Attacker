@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import org.jfree.util.Log;
 import Graphs.BranchTrace;
+import TestVector.TestVector;
 
 /**
  * This Class manages the BranchTraces and merges newly obtained Workflows with
@@ -38,15 +39,15 @@ public class ResultContainer {
     }
 
     // List of old Results
-    private final ArrayList<WorkflowTrace> goodTrace;
-    private final Set<WorkflowTraceType> typeSet;
+    private final ArrayList<TestVector> goodVectors;
+
     private final EvolutionaryFuzzerConfig evoConfig;
     private int executed = 0;
     private Analyzer analyzer;
 
     private ResultContainer() {
-	goodTrace = new ArrayList<>();
-	typeSet = new HashSet<>();
+	goodVectors = new ArrayList<>();
+
 	evoConfig = Config.ConfigManager.getInstance().getConfig();
 	analyzer = new Analyzer(evoConfig);
     }
@@ -56,8 +57,8 @@ public class ResultContainer {
      * 
      * @return ArrayList of good WorkflowTraces
      */
-    public ArrayList<WorkflowTrace> getGoodTraces() {
-	return goodTrace;
+    public ArrayList<TestVector> getGoodVectors() {
+	return goodVectors;
     }
 
     /**
@@ -70,33 +71,15 @@ public class ResultContainer {
     public void commit(Result result) {
 	executed++;
 	analyzer.analyze(result);
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
-	type.clean();
-	if (typeSet.add(type) && evoConfig.isSerialize()) {
-	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
-	    LOG.log(Level.FINER, type.toString());
-	    File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/" + result.getId());
-	    try {
-		f.createNewFile();
-		WorkflowTraceSerializer.write(f, result.getExecutedTrace());
-	    } catch (JAXBException | IOException E) {
-		LOG.log(Level.SEVERE,
-			"Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-			f.getAbsolutePath());
-	    }
-	}
+
     }
 
     public int getExecuted() {
 	return executed;
     }
 
-    public int getTypeCount() {
-	return typeSet.size();
-    }
-
-    public void addGoodTrace(WorkflowTrace trace) {
-	goodTrace.add(trace);
+    public void addGoodVector(TestVector vector) {
+	goodVectors.add(vector);
     }
 
     public Analyzer getAnalyzer() {

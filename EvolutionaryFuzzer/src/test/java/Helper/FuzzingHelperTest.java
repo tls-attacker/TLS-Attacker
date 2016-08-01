@@ -53,14 +53,14 @@ public class FuzzingHelperTest {
     }
 
     /**
-     * Test of addRecordsAtRandom method, of class FuzzingHelper.
+     * Test of addRecordAtRandom method, of class FuzzingHelper.
      */
     @Test
     public void testAddRecordsAtRandom() {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage());
 	ConnectionEnd messageIssuer = ConnectionEnd.CLIENT;
-	FuzzingHelper.addRecordsAtRandom(trace, messageIssuer);
+	FuzzingHelper.addRecordAtRandom(trace, messageIssuer);
     }
 
     /**

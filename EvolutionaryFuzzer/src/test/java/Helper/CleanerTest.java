@@ -29,7 +29,7 @@ public class CleanerTest {
 
 	EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
 
-	evoConfig.setOutputFolder("JUNIT");
+	evoConfig.setOutputFolder("JUNIT/");
 	File f = new File(evoConfig.getOutputFolder() + "traces/");
 	f.mkdirs();
 	Cleaner.cleanTraces(evoConfig);
@@ -42,7 +42,7 @@ public class CleanerTest {
     public void testCleanAll() {
 	EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
 
-	evoConfig.setOutputFolder("JUNIT");
+	evoConfig.setOutputFolder("JUNIT/");
 	File f = new File(evoConfig.getOutputFolder() + "traces/");
 	f.mkdirs();
 	f = new File(evoConfig.getOutputFolder() + "faulty/");

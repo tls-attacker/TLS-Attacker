@@ -10,6 +10,7 @@ package Analyzer;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
 import Result.Result;
+import TestVector.TestVectorSerializer;
 import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
@@ -40,7 +41,8 @@ public class UniqueFlowsRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
+	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
+		.getTrace());
 	type.clean();
 	return !typeSet.contains(type);
 
@@ -49,7 +51,8 @@ public class UniqueFlowsRule extends Rule {
     @Override
     public void onApply(Result result) {
 	found++;
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedTrace());
+	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
+		.getTrace());
 	type.clean();
 	typeSet.add(type);// TODO Can this be a race?
 	// It may be that we dont want to safe good Traces, for example if
@@ -59,10 +62,11 @@ public class UniqueFlowsRule extends Rule {
 	File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/" + result.getId());
 	try {
 	    f.createNewFile();
-	    WorkflowTraceSerializer.write(f, result.getExecutedTrace());
+	    TestVectorSerializer.write(f, result.getExecutedVector());
 	} catch (JAXBException | IOException E) {
-	    LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to {0}",
-		    f.getAbsolutePath());
+	    LOG.log(Level.SEVERE,
+		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+			    + f.getAbsolutePath(), E);
 	}
     }
 

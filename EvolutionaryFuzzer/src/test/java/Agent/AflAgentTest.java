@@ -28,7 +28,7 @@ public class AflAgentTest {
      */
     @AfterClass
     public static void tearDownClass() {
-	File f = new File("JUNIT");
+	File f = new File("JUNIT/");
 	deleteFolder(f);
 
     }

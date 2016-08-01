@@ -17,13 +17,13 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Result.ResultContainer;
 import Server.ServerManager;
 import Server.TLSServer;
+import TestVector.TestVector;
+import TestVector.TestVectorSerializer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -51,9 +51,9 @@ public class ExecutorThreadPool implements Runnable {
     private long runs = 0;
     // List of Workflowtraces that should be executed before we start generating
     // new Workflows
-    private final List<WorkflowTrace> list;
+    private final List<TestVector> list;
     // The Config the ExecutorThreadPool uses
-    private EvolutionaryFuzzerConfig config;
+    private final EvolutionaryFuzzerConfig config;
 
     /**
      * Constructor for the ExecutorThreadPool
@@ -77,16 +77,16 @@ public class ExecutorThreadPool implements Runnable {
 
 	LOG.log(Level.INFO, "Reading good Traces in:");
 
-	list = WorkflowTraceSerializer.readFolder(f);
+	list = TestVectorSerializer.readFolder(f);
 	f = new File(config.getOutputFolder() + "uniqueFlows/");
 
-	list.addAll(WorkflowTraceSerializer.readFolder(f));
+	list.addAll(TestVectorSerializer.readFolder(f));
 	LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
 	// We need to fix Server responses before we can use the workflowtraces
 	// for mutation
 	LOG.log(Level.INFO, "Preparing Traces:{0}", list.size());
-	for (WorkflowTrace trace : list) {
-	    trace.makeGeneric();
+	for (TestVector vector : list) {
+	    vector.getTrace().makeGeneric();
 	}
     }
 
@@ -181,7 +181,7 @@ public class ExecutorThreadPool implements Runnable {
     }
 
     /**
-     * Starts of stops the Threadpool
+     * Starts or stops the Threadpool
      * 
      * @param stopped
      */

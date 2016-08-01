@@ -8,6 +8,7 @@
 package Mutator;
 
 import Config.EvolutionaryFuzzerConfig;
+import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 
 /**
@@ -20,9 +21,11 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 public abstract class Mutator {
 
     protected EvolutionaryFuzzerConfig config;
+    protected CertificateMutator certMutator;
 
-    public Mutator(EvolutionaryFuzzerConfig config) {
+    public Mutator(EvolutionaryFuzzerConfig config, CertificateMutator certMutator) {
 	this.config = config;
+	this.certMutator = certMutator;
     }
 
     /**
@@ -30,5 +33,5 @@ public abstract class Mutator {
      * 
      * @return
      */
-    public abstract WorkflowTrace getNewMutation();
+    public abstract TestVector getNewMutation();
 }

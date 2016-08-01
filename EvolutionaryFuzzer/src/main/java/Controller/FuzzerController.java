@@ -6,9 +6,8 @@ import Mutator.Mutator;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
-import Graphs.CountEdge;
 import Graphs.Edge;
-import Graphs.ProbeVertex;
+import Mutator.FixedCertificateMutator;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -27,7 +26,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
-import org.jgrapht.DirectedGraph;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -56,9 +54,7 @@ public class FuzzerController extends Controller {
 	ServerManager serverManager = ServerManager.getInstance();
 	serverManager.init(config);
 
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
-	mutator = new SimpleMutator(tmpTlsContext, config);
+	mutator = new SimpleMutator(config, new FixedCertificateMutator());
 	int threads = config.getThreads();
 	if (threads == -1) {
 	    threads = serverManager.getNumberOfServers();

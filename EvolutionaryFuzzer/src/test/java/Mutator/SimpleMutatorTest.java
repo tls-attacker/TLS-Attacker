@@ -65,10 +65,8 @@ public class SimpleMutatorTest {
      */
     @Test
     public void testMutation() {
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	TlsContext tmpTlsContext = configHandler.initializeTlsContext(new EvolutionaryFuzzerConfig());
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	SimpleMutator mutator = new SimpleMutator(tmpTlsContext, config);
+	SimpleMutator mutator = new SimpleMutator(config, new FixedCertificateMutator());
 	mutator.getNewMutation();
     }
 }

@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.util.logging.Logger;
 import Graphs.BranchTrace;
+import TestVector.TestVector;
 
 /**
  * This class summarizes a the Results of FuzzingVector. It contains information
@@ -35,21 +36,21 @@ public class Result {
     // File Containing all the ProbeIDs
     private final BranchTrace branchTrace;
     // Workflowtrace that should be Executed
-    private final WorkflowTrace trace;
+    private final TestVector vector;
     // Workflowtrace that was executed
-    private final WorkflowTrace executedTrace;
+    private final TestVector executedVector;
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
 
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
-	    WorkflowTrace trace, WorkflowTrace executedTrace, String id) {
+	    TestVector vector, TestVector executedVector, String id) {
 	this.hasCrashed = hasCrashed;
 	this.didTimeout = didTimeout;
 	this.startTime = startTime;
 	this.stopTime = stopTime;
 	this.branchTrace = branchTrace;
-	this.trace = trace;
-	this.executedTrace = executedTrace;
+	this.vector = vector;
+	this.executedVector = executedVector;
 	this.id = id;
     }
 
@@ -62,8 +63,8 @@ public class Result {
 	return id;
     }
 
-    public WorkflowTrace getExecutedTrace() {
-	return executedTrace;
+    public TestVector getExecutedVector() {
+	return executedVector;
     }
 
     /**
@@ -117,13 +118,8 @@ public class Result {
 		+ ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
     }
 
-    /**
-     * Returns the executed WorkflowTrace
-     * 
-     * @return Executed WorkflowTrace
-     */
-    public WorkflowTrace getTrace() {
-	return trace;
+    public TestVector getVector() {
+	return vector;
     }
 
 }

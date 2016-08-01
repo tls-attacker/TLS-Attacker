@@ -9,6 +9,7 @@ package Executor;
 
 import Config.EvolutionaryFuzzerConfig;
 import Executor.ExecutorThreadPool;
+import Mutator.FixedCertificateMutator;
 import Mutator.SimpleMutator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;
@@ -26,8 +27,9 @@ public class ExecutorThreadPoolTest {
     @Test
     public void testConstructor() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	TlsContext context = new TlsContext();
-	ExecutorThreadPool pool = new ExecutorThreadPool(5, new SimpleMutator(context, config), config);
+
+	ExecutorThreadPool pool = new ExecutorThreadPool(5, new SimpleMutator(config, new FixedCertificateMutator()),
+		config);
 	assertTrue("Failure: Pool is not stopped on creation", pool.isStopped());
     }
 }
