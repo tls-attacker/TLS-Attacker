@@ -9,6 +9,7 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -367,7 +368,8 @@ public enum CipherSuite {
     public static CipherSuite getRandom() {
 	CipherSuite c = null;
 	while (c == null) {
-	    c = MAP.get((new Random().nextInt(0xFFFF)));
+	    Object[] o = MAP.values().toArray();
+            c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
 	}
 	return c;
     }
