@@ -8,6 +8,7 @@
 package Graphs;
 
 import Result.MergeResult;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class BranchTrace {
+public class BranchTrace implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 

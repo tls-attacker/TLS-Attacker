@@ -7,13 +7,14 @@
  */
 package Graphs;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class Edge {
+public class Edge implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = Logger.getLogger(Edge.class.getName());
