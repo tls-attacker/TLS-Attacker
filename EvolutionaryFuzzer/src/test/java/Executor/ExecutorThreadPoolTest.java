@@ -9,7 +9,7 @@ package Executor;
 
 import Config.EvolutionaryFuzzerConfig;
 import Executor.ExecutorThreadPool;
-import Mutator.FixedCertificateMutator;
+import Mutator.Certificate.FixedCertificateMutator;
 import Mutator.SimpleMutator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;

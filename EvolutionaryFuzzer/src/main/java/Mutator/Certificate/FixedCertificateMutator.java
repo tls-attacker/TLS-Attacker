@@ -5,8 +5,9 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package Mutator;
+package Mutator.Certificate;
 
+import TestVector.ServerCertificateKeypair;
 import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;

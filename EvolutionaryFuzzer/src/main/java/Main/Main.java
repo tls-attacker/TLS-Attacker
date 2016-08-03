@@ -14,6 +14,8 @@ import Controller.FuzzerController;
 import Executor.DebugExecutor;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
+import Exceptions.IllegalCertificateMutatorException;
+import Exceptions.IllegalMutatorException;
 import FlowVisualisation.AutomataWindow;
 import FlowVisualisation.GraphWindow;
 import Helper.Cleaner;
@@ -68,23 +70,25 @@ public class Main {
 	    jc.usage();
 	    return;
 	}
-	evoConfig.setFuzzingMode(true);
-	if (evoConfig.getKeystore() == null) {
-	    evoConfig.setKeystore("../resources/rsa1024.jks");
-	}
-	if (evoConfig.getPassword() == null) {
-	    evoConfig.setPassword("password");
-	}
-	if (evoConfig.getAlias() == null || evoConfig.getAlias().equals("")) {
-	    evoConfig.setAlias("alias");
-	}
+	
 
 	switch (jc.getParsedCommand()) {
 	    case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
+                try
+                {
 		Controller controller = new FuzzerController(evoConfig);
 		controller.startFuzzer();
-		controller.startConsoleInput();
-		break;
+                    controller.startConsoleInput();
+                }
+                catch(IllegalCertificateMutatorException ex)
+                {
+                    LOG.info("Unknown Certificate Mutator. Aborting...");
+                }
+                catch(IllegalMutatorException ex)
+                {
+                    LOG.info("Unknown Mutator. Aborting...");
+                }
+                break;
 	    case "tracetypes":
 		File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/");
 		List<WorkflowTrace> traces = WorkflowTraceSerializer.readFolder(f);

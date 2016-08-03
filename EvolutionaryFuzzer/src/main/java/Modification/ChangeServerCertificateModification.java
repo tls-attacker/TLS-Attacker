@@ -7,7 +7,7 @@
  */
 package Modification;
 
-import Mutator.ServerCertificateKeypair;
+import TestVector.ServerCertificateKeypair;
 
 /**
  * 

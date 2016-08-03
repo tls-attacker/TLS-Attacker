@@ -7,7 +7,6 @@
  */
 package TestVector;
 
-import Mutator.ServerCertificateKeypair;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;

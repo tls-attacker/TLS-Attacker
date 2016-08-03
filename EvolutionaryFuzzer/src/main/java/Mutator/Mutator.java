@@ -7,6 +7,7 @@
  */
 package Mutator;
 
+import Mutator.Certificate.CertificateMutator;
 import Config.EvolutionaryFuzzerConfig;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;

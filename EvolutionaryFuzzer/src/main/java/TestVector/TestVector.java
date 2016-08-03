@@ -8,7 +8,6 @@
 package TestVector;
 
 import Modification.Modification;
-import Mutator.ServerCertificateKeypair;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.Serializable;
 import java.util.LinkedList;

@@ -1,5 +1,7 @@
 package Mutator;
 
+import Mutator.Certificate.CertificateMutator;
+import TestVector.ServerCertificateKeypair;
 import Mutator.Mutator;
 import Config.EvolutionaryFuzzerConfig;
 import Helper.FuzzingHelper;

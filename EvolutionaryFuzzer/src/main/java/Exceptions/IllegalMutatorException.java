@@ -5,17 +5,18 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package Mutator;
-
-import org.bouncycastle.jce.provider.X509CertificateObject;
+package Exceptions;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class CertificateMutator {
-    public abstract X509CertificateObject getClientCertificate();
+public class IllegalMutatorException extends Exception
+{
 
-    public abstract ServerCertificateKeypair getServerCertificateKeypair();
-
+    public IllegalMutatorException(String string)
+    {
+        super(string);
+    }
+    
 }

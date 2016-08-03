@@ -5,9 +5,14 @@ import Executor.ExecutorThreadPool;
 import Mutator.Mutator;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
+import Exceptions.IllegalCertificateMutatorException;
+import Exceptions.IllegalMutatorException;
 import Graphs.BranchTrace;
 import Graphs.Edge;
-import Mutator.FixedCertificateMutator;
+import Mutator.Certificate.CertificateMutator;
+import Mutator.Certificate.CertificateMutatorFactory;
+import Mutator.Certificate.FixedCertificateMutator;
+import Mutator.MutatorFactory;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -45,6 +50,8 @@ public class FuzzerController extends Controller
 
     // Chosen Mutator
     private final Mutator mutator;
+    // Chosen Certificate Mutator
+    private final CertificateMutator certMutator;
     // ThreadPool to start or stop
     private final ExecutorThreadPool pool;
 
@@ -54,7 +61,7 @@ public class FuzzerController extends Controller
      *
      * @param config Configuration used by the Controller
      */
-    public FuzzerController(EvolutionaryFuzzerConfig config)
+    public FuzzerController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException, IllegalCertificateMutatorException
     {
         super(config);
         ServerManager serverManager = ServerManager.getInstance();
@@ -77,7 +84,8 @@ public class FuzzerController extends Controller
             }
             
         }
-        mutator = new SimpleMutator(config, new FixedCertificateMutator());
+        certMutator = CertificateMutatorFactory.getCertificateMutator(config);
+        mutator = MutatorFactory.getMutator(new FixedCertificateMutator(), config);
         int threads = config.getThreads();
         if (threads == -1)
         {

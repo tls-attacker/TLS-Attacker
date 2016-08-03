@@ -49,6 +49,10 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private Integer threads = -1;
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
     private String agent = "AFL";
+    @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors (Default: simple). Possible: simple")
+    private String mutator = "simple";
+    @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates (Default: fixed). Possible: fixed")
+    private String certMutator = "fixed";
     @Parameter(names = "-no_old", description = "The mutator wont run WorkflowTraces he finds in the Good WorkflowTrace Folder, before he starts generating new Mutations")
     private boolean noOld = false;
     @Parameter(names = "-start_stopped", description = "Starts the Fuzzer in a stopped state.")
@@ -56,6 +60,26 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
 
+    public String getCertMutator()
+    {
+        return certMutator;
+    }
+
+    public void setCertMutator(String certMutator)
+    {
+        this.certMutator = certMutator;
+    }
+    
+    public String getMutator()
+    {
+        return mutator;
+    }
+
+    public void setMutator(String mutator)
+    {
+        this.mutator = mutator;
+    }
+    
     public boolean isCleanStart()
     {
         return cleanStart;
@@ -118,6 +142,11 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	outputFolder = "./";
 	serverCommandFromFile = "server/";
 	this.timeout = 10000;
+        setFuzzingMode(true);
+        setKeystore("../resources/rsa1024.jks");
+	setPassword("password");
+	setAlias("alias");
+	
     }
 
     public boolean isSerialize() {
