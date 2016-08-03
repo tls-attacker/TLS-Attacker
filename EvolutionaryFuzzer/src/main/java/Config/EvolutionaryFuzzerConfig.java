@@ -53,6 +53,19 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private boolean noOld = false;
     @Parameter(names = "-start_stopped", description = "Starts the Fuzzer in a stopped state.")
     private boolean startStopped = false;
+    @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
+    private boolean cleanStart = false;
+
+    public boolean isCleanStart()
+    {
+        return cleanStart;
+    }
+
+    public void setCleanStart(boolean cleanStart)
+    {
+        this.cleanStart = cleanStart;
+    }
+    
 
     public Integer getMultipleModifications() {
 	return multipleModifications;

@@ -21,6 +21,7 @@ import Result.ResultContainer;
 import Server.ServerManager;
 import Mutator.SimpleMutator;
 import Server.TLSServer;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -58,7 +59,24 @@ public class FuzzerController extends Controller
         super(config);
         ServerManager serverManager = ServerManager.getInstance();
         serverManager.init(config);
-
+        if(config.isCleanStart())
+        {
+            for(File f : new File(config.getOutputFolder()+"/good/").listFiles())
+            {
+                if(!f.getName().startsWith("."))
+                {
+                    f.delete();
+                }
+            }
+            for(File f : new File(config.getOutputFolder()+"/uniqueFlows/").listFiles())
+            {
+                if(!f.getName().startsWith("."))
+                {
+                    f.delete();
+                }
+            }
+            
+        }
         mutator = new SimpleMutator(config, new FixedCertificateMutator());
         int threads = config.getThreads();
         if (threads == -1)
