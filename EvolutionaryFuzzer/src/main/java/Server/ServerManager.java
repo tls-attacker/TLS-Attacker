@@ -48,9 +48,10 @@ public class ServerManager {
 	    // ServerConfig is a Folder
 	    for (File f : file.listFiles()) {
 		try {
-		    TLSServer server = ServerSerializer.read(f);
-		    addServer(server);
-
+		    if (f.isFile()) {
+			TLSServer server = ServerSerializer.read(f);
+			addServer(server);
+		    }
 		} catch (Exception ex) {
 		    LOG.log(Level.SEVERE, "Could not read Server!", ex);
 		}
