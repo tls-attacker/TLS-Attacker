@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,11 +28,11 @@ public class AnalyzeTimeRule extends Rule {
     private FileWriter fw;
     private BufferedWriter bw;
     private PrintWriter out;
-    private long executedTime;
-    private long executedTraces = 0;
-    private long highest = Long.MIN_VALUE;
-    private long lowest = Long.MAX_VALUE;
-
+    private double executedTime;
+    private double executedTraces = 0;
+    private double highest = Double.MIN_VALUE;
+    private double lowest = Double.MAX_VALUE;
+    private static DecimalFormat df2 = new DecimalFormat("0.##");
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
 	try {
 	    this.evoConfig = evoConfig;
@@ -73,9 +74,9 @@ public class AnalyzeTimeRule extends Rule {
     @Override
     public String report() {
 	if (executedTraces > 0) {
-	    return "Executed: " + executedTraces + " Highest:" + highest / 1000 + "s Lowest:" + lowest / 1000
-		    + "s Medium:" + (executedTime / executedTraces) / 1000 + "s Traces/Second:"
-		    + (double) (executedTraces) / (double) (executedTime / 1000) + "\n";
+	    return "Executed: " + executedTraces + " Highest:" + df2.format(highest / 1000) + "s Lowest:" + df2.format(lowest / 1000)
+		    + "s Medium:" + df2.format((executedTime / executedTraces) / 1000) + "s Traces/Second:"
+		    + df2.format(executedTraces / executedTime / 1000) + "\n";
 	} else {
 	    return null;
 	}
