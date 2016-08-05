@@ -8,15 +8,13 @@
 package Exceptions;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class IllegalMutatorException extends Exception
-{
+public class IllegalMutatorException extends Exception {
 
-    public IllegalMutatorException(String string)
-    {
-        super(string);
+    public IllegalMutatorException(String string) {
+	super(string);
     }
-    
+
 }

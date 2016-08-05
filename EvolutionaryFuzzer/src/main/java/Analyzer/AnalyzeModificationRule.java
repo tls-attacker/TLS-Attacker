@@ -30,11 +30,11 @@ public class AnalyzeModificationRule extends Rule {
 
     private EvolutionaryFuzzerConfig evoConfig;
     private long executedTraces = 0;
-    private HashMap<ModificationType,MutableInt> typeMap;
+    private HashMap<ModificationType, MutableInt> typeMap;
 
     public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
-        this.evoConfig = evoConfig; 
-        typeMap = new HashMap<>();
+	this.evoConfig = evoConfig;
+	typeMap = new HashMap<>();
     }
 
     @Override
@@ -45,18 +45,14 @@ public class AnalyzeModificationRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-	for(Modification mod : result.getExecutedVector().getModificationList())
-        {
-            MutableInt i = typeMap.get(mod.getType());
-            if(i==null)
-            {
-                typeMap.put(mod.getType(), new MutableInt(1));
-            }
-            else
-            {
-                i.addValue(1);
-            }
-        }
+	for (Modification mod : result.getExecutedVector().getModificationList()) {
+	    MutableInt i = typeMap.get(mod.getType());
+	    if (i == null) {
+		typeMap.put(mod.getType(), new MutableInt(1));
+	    } else {
+		i.addValue(1);
+	    }
+	}
     }
 
     @Override
@@ -67,11 +63,10 @@ public class AnalyzeModificationRule extends Rule {
     public String report() {
 	if (executedTraces > 0) {
 	    StringBuilder b = new StringBuilder("Modifications which lead to good Traces:\n");
-            for(Entry<ModificationType,MutableInt> e : typeMap.entrySet() )
-            {
-                b.append(e.getKey().name()+" Count:"+e.getValue().getValue()+"\n");
-            }
-            return b.toString();
+	    for (Entry<ModificationType, MutableInt> e : typeMap.entrySet()) {
+		b.append(e.getKey().name() + " Count:" + e.getValue().getValue() + "\n");
+	    }
+	    return b.toString();
 	} else {
 	    return null;
 	}

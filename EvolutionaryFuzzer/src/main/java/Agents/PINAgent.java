@@ -21,6 +21,7 @@ import Graphs.Edge;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,7 +50,8 @@ public class PINAgent extends Agent {
     /**
      * Default Constructor
      */
-    public PINAgent() {
+    public PINAgent(ServerCertificateKeypair keypair) {
+	super(keypair);
 	timeout = false;
 	crash = false;
 
@@ -62,7 +64,7 @@ public class PINAgent extends Agent {
 	}
 	startTime = System.currentTimeMillis();
 	running = true;
-	server.start(prefix);
+	server.start(prefix, keypair.getCertificateFile(), keypair.getKeyFile());
     }
 
     @Override

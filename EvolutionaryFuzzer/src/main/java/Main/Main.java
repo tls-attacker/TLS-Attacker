@@ -19,6 +19,8 @@ import Exceptions.IllegalMutatorException;
 import FlowVisualisation.AutomataWindow;
 import FlowVisualisation.GraphWindow;
 import Helper.Cleaner;
+import TestVector.TestVector;
+import TestVector.TestVectorSerializer;
 import WorkFlowType.MessageFlow;
 import WorkFlowType.WorkflowGraphBuilder;
 import WorkFlowType.WorkflowTraceType;
@@ -53,7 +55,7 @@ public class Main {
 
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
 
-	JCommander jc = new JCommander(evoConfig);
+	JCommander jc = new JCommander(generalConfig);
 	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
 	jc.addCommand("tracetypes", evoConfig);
 	jc.addCommand("clean", evoConfig);
@@ -70,35 +72,29 @@ public class Main {
 	    jc.usage();
 	    return;
 	}
-	
 
 	switch (jc.getParsedCommand()) {
 	    case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
-                try
-                {
-		Controller controller = new FuzzerController(evoConfig);
-		controller.startFuzzer();
-                    controller.startConsoleInput();
-                }
-                catch(IllegalCertificateMutatorException ex)
-                {
-                    LOG.info("Unknown Certificate Mutator. Aborting...");
-                }
-                catch(IllegalMutatorException ex)
-                {
-                    LOG.info("Unknown Mutator. Aborting...");
-                }
-                break;
+		try {
+		    Controller controller = new FuzzerController(evoConfig);
+		    controller.startFuzzer();
+		    controller.startConsoleInput();
+		} catch (IllegalCertificateMutatorException ex) {
+		    LOG.info("Unknown Certificate Mutator. Aborting...");
+		} catch (IllegalMutatorException ex) {
+		    LOG.info("Unknown Mutator. Aborting...");
+		}
+		break;
 	    case "tracetypes":
 		File f = new File(evoConfig.getOutputFolder() + "uniqueFlows/");
-		List<WorkflowTrace> traces = WorkflowTraceSerializer.readFolder(f);
+		List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 
 		LOG.log(Level.INFO, "Fininshed reading.");
-		Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateTypeList(traces);
+		Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateTypeList(vectors);
 
 		LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
 
-		set = WorkflowTraceTypeManager.generateCleanTypeList(traces);
+		set = WorkflowTraceTypeManager.generateCleanTypeList(vectors);
 
 		LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");
 		// AutomataWindow.showWindow(WorkflowAutomataBuilder.generateWorkflowAutomata(set));
@@ -115,10 +111,10 @@ public class Main {
 		ServerManager manager = ServerManager.getInstance();
 		manager.init(evoConfig);
 		f = new File(evoConfig.getOutputFolder() + "faulty/");
-		traces = WorkflowTraceSerializer.readFolder(f);
-		for (WorkflowTrace trace : traces) {
-		    LOG.log(Level.INFO, "Trace:" + trace.getName());
-		    DebugExecutor.execute(trace);
+		vectors = TestVectorSerializer.readFolder(f);
+		for (TestVector vector : vectors) {
+		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
+		    DebugExecutor.execute(vector, evoConfig);
 		}
 		break;
 

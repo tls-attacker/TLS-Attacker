@@ -1,5 +1,7 @@
 package Server;
 
+import Mutator.Certificate.CertificateMutator;
+import Mutator.Certificate.FixedCertificateMutator;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -44,11 +46,9 @@ public class TLSServerTest {
      */
     @Before
     public void setUp() {
-	server = new TLSServer(
-		"127.0.0.1",
-		4433,
-		"/home/ic0ns/Downloads/afl/afl-2.10b/afl-showmap -m none -o /home/ic0ns/Traces/openssl[id] /home/ic0ns/Downloads/afl/afl-2.10b/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept 4433",
-		"ACCEPT", "./");
+	server = new TLSServer("127.0.0.1", 4435,
+		"openssl/openssl/bin/openssl s_server -naccept 1 -key [key] -cert [cert] -accept [port]", "ACCEPT",
+		"JUNIT/");
     }
 
     /**
@@ -56,6 +56,7 @@ public class TLSServerTest {
      */
     @After
     public void tearDown() {
+	server.stop();
 	server = null;
     }
 
@@ -65,7 +66,9 @@ public class TLSServerTest {
     @Test
     public void testStart() {
 	server.occupie();
-	server.start("AFL/afl-showmap -m none -o [output]/[id] ");
+	CertificateMutator mut = new FixedCertificateMutator();
+	server.start("", mut.getServerCertificateKeypair().getCertificateFile(), mut.getServerCertificateKeypair()
+		.getKeyFile());
 	server.serverIsRunning();
     }
 
@@ -75,7 +78,9 @@ public class TLSServerTest {
     @Test
     public void testRestart() {
 	server.occupie();
-	server.restart("AFL/afl-showmap -m none -o [output]/[id] ");
+	CertificateMutator mut = new FixedCertificateMutator();
+	server.start("", mut.getServerCertificateKeypair().getCertificateFile(), mut.getServerCertificateKeypair()
+		.getKeyFile());
 	server.serverIsRunning();
     }
 
@@ -127,8 +132,10 @@ public class TLSServerTest {
     @Test
     public void testExitedStarted() {
 	server.occupie();
-	server.start("AFL/afl-showmap -m none -o [output]/[id] ");
+	CertificateMutator mut = new FixedCertificateMutator();
+	server.start("", mut.getServerCertificateKeypair().getCertificateFile(), mut.getServerCertificateKeypair()
+		.getKeyFile());
 	assertFalse("Failure: Server started but should not have exited yet", server.exited());
     }
-
+    // TODO Test if a started server accepts a tls connection
 }

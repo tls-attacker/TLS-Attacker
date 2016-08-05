@@ -63,14 +63,28 @@ class StreamGobbler extends Thread {
 		if (line.equals(accepted)) {
 		    hasAccepted = true;
 		} else {
-		    LOG.log(Level.FINEST, line);
+
 		}
+		LOG.log(Level.FINEST, line);
 	    }
 	    if (pw != null) {
 		pw.flush();
 	    }
 	} catch (IOException ioe) {
-	    ioe.printStackTrace();
+
+	}
+    }
+
+    public void close() {
+	try {
+	    os.close();
+	} catch (IOException ex) {
+	    Logger.getLogger(StreamGobbler.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	try {
+	    is.close();
+	} catch (IOException ex) {
+	    Logger.getLogger(StreamGobbler.class.getName()).log(Level.SEVERE, null, ex);
 	}
     }
 

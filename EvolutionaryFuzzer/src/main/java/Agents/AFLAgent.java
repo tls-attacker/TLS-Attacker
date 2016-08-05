@@ -19,7 +19,9 @@ import Graphs.Edge;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
+import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
@@ -52,10 +54,10 @@ public class AFLAgent extends Agent {
     /**
      * Default Constructor
      */
-    public AFLAgent() {
+    public AFLAgent(ServerCertificateKeypair keypair) {
+	super(keypair);
 	timeout = false;
 	crash = false;
-
     }
 
     @Override
@@ -65,7 +67,7 @@ public class AFLAgent extends Agent {
 	}
 	startTime = System.currentTimeMillis();
 	running = true;
-	server.start(prefix);
+	server.start(prefix, keypair.getCertificateFile(), keypair.getKeyFile());
     }
 
     @Override
@@ -183,7 +185,9 @@ public class AFLAgent extends Agent {
 		    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
 	} finally {
 	    try {
-		br.close();
+		if (br != null) {
+		    br.close();
+		}
 	    } catch (IOException ex) {
 		Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
 	    }

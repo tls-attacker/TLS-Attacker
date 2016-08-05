@@ -60,36 +60,29 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
 
-    public String getCertMutator()
-    {
-        return certMutator;
+    public String getCertMutator() {
+	return certMutator;
     }
 
-    public void setCertMutator(String certMutator)
-    {
-        this.certMutator = certMutator;
-    }
-    
-    public String getMutator()
-    {
-        return mutator;
+    public void setCertMutator(String certMutator) {
+	this.certMutator = certMutator;
     }
 
-    public void setMutator(String mutator)
-    {
-        this.mutator = mutator;
-    }
-    
-    public boolean isCleanStart()
-    {
-        return cleanStart;
+    public String getMutator() {
+	return mutator;
     }
 
-    public void setCleanStart(boolean cleanStart)
-    {
-        this.cleanStart = cleanStart;
+    public void setMutator(String mutator) {
+	this.mutator = mutator;
     }
-    
+
+    public boolean isCleanStart() {
+	return cleanStart;
+    }
+
+    public void setCleanStart(boolean cleanStart) {
+	this.cleanStart = cleanStart;
+    }
 
     public Integer getMultipleModifications() {
 	return multipleModifications;
@@ -142,11 +135,11 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	outputFolder = "./";
 	serverCommandFromFile = "server/";
 	this.timeout = 10000;
-        setFuzzingMode(true);
-        setKeystore("../resources/rsa1024.jks");
+	setFuzzingMode(true);
+	setKeystore("../resources/rsa1024.jks");
 	setPassword("password");
 	setAlias("alias");
-	
+
     }
 
     public boolean isSerialize() {

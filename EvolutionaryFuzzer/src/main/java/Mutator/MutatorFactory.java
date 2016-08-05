@@ -12,20 +12,18 @@ import Exceptions.IllegalMutatorException;
 import Mutator.Certificate.CertificateMutator;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class MutatorFactory
-{
-    public static Mutator getMutator(CertificateMutator certMutator, EvolutionaryFuzzerConfig config) throws IllegalMutatorException
-    {
-        switch(config.getMutator())
-        {
-            case "simple":
-                return new SimpleMutator(config,certMutator);
-            default:
-                throw new IllegalMutatorException("Illegal Value for Mutator:"+config.getMutator());
-                        
-        }
+public class MutatorFactory {
+    public static Mutator getMutator(CertificateMutator certMutator, EvolutionaryFuzzerConfig config)
+	    throws IllegalMutatorException {
+	switch (config.getMutator()) {
+	    case "simple":
+		return new SimpleMutator(config, certMutator);
+	    default:
+		throw new IllegalMutatorException("Illegal Value for Mutator:" + config.getMutator());
+
+	}
     }
 }

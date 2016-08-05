@@ -13,7 +13,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import Agents.AFLAgent;
+import Mutator.Certificate.FixedCertificateMutator;
 import Server.TLSServer;
+import TestVector.ServerCertificateKeypair;
+import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
+import org.junit.After;
 
 /**
  * 
@@ -49,6 +53,8 @@ public class AflAgentTest {
 
     private AFLAgent agent = null;
     private TLSServer server = null;
+    private FixedCertificateMutator mut = null;
+    private ServerCertificateKeypair pair = null;
 
     /**
      *
@@ -61,13 +67,19 @@ public class AflAgentTest {
      */
     @Before
     public void setUp() {
-	agent = new AFLAgent();
-	server = new TLSServer(
-		"127.0.0.1",
-		4433,
-		"AFL/openssl-1.1.0-pre5/myOpenssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept [port]",
+	mut = new FixedCertificateMutator();
+	pair = mut.getServerCertificateKeypair();
+	agent = new AFLAgent(pair);
+	server = new TLSServer("127.0.0.1", 4434,
+		"AFL/openssl/myOpenssl/bin/openssl s_server -naccept 1 -key [key] -cert [cert] -accept [port]",
 		"ACCEPT", "JUNIT/");
 	server.occupie();
+    }
+
+    @After
+    public void tearDown() {
+	server.stop();
+	server = null;
     }
 
     /**

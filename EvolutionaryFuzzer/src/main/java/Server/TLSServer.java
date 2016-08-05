@@ -233,14 +233,14 @@ public final class TLSServer {
     /**
      * Starts the Server by executing the restart Server command
      */
-    public synchronized void start(String prefix) {
+    public synchronized void start(String prefix, File certificateFile, File keyFile) {
 
 	// You have to ooccupie a Server to start it
 	if (!this.isFree()) {
 	    if (p != null) {
-		p.destroy();
+		stop();
 	    }
-	    restart(prefix);
+	    restart(prefix, certificateFile, keyFile);
 	} else {
 	    throw new IllegalStateException("Cant start a not marked Server. Occupie it first!");
 	}
@@ -249,31 +249,33 @@ public final class TLSServer {
     /**
      * Restarts the Server by executing the restart Server command
      */
-    public synchronized void restart(String prefix) {
+    public synchronized void restart(String prefix, File certificateFile, File keyFile) {
 	if (!this.isFree()) {
 	    if (p != null) {
-		p.destroy();
+		stop();
 	    }
 	    try {
 		id = LogFileIDManager.getInstance().getID();
 		String command = (prefix + restartServerCommand).replace("[id]", "" + id);
 		command = command.replace("[output]", traces.getAbsolutePath());
 		command = command.replace("[port]", "" + port);
-		// System.out.println(command);
+		command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
+		command = command.replace("[key]", "" + keyFile.getAbsolutePath());
+		LOG.log(Level.INFO, "Starting Server:" + command);
 		long time = System.currentTimeMillis();
 		Runtime rt = Runtime.getRuntime();
-		Process proc = rt.exec(command);
+		p = rt.exec(command);
 
 		// any error message?
-		errorGobbler = new StreamGobbler(proc.getErrorStream(), "ERR", accepted);
+		errorGobbler = new StreamGobbler(p.getErrorStream(), "ERR", accepted);
 
 		// any output?
-		outputGobbler = new StreamGobbler(proc.getInputStream(), "OUT", accepted);
+		outputGobbler = new StreamGobbler(p.getInputStream(), "OUT", accepted);
 
 		// kick them off
 		errorGobbler.start();
 		outputGobbler.start();
-		procmon = ProcMon.create(proc);
+		procmon = ProcMon.create(p);
 		while (!outputGobbler.accepted()) {
 
 		    try {
@@ -338,6 +340,7 @@ public final class TLSServer {
 	try {
 	    if (p != null) {
 		p.destroy();
+		p.waitFor();
 	    }
 	} catch (Exception E) {
 	    E.printStackTrace();

@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
 
 /**
@@ -24,6 +25,13 @@ import TestVector.TestVector;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Agent {
+
+    protected ServerCertificateKeypair keypair;
+
+    public Agent(ServerCertificateKeypair keypair) {
+	this.keypair = keypair;
+    }
+
     /**
      * This method should be called, before the Fuzzingvector is sent to the
      * Application.

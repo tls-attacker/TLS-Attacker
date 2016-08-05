@@ -9,6 +9,7 @@ package Agents;
 
 import Agents.Agent;
 import Config.EvolutionaryFuzzerConfig;
+import TestVector.ServerCertificateKeypair;
 
 /**
  * 
@@ -16,12 +17,12 @@ import Config.EvolutionaryFuzzerConfig;
  */
 public class AgentFactory {
 
-    public static Agent generateAgent(EvolutionaryFuzzerConfig config) {
+    public static Agent generateAgent(EvolutionaryFuzzerConfig config, ServerCertificateKeypair keypair) {
 	switch (config.getAgent()) {
 	    case "AFL":
-		return new AFLAgent();
+		return new AFLAgent(keypair);
 	    case "PIN":
-		return new PINAgent();
+		return new PINAgent(keypair);
 	    default:
 		throw new RuntimeException("Could not find Agent!");
 	}

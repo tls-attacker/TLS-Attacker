@@ -9,11 +9,16 @@ package Agent;
 
 import static Agent.AflAgentTest.deleteFolder;
 import Agents.PINAgent;
+import Mutator.Certificate.FixedCertificateMutator;
 import Result.Result;
 import Server.TLSServer;
+import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -27,6 +32,8 @@ public class PinAgentTest {
 
     private static PINAgent agent;
     private static TLSServer server;
+    private FixedCertificateMutator mut = null;
+    private ServerCertificateKeypair pair = null;
 
     /**
      *
@@ -43,13 +50,19 @@ public class PinAgentTest {
 
     @Before
     public void setUp() {
-	agent = new PINAgent();
-	server = new TLSServer(
-		"127.0.0.1",
-		4433,
-		"openssl/openssl/bin/openssl s_server -naccept 1 -key /home/ic0ns/key.pem -cert /home/ic0ns/cert.pem -accept [port]",
-		"ACCEPT", "JUNIT/");
+	mut = new FixedCertificateMutator();
+	pair = mut.getServerCertificateKeypair();
+	agent = new PINAgent(pair);
+	server = new TLSServer("127.0.0.1", 4433,
+		"openssl/openssl/bin/openssl s_server -naccept 1 -key [key] -cert [cert] -accept [port]", "ACCEPT",
+		"JUNIT/");
 	server.occupie();
+    }
+
+    @After
+    public void tearDown() {
+	server.stop();
+	server = null;
     }
 
     /**

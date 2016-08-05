@@ -23,14 +23,14 @@ public class Analyzer {
     public Analyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;
 	ruleList = new LinkedList<Rule>();
-        //THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
-        ruleList.add(new IsGoodRule(config));
+	// THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
+	ruleList.add(new IsGoodRule(config));
 	ruleList.add(new ContainsInternalErrorRule(config));
 	ruleList.add(new IsCrashRules(config));
 	ruleList.add(new IsTimeoutRule(config));
 	ruleList.add(new AnalyzeTimeRule(config));
 	ruleList.add(new UniqueFlowsRule(config));
-        ruleList.add(new AnalyzeModificationRule(config));
+	ruleList.add(new AnalyzeModificationRule(config));
     }
 
     public void analyze(Result result) {

@@ -8,6 +8,8 @@
 package Executor;
 
 import Agents.AFLAgent;
+import Agents.Agent;
+import Agents.AgentFactory;
 import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -36,6 +38,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import Server.ServerManager;
 import Server.TLSServer;
+import TestVector.TestVector;
 
 /**
  * 
@@ -45,28 +48,26 @@ public class DebugExecutor {
 
     private static final Logger LOG = Logger.getLogger(DebugExecutor.class.getName());
 
-    public static void execute(WorkflowTrace trace) {
+    public static void execute(TestVector vector, EvolutionaryFuzzerConfig config) {
+	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+	TransportHandler transportHandler = null;
 	TLSServer server = null;
 	try {
-	    AFLAgent agent = new AFLAgent();
+	    Agent agent = AgentFactory.generateAgent(config, vector.getKeyCertPair());
 	    server = ServerManager.getInstance().getFreeServer();
 
 	    agent.applicationStart(server);
-	    ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 
 	    GeneralConfig gc = new GeneralConfig();
 	    gc.setLogLevel(Level.OFF);
 	    configHandler.initialize(gc);
 
-	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-
-	    TransportHandler transportHandler = null;
 	    long time = System.currentTimeMillis();
 	    int counter = 0;
 	    while (transportHandler == null) {
 		try {
 
-		    transportHandler = configHandler.initializeTransportHandler(fc);
+		    transportHandler = configHandler.initializeTransportHandler(config);
 
 		} catch (ConfigurationException E) {
 		    // It may happen that the implementation is not ready yet
@@ -84,21 +85,12 @@ public class DebugExecutor {
 		}
 	    }
 	    TlsContext tlsContext = new TlsContext();
-	    tlsContext.setWorkflowTrace(trace);
+	    tlsContext.setWorkflowTrace(vector.getTrace());
 
-	    if (fc.getKeystore() == null) {
-		fc.setKeystore("../resources/rsa1024.jks");
-	    }
-	    if (fc.getPassword() == null) {
-		fc.setPassword("password");
-	    }
-	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
-		fc.setAlias("alias");
-	    }
-	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
+	    KeyStore ks = KeystoreHandler.loadKeyStore(config.getKeystore(), config.getPassword());
 	    tlsContext.setKeyStore(ks);
-	    tlsContext.setAlias(fc.getAlias());
-	    tlsContext.setPassword(fc.getPassword());
+	    tlsContext.setAlias(config.getAlias());
+	    tlsContext.setPassword(config.getPassword());
 	    if (LOG.getLevel() == java.util.logging.Level.FINE) {
 		Enumeration<String> aliases = ks.aliases();
 		LOG.log(java.util.logging.Level.FINE, "Successfully read keystore with the following aliases: ");
@@ -140,7 +132,7 @@ public class DebugExecutor {
 	    }
 	    agent.applicationStop(server);
 
-	} catch (KeyStoreException | IOException | NoSuchAlgorithmException ex) {
+	} catch (KeyStoreException | IOException ex) {
 	    Logger.getLogger(DebugExecutor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (CertificateParsingException ex) {
 	    Logger.getLogger(DebugExecutor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);

@@ -57,7 +57,7 @@ public class IsGoodRule extends Rule {
     @Override
     public void onApply(Result result) {
 	found++;
-        result.setGoodTrace(true);
+	result.setGoodTrace(true);
 	// It may be that we dont want to safe good Traces, for example if
 	// we execute already saved Traces
 	if (evoConfig.isSerialize()) {
@@ -80,7 +80,7 @@ public class IsGoodRule extends Rule {
 
     @Override
     public void onDecline(Result result) {
-        result.setGoodTrace(Boolean.FALSE);
+	result.setGoodTrace(Boolean.FALSE);
     }
 
     @Override

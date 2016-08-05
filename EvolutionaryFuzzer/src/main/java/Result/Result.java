@@ -55,17 +55,14 @@ public class Result {
 	this.id = id;
     }
 
-    public Boolean isGoodTrace()
-    {
-        return goodTrace;
+    public Boolean isGoodTrace() {
+	return goodTrace;
     }
 
-    public void setGoodTrace(Boolean wasGoodTrace)
-    {
-        this.goodTrace = wasGoodTrace;
+    public void setGoodTrace(Boolean wasGoodTrace) {
+	this.goodTrace = wasGoodTrace;
     }
 
-    
     /**
      * Returns the ID of the Result
      * 

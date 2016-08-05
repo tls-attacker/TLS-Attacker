@@ -7,6 +7,7 @@
  */
 package WorkFlowType;
 
+import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -28,10 +29,10 @@ public class WorkflowTraceTypeManager {
      * @param traces
      * @return
      */
-    public static Set<WorkflowTraceType> generateTypeList(List<WorkflowTrace> traces) {
+    public static Set<WorkflowTraceType> generateTypeList(List<TestVector> vectors) {
 	Set<WorkflowTraceType> set = new HashSet<>();
-	for (WorkflowTrace trace : traces) {
-	    WorkflowTraceType type = generateWorkflowTraceType(trace);
+	for (TestVector vector : vectors) {
+	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace());
 	    set.add(type);
 	}
 	return set;
@@ -48,10 +49,10 @@ public class WorkflowTraceTypeManager {
      * @param traces
      * @return
      */
-    public static Set<WorkflowTraceType> generateCleanTypeList(List<WorkflowTrace> traces) {
+    public static Set<WorkflowTraceType> generateCleanTypeList(List<TestVector> vectors) {
 	Set<WorkflowTraceType> set = new HashSet<>();
-	for (WorkflowTrace trace : traces) {
-	    WorkflowTraceType type = generateWorkflowTraceType(trace);
+	for (TestVector vector : vectors) {
+	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace());
 	    type.clean();
 	    set.add(type);
 	}
