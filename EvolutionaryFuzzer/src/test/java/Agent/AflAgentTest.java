@@ -13,11 +13,15 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import Agents.AFLAgent;
+import Config.ConfigManager;
 import Mutator.Certificate.FixedCertificateMutator;
+import Server.ServerSerializer;
 import Server.TLSServer;
 import TestVector.ServerCertificateKeypair;
 import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
+import java.util.logging.Level;
 import org.junit.After;
+import org.junit.Assert;
 
 /**
  * 
@@ -32,6 +36,7 @@ public class AflAgentTest {
      */
     @AfterClass
     public static void tearDownClass() {
+
 	File f = new File("JUNIT/");
 	deleteFolder(f);
 
@@ -70,10 +75,17 @@ public class AflAgentTest {
 	mut = new FixedCertificateMutator();
 	pair = mut.getServerCertificateKeypair();
 	agent = new AFLAgent(pair);
-	server = new TLSServer("127.0.0.1", 4434,
-		"AFL/openssl/myOpenssl/bin/openssl s_server -naccept 1 -key [key] -cert [cert] -accept [port]",
-		"ACCEPT", "JUNIT/");
+	File f = new File("../resources/EvolutionaryFuzzer/TestServer/afl.config");
+	if (!f.exists()) {
+	    Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
+	}
+	try {
+	    server = ServerSerializer.read(f);
+	} catch (Exception ex) {
+	    Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+	}
 	server.occupie();
+
     }
 
     @After

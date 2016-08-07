@@ -11,6 +11,7 @@ import static Agent.AflAgentTest.deleteFolder;
 import Agents.PINAgent;
 import Mutator.Certificate.FixedCertificateMutator;
 import Result.Result;
+import Server.ServerSerializer;
 import Server.TLSServer;
 import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
@@ -20,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -53,9 +55,15 @@ public class PinAgentTest {
 	mut = new FixedCertificateMutator();
 	pair = mut.getServerCertificateKeypair();
 	agent = new PINAgent(pair);
-	server = new TLSServer("127.0.0.1", 4433,
-		"openssl/openssl/bin/openssl s_server -naccept 1 -key [key] -cert [cert] -accept [port]", "ACCEPT",
-		"JUNIT/");
+	File f = new File("../resources/EvolutionaryFuzzer/TestServer/normal.config");
+	if (!f.exists()) {
+	    Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
+	}
+	try {
+	    server = ServerSerializer.read(f);
+	} catch (Exception ex) {
+	    Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+	}
 	server.occupie();
     }
 
@@ -108,7 +116,7 @@ public class PinAgentTest {
     @Test
     public void testCollectResults() {
 	TestVector t = new TestVector(null, null, null);
-	agent.collectResults(new File("../resources/testsuite/EvolutionaryFuzzer/PinTest/test.trace"), t, t);
+	agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/test.trace"), t, t);
     }
 
     /**
@@ -118,8 +126,7 @@ public class PinAgentTest {
     @Test
     public void testCollectResultsGraph() {
 	TestVector t = new TestVector(new WorkflowTrace(), null, null);
-	Result r = agent
-		.collectResults(new File("../resources/testsuite/EvolutionaryFuzzer/PinTest/graph.trace"), t, t);
+	Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/graph.trace"), t, t);
 	assertTrue("Failure: Test result should have exactly 4 Vertices",
 		r.getBranchTrace().getVerticesSet().size() == 4);
 	assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getEdgeMap().size() == 6);

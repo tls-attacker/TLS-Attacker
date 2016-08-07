@@ -4,15 +4,16 @@ import Mutator.Certificate.CertificateMutator;
 import TestVector.ServerCertificateKeypair;
 import Mutator.Mutator;
 import Config.EvolutionaryFuzzerConfig;
+import Config.Mutator.SimpleMutatorConfig;
 import Helper.FuzzingHelper;
 import static Helper.FuzzingHelper.executeModifiableVariableModification;
 import static Helper.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
+import Helper.XMLSerializer;
 import Modification.ChangeServerCertificateModification;
 import Modification.Modification;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.util.List;
@@ -20,7 +21,9 @@ import java.util.Random;
 import java.util.logging.Logger;
 import Result.ResultContainer;
 import TestVector.TestVector;
-import org.bouncycastle.jce.provider.X509CertificateObject;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
 
 /**
  * 
@@ -32,13 +35,29 @@ public class SimpleMutator extends Mutator {
 
     // private final Node<WorkflowTrace> tree;
     private int goodIndex = 0;
+    private SimpleMutatorConfig config;
 
     /**
      * 
      * @param config
      */
-    public SimpleMutator(EvolutionaryFuzzerConfig config, CertificateMutator certMutator) {
-	super(config, certMutator);
+    public SimpleMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator) {
+	super(evoConfig, certMutator);
+	File f = new File(evoConfig.getConfigFolder() + "mutator/simple.conf");
+	if (f.exists()) {
+	    try {
+		config = (SimpleMutatorConfig) XMLSerializer.read(f);
+	    } catch (FileNotFoundException ex) {
+		Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	} else {
+	    config = new SimpleMutatorConfig();
+	    try {
+		XMLSerializer.write(config, f);
+	    } catch (FileNotFoundException ex) {
+		Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
     }
 
     /**

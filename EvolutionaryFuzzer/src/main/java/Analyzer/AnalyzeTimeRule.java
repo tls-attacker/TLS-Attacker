@@ -7,6 +7,8 @@
  */
 package Analyzer;
 
+import Config.Analyzer.AnalyzeModificationRuleConfig;
+import Config.Analyzer.AnalyzeTimeRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
 import java.io.BufferedWriter;
@@ -23,8 +25,6 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeTimeRule extends Rule {
-
-    private EvolutionaryFuzzerConfig evoConfig;
     private FileWriter fw;
     private BufferedWriter bw;
     private PrintWriter out;
@@ -33,10 +33,16 @@ public class AnalyzeTimeRule extends Rule {
     private double highest = Double.MIN_VALUE;
     private double lowest = Double.MAX_VALUE;
     private static DecimalFormat df2 = new DecimalFormat("0.##");
+
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
+	super(evoConfig, "analyze_time.rule");
+	if (config == null) {
+	    config = new AnalyzeTimeRuleConfig();
+	    writeConfig(config);
+	}
 	try {
-	    this.evoConfig = evoConfig;
-	    File f = new File(evoConfig.getOutputFolder() + "/timing.results");
+	    File f = new File(evoConfig.getOutputFolder() + ((AnalyzeTimeRuleConfig) config).getOutputFile());
+
 	    fw = new FileWriter(f, true);
 	    bw = new BufferedWriter(fw);
 	    out = new PrintWriter(bw);
@@ -74,9 +80,9 @@ public class AnalyzeTimeRule extends Rule {
     @Override
     public String report() {
 	if (executedTraces > 0) {
-	    return "Executed: " + executedTraces + " Highest:" + df2.format(highest / 1000) + "s Lowest:" + df2.format(lowest / 1000)
-		    + "s Medium:" + df2.format((executedTime / executedTraces) / 1000) + "s Traces/Second:"
-		    + df2.format(executedTraces / executedTime / 1000) + "\n";
+	    return "Executed: " + executedTraces + " Highest:" + df2.format(highest / 1000) + "s Lowest:"
+		    + df2.format(lowest / 1000) + "s Medium:" + df2.format((executedTime / executedTraces) / 1000)
+		    + "s Traces/Second:" + df2.format(executedTraces / (executedTime / 1000)) + "\n";
 	} else {
 	    return null;
 	}

@@ -1,5 +1,6 @@
 package Server;
 
+import Agent.AflAgentTest;
 import Mutator.Certificate.CertificateMutator;
 import Mutator.Certificate.FixedCertificateMutator;
 import java.util.logging.Logger;
@@ -11,6 +12,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import Server.TLSServer;
+import java.io.File;
+import java.util.logging.Level;
+import org.junit.Assert;
 
 /**
  * 
@@ -46,9 +50,15 @@ public class TLSServerTest {
      */
     @Before
     public void setUp() {
-	server = new TLSServer("127.0.0.1", 4435,
-		"openssl/openssl/bin/openssl s_server -naccept 1 -key [key] -cert [cert] -accept [port]", "ACCEPT",
-		"JUNIT/");
+	File f = new File("../resources/EvolutionaryFuzzer/TestServer/server.config");
+	if (!f.exists()) {
+	    Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
+	}
+	try {
+	    server = ServerSerializer.read(f);
+	} catch (Exception ex) {
+	    Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }
 
     /**

@@ -39,6 +39,7 @@ import Result.Result;
 import Result.ResultContainer;
 import Server.TLSServer;
 import TestVector.TestVector;
+import TestVector.TestVectorSerializer;
 import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -161,10 +162,9 @@ public class TLSExecutor extends Executor {
 		    + LogFileIDManager.getInstance().getFilename());
 
 	    try {
-		f.createNewFile();
-		WorkflowTraceSerializer.write(f, testVector.getTrace());
+		TestVectorSerializer.write(f, testVector);
 	    } catch (JAXBException | IOException Ex) {
-		System.out.println("Could not serialize WorkflowTrace!");
+		System.out.println("Could not serialize WorkflowTrace:" + f.getAbsolutePath());
 		Ex.printStackTrace();
 	    }
 	    System.out.println("File:" + f.getName());
@@ -184,14 +184,15 @@ public class TLSExecutor extends Executor {
 	    }
 
 	    agent.applicationStop(server);
-	    File branchTrace = new File(server.getTracesFolder().getAbsolutePath() + "/" + server.getID());
+	    File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
+		    + "/" + server.getID());
 	    Result r = agent.collectResults(branchTrace, backupVector, testVector);
 	    branchTrace.delete();
 	    ResultContainer.getInstance().commit(r);
 	    int id = server.getID();
 
 	    // Cleanup
-	    File file = new File(server.getTracesFolder().getAbsolutePath() + "/" + id);
+	    File file = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath() + "/" + id);
 	    if (file.exists()) {
 		file.delete();
 	    }

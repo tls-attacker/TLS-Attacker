@@ -70,6 +70,7 @@ public class ExecutorThreadPool implements Runnable {
 	this.mutator = mutator;
 	BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize * 5);
 	File f = new File(config.getOutputFolder() + "good/");
+	f.mkdirs(); // TODO
 	ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
 
 	executor = new BlockingThreadPoolExecutor(poolSize, poolSize, config.getTimeout(), TimeUnit.MICROSECONDS,
@@ -79,7 +80,7 @@ public class ExecutorThreadPool implements Runnable {
 
 	list = TestVectorSerializer.readFolder(f);
 	f = new File(config.getOutputFolder() + "uniqueFlows/");
-
+	f.mkdirs(); // TODO
 	list.addAll(TestVectorSerializer.readFolder(f));
 	LOG.log(Level.INFO, "Loaded old good Traces:{0}", list.size());
 	// We need to fix Server responses before we can use the workflowtraces

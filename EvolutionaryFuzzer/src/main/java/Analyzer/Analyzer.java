@@ -25,7 +25,7 @@ public class Analyzer {
 	ruleList = new LinkedList<Rule>();
 	// THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
 	ruleList.add(new IsGoodRule(config));
-	ruleList.add(new ContainsInternalErrorRule(config));
+	ruleList.add(new FindAlertsRule(config));
 	ruleList.add(new IsCrashRules(config));
 	ruleList.add(new IsTimeoutRule(config));
 	ruleList.add(new AnalyzeTimeRule(config));

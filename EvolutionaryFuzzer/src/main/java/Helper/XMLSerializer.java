@@ -1,5 +1,13 @@
-package Server;
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package Helper;
 
+import Config.Mutator.SimpleMutatorConfig;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -8,25 +16,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
 
-public class ServerSerializer {
-
-    /**
-     * context initialization is expensive, we need to do that only once
-     */
-    private static JAXBContext context;
-
-    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
-
+/**
+ * 
+ * @author Robert Merget - robert.merget@rub.de
+ */
+public class XMLSerializer {
     /**
      * 
      * @param f
      * @param file
      * @throws Exception
      */
-    public static void write(TLSServer f, File file) throws Exception {
+    public static void write(Object f, File file) throws FileNotFoundException {
 	XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
 	encoder.writeObject(f);
 	encoder.close();
@@ -38,13 +40,10 @@ public class ServerSerializer {
      * @return
      * @throws Exception
      */
-    public static TLSServer read(File file) throws FileNotFoundException {
+    public static Object read(File file) throws FileNotFoundException {
 	XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
-	TLSServer o = (TLSServer) decoder.readObject();
+	Object o = decoder.readObject();
 	decoder.close();
 	return o;
-    }
-
-    private ServerSerializer() {
     }
 }

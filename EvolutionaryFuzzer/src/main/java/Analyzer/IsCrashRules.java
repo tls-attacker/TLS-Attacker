@@ -7,6 +7,8 @@
  */
 package Analyzer;
 
+import Config.Analyzer.FindAlertsRuleConfig;
+import Config.Analyzer.IsCrashRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
 import TestVector.TestVectorSerializer;
@@ -22,11 +24,17 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsCrashRules extends Rule {
-    private EvolutionaryFuzzerConfig evoConfig;
+
     private int found = 0;
 
     public IsCrashRules(EvolutionaryFuzzerConfig evoConfig) {
-	this.evoConfig = evoConfig;
+	super(evoConfig, "is_crash.rule");
+	if (config == null) {
+	    config = new IsCrashRuleConfig();
+	    writeConfig(config);
+	}
+	File f = new File(evoConfig.getOutputFolder() + ((IsCrashRuleConfig) config).getOutputFolder());
+	f.mkdirs();
     }
 
     @Override
@@ -41,7 +49,7 @@ public class IsCrashRules extends Rule {
     @Override
     public void onApply(Result result) {
 	found++;
-	File f = new File(evoConfig.getOutputFolder() + "crash/" + result.getId());
+	File f = new File(evoConfig.getOutputFolder() + ((IsCrashRuleConfig) config).getOutputFolder() + result.getId());
 	try {
 	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace crashed!");
 	    f.createNewFile();

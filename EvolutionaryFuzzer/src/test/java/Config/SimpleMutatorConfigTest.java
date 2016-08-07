@@ -8,6 +8,7 @@
 package Config;
 
 import Config.EvolutionaryFuzzerConfig;
+import Config.Mutator.SimpleMutatorConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class EvolutionaryFuzzerConfigTest {
+public class SimpleMutatorConfigTest {
 
     @BeforeClass
     public static void setUpClass() {
@@ -27,12 +28,12 @@ public class EvolutionaryFuzzerConfigTest {
     public static void tearDownClass() {
     }
 
-    public EvolutionaryFuzzerConfigTest() {
+    public SimpleMutatorConfigTest() {
     }
 
     @Test
     public void testEvolutionaryFuzzerPercentage() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	SimpleMutatorConfig config = new SimpleMutatorConfig();
 	Exception E = null;
 	try {
 	    config.setAddMessagePercentage(101);

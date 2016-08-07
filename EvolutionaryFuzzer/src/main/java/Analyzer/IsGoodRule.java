@@ -7,6 +7,9 @@
  */
 package Analyzer;
 
+import Config.Analyzer.FindAlertsRuleConfig;
+import Config.Analyzer.IsCrashRuleConfig;
+import Config.Analyzer.IsGoodRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
 import Graphs.CountEdge;
@@ -32,12 +35,17 @@ public class IsGoodRule extends Rule {
     private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
     // BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
-    private EvolutionaryFuzzerConfig evoConfig;
     private int found = 0;
 
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
+	super(evoConfig, "is_good.rule");
+	if (config == null) {
+	    config = new IsGoodRuleConfig();
+	    writeConfig(config);
+	}
 	this.branch = new BranchTrace();
-	this.evoConfig = evoConfig;
+	File f = new File(evoConfig.getOutputFolder() + ((IsGoodRuleConfig) config).getOutputFolder());
+	f.mkdirs();
     }
 
     @Override
@@ -61,7 +69,8 @@ public class IsGoodRule extends Rule {
 	// It may be that we dont want to safe good Traces, for example if
 	// we execute already saved Traces
 	if (evoConfig.isSerialize()) {
-	    File f = new File(evoConfig.getOutputFolder() + "good/" + result.getId());
+	    File f = new File(evoConfig.getOutputFolder() + ((IsGoodRuleConfig) config).getOutputFolder()
+		    + result.getId());
 	    try {
 		f.createNewFile();
 		TestVectorSerializer.write(f, result.getExecutedVector());

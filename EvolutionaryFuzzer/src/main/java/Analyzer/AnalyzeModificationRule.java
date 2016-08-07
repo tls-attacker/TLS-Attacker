@@ -7,13 +7,16 @@
  */
 package Analyzer;
 
+import Config.Analyzer.AnalyzeModificationRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
+import Helper.XMLSerializer;
 import Modification.Modification;
 import Modification.ModificationType;
 import Result.Result;
 import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,13 +31,17 @@ import java.util.logging.Logger;
  */
 public class AnalyzeModificationRule extends Rule {
 
-    private EvolutionaryFuzzerConfig evoConfig;
     private long executedTraces = 0;
     private HashMap<ModificationType, MutableInt> typeMap;
 
     public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
-	this.evoConfig = evoConfig;
+	super(evoConfig, "analyze_modification.rule");
+	if (config == null) {
+	    config = new AnalyzeModificationRuleConfig();
+	    writeConfig(config);
+	}
 	typeMap = new HashMap<>();
+
     }
 
     @Override

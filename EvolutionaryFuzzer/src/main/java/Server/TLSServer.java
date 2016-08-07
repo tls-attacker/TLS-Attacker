@@ -8,6 +8,7 @@
 package Server;
 
 import Config.ConfigManager;
+import Config.EvolutionaryFuzzerConfig;
 import Helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
@@ -31,15 +32,7 @@ public final class TLSServer {
     private int port;
     private int id = -1;
     private String restartServerCommand;
-    private String outputFolder;
     private String accepted;
-    private File traces; // Temporary Folder which contains currently executed
-    // traces
-    private File crashedFolder; // Contains Traces which crashed the
-    // Implementation
-    private File timeoutFolder; // Contains Traces which timedout
-    private File goodTracesFolder; // Contains Traces which look promising
-    private File faultyFolder; // Contains Traces which caused an exception on
     private StreamGobbler errorGobbler;
     private StreamGobbler outputGobbler;
     // our end
@@ -50,7 +43,6 @@ public final class TLSServer {
 	ip = null;
 	port = 0;
 	restartServerCommand = null;
-	outputFolder = null;
     }
 
     /**
@@ -66,71 +58,12 @@ public final class TLSServer {
      * @param accepted
      *            The String which the Server prints to the console when the
      *            Server is fully started
-     * @param outputFolder
      */
-    public TLSServer(String ip, int port, String restartServerCommand, String accepted, String outputFolder) {
-	this.outputFolder = outputFolder;
+    public TLSServer(String ip, int port, String restartServerCommand, String accepted) {
 	this.ip = ip;
 	this.port = port;
 	this.restartServerCommand = restartServerCommand;
 	this.accepted = accepted;
-	this.setOutputFolder(outputFolder);
-    }
-
-    /**
-     * Returns a Folder in which the Agent saves the Traces
-     * 
-     * @return Folder in which the Agent saves the Traces
-     */
-    public File getTracesFolder() {
-	return traces;
-    }
-
-    /**
-     * Returns a Folder which contains the WorkflowTraces that crashed the
-     * Implementation
-     * 
-     * @return Folder which contains the WorkflowTraces that crashed the
-     *         Implementation
-     */
-    public File getCrashedFolder() {
-	return crashedFolder;
-    }
-
-    /**
-     * Returns a Folder which contains the WorkflowTraces that timedout the
-     * Implementation
-     * 
-     * @return Folder which contains the WorkflowTraces that crashed the
-     *         Implementation
-     */
-    public File getTimeoutFolder() {
-	return timeoutFolder;
-    }
-
-    /**
-     * Returns a Folder which contains the WorkflowTraces that looked promising
-     * 
-     * @return Folder which contains the WorkflowTraces that crashed the
-     *         Implementation
-     */
-    public File getGoodTracesFolder() {
-	return goodTracesFolder;
-    }
-
-    /**
-     * Returns a Folder which contains the WorkflowTraces that threw an
-     * Exception on our end.
-     * 
-     * @return Folder which contains the WorkflowTraces that crashed the
-     *         Implementation
-     */
-    public File getFaultyFolder() {
-	return faultyFolder;
-    }
-
-    public String getOutputFolder() {
-	return outputFolder;
     }
 
     public String getAccepted() {
@@ -139,30 +72,6 @@ public final class TLSServer {
 
     public String getRestartServerCommand() {
 	return restartServerCommand;
-    }
-
-    public void setOutputFolder(String outputFolder) {
-	this.outputFolder = outputFolder;
-	this.crashedFolder = new File(outputFolder + "crash/");
-	this.faultyFolder = new File(outputFolder + "faulty/");
-	this.goodTracesFolder = new File(outputFolder + "good/");
-	this.traces = new File(outputFolder + "traces/");
-	this.timeoutFolder = new File(outputFolder + "timeout/");
-	if (!crashedFolder.exists() && !crashedFolder.mkdirs()) {
-	    throw new RuntimeException("Could not Create Output Folder!");
-	}
-	if (!faultyFolder.exists() && !faultyFolder.mkdirs()) {
-	    throw new RuntimeException("Could not Create Output Folder!");
-	}
-	if (!goodTracesFolder.exists() && !goodTracesFolder.mkdirs()) {
-	    throw new RuntimeException("Could not Create Output Folder!");
-	}
-	if (!traces.exists() && !traces.mkdirs()) {
-	    throw new RuntimeException("Could not Create Output Folder!");
-	}
-	if (!timeoutFolder.exists() && !timeoutFolder.mkdirs()) {
-	    throw new RuntimeException("Could not Create Output Folder!");
-	}
     }
 
     /**
@@ -257,11 +166,12 @@ public final class TLSServer {
 	    try {
 		id = LogFileIDManager.getInstance().getID();
 		String command = (prefix + restartServerCommand).replace("[id]", "" + id);
-		command = command.replace("[output]", traces.getAbsolutePath());
+		command = command.replace("[output]", ConfigManager.getInstance().getConfig().getTracesFolder()
+			.getAbsolutePath());
 		command = command.replace("[port]", "" + port);
 		command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
 		command = command.replace("[key]", "" + keyFile.getAbsolutePath());
-		LOG.log(Level.INFO, "Starting Server:" + command);
+		LOG.log(Level.FINE, "Starting Server:" + command);
 		long time = System.currentTimeMillis();
 		Runtime rt = Runtime.getRuntime();
 		p = rt.exec(command);
@@ -328,9 +238,7 @@ public final class TLSServer {
     @Override
     public String toString() {
 	return "TLSServer{free=" + free + ", ip=" + ip + ", port=" + port + ", id=" + id + ", restartServerCommand="
-		+ restartServerCommand + ", outputFolder=" + outputFolder + ", accepted=" + accepted + ", traces="
-		+ traces + ", crashedFolder=" + crashedFolder + ", timeoutFolder=" + timeoutFolder
-		+ ", goodTracesFolder=" + goodTracesFolder + ", faultyFolder=" + faultyFolder + '}';
+		+ restartServerCommand + ", accepted=" + accepted + '}';
     }
 
     /**

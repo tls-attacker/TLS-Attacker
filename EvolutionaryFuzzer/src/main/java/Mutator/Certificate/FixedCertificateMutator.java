@@ -72,8 +72,8 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 	    r = new Random();
 	    clientCertList.add(x509CertObject);
-	    serverPairList.add(new ServerCertificateKeypair(new File("certificates/server/key.pem"), new File(
-		    "certificates/server/cert.pem")));
+	    serverPairList.add(new ServerCertificateKeypair(new File(fc.getOutputFolder()
+		    + "certificates/server/key.pem"), new File(fc.getOutputFolder() + "certificates/server/cert.pem")));
 	} catch (KeyStoreException ex) {
 	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
 	} catch (IOException ex) {
