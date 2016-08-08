@@ -373,7 +373,7 @@ public enum CipherSuite {
 	CipherSuite c = null;
 	while (c == null) {
 	    Object[] o = MAP.values().toArray();
-            c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
+	    c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
 	}
 	return c;
     }

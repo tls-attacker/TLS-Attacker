@@ -38,6 +38,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 		|| tlsContext.getRecordHandler().getRecordCipher() == null) {
 	    setRecordCipher();
 	}
+	tlsContext.getRecordHandler().setEncryptSending(true);
 	byte[] result = { protocolMessage.getCcsProtocolType().getValue() };
 	return result;
     }
@@ -49,6 +50,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 	    setRecordCipher();
 	}
 	protocolMessage.setCcsProtocolType(message[pointer]);
+	tlsContext.getRecordHandler().setDecryptReceiving(true);
 	return pointer + 1;
     }
 

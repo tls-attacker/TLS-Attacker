@@ -32,6 +32,8 @@ public class RecordHandler {
     protected final TlsContext tlsContext;
 
     protected TlsRecordBlockCipher recordCipher;
+    protected boolean encryptSending = false;
+    protected boolean decryptReceiving = false;
 
     protected byte[] finishedBytes = null;
 
@@ -91,6 +93,22 @@ public class RecordHandler {
 	return result;
     }
 
+    public boolean isEncryptSending() {
+	return encryptSending;
+    }
+
+    public void setEncryptSending(boolean encryptSending) {
+	this.encryptSending = encryptSending;
+    }
+
+    public boolean isDecryptReceiving() {
+	return decryptReceiving;
+    }
+
+    public void setDecryptReceiving(boolean decryptReceiving) {
+	this.decryptReceiving = decryptReceiving;
+    }
+
     /**
      * Takes the data going to be sent and wraps it inside of the record. It
      * returns the size of the data, which were currently wrapped in the records
@@ -123,7 +141,7 @@ public class RecordHandler {
 	record.setLength(pmData.length);
 	record.setProtocolMessageBytes(pmData);
 
-	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	if (encryptSending && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
 	    byte[] mac = recordCipher.calculateMac(tlsContext.getProtocolVersion(), contentType, record
 		    .getProtocolMessageBytes().getValue());
 	    record.setMac(mac);
@@ -183,7 +201,7 @@ public class RecordHandler {
 		lastByte = rawRecordData.length;
 	    }
 
-	    if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
+	    if (decryptReceiving && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
 		    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
 		record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
 		byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);

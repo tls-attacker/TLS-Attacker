@@ -100,7 +100,7 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 	    LOGGER.debug("  Base point: {} ", publicKeyParameters.getParameters().getG());
 	    LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
 	} catch (TlsFatalAlert alert) {
-	    throw new UnsupportedOperationException("Problematic EC parameters, we dont support these yet");
+	    throw new UnsupportedOperationException("Problematic EC parameters, we dont support these yet", alert);
 	} catch (IOException ex) {
 	    throw new WorkflowExecutionException("EC public key parsing failed", ex);
 	}
