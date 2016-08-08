@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -27,9 +28,11 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 	if (protocolMessage.getConfig() != null && protocolMessage.getConfig().length > 0) {
 	    protocolMessage.setLevel(protocolMessage.getConfig()[0]);
 	} else {
-	    // TODO ist das ein sinvoller default? geht auch schÃ¶ner
-	    protocolMessage.setConfig(AlertLevel.FATAL, AlertDescription.UNKNOWN_CA);
-	    protocolMessage.setLevel(protocolMessage.getConfig()[0]);
+	    if (protocolMessage.isFuzzingMode()) {
+                Random r = new Random();
+		protocolMessage.setConfig(AlertLevel.values()[r.nextInt(AlertLevel.values().length)], AlertDescription.values()[r.nextInt(AlertDescription.values().length)]);
+		protocolMessage.setLevel(protocolMessage.getConfig()[0]);
+	    }
 	}
 	protocolMessage.setDescription(protocolMessage.getConfig()[1]);
 	byte[] result = { protocolMessage.getLevel().getValue(), protocolMessage.getDescription().getValue() };
