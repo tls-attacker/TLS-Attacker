@@ -129,48 +129,40 @@ public class ExecutorThreadPool implements Runnable {
 		    }
 		} catch (Throwable E) {
 		    E.printStackTrace();
-		} finally {
-		    if (server != null) {
-			server.release();
-		    }
-		}
-	    }
-	}
-
-	// Save new results
-	config.setSerialize(true);
-	while (true) {
-	    TLSServer server = null;
-	    try {
-		if (!stopped) {
-		    server = ServerManager.getInstance().getFreeServer();
-		    TestVector vector = mutator.getNewMutation();
-		    Agent agent = AgentFactory.generateAgent(config, vector.getKeyCertPair());
-		    Runnable worker = new TLSExecutor(vector, server, agent);
-		    executor.submit(worker);
-		    runs++;
-
-		} else {
-		    try {
-			Thread.sleep(1000);
-		    } catch (InterruptedException ex) {
-			Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-				"Thread interruiped while the ThreadPool is paused.", ex);
-		    }
-		}
-	    } catch (Throwable ex) {
-		ex.printStackTrace();
-	    } finally {
-		if (server != null) {
-		    server.release();
 		}
 	    }
 
+	    // Save new results
+	    config.setSerialize(true);
+	    while (true) {
+		TLSServer server = null;
+		try {
+		    if (!stopped) {
+			server = ServerManager.getInstance().getFreeServer();
+			TestVector vector = mutator.getNewMutation();
+			Agent agent = AgentFactory.generateAgent(config, vector.getKeyCertPair());
+			Runnable worker = new TLSExecutor(vector, server, agent);
+			executor.submit(worker);
+			runs++;
+
+		    } else {
+			try {
+			    Thread.sleep(1000);
+			} catch (InterruptedException ex) {
+			    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+				    "Thread interruiped while the ThreadPool is paused.", ex);
+			}
+		    }
+		} catch (Throwable ex) {
+		    ex.printStackTrace();
+		}
+
+	    }
+	    /*
+	     * executor.shutdown(); while (!executor.isTerminated()) { }
+	     * System.out.println('ExecutorThread Pool Shutdown');
+	     */
 	}
-	/*
-	 * executor.shutdown(); while (!executor.isTerminated()) { }
-	 * System.out.println('ExecutorThread Pool Shutdown');
-	 */
     }
 
     /**

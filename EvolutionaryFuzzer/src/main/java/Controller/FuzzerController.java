@@ -67,18 +67,18 @@ public class FuzzerController extends Controller {
 	ServerManager serverManager = ServerManager.getInstance();
 	serverManager.init(config);
 	if (config.isCleanStart()) {// TODO
-	// for (File f : new File(config.getOutputFolder() +
-	// "/good/").listFiles()) {
-	// if (!f.getName().startsWith(".")) {
-	// f.delete();
-	// }
-	// }
-	// for (File f : new File(config.getOutputFolder() +
-	// "/uniqueFlows/").listFiles()) {
-	// if (!f.getName().startsWith(".")) {
-	// f.delete();
-	// }
-	// }
+	    // for (File f : new File(config.getOutputFolder() +
+	    // "/good/").listFiles()) {
+	    // if (!f.getName().startsWith(".")) {
+	    // f.delete();
+	    // }
+	    // }
+	    // for (File f : new File(config.getOutputFolder() +
+	    // "/uniqueFlows/").listFiles()) {
+	    // if (!f.getName().startsWith(".")) {
+	    // f.delete();
+	    // }
+	    // }
 
 	}
 	certMutator = CertificateMutatorFactory.getCertificateMutator(config);

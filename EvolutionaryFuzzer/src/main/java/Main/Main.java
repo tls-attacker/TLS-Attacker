@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.ListenableDirectedGraph;
+import weka.core.Utils;
 
 /**
  * 
@@ -51,6 +52,7 @@ public class Main {
      * @param args
      */
     public static void main(String args[]) {
+	LOG.log(Level.FINE, Utils.arrayToString(args));
 	GeneralConfig generalConfig = new GeneralConfig();
 
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();

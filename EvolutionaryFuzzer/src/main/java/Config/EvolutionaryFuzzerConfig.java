@@ -131,6 +131,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	outputFolder = "data/";
 	serverCommandFromFile = outputFolder + "server/";
 	this.timeout = 10000;
+	this.tlsTimeout = 100;
 	setFuzzingMode(true);
 	setKeystore("../resources/rsa1024.jks");
 	setPassword("password");

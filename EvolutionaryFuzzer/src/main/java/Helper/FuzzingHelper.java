@@ -281,14 +281,19 @@ public class FuzzingHelper {
 	Random random = RandomHelper.getRandom();
 	int insertPosition = random.nextInt(protocolMessages.size());
 	ProtocolMessage pm = null;
-	while (pm == null) {
+	int i = 0;
+	while (pm == null && i < 100) {
 	    int takePosition = random.nextInt(protocolMessages.size());
 	    if (protocolMessages.get(takePosition).getMessageIssuer() == messageIssuer) {
 		pm = (ProtocolMessage) UnoptimizedDeepCopy.copy(protocolMessages.get(takePosition));
 	    }
+	    i++;
 	}
-	protocolMessages.add(insertPosition, pm);
-	return new DuplicateMessageModification(pm, insertPosition);
+	if (pm != null) {
+	    protocolMessages.add(insertPosition, pm);
+	    return new DuplicateMessageModification(pm, insertPosition);
+	}
+	return null;
     }
 
     /**
