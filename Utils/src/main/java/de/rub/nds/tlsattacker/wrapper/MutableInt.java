@@ -8,28 +8,25 @@
 package de.rub.nds.tlsattacker.wrapper;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class MutableInt
-{
+public class MutableInt {
     private int value;
-    public MutableInt(int value)
-    {
-        this.value = value;
+
+    public MutableInt(int value) {
+	this.value = value;
     }
 
-    public int getValue()
-    {
-        return value;
+    public int getValue() {
+	return value;
     }
 
-    public void setValue(int value)
-    {
-        this.value = value;
+    public void setValue(int value) {
+	this.value = value;
     }
-    public void addValue(int value)
-    {
-        this.value += value;
+
+    public void addValue(int value) {
+	this.value += value;
     }
 }

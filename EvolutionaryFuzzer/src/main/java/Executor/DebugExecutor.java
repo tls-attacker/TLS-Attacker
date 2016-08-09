@@ -49,7 +49,9 @@ public class DebugExecutor {
     private static final Logger LOG = Logger.getLogger(DebugExecutor.class.getName());
 
     public static void execute(TestVector vector, EvolutionaryFuzzerConfig config) {
+
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+
 	TransportHandler transportHandler = null;
 	TLSServer server = null;
 	try {

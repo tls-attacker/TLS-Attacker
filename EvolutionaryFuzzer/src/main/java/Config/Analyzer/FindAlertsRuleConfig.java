@@ -32,6 +32,10 @@ public class FindAlertsRuleConfig extends RuleConfig {
     public FindAlertsRuleConfig() {
 	this.blackList = new LinkedList<>();
 	blackList.add(80);
+	blackList.add(21);
+	blackList.add(41);
+	blackList.add(60);
+
 	this.whitelist = new HashSet<>();
 	// we add all AlertDescriptions TLS Attacker knows to the whitelist
 	for (AlertDescription des : AlertDescription.values()) {

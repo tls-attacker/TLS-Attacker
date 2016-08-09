@@ -78,6 +78,9 @@ public class TLSExecutor extends Executor {
 	this.server = server;
 	this.agent = agent;
 	backupVector = (TestVector) UnoptimizedDeepCopy.copy(testVector);
+	if (testVector.getKeyCertPair() == null) {
+	    System.out.println("test");
+	}
     }
 
     /**
