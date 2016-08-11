@@ -41,6 +41,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 
     public FixedCertificateMutator() {
 	try {
+	    // TODO Config
 	    this.clientCertList = new ArrayList<>();
 	    this.serverPairList = new ArrayList<>();
 	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();

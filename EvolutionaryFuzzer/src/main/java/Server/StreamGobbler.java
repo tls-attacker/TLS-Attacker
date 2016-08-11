@@ -65,7 +65,6 @@ class StreamGobbler extends Thread {
 		} else {
 
 		}
-		System.err.println(line);
 		LOG.log(Level.FINEST, line);
 	    }
 	    if (pw != null) {

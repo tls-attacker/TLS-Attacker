@@ -45,6 +45,13 @@ public class IsGoodRule extends Rule {
 	}
 	this.branch = new BranchTrace();
 	File f = new File(evoConfig.getOutputFolder() + ((IsGoodRuleConfig) config).getOutputFolder());
+	if (evoConfig.isCleanStart()) {
+	    if (f.exists()) {
+		for (File tempFile : f.listFiles()) {
+		    tempFile.delete();
+		}
+	    }
+	}
 	f.mkdirs();
     }
 

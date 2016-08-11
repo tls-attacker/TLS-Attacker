@@ -34,6 +34,13 @@ public class IsCrashRules extends Rule {
 	    writeConfig(config);
 	}
 	File f = new File(evoConfig.getOutputFolder() + ((IsCrashRuleConfig) config).getOutputFolder());
+	if (evoConfig.isCleanStart()) {
+	    if (f.exists()) {
+		for (File tempFile : f.listFiles()) {
+		    tempFile.delete();
+		}
+	    }
+	}
 	f.mkdirs();
     }
 

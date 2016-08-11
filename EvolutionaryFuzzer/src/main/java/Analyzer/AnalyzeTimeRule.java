@@ -29,10 +29,10 @@ public class AnalyzeTimeRule extends Rule {
     private BufferedWriter bw;
     private PrintWriter out;
     private double executedTime;
-    private double executedTraces = 0;
+    private int executedTraces = 0;
     private double highest = Double.MIN_VALUE;
     private double lowest = Double.MAX_VALUE;
-    private static DecimalFormat df2 = new DecimalFormat("0.##");
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
 
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_time.rule");
@@ -42,7 +42,10 @@ public class AnalyzeTimeRule extends Rule {
 	}
 	try {
 	    File f = new File(evoConfig.getOutputFolder() + ((AnalyzeTimeRuleConfig) config).getOutputFile());
-
+	    if (evoConfig.isCleanStart()) {
+		f.delete();
+		f.createNewFile();
+	    }
 	    fw = new FileWriter(f, true);
 	    bw = new BufferedWriter(fw);
 	    out = new PrintWriter(bw);
@@ -80,9 +83,10 @@ public class AnalyzeTimeRule extends Rule {
     @Override
     public String report() {
 	if (executedTraces > 0) {
-	    return "Executed: " + executedTraces + " Highest:" + df2.format(highest / 1000) + "s Lowest:"
-		    + df2.format(lowest / 1000) + "s Medium:" + df2.format((executedTime / executedTraces) / 1000)
-		    + "s Traces/Second:" + df2.format(executedTraces / (executedTime / 1000)) + "\n";
+	    return "Executed: " + executedTraces + " Highest:" + decimalFormat.format(highest / 1000) + "s Lowest:"
+		    + decimalFormat.format(lowest / 1000) + "s Medium:"
+		    + decimalFormat.format((executedTime / executedTraces) / 1000) + "s Traces/Second:"
+		    + decimalFormat.format(executedTraces / (executedTime / 1000)) + "\n";
 	} else {
 	    return null;
 	}

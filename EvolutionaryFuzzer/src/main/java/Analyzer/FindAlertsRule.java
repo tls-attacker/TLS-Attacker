@@ -40,6 +40,13 @@ public class FindAlertsRule extends Rule {
 	    writeConfig(config);
 	}
 	File f = new File(evoConfig.getOutputFolder() + ((FindAlertsRuleConfig) config).getOutputFolder());
+	if (evoConfig.isCleanStart()) {
+	    if (f.exists()) {
+		for (File tempFile : f.listFiles()) {
+		    tempFile.delete();
+		}
+	    }
+	}
 	f.mkdirs();
 	if (((FindAlertsRuleConfig) config).isSaveOneOfEach()) {
 	    // Load previously seen Testvectors and scan them for seen alert

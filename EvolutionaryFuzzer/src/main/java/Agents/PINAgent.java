@@ -45,7 +45,7 @@ public class PINAgent extends Agent {
     protected boolean timeout;
     // If the Application did Crash
     protected boolean crash;
-    private final String prefix = "PIN/pin.sh -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
+    private final String prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
 
     /**
      * Default Constructor

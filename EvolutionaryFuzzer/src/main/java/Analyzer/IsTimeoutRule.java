@@ -34,6 +34,13 @@ public class IsTimeoutRule extends Rule {
 	    writeConfig(config);
 	}
 	File f = new File(evoConfig.getOutputFolder() + ((IsTimeoutRuleConfig) config).getOutputFolder());
+	if (evoConfig.isCleanStart()) {
+	    if (f.exists()) {
+		for (File tempFile : f.listFiles()) {
+		    tempFile.delete();
+		}
+	    }
+	}
 	f.mkdirs();
     }
 

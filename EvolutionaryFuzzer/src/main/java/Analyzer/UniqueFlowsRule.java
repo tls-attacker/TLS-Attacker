@@ -44,6 +44,13 @@ public class UniqueFlowsRule extends Rule {
 	}
 	typeSet = new HashSet<>();
 	File f = new File(evoConfig.getOutputFolder() + ((UniqueFlowsRuleConfig) config).getOutputFolder());
+	if (evoConfig.isCleanStart()) {
+	    if (f.exists()) {
+		for (File tempFile : f.listFiles()) {
+		    tempFile.delete();
+		}
+	    }
+	}
 	f.mkdirs();
     }
 
