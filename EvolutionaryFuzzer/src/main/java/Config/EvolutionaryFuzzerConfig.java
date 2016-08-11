@@ -44,13 +44,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private String configFolder = "config/";
 
     private File tracesFolder; // Temporary Folder which contains currently
-			       // executed
-    // traces
-    private File crashedFolder; // Contains Traces which crashed the
-    // Implementation
-    private File timeoutFolder; // Contains Traces which timedout
-    private File goodTracesFolder; // Contains Traces which look promising
-    private File faultyFolder; // Contains Traces which caused an exception on
+			       // executed traces
 
     public String getConfigFolder() {
 	return configFolder;
@@ -62,22 +56,6 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 
     public File getTracesFolder() {
 	return tracesFolder;
-    }
-
-    public File getCrashedFolder() {
-	return crashedFolder;
-    }
-
-    public File getTimeoutFolder() {
-	return timeoutFolder;
-    }
-
-    public File getGoodTracesFolder() {
-	return goodTracesFolder;
-    }
-
-    public File getFaultyFolder() {
-	return faultyFolder;
     }
 
     public String getCertMutator() {
@@ -136,11 +114,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	setKeystore("../resources/rsa1024.jks");
 	setPassword("password");
 	setAlias("alias");
-	this.crashedFolder = new File(outputFolder + "crash/");
-	this.faultyFolder = new File(outputFolder + "faulty/");
-	this.goodTracesFolder = new File(outputFolder + "good/");
 	this.tracesFolder = new File(outputFolder + "traces/");
-	this.timeoutFolder = new File(outputFolder + "timeout/");
     }
 
     public boolean isSerialize() {
@@ -203,26 +177,8 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
      */
     public void setOutputFolder(String outputFolder) {
 	this.outputFolder = outputFolder;
-	this.crashedFolder = new File(outputFolder + "crash/");
-	this.faultyFolder = new File(outputFolder + "faulty/");
-	this.goodTracesFolder = new File(outputFolder + "good/");
 	this.tracesFolder = new File(outputFolder + "traces/");
-	this.timeoutFolder = new File(outputFolder + "timeout/");
-	// if (!crashedFolder.exists() && !crashedFolder.mkdirs()) {
-	// throw new RuntimeException("Could not Create Output Folder!");
-	// }
-	// if (!faultyFolder.exists() && !faultyFolder.mkdirs()) {
-	// throw new RuntimeException("Could not Create Output Folder!");
-	// }
-	// if (!goodTracesFolder.exists() && !goodTracesFolder.mkdirs()) {
-	// throw new RuntimeException("Could not Create Output Folder!");
-	// }
-	// if (!tracesFolder.exists() && !tracesFolder.mkdirs()) {
-	// throw new RuntimeException("Could not Create Output Folder!");
-	// }
-	// if (!timeoutFolder.exists() && !timeoutFolder.mkdirs()) {
-	// throw new RuntimeException("Could not Create Output Folder!");
-	// }
+
     }
 
 }
