@@ -7,13 +7,14 @@
  */
 package Config;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-
+@Parameters(commandDescription = "Generates a new Server Config file")
 public class ServerConfig
 {
     
