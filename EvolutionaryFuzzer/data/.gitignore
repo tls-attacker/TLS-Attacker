@@ -3,7 +3,6 @@ crash/
 faulty/
 file.id
 good/
-server/
 timeout/
 timing.results/
 traces/
