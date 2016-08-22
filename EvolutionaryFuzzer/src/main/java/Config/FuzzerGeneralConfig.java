@@ -40,7 +40,10 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 	this.configFolder = configFolder;
 	File f = new File(configFolder);
 	f.mkdirs();
-        
+        f = new File(getMutatorConfigFolder());
+        f.mkdirs();
+        f = new File(getAnalyzerConfigFolder());
+        f.mkdirs();
     }
 
     public String getAgent() {
