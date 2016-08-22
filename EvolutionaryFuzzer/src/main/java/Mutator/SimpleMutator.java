@@ -44,7 +44,7 @@ public class SimpleMutator extends Mutator {
      */
     public SimpleMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator) {
 	super(evoConfig, certMutator);
-	File f = new File(evoConfig.getConfigFolder() + "mutator/simple.conf");
+	File f = new File(evoConfig.getConfigFolder() + "simple.conf");
 	if (f.exists()) {
 	    try {
 		config = (SimpleMutatorConfig) XMLSerializer.read(f);

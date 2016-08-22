@@ -53,7 +53,7 @@ public abstract class Rule {
 
     protected RuleConfig TryLoadConfig() {
 
-	File f = new File(evoConfig.getConfigFolder() + "analyzer/" + configFileName);
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
 	    try {
 		return (RuleConfig) XMLSerializer.read(f);
@@ -69,10 +69,10 @@ public abstract class Rule {
     }
 
     protected void writeConfig(RuleConfig c) {
-	File f = new File(evoConfig.getConfigFolder() + "analyzer/" + configFileName);
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
 	    LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:" + configFileName);
-	} else {
+        } else {
 	    try {
 		XMLSerializer.write(c, f);
 	    } catch (IOException ex) {
