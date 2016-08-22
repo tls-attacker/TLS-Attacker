@@ -31,6 +31,9 @@ public class Analyzer {
 	ruleList.add(new AnalyzeTimeRule(config));
 	ruleList.add(new UniqueFlowsRule(config));
 	ruleList.add(new AnalyzeModificationRule(config));
+        ruleList.add(new ProtocolVersionRule(config));
+        ruleList.add(new EarlyHeartbeatRule(config));
+        
     }
 
     public void analyze(Result result) {
