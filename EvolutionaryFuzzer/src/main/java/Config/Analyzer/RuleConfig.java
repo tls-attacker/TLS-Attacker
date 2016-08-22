@@ -12,7 +12,13 @@ package Config.Analyzer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class RuleConfig {
+
     protected boolean active = true;
+    protected String outputFolderName;
+
+    public RuleConfig(String outputFolderName) {
+	this.outputFolderName = outputFolderName;
+    }
 
     public boolean isActive() {
 	return active;
@@ -20,6 +26,14 @@ public abstract class RuleConfig {
 
     public void setActive(boolean active) {
 	this.active = active;
+    }
+
+    public String getOutputFolder() {
+	return outputFolderName;
+    }
+
+    public void setOutputFolder(String outputFolder) {
+	this.outputFolderName = outputFolder;
     }
 
 }

@@ -25,14 +25,14 @@ import java.util.logging.Logger;
 public abstract class Rule {
 
     protected File ruleFolder;
-    protected RuleConfig config = null;
     protected final String configFileName;
     protected EvolutionaryFuzzerConfig evoConfig;
+    private boolean isActive = true;
 
     protected Rule(EvolutionaryFuzzerConfig evoConfig, String configFileName) {
 	this.configFileName = configFileName;
 	this.evoConfig = evoConfig;
-	config = TryLoadConfig();
+	// TODO Try and load config
     }
 
     public File getRuleFolder() {
@@ -40,8 +40,10 @@ public abstract class Rule {
     }
 
     public boolean isActive() {
-	return config.isActive();
+	return isActive;
     }
+
+    public abstract RuleConfig getConfig();
 
     public abstract boolean applys(Result result);
 
@@ -79,6 +81,18 @@ public abstract class Rule {
 		LOG.log(Level.SEVERE, "Could not write ConfigFile:" + configFileName);
 	    }
 	}
+    }
+
+    protected void prepareConfigFolder() {
+	File f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
+	if (evoConfig.isCleanStart()) {
+	    if (f.exists()) {
+		for (File tempFile : f.listFiles()) {
+		    tempFile.delete();
+		}
+	    }
+	}
+	f.mkdirs();
     }
 
     private static final Logger LOG = Logger.getLogger(Rule.class.getName());

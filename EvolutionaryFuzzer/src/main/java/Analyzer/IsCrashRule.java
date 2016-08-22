@@ -9,6 +9,7 @@ package Analyzer;
 
 import Config.Analyzer.FindAlertsRuleConfig;
 import Config.Analyzer.IsCrashRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
 import TestVector.TestVectorSerializer;
@@ -23,25 +24,19 @@ import javax.xml.bind.JAXBException;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class IsCrashRules extends Rule {
+public class IsCrashRule extends Rule {
 
     private int found = 0;
+    private IsCrashRuleConfig config;
 
-    public IsCrashRules(EvolutionaryFuzzerConfig evoConfig) {
+    public IsCrashRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_crash.rule");
+	config = (IsCrashRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new IsCrashRuleConfig();
 	    writeConfig(config);
 	}
-	File f = new File(evoConfig.getOutputFolder() + ((IsCrashRuleConfig) config).getOutputFolder());
-	if (evoConfig.isCleanStart()) {
-	    if (f.exists()) {
-		for (File tempFile : f.listFiles()) {
-		    tempFile.delete();
-		}
-	    }
-	}
-	f.mkdirs();
+	prepareConfigFolder();
     }
 
     @Override
@@ -56,7 +51,7 @@ public class IsCrashRules extends Rule {
     @Override
     public void onApply(Result result) {
 	found++;
-	File f = new File(evoConfig.getOutputFolder() + ((IsCrashRuleConfig) config).getOutputFolder() + result.getId());
+	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
 	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace crashed!");
 	    f.createNewFile();
@@ -81,6 +76,11 @@ public class IsCrashRules extends Rule {
 	}
     }
 
-    private static final Logger LOG = Logger.getLogger(IsCrashRules.class.getName());
+    @Override
+    public IsCrashRuleConfig getConfig() {
+	return config;
+    }
+
+    private static final Logger LOG = Logger.getLogger(IsCrashRule.class.getName());
 
 }

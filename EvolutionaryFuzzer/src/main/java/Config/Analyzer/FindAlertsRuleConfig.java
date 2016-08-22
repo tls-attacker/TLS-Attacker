@@ -26,10 +26,11 @@ public class FindAlertsRuleConfig extends RuleConfig {
     // The Pokemon method, the Rule is advised to save one example testvector
     // for each alert message
     private boolean saveOneOfEach = true;
+
     // Output folder relative to the evolutionaryConfig output folder
-    private String outputFolder = "alerts/";
 
     public FindAlertsRuleConfig() {
+	super("alerts/");
 	this.blackList = new LinkedList<>();
 	blackList.add(80);
 	blackList.add(21);
@@ -66,13 +67,4 @@ public class FindAlertsRuleConfig extends RuleConfig {
     public void setSaveOneOfEach(boolean saveOneOfEach) {
 	this.saveOneOfEach = saveOneOfEach;
     }
-
-    public String getOutputFolder() {
-	return outputFolder;
-    }
-
-    public void setOutputFolder(String outputFolder) {
-	this.outputFolder = outputFolder;
-    }
-
 }

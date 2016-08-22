@@ -9,6 +9,7 @@ package Analyzer;
 
 import Config.Analyzer.FindAlertsRuleConfig;
 import Config.Analyzer.IsTimeoutRuleConfig;
+import Config.Analyzer.RuleConfig;
 import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
@@ -32,26 +33,19 @@ import javax.xml.bind.JAXBException;
 public class UniqueFlowsRule extends Rule {
 
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRule.class.getName());
-
+    private UniqueFlowsRuleConfig config;
     private final Set<WorkflowTraceType> typeSet;
     private int found = 0;
 
     public UniqueFlowsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "unique_flows.rule");
+	config = (UniqueFlowsRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new UniqueFlowsRuleConfig();
 	    writeConfig(config);
 	}
 	typeSet = new HashSet<>();
-	File f = new File(evoConfig.getOutputFolder() + ((UniqueFlowsRuleConfig) config).getOutputFolder());
-	if (evoConfig.isCleanStart()) {
-	    if (f.exists()) {
-		for (File tempFile : f.listFiles()) {
-		    tempFile.delete();
-		}
-	    }
-	}
-	f.mkdirs();
+	prepareConfigFolder();
     }
 
     @Override
@@ -74,8 +68,7 @@ public class UniqueFlowsRule extends Rule {
 	// we execute already saved Traces
 	LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
 	LOG.log(Level.FINER, type.toString());
-	File f = new File(evoConfig.getOutputFolder() + ((UniqueFlowsRuleConfig) config).getOutputFolder()
-		+ result.getId());
+	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
 	    f.createNewFile();
 	    TestVectorSerializer.write(f, result.getExecutedVector());
@@ -93,6 +86,11 @@ public class UniqueFlowsRule extends Rule {
     @Override
     public String report() {
 	return "WorkflowTraceTypes observed:" + typeSet.size() + " WorkFlowTraceTypes found:" + found + "\n";
+    }
+
+    @Override
+    public UniqueFlowsRuleConfig getConfig() {
+	return config;
     }
 
 }

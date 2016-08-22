@@ -14,14 +14,8 @@ package Config.Analyzer;
 public class IsTimeoutRuleConfig extends RuleConfig {
     // The Timeout is not defined in the Timeout config, since the Timeout Rule
     // sees the WorkflowTrace first after it already Timedout
-    private String outputFolder = "timeout/";
 
-    public String getOutputFolder() {
-	return outputFolder;
+    public IsTimeoutRuleConfig() {
+	super("timeout/");
     }
-
-    public void setOutputFolder(String outputFolder) {
-	this.outputFolder = outputFolder;
-    }
-
 }

@@ -10,6 +10,7 @@ package Analyzer;
 import Config.Analyzer.FindAlertsRuleConfig;
 import Config.Analyzer.IsCrashRuleConfig;
 import Config.Analyzer.IsGoodRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
 import Graphs.CountEdge;
@@ -36,23 +37,17 @@ public class IsGoodRule extends Rule {
     // BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
     private int found = 0;
+    private IsGoodRuleConfig config;
 
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_good.rule");
+	config = (IsGoodRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new IsGoodRuleConfig();
 	    writeConfig(config);
 	}
 	this.branch = new BranchTrace();
-	File f = new File(evoConfig.getOutputFolder() + ((IsGoodRuleConfig) config).getOutputFolder());
-	if (evoConfig.isCleanStart()) {
-	    if (f.exists()) {
-		for (File tempFile : f.listFiles()) {
-		    tempFile.delete();
-		}
-	    }
-	}
-	f.mkdirs();
+	prepareConfigFolder();
     }
 
     @Override
@@ -76,8 +71,7 @@ public class IsGoodRule extends Rule {
 	// It may be that we dont want to safe good Traces, for example if
 	// we execute already saved Traces
 	if (evoConfig.isSerialize()) {
-	    File f = new File(evoConfig.getOutputFolder() + ((IsGoodRuleConfig) config).getOutputFolder()
-		    + result.getId());
+	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	    try {
 		f.createNewFile();
 		TestVectorSerializer.write(f, result.getExecutedVector());
@@ -104,4 +98,8 @@ public class IsGoodRule extends Rule {
 	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found + "\n";
     }
 
+    @Override
+    public IsGoodRuleConfig getConfig() {
+	return config;
+    }
 }

@@ -8,6 +8,7 @@
 package Analyzer;
 
 import Config.Analyzer.AnalyzeModificationRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Helper.XMLSerializer;
 import Modification.Modification;
@@ -33,9 +34,11 @@ public class AnalyzeModificationRule extends Rule {
 
     private long executedTraces = 0;
     private HashMap<ModificationType, MutableInt> typeMap;
+    private AnalyzeModificationRuleConfig config;
 
     public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_modification.rule");
+	config = (AnalyzeModificationRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new AnalyzeModificationRuleConfig();
 	    writeConfig(config);
@@ -46,12 +49,12 @@ public class AnalyzeModificationRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	executedTraces++;
 	return true;
     }
 
     @Override
     public void onApply(Result result) {
+	executedTraces++;
 	for (Modification mod : result.getExecutedVector().getModificationList()) {
 	    MutableInt i = typeMap.get(mod.getType());
 	    if (i == null) {
@@ -77,6 +80,20 @@ public class AnalyzeModificationRule extends Rule {
 	} else {
 	    return null;
 	}
+    }
+
+    public long getExecutedTraces() {
+	return executedTraces;
+    }
+
+    public HashMap<ModificationType, MutableInt> getTypeMap() {
+	// TODO can we do sth like unmodifiable map?
+	return typeMap;
+    }
+
+    @Override
+    public AnalyzeModificationRuleConfig getConfig() {
+	return config;
     }
 
     private static final Logger LOG = Logger.getLogger(AnalyzeModificationRule.class.getName());

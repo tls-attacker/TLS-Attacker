@@ -12,7 +12,12 @@ package Config.Analyzer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeTimeRuleConfig extends RuleConfig {
+
     private String outputFile = "timing.results";
+
+    public AnalyzeTimeRuleConfig() {
+	super(null);
+    }
 
     public String getOutputFile() {
 	return outputFile;

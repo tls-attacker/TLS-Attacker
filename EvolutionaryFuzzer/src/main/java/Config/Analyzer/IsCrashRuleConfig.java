@@ -12,14 +12,9 @@ package Config.Analyzer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsCrashRuleConfig extends RuleConfig {
-    private String outputFolder = "crash/";
 
-    public String getOutputFolder() {
-	return outputFolder;
-    }
-
-    public void setOutputFolder(String outputFolder) {
-	this.outputFolder = outputFolder;
+    public IsCrashRuleConfig() {
+	super("crash/");
     }
 
 }

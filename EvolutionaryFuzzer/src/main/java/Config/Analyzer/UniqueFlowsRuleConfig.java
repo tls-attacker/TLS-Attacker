@@ -12,14 +12,8 @@ package Config.Analyzer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class UniqueFlowsRuleConfig extends RuleConfig {
-    private String outputFolder = "uniqueFlows/";
 
-    public String getOutputFolder() {
-	return outputFolder;
+    public UniqueFlowsRuleConfig() {
+	super("uniqueFlows/");
     }
-
-    public void setOutputFolder(String outputFolder) {
-	this.outputFolder = outputFolder;
-    }
-
 }

@@ -9,6 +9,7 @@ package Analyzer;
 
 import Config.Analyzer.AnalyzeModificationRuleConfig;
 import Config.Analyzer.AnalyzeTimeRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
 import java.io.BufferedWriter;
@@ -25,30 +26,28 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeTimeRule extends Rule {
-    private FileWriter fw;
-    private BufferedWriter bw;
-    private PrintWriter out;
-    private double executedTime;
-    private int executedTraces = 0;
-    private double highest = Double.MIN_VALUE;
-    private double lowest = Double.MAX_VALUE;
+    private PrintWriter outWriter;
+    private double executedTimeTotal;
+    private int numberExecutedTraces = 0;
+    private double slowestTime = Double.MIN_VALUE;
+    private double fastestTime = Double.MAX_VALUE;
     private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
+    private AnalyzeTimeRuleConfig config;
 
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_time.rule");
+	config = (AnalyzeTimeRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new AnalyzeTimeRuleConfig();
 	    writeConfig(config);
 	}
 	try {
-	    File f = new File(evoConfig.getOutputFolder() + ((AnalyzeTimeRuleConfig) config).getOutputFile());
+	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFile());
 	    if (evoConfig.isCleanStart()) {
 		f.delete();
 		f.createNewFile();
 	    }
-	    fw = new FileWriter(f, true);
-	    bw = new BufferedWriter(fw);
-	    out = new PrintWriter(bw);
+	    outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
 	} catch (IOException ex) {
 	    Logger.getLogger(AnalyzeTimeRule.class.getName())
 		    .log(Level.SEVERE,
@@ -59,21 +58,21 @@ public class AnalyzeTimeRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	executedTraces++;
 	return true;
     }
 
     @Override
     public void onApply(Result result) {
-	executedTime += (result.getStopTime() - result.getStartTime());
-	if ((result.getStopTime() - result.getStartTime()) > highest) {
-	    highest = (result.getStopTime() - result.getStartTime());
+	numberExecutedTraces++;
+	executedTimeTotal += (result.getStopTime() - result.getStartTime());
+	if ((result.getStopTime() - result.getStartTime()) > slowestTime) {
+	    slowestTime = (result.getStopTime() - result.getStartTime());
 	}
-	if ((result.getStopTime() - result.getStartTime()) < lowest) {
-	    lowest = (result.getStopTime() - result.getStartTime());
+	if ((result.getStopTime() - result.getStartTime()) < fastestTime) {
+	    fastestTime = (result.getStopTime() - result.getStartTime());
 	}
-	out.println(result.getId() + "," + (result.getStopTime() - result.getStartTime()));
-	out.flush();
+	outWriter.println(result.getId() + "," + (result.getStopTime() - result.getStartTime()));
+	outWriter.flush();
     }
 
     @Override
@@ -82,14 +81,35 @@ public class AnalyzeTimeRule extends Rule {
 
     @Override
     public String report() {
-	if (executedTraces > 0) {
-	    return "Executed: " + executedTraces + " Highest:" + decimalFormat.format(highest / 1000) + "s Lowest:"
-		    + decimalFormat.format(lowest / 1000) + "s Medium:"
-		    + decimalFormat.format((executedTime / executedTraces) / 1000) + "s Traces/Second:"
-		    + decimalFormat.format(executedTraces / (executedTime / 1000)) + "\n";
+	if (numberExecutedTraces > 0) {
+	    return "Executed: " + numberExecutedTraces + " Highest:" + decimalFormat.format(slowestTime / 1000)
+		    + "s Lowest:" + decimalFormat.format(fastestTime / 1000) + "s Medium:"
+		    + decimalFormat.format((executedTimeTotal / numberExecutedTraces) / 1000) + "s Traces/Second:"
+		    + decimalFormat.format(numberExecutedTraces / (executedTimeTotal / 1000)) + "\n";
 	} else {
 	    return null;
 	}
+    }
+
+    @Override
+    public AnalyzeTimeRuleConfig getConfig() {
+	return config;
+    }
+
+    public double getExecutedTimeTotal() {
+	return executedTimeTotal;
+    }
+
+    public int getNumberExecutedTraces() {
+	return numberExecutedTraces;
+    }
+
+    public double getSlowestTime() {
+	return slowestTime;
+    }
+
+    public double getFastestTime() {
+	return fastestTime;
     }
 
     private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());

@@ -13,4 +13,8 @@ package Config.Analyzer;
  */
 public class AnalyzeModificationRuleConfig extends RuleConfig {
 
+    public AnalyzeModificationRuleConfig() {
+	super(null);
+    }
+
 }

@@ -10,6 +10,7 @@ package Analyzer;
 import Config.Analyzer.FindAlertsRuleConfig;
 import Config.Analyzer.IsGoodRuleConfig;
 import Config.Analyzer.IsTimeoutRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
 import TestVector.TestVectorSerializer;
@@ -26,22 +27,16 @@ import javax.xml.bind.JAXBException;
  */
 public class IsTimeoutRule extends Rule {
     private int found = 0;
+    private IsTimeoutRuleConfig config;
 
     public IsTimeoutRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_timeout.rule");
+	config = (IsTimeoutRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new IsTimeoutRuleConfig();
 	    writeConfig(config);
 	}
-	File f = new File(evoConfig.getOutputFolder() + ((IsTimeoutRuleConfig) config).getOutputFolder());
-	if (evoConfig.isCleanStart()) {
-	    if (f.exists()) {
-		for (File tempFile : f.listFiles()) {
-		    tempFile.delete();
-		}
-	    }
-	}
-	f.mkdirs();
+	prepareConfigFolder();
     }
 
     @Override
@@ -56,8 +51,7 @@ public class IsTimeoutRule extends Rule {
     @Override
     public void onApply(Result result) {
 	found++;
-	File f = new File(evoConfig.getOutputFolder() + ((IsTimeoutRuleConfig) config).getOutputFolder()
-		+ result.getId());
+	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
 	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace did Timeout!");
 	    f.createNewFile();
@@ -80,6 +74,11 @@ public class IsTimeoutRule extends Rule {
 	} else {
 	    return null;
 	}
+    }
+
+    @Override
+    public IsTimeoutRuleConfig getConfig() {
+	return config;
     }
 
     private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());

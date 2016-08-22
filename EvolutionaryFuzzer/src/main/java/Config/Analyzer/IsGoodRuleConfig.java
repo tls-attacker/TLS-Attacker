@@ -12,14 +12,9 @@ package Config.Analyzer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsGoodRuleConfig extends RuleConfig {
-    private String outputFolder = "good/";
 
-    public String getOutputFolder() {
-	return outputFolder;
-    }
-
-    public void setOutputFolder(String outputFolder) {
-	this.outputFolder = outputFolder;
+    public IsGoodRuleConfig() {
+	super("good/");
     }
 
 }

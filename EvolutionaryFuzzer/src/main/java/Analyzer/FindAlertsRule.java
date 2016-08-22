@@ -8,6 +8,7 @@
 package Analyzer;
 
 import Config.Analyzer.FindAlertsRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
 import TestVector.TestVector;
@@ -31,33 +32,28 @@ import javax.xml.bind.JAXBException;
 public class FindAlertsRule extends Rule {
 
     private int found = 0;
-    private boolean[] index = new boolean[Byte.MAX_VALUE];
+    private boolean[] alertMap = new boolean[Byte.MAX_VALUE];
+    private FindAlertsRuleConfig config;
 
     public FindAlertsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "find_alerts.rule");
+	config = (FindAlertsRuleConfig) TryLoadConfig();
 	if (config == null) {
 	    config = new FindAlertsRuleConfig();
 	    writeConfig(config);
 	}
-	File f = new File(evoConfig.getOutputFolder() + ((FindAlertsRuleConfig) config).getOutputFolder());
-	if (evoConfig.isCleanStart()) {
-	    if (f.exists()) {
-		for (File tempFile : f.listFiles()) {
-		    tempFile.delete();
-		}
-	    }
-	}
-	f.mkdirs();
-	if (((FindAlertsRuleConfig) config).isSaveOneOfEach()) {
+	prepareConfigFolder();
+	if (config.isSaveOneOfEach()) {
 	    // Load previously seen Testvectors and scan them for seen alert
 	    // messages
-
+	    // TODO
+	    File f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	    List<TestVector> vectorList = TestVectorSerializer.readFolder(f);
 	    for (TestVector vector : vectorList) {
 		List<Integer> positions = vector.getTrace().getProtocolMessagePositions(ProtocolMessageType.ALERT);
 		for (Integer i : positions) {
 		    AlertMessage pm = (AlertMessage) vector.getTrace().getProtocolMessages().get(i);
-		    index[pm.getDescription().getOriginalValue().byteValue()] = true;
+		    alertMap[pm.getDescription().getOriginalValue().byteValue()] = true;
 		}
 	    }
 	}
@@ -72,17 +68,14 @@ public class FindAlertsRule extends Rule {
 		AlertMessage pm = (AlertMessage) trace.getProtocolMessages().get(i);
 		if (pm.getMessageIssuer() == ConnectionEnd.SERVER) {
 		    // If Message is in blacklist it applys
-		    if (((FindAlertsRuleConfig) config).getBlackList().contains(
-			    pm.getDescription().getOriginalValue().byteValue())) {
+		    if (config.getBlackList().contains(pm.getDescription().getOriginalValue().byteValue())) {
 			return true;
 		    }
 		    // If Message is not in Whitelist
-		    if (!((FindAlertsRuleConfig) config).getWhitelist().contains(
-			    pm.getDescription().getOriginalValue().byteValue())) {
+		    if (!config.getWhitelist().contains(pm.getDescription().getOriginalValue().byteValue())) {
 			return true;
 		    }
-		    if (((FindAlertsRuleConfig) config).isSaveOneOfEach()
-			    && !index[pm.getDescription().getOriginalValue().byteValue()]) {
+		    if (config.isSaveOneOfEach() && !alertMap[pm.getDescription().getOriginalValue().byteValue()]) {
 			return true;
 		    }
 		}
@@ -97,18 +90,17 @@ public class FindAlertsRule extends Rule {
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
 	List<Integer> positions = trace.getProtocolMessagePositions(ProtocolMessageType.ALERT);
 	StringBuilder containsAlerts = new StringBuilder("");
-	if (((FindAlertsRuleConfig) config).isSaveOneOfEach()) {
+	if (config.isSaveOneOfEach()) {
 	    for (Integer i : positions) {
 		AlertMessage pm = (AlertMessage) trace.getProtocolMessages().get(i);
-		if (!index[pm.getDescription().getOriginalValue()]) {
+		if (!alertMap[pm.getDescription().getOriginalValue()]) {
 		    containsAlerts.append("," + pm.getDescription().getOriginalValue());
 		}
-		index[pm.getDescription().getOriginalValue().byteValue()] = true;
+		alertMap[pm.getDescription().getOriginalValue().byteValue()] = true;
 	    }
 	}
 	found++;
-	File f = new File(evoConfig.getOutputFolder() + ((FindAlertsRuleConfig) config).getOutputFolder()
-		+ result.getId());
+	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
 	    result.getExecutedVector()
 		    .getTrace()
@@ -131,7 +123,7 @@ public class FindAlertsRule extends Rule {
 
 	StringBuilder builder = new StringBuilder("Alerts found:" + found + "\n");
 	for (int i = 0; i < Byte.MAX_VALUE; i++) {
-	    if (index[i]) {
+	    if (alertMap[i]) {
 		try {
 		    AlertDescription desc = AlertDescription.getAlertDescription((byte) i);
 		    if (desc != null) {
@@ -149,6 +141,11 @@ public class FindAlertsRule extends Rule {
 	builder.append("\n");
 	return builder.toString();
 
+    }
+
+    @Override
+    public FindAlertsRuleConfig getConfig() {
+	return config;
     }
 
     private static final Logger LOG = Logger.getLogger(FindAlertsRule.class.getName());
