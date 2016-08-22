@@ -39,11 +39,9 @@ public class AflAgentTest {
     public static void tearDownClass() {
 
 	File f = new File("JUNIT/");
-        FileHelper.deleteFolder(f);
+	FileHelper.deleteFolder(f);
 
     }
-
-    
 
     private AFLAgent agent = null;
     private TLSServer server = null;
