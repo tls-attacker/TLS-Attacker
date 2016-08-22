@@ -23,6 +23,7 @@ import Result.ResultContainer;
 import TestVector.TestVector;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 
 /**
@@ -54,7 +55,7 @@ public class SimpleMutator extends Mutator {
 	    config = new SimpleMutatorConfig();
 	    try {
 		XMLSerializer.write(config, f);
-	    } catch (FileNotFoundException ex) {
+	    } catch (IOException ex) {
 		Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, null, ex);
 	    }
 	}
