@@ -30,7 +30,7 @@ import javax.xml.bind.JAXBException;
 public class EarlyHeartbeatRule extends Rule {
     private EarlyHeartbeatRuleConfig config;
     private int found = 0;
-    
+
     public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "early_heartbeat.rule");
 	config = (EarlyHeartbeatRuleConfig) TryLoadConfig();
@@ -45,13 +45,7 @@ public class EarlyHeartbeatRule extends Rule {
     public boolean applys(Result result) {
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
 	if (trace.containsProtocolMessage(ProtocolMessageType.HEARTBEAT, ConnectionEnd.SERVER)) {
-	    List<Integer> finishedPositions = trace.getHandshakeMessagePositions(HandshakeMessageType.FINISHED,
-		    ConnectionEnd.SERVER);
-	    List<Integer> heartbeatPositions = trace.getProtocolMessagePositions(ProtocolMessageType.HEARTBEAT,
-		    ConnectionEnd.SERVER);
-
-	    return (finishedPositions.size() == 0 && heartbeatPositions.size() != 0) || finishedPositions.size() > 0
-		    && heartbeatPositions.size() > 0 && finishedPositions.get(0) < heartbeatPositions.get(0);
+	    return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);
 	} else {
 	    return false;
 	}
@@ -59,10 +53,13 @@ public class EarlyHeartbeatRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-        found++;
+	found++;
 	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
-	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace has a Heartbeat from the Server before the Server send his finished message!");
+	    result.getExecutedVector()
+		    .getTrace()
+		    .setDescription(
+			    "WorkflowTrace has a Heartbeat from the Server before the Server send his finished message!");
 	    f.createNewFile();
 	    TestVectorSerializer.write(f, result.getExecutedVector());
 	} catch (JAXBException | IOException E) {
@@ -89,6 +86,24 @@ public class EarlyHeartbeatRule extends Rule {
     public EarlyHeartbeatRuleConfig getConfig() {
 	return config;
     }
+
+    public boolean hasHeartbeatWithoutFinished(WorkflowTrace trace) {
+	List<Integer> finishedPositions = trace.getHandshakeMessagePositions(HandshakeMessageType.FINISHED,
+		ConnectionEnd.SERVER);
+	List<Integer> heartbeatPositions = trace.getProtocolMessagePositions(ProtocolMessageType.HEARTBEAT,
+		ConnectionEnd.SERVER);
+	return (finishedPositions.isEmpty() && !heartbeatPositions.isEmpty());
+    }
+
+    public boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
+	List<Integer> finishedPositions = trace.getHandshakeMessagePositions(HandshakeMessageType.FINISHED,
+		ConnectionEnd.SERVER);
+	List<Integer> heartbeatPositions = trace.getProtocolMessagePositions(ProtocolMessageType.HEARTBEAT,
+		ConnectionEnd.SERVER);
+	return finishedPositions.size() > 0 && heartbeatPositions.size() > 0
+		&& finishedPositions.get(0) > heartbeatPositions.get(0);
+    }
+
     private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
-    
+
 }
