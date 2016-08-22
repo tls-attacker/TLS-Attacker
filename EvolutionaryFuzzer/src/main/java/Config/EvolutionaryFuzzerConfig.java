@@ -1,6 +1,7 @@
 package Config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
@@ -14,7 +15,8 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
+@Parameters(commandDescription = "Starts the Fuzzer")
+public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     /**
      *
@@ -22,14 +24,12 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     public static final String ATTACK_COMMAND = "fuzzer";
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
-    @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given File or Folder.", converter = FileConverter.class)
-    private String serverCommandFromFile = "server/";
+    
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./";
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
-    @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
-    private String agent = "AFL";
+    
     @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors (Default: simple). Possible: simple")
     private String mutator = "simple";
     @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates (Default: fixed). Possible: fixed")
@@ -40,19 +40,11 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
     private boolean startStopped = false;
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
-    @Parameter(names = "-config_folder", description = "The Folder in which the config Files are", converter = FileConverter.class)
-    private String configFolder = "config/";
 
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
 
-    public String getConfigFolder() {
-	return configFolder;
-    }
-
-    public void setConfigFolder(String configFolder) {
-	this.configFolder = configFolder;
-    }
+    
 
     public File getTracesFolder() {
 	return tracesFolder;
@@ -125,13 +117,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	this.serialize = serialize;
     }
 
-    public String getAgent() {
-	return agent;
-    }
-
-    public void setAgent(String agent) {
-	this.agent = agent;
-    }
+  
 
     public Integer getThreads() {
 	return threads;
@@ -141,23 +127,7 @@ public class EvolutionaryFuzzerConfig extends ClientCommandConfig {
 	this.threads = threads;
     }
 
-    /**
-     * Returns the path to the ServerConfig File
-     * 
-     * @return Path to the ServerConfig File
-     */
-    public String getServerCommandFromFile() {
-	return serverCommandFromFile;
-    }
-
-    /**
-     * Sets the path to the ServerConfig File
-     * 
-     * @param serverCommandFromFile
-     */
-    public void setServerCommandFromFile(String serverCommandFromFile) {
-	this.serverCommandFromFile = serverCommandFromFile;
-    }
+    
 
     /**
      * Returns the Path to the Folder in which the Fuzzer will save its output
