@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * 
@@ -28,8 +29,12 @@ public class XMLSerializer {
      * @param file
      * @throws Exception
      */
-    public static void write(Object f, File file) throws FileNotFoundException {
-	XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
+    public static void write(Object f, File file) throws FileNotFoundException, IOException {
+	if(!file.exists())
+        {
+            file.createNewFile();
+        }
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
 	encoder.writeObject(f);
 	encoder.close();
     }
