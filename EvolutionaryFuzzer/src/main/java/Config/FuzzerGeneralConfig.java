@@ -10,6 +10,7 @@ package Config;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
+import java.io.File;
 
 /**
  * 
@@ -29,6 +30,8 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 
     public void setConfigFolder(String configFolder) {
 	this.configFolder = configFolder;
+        File f = new File(configFolder);
+        f.mkdirs();
     }
 
     public String getAgent() {

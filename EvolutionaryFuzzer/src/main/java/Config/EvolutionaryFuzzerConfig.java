@@ -140,6 +140,8 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      */
     public void setOutputFolder(String outputFolder) {
 	this.outputFolder = outputFolder;
+        File f = new File(outputFolder);
+        f.mkdirs();
 	this.tracesFolder = new File(outputFolder + "traces/");
 
     }
