@@ -1,0 +1,94 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package Analyzer;
+
+import Config.Analyzer.EarlyHeartbeatRuleConfig;
+import Config.Analyzer.UniqueFlowsRuleConfig;
+import Config.EvolutionaryFuzzerConfig;
+import Result.Result;
+import TestVector.TestVectorSerializer;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
+
+/**
+ * 
+ * @author ic0ns
+ */
+public class EarlyHeartbeatRule extends Rule {
+    private EarlyHeartbeatRuleConfig config;
+    private int found = 0;
+    
+    public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
+	super(evoConfig, "early_heartbeat.rule");
+	config = (EarlyHeartbeatRuleConfig) TryLoadConfig();
+	if (config == null) {
+	    config = new EarlyHeartbeatRuleConfig();
+	    writeConfig(config);
+	}
+	prepareConfigFolder();
+    }
+
+    @Override
+    public boolean applys(Result result) {
+	WorkflowTrace trace = result.getExecutedVector().getTrace();
+	if (trace.containsProtocolMessage(ProtocolMessageType.HEARTBEAT, ConnectionEnd.SERVER)) {
+	    List<Integer> finishedPositions = trace.getHandshakeMessagePositions(HandshakeMessageType.FINISHED,
+		    ConnectionEnd.SERVER);
+	    List<Integer> heartbeatPositions = trace.getProtocolMessagePositions(ProtocolMessageType.HEARTBEAT,
+		    ConnectionEnd.SERVER);
+
+	    return (finishedPositions.size() == 0 && heartbeatPositions.size() != 0) || finishedPositions.size() > 0
+		    && heartbeatPositions.size() > 0 && finishedPositions.get(0) < heartbeatPositions.get(0);
+	} else {
+	    return false;
+	}
+    }
+
+    @Override
+    public void onApply(Result result) {
+        found++;
+	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
+	try {
+	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace has a Heartbeat from the Server before the Server send his finished message!");
+	    f.createNewFile();
+	    TestVectorSerializer.write(f, result.getExecutedVector());
+	} catch (JAXBException | IOException E) {
+	    LOG.log(Level.SEVERE,
+		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+			    + f.getAbsolutePath(), E);
+	}
+    }
+
+    @Override
+    public void onDecline(Result result) {
+    }
+
+    @Override
+    public String report() {
+	if (found > 0) {
+	    return "Found " + found + " Traces with EarlyHeartBeat messages from the Server\n";
+	} else {
+	    return null;
+	}
+    }
+
+    @Override
+    public EarlyHeartbeatRuleConfig getConfig() {
+	return config;
+    }
+    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
+    
+}
