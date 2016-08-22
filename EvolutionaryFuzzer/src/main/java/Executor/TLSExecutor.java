@@ -169,10 +169,10 @@ public class TLSExecutor extends Executor {
 		try {
 		    TestVectorSerializer.write(f, testVector);
 		} catch (JAXBException | IOException Ex) {
-		    System.out.println("Could not serialize WorkflowTrace:" + f.getAbsolutePath());
+		    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
 		    Ex.printStackTrace();
 		}
-		System.out.println("File:" + f.getName());
+		LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
 		E.printStackTrace();
 	    } finally {
 		if (transportHandler != null) {

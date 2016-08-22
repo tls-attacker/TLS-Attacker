@@ -38,7 +38,6 @@ public class GraphWindow {
 
     public static void showWindow(DirectedMultigraph<Integer, MessageFlow> incomingGraph) {
 
-	System.out.println(incomingGraph.edgeSet().size());
 	JFrame frame = new JFrame();
 	frame.setSize(400, 400);
 	JGraphModelAdapter adapter = new JGraphModelAdapter(incomingGraph);
@@ -55,4 +54,6 @@ public class GraphWindow {
 	    }
 	}
     }
+    private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
+    
 }

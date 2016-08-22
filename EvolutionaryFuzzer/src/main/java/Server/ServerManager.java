@@ -95,7 +95,6 @@ public class ServerManager {
      * @return A Free Server
      */
     public synchronized TLSServer getFreeServer() {
-	// System.out.println("Getting Server");
 	long startSearch = System.currentTimeMillis();
 	if (serverList.isEmpty()) {
 	    return null;
@@ -107,7 +106,6 @@ public class ServerManager {
 		// Try to get a free Server
 
 		server.occupie();
-		// System.out.println("Got:"+server.toString());
 		return server;
 	    }
 	    i++;
