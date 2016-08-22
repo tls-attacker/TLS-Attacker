@@ -12,17 +12,17 @@ import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class FuzzerGeneralConfig extends ClientCommandConfig
-{
+public class FuzzerGeneralConfig extends ClientCommandConfig {
     @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given File or Folder.", converter = FileConverter.class)
     protected String serverCommandFromFile = "server/";
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN")
     protected String agent = "AFL";
     @Parameter(names = "-config_folder", description = "The Folder in which the config Files are", converter = FileConverter.class)
     protected String configFolder = "config/";
+
     public String getConfigFolder() {
 	return configFolder;
     }
@@ -30,13 +30,15 @@ public class FuzzerGeneralConfig extends ClientCommandConfig
     public void setConfigFolder(String configFolder) {
 	this.configFolder = configFolder;
     }
-      public String getAgent() {
+
+    public String getAgent() {
 	return agent;
     }
 
     public void setAgent(String agent) {
 	this.agent = agent;
     }
+
     /**
      * Returns the path to the ServerConfig File
      * 

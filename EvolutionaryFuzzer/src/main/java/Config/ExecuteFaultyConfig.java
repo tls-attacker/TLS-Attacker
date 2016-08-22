@@ -10,11 +10,10 @@ package Config;
 import com.beust.jcommander.Parameters;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 @Parameters(commandDescription = "Executes all TestVectors which caused an Exception while Fuzzing. This is useful for Debugging purposes.")
-public class ExecuteFaultyConfig extends FuzzerGeneralConfig
-{
-  
+public class ExecuteFaultyConfig extends FuzzerGeneralConfig {
+
 }

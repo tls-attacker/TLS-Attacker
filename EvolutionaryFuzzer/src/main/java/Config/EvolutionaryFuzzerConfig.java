@@ -24,12 +24,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public static final String ATTACK_COMMAND = "fuzzer";
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
-    
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./";
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
-    
+
     @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors (Default: simple). Possible: simple")
     private String mutator = "simple";
     @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates (Default: fixed). Possible: fixed")
@@ -43,8 +42,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
-
-    
 
     public File getTracesFolder() {
 	return tracesFolder;
@@ -117,8 +114,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	this.serialize = serialize;
     }
 
-  
-
     public Integer getThreads() {
 	return threads;
     }
@@ -126,8 +121,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public void setThreads(Integer threads) {
 	this.threads = threads;
     }
-
-    
 
     /**
      * Returns the Path to the Folder in which the Fuzzer will save its output
