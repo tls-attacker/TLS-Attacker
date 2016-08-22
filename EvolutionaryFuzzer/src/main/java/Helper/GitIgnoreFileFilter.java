@@ -11,20 +11,17 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class GitIgnoreFileFilter implements FilenameFilter
-{
+public class GitIgnoreFileFilter implements FilenameFilter {
 
     @Override
-    public boolean accept(File dir, String name)
-    {
-        if(name.equals(".gitignore"))
-        {
-            return false;
-        }
-        return true;
+    public boolean accept(File dir, String name) {
+	if (name.equals(".gitignore")) {
+	    return false;
+	}
+	return true;
     }
-    
+
 }
