@@ -9,12 +9,11 @@ package Analyzer;
 
 import Config.Analyzer.RuleConfig;
 import Config.EvolutionaryFuzzerConfig;
-import Config.Mutator.SimpleMutatorConfig;
 import Helper.XMLSerializer;
-import Mutator.SimpleMutator;
 import Result.Result;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,6 @@ public abstract class Rule {
     protected Rule(EvolutionaryFuzzerConfig evoConfig, String configFileName) {
 	this.configFileName = configFileName;
 	this.evoConfig = evoConfig;
-	// TODO Try and load config
     }
 
     public File getRuleFolder() {
@@ -77,8 +75,9 @@ public abstract class Rule {
 	} else {
 	    try {
 		XMLSerializer.write(c, f);
-	    } catch (FileNotFoundException ex) {
-		LOG.log(Level.SEVERE, "Could not write ConfigFile:" + configFileName);
+	    } catch (IOException ex) {
+		LOG.log(Level.SEVERE, "Could not write ConfigFile:" + configFileName, ex);
+
 	    }
 	}
     }
