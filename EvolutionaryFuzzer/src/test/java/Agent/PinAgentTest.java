@@ -7,7 +7,6 @@
  */
 package Agent;
 
-import static Agent.AflAgentTest.deleteFolder;
 import Agents.PINAgent;
 import Mutator.Certificate.FixedCertificateMutator;
 import Result.Result;
@@ -16,6 +15,7 @@ import Server.TLSServer;
 import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +43,7 @@ public class PinAgentTest {
     @AfterClass
     public static void tearDownClass() {
 	File f = new File("JUNIT/");
-	deleteFolder(f);
+	FileHelper.deleteFolder(f);
 
     }
 

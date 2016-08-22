@@ -19,6 +19,7 @@ import Server.ServerSerializer;
 import Server.TLSServer;
 import TestVector.ServerCertificateKeypair;
 import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
+import de.rub.nds.tlsattacker.util.FileHelper;
 import java.util.logging.Level;
 import org.junit.After;
 import org.junit.Assert;
@@ -38,23 +39,11 @@ public class AflAgentTest {
     public static void tearDownClass() {
 
 	File f = new File("JUNIT/");
-	deleteFolder(f);
+        FileHelper.deleteFolder(f);
 
     }
 
-    public static void deleteFolder(File folder) {
-	File[] files = folder.listFiles();
-	if (files != null) {
-	    for (File f : files) {
-		if (f.isDirectory()) {
-		    deleteFolder(f);
-		} else {
-		    f.delete();
-		}
-	    }
-	}
-	folder.delete();
-    }
+    
 
     private AFLAgent agent = null;
     private TLSServer server = null;
