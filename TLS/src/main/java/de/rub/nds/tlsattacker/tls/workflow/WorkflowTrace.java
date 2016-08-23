@@ -157,14 +157,29 @@ public class WorkflowTrace implements Serializable {
 	return positions;
     }
 
+    public List<Integer> getProtocolMessagePositions(ProtocolMessageType type, ConnectionEnd issuer) {
+	List<Integer> positions = new LinkedList<>();
+	int position = 0;
+	for (ProtocolMessage pm : protocolMessages) {
+	    if (pm.getProtocolMessageType() == type && pm.getMessageIssuer() == issuer) {
+		positions.add(position);
+	    }
+	    position++;
+	}
+	return positions;
+    }
+
     public boolean containsProtocolMessage(ProtocolMessageType type) {
 	return !getProtocolMessagePositions(type).isEmpty();
     }
 
+    public boolean containsProtocolMessage(ProtocolMessageType type, ConnectionEnd end) {
+	return !getProtocolMessagePositions(type, end).isEmpty();
+    }
+
     /**
      * Returns the first protocol message of a specified type, which is
-     * contained in the list of protocol messages. Throws an
-     * IllegalArgumentException if no message is found.
+     * contained in the list of protocol messages. Returns null if no message is found.
      * 
      * @param type
      * @return
@@ -175,7 +190,7 @@ public class WorkflowTrace implements Serializable {
 		return pm;
 	    }
 	}
-	throw new IllegalArgumentException("The Workflow does not contain any " + type);
+        return null;
     }
 
     /**
@@ -199,14 +214,35 @@ public class WorkflowTrace implements Serializable {
 	return positions;
     }
 
+    /**
+     * Returns a list of handshake messages of a given type.
+     * 
+     * @param type
+     * @param end
+     * @return
+     */
+    public List<Integer> getHandshakeMessagePositions(HandshakeMessageType type, ConnectionEnd connectionEnd) {
+	List<Integer> positions = new LinkedList<>();
+	int position = 0;
+	for (ProtocolMessage pm : protocolMessages) {
+	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+		HandshakeMessage hm = (HandshakeMessage) pm;
+		if (hm.getHandshakeMessageType() == type && hm.getMessageIssuer() == connectionEnd) {
+		    positions.add(position);
+		}
+	    }
+	    position++;
+	}
+	return positions;
+    }
+
     public boolean containsHandshakeMessage(HandshakeMessageType type) {
 	return !getHandshakeMessagePositions(type).isEmpty();
     }
 
     /**
      * Returns the first handshake message of a specified type, which is
-     * contained in the list of protocol messages. Throws an
-     * IllegalArgumentException if no message is found.
+     * contained in the list of protocol messages. Returns null if no message is found.
      * 
      * @param type
      * @return
@@ -220,7 +256,7 @@ public class WorkflowTrace implements Serializable {
 		}
 	    }
 	}
-	throw new IllegalArgumentException("The Workflow does not contain any " + type);
+	return null;
     }
 
     public ProtocolMessage getLastProtocolMesssage() {
@@ -258,7 +294,7 @@ public class WorkflowTrace implements Serializable {
 	return serverMessages.get(size - 1);
     }
 
-    private boolean containsFinishedMessage(ConnectionEnd peer) {
+    public boolean containsFinishedMessage(ConnectionEnd peer) {
 	for (ProtocolMessage pm : protocolMessages) {
 	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
 		HandshakeMessage hm = (HandshakeMessage) pm;
