@@ -1,9 +1,11 @@
+
+early_heartbeat/
 alerts/
 crash/
 faulty/
 file.id
 good/
 timeout/
-timing.results/
+/timing.results
 traces/
 uniqueFlows/

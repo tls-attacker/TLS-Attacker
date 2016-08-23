@@ -1,11 +1,8 @@
 /target/
 /PIN/
-/openssl/
-/opensslvul/
-/openssltimeout/
-
-/server(afl)/
-pin.log
-vertices.dump
-edges.dump
-file.id
+/implementations/
+/pin.log
+/vertices.dump
+/edges.dump
+/file.id
+/config/
