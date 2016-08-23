@@ -19,20 +19,6 @@ import static org.junit.Assert.assertNull;
 public class ServerManagerTest {
     private static final Logger LOG = Logger.getLogger(ServerManagerTest.class.getName());
 
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     ServerManager manager = null;
 
     /**
@@ -46,6 +32,7 @@ public class ServerManagerTest {
      */
     @Before
     public void setUp() {
+        Config.ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
 	manager = ServerManager.getInstance();
 	manager.addServer(new TLSServer("127.0.0.1", 1, "command1", "ACCEPT"));
 	manager.addServer(new TLSServer("127.0.0.2", 2, "command2", "ACCEPT"));

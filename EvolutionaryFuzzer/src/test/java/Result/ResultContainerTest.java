@@ -7,12 +7,19 @@
  */
 package Result;
 
+import Analyzer.IsCrashRule;
+import Config.ConfigManager;
+import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.util.FileHelper;
+import java.io.File;
 import java.util.ArrayList;
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  * 
@@ -22,7 +29,19 @@ public class ResultContainerTest {
 
     public ResultContainerTest() {
     }
+    @Before
+    public void setUp() {
+	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	config.setOutputFolder("unit_test_output/");
+	config.setConfigFolder("unit_test_config/");
+        ConfigManager.getInstance().setConfig(config);
+    }
 
+    @After
+    public void tearDown() {
+	FileHelper.deleteFolder(new File("unit_test_output"));
+	FileHelper.deleteFolder(new File("unit_test_config"));
+    }
     /**
      * Test of getInstance method, of class ResultContainer.
      */
