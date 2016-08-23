@@ -63,49 +63,54 @@ public class ProtocolVersionRule extends Rule {
 		.getFirstHandshakeMessage(HandshakeMessageType.SERVER_HELLO);
 
 	if (clientMessage == null || serverMessage == null) {
+            System.out.println("does not contain both hellos");
 	    return false;
 	}
 	byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
 	byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
-	int intRepresentationClientVersion = clientProtocolVersions[0] * 0x100 + clientProtocolVersions[1];
-	int intRepresentationServerVersion = serverProtocolVersions[0] * 0x100 + serverProtocolVersions[1];
-
+	
 	if (clientProtocolVersions.length != 2 && config.isLogOnWrongFieldSizes()) {
 	    // Our protocol Version is too short/long but server responded
 	    // anyways
+	    System.out.println("responded on too long too short protocol");
 	    return true;
 	} else {
 	    clientVersion = ProtocolVersion.getProtocolVersion(clientProtocolVersions);
 	}
 	if (serverProtocolVersions.length != 2) {
 	    // The Server returned an invalid protocolversion size field
+            System.out.println("The Servers protocolversion field is too short");
 	    return true;
 	} else {
 	    serverVersion = ProtocolVersion.getProtocolVersion(serverProtocolVersions);
 	    if (serverVersion == null) {
 		// ServerVersion is nonstandart, always report
+                System.out.println("Non standart Version");
 		return true;
 	    } else if (!config.isAllowedVersion(serverVersion)) {
 		// ServerVersion is on Blacklist
+                System.out.println("Protocolversion is on the Blacklist");
 		return true;
 	    }
 	}
-	// Check if we are on the highest Version
-	if (serverVersion == highestDTLSSupported || serverVersion == highestTLSSupported) {
-	    return false;
-	}
+	
+        int intRepresentationClientVersion = clientProtocolVersions[0] * 0x100 + clientProtocolVersions[1];
+	int intRepresentationServerVersion = serverProtocolVersions[0] * 0x100 + serverProtocolVersions[1];
 	if (clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE) {
 	    // We are some DTLS Protocolversion
 	    // We chose dtls and the server agreed on some DTLS Version
-	    return intRepresentationClientVersion < intRepresentationServerVersion
+	    System.out.println("Int repo DTLScomparison:" + intRepresentationClientVersion + " " + intRepresentationServerVersion);
+            return intRepresentationClientVersion < intRepresentationServerVersion
 		    && serverVersion != highestDTLSSupported;
 
 	} else if ((clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] != (byte) 0xFE)
 		|| (clientProtocolVersions[0] != (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE)) {
 	    // DTLS TLS mismatch
-	    return true;
+            System.out.println("TLS DTLS mismatch :" + intRepresentationClientVersion + " " + intRepresentationServerVersion);
+            return true;
 	} else {
-	    return intRepresentationClientVersion > intRepresentationServerVersion
+            System.out.println("Int repo TLScomparison:" + intRepresentationClientVersion + " " + intRepresentationServerVersion);
+            return intRepresentationClientVersion > intRepresentationServerVersion
 		    && serverVersion != highestTLSSupported;
 	}
     }
