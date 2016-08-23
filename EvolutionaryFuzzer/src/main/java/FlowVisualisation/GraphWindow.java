@@ -8,27 +8,13 @@
 package FlowVisualisation;
 
 import WorkFlowType.MessageFlow;
-import javax.swing.JFrame;
-import org.jgraph.JGraph;
-import org.jgrapht.Graph;
-import java.awt.Color;
-import java.awt.geom.Rectangle2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import org.jgraph.JGraph;
-import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.DefaultEdge;
-import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphModel;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedMultigraph;
-import org.jgrapht.graph.ListenableDirectedGraph;
 
 /**
  * 
@@ -54,6 +40,7 @@ public class GraphWindow {
 	    }
 	}
     }
+
     private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
-    
+
 }
