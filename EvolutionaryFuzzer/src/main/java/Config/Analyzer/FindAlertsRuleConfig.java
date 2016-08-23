@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class FindAlertsRuleConfig extends RuleConfig {
     // List of Alert codes, if we see this alert we save the workflow trace
-    private LinkedList<Integer> blackList;
+    private Set<Byte> blacklist;
     // Set of RFC Comform Alert Codes, every Code that is not in this list is
     // saved
     private Set<Byte> whitelist;
@@ -31,25 +31,25 @@ public class FindAlertsRuleConfig extends RuleConfig {
 
     public FindAlertsRuleConfig() {
 	super("alerts/");
-	this.blackList = new LinkedList<>();
-	blackList.add(80);
-	blackList.add(21);
-	blackList.add(41);
-	blackList.add(60);
+	this.blacklist = new HashSet<>();
+	blacklist.add((byte) 80);
+	blacklist.add((byte) 21);
+	blacklist.add((byte) 41);
+	blacklist.add((byte) 60);
 
 	this.whitelist = new HashSet<>();
 	// we add all AlertDescriptions TLS Attacker knows to the whitelist
-	for (AlertDescription des : AlertDescription.values()) {
-	    whitelist.add(des.getValue());
+	for (AlertDescription description : AlertDescription.values()) {
+	    whitelist.add(description.getValue());
 	}
     }
 
-    public LinkedList<Integer> getBlackList() {
-	return blackList;
+    public Set<Byte> getBlacklist() {
+	return blacklist;
     }
 
-    public void setBlackList(LinkedList<Integer> blackList) {
-	this.blackList = blackList;
+    public void setBlacklist(Set<Byte> blackList) {
+	this.blacklist = blackList;
     }
 
     public Set<Byte> getWhitelist() {

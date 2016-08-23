@@ -68,7 +68,7 @@ public class FindAlertsRule extends Rule {
 		AlertMessage pm = (AlertMessage) trace.getProtocolMessages().get(i);
 		if (pm.getMessageIssuer() == ConnectionEnd.SERVER) {
 		    // If Message is in blacklist it applys
-		    if (config.getBlackList().contains(pm.getDescription().getOriginalValue().byteValue())) {
+		    if (config.getBlacklist().contains(pm.getDescription().getOriginalValue().byteValue())) {
 			return true;
 		    }
 		    // If Message is not in Whitelist
