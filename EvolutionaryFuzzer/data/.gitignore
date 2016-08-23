@@ -9,3 +9,4 @@ timeout/
 /timing.results
 traces/
 uniqueFlows/
+faulty_version/
