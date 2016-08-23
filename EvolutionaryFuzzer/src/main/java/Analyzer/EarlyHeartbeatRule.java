@@ -38,7 +38,7 @@ public class EarlyHeartbeatRule extends Rule {
 	    config = new EarlyHeartbeatRuleConfig();
 	    writeConfig(config);
 	}
-	prepareConfigFolder();
+	prepareConfigOutputFolder();
     }
 
     @Override

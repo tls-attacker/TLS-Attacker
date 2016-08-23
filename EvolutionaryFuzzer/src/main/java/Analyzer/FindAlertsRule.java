@@ -42,7 +42,7 @@ public class FindAlertsRule extends Rule {
 	    config = new FindAlertsRuleConfig();
 	    writeConfig(config);
 	}
-	prepareConfigFolder();
+	prepareConfigOutputFolder();
 	if (config.isSaveOneOfEach()) {
 	    // Load previously seen Testvectors and scan them for seen alert
 	    // messages

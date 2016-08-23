@@ -40,7 +40,7 @@ public class UniqueFlowsRule extends Rule {
 	    writeConfig(config);
 	}
 	typeSet = new HashSet<>();
-	prepareConfigFolder();
+	prepareConfigOutputFolder();
     }
 
     @Override

@@ -47,7 +47,7 @@ public class IsGoodRule extends Rule {
 	    writeConfig(config);
 	}
 	this.branch = new BranchTrace();
-	prepareConfigFolder();
+	prepareConfigOutputFolder();
     }
 
     @Override

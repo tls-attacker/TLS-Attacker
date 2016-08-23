@@ -72,7 +72,7 @@ public abstract class Rule {
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
 	    LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:" + configFileName);
-        } else {
+	} else {
 	    try {
 		XMLSerializer.write(c, f);
 	    } catch (IOException ex) {
@@ -82,7 +82,7 @@ public abstract class Rule {
 	}
     }
 
-    protected void prepareConfigFolder() {
+    protected void prepareConfigOutputFolder() {
 	File f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	if (evoConfig.isCleanStart()) {
 	    if (f.exists()) {

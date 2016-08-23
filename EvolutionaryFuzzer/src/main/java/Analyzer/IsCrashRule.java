@@ -36,7 +36,7 @@ public class IsCrashRule extends Rule {
 	    config = new IsCrashRuleConfig();
 	    writeConfig(config);
 	}
-	prepareConfigFolder();
+	prepareConfigOutputFolder();
     }
 
     @Override

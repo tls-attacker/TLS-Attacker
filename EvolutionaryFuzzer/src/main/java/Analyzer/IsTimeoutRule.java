@@ -36,7 +36,7 @@ public class IsTimeoutRule extends Rule {
 	    config = new IsTimeoutRuleConfig();
 	    writeConfig(config);
 	}
-	prepareConfigFolder();
+	prepareConfigOutputFolder();
     }
 
     @Override
