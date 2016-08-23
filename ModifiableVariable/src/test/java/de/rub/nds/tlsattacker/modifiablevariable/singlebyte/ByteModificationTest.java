@@ -92,7 +92,7 @@ public class ByteModificationTest {
 	assertNotSame(expectedResult, result);
 	assertEquals(new Byte("10"), start.getOriginalValue());
     }
-    
+
     /**
      * Test of explicitValue from file method
      */
@@ -103,9 +103,9 @@ public class ByteModificationTest {
 	expectedResult = -128;
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-	
-        modifier = ByteModificationFactory.explicitValueFromFile(1);
-        start.setModification(modifier);
+
+	modifier = ByteModificationFactory.explicitValueFromFile(1);
+	start.setModification(modifier);
 	expectedResult = -1;
 	result = start.getValue();
 	assertEquals(expectedResult, result);

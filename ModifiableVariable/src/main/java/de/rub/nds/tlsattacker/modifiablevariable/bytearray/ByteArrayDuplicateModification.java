@@ -23,7 +23,7 @@ public class ByteArrayDuplicateModification extends VariableModification<byte[]>
     public ByteArrayDuplicateModification() {
 
     }
-    
+
     @Override
     protected byte[] modifyImplementationHook(byte[] input) {
 	if (input == null) {

@@ -126,7 +126,7 @@ public class BigIntegerModificationTest {
 	assertNotSame(expectedResult, result);
 	assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
-    
+
     /**
      * Test of explicitValue from file method
      */
@@ -137,15 +137,15 @@ public class BigIntegerModificationTest {
 	expectedResult = BigInteger.valueOf(-128);
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-	
-        modifier = BigIntegerModificationFactory.explicitValueFromFile(1);
-        start.setModification(modifier);
+
+	modifier = BigIntegerModificationFactory.explicitValueFromFile(1);
+	start.setModification(modifier);
 	expectedResult = BigInteger.valueOf(-1);
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-        
-        modifier = BigIntegerModificationFactory.explicitValueFromFile(26);
-        start.setModification(modifier);
+
+	modifier = BigIntegerModificationFactory.explicitValueFromFile(26);
+	start.setModification(modifier);
 	expectedResult = BigInteger.valueOf(2147483647);
 	result = start.getValue();
 	assertEquals(expectedResult, result);

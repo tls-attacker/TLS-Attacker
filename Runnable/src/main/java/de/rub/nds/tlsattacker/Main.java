@@ -104,60 +104,60 @@ public class Main {
 	    return;
 	}
 
-        Attacker attacker;
-        switch (jc.getParsedCommand()) {
-            case MultiFuzzerConfig.COMMAND:
-                startMultiFuzzer(cmconfig, generalConfig, jc);
-                return;
-            case ServerCommandConfig.COMMAND:
-                startSimpleTls(generalConfig, server, jc);
-                return;
-            case ClientCommandConfig.COMMAND:
-                startSimpleTls(generalConfig, client, jc);
-                return;
-            case ServerTestConfig.COMMAND:
-                ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
-                boolean success = st.startTests();
-                if (success) {
-                    System.exit(0);
-                } else {
-                    System.exit(1);
-                }
-            case BleichenbacherCommandConfig.ATTACK_COMMAND:
-                attacker = new BleichenbacherAttack(bleichenbacherTest);
-                break;
-            case InvalidCurveAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new InvalidCurveAttack(ellipticTest);
-                break;
-            case InvalidCurveAttackFullCommandConfig.ATTACK_COMMAND:
-                attacker = new InvalidCurveAttackFull(elliptic);
-                break;
-            case HeartbleedCommandConfig.ATTACK_COMMAND:
-                attacker = new HeartbleedAttack(heartbleed);
-                break;
-            case PoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new PoodleAttack(poodle);
-                break;
-            case PaddingOracleCommandConfig.ATTACK_COMMAND:
-                attacker = new PaddingOracleAttack(paddingOracle);
-                break;
-            case Cve20162107CommandConfig.ATTACK_COMMAND:
-                attacker = new Cve20162107(cve20162107);
-                break;
-            case WinshockCommandConfig.ATTACK_COMMAND:
-                attacker = new WinshockAttack(winshock);
-                break;
-            case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
-                break;
-            case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new ManInTheMiddleAttack(MitM_Attack);
-                break;
-            default:
-                throw new ConfigurationException("No command found");
-        }
-        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        configHandler.initialize(generalConfig);
+	Attacker attacker;
+	switch (jc.getParsedCommand()) {
+	    case MultiFuzzerConfig.COMMAND:
+		startMultiFuzzer(cmconfig, generalConfig, jc);
+		return;
+	    case ServerCommandConfig.COMMAND:
+		startSimpleTls(generalConfig, server, jc);
+		return;
+	    case ClientCommandConfig.COMMAND:
+		startSimpleTls(generalConfig, client, jc);
+		return;
+	    case ServerTestConfig.COMMAND:
+		ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
+		boolean success = st.startTests();
+		if (success) {
+		    System.exit(0);
+		} else {
+		    System.exit(1);
+		}
+	    case BleichenbacherCommandConfig.ATTACK_COMMAND:
+		attacker = new BleichenbacherAttack(bleichenbacherTest);
+		break;
+	    case InvalidCurveAttackCommandConfig.ATTACK_COMMAND:
+		attacker = new InvalidCurveAttack(ellipticTest);
+		break;
+	    case InvalidCurveAttackFullCommandConfig.ATTACK_COMMAND:
+		attacker = new InvalidCurveAttackFull(elliptic);
+		break;
+	    case HeartbleedCommandConfig.ATTACK_COMMAND:
+		attacker = new HeartbleedAttack(heartbleed);
+		break;
+	    case PoodleCommandConfig.ATTACK_COMMAND:
+		attacker = new PoodleAttack(poodle);
+		break;
+	    case PaddingOracleCommandConfig.ATTACK_COMMAND:
+		attacker = new PaddingOracleAttack(paddingOracle);
+		break;
+	    case Cve20162107CommandConfig.ATTACK_COMMAND:
+		attacker = new Cve20162107(cve20162107);
+		break;
+	    case WinshockCommandConfig.ATTACK_COMMAND:
+		attacker = new WinshockAttack(winshock);
+		break;
+	    case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
+		attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
+		break;
+	    case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
+		attacker = new ManInTheMiddleAttack(MitM_Attack);
+		break;
+	    default:
+		throw new ConfigurationException("No command found");
+	}
+	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+	configHandler.initialize(generalConfig);
 
 	if (configHandler.printHelpForCommand(jc, attacker.getConfig())) {
 	    return;
