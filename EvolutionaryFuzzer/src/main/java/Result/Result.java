@@ -28,7 +28,7 @@ public class Result {
 
     private final boolean hasCrashed;
     // If the Implementation did Timeout
-    private final boolean didTimeout;
+    private boolean didTimeout;
     // The Unixtime @ which the Vector started executing
     private final long startTime;
     // The Unixtime @ which the Vector finished executing
@@ -42,7 +42,7 @@ public class Result {
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
     private Boolean goodTrace = null;
-
+    
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
 	    TestVector vector, TestVector executedVector, String id) {
 	this.hasCrashed = hasCrashed;
@@ -61,6 +61,11 @@ public class Result {
 
     public void setGoodTrace(Boolean wasGoodTrace) {
 	this.goodTrace = wasGoodTrace;
+    }
+
+    public void setDidTimeout(boolean didTimeout)
+    {
+        this.didTimeout = didTimeout;
     }
 
     /**
