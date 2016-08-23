@@ -7,17 +7,12 @@
  */
 package Analyzer;
 
-import Config.Analyzer.FindAlertsRuleConfig;
-import Config.Analyzer.IsTimeoutRuleConfig;
-import Config.Analyzer.RuleConfig;
 import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
-import Graphs.BranchTrace;
 import Result.Result;
 import TestVector.TestVectorSerializer;
 import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
