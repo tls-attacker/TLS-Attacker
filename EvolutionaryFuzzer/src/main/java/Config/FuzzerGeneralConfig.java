@@ -27,23 +27,23 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getConfigFolder() {
 	return configFolder;
     }
-    
+
     public String getMutatorConfigFolder() {
-        return configFolder + "mutator/";
+	return configFolder + "mutator/";
     }
-    
+
     public String getAnalyzerConfigFolder() {
-        return configFolder + "analyzer/";
+	return configFolder + "analyzer/";
     }
-    
+
     public void setConfigFolder(String configFolder) {
 	this.configFolder = configFolder;
 	File f = new File(configFolder);
 	f.mkdirs();
-        f = new File(getMutatorConfigFolder());
-        f.mkdirs();
-        f = new File(getAnalyzerConfigFolder());
-        f.mkdirs();
+	f = new File(getMutatorConfigFolder());
+	f.mkdirs();
+	f = new File(getAnalyzerConfigFolder());
+	f.mkdirs();
     }
 
     public String getAgent() {

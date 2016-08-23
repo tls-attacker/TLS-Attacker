@@ -31,7 +31,7 @@ public class XMLSerializer {
      */
     public static void write(Object f, File file) throws FileNotFoundException, IOException {
 	if (!file.exists()) {
-            file.createNewFile();
+	    file.createNewFile();
 	}
 	XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
 	encoder.writeObject(f);
