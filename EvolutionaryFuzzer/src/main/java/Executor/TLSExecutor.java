@@ -42,6 +42,7 @@ import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
+
 /**
  * This is an Implementation of an Executor. This Executor is specially designed
  * for the TLS Protocol. The whole Program is not completely generic in this
@@ -54,7 +55,7 @@ import java.util.Collection;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSExecutor extends Executor {
-    
+
     private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 
     private final TestVector testVector;
@@ -75,9 +76,6 @@ public class TLSExecutor extends Executor {
 	this.server = server;
 	this.agent = agent;
 	backupVector = (TestVector) UnoptimizedDeepCopy.copy(testVector);
-	if (testVector.getKeyCertPair() == null) {
-	    System.out.println("test");
-	}
     }
 
     /**
@@ -119,7 +117,7 @@ public class TLSExecutor extends Executor {
 			// It may happen that the implementation is not ready
 			// yet
 			if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			    LOG.log(java.util.logging.Level.INFO,"Could not start Server! Trying to Restart it!");
+			    LOG.log(java.util.logging.Level.INFO, "Could not start Server! Trying to Restart it!");
 			    agent.applicationStop(server);
 			    agent.applicationStart(server);
 			    time = System.currentTimeMillis();
