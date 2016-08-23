@@ -41,6 +41,7 @@ public class ResultContainerTest {
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
+        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
     }
     /**
      * Test of getInstance method, of class ResultContainer.

@@ -14,9 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 import Agents.AFLAgent;
 import Config.ConfigManager;
+import Config.EvolutionaryFuzzerConfig;
 import Mutator.Certificate.FixedCertificateMutator;
 import Server.ServerSerializer;
 import Server.TLSServer;
+import TestHelper.UnitTestCertificateMutator;
 import TestVector.ServerCertificateKeypair;
 import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
 import de.rub.nds.tlsattacker.util.FileHelper;
@@ -32,6 +34,15 @@ public class AflAgentTest {
     // TODO Collect Results Test
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
 
+
+    @After
+    public void tearDown() {
+	FileHelper.deleteFolder(new File("unit_test_output"));
+	FileHelper.deleteFolder(new File("unit_test_config"));
+        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+      	server.stop();
+	server = null;
+    }
     /**
      *
      */
@@ -45,7 +56,7 @@ public class AflAgentTest {
 
     private AFLAgent agent = null;
     private TLSServer server = null;
-    private FixedCertificateMutator mut = null;
+    private UnitTestCertificateMutator mut = null;
     private ServerCertificateKeypair pair = null;
 
     /**
@@ -59,7 +70,11 @@ public class AflAgentTest {
      */
     @Before
     public void setUp() {
-	mut = new FixedCertificateMutator();
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	config.setOutputFolder("unit_test_output/");
+	config.setConfigFolder("unit_test_config/");
+        ConfigManager.getInstance().setConfig(config);
+	mut = new UnitTestCertificateMutator();
 	pair = mut.getServerCertificateKeypair();
 	agent = new AFLAgent(pair);
 	File f = new File("../resources/EvolutionaryFuzzer/TestServer/afl.config");
@@ -75,12 +90,7 @@ public class AflAgentTest {
 
     }
 
-    @After
-    public void tearDown() {
-	server.stop();
-	server = null;
-    }
-
+    
     /**
      *
      */

@@ -8,10 +8,13 @@
 package Agent;
 
 import Agents.PINAgent;
+import Config.ConfigManager;
+import Config.EvolutionaryFuzzerConfig;
 import Mutator.Certificate.FixedCertificateMutator;
 import Result.Result;
 import Server.ServerSerializer;
 import Server.TLSServer;
+import TestHelper.UnitTestCertificateMutator;
 import TestVector.ServerCertificateKeypair;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -34,7 +37,7 @@ public class PinAgentTest {
 
     private static PINAgent agent;
     private static TLSServer server;
-    private FixedCertificateMutator mut = null;
+    private UnitTestCertificateMutator mut = null;
     private ServerCertificateKeypair pair = null;
 
     /**
@@ -50,9 +53,21 @@ public class PinAgentTest {
     public PinAgentTest() {
     }
 
+    @After
+    public void tearDown() {
+	FileHelper.deleteFolder(new File("unit_test_output"));
+	FileHelper.deleteFolder(new File("unit_test_config"));
+        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+        server.stop();
+	server = null;
+    }
     @Before
     public void setUp() {
-	mut = new FixedCertificateMutator();
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	config.setOutputFolder("unit_test_output/");
+	config.setConfigFolder("unit_test_config/");
+        ConfigManager.getInstance().setConfig(config);
+	mut = new UnitTestCertificateMutator();
 	pair = mut.getServerCertificateKeypair();
 	agent = new PINAgent(pair);
 	File f = new File("../resources/EvolutionaryFuzzer/TestServer/normal.config");
@@ -67,11 +82,6 @@ public class PinAgentTest {
 	server.occupie();
     }
 
-    @After
-    public void tearDown() {
-	server.stop();
-	server = null;
-    }
 
     /**
      *
