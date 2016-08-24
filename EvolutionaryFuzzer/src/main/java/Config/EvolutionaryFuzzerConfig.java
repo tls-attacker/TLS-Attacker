@@ -132,6 +132,18 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	return outputFolder;
     }
 
+    public String getOutputCertificateFolder() {
+	return outputFolder + "certificates/";
+    }
+
+    public String getOutputClientCertificateFolder() {
+	return outputFolder + "certificates/client/";
+    }
+
+    public String getOutputServerCertificateFolder() {
+	return outputFolder + "certificates/server/";
+    }
+
     /**
      * Sets the Path to the Folder in which the Fuzzer will save its output to.
      * The Server will genereate several Folder in the Output Folder.

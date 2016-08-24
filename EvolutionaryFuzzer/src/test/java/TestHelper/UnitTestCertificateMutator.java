@@ -7,11 +7,12 @@
  */
 package TestHelper;
 
+import Certificate.ClientCertificateStructure;
 import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
 import Mutator.Certificate.CertificateMutator;
 import Mutator.Certificate.FixedCertificateMutator;
-import TestVector.ServerCertificateKeypair;
+import Certificate.ServerCertificateStructure;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
@@ -31,70 +32,36 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- * This mutator does not rely on a certificate Config File to generate Certificates
+ * This mutator does not rely on a certificate Config File to generate
+ * Certificates
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnitTestCertificateMutator extends CertificateMutator
-{
-private List<X509CertificateObject> clientCertList;
-    private List<ServerCertificateKeypair> serverPairList;
+public class UnitTestCertificateMutator extends CertificateMutator {
+    private List<ClientCertificateStructure> clientPairList;
+    private List<ServerCertificateStructure> serverPairList;
     private Random r;
 
     public UnitTestCertificateMutator() {
-	try {
-	    // TODO Config
-	    this.clientCertList = new ArrayList<>();
-	    this.serverPairList = new ArrayList<>();
-	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-	    if (fc.getKeystore() == null) {
-		fc.setKeystore("../resources/rsa1024.jks");
-	    }
-	    if (fc.getPassword() == null) {
-		fc.setPassword("password");
-	    }
-	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
-		fc.setAlias("alias");
-	    }
-	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
+	this.clientPairList = new ArrayList<>();
+	this.serverPairList = new ArrayList<>();
+	clientPairList.add(new ClientCertificateStructure("password", "alias", new File("../resources/rsa1024.jks")));
+	r = new Random();
 
-	    java.security.cert.Certificate sunCert = ks.getCertificate(fc.getAlias());
-	    if (sunCert == null) {
-		throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-			+ "certificate alias and key? (Current alias: " + "alias" + ")");
-	    }
-	    byte[] certBytes = sunCert.getEncoded();
+	serverPairList.add(new ServerCertificateStructure(new File(
+		"../resources/EvolutionaryFuzzer/TestCerts/rsa1024key.pem"), new File(
+		"../resources/EvolutionaryFuzzer/TestCerts/rsa1024.pem")));
 
-	    ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-	    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-
-	    org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
-	    certs[0] = cert;
-	    org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs);
-
-	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-	    r = new Random();
-	    clientCertList.add(x509CertObject);
-	    serverPairList.add(new ServerCertificateKeypair(new File("../resources/EvolutionaryFuzzer/TestCerts/rsa1024key.pem"), new File("../resources/EvolutionaryFuzzer/TestCerts/rsa1024.pem")));
-	} catch (KeyStoreException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (IOException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (NoSuchAlgorithmException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (CertificateException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	}
     }
 
     @Override
-    public X509CertificateObject getClientCertificate() {
-	return clientCertList.get(r.nextInt(clientCertList.size()));
+    public ClientCertificateStructure getClientCertificateStructure() {
+	return clientPairList.get(r.nextInt(clientPairList.size()));
     }
 
     @Override
-    public ServerCertificateKeypair getServerCertificateKeypair() {
+    public ServerCertificateStructure getServerCertificateStructure() {
 	return serverPairList.get(r.nextInt(serverPairList.size()));
     }
-    
+
 }

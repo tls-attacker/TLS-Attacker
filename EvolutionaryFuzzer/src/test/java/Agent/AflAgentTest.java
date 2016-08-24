@@ -19,7 +19,7 @@ import Mutator.Certificate.FixedCertificateMutator;
 import Server.ServerSerializer;
 import Server.TLSServer;
 import TestHelper.UnitTestCertificateMutator;
-import TestVector.ServerCertificateKeypair;
+import Certificate.ServerCertificateStructure;
 import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.util.logging.Level;
@@ -34,15 +34,15 @@ public class AflAgentTest {
     // TODO Collect Results Test
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
 
-
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
-        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
-      	server.stop();
+	ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+	server.stop();
 	server = null;
     }
+
     /**
      *
      */
@@ -57,7 +57,7 @@ public class AflAgentTest {
     private AFLAgent agent = null;
     private TLSServer server = null;
     private UnitTestCertificateMutator mut = null;
-    private ServerCertificateKeypair pair = null;
+    private ServerCertificateStructure pair = null;
 
     /**
      *
@@ -70,12 +70,12 @@ public class AflAgentTest {
      */
     @Before
     public void setUp() {
-        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
 	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
-        ConfigManager.getInstance().setConfig(config);
+	ConfigManager.getInstance().setConfig(config);
 	mut = new UnitTestCertificateMutator();
-	pair = mut.getServerCertificateKeypair();
+	pair = mut.getServerCertificateStructure();
 	agent = new AFLAgent(pair);
 	File f = new File("../resources/EvolutionaryFuzzer/TestServer/afl.config");
 	if (!f.exists()) {
@@ -90,7 +90,6 @@ public class AflAgentTest {
 
     }
 
-    
     /**
      *
      */

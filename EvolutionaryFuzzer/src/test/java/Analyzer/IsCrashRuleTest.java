@@ -50,10 +50,10 @@ public class IsCrashRuleTest {
     @Test
     public void testApplys() {
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null), new TestVector(new WorkflowTrace(), null, null), "unit.test");
+		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
 	assertTrue(rule.applys(result));
-	result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null),
-		new TestVector(new WorkflowTrace(), null, null), "unit.test");
+	result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
+		null), new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
 	assertFalse(rule.applys(result));
 
     }
@@ -65,7 +65,7 @@ public class IsCrashRuleTest {
     public void testOnApply() {
 	// TODO we dont check if the file is actually created
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null), new TestVector(new WorkflowTrace(), null, null), "unit.test");
+		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
 	rule.onApply(result);
     }
 
@@ -84,7 +84,7 @@ public class IsCrashRuleTest {
     public void testReport() {
 	assertNull(rule.report());
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null), new TestVector(new WorkflowTrace(), null, null), "unit.test");
+		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

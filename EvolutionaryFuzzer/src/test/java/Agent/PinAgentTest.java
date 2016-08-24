@@ -15,7 +15,7 @@ import Result.Result;
 import Server.ServerSerializer;
 import Server.TLSServer;
 import TestHelper.UnitTestCertificateMutator;
-import TestVector.ServerCertificateKeypair;
+import Certificate.ServerCertificateStructure;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.FileHelper;
@@ -38,7 +38,7 @@ public class PinAgentTest {
     private static PINAgent agent;
     private static TLSServer server;
     private UnitTestCertificateMutator mut = null;
-    private ServerCertificateKeypair pair = null;
+    private ServerCertificateStructure pair = null;
 
     /**
      *
@@ -57,18 +57,19 @@ public class PinAgentTest {
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
-        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
-        server.stop();
+	ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+	server.stop();
 	server = null;
     }
+
     @Before
     public void setUp() {
-        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
 	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
-        ConfigManager.getInstance().setConfig(config);
+	ConfigManager.getInstance().setConfig(config);
 	mut = new UnitTestCertificateMutator();
-	pair = mut.getServerCertificateKeypair();
+	pair = mut.getServerCertificateStructure();
 	agent = new PINAgent(pair);
 	File f = new File("../resources/EvolutionaryFuzzer/TestServer/normal.config");
 	if (!f.exists()) {
@@ -81,7 +82,6 @@ public class PinAgentTest {
 	}
 	server.occupie();
     }
-
 
     /**
      *
@@ -125,7 +125,7 @@ public class PinAgentTest {
      */
     @Test
     public void testCollectResults() {
-	TestVector t = new TestVector(null, null, null);
+	TestVector t = new TestVector(null, null, null, null);
 	agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/test.trace"), t, t);
     }
 
@@ -135,7 +135,7 @@ public class PinAgentTest {
      */
     @Test
     public void testCollectResultsGraph() {
-	TestVector t = new TestVector(new WorkflowTrace(), null, null);
+	TestVector t = new TestVector(new WorkflowTrace(), null, null, null);
 	Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/graph.trace"), t, t);
 	assertTrue("Failure: Test result should have exactly 4 Vertices",
 		r.getBranchTrace().getVerticesSet().size() == 4);

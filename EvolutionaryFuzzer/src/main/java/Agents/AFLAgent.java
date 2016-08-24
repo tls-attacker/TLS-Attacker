@@ -19,7 +19,7 @@ import Graphs.Edge;
 import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
-import TestVector.ServerCertificateKeypair;
+import Certificate.ServerCertificateStructure;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
 import java.io.BufferedReader;
@@ -54,7 +54,7 @@ public class AFLAgent extends Agent {
     /**
      * Default Constructor
      */
-    public AFLAgent(ServerCertificateKeypair keypair) {
+    public AFLAgent(ServerCertificateStructure keypair) {
 	super(keypair);
 	timeout = false;
 	crash = false;

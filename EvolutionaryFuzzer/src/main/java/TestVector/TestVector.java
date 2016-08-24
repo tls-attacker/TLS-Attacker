@@ -7,6 +7,8 @@
  */
 package TestVector;
 
+import Certificate.ClientCertificateStructure;
+import Certificate.ServerCertificateStructure;
 import Modification.Modification;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.Serializable;
@@ -26,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class TestVector implements Serializable {
 
     private WorkflowTrace trace = null;
-    private ServerCertificateKeypair keyCertPair = null;
+    private ServerCertificateStructure serverKeyCert = null;
+    private ClientCertificateStructure clientKeyCert = null;
     @XmlTransient
     private TestVector parent = null;
     @XmlTransient
@@ -34,9 +37,11 @@ public class TestVector implements Serializable {
     @XmlTransient
     private List<Modification> modificationList = null;
 
-    public TestVector(WorkflowTrace trace, ServerCertificateKeypair keyCertPair, TestVector parent) {
+    public TestVector(WorkflowTrace trace, ServerCertificateStructure keyCertPair,
+	    ClientCertificateStructure clientKeyCert, TestVector parent) {
 	this.trace = trace;
-	this.keyCertPair = keyCertPair;
+	this.serverKeyCert = keyCertPair;
+	this.clientKeyCert = clientKeyCert;
 	this.parent = parent;
 	this.modificationList = new LinkedList<Modification>();
     }
@@ -48,8 +53,12 @@ public class TestVector implements Serializable {
 	return trace;
     }
 
-    public ServerCertificateKeypair getKeyCertPair() {
-	return keyCertPair;
+    public ClientCertificateStructure getClientKeyCert() {
+	return clientKeyCert;
+    }
+
+    public ServerCertificateStructure getServerKeyCert() {
+	return serverKeyCert;
     }
 
     public void addModification(Modification modification) {

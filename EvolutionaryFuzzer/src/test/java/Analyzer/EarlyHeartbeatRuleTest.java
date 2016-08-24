@@ -62,8 +62,8 @@ public class EarlyHeartbeatRuleTest {
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
+		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
 	assertTrue(rule.applys(result));
 	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
 	assertTrue(rule.applys(result));
@@ -71,17 +71,17 @@ public class EarlyHeartbeatRuleTest {
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
 	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null, null),
+		new TestVector(trace, null, null, null), "unittest.id");
 	assertFalse(rule.applys(result));
 	trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null, null),
+		new TestVector(trace, null, null, null), "unittest.id");
 	assertFalse(rule.applys(result));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null, null),
+		new TestVector(trace, null, null, null), "unittest.id");
 	trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
@@ -99,8 +99,8 @@ public class EarlyHeartbeatRuleTest {
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
+		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
 	rule.onApply(result);
     }
 
@@ -122,8 +122,8 @@ public class EarlyHeartbeatRuleTest {
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
+		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

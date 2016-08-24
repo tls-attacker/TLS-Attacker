@@ -42,7 +42,7 @@ public class Result {
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
     private Boolean goodTrace = null;
-    
+
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
 	    TestVector vector, TestVector executedVector, String id) {
 	this.hasCrashed = hasCrashed;
@@ -63,9 +63,8 @@ public class Result {
 	this.goodTrace = wasGoodTrace;
     }
 
-    public void setDidTimeout(boolean didTimeout)
-    {
-        this.didTimeout = didTimeout;
+    public void setDidTimeout(boolean didTimeout) {
+	this.didTimeout = didTimeout;
     }
 
     /**

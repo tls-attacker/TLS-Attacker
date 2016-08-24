@@ -55,7 +55,7 @@ public class DebugExecutor {
 	TransportHandler transportHandler = null;
 	TLSServer server = null;
 	try {
-	    Agent agent = AgentFactory.generateAgent(config, vector.getKeyCertPair());
+	    Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
 	    server = ServerManager.getInstance().getFreeServer();
 
 	    agent.applicationStart(server);

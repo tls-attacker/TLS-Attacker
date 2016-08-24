@@ -32,7 +32,7 @@ public class ServerManagerTest {
      */
     @Before
     public void setUp() {
-        Config.ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+	Config.ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
 	manager = ServerManager.getInstance();
 	manager.addServer(new TLSServer("127.0.0.1", 1, "command1", "ACCEPT"));
 	manager.addServer(new TLSServer("127.0.0.2", 2, "command2", "ACCEPT"));

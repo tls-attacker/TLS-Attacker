@@ -59,8 +59,8 @@ public class ProtocolVersionRuleTest {
 	ClientHelloMessage clientHello = new ClientHelloMessage(ConnectionEnd.CLIENT);
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	trace.add(clientHello);
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "test.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
+		new TestVector(trace, null, null, null), "test.unit");
 	assertFalse(rule.applys(result));
 	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
 	trace.add(serverHello);
@@ -115,8 +115,8 @@ public class ProtocolVersionRuleTest {
 	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
 	trace.add(serverHello);
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "test.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
+		new TestVector(trace, null, null, null), "test.unit");
 	rule.onApply(result);
 	// TODO TEST IF IT IS REALLY SAVED
     }
@@ -142,8 +142,8 @@ public class ProtocolVersionRuleTest {
 	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
 	trace.add(serverHello);
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "test.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
+		new TestVector(trace, null, null, null), "test.unit");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

@@ -51,7 +51,7 @@ public class AnalyzeModificationRuleTest {
 	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
 	rule = new AnalyzeModificationRule(config);
-	vector = new TestVector(null, null, null);
+	vector = new TestVector(null, null, null, null);
 	vector.addModification(new AddMessageModification(new ClientHelloMessage()));
 	vector.addModification(new AddRecordModification(new ClientHelloMessage()));
 	vector.addModification(new ChangeServerCertificateModification(null));

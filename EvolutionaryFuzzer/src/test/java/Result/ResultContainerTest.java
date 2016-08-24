@@ -29,20 +29,22 @@ public class ResultContainerTest {
 
     public ResultContainerTest() {
     }
+
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
 	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
-        ConfigManager.getInstance().setConfig(config);
+	ConfigManager.getInstance().setConfig(config);
     }
 
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
-        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+	ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
     }
+
     /**
      * Test of getInstance method, of class ResultContainer.
      */
@@ -59,9 +61,10 @@ public class ResultContainerTest {
     public void testCommit() {
 
 	Result result = new Result(true, true, 0, System.currentTimeMillis(), new BranchTrace(), new TestVector(
-		new WorkflowTrace(), null, null), new TestVector(new WorkflowTrace(), null, null), "test.unit");// TODO
-														// Delete
-														// Testfiles
+		new WorkflowTrace(), null, null, null), new TestVector(new WorkflowTrace(), null, null, null),
+		"test.unit");// TODO
+	// Delete
+	// Testfiles
 	ResultContainer instance = ResultContainer.getInstance();
 	instance.commit(result);
 

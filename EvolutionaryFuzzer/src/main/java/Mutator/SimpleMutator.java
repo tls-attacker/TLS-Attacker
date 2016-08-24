@@ -1,7 +1,8 @@
 package Mutator;
 
+import Certificate.ClientCertificateStructure;
 import Mutator.Certificate.CertificateMutator;
-import TestVector.ServerCertificateKeypair;
+import Certificate.ServerCertificateStructure;
 import Mutator.Mutator;
 import Config.EvolutionaryFuzzerConfig;
 import Config.Mutator.SimpleMutatorConfig;
@@ -9,6 +10,7 @@ import Helper.FuzzingHelper;
 import static Helper.FuzzingHelper.executeModifiableVariableModification;
 import static Helper.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
 import Helper.XMLSerializer;
+import Modification.ChangeClientCertificateModification;
 import Modification.ChangeServerCertificateModification;
 import Modification.Modification;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
@@ -35,7 +37,7 @@ public class SimpleMutator extends Mutator {
     private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 
     // private final Node<WorkflowTrace> tree;
-    private int goodIndex = 0;
+    private int goodIndex = 0; // TODO
     private SimpleMutatorConfig config;
 
     /**
@@ -71,12 +73,14 @@ public class SimpleMutator extends Mutator {
 	// chose a random trace from the list
 	TestVector tempVector;
 	WorkflowTrace trace = null;
-	ServerCertificateKeypair keyCertPair;
+	ServerCertificateStructure serverKeyCertPair;
+	ClientCertificateStructure clientKeyCertPair;
 	TestVector newTestVector;
 	boolean modified = false;
 	do {
 	    if (ResultContainer.getInstance().getGoodVectors().isEmpty()) {
-		tempVector = new TestVector(new WorkflowTrace(), certMutator.getServerCertificateKeypair(), null);
+		tempVector = new TestVector(new WorkflowTrace(), certMutator.getServerCertificateStructure(),
+			certMutator.getClientCertificateStructure(), null);
 		ResultContainer.getInstance().getGoodVectors().add(tempVector);
 		modified = true;
 	    } else {
@@ -84,15 +88,21 @@ public class SimpleMutator extends Mutator {
 		tempVector = ResultContainer.getInstance().getGoodVectors()
 			.get(r.nextInt(ResultContainer.getInstance().getGoodVectors().size()));
 	    }
-	    keyCertPair = tempVector.getKeyCertPair();
+	    serverKeyCertPair = tempVector.getServerKeyCert();
+	    clientKeyCertPair = tempVector.getClientKeyCert();
 	    trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempVector.getTrace());
 	    Modification modification = null;
 	    if (r.nextInt(100) <= config.getChangeServerCert()) {
-		keyCertPair = certMutator.getServerCertificateKeypair();
-		modification = new ChangeServerCertificateModification(keyCertPair);
+		serverKeyCertPair = certMutator.getServerCertificateStructure();
+		modification = new ChangeServerCertificateModification(serverKeyCertPair);
 		modified = true;
 	    }
-	    newTestVector = new TestVector(trace, keyCertPair, tempVector);
+	    if (r.nextInt(100) <= config.getChangeClientCert()) {
+		clientKeyCertPair = certMutator.getClientCertificateStructure();
+		modification = new ChangeClientCertificateModification(clientKeyCertPair);
+		modified = true;
+	    }
+	    newTestVector = new TestVector(trace, serverKeyCertPair, clientKeyCertPair, tempVector);
 	    if (modification != null) {
 		newTestVector.addModification(modification);
 	    }

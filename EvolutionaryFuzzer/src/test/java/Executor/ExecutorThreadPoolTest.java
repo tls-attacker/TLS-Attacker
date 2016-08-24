@@ -29,13 +29,14 @@ public class ExecutorThreadPoolTest {
     @Test
     public void testConstructor() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        config.setOutputFolder("unit_test_output/");
+	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
 	ExecutorThreadPool pool = new ExecutorThreadPool(5, new SimpleMutator(config, new FixedCertificateMutator()),
 		config);
 	assertTrue("Failure: Pool is not stopped on creation", pool.isStopped());
     }
-     public void tearDown() {
+
+    public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
     }

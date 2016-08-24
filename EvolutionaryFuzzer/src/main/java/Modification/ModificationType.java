@@ -17,5 +17,6 @@ public enum ModificationType {
     REMOVE_MESSAGE,
     MODIFY_FIELD,
     ADD_RECORD,
-    CHANGE_SERVER_CERT
+    CHANGE_SERVER_CERT,
+    CHANGE_CLIENT_CERT,
 }

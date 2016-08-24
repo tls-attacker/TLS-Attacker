@@ -68,8 +68,8 @@ public class FindAlertsRuleTest {
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
+		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
 	assertFalse(rule.applys(result)); // Should not apply cause it has no
 					  // alert message
 	AlertMessage message = new AlertMessage(ConnectionEnd.CLIENT);
@@ -96,8 +96,8 @@ public class FindAlertsRuleTest {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null),
-		new TestVector(trace, null, null), "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
+		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
 	AlertMessage message = new AlertMessage(ConnectionEnd.SERVER);
 	message.setDescription((byte) 20);
 	trace.add(message);
@@ -121,8 +121,8 @@ public class FindAlertsRuleTest {
      */
     @Test
     public void testReport() {
-	rule.onApply(new Result(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null),
-		new TestVector(new WorkflowTrace(), null, null), "unit.test"));
+	rule.onApply(new Result(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
+		null), new TestVector(new WorkflowTrace(), null, null, null), "unit.test"));
 	assertNotNull(rule.report());
     }
 

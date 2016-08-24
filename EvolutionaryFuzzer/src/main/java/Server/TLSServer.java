@@ -9,6 +9,7 @@ package Server;
 
 import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
+import Exceptions.TimeoutException;
 import Helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
@@ -171,7 +172,7 @@ public final class TLSServer {
 		command = command.replace("[port]", "" + port);
 		command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
 		command = command.replace("[key]", "" + keyFile.getAbsolutePath());
-		LOG.log(Level.FINE, "Starting Server:" + command);
+		LOG.log(Level.INFO, "Starting Server:" + command);
 		long time = System.currentTimeMillis();
 		Runtime rt = Runtime.getRuntime();
 		p = rt.exec(command);
@@ -194,7 +195,7 @@ public final class TLSServer {
 			Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
 		    }
 		    if (System.currentTimeMillis() - time >= ConfigManager.getInstance().getConfig().getTimeout()) {
-			throw new RuntimeException("Timeout in StreamGobler, Server never finished starting");
+			throw new TimeoutException("Timeout in StreamGobler, Server never finished starting");
 		    }
 		}
 	    } catch (IOException t) {

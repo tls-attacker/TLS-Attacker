@@ -7,21 +7,22 @@
  */
 package Modification;
 
+import Certificate.ClientCertificateStructure;
 import Certificate.ServerCertificateStructure;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeServerCertificateModification extends Modification {
-    private final ServerCertificateStructure keyCertPair;
+public class ChangeClientCertificateModification extends Modification {
+    private final ClientCertificateStructure keyCertPair;
 
-    public ChangeServerCertificateModification(ServerCertificateStructure keyCertPair) {
-	super(ModificationType.CHANGE_SERVER_CERT);
+    public ChangeClientCertificateModification(ClientCertificateStructure keyCertPair) {
+	super(ModificationType.CHANGE_CLIENT_CERT);
 	this.keyCertPair = keyCertPair;
     }
 
-    public ServerCertificateStructure getKeyCertPair() {
+    public ClientCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }
 

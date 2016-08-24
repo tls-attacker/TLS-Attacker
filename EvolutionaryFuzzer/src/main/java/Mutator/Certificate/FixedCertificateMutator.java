@@ -7,13 +7,19 @@
  */
 package Mutator.Certificate;
 
-import TestVector.ServerCertificateKeypair;
+import Analyzer.Rule;
+import Certificate.ClientCertificateStructure;
+import Certificate.ServerCertificateStructure;
+import Config.Analyzer.RuleConfig;
 import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
+import Config.Mutator.Certificate.FixedCertificateMutatorConfig;
+import Helper.XMLSerializer;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -34,66 +40,52 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FixedCertificateMutator extends CertificateMutator {
-
-    private List<X509CertificateObject> clientCertList;
-    private List<ServerCertificateKeypair> serverPairList;
+    private FixedCertificateMutatorConfig config;
+    private List<ClientCertificateStructure> clientCertList;
+    private List<ServerCertificateStructure> serverPairList;
     private Random r;
 
     public FixedCertificateMutator() {
+	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
+	String configFileName = "fixed_cert.config";
 	try {
-	    // TODO Config
-	    this.clientCertList = new ArrayList<>();
-	    this.serverPairList = new ArrayList<>();
-	    EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-	    if (fc.getKeystore() == null) {
-		fc.setKeystore("../resources/rsa1024.jks");
+	    File f = new File(evoConfig.getCertificateMutatorConfigFolder() + configFileName);
+	    if (f.exists()) {
+		try {
+		    config = (FixedCertificateMutatorConfig) XMLSerializer.read(f);
+		} catch (FileNotFoundException ex) {
+		    Logger.getLogger(Rule.class.getName()).log(Level.SEVERE,
+			    "Could not read ConfigFile:" + configFileName, ex);
+		}
+	    } else {
+		LOG.log(Level.FINE, "No ConfigFile found:" + configFileName);
 	    }
-	    if (fc.getPassword() == null) {
-		fc.setPassword("password");
+	    if (config == null) {
+		config = new FixedCertificateMutatorConfig();
+		XMLSerializer.write(config, f);
 	    }
-	    if (fc.getAlias() == null || fc.getAlias().equals("")) {
-		fc.setAlias("alias");
+	    this.clientCertList = config.getClientCertificates();
+	    this.serverPairList = config.getServerCertificates();
+	    if (clientCertList.isEmpty() || serverPairList.isEmpty()) {
+		LOG.log(Level.INFO,
+			"The CertificateMutator is not properly configured. Make sure that the FixedCertificateMutator knows atleast one Client and one Server CertificatePair");
+		throw new ConfigurationException("CertificateMutator has not enough Certificates");
 	    }
-	    KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
-
-	    java.security.cert.Certificate sunCert = ks.getCertificate(fc.getAlias());
-	    if (sunCert == null) {
-		throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-			+ "certificate alias and key? (Current alias: " + "alias" + ")");
-	    }
-	    byte[] certBytes = sunCert.getEncoded();
-
-	    ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-	    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-
-	    org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
-	    certs[0] = cert;
-	    org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs);
-
-	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 	    r = new Random();
-	    clientCertList.add(x509CertObject);
-	    serverPairList.add(new ServerCertificateKeypair(new File(fc.getOutputFolder()
-		    + "certificates/server/key.pem"), new File(fc.getOutputFolder() + "certificates/server/cert.pem")));
-	} catch (KeyStoreException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
 	} catch (IOException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (NoSuchAlgorithmException ex) {
-	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (CertificateException ex) {
 	    Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
 	}
     }
 
     @Override
-    public X509CertificateObject getClientCertificate() {
+    public ClientCertificateStructure getClientCertificateStructure() {
 	return clientCertList.get(r.nextInt(clientCertList.size()));
     }
 
     @Override
-    public ServerCertificateKeypair getServerCertificateKeypair() {
+    public ServerCertificateStructure getServerCertificateStructure() {
 	return serverPairList.get(r.nextInt(serverPairList.size()));
     }
 
+    private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
 }

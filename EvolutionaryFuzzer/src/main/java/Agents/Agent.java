@@ -11,7 +11,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import Result.Result;
 import Server.TLSServer;
-import TestVector.ServerCertificateKeypair;
+import Certificate.ServerCertificateStructure;
 import TestVector.TestVector;
 
 /**
@@ -26,9 +26,9 @@ import TestVector.TestVector;
  */
 public abstract class Agent {
 
-    protected ServerCertificateKeypair keypair;
+    protected ServerCertificateStructure keypair;
 
-    public Agent(ServerCertificateKeypair keypair) {
+    public Agent(ServerCertificateStructure keypair) {
 	this.keypair = keypair;
     }
 

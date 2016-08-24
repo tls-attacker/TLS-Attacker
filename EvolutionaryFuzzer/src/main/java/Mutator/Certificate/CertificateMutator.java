@@ -7,7 +7,8 @@
  */
 package Mutator.Certificate;
 
-import TestVector.ServerCertificateKeypair;
+import Certificate.ClientCertificateStructure;
+import Certificate.ServerCertificateStructure;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -15,8 +16,8 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class CertificateMutator {
-    public abstract X509CertificateObject getClientCertificate();
+    public abstract ClientCertificateStructure getClientCertificateStructure();
 
-    public abstract ServerCertificateKeypair getServerCertificateKeypair();
+    public abstract ServerCertificateStructure getServerCertificateStructure();
 
 }

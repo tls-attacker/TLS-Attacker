@@ -1,6 +1,7 @@
 package Server;
 
 import Agent.AflAgentTest;
+import Certificate.ServerCertificateStructure;
 import Mutator.Certificate.CertificateMutator;
 import Mutator.Certificate.FixedCertificateMutator;
 import java.util.logging.Logger;
@@ -77,8 +78,8 @@ public class TLSServerTest {
     public void testStart() {
 	server.occupie();
 	CertificateMutator mut = new FixedCertificateMutator();
-	server.start("", mut.getServerCertificateKeypair().getCertificateFile(), mut.getServerCertificateKeypair()
-		.getKeyFile());
+        ServerCertificateStructure cert = mut.getServerCertificateStructure();
+	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	server.serverIsRunning();
     }
 
@@ -89,8 +90,8 @@ public class TLSServerTest {
     public void testRestart() {
 	server.occupie();
 	CertificateMutator mut = new FixedCertificateMutator();
-	server.start("", mut.getServerCertificateKeypair().getCertificateFile(), mut.getServerCertificateKeypair()
-		.getKeyFile());
+	ServerCertificateStructure cert = mut.getServerCertificateStructure();
+	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	server.serverIsRunning();
     }
 
@@ -143,8 +144,8 @@ public class TLSServerTest {
     public void testExitedStarted() {
 	server.occupie();
 	CertificateMutator mut = new FixedCertificateMutator();
-	server.start("", mut.getServerCertificateKeypair().getCertificateFile(), mut.getServerCertificateKeypair()
-		.getKeyFile());
+	ServerCertificateStructure cert = mut.getServerCertificateStructure();
+	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	assertFalse("Failure: Server started but should not have exited yet", server.exited());
     }
     // TODO Test if a started server accepts a tls connection

@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package TestVector;
+package Certificate;
 
 import java.io.File;
 import java.io.Serializable;
@@ -14,20 +14,20 @@ import java.io.Serializable;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerCertificateKeypair implements Serializable {// TODO
+public class ServerCertificateStructure implements Serializable {// TODO
     private File keyFile;
     private File certificateFile;
     private String keyFilePath;
     private String certificateFilePath;
 
-    public ServerCertificateKeypair(File keyFile, File certificateFile) {
+    public ServerCertificateStructure(File keyFile, File certificateFile) {
 	this.keyFile = keyFile;
 	this.certificateFile = certificateFile;
 	this.keyFilePath = keyFile.getAbsolutePath();
 	this.certificateFilePath = certificateFile.getAbsolutePath();
     }
 
-    public ServerCertificateKeypair() {
+    public ServerCertificateStructure() {
 	this.keyFile = null;
 	this.certificateFile = null;
 	this.keyFilePath = null;

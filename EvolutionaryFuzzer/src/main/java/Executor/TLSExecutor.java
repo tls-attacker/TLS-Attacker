@@ -10,6 +10,7 @@ package Executor;
 import Agents.Agent;
 import Config.ConfigManager;
 import Config.EvolutionaryFuzzerConfig;
+import Exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -85,7 +86,7 @@ public class TLSExecutor extends Executor {
     public void run() {
 
 	try {
-
+	    boolean timeout = false;
 	    ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 	    TransportHandler transportHandler = null;
 
@@ -98,13 +99,15 @@ public class TLSExecutor extends Executor {
 			}
 		    }
 		}
-
+		// Load clientCertificate
+		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
+		fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
+		fc.setPassword(testVector.getClientKeyCert().getPassword());
+		fc.setAlias(testVector.getClientKeyCert().getAlias());
 		agent.applicationStart(server);
 		GeneralConfig gc = new GeneralConfig();
 		gc.setLogLevel(Level.OFF);
 		configHandler.initialize(gc);
-
-		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
 
 		long time = System.currentTimeMillis();
 		int counter = 0;
@@ -135,7 +138,7 @@ public class TLSExecutor extends Executor {
 		tlsContext.setAlias(fc.getAlias());
 		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
 		Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
-			.generateCertificates(new FileInputStream(testVector.getKeyCertPair().getCertificateFile()));
+			.generateCertificates(new FileInputStream(testVector.getServerKeyCert().getCertificateFile()));
 
 		Certificate sunCert = (Certificate) certs.toArray()[0];
 		byte[] certBytes = sunCert.getEncoded();
@@ -160,6 +163,8 @@ public class TLSExecutor extends Executor {
 		workflowExecutor.executeWorkflow();
 	    } catch (UnsupportedOperationException E) {
 		// Skip Workflows we dont support yet
+	    } catch (TimeoutException E) {
+		timeout = true;
 	    } catch (Throwable E) {
 		File f = new File(ConfigManager.getInstance().getConfig().getOutputFolder() + "faulty/"
 			+ LogFileIDManager.getInstance().getFilename());
@@ -179,7 +184,7 @@ public class TLSExecutor extends Executor {
 		long t = System.currentTimeMillis();
 		while (!server.exited()) {
 		    if (t + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			// TODO tell agent that server timeout
+			timeout = true;
 			server.stop();
 			break;
 
@@ -190,6 +195,7 @@ public class TLSExecutor extends Executor {
 		File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
 			+ "/" + server.getID());
 		Result r = agent.collectResults(branchTrace, backupVector, testVector);
+		r.setDidTimeout(timeout);
 		branchTrace.delete();
 		ResultContainer.getInstance().commit(r);
 		int id = server.getID();

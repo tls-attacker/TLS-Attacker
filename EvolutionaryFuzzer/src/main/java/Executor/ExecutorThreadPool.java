@@ -114,7 +114,7 @@ public class ExecutorThreadPool implements Runnable {
 		try {
 		    if (!stopped) {
 			server = ServerManager.getInstance().getFreeServer();
-			Agent agent = AgentFactory.generateAgent(config, list.get(i).getKeyCertPair());
+			Agent agent = AgentFactory.generateAgent(config, list.get(i).getServerKeyCert());
 			Runnable worker = new TLSExecutor(list.get(i), server, agent);
 			executor.submit(worker);
 			runs++;
@@ -140,7 +140,7 @@ public class ExecutorThreadPool implements Runnable {
 		    if (!stopped) {
 			server = ServerManager.getInstance().getFreeServer();
 			TestVector vector = mutator.getNewMutation();
-			Agent agent = AgentFactory.generateAgent(config, vector.getKeyCertPair());
+			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
 			Runnable worker = new TLSExecutor(vector, server, agent);
 			executor.submit(worker);
 			runs++;
