@@ -73,8 +73,8 @@ public final class TestVectorSerializer {
      *            TestVector that should be written
      * @throws FileNotFoundException
      *             Is thrown if the File cannot be found
-     * @throws JAXBException
-     *             TODO
+     * @throws JAXBException 
+     *             Is thrown when the Object cannot be serialized
      * @throws IOException
      *             Is thrown if the Process doesn't have the rights to write to
      *             the File
