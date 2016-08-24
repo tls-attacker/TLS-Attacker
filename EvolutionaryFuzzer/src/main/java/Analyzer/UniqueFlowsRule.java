@@ -59,24 +59,26 @@ public class UniqueFlowsRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-	found++;
+	
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
 		.getTrace());
 	type.clean();
-	typeSet.add(type);// TODO Can this be a race?
-	// It may be that we dont want to safe good Traces, for example if
-	// we execute already saved Traces
-	LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
-	LOG.log(Level.FINER, type.toString());
-	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
-	try {
-	    f.createNewFile();
-	    TestVectorSerializer.write(f, result.getExecutedVector());
-	} catch (JAXBException | IOException E) {
-	    LOG.log(Level.SEVERE,
-		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-			    + f.getAbsolutePath(), E);
+	if (typeSet.add(type)) {
+            found++;
+	    // It may be that we dont want to safe good Traces, for example if
+	    // we execute already saved Traces
+	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
+	    LOG.log(Level.FINER, type.toString());
+	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
+	    try {
+		f.createNewFile();
+		TestVectorSerializer.write(f, result.getExecutedVector());
+	    } catch (JAXBException | IOException E) {
+		LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+			+ f.getAbsolutePath(), E);
+	    }
 	}
+
     }
 
     @Override
