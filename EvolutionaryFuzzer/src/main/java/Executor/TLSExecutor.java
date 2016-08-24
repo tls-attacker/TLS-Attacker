@@ -91,14 +91,6 @@ public class TLSExecutor extends Executor {
 	    TransportHandler transportHandler = null;
 
 	    try {
-		// TODO
-		for (ProtocolMessage pm : testVector.getTrace().getProtocolMessages()) {
-		    if (pm.getMessageIssuer() == ConnectionEnd.SERVER) {
-			if (pm.getClass() != ArbitraryMessage.class) {
-			    System.out.println("Wrong message class from server");
-			}
-		    }
-		}
 		// Load clientCertificate
 		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
 		fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
