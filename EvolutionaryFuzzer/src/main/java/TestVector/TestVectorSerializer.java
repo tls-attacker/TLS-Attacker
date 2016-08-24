@@ -80,7 +80,10 @@ public final class TestVectorSerializer {
      *             the File
      */
     public static void write(File file, TestVector vector) throws FileNotFoundException, JAXBException, IOException {
-
+        if(!file.exists())
+        {
+            file.createNewFile();
+        }
 	FileOutputStream fos = new FileOutputStream(file);
 	TestVectorSerializer.write(fos, vector);
     }
