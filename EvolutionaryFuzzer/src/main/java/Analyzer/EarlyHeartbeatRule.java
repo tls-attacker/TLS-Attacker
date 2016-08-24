@@ -7,6 +7,7 @@
  */
 package Analyzer;
 
+import Config.Analyzer.AnalyzeTimeRuleConfig;
 import Config.Analyzer.EarlyHeartbeatRuleConfig;
 import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -33,7 +35,10 @@ public class EarlyHeartbeatRule extends Rule {
 
     public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "early_heartbeat.rule");
-	config = (EarlyHeartbeatRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, EarlyHeartbeatRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new EarlyHeartbeatRuleConfig();
 	    writeConfig(config);

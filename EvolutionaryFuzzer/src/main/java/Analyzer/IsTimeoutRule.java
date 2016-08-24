@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -31,7 +32,10 @@ public class IsTimeoutRule extends Rule {
 
     public IsTimeoutRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_timeout.rule");
-	config = (IsTimeoutRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, IsTimeoutRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new IsTimeoutRuleConfig();
 	    writeConfig(config);

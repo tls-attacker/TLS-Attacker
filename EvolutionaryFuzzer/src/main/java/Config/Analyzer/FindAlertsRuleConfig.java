@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlRootElement
 public class FindAlertsRuleConfig extends RuleConfig {
     // List of Alert codes, if we see this alert we save the workflow trace
     private Set<Byte> blacklist;

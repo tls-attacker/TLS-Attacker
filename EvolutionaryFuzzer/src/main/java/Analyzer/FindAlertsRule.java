@@ -7,6 +7,7 @@
  */
 package Analyzer;
 
+import Config.Analyzer.EarlyHeartbeatRuleConfig;
 import Config.Analyzer.FindAlertsRuleConfig;
 import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -37,7 +39,10 @@ public class FindAlertsRule extends Rule {
 
     public FindAlertsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "find_alerts.rule");
-	config = (FindAlertsRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, FindAlertsRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new FindAlertsRuleConfig();
 	    writeConfig(config);
@@ -47,7 +52,7 @@ public class FindAlertsRule extends Rule {
 	    // Load previously seen Testvectors and scan them for seen alert
 	    // messages
 	    // TODO
-	    File f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
+	    f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	    List<TestVector> vectorList = TestVectorSerializer.readFolder(f);
 	    for (TestVector vector : vectorList) {
 		List<Integer> positions = vector.getTrace().getProtocolMessagePositions(ProtocolMessageType.ALERT);

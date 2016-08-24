@@ -9,13 +9,13 @@ package Analyzer;
 
 import Config.Analyzer.RuleConfig;
 import Config.EvolutionaryFuzzerConfig;
-import Helper.XMLSerializer;
 import Result.Result;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 
 /**
  * 
@@ -51,34 +51,12 @@ public abstract class Rule {
 
     public abstract String report();
 
-    protected RuleConfig TryLoadConfig() {
-
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    try {
-		return (RuleConfig) XMLSerializer.read(f);
-	    } catch (FileNotFoundException ex) {
-		Logger.getLogger(Rule.class.getName()).log(Level.SEVERE, "Could not read ConfigFile:" + configFileName,
-			ex);
-	    }
-	} else {
-	    LOG.log(Level.FINE, "No ConfigFile found:" + configFileName);
-	    return null;
-	}
-	return null;
-    }
-
     protected void writeConfig(RuleConfig c) {
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
 	    LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:" + configFileName);
 	} else {
-	    try {
-		XMLSerializer.write(c, f);
-	    } catch (IOException ex) {
-		LOG.log(Level.SEVERE, "Could not write ConfigFile:" + configFileName, ex);
-
-	    }
+	    JAXB.marshal(c, f);
 	}
     }
 

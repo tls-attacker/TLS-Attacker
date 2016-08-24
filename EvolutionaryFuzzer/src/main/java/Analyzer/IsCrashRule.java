@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -31,7 +32,10 @@ public class IsCrashRule extends Rule {
 
     public IsCrashRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_crash.rule");
-	config = (IsCrashRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, IsCrashRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new IsCrashRuleConfig();
 	    writeConfig(config);

@@ -8,9 +8,9 @@
 package Analyzer;
 
 import Config.Analyzer.AnalyzeModificationRuleConfig;
+import Config.Analyzer.RuleConfig;
 import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
-import Helper.XMLSerializer;
 import Modification.Modification;
 import Modification.ModificationType;
 import Result.Result;
@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 
 /**
  * 
@@ -38,7 +39,10 @@ public class AnalyzeModificationRule extends Rule {
 
     public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_modification.rule");
-	config = (AnalyzeModificationRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, AnalyzeModificationRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new AnalyzeModificationRuleConfig();
 	    writeConfig(config);

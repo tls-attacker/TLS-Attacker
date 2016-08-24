@@ -9,7 +9,6 @@ import Config.Mutator.SimpleMutatorConfig;
 import Helper.FuzzingHelper;
 import static Helper.FuzzingHelper.executeModifiableVariableModification;
 import static Helper.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
-import Helper.XMLSerializer;
 import Modification.ChangeClientCertificateModification;
 import Modification.ChangeServerCertificateModification;
 import Modification.Modification;
@@ -24,9 +23,7 @@ import java.util.logging.Logger;
 import Result.ResultContainer;
 import TestVector.TestVector;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.logging.Level;
+import javax.xml.bind.JAXB;
 
 /**
  * 
@@ -48,18 +45,10 @@ public class SimpleMutator extends Mutator {
 	super(evoConfig, certMutator);
 	File f = new File(evoConfig.getConfigFolder() + "simple.conf");
 	if (f.exists()) {
-	    try {
-		config = (SimpleMutatorConfig) XMLSerializer.read(f);
-	    } catch (FileNotFoundException ex) {
-		Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, null, ex);
-	    }
+	    config = JAXB.unmarshal(f, SimpleMutatorConfig.class);
 	} else {
 	    config = new SimpleMutatorConfig();
-	    try {
-		XMLSerializer.write(config, f);
-	    } catch (IOException ex) {
-		Logger.getLogger(SimpleMutator.class.getName()).log(Level.SEVERE, null, ex);
-	    }
+	    JAXB.marshal(config, f);
 	}
     }
 

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import org.jgrapht.DirectedGraph;
 
@@ -41,7 +42,10 @@ public class IsGoodRule extends Rule {
 
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_good.rule");
-	config = (IsGoodRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, IsGoodRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new IsGoodRuleConfig();
 	    writeConfig(config);

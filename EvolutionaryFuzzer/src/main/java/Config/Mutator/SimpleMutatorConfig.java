@@ -15,15 +15,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A Config File which controls the EvolutionaryFuzzer.
  * 
  * @author Robert Merget - robert.merget@rub.de
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class SimpleMutatorConfig extends ClientCommandConfig {
+@XmlRootElement
+public class SimpleMutatorConfig implements Serializable {
 
     private Integer modifyVariablePercentage = 90;
     private Integer addRecordPercentage = 50;
@@ -76,7 +78,7 @@ public class SimpleMutatorConfig extends ClientCommandConfig {
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
 	this.removeMessagePercentage = removeMessagePercentage;
 	if (removeMessagePercentage > 100) {
-	    throw new IllegalArgumentException("RemoveMessagePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	    throw new IllegalArgumentException("RemoveMessagePercentage cannot be >100:" + removeMessagePercentage);
 	}
     }
 
@@ -99,7 +101,7 @@ public class SimpleMutatorConfig extends ClientCommandConfig {
     public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
 	this.modifyVariablePercentage = modifyVariablePercentage;
 	if (modifyVariablePercentage > 100) {
-	    throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	    throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + modifyVariablePercentage);
 	}
     }
 
@@ -124,7 +126,7 @@ public class SimpleMutatorConfig extends ClientCommandConfig {
     public void setAddRecordPercentage(Integer addRecordPercentage) {
 	this.addRecordPercentage = addRecordPercentage;
 	if (addRecordPercentage > 100) {
-	    throw new IllegalArgumentException("AddRecordPercentage cannot be >100:" + verifyWorkflowCorrectness);
+	    throw new IllegalArgumentException("AddRecordPercentage cannot be >100:" + addRecordPercentage);
 	}
     }
 
@@ -148,7 +150,7 @@ public class SimpleMutatorConfig extends ClientCommandConfig {
     public void setAddMessagePercentage(Integer addMessagePercentage) {
 	this.addMessagePercentage = addMessagePercentage;
 	if (addMessagePercentage > 100) {
-	    throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + verifyWorkflowCorrectness);
+	    throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + addMessagePercentage);
 	}
     }
 }

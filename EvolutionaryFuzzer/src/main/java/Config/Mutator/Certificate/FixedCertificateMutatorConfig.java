@@ -11,21 +11,26 @@ import Certificate.ClientCertificateStructure;
 import Certificate.ServerCertificateStructure;
 import Config.ConfigManager;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class FixedCertificateMutatorConfig {
+@XmlRootElement
+public class FixedCertificateMutatorConfig implements Serializable {
     private ArrayList<ClientCertificateStructure> clientCertificates;
     private ArrayList<ServerCertificateStructure> serverCertificates;
 
     public FixedCertificateMutatorConfig() {
+    }
+
+    public FixedCertificateMutatorConfig(String test) {
 	clientCertificates = new ArrayList<>();
 	// Initialize the Config File with some certificates if we can find them
-        new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();
+	new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();
 	File jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()
 		+ "ec256.jks");
 	if (jksFile.exists()) {
@@ -62,7 +67,8 @@ public class FixedCertificateMutatorConfig {
 	certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
 		+ "rsa1024key.pem");
 	if (keyFile.exists() && certFile.exists()) {
-	    //serverCertificates.add(new ServerCertificateStructure(keyFile, certFile)); //TODO
+	    // serverCertificates.add(new ServerCertificateStructure(keyFile,
+	    // certFile)); //TODO
 	}
 	keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
 		+ "rsa4096cert.pem");
@@ -81,7 +87,7 @@ public class FixedCertificateMutatorConfig {
 	}
     }
 
-    public List<ClientCertificateStructure> getClientCertificates() {
+    public ArrayList<ClientCertificateStructure> getClientCertificates() {
 	return clientCertificates;
     }
 
@@ -89,7 +95,7 @@ public class FixedCertificateMutatorConfig {
 	this.clientCertificates = clientCertificates;
     }
 
-    public List<ServerCertificateStructure> getServerCertificates() {
+    public ArrayList<ServerCertificateStructure> getServerCertificates() {
 	return serverCertificates;
     }
 

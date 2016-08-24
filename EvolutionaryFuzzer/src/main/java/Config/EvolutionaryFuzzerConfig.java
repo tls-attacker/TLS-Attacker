@@ -104,13 +104,13 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	setPassword("password");
 	setAlias("alias");
 	this.tracesFolder = new File(outputFolder + "traces/");
-        tracesFolder.mkdirs();
-        new File(getOutputCertificateFolder()).mkdirs();
-        new File(getOutputClientCertificateFolder()).mkdirs();
-        new File(getOutputFolder()).mkdirs();
-        new File(getOutputServerCertificateFolder()).mkdirs();
-        new File(getCertificateMutatorConfigFolder()).mkdirs();
-        new File(getAnalyzerConfigFolder()).mkdirs();
+	tracesFolder.mkdirs();
+	new File(getOutputCertificateFolder()).mkdirs();
+	new File(getOutputClientCertificateFolder()).mkdirs();
+	new File(getOutputFolder()).mkdirs();
+	new File(getOutputServerCertificateFolder()).mkdirs();
+	new File(getCertificateMutatorConfigFolder()).mkdirs();
+	new File(getAnalyzerConfigFolder()).mkdirs();
     }
 
     public boolean isSerialize() {

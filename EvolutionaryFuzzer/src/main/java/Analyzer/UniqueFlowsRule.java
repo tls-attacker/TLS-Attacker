@@ -7,6 +7,7 @@
  */
 package Analyzer;
 
+import Config.Analyzer.ProtocolVersionRuleConfig;
 import Config.Analyzer.UniqueFlowsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -34,7 +36,10 @@ public class UniqueFlowsRule extends Rule {
 
     public UniqueFlowsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "unique_flows.rule");
-	config = (UniqueFlowsRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, UniqueFlowsRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new UniqueFlowsRuleConfig();
 	    writeConfig(config);

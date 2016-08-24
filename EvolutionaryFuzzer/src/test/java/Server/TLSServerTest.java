@@ -78,7 +78,7 @@ public class TLSServerTest {
     public void testStart() {
 	server.occupie();
 	CertificateMutator mut = new FixedCertificateMutator();
-        ServerCertificateStructure cert = mut.getServerCertificateStructure();
+	ServerCertificateStructure cert = mut.getServerCertificateStructure();
 	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	server.serverIsRunning();
     }

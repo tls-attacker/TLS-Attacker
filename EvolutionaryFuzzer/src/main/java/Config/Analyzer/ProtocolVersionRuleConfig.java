@@ -9,12 +9,14 @@ package Config.Analyzer;
 
 import Config.Analyzer.RuleConfig;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import javax.xml.bind.annotation.XmlRootElement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * 
  * @author ic0ns
  */
+@XmlRootElement
 public class ProtocolVersionRuleConfig extends RuleConfig {
     private boolean allowSSL2 = false;
     private boolean allowSSL3 = true;

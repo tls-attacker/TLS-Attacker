@@ -7,6 +7,7 @@
  */
 package Analyzer;
 
+import Config.Analyzer.IsTimeoutRuleConfig;
 import Config.Analyzer.ProtocolVersionRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -40,7 +42,10 @@ public class ProtocolVersionRule extends Rule {
 
     public ProtocolVersionRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "highest_version.rule");
-	config = (ProtocolVersionRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, ProtocolVersionRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new ProtocolVersionRuleConfig();
 	    writeConfig(config);

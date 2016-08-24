@@ -9,6 +9,11 @@ package Mutator.Certificate;
 
 import Certificate.ClientCertificateStructure;
 import Certificate.ServerCertificateStructure;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -20,4 +25,14 @@ public abstract class CertificateMutator {
 
     public abstract ServerCertificateStructure getServerCertificateStructure();
 
+    public void serialize(File file) {
+	if (!file.exists()) {
+	    try {
+		file.createNewFile();
+	    } catch (IOException ex) {
+		Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
+	JAXB.marshal(this, file);
+    }
 }

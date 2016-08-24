@@ -7,10 +7,13 @@
  */
 package Config.Analyzer;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlRootElement
 public class IsTimeoutRuleConfig extends RuleConfig {
     // The Timeout is not defined in the Timeout config, since the Timeout Rule
     // sees the WorkflowTrace first after it already Timedout

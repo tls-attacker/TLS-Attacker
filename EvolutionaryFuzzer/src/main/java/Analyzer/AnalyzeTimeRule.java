@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 
 /**
  * 
@@ -36,13 +37,16 @@ public class AnalyzeTimeRule extends Rule {
 
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_time.rule");
-	config = (AnalyzeTimeRuleConfig) TryLoadConfig();
+	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+	if (f.exists()) {
+	    config = JAXB.unmarshal(f, AnalyzeTimeRuleConfig.class);
+	}
 	if (config == null) {
 	    config = new AnalyzeTimeRuleConfig();
 	    writeConfig(config);
 	}
 	try {
-	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFile());
+	    f = new File(evoConfig.getOutputFolder() + config.getOutputFile());
 	    if (evoConfig.isCleanStart()) {
 		f.delete();
 		f.createNewFile();
