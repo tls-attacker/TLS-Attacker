@@ -36,7 +36,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     public ProtocolVersionRuleConfig() {
-	super("faulty_version");
+	super("faulty_version/");
     }
 
     public boolean isAllowSSL2() {
