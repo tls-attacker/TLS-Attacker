@@ -28,18 +28,7 @@ public class FuzzerControllerTest {
     public static void tearDownClass() {
     }
 
-    /*
-     * This Test is probably not vialble TODO
-     * 
-     * @Test public void testStartStopFuzzer() { EvolutionaryFuzzerConfig config
-     * = new EvolutionaryFuzzerConfig(); FuzzerController con = new
-     * FuzzerController(config); assertFalse(con.isRunning());
-     * con.startFuzzer(); assertTrue(con.isRunning()); con.stopFuzzer();
-     * assertFalse(con.isRunning());
-     * 
-     * }
-     */
-
+    
     public FuzzerControllerTest() {
     }
 
