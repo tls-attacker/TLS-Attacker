@@ -233,16 +233,17 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
 	try {
 	    // TODO can throw a EOFException
-	    
-            p = TlsDHUtils.readDHParameter(is);
-            g = TlsDHUtils.readDHParameter(is);
-            BigInteger Ys = TlsDHUtils.readDHParameter(is);
-            ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(Ys, new DHParameters(p, g)));
-   
+
+	    p = new BigInteger(1, protocolMessage.getSerializedP().getValue());
+	    g = new BigInteger(1, protocolMessage.getSerializedG().getValue());
+	    BigInteger Ys = new BigInteger(1, protocolMessage.getSerializedPublicKey().getValue());
+	    ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(Ys,
+		    new DHParameters(p, g)));
+
 	    tlsContext.setServerDHParameters(publicKeyParameters);
 
 	    KeyStore ks = tlsContext.getKeyStore();
-            
+
 	    // could be extended to choose the algorithms depending on the
 	    // certificate
 	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -251,15 +252,14 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	    protocolMessage.setHashAlgorithm(selectedSignatureHashAlgo.getHashAlgorithm().getValue());
 
 	    Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
-      	    RSAPrivateCrtKey rsaKey = null;
-            if(!key.getAlgorithm().equals("RSA"))
-            {
-                //Load static key
-                ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
-                key = ks.getKey("alias", "password".toCharArray());
-            }
-            rsaKey = (RSAPrivateCrtKey) key;
-            Signature instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+	    RSAPrivateCrtKey rsaKey = null;
+	    if (!key.getAlgorithm().equals("RSA")) {
+		// Load static key
+		ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+		key = ks.getKey("alias", "password".toCharArray());
+	    }
+	    rsaKey = (RSAPrivateCrtKey) key;
+	    Signature instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
 	    instance.initSign(rsaKey);
 	    LOGGER.debug("SignatureAndHashAlgorithm for ServerKeyExchange message: {}",
 		    selectedSignatureHashAlgo.getJavaName());
@@ -289,11 +289,9 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
 		| SignatureException | IOException ex) {
 	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+	} catch (CertificateException ex) {
+	    java.util.logging.Logger.getLogger(DHEServerKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
 	}
-        catch (CertificateException ex)
-        {
-            java.util.logging.Logger.getLogger(DHEServerKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
 	return protocolMessage.getCompleteResultingMessage().getValue();
     }
