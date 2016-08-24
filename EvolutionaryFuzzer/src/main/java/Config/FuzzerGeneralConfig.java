@@ -23,12 +23,9 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     protected String agent = "AFL";
     @Parameter(names = "-config_folder", description = "The Folder in which the config Files are", converter = FileConverter.class)
     protected String configFolder = "config/";
-    protected String mutatorConfigFolder = configFolder + "mutator/";
-    protected String certificateMutatorConfigFolder = mutatorConfigFolder + "certificate/";
-    protected String analyzerConfigFolder = configFolder + "analyzer/";
 
     public String getCertificateMutatorConfigFolder() {
-	return certificateMutatorConfigFolder;
+	return configFolder + "mutator/certificate/";
     }
 
     public String getConfigFolder() {
@@ -36,11 +33,11 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     public String getMutatorConfigFolder() {
-	return mutatorConfigFolder;
+	return configFolder + "mutator/";
     }
 
     public String getAnalyzerConfigFolder() {
-	return analyzerConfigFolder;
+	return configFolder + "analyzer/";
     }
 
     public void setConfigFolder(String configFolder) {
