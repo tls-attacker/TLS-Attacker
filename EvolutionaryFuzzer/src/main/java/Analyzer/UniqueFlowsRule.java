@@ -59,12 +59,12 @@ public class UniqueFlowsRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-	
+
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
 		.getTrace());
 	type.clean();
 	if (typeSet.add(type)) {
-            found++;
+	    found++;
 	    // It may be that we dont want to safe good Traces, for example if
 	    // we execute already saved Traces
 	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
