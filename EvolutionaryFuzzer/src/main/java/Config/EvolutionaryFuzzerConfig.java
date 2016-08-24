@@ -43,15 +43,15 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
-    public String getArchiveFolder()
-    {
-        return archiveFolder;
+
+    public String getArchiveFolder() {
+	return archiveFolder;
     }
 
-    public void setArchiveFolder(String archiveFolder)
-    {
-        this.archiveFolder = archiveFolder;
+    public void setArchiveFolder(String archiveFolder) {
+	this.archiveFolder = archiveFolder;
     }
+
     public File getTracesFolder() {
 	return tracesFolder;
     }
@@ -120,8 +120,8 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	new File(getOutputServerCertificateFolder()).mkdirs();
 	new File(getCertificateMutatorConfigFolder()).mkdirs();
 	new File(getAnalyzerConfigFolder()).mkdirs();
-        new File(getOutputFaultyFolder()).mkdirs();
-        new File(getArchiveFolder()).mkdirs();
+	new File(getOutputFaultyFolder()).mkdirs();
+	new File(getArchiveFolder()).mkdirs();
     }
 
     public boolean isSerialize() {
@@ -161,9 +161,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public String getOutputServerCertificateFolder() {
 	return outputFolder + "certificates/server/";
     }
+
     public String getOutputFaultyFolder() {
 	return outputFolder + "faulty/";
     }
+
     /**
      * Sets the Path to the Folder in which the Fuzzer will save its output to.
      * The Server will genereate several Folder in the Output Folder.

@@ -69,11 +69,8 @@ public class TestVector implements Serializable {
 	return modificationList;
     }
 
-    public TestVector getParent()
-    {
-        return parent;
+    public TestVector getParent() {
+	return parent;
     }
-    
-    
 
 }

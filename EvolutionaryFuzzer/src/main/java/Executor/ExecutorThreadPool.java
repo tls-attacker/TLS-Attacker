@@ -69,15 +69,15 @@ public class ExecutorThreadPool implements Runnable {
 	this.poolSize = poolSize;
 	this.mutator = mutator;
 	BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize * 5);
-	
+
 	ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
 
 	executor = new BlockingThreadPoolExecutor(poolSize, poolSize, config.getTimeout(), TimeUnit.MICROSECONDS,
 		workQueue, threadFactory);
 
 	LOG.log(Level.INFO, "Reading Archive Vectors in:");
-        
-        File f = new File(config.getArchiveFolder());
+
+	File f = new File(config.getArchiveFolder());
 	list = TestVectorSerializer.readFolder(f);
 	LOG.log(Level.INFO, "Loaded Archive Vectors:{0}", list.size());
 	// We need to fix Server responses before we can use the workflowtraces

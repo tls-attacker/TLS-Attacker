@@ -28,7 +28,6 @@ public class FuzzerControllerTest {
     public static void tearDownClass() {
     }
 
-    
     public FuzzerControllerTest() {
     }
 
