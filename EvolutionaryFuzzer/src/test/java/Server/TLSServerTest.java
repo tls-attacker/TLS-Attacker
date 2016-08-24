@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import Server.TLSServer;
+import TestHelper.UnitTestCertificateMutator;
 import java.io.File;
 import java.util.logging.Level;
 import org.junit.Assert;
@@ -77,7 +78,7 @@ public class TLSServerTest {
     @Test
     public void testStart() {
 	server.occupie();
-	CertificateMutator mut = new FixedCertificateMutator();
+	CertificateMutator mut = new UnitTestCertificateMutator();
 	ServerCertificateStructure cert = mut.getServerCertificateStructure();
 	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	server.serverIsRunning();
@@ -89,7 +90,7 @@ public class TLSServerTest {
     @Test
     public void testRestart() {
 	server.occupie();
-	CertificateMutator mut = new FixedCertificateMutator();
+	CertificateMutator mut = new UnitTestCertificateMutator();
 	ServerCertificateStructure cert = mut.getServerCertificateStructure();
 	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	server.serverIsRunning();
@@ -143,7 +144,7 @@ public class TLSServerTest {
     @Test
     public void testExitedStarted() {
 	server.occupie();
-	CertificateMutator mut = new FixedCertificateMutator();
+	CertificateMutator mut = new UnitTestCertificateMutator();
 	ServerCertificateStructure cert = mut.getServerCertificateStructure();
 	server.start("", cert.getCertificateFile(), cert.getKeyFile());
 	assertFalse("Failure: Server started but should not have exited yet", server.exited());
