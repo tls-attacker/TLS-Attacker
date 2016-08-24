@@ -65,7 +65,6 @@ public class AnalyzeTimeRuleTest {
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
 		"unittest.id");
 	rule.onApply(result);
-	// TODO We only tested with the onApply method did not crash?
     }
 
     /**

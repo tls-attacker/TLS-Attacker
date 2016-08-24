@@ -63,10 +63,10 @@ public class IsCrashRuleTest {
      */
     @Test
     public void testOnApply() {
-	// TODO we dont check if the file is actually created
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
 		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit2.test");
 	rule.onApply(result);
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
 
     /**

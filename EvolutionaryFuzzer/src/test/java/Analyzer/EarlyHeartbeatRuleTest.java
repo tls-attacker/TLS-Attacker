@@ -93,8 +93,6 @@ public class EarlyHeartbeatRuleTest {
      */
     @Test
     public void testOnApply() {
-	// TODO we only tested if the onApply Method did not crash, not if it
-	// saved the workflowtrace
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
@@ -102,6 +100,8 @@ public class EarlyHeartbeatRuleTest {
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
 		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
 	rule.onApply(result);
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+
     }
 
     /**

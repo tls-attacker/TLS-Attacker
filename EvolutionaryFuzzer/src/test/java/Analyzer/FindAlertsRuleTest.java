@@ -55,15 +55,6 @@ public class FindAlertsRuleTest {
      */
     @Test
     public void testApplys() {
-	// TODO how to make sure the map is not initialized while tasting?
-
-    }
-
-    /**
-     * Test of onApply method, of class FindAlertsRule.
-     */
-    @Test
-    public void testOnApply() {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
 	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
@@ -88,6 +79,22 @@ public class FindAlertsRuleTest {
 	message.setDescription((byte) 60);
 	assertTrue(rule.applys(result)); // Should apply since the description
 					 // is on the blacklist
+
+    }
+
+    /**
+     * Test of onApply method, of class FindAlertsRule.
+     */
+    @Test
+    public void testOnApply() {
+	WorkflowTrace trace = new WorkflowTrace();
+	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
+	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
+	trace.add(new AlertMessage(ConnectionEnd.SERVER));
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
+		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
+	rule.onApply(result);
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
 
     @Test

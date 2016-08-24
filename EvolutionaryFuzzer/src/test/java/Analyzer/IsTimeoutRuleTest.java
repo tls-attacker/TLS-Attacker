@@ -67,6 +67,7 @@ public class IsTimeoutRuleTest {
 	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
 		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit3.test");
 	rule.onApply(result);
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
 
     /**

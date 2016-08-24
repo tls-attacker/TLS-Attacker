@@ -46,8 +46,8 @@ public class ProtocolVersionRuleTest {
 
     @After
     public void tearDown() {
-	FileHelper.deleteFolder(new File("unit_test_output"));
-	FileHelper.deleteFolder(new File("unit_test_config"));
+	FileHelper.deleteFolder(new File("unit_test_output/"));
+	FileHelper.deleteFolder(new File("unit_test_config/"));
     }
 
     /**
@@ -118,7 +118,8 @@ public class ProtocolVersionRuleTest {
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
 		new TestVector(trace, null, null, null), "test.unit");
 	rule.onApply(result);
-	// TODO TEST IF IT IS REALLY SAVED
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+
     }
 
     /**

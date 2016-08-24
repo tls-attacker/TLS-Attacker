@@ -38,6 +38,7 @@ public class IsGoodRuleTest {
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	config.setSerialize(true);
 	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
 	rule = new IsGoodRule(config);
@@ -100,8 +101,9 @@ public class IsGoodRuleTest {
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
 		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	rule.onApply(result);
-	// TODO Make sure good folder has 1 trace
 	assertTrue(result.isGoodTrace());
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+
     }
 
     /**

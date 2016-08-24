@@ -75,7 +75,8 @@ public class UniqueFlowsRuleTest {
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
 		new TestVector(trace, null, null, null), "tes2t.unit");
 	rule.onApply(result);
-	// TODO Check if actually saved
+	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+
     }
 
     /**
