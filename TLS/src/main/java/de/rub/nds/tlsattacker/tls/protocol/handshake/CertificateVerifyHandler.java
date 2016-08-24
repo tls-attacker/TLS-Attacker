@@ -74,7 +74,7 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	    Key key = ks.getKey(alias, password.toCharArray());
 	    Signature instance = null;
 	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = null;
-
+	    int counter = 0;
 	    switch (key.getAlgorithm()) {
 		case "RSA":
 		    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
@@ -82,10 +82,19 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 		    // TLS Context has no supportedSignatureHashAlgorithms
 		    if (tlsContext.getSupportedSignatureAndHashAlgorithmsForRSA().size() == 0) {
 			do {
-			    // Choose one random
-			    selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-				    generateRandomHashAlgorithm());
-			    instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+			    try {
+				// Choose one random
+				selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+					generateRandomHashAlgorithm());
+				instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+			    } catch (NoSuchAlgorithmException E) {
+				counter++;
+				if (counter > 100) {
+				    // Even after 100 trys we were unable to get
+				    // a signature algorithm
+				    throw E;
+				}
+			    }
 			} while (instance == null);
 			instance.initSign(rsaKey);
 		    } else {
@@ -101,13 +110,24 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 		    if (tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size() == 0) {
 			// Choose one random
 			do {
-			    selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-				    generateRandomHashAlgorithm());
-			    instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+			    try {
+				selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+					generateRandomHashAlgorithm());
+				instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+			    } catch (NoSuchAlgorithmException E) {
+				counter++;
+				if (counter > 100) {
+				    // Even after 100 trys we were unable to get
+				    // a signature algorithm
+				    throw E;
+				}
+			    }
 			} while (instance == null);
 			instance.initSign(ecKey);
 		    } else {
-			selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(0);
+                        //Dont always choose the first supported SignatureAlgorithm, choose one at random, this is important for fuzzing
+			Random r = new Random();
+			selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(r.nextInt(tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size()));
 			instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
 			instance.initSign(ecKey);
 		    }
