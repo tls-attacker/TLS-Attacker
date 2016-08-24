@@ -25,10 +25,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
-    private String outputFolder = "./";
+    private String outputFolder = "./data/";
+    @Parameter(names = "-archive_folder", description = "Archive Folder that contains TestVectors that should seed the Fuzzer", converter = FileConverter.class)
+    private String archiveFolder = "./archive/";
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
-
     @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors (Default: simple). Possible: simple")
     private String mutator = "simple";
     @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates (Default: fixed). Possible: fixed")
@@ -42,7 +43,15 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
+    public String getArchiveFolder()
+    {
+        return archiveFolder;
+    }
 
+    public void setArchiveFolder(String archiveFolder)
+    {
+        this.archiveFolder = archiveFolder;
+    }
     public File getTracesFolder() {
 	return tracesFolder;
     }
@@ -112,6 +121,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	new File(getCertificateMutatorConfigFolder()).mkdirs();
 	new File(getAnalyzerConfigFolder()).mkdirs();
         new File(getOutputFaultyFolder()).mkdirs();
+        new File(getArchiveFolder()).mkdirs();
     }
 
     public boolean isSerialize() {
