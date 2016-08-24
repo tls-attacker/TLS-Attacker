@@ -76,7 +76,7 @@ public class AnalyzeModificationRule extends Rule {
     @Override
     public String report() {
 	if (executedTraces > 0) {
-	    StringBuilder b = new StringBuilder("Modifications which lead to good Traces:\n");
+	    StringBuilder b = new StringBuilder("Modifications which the Mutator applied:\n");
 	    for (Entry<ModificationType, MutableInt> e : typeMap.entrySet()) {
 		b.append(e.getKey().name() + " Count:" + e.getValue().getValue() + "\n");
 	    }
