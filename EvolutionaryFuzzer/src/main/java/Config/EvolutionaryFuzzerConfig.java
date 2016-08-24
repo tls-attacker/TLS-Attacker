@@ -111,6 +111,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	new File(getOutputServerCertificateFolder()).mkdirs();
 	new File(getCertificateMutatorConfigFolder()).mkdirs();
 	new File(getAnalyzerConfigFolder()).mkdirs();
+        new File(getOutputFaultyFolder()).mkdirs();
     }
 
     public boolean isSerialize() {
@@ -150,7 +151,9 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public String getOutputServerCertificateFolder() {
 	return outputFolder + "certificates/server/";
     }
-
+    public String getOutputFaultyFolder() {
+	return outputFolder + "faulty/";
+    }
     /**
      * Sets the Path to the Folder in which the Fuzzer will save its output to.
      * The Server will genereate several Folder in the Output Folder.

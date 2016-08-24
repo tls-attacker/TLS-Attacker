@@ -109,7 +109,7 @@ public class Main {
 	    case "execute-faulty":
 		ServerManager manager = ServerManager.getInstance();
 		manager.init(evoConfig);
-		f = new File(evoConfig.getOutputFolder() + "faulty/");
+		f = new File(evoConfig.getOutputFaultyFolder());
 		List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 		for (TestVector vector : vectors) {
 		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
