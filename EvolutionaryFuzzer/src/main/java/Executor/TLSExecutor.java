@@ -166,7 +166,7 @@ public class TLSExecutor extends Executor {
 	    } catch (TimeoutException E) {
 		timeout = true;
 	    } catch (Throwable E) {
-		File f = new File(ConfigManager.getInstance().getConfig().getOutputFolder() + "faulty/"
+		File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
 			+ LogFileIDManager.getInstance().getFilename());
 
 		try {
