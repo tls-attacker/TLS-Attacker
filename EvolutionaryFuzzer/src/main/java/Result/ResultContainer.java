@@ -41,7 +41,12 @@ public class ResultContainer {
     // List of old Results
     private ArrayList<TestVector> goodVectors;
 
-    private EvolutionaryFuzzerConfig evoConfig;
+    private EvolutionaryFuzzerConfig evolutionaryFuzzerConfig;
+
+    public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig)
+    {
+        this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
+    }
     private int executed = 0;
     private Analyzer analyzer;
 
@@ -49,8 +54,8 @@ public class ResultContainer {
 
 	goodVectors = new ArrayList<>();
 
-	evoConfig = Config.ConfigManager.getInstance().getConfig();
-	analyzer = new Analyzer(evoConfig);
+	evolutionaryFuzzerConfig = Config.ConfigManager.getInstance().getConfig();
+	analyzer = new Analyzer(evolutionaryFuzzerConfig);
 
     }
 
