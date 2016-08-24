@@ -111,9 +111,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
 	} else if (version == ProtocolVersion.DTLS12) {
 	    return allowDTLS12;
 	} else {
-	    // PROTOCOL VERSION NOT YET IMPLEMENTED IN THE FUZZER
-	    // TODO
-	    throw new NotImplementedException();
+	    throw new UnsupportedOperationException();
 	}
     }
 }
