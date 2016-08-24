@@ -41,7 +41,7 @@ public class SimpleMutator extends Mutator {
      */
     public SimpleMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator) {
 	super(evoConfig, certMutator);
-	File f = new File(evoConfig.getConfigFolder() + "simple.conf");
+	File f = new File(evoConfig.getMutatorConfigFolder()+ "simple.conf");
 	if (f.exists()) {
 	    config = JAXB.unmarshal(f, SimpleMutatorConfig.class);
 	} else {
