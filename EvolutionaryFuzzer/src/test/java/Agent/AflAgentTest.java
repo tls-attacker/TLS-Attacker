@@ -35,7 +35,6 @@ import static org.junit.Assert.assertTrue;
  * @author ic0ns
  */
 public class AflAgentTest {
-    // TODO Collect Results Test
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
 
     @After
@@ -129,11 +128,10 @@ public class AflAgentTest {
 	agent.applicationStop(server);
 	agent.applicationStop(server);
     }
-    
+
     @Test
-    public void testCollectResults()
-    {
-        TestVector t = new TestVector(new WorkflowTrace(), null, null, null);
+    public void testCollectResults() {
+	TestVector t = new TestVector(new WorkflowTrace(), null, null, null);
 	Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/AFLTest/graph.trace"), t, t);
 	assertTrue("Failure: Test result should have exactly 4 Vertices",
 		r.getBranchTrace().getVerticesSet().size() == 4);
