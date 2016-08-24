@@ -33,8 +33,6 @@ public class SimpleMutator extends Mutator {
 
     private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 
-    // private final Node<WorkflowTrace> tree;
-    private int goodIndex = 0; // TODO
     private SimpleMutatorConfig config;
 
     /**

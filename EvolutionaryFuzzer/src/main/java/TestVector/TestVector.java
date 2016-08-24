@@ -33,8 +33,6 @@ public class TestVector implements Serializable {
     @XmlTransient
     private TestVector parent = null;
     @XmlTransient
-    private long children = 0; // TODO
-    @XmlTransient
     private List<Modification> modificationList = null;
 
     public TestVector(WorkflowTrace trace, ServerCertificateStructure keyCertPair,
