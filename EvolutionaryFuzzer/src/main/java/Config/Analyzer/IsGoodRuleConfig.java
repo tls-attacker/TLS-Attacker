@@ -16,8 +16,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class IsGoodRuleConfig extends RuleConfig {
 
+    private String outputFileGraph = "good.graph";
+    
     public IsGoodRuleConfig() {
 	super("good/");
     }
 
+    public String getOutputFileGraph()
+    {
+        return outputFileGraph;
+    }
+
+    public void setOutputFileGraph(String outputFileGraph)
+    {
+        this.outputFileGraph = outputFileGraph;
+    }
+    
 }

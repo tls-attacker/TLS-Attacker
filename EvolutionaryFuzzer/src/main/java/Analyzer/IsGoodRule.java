@@ -20,8 +20,11 @@ import Result.Result;
 import Result.ResultContainer;
 import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
@@ -34,11 +37,13 @@ import org.jgrapht.DirectedGraph;
  */
 public class IsGoodRule extends Rule {
 
+    private PrintWriter outWriter;
     private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
     // BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
     private int found = 0;
     private IsGoodRuleConfig config;
+    private long lastGoodTimestamp = System.currentTimeMillis();
 
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_good.rule");
@@ -52,6 +57,19 @@ public class IsGoodRule extends Rule {
 	}
 	this.branch = new BranchTrace();
 	prepareConfigOutputFolder();
+        try {
+	    f = new File(evoConfig.getOutputFolder() + config.getOutputFileGraph());
+	    if (evoConfig.isCleanStart()) {
+		f.delete();
+		f.createNewFile();
+	    }
+	    outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
+	} catch (IOException ex) {
+	    Logger.getLogger(AnalyzeTimeRule.class.getName())
+		    .log(Level.SEVERE,
+			    "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
+			    ex);
+	}
     }
 
     @Override
@@ -70,7 +88,11 @@ public class IsGoodRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-	found++;
+        //Write statistics
+        outWriter.println(System.currentTimeMillis()-lastGoodTimestamp);
+	outWriter.flush();
+        lastGoodTimestamp = System.currentTimeMillis();
+        found++;
 	result.setGoodTrace(true);
 	// It may be that we dont want to safe good Traces, for example if
 	// we execute already saved Traces
@@ -99,7 +121,7 @@ public class IsGoodRule extends Rule {
 
     @Override
     public String report() {
-	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found + "\n";
+	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found + " Last Good "+ (double)(System.currentTimeMillis()-lastGoodTimestamp)/1000.0+" seconds ago\n";
     }
 
     @Override
