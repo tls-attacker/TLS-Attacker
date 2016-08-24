@@ -20,11 +20,15 @@ import Server.ServerSerializer;
 import Server.TLSServer;
 import TestHelper.UnitTestCertificateMutator;
 import Certificate.ServerCertificateStructure;
+import Result.Result;
+import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.util.logging.Level;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -124,6 +128,16 @@ public class AflAgentTest {
 	agent.applicationStart(server);
 	agent.applicationStop(server);
 	agent.applicationStop(server);
+    }
+    
+    @Test
+    public void testCollectResults()
+    {
+        TestVector t = new TestVector(new WorkflowTrace(), null, null, null);
+	Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/AFLTest/graph.trace"), t, t);
+	assertTrue("Failure: Test result should have exactly 4 Vertices",
+		r.getBranchTrace().getVerticesSet().size() == 4);
+	assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getEdgeMap().size() == 6);
 
     }
 
