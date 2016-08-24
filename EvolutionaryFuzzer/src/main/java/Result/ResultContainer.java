@@ -2,21 +2,8 @@ package Result;
 
 import Analyzer.Analyzer;
 import Config.EvolutionaryFuzzerConfig;
-import WorkFlowType.WorkflowTraceType;
-import WorkFlowType.WorkflowTraceTypeManager;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
-import org.jfree.util.Log;
-import Graphs.BranchTrace;
 import TestVector.TestVector;
 
 /**
@@ -43,10 +30,10 @@ public class ResultContainer {
 
     private EvolutionaryFuzzerConfig evolutionaryFuzzerConfig;
 
-    public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig)
-    {
-        this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
+    public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
+	this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
     }
+
     private int executed = 0;
     private Analyzer analyzer;
 
