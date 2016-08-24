@@ -57,7 +57,7 @@ public class UniqueFlowsRuleTest {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new CertificateRequestMessage(ConnectionEnd.CLIENT));
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "test.unit");
+		new TestVector(trace, null, null, null), "tes2t.unit");
 	assertTrue(rule.applys(result));// Should apply since its the first time
 					// the rule has seen this tracetype
 	assertTrue(rule.applys(result));// Should not apply since its the second
@@ -73,7 +73,7 @@ public class UniqueFlowsRuleTest {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new CertificateRequestMessage(ConnectionEnd.CLIENT));
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "test.unit");
+		new TestVector(trace, null, null, null), "tes2t.unit");
 	rule.onApply(result);
 	// TODO Check if actually saved
     }
@@ -97,7 +97,7 @@ public class UniqueFlowsRuleTest {
 	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
 	trace.add(serverHello);
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "test.unit");
+		new TestVector(trace, null, null, null), "tes2t.unit");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

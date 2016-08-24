@@ -65,7 +65,7 @@ public class IsGoodRuleTest {
 	edgeMap.put(tempEdge, tempEdge);
 	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
-		new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
+		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	assertTrue(rule.applys(result));
 	assertFalse(rule.applys(result)); // The same trace should not apply
 					  // twice
@@ -73,12 +73,12 @@ public class IsGoodRuleTest {
 	edgeMap.put(tempEdge, tempEdge);
 	trace = new BranchTrace(verticesSet, edgeMap);
 	result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
-		new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
+		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	assertTrue(rule.applys(result));
 	verticesSet.add(4l);
 	trace = new BranchTrace(verticesSet, edgeMap);
 	result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
-		new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
+		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	assertTrue(rule.applys(result));
     }
 
@@ -98,7 +98,7 @@ public class IsGoodRuleTest {
 	edgeMap.put(tempEdge, tempEdge);
 	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
-		new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
+		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	rule.onApply(result);
 	// TODO Make sure good folder has 1 trace
 	assertTrue(result.isGoodTrace());
@@ -120,7 +120,7 @@ public class IsGoodRuleTest {
 	edgeMap.put(tempEdge, tempEdge);
 	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
-		new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
+		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	rule.applys(result);
 	trace = rule.getBranchTrace();
 	assertNotNull(result);
@@ -156,7 +156,7 @@ public class IsGoodRuleTest {
 	edgeMap.put(tempEdge, tempEdge);
 	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null, null),
-		new TestVector(new WorkflowTrace(), null, null, null), "unit.test");
+		new TestVector(new WorkflowTrace(), null, null, null), "unit1.test");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

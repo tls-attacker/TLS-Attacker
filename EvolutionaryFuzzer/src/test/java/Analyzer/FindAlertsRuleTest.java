@@ -122,7 +122,7 @@ public class FindAlertsRuleTest {
     @Test
     public void testReport() {
 	rule.onApply(new Result(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-		null), new TestVector(new WorkflowTrace(), null, null, null), "unit.test"));
+		null), new TestVector(new WorkflowTrace(), null, null, null), "2unit.test"));
 	assertNotNull(rule.report());
     }
 
