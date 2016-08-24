@@ -73,7 +73,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
 	keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
 		+ "rsa4096cert.pem");
 	certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-		+ "rsa4096key.pemm");
+		+ "rsa4096key.pem");
 	if (keyFile.exists() && certFile.exists()) {
 	    serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
 	}
