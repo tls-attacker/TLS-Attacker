@@ -51,7 +51,6 @@ public class FindAlertsRule extends Rule {
 	if (config.isSaveOneOfEach()) {
 	    // Load previously seen Testvectors and scan them for seen alert
 	    // messages
-	    // TODO
 	    f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	    List<TestVector> vectorList = TestVectorSerializer.readFolder(f);
 	    for (TestVector vector : vectorList) {

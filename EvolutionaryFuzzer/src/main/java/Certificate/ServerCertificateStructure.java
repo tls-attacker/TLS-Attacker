@@ -14,7 +14,7 @@ import java.io.Serializable;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerCertificateStructure implements Serializable {// TODO
+public class ServerCertificateStructure implements Serializable {
     private File keyFile;
     private File certificateFile;
 
