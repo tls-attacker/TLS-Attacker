@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -28,12 +29,14 @@ import java.security.UnrecoverableKeyException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -51,8 +54,29 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     byte[] prepareKeyExchangeMessage() {
-	RSAPublicKey publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
-	int keyByteLength = publicKey.getModulus().bitLength() / 8;
+        RSAPublicKey publicKey = null;
+        if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
+
+            if (protocolMessage.isFuzzingMode()) {
+                    KeyPairGenerator keyGen = null;
+                try {
+                    keyGen = KeyPairGenerator.getInstance("RSA", "BC");
+                }
+                catch (NoSuchAlgorithmException ex) {
+                    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                catch (NoSuchProviderException ex) {
+                    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                    publicKey = (RSAPublicKey)keyGen.genKeyPair().getPublic();
+                }
+        }
+        else
+        {
+            publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
+	
+        }
+        int keyByteLength = publicKey.getModulus().bitLength() / 8;
 	// the number of random bytes in the pkcs1 message
 	int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
 	byte[] padding = new byte[randomByteLength];
