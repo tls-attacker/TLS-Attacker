@@ -5,8 +5,7 @@ package Graphs;
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 import Graphs.BranchTrace;
 import java.io.File;
@@ -21,28 +20,41 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import Result.MergeResult;
+import Result.Result;
+import TestVector.TestVector;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.junit.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * 
+ *
  * @author ic0ns
  */
-public class BranchTest {
+public class BranchTest
+{
+
     private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
     /**
      *
      */
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass()
+    {
     }
 
     /**
      *
      */
     @AfterClass
-    public static void tearDownClass() {
+    public static void tearDownClass()
+    {
     }
 
     private BranchTrace tree;
@@ -50,118 +62,88 @@ public class BranchTest {
     /**
      *
      */
-    public BranchTest() {
-	tree = new BranchTrace();
+    public BranchTest()
+    {
+        tree = new BranchTrace();
     }
 
     /**
      *
      */
     @Before
-    public void setUp() {
-	tree = new BranchTrace();
+    public void setUp()
+    {
+        tree = new BranchTrace();
     }
 
     /**
      *
      */
     @After
-    public void tearDown() {
-	tree = null;
+    public void tearDown()
+    {
+        tree = null;
     }
 
-    /**
-     *
-     */
     @Test
-    public void testConstructor() {
+    public void testConstructor()
+    {
 
-	tree = new BranchTrace();
+        tree = new BranchTrace();
     }
-    // TODO
-    // /**
-    // *
-    // * @throws FileNotFoundException
-    // * @throws IOException
-    // */
-    // @Test(expected = NullPointerException.class)
-    // public void testMergeNull() throws FileNotFoundException, IOException {
-    // // Test with null
-    // tree.merge((File) null);
-    // }
-    // TODO
-    // /**
-    // *
-    // * @throws FileNotFoundException
-    // * @throws IOException
-    // */
-    // @Test(expected = FileNotFoundException.class)
-    // public void testMergeNotExistentFile() throws FileNotFoundException,
-    // IOException {
-    // tree.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
-    // tree.merge(new File(""));
-    // }
-    // TODO
-    // /**
-    // *
-    // * @throws FileNotFoundException
-    // * @throws IOException
-    // */
-    // @Test(expected = NumberFormatException.class)
-    // public void testMergeInvalid() throws FileNotFoundException, IOException
-    // {
-    // tree.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl3"));
-    // }
-    // TODO
-    // /**
-    // *
-    // */
-    // @Test
-    // public void testMergeValid() {
-    // // Test with valid
-    // Exception e = null;
-    // try {
-    // tree.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
-    // MergeResult r = tree.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
-    // assertTrue("Failure: The Test File contains exactly 2 new Branches, we found:"
-    // + r.getNewBranches(),
-    // r.getNewBranches() == 2);
-    // assertTrue("Failure: The Test File contains exactly 1 new Vertice, we found:"
-    // + r.getNewVertices(),
-    // r.getNewVertices() == 1);
-    // r = tree.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl2"));
-    // assertTrue(
-    // "Failure: After merging the same File twice, no new Branches should be found, we found:"
-    // + r.getNewBranches(), r.getNewBranches() == 0);
-    // assertTrue(
-    // "Failure: After merging the same File twice, no new Vertices should be found, we found:"
-    // + r.getNewBranches(), r.getNewVertices() == 0);
-    // } catch (IOException E) {
-    // e = E;
-    // }
-    // assertNull(
-    // "Failure: The Test should not Throw an Exception. Might indicate that it could not find the Testfiles.",
-    // e);
-    // }
-    // TODO
-    // @Test
-    // public void testMergeBranch() {
-    // try {
-    // BranchTrace trace = new BranchTrace();
-    // trace.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl"));
-    // BranchTrace trace2 = new BranchTrace();
-    // trace2.merge(new
-    // File("../resources/testsuite/EvolutionaryFuzzer/BranchTest/openssl4"));
-    // trace.merge(trace2);
-    // } catch (IOException ex) {
-    // Assert.fail("Could not find TestFiles");
-    // }
-    // }
 
+    @Test(expected = NullPointerException.class)
+    public void testMergeNull() throws FileNotFoundException, IOException
+    {
+        tree.merge(null);
+    }
+    
+    @Test
+    public void testMerge()
+    {
+        Set<Long> verticesSet = new HashSet<>();
+	verticesSet.add(1l);
+	verticesSet.add(2l);
+	verticesSet.add(3l);
+	Map<Edge, Edge> edgeMap = new HashMap<>();
+	Edge tempEdge = new Edge(1, 2);
+	edgeMap.put(tempEdge, tempEdge);
+	tempEdge = new Edge(2, 3);
+	edgeMap.put(tempEdge, tempEdge);
+	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
+	MergeResult mergeResult = tree.merge(trace);
+        assertTrue(mergeResult.getHitVertices()==3);
+        assertTrue(mergeResult.getNewBranches()==2);
+        assertTrue(mergeResult.getNewVertices()==3);
+        verticesSet = new HashSet<>();
+	verticesSet.add(1l);
+	verticesSet.add(2l);
+	verticesSet.add(3l);
+	verticesSet.add(4l);
+	
+        edgeMap = new HashMap<>();
+	tempEdge = new Edge(1, 2);
+	edgeMap.put(tempEdge, tempEdge);
+	tempEdge = new Edge(2, 3);
+	edgeMap.put(tempEdge, tempEdge);
+	trace = new BranchTrace(verticesSet, edgeMap);
+	mergeResult = tree.merge(trace);
+        assertTrue(mergeResult.getHitVertices()==4);
+        assertTrue(mergeResult.getNewBranches()==0);
+        assertTrue(mergeResult.getNewVertices()==1);
+        verticesSet = new HashSet<>();
+	edgeMap = new HashMap<>();
+	tempEdge = new Edge(1, 2);
+	edgeMap.put(tempEdge, tempEdge);
+	tempEdge = new Edge(2, 3);
+        tempEdge = new Edge(1, 3);
+        
+	edgeMap.put(tempEdge, tempEdge);
+	trace = new BranchTrace(verticesSet, edgeMap);
+	mergeResult = tree.merge(trace);
+        assertTrue(mergeResult.getHitVertices()==0);
+        assertTrue(mergeResult.getNewBranches()==1);
+        assertTrue(mergeResult.getNewVertices()==0);
+        
+    }
 }
