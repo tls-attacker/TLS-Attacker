@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,8 +33,10 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -44,7 +47,11 @@ import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
 import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.crypto.tls.TlsDHUtils;
 import org.bouncycastle.util.BigIntegers;
+import sun.security.rsa.RSAKeyFactory;
+import sun.security.rsa.RSAKeyPairGenerator;
+import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -226,12 +233,16 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
 	try {
 	    // TODO can throw a EOFException
-	    ServerDHParams publicKeyParameters = publicKeyParameters = ServerDHParams.parse(is);
-
+	    
+            p = TlsDHUtils.readDHParameter(is);
+            g = TlsDHUtils.readDHParameter(is);
+            BigInteger Ys = TlsDHUtils.readDHParameter(is);
+            ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(Ys, new DHParameters(p, g)));
+   
 	    tlsContext.setServerDHParameters(publicKeyParameters);
 
 	    KeyStore ks = tlsContext.getKeyStore();
-
+            
 	    // could be extended to choose the algorithms depending on the
 	    // certificate
 	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -240,10 +251,15 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	    protocolMessage.setHashAlgorithm(selectedSignatureHashAlgo.getHashAlgorithm().getValue());
 
 	    Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
-
-	    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
-
-	    Signature instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+      	    RSAPrivateCrtKey rsaKey = null;
+            if(!key.getAlgorithm().equals("RSA"))
+            {
+                //Load static key
+                ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+                key = ks.getKey("alias", "password".toCharArray());
+            }
+            rsaKey = (RSAPrivateCrtKey) key;
+            Signature instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
 	    instance.initSign(rsaKey);
 	    LOGGER.debug("SignatureAndHashAlgorithm for ServerKeyExchange message: {}",
 		    selectedSignatureHashAlgo.getJavaName());
@@ -274,6 +290,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 		| SignatureException | IOException ex) {
 	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
 	}
+        catch (CertificateException ex)
+        {
+            java.util.logging.Logger.getLogger(DHEServerKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 	return protocolMessage.getCompleteResultingMessage().getValue();
     }
