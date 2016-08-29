@@ -17,11 +17,16 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,91 +37,48 @@ import java.util.List;
  */
 public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    private final CommandConfig config;
-
     RsaWorkflowConfigurationFactory(CommandConfig config) {
-	this.config = config;
+	super(config);
     }
 
     @Override
-    public TlsContext createClientHelloTlsContext() {
-	TlsContext context = new TlsContext();
-	context.setProtocolVersion(config.getProtocolVersion());
-	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
-	WorkflowTrace workflowTrace = new WorkflowTrace();
-
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	workflowTrace.add(ch);
-
-	ch.setSupportedCipherSuites(config.getCipherSuites());
-	ch.setSupportedCompressionMethods(config.getCompressionMethods());
-
-	initializeClientHelloExtensions(config, ch);
-
-	context.setWorkflowTrace(workflowTrace);
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
-    @Override
-    public TlsContext createHandshakeTlsContext() {
-	TlsContext context = this.createClientHelloTlsContext();
+    public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
+	TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+	List<ProtocolMessage> messages = new LinkedList<>();
 	WorkflowTrace workflowTrace = context.getWorkflowTrace();
+	messages.add(new ServerHelloMessage());
+	messages.add(new CertificateMessage());
 
-	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
-        CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
-        crm.setRequired(false);
-        workflowTrace.add(crm);
+	if (config.getCipherSuites().get(0).isEphemeral()) {
+	    messages.add(new ECDHEServerKeyExchangeMessage());
+	}
+
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
+	    messages.add(new CertificateRequestMessage());
+	    messages.add(new ServerHelloDoneMessage());
+	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+	    messages = new LinkedList<>();
+	    messages.add(new CertificateMessage());
+	    messages.add(new RSAClientKeyExchangeMessage());
+	    messages.add(new CertificateVerifyMessage());
 	} else {
-	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    messages.add(new ServerHelloDoneMessage());
+	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+	    messages = new LinkedList<>();
+	    messages.add(new RSAClientKeyExchangeMessage());
 	}
 
-	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	workflowTrace.add(new FinishedMessage(ConnectionEnd.CLIENT));
-
-	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	workflowTrace.add(new FinishedMessage(ConnectionEnd.SERVER));
-
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
-    @Override
-    public TlsContext createFullTlsContext() {
-	TlsContext context = this.createHandshakeTlsContext();
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
-
-	workflowTrace.add(new ApplicationMessage(ConnectionEnd.CLIENT));
-
-	if (config.getHeartbeatMode() != null) {
-	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	}
+	messages.add(new ChangeCipherSpecMessage());
+	messages.add(new FinishedMessage());
+	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+	messages = new LinkedList<>();
+	messages.add(new ChangeCipherSpecMessage());
+	messages.add(new FinishedMessage());
+	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
 
 	initializeProtocolMessageOrder(context);
 
 	return context;
     }
 
-    @Override
-    public TlsContext createFullServerResponseTlsContext() {
-	TlsContext context = this.createFullTlsContext();
-
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.SERVER));
-
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
 }

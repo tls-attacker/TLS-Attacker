@@ -42,11 +42,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected ProtocolMessageType protocolMessageType;
 
     /**
-     * describes if the messages are coming from the client or the server.
-     */
-    protected ConnectionEnd messageIssuer;
-
-    /**
      * List of preconfigured records for this protocol message
      */
     protected List<Record> records;
@@ -84,14 +79,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 	return protocolMessageType;
     }
 
-    public ConnectionEnd getMessageIssuer() {
-	return messageIssuer;
-    }
-
-    public void setMessageIssuer(ConnectionEnd messageIssuer) {
-	this.messageIssuer = messageIssuer;
-    }
-
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
 	    @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
@@ -111,11 +98,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isRequired() {
-        return required;
+	return required;
     }
 
     public void setRequired(boolean required) {
-        this.required = required;
+	this.required = required;
     }
 
     public boolean isGoingToBeSent() {

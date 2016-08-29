@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * Shuffles the byte array, using a pre-defined array of array pointers
  * (#shuffle). Array pointers are currently defined as bytes, since we are
  * modifying rather smaller arrays.
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
-@XmlType(propOrder = {"shuffle", "modificationFilter", "postModification"})
+@XmlType(propOrder = { "shuffle", "modificationFilter", "postModification" })
 public class ByteArrayShuffleModification extends VariableModification<byte[]> {
 
     private byte[] shuffle;
@@ -31,29 +31,29 @@ public class ByteArrayShuffleModification extends VariableModification<byte[]> {
     }
 
     public ByteArrayShuffleModification(byte[] shuffle) {
-        this.shuffle = shuffle;
+	this.shuffle = shuffle;
     }
 
     @Override
     protected byte[] modifyImplementationHook(final byte[] input) {
-        byte[] result = input.clone();
-        int size = input.length;
-        for (int i = 0; i < shuffle.length - 1; i += 2) {
-            int p1 = (shuffle[i] & 0xff) % size;
-            int p2 = (shuffle[i + 1] & 0xff) % size;
-            byte tmp = result[p1];
-            result[p1] = result[p2];
-            result[p2] = tmp;
-        }
-        return result;
+	byte[] result = input.clone();
+	int size = input.length;
+	for (int i = 0; i < shuffle.length - 1; i += 2) {
+	    int p1 = (shuffle[i] & 0xff) % size;
+	    int p2 = (shuffle[i + 1] & 0xff) % size;
+	    byte tmp = result[p1];
+	    result[p1] = result[p2];
+	    result[p2] = tmp;
+	}
+	return result;
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getShuffle() {
-        return shuffle;
+	return shuffle;
     }
 
     public void setShuffle(byte[] shuffle) {
-        this.shuffle = shuffle;
+	this.shuffle = shuffle;
     }
 }

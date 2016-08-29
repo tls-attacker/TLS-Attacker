@@ -34,12 +34,6 @@ public class ServerHelloMessage extends HelloMessage {
 
     public ServerHelloMessage() {
 	super(HandshakeMessageType.SERVER_HELLO);
-	this.messageIssuer = ConnectionEnd.SERVER;
-    }
-
-    public ServerHelloMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.SERVER_HELLO);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {

@@ -45,11 +45,6 @@ public class AlertMessage extends ProtocolMessage {
 	this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
-    public AlertMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
-    }
-
     public ModifiableByte getLevel() {
 	return level;
     }

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import com.sun.org.apache.xerces.internal.xni.grammars.XMLSchemaDescription;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
@@ -63,7 +64,7 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 	    protocolMessage.setX509CertificateObject(x509CertObject);
 
-	    if (protocolMessage.getMessageIssuer() == ConnectionEnd.SERVER) {
+	    if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
 		tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
 		tlsContext.setX509ServerCertificateObject(x509CertObject);
 	    } else {
@@ -120,7 +121,7 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 		    .getCertificatesLength().getValue() + HandshakeByteLength.CERTIFICATES_LENGTH));
 	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 	    protocolMessage.setX509CertificateObject(x509CertObject);
-	    if (protocolMessage.getMessageIssuer() == ConnectionEnd.SERVER) {
+	    if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
 		tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
 		tlsContext.setX509ServerCertificateObject(x509CertObject);
 	    } else {

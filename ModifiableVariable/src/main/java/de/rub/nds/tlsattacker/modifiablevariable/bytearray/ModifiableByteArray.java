@@ -18,52 +18,52 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
-@XmlSeeAlso({ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class,
-    ByteArrayInsertModification.class, ByteArrayXorModification.class, ByteArrayDuplicateModification.class})
-@XmlType(propOrder = {"originalValue", "modification", "assertEquals"})
+@XmlSeeAlso({ ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class,
+	ByteArrayInsertModification.class, ByteArrayXorModification.class, ByteArrayDuplicateModification.class })
+@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableByteArray extends ModifiableVariable<byte[]> implements Serializable {
 
     @Override
     protected void createRandomModification() {
-        VariableModification<byte[]> vm = ByteArrayModificationFactory.createRandomModification((byte[]) originalValue);
-        setModification(vm);
+	VariableModification<byte[]> vm = ByteArrayModificationFactory.createRandomModification((byte[]) originalValue);
+	setModification(vm);
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getOriginalValue() {
-        return originalValue;
+	return originalValue;
     }
 
     public void setOriginalValue(byte[] value) {
-        this.originalValue = value;
+	this.originalValue = value;
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getAssertEquals() {
-        return assertEquals;
+	return assertEquals;
     }
 
     public void setAssertEquals(byte[] assertEquals) {
-        this.assertEquals = assertEquals;
+	this.assertEquals = assertEquals;
     }
 
     @Override
     public boolean isOriginalValueModified() {
-        return originalValue != null && !Arrays.equals(originalValue, getValue());
+	return originalValue != null && !Arrays.equals(originalValue, getValue());
     }
 
     @Override
     public boolean validateAssertions() {
-        boolean valid = true;
-        if (assertEquals != null) {
-            if (!Arrays.equals(assertEquals, getValue())) {
-                valid = false;
-            }
-        }
-        return valid;
+	boolean valid = true;
+	if (assertEquals != null) {
+	    if (!Arrays.equals(assertEquals, getValue())) {
+		valid = false;
+	    }
+	}
+	return valid;
     }
 }

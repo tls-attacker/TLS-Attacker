@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModifiableVariableTest {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(ModifiableVariableTest.class);
 
     @Test

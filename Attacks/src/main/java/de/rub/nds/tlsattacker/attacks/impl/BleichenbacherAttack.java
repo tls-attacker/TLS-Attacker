@@ -74,7 +74,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 
 	LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
 	for (ProtocolMessage pm : protocolMessages) {
-	    LOGGER.info("Sent by: {}, Type: {}", pm.getMessageIssuer(), pm.getProtocolMessageType());
+	    LOGGER.info("Sent Type: {}", pm.getProtocolMessageType());
 	    if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
 		AlertMessage alert = (AlertMessage) pm;
 		AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
@@ -91,11 +91,11 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 	if (protocolMessageSet.size() == 1) {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
 		    sb.toString());
-            vulnerable = false;
+	    vulnerable = false;
 	} else {
 	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
 		    sb.toString());
-            vulnerable = true;
+	    vulnerable = true;
 	}
 
     }
@@ -109,7 +109,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 	RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+		.getFirstConfiguredHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
 	ModifiableByteArray epms = new ModifiableByteArray();
 	epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
 	cke.setEncryptedPremasterSecret(epms);
@@ -125,7 +125,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 	tlsContexts.add(tlsContext);
 
 	transportHandler.closeConnection();
-	return trace.getProtocolMessages().get(trace.getProtocolMessages().size() - 1);
+	return trace.getAllConfiguredMessages().get(trace.getAllConfiguredMessages().size() - 1);
     }
 
 }

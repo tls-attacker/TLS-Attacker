@@ -43,11 +43,6 @@ public class HeartbeatMessage extends ProtocolMessage {
 	this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
     }
 
-    public HeartbeatMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
-    }
-
     public ModifiableByte getHeartbeatMessageType() {
 	return heartbeatMessageType;
     }

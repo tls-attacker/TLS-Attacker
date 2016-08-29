@@ -104,7 +104,7 @@ public class IntegerModificationTest {
 	assertEquals(expectedResult, result);
 	assertEquals(new Integer(10), start.getOriginalValue());
     }
-    
+
     /**
      * Test of explicitValue from file method, of class IntegerModification.
      */
@@ -115,15 +115,15 @@ public class IntegerModificationTest {
 	expectedResult = -128;
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-	
-        modifier = IntegerModificationFactory.explicitValueFromFile(1);
-        start.setModification(modifier);
+
+	modifier = IntegerModificationFactory.explicitValueFromFile(1);
+	start.setModification(modifier);
 	expectedResult = -1;
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-        
-        modifier = IntegerModificationFactory.explicitValueFromFile(26);
-        start.setModification(modifier);
+
+	modifier = IntegerModificationFactory.explicitValueFromFile(26);
+	start.setModification(modifier);
 	expectedResult = 2147483647;
 	result = start.getValue();
 	assertEquals(expectedResult, result);

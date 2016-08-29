@@ -40,12 +40,6 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public ECDHEServerKeyExchangeMessage() {
 	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-	this.messageIssuer = ConnectionEnd.SERVER;
-    }
-
-    public ECDHEServerKeyExchangeMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableByte getCurveType() {

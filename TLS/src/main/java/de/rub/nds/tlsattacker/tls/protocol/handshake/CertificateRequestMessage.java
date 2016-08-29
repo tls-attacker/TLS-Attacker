@@ -70,12 +70,6 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public CertificateRequestMessage() {
 	super(HandshakeMessageType.CERTIFICATE_REQUEST);
-	this.messageIssuer = ConnectionEnd.SERVER;
-    }
-
-    public CertificateRequestMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CERTIFICATE_REQUEST);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableInteger getClientCertificateTypesCount() {

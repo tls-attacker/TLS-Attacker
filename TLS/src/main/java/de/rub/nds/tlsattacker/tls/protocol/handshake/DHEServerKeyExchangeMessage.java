@@ -94,12 +94,6 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public DHEServerKeyExchangeMessage() {
 	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-	this.messageIssuer = ConnectionEnd.SERVER;
-    }
-
-    public DHEServerKeyExchangeMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableInteger getpLength() {

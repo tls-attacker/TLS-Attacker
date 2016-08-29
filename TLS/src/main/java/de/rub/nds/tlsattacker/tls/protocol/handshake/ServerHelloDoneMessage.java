@@ -18,11 +18,5 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     public ServerHelloDoneMessage() {
 	super(HandshakeMessageType.SERVER_HELLO_DONE);
-	this.messageIssuer = ConnectionEnd.SERVER;
-    }
-
-    public ServerHelloDoneMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.SERVER_HELLO_DONE);
-	this.messageIssuer = messageIssuer;
     }
 }

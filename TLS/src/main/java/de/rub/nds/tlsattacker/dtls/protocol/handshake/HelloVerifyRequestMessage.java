@@ -38,15 +38,6 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
     }
 
-    public HelloVerifyRequestMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
-    }
-
-    public HelloVerifyRequestMessage(HandshakeMessageType handshakeMessageType) {
-	super(handshakeMessageType);
-    }
-
     public ModifiableByteArray getProtocolVersion() {
 	return protocolVersion;
     }

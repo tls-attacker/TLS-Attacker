@@ -18,13 +18,6 @@ public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage() {
 	super(HandshakeMessageType.HELLO_REQUEST);
-	this.messageIssuer = ConnectionEnd.SERVER;
-	setIncludeInDigest(false);
-    }
-
-    public HelloRequestMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.HELLO_REQUEST);
-	this.messageIssuer = messageIssuer;
 	setIncludeInDigest(false);
     }
 }

@@ -77,16 +77,16 @@ public class ClientConfigHandler extends ConfigHandler {
 	} else {
 	    switch (ccConfig.getWorkflowTraceType()) {
 		case FULL_SERVER_RESPONSE:
-		    tlsContext = factory.createFullServerResponseTlsContext();
+		    tlsContext = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT);
 		    break;
 		case FULL:
-		    tlsContext = factory.createFullTlsContext();
+		    tlsContext = factory.createFullTlsContext(ConnectionEnd.CLIENT);
 		    break;
 		case HANDSHAKE:
-		    tlsContext = factory.createHandshakeTlsContext();
+		    tlsContext = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT);
 		    break;
 		case CLIENT_HELLO:
-		    tlsContext = factory.createClientHelloTlsContext();
+		    tlsContext = factory.createClientHelloTlsContext(ConnectionEnd.CLIENT);
 		    break;
 		default:
 		    throw new ConfigurationException("not supported workflow type: " + ccConfig.getWorkflowTraceType());

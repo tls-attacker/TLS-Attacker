@@ -75,8 +75,8 @@ public class LongModificationTest {
 	assertEquals(expectedResult, result);
 	assertEquals(new Long(10L), start.getOriginalValue());
     }
-    
-     /**
+
+    /**
      * Test of explicitValue from file method
      */
     @Test
@@ -86,15 +86,15 @@ public class LongModificationTest {
 	expectedResult = -128L;
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-	
-        modifier = LongModificationFactory.explicitValueFromFile(1);
-        start.setModification(modifier);
+
+	modifier = LongModificationFactory.explicitValueFromFile(1);
+	start.setModification(modifier);
 	expectedResult = -1L;
 	result = start.getValue();
 	assertEquals(expectedResult, result);
-        
-        modifier = LongModificationFactory.explicitValueFromFile(26);
-        start.setModification(modifier);
+
+	modifier = LongModificationFactory.explicitValueFromFile(26);
+	start.setModification(modifier);
 	expectedResult = 2147483647L;
 	result = start.getValue();
 	assertEquals(expectedResult, result);

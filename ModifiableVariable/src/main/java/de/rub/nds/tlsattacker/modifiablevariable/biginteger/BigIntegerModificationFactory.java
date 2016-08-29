@@ -31,7 +31,7 @@ final public class BigIntegerModificationFactory {
     private static final int MAX_MODIFICATION_VALUE = 320000;
 
     private static final int MAX_MODIFICATION_SHIFT_VALUE = 50;
-    
+
     private static List<VariableModification<BigInteger>> modificationsFromFile;
 
     private BigIntegerModificationFactory() {
@@ -84,30 +84,30 @@ final public class BigIntegerModificationFactory {
     public static VariableModification<BigInteger> explicitValue(final BigInteger value) {
 	return new BigIntegerExplicitValueModification(value);
     }
-    
+
     public static VariableModification<BigInteger> explicitValueFromFile(int value) {
-        List<VariableModification<BigInteger>> modifications = modificationsFromFile();
-        int pos = value % modifications.size();
-        return modifications.get(pos);
+	List<VariableModification<BigInteger>> modifications = modificationsFromFile();
+	int pos = value % modifications.size();
+	return modifications.get(pos);
     }
 
     public static List<VariableModification<BigInteger>> modificationsFromFile() {
-        try {
-            if (modificationsFromFile == null) {
-                modificationsFromFile = new LinkedList<>();
-                ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
-                File file = new File(classLoader.getResource(IntegerModificationFactory.FILE_NAME).getFile());
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String value = line.trim().split(" ")[0];
-                    modificationsFromFile.add(explicitValue(value));
-                }
-            }
-            return modificationsFromFile;
-        } catch (IOException ex) {
-            throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
-        }
+	try {
+	    if (modificationsFromFile == null) {
+		modificationsFromFile = new LinkedList<>();
+		ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
+		File file = new File(classLoader.getResource(IntegerModificationFactory.FILE_NAME).getFile());
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line;
+		while ((line = br.readLine()) != null) {
+		    String value = line.trim().split(" ")[0];
+		    modificationsFromFile.add(explicitValue(value));
+		}
+	    }
+	    return modificationsFromFile;
+	} catch (IOException ex) {
+	    throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
+	}
     }
 
     public static VariableModification<BigInteger> createRandomModification() {
@@ -135,9 +135,9 @@ final public class BigIntegerModificationFactory {
 	    case 5:
 		vm = new BigIntegerShiftRightModification(shiftModification);
 		return vm;
-            case 6:
-                vm = explicitValueFromFile(MAX_MODIFICATION_VALUE);
-                return vm;
+	    case 6:
+		vm = explicitValueFromFile(MAX_MODIFICATION_VALUE);
+		return vm;
 	}
 	return vm;
     }

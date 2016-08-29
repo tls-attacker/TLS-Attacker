@@ -93,7 +93,8 @@ public class Dtls12WorkflowExecutorTest {
 		packet = new DatagramPacket(data, data.length);
 		sender.send(packet);
 
-		TlsContext context = WorkflowConfigurationFactory.createInstance(config).createFullTlsContext();
+		TlsContext context = WorkflowConfigurationFactory.createInstance(config).createFullTlsContext(
+			ConnectionEnd.CLIENT);
 		context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 		Dtls12WorkflowExecutor workflowExecutor = new Dtls12WorkflowExecutor(th, context);
 		workflowExecutor.executeWorkflow();

