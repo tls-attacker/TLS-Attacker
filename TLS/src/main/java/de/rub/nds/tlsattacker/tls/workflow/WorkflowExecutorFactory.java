@@ -26,7 +26,6 @@ public class WorkflowExecutorFactory {
 		we = new GenericWorkflowExecutor(transportHandler, tlsContext, ExecutorType.TLS);
 		return we;
 	    case DTLS12:
-		// TODO
 		we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
 		return we;
 	    default:

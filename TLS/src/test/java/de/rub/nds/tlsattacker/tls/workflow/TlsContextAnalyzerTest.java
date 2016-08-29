@@ -221,11 +221,10 @@ public class TlsContextAnalyzerTest {
 	TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 	for (ReceiveAction action : context.getWorkflowTrace().getReceiveActions()) {
-	    List<ProtocolMessage> messages = new LinkedList<>();
 	    for (ProtocolMessage tempMessage : action.getConfiguredMessages()) {
-		messages.add(tempMessage);
+                action.getActuallyReceivedMessages().add(tempMessage);
 	    }
-	    action.setActuallyReceivedMessages(messages);
+	    
 	}
 	assertFalse("There shouldnt be an unexpeted Message",
 		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));

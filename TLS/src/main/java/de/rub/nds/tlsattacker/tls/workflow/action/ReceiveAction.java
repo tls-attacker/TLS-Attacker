@@ -35,8 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ReceiveAction extends MessageAction {
-    private List<ProtocolMessage> actuallyReceivedMessages; // TODO we can also
-							    // do this?
+    protected List<ProtocolMessage> actuallyReceivedMessages;
 
     public ReceiveAction() {
 	super(new LinkedList<ProtocolMessage>());
@@ -57,12 +56,7 @@ public class ReceiveAction extends MessageAction {
     public List<ProtocolMessage> getActuallyReceivedMessages() {
 	return actuallyReceivedMessages;
     }
-
-    // i only want this Here for unit tests, can i hide it? TODO
-    public void setActuallyReceivedMessages(List<ProtocolMessage> actuallyReceivedMessages) {
-	this.actuallyReceivedMessages = actuallyReceivedMessages;
-    }
-
+   
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws IOException {
 	tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionPeer());
