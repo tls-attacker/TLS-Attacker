@@ -222,9 +222,9 @@ public class TlsContextAnalyzerTest {
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 	for (ReceiveAction action : context.getWorkflowTrace().getReceiveActions()) {
 	    for (ProtocolMessage tempMessage : action.getConfiguredMessages()) {
-                action.getActuallyReceivedMessages().add(tempMessage);
+		action.getActualMessages().add(tempMessage);
 	    }
-	    
+
 	}
 	assertFalse("There shouldnt be an unexpeted Message",
 		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
@@ -241,19 +241,19 @@ public class TlsContextAnalyzerTest {
 	assertFalse("There shouldnt be an unexpeted Message",
 		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
 	ReceiveAction action = context.getWorkflowTrace().getReceiveActions().get(1);
-	action.getActuallyReceivedMessages().add(new AlertMessage()); // Because
-								      // we
-								      // didnt
-								      // configure
-								      // this
-								      // message
+	action.getActualMessages().add(new AlertMessage()); // Because
+							    // we
+							    // didnt
+							    // configure
+							    // this
+							    // message
 	assertTrue("There should be an unexpected Message",
 		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
-	action.getActuallyReceivedMessages().remove(action.getActuallyReceivedMessages().size() - 1);
+	action.getActualMessages().remove(action.getActualMessages().size() - 1);
 	assertFalse("There shouldnt be an unexpeted Message",
 		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
-	action.getActuallyReceivedMessages().remove(0);
-	action.getActuallyReceivedMessages().add(0, new ServerHelloDoneMessage());
+	action.getActualMessages().remove(0);
+	action.getActualMessages().add(0, new ServerHelloDoneMessage());
 	assertTrue("There should be an unexpected Message",
 		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
 

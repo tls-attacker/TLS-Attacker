@@ -35,32 +35,24 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ReceiveAction extends MessageAction {
-    protected List<ProtocolMessage> actuallyReceivedMessages;
 
     public ReceiveAction() {
 	super(new LinkedList<ProtocolMessage>());
-	actuallyReceivedMessages = new LinkedList<>();
     }
 
     public ReceiveAction(List<ProtocolMessage> messages) {
 	super(messages);
-	actuallyReceivedMessages = new LinkedList<>();
     }
 
     public ReceiveAction(ProtocolMessage message) {
 	super(new LinkedList<ProtocolMessage>());
-	actuallyReceivedMessages = new LinkedList<>();
 	configuredMessages.add(message);
     }
 
-    public List<ProtocolMessage> getActuallyReceivedMessages() {
-	return actuallyReceivedMessages;
-    }
-   
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws IOException {
 	tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionPeer());
-	actuallyReceivedMessages = executor.receiveMessages(tlsContext, configuredMessages);
+	actualMessages = executor.receiveMessages(tlsContext, configuredMessages);
 	executed = true;
     }
 

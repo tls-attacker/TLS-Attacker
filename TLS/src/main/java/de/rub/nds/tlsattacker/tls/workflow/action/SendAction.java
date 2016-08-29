@@ -55,7 +55,7 @@ public class SendAction extends MessageAction {
 								     // simply
 								     // execute
 								     // it
-	executor.sendMessages(tlsContext, configuredMessages);
+	actualMessages = executor.sendMessages(tlsContext, configuredMessages);
 	executed = true;
     }
 

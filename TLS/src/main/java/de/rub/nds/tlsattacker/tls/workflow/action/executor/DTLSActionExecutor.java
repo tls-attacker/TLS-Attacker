@@ -72,7 +72,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     @Override
-    public void sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) throws IOException {
+    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) throws IOException {
 	if (retransmitCounter < maxRetransmits) {
 	    throw new WorkflowExecutionException("Retransmit Counter reached Max Retransmits!");
 	}
@@ -86,6 +86,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 	previousMessage = null;
 	handshakeMessageSendRecordList = null;
 	handshakeMessageSendBuffer = new byte[0];
+	return messages;
     }
 
     @Override

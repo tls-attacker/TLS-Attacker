@@ -296,12 +296,12 @@ public final class TlsContextAnalyzer {
 	List<ReceiveAction> receiveActions = trace.getReceiveActions();
 	int counter = 0;
 	for (ReceiveAction action : receiveActions) {
-	    if (action.getActuallyReceivedMessages().size() != action.getConfiguredMessages().size()) {
+	    if (action.getActualMessages().size() != action.getConfiguredMessages().size()) {
 		return counter;
 	    }
 	    // Check if Messages are the same
-	    for (int i = 0; i < action.getActuallyReceivedMessages().size(); i++) {
-		ProtocolMessage receivedMessage = action.getActuallyReceivedMessages().get(i);
+	    for (int i = 0; i < action.getActualMessages().size(); i++) {
+		ProtocolMessage receivedMessage = action.getActualMessages().get(i);
 		ProtocolMessage expectedMessage = action.getConfiguredMessages().get(i);
 		if (receivedMessage.getProtocolMessageType() == expectedMessage.getProtocolMessageType()) {
 		    if (!receivedMessage.getClass().equals(expectedMessage.getClass())) {

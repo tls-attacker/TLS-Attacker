@@ -17,7 +17,8 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class ActionExecutor {
-    public abstract void sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) throws IOException;
+    public abstract List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages)
+	    throws IOException;
 
     public abstract List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages)
 	    throws IOException;

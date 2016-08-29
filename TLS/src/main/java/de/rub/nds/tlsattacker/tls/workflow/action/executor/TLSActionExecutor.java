@@ -40,20 +40,21 @@ public class TLSActionExecutor extends ActionExecutor {
     private int pointer = 0;
 
     @Override
-    public void sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) throws IOException {
+    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) throws IOException {
 	MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
 	for (ProtocolMessage message : messages) {
 	    prepareMyProtocolMessageBytes(message, tlsContext, messageBytesCollector);
 	    prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
 	}
 	sendData(tlsContext, messageBytesCollector);
+	return messages;
     }
 
     @Override
     public List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages)
 	    throws IOException {
 	pointer = 0;
-	handleProtocolMessagesFromPeer(messages, tlsContext);
+	List<ProtocolMessage> receivedList = handleProtocolMessagesFromPeer(messages, tlsContext);
 	return messages;
 
     }
@@ -116,16 +117,13 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param context
      * @throws IOException
      */
-    protected void handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages, TlsContext context)
-	    throws IOException {
+    protected List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages,
+	    TlsContext context) throws IOException {
 	List<Record> records = fetchRecords(context);
 	if (records.isEmpty()) {
 	    ProtocolMessage pm = protocolMessages.get(0);
 	    if (pm != null && pm.getClass() == ArbitraryMessage.class) {
-		protocolMessages = new LinkedList<>(); // We should remove all
-						       // Messages in this case
-						       // not only the current?
-		return;
+		return new LinkedList<>(); // We received no messages
 	    } else {
 		throw new WorkflowExecutionException("The configured protocol message was not found, "
 			+ "the TLS peer does not send any data.");
@@ -133,12 +131,13 @@ public class TLSActionExecutor extends ActionExecutor {
 	}
 
 	List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
-
+	List<ProtocolMessage> receivedMessages = new LinkedList<>();
 	for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
 	    byte[] rawProtocolMessageBytes = getRawProtocolBytesFromRecords(recordsOfSameContent);
 	    ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent.get(0)
 		    .getContentType().getValue());
-	    parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages, protocolMessageType, context);
+	    receivedMessages.addAll(parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages,
+		    protocolMessageType, context));
 	    if (!context.isRenegotiation()) {
 		ProtocolMessage pm = protocolMessages.get(pointer - 1);
 		pm.setRecords(recordsOfSameContent);
@@ -146,6 +145,7 @@ public class TLSActionExecutor extends ActionExecutor {
 		handleRenegotiation(context);
 	    }
 	}
+	return receivedMessages;
     }
 
     /**
@@ -183,9 +183,10 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param protocolMessages
      * @param protocolMessageType
      */
-    protected void parseRawBytesIntoProtocolMessages(byte[] rawProtocolMessageBytes,
+    protected List<ProtocolMessage> parseRawBytesIntoProtocolMessages(byte[] rawProtocolMessageBytes,
 	    List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType, TlsContext context) {
 	int dataPointer = 0;
+	List<ProtocolMessage> receivedMessages = new LinkedList<>();
 	while (dataPointer != rawProtocolMessageBytes.length) {
 	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
 		    rawProtocolMessageBytes[dataPointer], context);
@@ -197,10 +198,12 @@ public class TLSActionExecutor extends ActionExecutor {
 
 		dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
 		LOG.log(Level.FINE, "The following message was parsed: {}", pmh.getProtocolMessage().toString());
+		receivedMessages.add(pmh.getProtocolMessage());
 		handleIncomingAlert(pmh, context);
 		pointer++;
 	    }
 	}
+	return receivedMessages;
     }
 
     /**

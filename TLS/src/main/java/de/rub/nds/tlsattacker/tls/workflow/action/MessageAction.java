@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -63,9 +64,15 @@ public abstract class MessageAction extends TLSAction {
 	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
 	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     protected List<ProtocolMessage> configuredMessages;
+    protected List<ProtocolMessage> actualMessages;
 
     public MessageAction(List<ProtocolMessage> messages) {
 	this.configuredMessages = messages;
+	actualMessages = new LinkedList<>();
+    }
+
+    public List<ProtocolMessage> getActualMessages() {
+	return actualMessages;
     }
 
     public List<ProtocolMessage> getConfiguredMessages() {

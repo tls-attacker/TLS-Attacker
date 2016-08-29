@@ -201,9 +201,7 @@ public class WorkflowTrace implements Serializable {
 	for (TLSAction action : tlsActions) {
 	    if (action instanceof MessageAction) {
 		for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-
 		    messages.add(pm);
-
 		}
 	    }
 	}
@@ -214,18 +212,8 @@ public class WorkflowTrace implements Serializable {
 	List<ProtocolMessage> messages = new LinkedList<>();
 	for (TLSAction action : tlsActions) {
 	    if (action instanceof MessageAction) {
-		if (action instanceof ReceiveAction) {
-		    for (ProtocolMessage pm : ((ReceiveAction) action).getActuallyReceivedMessages()) {
-
-			messages.add(pm);
-
-		    }
-		} else {
-		    for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-
-			messages.add(pm);
-
-		    }
+		for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
+		    messages.add(pm);
 		}
 	    }
 	}
@@ -250,7 +238,7 @@ public class WorkflowTrace implements Serializable {
 	List<ProtocolMessage> messages = new LinkedList<>();
 	for (TLSAction action : tlsActions) {
 	    if (action instanceof ReceiveAction) {
-		for (ProtocolMessage pm : ((ReceiveAction) action).getActuallyReceivedMessages()) {
+		for (ProtocolMessage pm : ((ReceiveAction) action).getActualMessages()) {
 
 		    messages.add(pm);
 
