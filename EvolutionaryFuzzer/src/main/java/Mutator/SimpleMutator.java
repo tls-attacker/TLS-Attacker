@@ -109,6 +109,11 @@ public class SimpleMutator extends Mutator {
 		newTestVector.addModification(FuzzingHelper.removeRandomMessage(trace));
 		modified = true;
 	    }
+            // perhaps toggle Encryption
+            if (r.nextInt(100) <= simpleConfig.getAddToggleEncrytionPercentage()) {
+		newTestVector.addModification(FuzzingHelper.addToggleEncrytionActionModification(trace));
+		modified = true;
+	    }
 	    // perhaps add records
 	    if (r.nextInt(100) <= simpleConfig.getAddRecordPercentage()) {
 		newTestVector.addModification(FuzzingHelper.addRecordAtRandom(trace));

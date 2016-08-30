@@ -9,7 +9,8 @@ package Helper;
 
 import Modification.AddMessageModification;
 import Modification.AddRecordModification;
-import Modification.AddMessageFlight;
+import Modification.AddMessageFlightModification;
+import Modification.AddToggleEncrytionActionModification;
 import Modification.DuplicateMessageModification;
 import Modification.ModifyFieldModification;
 import Modification.RemoveMessageModification;
@@ -47,6 +48,8 @@ import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ToggleEncryptionAction;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
@@ -179,12 +182,12 @@ public class FuzzingHelper {
      * @param tempTrace
      * @return
      */
-    public static AddMessageFlight addMessageFlight(WorkflowTrace tempTrace) {
+    public static AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
 	SendAction sendAction = new SendAction(generateRandomMessage());
 	ReceiveAction receiveAction = new ReceiveAction(new ArbitraryMessage());
 	tempTrace.add(sendAction);
 	tempTrace.add(receiveAction);
-	return new AddMessageFlight(sendAction, receiveAction);
+	return new AddMessageFlightModification(sendAction, receiveAction);
     }
 
     /**
@@ -372,6 +375,15 @@ public class FuzzingHelper {
 	return holders;
     }
 
+    public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace)
+    {
+        TLSAction newAction = new ToggleEncryptionAction();
+        List<TLSAction> actionList = trace.getTLSActions();
+        Random r = new Random();
+        int positon = r.nextInt(actionList.size());
+        actionList.add(positon, newAction);
+        return new AddToggleEncrytionActionModification(positon);
+    }
     private FuzzingHelper() {
 
     }

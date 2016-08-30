@@ -20,4 +20,5 @@ public enum ModificationType {
     CHANGE_SERVER_CERT,
     CHANGE_CLIENT_CERT,
     ADD_MESSAGE_FLIGHT,
+    TOGGLE_ENCRYPTION
 }
