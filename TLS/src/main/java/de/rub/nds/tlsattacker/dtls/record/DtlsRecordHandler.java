@@ -139,7 +139,7 @@ public class DtlsRecordHandler extends RecordHandler {
 
 	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC && epochCounter > 0) {
 	    byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getProtocolVersion(), contentType, record
-		    .getProtocolMessageBytes().getValue(), sequenceCounter, epochCounter);
+		    .getProtocolMessageBytes().getValue(), record.getSequenceNumber().getValue().longValue(), record.getEpoch().getValue());
 	    record.setMac(mac);
 	    byte[] macedData = ArrayConverter.concatenate(record.getProtocolMessageBytes().getValue(), record.getMac()
 		    .getValue());
@@ -194,7 +194,7 @@ public class DtlsRecordHandler extends RecordHandler {
 
 	    int lastByte = dataPointer + 13 + length;
 	    byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 13, lastByte);
-	    LOGGER.debug("Raw protocol bytes from the current record:  {}",
+	    LOGGER.debug("Raw protocol bytes from the current parsed record:  {}",
 		    ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
 	    if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
