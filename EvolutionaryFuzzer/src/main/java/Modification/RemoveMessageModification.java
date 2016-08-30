@@ -8,6 +8,7 @@
 package Modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 
 /**
  * 
@@ -16,15 +17,21 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 public class RemoveMessageModification extends Modification {
     private final ProtocolMessage message;
     private final int position;
+    private final SendAction action;
 
-    public RemoveMessageModification(ProtocolMessage message, int position) {
+    public RemoveMessageModification(ProtocolMessage message, SendAction action, int position) {
 	super(ModificationType.ADD_MESSAGE);
 	this.message = message;
 	this.position = position;
+	this.action = action;
     }
 
     public int getPosition() {
 	return position;
+    }
+
+    public SendAction getAction() {
+	return action;
     }
 
     public ProtocolMessage getMessage() {

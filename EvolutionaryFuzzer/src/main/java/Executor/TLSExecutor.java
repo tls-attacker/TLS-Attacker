@@ -39,6 +39,8 @@ import Result.ResultContainer;
 import Server.TLSServer;
 import TestVector.TestVector;
 import TestVector.TestVectorSerializer;
+import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -126,6 +128,7 @@ public class TLSExecutor extends Executor {
 		}
 		KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
 		TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
+		tlsContext.setFuzzingMode(true);
 		tlsContext.setKeyStore(ks);
 		tlsContext.setAlias(fc.getAlias());
 		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
@@ -148,9 +151,14 @@ public class TLSExecutor extends Executor {
 		tlsContext.setX509ServerCertificateObject(x509CertObject);
 		tlsContext.setServerCertificate(cert);
 		tlsContext.setWorkflowTrace(testVector.getTrace());
+		WorkflowExecutor workflowExecutor = null;
+		if (testVector.getExecutorType() == ExecutorType.TLS) {
+		    workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext,
+			    testVector.getExecutorType());
+		} else {
+		    workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
 
-		WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext);
-
+		}
 		// tlsContext.setServerCertificate(certificate);
 		workflowExecutor.executeWorkflow();
 	    } catch (UnsupportedOperationException E) {

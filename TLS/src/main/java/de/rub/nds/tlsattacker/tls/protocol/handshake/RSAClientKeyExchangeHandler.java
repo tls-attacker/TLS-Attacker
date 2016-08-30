@@ -54,29 +54,27 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     byte[] prepareKeyExchangeMessage() {
-        RSAPublicKey publicKey = null;
-        if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
+	RSAPublicKey publicKey = null;
+	if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
 
-            if (protocolMessage.isFuzzingMode()) {
-                    KeyPairGenerator keyGen = null;
-                try {
-                    keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-                }
-                catch (NoSuchAlgorithmException ex) {
-                    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                catch (NoSuchProviderException ex) {
-                    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                    publicKey = (RSAPublicKey)keyGen.genKeyPair().getPublic();
-                }
-        }
-        else
-        {
-            publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
-	
-        }
-        int keyByteLength = publicKey.getModulus().bitLength() / 8;
+	    if (protocolMessage.isFuzzingMode()) {
+		KeyPairGenerator keyGen = null;
+		try {
+		    keyGen = KeyPairGenerator.getInstance("RSA", "BC");
+		} catch (NoSuchAlgorithmException ex) {
+		    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
+			    null, ex);
+		} catch (NoSuchProviderException ex) {
+		    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
+			    null, ex);
+		}
+		publicKey = (RSAPublicKey) keyGen.genKeyPair().getPublic();
+	    }
+	} else {
+	    publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
+
+	}
+	int keyByteLength = publicKey.getModulus().bitLength() / 8;
 	// the number of random bytes in the pkcs1 message
 	int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
 	byte[] padding = new byte[randomByteLength];

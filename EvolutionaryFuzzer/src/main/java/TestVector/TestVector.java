@@ -11,6 +11,7 @@ import Certificate.ClientCertificateStructure;
 import Certificate.ServerCertificateStructure;
 import Modification.Modification;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,17 +35,27 @@ public class TestVector implements Serializable {
     private TestVector parent = null;
     @XmlTransient
     private List<Modification> modificationList = null;
+    private ExecutorType executorType;
 
     public TestVector(WorkflowTrace trace, ServerCertificateStructure keyCertPair,
-	    ClientCertificateStructure clientKeyCert, TestVector parent) {
+	    ClientCertificateStructure clientKeyCert, ExecutorType executorType, TestVector parent) {
 	this.trace = trace;
 	this.serverKeyCert = keyCertPair;
 	this.clientKeyCert = clientKeyCert;
 	this.parent = parent;
 	this.modificationList = new LinkedList<Modification>();
+	this.executorType = executorType;
     }
 
     public TestVector() {
+    }
+
+    public ExecutorType getExecutorType() {
+	return executorType;
+    }
+
+    public void setExecutorType(ExecutorType executorType) {
+	this.executorType = executorType;
     }
 
     public WorkflowTrace getTrace() {

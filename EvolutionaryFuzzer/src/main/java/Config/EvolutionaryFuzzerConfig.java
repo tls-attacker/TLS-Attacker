@@ -1,5 +1,7 @@
 package Config;
 
+import Config.Mutator.ActionExecutorTypeConfig;
+import Config.Mutator.SimpleMutatorConfig;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
@@ -8,6 +10,7 @@ import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 import java.io.File;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 
 /**
  * A Config File which controls the EvolutionaryFuzzer.
@@ -43,6 +46,15 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
+    private ActionExecutorTypeConfig actionExecutorConfig;
+
+    public ActionExecutorTypeConfig getActionExecutorConfig() {
+	return actionExecutorConfig;
+    }
+
+    public void setActionExecutorConfig(ActionExecutorTypeConfig actionExecutorConfig) {
+	this.actionExecutorConfig = actionExecutorConfig;
+    }
 
     public String getArchiveFolder() {
 	return archiveFolder;
@@ -122,6 +134,13 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	new File(getAnalyzerConfigFolder()).mkdirs();
 	new File(getOutputFaultyFolder()).mkdirs();
 	new File(getArchiveFolder()).mkdirs();
+	File f = new File(getMutatorConfigFolder() + "action_executor.conf");
+	if (f.exists()) {
+	    actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
+	} else {
+	    actionExecutorConfig = new ActionExecutorTypeConfig();
+	    JAXB.marshal(actionExecutorConfig, f);
+	}
     }
 
     public boolean isSerialize() {

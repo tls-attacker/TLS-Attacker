@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -16,6 +15,7 @@ import java.util.Map;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum ProtocolVersion {
+
     SSL2(new byte[] { (byte) 0x02, (byte) 0x00 }),
     SSL3(new byte[] { (byte) 0x03, (byte) 0x00 }),
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
@@ -39,12 +39,20 @@ public enum ProtocolVersion {
 	}
     }
 
-    private static int valueToInt(byte[] value) {
-	return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+    private static Integer valueToInt(byte[] value) {
+	if (value.length == 2) {
+	    return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+	} else {
+	    return null;
+	}
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
-	return MAP.get(valueToInt(value));
+	Integer i = valueToInt(value);
+	if (i == null) {
+	    return null;
+	}
+	return MAP.get(i);
     }
 
     public byte[] getValue() {

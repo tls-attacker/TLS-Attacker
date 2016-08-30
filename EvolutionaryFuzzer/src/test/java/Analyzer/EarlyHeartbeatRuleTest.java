@@ -7,6 +7,7 @@
  */
 package Analyzer;
 
+import TestHelper.WorkFlowTraceFakeExecuter;
 import Config.Analyzer.EarlyHeartbeatRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
@@ -19,6 +20,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import org.junit.After;
@@ -59,32 +63,37 @@ public class EarlyHeartbeatRuleTest {
     @Test
     public void testApplys() {
 	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
-		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new SendAction(new HeartbeatMessage()));
+	trace.add(new ReceiveAction(new HeartbeatMessage()));
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertTrue(rule.applys(result));
-	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
+	trace.add(new ReceiveAction(new FinishedMessage()));
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertTrue(rule.applys(result));
 	trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
-	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new ReceiveAction(new FinishedMessage()));
+	trace.add(new ReceiveAction(new HeartbeatMessage()));
+	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result));
 	trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new ReceiveAction(new FinishedMessage()));
+	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "unittest.id");
+	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
 	trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new ReceiveAction(new ServerHelloMessage()));
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result));
     }
 
@@ -94,11 +103,12 @@ public class EarlyHeartbeatRuleTest {
     @Test
     public void testOnApply() {
 	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
-		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new ReceiveAction(new HeartbeatMessage()));
+	trace.add(new ReceiveAction(new HeartbeatMessage()));
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
@@ -119,11 +129,12 @@ public class EarlyHeartbeatRuleTest {
     public void testReport() {
 	assertNull(rule.report());
 	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
-		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new SendAction(new HeartbeatMessage()));
+	trace.add(new ReceiveAction(new HeartbeatMessage()));
+	WorkFlowTraceFakeExecuter.execute(trace);
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

@@ -8,6 +8,7 @@
 package Modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 
 /**
  * 
@@ -15,10 +16,12 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
  */
 public class AddMessageModification extends Modification {
     private final ProtocolMessage message;
+    private final SendAction action;
 
-    public AddMessageModification(ProtocolMessage message) {
+    public AddMessageModification(ProtocolMessage message, SendAction action) {
 	super(ModificationType.ADD_MESSAGE);
 	this.message = message;
+	this.action = action;
     }
 
     public ProtocolMessage getMessage() {

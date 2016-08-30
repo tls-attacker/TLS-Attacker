@@ -45,11 +45,6 @@ public class CertificateMessage extends HandshakeMessage {
 	super(HandshakeMessageType.CERTIFICATE);
     }
 
-    public CertificateMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CERTIFICATE);
-	this.messageIssuer = messageIssuer;
-    }
-
     public ModifiableInteger getCertificatesLength() {
 	return certificatesLength;
     }

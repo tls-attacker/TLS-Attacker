@@ -41,12 +41,6 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     public CertificateVerifyMessage() {
 	super(HandshakeMessageType.CERTIFICATE_VERIFY);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public CertificateVerifyMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CERTIFICATE_VERIFY);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableByteArray getSignatureHashAlgorithm() {

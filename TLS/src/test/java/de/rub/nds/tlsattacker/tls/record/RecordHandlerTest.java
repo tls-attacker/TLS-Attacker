@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -32,7 +33,7 @@ public class RecordHandlerTest {
 	Security.addProvider(new BouncyCastleProvider());
 	ClientCommandConfig config = new ClientCommandConfig();
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
-	TlsContext context = factory.createHandshakeTlsContext();
+	TlsContext context = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT);
 	context.setRecordHandler(new RecordHandler(context));
 	recordHandler = context.getRecordHandler();
     }

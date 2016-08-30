@@ -17,6 +17,7 @@ import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
@@ -54,9 +55,10 @@ public class FindAlertsRule extends Rule {
 	    f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	    List<TestVector> vectorList = TestVectorSerializer.readFolder(f);
 	    for (TestVector vector : vectorList) {
-		List<Integer> positions = vector.getTrace().getProtocolMessagePositions(ProtocolMessageType.ALERT);
-		for (Integer i : positions) {
-		    AlertMessage pm = (AlertMessage) vector.getTrace().getProtocolMessages().get(i);
+		List<ProtocolMessage> messages = vector.getTrace().getActuallyRecievedProtocolMessagesOfType(
+			ProtocolMessageType.ALERT);
+		for (ProtocolMessage message : messages) {
+		    AlertMessage pm = (AlertMessage) message;
 		    alertMap[pm.getDescription().getOriginalValue().byteValue()] = true;
 		}
 	    }
@@ -66,23 +68,22 @@ public class FindAlertsRule extends Rule {
     @Override
     public boolean applys(Result result) {
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
-	if (trace.containsProtocolMessage(ProtocolMessageType.ALERT)) {
-	    List<Integer> positions = trace.getProtocolMessagePositions(ProtocolMessageType.ALERT);
-	    for (Integer i : positions) {
-		AlertMessage pm = (AlertMessage) trace.getProtocolMessages().get(i);
-		if (pm.getMessageIssuer() == ConnectionEnd.SERVER) {
-		    // If Message is in blacklist it applys
-		    if (config.getBlacklist().contains(pm.getDescription().getOriginalValue().byteValue())) {
-			return true;
-		    }
-		    // If Message is not in Whitelist
-		    if (!config.getWhitelist().contains(pm.getDescription().getOriginalValue().byteValue())) {
-			return true;
-		    }
-		    if (config.isSaveOneOfEach() && !alertMap[pm.getDescription().getOriginalValue().byteValue()]) {
-			return true;
-		    }
+	List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
+	if (!messages.isEmpty()) {
+	    for (ProtocolMessage message : messages) {
+		AlertMessage pm = (AlertMessage) message;
+		// If Message is in blacklist it applys
+		if (config.getBlacklist().contains(pm.getDescription().getOriginalValue().byteValue())) {
+		    return true;
 		}
+		// If Message is not in Whitelist
+		if (!config.getWhitelist().contains(pm.getDescription().getOriginalValue().byteValue())) {
+		    return true;
+		}
+		if (config.isSaveOneOfEach() && !alertMap[pm.getDescription().getOriginalValue().byteValue()]) {
+		    return true;
+		}
+
 	    }
 	}
 	return false;
@@ -92,11 +93,11 @@ public class FindAlertsRule extends Rule {
     @Override
     public void onApply(Result result) {
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
-	List<Integer> positions = trace.getProtocolMessagePositions(ProtocolMessageType.ALERT);
+	List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
 	StringBuilder containsAlerts = new StringBuilder("");
 	if (config.isSaveOneOfEach()) {
-	    for (Integer i : positions) {
-		AlertMessage pm = (AlertMessage) trace.getProtocolMessages().get(i);
+	    for (ProtocolMessage message : messages) {
+		AlertMessage pm = (AlertMessage) message;
 		if (!alertMap[pm.getDescription().getOriginalValue()]) {
 		    containsAlerts.append("," + pm.getDescription().getOriginalValue());
 		}

@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -157,6 +158,12 @@ public class TlsContext {
 
     private RecordHandler recordHandler;
 
+    private TransportHandler transportHandler;
+
+    private boolean fuzzingMode = false;
+
+    private ConnectionEnd talkingConnectionEnd = ConnectionEnd.CLIENT;
+
     /**
      * DTLS Cookie
      */
@@ -171,6 +178,14 @@ public class TlsContext {
     public TlsContext(ProtocolVersion pv) {
 	this();
 	protocolVersion = pv;
+    }
+
+    public ConnectionEnd getTalkingConnectionEnd() {
+	return talkingConnectionEnd;
+    }
+
+    public void setTalkingConnectionEnd(ConnectionEnd talkingConnectionEnd) {
+	this.talkingConnectionEnd = talkingConnectionEnd;
     }
 
     public void initiliazeTlsMessageDigest() {
@@ -220,6 +235,14 @@ public class TlsContext {
 
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
 	this.protocolVersion = protocolVersion;
+    }
+
+    public boolean isFuzzingMode() {
+	return fuzzingMode;
+    }
+
+    public void setFuzzingMode(boolean fuzzingMode) {
+	this.fuzzingMode = fuzzingMode;
     }
 
     public ConnectionEnd getMyConnectionEnd() {
@@ -330,14 +353,6 @@ public class TlsContext {
 	this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
     }
 
-    public List<ProtocolMessageTypeHolder> getPreconfiguredProtocolMessages() {
-	return preconfiguredProtocolMessages;
-    }
-
-    public void setPreconfiguredProtocolMessages(List<ProtocolMessageTypeHolder> preconfiguredProtocolMessages) {
-	this.preconfiguredProtocolMessages = preconfiguredProtocolMessages;
-    }
-
     public KeyStore getKeyStore() {
 	return keyStore;
     }
@@ -410,6 +425,14 @@ public class TlsContext {
 
     public byte[] getDtlsHandshakeCookie() {
 	return dtlsHandshakeCookie;
+    }
+
+    public TransportHandler getTransportHandler() {
+	return transportHandler;
+    }
+
+    public void setTransportHandler(TransportHandler transportHandler) {
+	this.transportHandler = transportHandler;
     }
 
     public RecordHandler getRecordHandler() {

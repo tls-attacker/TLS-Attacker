@@ -11,12 +11,16 @@ import Config.Analyzer.FindAlertsRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
 import Result.Result;
+import TestHelper.WorkFlowTraceFakeExecuter;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import org.junit.After;
@@ -56,29 +60,34 @@ public class FindAlertsRuleTest {
     @Test
     public void testApplys() {
 	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
-		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new SendAction(new HeartbeatMessage()));
+	trace.add(new ReceiveAction(new HeartbeatMessage()));
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result)); // Should not apply cause it has no
-					  // alert message
-	AlertMessage message = new AlertMessage(ConnectionEnd.CLIENT);
+	// alert message
+	AlertMessage message = new AlertMessage();
 	message.setDescription((byte) 0xFE);
-	trace.add(message);
+	trace.add(new SendAction(message));
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result)); // Should not apply cause the alert
-					  // message is sent by the client
-	message = new AlertMessage(ConnectionEnd.SERVER);
+	// message is sent by the client
+	message = new AlertMessage();
 	message.setDescription((byte) 20);
-	trace.add(message);
+	trace.add(new ReceiveAction(message));
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result)); // Should not apply since the alert
-					  // Message is on the WhiteList
+	// Message is on the WhiteList
 	message.setDescription((byte) 127);
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertTrue(rule.applys(result)); // Should apply since the description
-					 // // is not on the whitelist
+	// // is not on the whitelist
 	message.setDescription((byte) 60);
+
 	assertTrue(rule.applys(result)); // Should apply since the description
-					 // is on the blacklist
+	// is on the blacklist
 
     }
 
@@ -88,11 +97,11 @@ public class FindAlertsRuleTest {
     @Test
     public void testOnApply() {
 	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	trace.add(new AlertMessage(ConnectionEnd.SERVER));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
-		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new SendAction(new HeartbeatMessage()));
+	trace.add(new ReceiveAction(new AlertMessage()));
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -101,18 +110,19 @@ public class FindAlertsRuleTest {
     public void testOneOfEach() {
 	rule.getConfig().setSaveOneOfEach(true);
 	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new ClientHelloMessage(ConnectionEnd.CLIENT));
-	trace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(),
-		new TestVector(trace, null, null, null), new TestVector(trace, null, null, null), "unittest.id");
-	AlertMessage message = new AlertMessage(ConnectionEnd.SERVER);
+	trace.add(new SendAction(new ClientHelloMessage()));
+	trace.add(new SendAction(new HeartbeatMessage()));
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+	AlertMessage message = new AlertMessage();
 	message.setDescription((byte) 20);
-	trace.add(message);
+	trace.add(new ReceiveAction(message));
+	WorkFlowTraceFakeExecuter.execute(trace);
+
 	assertTrue(rule.applys(result)); // Should apply since it is the first
 	rule.onApply(result); // time the rule sees the alert code
 	assertFalse(rule.applys(result)); // Should not apply since the rule has
-					  // already seen the alert code
-
+	// already seen the alert code
     }
 
     /**
@@ -129,7 +139,8 @@ public class FindAlertsRuleTest {
     @Test
     public void testReport() {
 	rule.onApply(new Result(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-		null), new TestVector(new WorkflowTrace(), null, null, null), "2unit.test"));
+		ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
+		"2unit.test"));
 	assertNotNull(rule.report());
     }
 

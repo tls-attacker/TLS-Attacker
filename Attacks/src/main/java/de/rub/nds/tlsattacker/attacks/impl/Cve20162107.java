@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -103,26 +104,25 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
 	FinishedMessage finishedMessage = (FinishedMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.FINISHED);
+		.getFirstConfiguredHandshakeMessage(HandshakeMessageType.FINISHED);
 	Record record = createRecordWithBadPadding();
 	finishedMessage.addRecord(record);
 
 	// Remove last two server messages (CCS and Finished). Instead of them,
 	// an alert will be sent.
-	int size = trace.getProtocolMessages().size();
-	trace.remove(size - 1);
-	trace.remove(size - 2);
+	AlertMessage alertMessage = new AlertMessage();
 
-	AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
-	trace.getProtocolMessages().add(allertMessage);
-
+	ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
+	List<ProtocolMessage> messages = new LinkedList<>();
+	messages.add(alertMessage);
+	action.setConfiguredMessages(lastMessages);
 	try {
 	    workflowExecutor.executeWorkflow();
 	} catch (WorkflowExecutionException ex) {
 	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
 	}
 
-	ProtocolMessage lm = trace.getLastProtocolMesssage();
+	ProtocolMessage lm = trace.getLastConfiguredProtocolMesssage();
 	lastMessages.add(lm);
 	tlsContexts.add(tlsContext);
 

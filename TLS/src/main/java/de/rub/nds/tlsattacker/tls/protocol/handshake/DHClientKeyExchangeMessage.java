@@ -56,12 +56,6 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public DHClientKeyExchangeMessage() {
 	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public DHClientKeyExchangeMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableBigInteger getP() {

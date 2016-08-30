@@ -29,6 +29,7 @@ import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -92,11 +93,12 @@ public class Main {
 		    List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 
 		    LOG.log(Level.INFO, "Fininshed reading.");
-		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateTypeList(vectors);
+		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateTypeList(vectors,
+			    ConnectionEnd.CLIENT);
 
 		    LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
 
-		    set = WorkflowTraceTypeManager.generateCleanTypeList(vectors);
+		    set = WorkflowTraceTypeManager.generateCleanTypeList(vectors, ConnectionEnd.CLIENT);
 
 		    LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");
 		    // AutomataWindow.showWindow(WorkflowAutomataBuilder.generateWorkflowAutomata(set));

@@ -120,7 +120,8 @@ public class DebugExecutor {
 
 	    tlsContext.setX509ServerCertificateObject(x509CertObject);
 	    // tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
-	    WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext);
+	    WorkflowExecutor workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext,
+		    vector.getExecutorType());
 
 	    // tlsContext.setServerCertificate(certificate);
 	    try {

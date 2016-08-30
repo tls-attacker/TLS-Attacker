@@ -11,6 +11,7 @@ import Config.Analyzer.ProtocolVersionRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Graphs.BranchTrace;
 import Result.Result;
+import TestHelper.WorkFlowTraceFakeExecuter;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.eap.ClientHello;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
@@ -18,6 +19,9 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 
@@ -56,15 +60,17 @@ public class ProtocolVersionRuleTest {
     @Test
     public void testApplys() {
 	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	ClientHelloMessage clientHello = new ClientHelloMessage();
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	trace.add(clientHello);
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "test.unit");
+	trace.add(new SendAction(clientHello));
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "test.unit");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result));
-	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
-	trace.add(serverHello);
+	ServerHelloMessage serverHello = new ServerHelloMessage();
+	trace.add(new ReceiveAction(serverHello));
 	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result));
 	serverHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
 	assertTrue(rule.applys(result)); // This is not the highest support
@@ -109,14 +115,15 @@ public class ProtocolVersionRuleTest {
     @Test
     public void testOnApply() {
 	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	ClientHelloMessage clientHello = new ClientHelloMessage();
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	trace.add(clientHello);
-	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
-	trace.add(serverHello);
+	trace.add(new SendAction(clientHello));
+	ServerHelloMessage serverHello = new ServerHelloMessage();
+	trace.add(new ReceiveAction(serverHello));
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "test.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "test.unit");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
@@ -137,14 +144,15 @@ public class ProtocolVersionRuleTest {
     public void testReport() {
 	assertNull(rule.report());
 	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage(ConnectionEnd.CLIENT);
+	ClientHelloMessage clientHello = new ClientHelloMessage();
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	trace.add(clientHello);
-	ServerHelloMessage serverHello = new ServerHelloMessage(ConnectionEnd.SERVER);
-	trace.add(serverHello);
+	trace.add(new SendAction(clientHello));
+	ServerHelloMessage serverHello = new ServerHelloMessage();
+	trace.add(new ReceiveAction(serverHello));
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, null),
-		new TestVector(trace, null, null, null), "test.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "test.unit");
+	WorkFlowTraceFakeExecuter.execute(trace);
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

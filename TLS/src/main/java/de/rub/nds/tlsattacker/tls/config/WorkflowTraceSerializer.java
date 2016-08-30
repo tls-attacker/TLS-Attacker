@@ -13,6 +13,9 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,7 +60,8 @@ public final class WorkflowTraceSerializer {
     private static JAXBContext getJAXBContext() throws JAXBException, IOException {
 	if (context == null) {
 	    context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
-		    ModificationFilter.class, VariableModification.class, ModifiableVariable.class);
+		    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
+		    SendAction.class, ReceiveAction.class);
 	}
 	return context;
     }
@@ -71,7 +75,7 @@ public final class WorkflowTraceSerializer {
      *            WorkflowTrace that should be written
      * @throws FileNotFoundException
      *             Is thrown if the File cannot be found
-     * @throws JAXBException 
+     * @throws JAXBException
      *             Is thrown if the Object cannot be serialized
      * @throws IOException
      *             Is thrown if the Process doesn't have the rights to write to

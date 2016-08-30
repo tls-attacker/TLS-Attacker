@@ -10,11 +10,10 @@ package de.rub.nds.tlsattacker.util;
 import java.io.File;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class FileHelper
-{
+public class FileHelper {
     public static void deleteFolder(File folder) {
 	File[] files = folder.listFiles();
 	if (files != null) {

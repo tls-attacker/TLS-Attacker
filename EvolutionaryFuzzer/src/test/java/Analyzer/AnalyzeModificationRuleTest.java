@@ -22,6 +22,8 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
@@ -51,11 +53,11 @@ public class AnalyzeModificationRuleTest {
 	config.setOutputFolder("unit_test_output/");
 	config.setConfigFolder("unit_test_config/");
 	rule = new AnalyzeModificationRule(config);
-	vector = new TestVector(null, null, null, null);
-	vector.addModification(new AddMessageModification(new ClientHelloMessage()));
+	vector = new TestVector(null, null, null, ExecutorType.TLS, null);
+	vector.addModification(new AddMessageModification(new ClientHelloMessage(), new SendAction()));
 	vector.addModification(new AddRecordModification(new ClientHelloMessage()));
 	vector.addModification(new ChangeServerCertificateModification(null));
-	vector.addModification(new DuplicateMessageModification(new ClientHelloMessage(), 0));
+	vector.addModification(new DuplicateMessageModification(new ClientHelloMessage(), new SendAction(), 0));
 	vector.addModification(new ModifyFieldModification("test", new AlertMessage()));
 
     }
@@ -133,7 +135,7 @@ public class AnalyzeModificationRuleTest {
     public void testGetTypeMap() {
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, vector, "unittest.id");
 	rule.onApply(result);
-	vector.addModification(new AddMessageModification(new ServerHelloDoneMessage()));
+	vector.addModification(new AddMessageModification(new ServerHelloDoneMessage(), new SendAction()));
 	rule.onApply(result);
 	HashMap<ModificationType, MutableInt> typeMap = rule.getTypeMap();
 	MutableInt val = typeMap.get(ModificationType.ADD_RECORD);

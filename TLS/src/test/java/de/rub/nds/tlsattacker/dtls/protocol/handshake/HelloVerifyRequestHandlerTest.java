@@ -46,7 +46,7 @@ public class HelloVerifyRequestHandlerTest {
     @Test
     public void testPrepareMessage() {
 	handler = new HelloVerifyRequestHandler(tlsContext);
-	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage());
 	HelloVerifyRequestMessage message = (HelloVerifyRequestMessage) handler.getProtocolMessage();
 
 	message.setCookie(ArrayConverter.hexStringToByteArray("112233"));
@@ -69,7 +69,7 @@ public class HelloVerifyRequestHandlerTest {
     public void testParseMessageAction() {
 	handler = new HelloVerifyRequestHandler(tlsContext);
 
-	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage());
 
 	int endPointer = 0;
 	endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
@@ -90,7 +90,7 @@ public class HelloVerifyRequestHandlerTest {
 	assertEquals("Check protocol message length pointer", 19, endPointer);
 
 	handler = new HelloVerifyRequestHandler(tlsContext);
-	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage());
 
 	endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
 
@@ -110,7 +110,7 @@ public class HelloVerifyRequestHandlerTest {
 	assertEquals("Check protocol message length pointer", 42, endPointer);
 
 	handler = new HelloVerifyRequestHandler(tlsContext);
-	handler.setProtocolMessage(new HelloVerifyRequestMessage(ConnectionEnd.SERVER));
+	handler.setProtocolMessage(new HelloVerifyRequestMessage());
 
 	endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
 

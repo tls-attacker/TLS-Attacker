@@ -9,6 +9,7 @@ package Helper;
 
 import Modification.AddMessageModification;
 import Modification.AddRecordModification;
+import Modification.AddMessageFlight;
 import Modification.DuplicateMessageModification;
 import Modification.ModifyFieldModification;
 import Modification.RemoveMessageModification;
@@ -44,6 +45,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
@@ -72,32 +75,27 @@ public class FuzzingHelper {
     }
 
     /**
-     * Returns a list of all Modifiable variable holders from the workflow
-     * trace, for a specific message issuer.
+     * Returns a list of all Modifiable variable holders from the workflow trace
+     * that we send
      * 
      * @param trace
-     * @param messageIssuer
      * @return
      */
-    public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace,
-	    ConnectionEnd messageIssuer) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
+    public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
+	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
 	List<ModifiableVariableHolder> result = new LinkedList<>();
 	for (ProtocolMessage pm : protocolMessages) {
-	    if (pm.getMessageIssuer() == messageIssuer) {
-		result.addAll(pm.getAllModifiableVariableHolders());
-	    }
+	    result.addAll(pm.getAllModifiableVariableHolders());
 	}
 	return result;
     }
 
-    public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object,
-	    ConnectionEnd myPeer) {
-	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object, myPeer);
+    public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
+	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
 	List<ModifiableVariableField> fields = new LinkedList<>();
 	for (ModifiableVariableListHolder holder : holders) {
-	    if (!(holder.getObject() instanceof ProtocolMessage)
-		    || ((ProtocolMessage) holder.getObject()).getMessageIssuer() == myPeer) {
+	    // if (!(holder.getObject() instanceof ProtocolMessage))
+	    {
 		for (Field f : holder.getFields()) {
 		    fields.add(new ModifiableVariableField(holder.getObject(), f));
 		}
@@ -144,58 +142,100 @@ public class FuzzingHelper {
      * @param trace
      * @param messageIssuer
      */
-    public static AddRecordModification addRecordAtRandom(WorkflowTrace trace, ConnectionEnd messageIssuer) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
+    public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
+	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
 	Random random = RandomHelper.getRandom();
 	for (int i = 0; i < protocolMessages.size(); i++) {
 	    int randomPM = random.nextInt(protocolMessages.size());
 	    ProtocolMessage pm = protocolMessages.get(randomPM);
-	    if (pm.getMessageIssuer() == messageIssuer) {
-		Record r = new Record();
-		r.setMaxRecordLengthConfig(random.nextInt(50));
-		pm.addRecord(r);
-		return new AddRecordModification(pm);
-	    }
+	    Record r = new Record();
+	    r.setMaxRecordLengthConfig(random.nextInt(50));// TODO can we make
+							   // this more crazy?
+	    pm.addRecord(r);
+	    return new AddRecordModification(pm);
+
 	}
 	return null;
     }
 
     public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
+	SendAction action = getRandomSendAction(tempTrace);
+	if (action.getConfiguredMessages().size() <= 1) {
+	    // We dont remove the last message from a flight
+	    return null;
+	}
 	Random r = new Random();
-	List<ProtocolMessage> messages = tempTrace.getProtocolMessages();
-	int i = r.nextInt(messages.size());
-	ProtocolMessage message = messages.get(i);
-
-	messages.remove(i);
-	return new RemoveMessageModification(message, i);
+	int index = r.nextInt(action.getConfiguredMessages().size());
+	ProtocolMessage message = action.getConfiguredMessages().get(index);
+	action.getConfiguredMessages().remove(index);
+	return new RemoveMessageModification(message, action, index);
     }
 
+    /**
+     * Adds a new SendAction followed by a new Receive Action. The SendAction
+     * initially contains a random message, and the receive action only contains
+     * an arbitary message
+     * 
+     * @param tempTrace
+     * @return
+     */
+    public static AddMessageFlight addMessageFlight(WorkflowTrace tempTrace) {
+	SendAction sendAction = new SendAction(generateRandomMessage());
+	ReceiveAction receiveAction = new ReceiveAction(new ArbitraryMessage());
+	tempTrace.add(sendAction);
+	tempTrace.add(receiveAction);
+	return new AddMessageFlight(sendAction, receiveAction);
+    }
+
+    /**
+     * Adds a random Message to a random SendAction
+     * 
+     * @param tempTrace
+     * @return
+     */
     public static AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
-	ProtocolMessage m = null;
+	SendAction action = getRandomSendAction(tempTrace);
+	if (action == null) {
+	    return null;
+	} else {
+	    ProtocolMessage message = generateRandomMessage();
+	    action.getConfiguredMessages().add(message);
+	    return new AddMessageModification(message, action);
+	}
+    }
+
+    private static SendAction getRandomSendAction(WorkflowTrace tempTrace) {
+	Random r = new Random();
+	List<SendAction> sendActions = tempTrace.getSendActions();
+	return sendActions.get(r.nextInt(sendActions.size()));
+    }
+
+    private static ProtocolMessage generateRandomMessage() {
+	ProtocolMessage message = null;
 	Random r = new Random();
 	do {
 
 	    switch (r.nextInt(18)) {
 		case 0:
-		    m = new AlertMessage(ConnectionEnd.CLIENT);
+		    message = new AlertMessage();
 		    break;
 		case 1:
-		    m = new ApplicationMessage(ConnectionEnd.CLIENT);
+		    message = new ApplicationMessage();
 		    break;
 		case 2:
-		    m = new CertificateMessage(ConnectionEnd.CLIENT);
+		    message = new CertificateMessage();
 		    break;
 		case 3:
-		    m = new CertificateRequestMessage(ConnectionEnd.CLIENT);
+		    message = new CertificateRequestMessage();
 		    break;
 		case 4:
-		    m = new CertificateVerifyMessage(ConnectionEnd.CLIENT);
+		    message = new CertificateVerifyMessage();
 		    break;
 		case 5:
-		    m = new ChangeCipherSpecMessage(ConnectionEnd.CLIENT);
+		    message = new ChangeCipherSpecMessage();
 		    break;
 		case 6:
-		    m = new ClientHelloDtlsMessage(ConnectionEnd.CLIENT);
+		    message = new ClientHelloDtlsMessage();
 		    LinkedList<CipherSuite> list = new LinkedList<>();
 		    int limit = new Random().nextInt(0xFF);
 
@@ -211,11 +251,11 @@ public class FuzzingHelper {
 		    }
 		    ArrayList<CompressionMethod> compressionList = new ArrayList<>();
 		    compressionList.add(CompressionMethod.NULL);
-		    ((ClientHelloMessage) m).setSupportedCipherSuites(list);
-		    ((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
+		    ((ClientHelloMessage) message).setSupportedCipherSuites(list);
+		    ((ClientHelloMessage) message).setSupportedCompressionMethods(compressionList);
 		    break;
 		case 7:
-		    m = new ClientHelloMessage(ConnectionEnd.CLIENT);
+		    message = new ClientHelloMessage();
 		    list = new LinkedList<>();
 		    limit = new Random().nextInt(0xFF);
 		    for (int i = 0; i < limit; i++) {
@@ -227,47 +267,43 @@ public class FuzzingHelper {
 		    }
 		    compressionList = new ArrayList<>();
 		    compressionList.add(CompressionMethod.NULL);
-		    ((ClientHelloMessage) m).setSupportedCipherSuites(list);
-		    ((ClientHelloMessage) m).setSupportedCompressionMethods(compressionList);
+		    ((ClientHelloMessage) message).setSupportedCipherSuites(list);
+		    ((ClientHelloMessage) message).setSupportedCompressionMethods(compressionList);
 		    break;
 		case 8:
-		    m = new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+		    message = new DHClientKeyExchangeMessage();
 		    break;
 		case 9:
-		    m = new HelloVerifyRequestMessage(ConnectionEnd.CLIENT);
+		    message = new HelloVerifyRequestMessage();
 		    break;
 		case 10:
-		    m = new DHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+		    message = new DHEServerKeyExchangeMessage();
 		    break;
 		case 11:
-		    m = new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+		    message = new ECDHClientKeyExchangeMessage();
 		    break;
 		case 12:
-		    m = new ECDHEServerKeyExchangeMessage(ConnectionEnd.CLIENT);
+		    message = new ECDHEServerKeyExchangeMessage();
 		    break;
 		case 13:
-		    m = new FinishedMessage(ConnectionEnd.CLIENT);
+		    message = new FinishedMessage();
 		    break;
 		case 14:
-		    m = new HeartbeatMessage(ConnectionEnd.CLIENT);
+		    message = new HeartbeatMessage();
 		    break;
 		case 15:
-		    m = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+		    message = new RSAClientKeyExchangeMessage();
 		    break;
 		case 16:
-		    m = new ServerHelloDoneMessage(ConnectionEnd.CLIENT);
+		    message = new ServerHelloDoneMessage();
 
 		    break;
 		case 17:
-		    m = new HelloRequestMessage(ConnectionEnd.CLIENT);
+		    message = new HelloRequestMessage();
 		    break;
 	    }
-	} while (m == null);
-	tempTrace.add(m);
-	ProtocolMessage pm = new ArbitraryMessage();
-	pm.setMessageIssuer(ConnectionEnd.SERVER);
-	tempTrace.add(pm);
-	return new AddMessageModification(m);
+	} while (message == null);
+	return message;
     }
 
     /**
@@ -275,25 +311,21 @@ public class FuzzingHelper {
      * @param trace
      * @param messageIssuer
      */
-    public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace,
-	    ConnectionEnd messageIssuer) {
-	List<ProtocolMessage> protocolMessages = trace.getProtocolMessages();
-	Random random = RandomHelper.getRandom();
-	int insertPosition = random.nextInt(protocolMessages.size());
-	ProtocolMessage pm = null;
-	int i = 0;
-	while (pm == null && i < 100) {
-	    int takePosition = random.nextInt(protocolMessages.size());
-	    if (protocolMessages.get(takePosition).getMessageIssuer() == messageIssuer) {
-		pm = (ProtocolMessage) UnoptimizedDeepCopy.copy(protocolMessages.get(takePosition));
-	    }
-	    i++;
+    public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
+	Random r = new Random();
+	ProtocolMessage message = null;
+	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
+	if (protocolMessages.size() > 0) {
+	    message = (ProtocolMessage) UnoptimizedDeepCopy
+		    .copy(protocolMessages.get(r.nextInt(protocolMessages.size())));
+	} else {
+	    return null;
 	}
-	if (pm != null) {
-	    protocolMessages.add(insertPosition, pm);
-	    return new DuplicateMessageModification(pm, insertPosition);
-	}
-	return null;
+	SendAction action = getRandomSendAction(trace);
+	int insertPosition = r.nextInt(action.getConfiguredMessages().size());
+
+	action.getConfiguredMessages().add(insertPosition, message);
+	return new DuplicateMessageModification(message, action, insertPosition);
     }
 
     /**
@@ -304,8 +336,7 @@ public class FuzzingHelper {
      * @param myPeer
      * @return
      */
-    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object,
-	    ConnectionEnd myPeer) {
+    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
 	List<ModifiableVariableListHolder> holders = new LinkedList<>();
 	List<Field> modFields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(object);
 	if (!modFields.isEmpty()) {
@@ -325,8 +356,7 @@ public class FuzzingHelper {
 			holders.addAll(ModifiableVariableAnalyzer
 				.getAllModifiableVariableHoldersFromArray((Object[]) possibleHolder));
 		    } else {
-			if (ProtocolMessage.class.isInstance(object)
-				&& ((ProtocolMessage) possibleHolder).getMessageIssuer() != myPeer) {
+			if (ProtocolMessage.class.isInstance(object)) {
 			    // LOGGER.info("Skipping {}",
 			    // possibleHolder.getClass());
 			} else {

@@ -19,4 +19,5 @@ public enum ModificationType {
     ADD_RECORD,
     CHANGE_SERVER_CERT,
     CHANGE_CLIENT_CERT,
+    ADD_MESSAGE_FLIGHT,
 }

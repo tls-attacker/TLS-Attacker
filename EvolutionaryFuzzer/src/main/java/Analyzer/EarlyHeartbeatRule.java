@@ -16,6 +16,8 @@ import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +51,7 @@ public class EarlyHeartbeatRule extends Rule {
     @Override
     public boolean applys(Result result) {
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
-	if (trace.containsProtocolMessage(ProtocolMessageType.HEARTBEAT, ConnectionEnd.SERVER)) {
+	if (!trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT).isEmpty()) {
 	    return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);
 	} else {
 	    return false;
@@ -93,20 +95,15 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     public boolean hasHeartbeatWithoutFinished(WorkflowTrace trace) {
-	List<Integer> finishedPositions = trace.getHandshakeMessagePositions(HandshakeMessageType.FINISHED,
-		ConnectionEnd.SERVER);
-	List<Integer> heartbeatPositions = trace.getProtocolMessagePositions(ProtocolMessageType.HEARTBEAT,
-		ConnectionEnd.SERVER);
-	return (finishedPositions.isEmpty() && !heartbeatPositions.isEmpty());
+	List<HandshakeMessage> finishedMessages = trace
+		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED);
+	List<ProtocolMessage> heartBeatMessages = trace
+		.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT);
+	return (finishedMessages.isEmpty() && !heartBeatMessages.isEmpty());
     }
 
     public boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
-	List<Integer> finishedPositions = trace.getHandshakeMessagePositions(HandshakeMessageType.FINISHED,
-		ConnectionEnd.SERVER);
-	List<Integer> heartbeatPositions = trace.getProtocolMessagePositions(ProtocolMessageType.HEARTBEAT,
-		ConnectionEnd.SERVER);
-	return finishedPositions.size() > 0 && heartbeatPositions.size() > 0
-		&& finishedPositions.get(0) > heartbeatPositions.get(0);
+	return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
     }
 
     private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());

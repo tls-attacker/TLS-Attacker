@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -57,7 +56,6 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-
 public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger(DHEServerKeyExchangeHandler.class);
@@ -232,14 +230,14 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	InputStream is = new ByteArrayInputStream(dhParams);
 
 	try {
-	    // TODO can throw a EOFException
 
-	    p = new BigInteger(1, protocolMessage.getSerializedP().getValue());
+	     p = new BigInteger(1, protocolMessage.getSerializedP().getValue());
 	    g = new BigInteger(1, protocolMessage.getSerializedG().getValue());
 	    BigInteger Ys = new BigInteger(1, protocolMessage.getSerializedPublicKey().getValue());
 	    ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(Ys,
 		    new DHParameters(p, g)));
 
+	    
 	    tlsContext.setServerDHParameters(publicKeyParameters);
 
 	    KeyStore ks = tlsContext.getKeyStore();

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.PublicKeyAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
@@ -26,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.tlsserver.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.tlsserver.TLSServer;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -159,11 +161,15 @@ public class TlsClientTest {
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-	workflowExecutor.executeWorkflow();
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (Exception E) {
+	    E.printStackTrace();
+	}
 	transportHandler.closeConnection();
 
-	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
-
+	assertTrue(!tlsContext.getWorkflowTrace()
+		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
     private void testCustomWorkflow(int port) {
@@ -180,21 +186,20 @@ public class TlsClientTest {
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
-	trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	trace.add(new CertificateMessage(ConnectionEnd.SERVER));
-	trace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	trace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	trace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	trace.add(new FinishedMessage(ConnectionEnd.CLIENT));
-	trace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	trace.add(new FinishedMessage(ConnectionEnd.SERVER));
 
+	trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
+		new ServerHelloMessage(), new CertificateMessage(), new ServerHelloDoneMessage()));
+
+	trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
+		new RSAClientKeyExchangeMessage(), new ChangeCipherSpecMessage(), new FinishedMessage()));
+	trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
+		new ChangeCipherSpecMessage(), new FinishedMessage()));
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	workflowExecutor.executeWorkflow();
 
 	transportHandler.closeConnection();
-
-	assertTrue(tlsContext.getWorkflowTrace().containsServerFinished());
+	assertTrue(!tlsContext.getWorkflowTrace()
+		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
 }

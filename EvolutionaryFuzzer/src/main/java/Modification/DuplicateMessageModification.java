@@ -8,6 +8,7 @@
 package Modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 
 /**
  * 
@@ -15,12 +16,18 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
  */
 public class DuplicateMessageModification extends Modification {
     private final ProtocolMessage message;
-    private int position;
+    private final int position;
+    private final SendAction action;
 
-    public DuplicateMessageModification(ProtocolMessage message, int position) {
+    public DuplicateMessageModification(ProtocolMessage message, SendAction action, int position) {
 	super(ModificationType.DUPLICATE_MESSAGE);
 	this.message = message;
 	this.position = position;
+	this.action = action;
+    }
+
+    public SendAction getAction() {
+	return action;
     }
 
     public int getPosition() {

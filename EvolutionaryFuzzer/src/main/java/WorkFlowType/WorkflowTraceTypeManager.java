@@ -11,6 +11,9 @@ import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,10 +32,10 @@ public class WorkflowTraceTypeManager {
      * @param traces
      * @return
      */
-    public static Set<WorkflowTraceType> generateTypeList(List<TestVector> vectors) {
+    public static Set<WorkflowTraceType> generateTypeList(List<TestVector> vectors, ConnectionEnd connectionEnd) {
 	Set<WorkflowTraceType> set = new HashSet<>();
 	for (TestVector vector : vectors) {
-	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace());
+	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace(), connectionEnd);
 	    set.add(type);
 	}
 	return set;
@@ -49,10 +52,10 @@ public class WorkflowTraceTypeManager {
      * @param traces
      * @return
      */
-    public static Set<WorkflowTraceType> generateCleanTypeList(List<TestVector> vectors) {
+    public static Set<WorkflowTraceType> generateCleanTypeList(List<TestVector> vectors, ConnectionEnd myConnectionEnd) {
 	Set<WorkflowTraceType> set = new HashSet<>();
 	for (TestVector vector : vectors) {
-	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace());
+	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace(), myConnectionEnd);
 	    type.clean();
 	    set.add(type);
 	}
@@ -66,11 +69,25 @@ public class WorkflowTraceTypeManager {
      *            Trace for which the WorkflowTraceType should be generated
      * @return
      */
-    public static WorkflowTraceType generateWorkflowTraceType(WorkflowTrace trace) {
+    public static WorkflowTraceType generateWorkflowTraceType(WorkflowTrace trace, ConnectionEnd myConnectionEnd) {
 	WorkflowTraceType type = new WorkflowTraceType();
-	for (ProtocolMessage m : trace.getProtocolMessages()) {
-	    MessageFlow flow = new MessageFlow(m.getClass(), m.getMessageIssuer());
-	    type.addMessageFlow(flow);
+	for (TLSAction action : trace.getTLSActions()) {
+	    if (action.isExecuted() && action instanceof MessageAction) {
+		MessageAction msgAction = (MessageAction) action;
+		if (msgAction instanceof SendAction) {
+		    for (ProtocolMessage message : msgAction.getActualMessages()) {
+			MessageFlow flow = new MessageFlow(message.getClass(), myConnectionEnd);
+			type.addMessageFlow(flow);
+		    }
+		} else {
+		    for (ProtocolMessage message : msgAction.getActualMessages()) {
+			MessageFlow flow = new MessageFlow(message.getClass(),
+				myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.CLIENT : ConnectionEnd.SERVER);
+			type.addMessageFlow(flow);
+		    }
+
+		}
+	    }
 	}
 	return type;
     }

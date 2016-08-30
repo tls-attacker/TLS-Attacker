@@ -105,9 +105,9 @@ public class MitMWorkflowExecutor {
 	List<ProtocolMessage> protocolMessages = clientTlsContext.getWorkflowTrace().getProtocolMessages();
 	ensureMyLastProtocolMessagesHaveRecords(protocolMessages);
 	try {
-	    while (clientWorkflowContext.getProtocolMessagePointer() < protocolMessages.size()
+	    while (clientWorkflowContext.getActionPointer() < protocolMessages.size()
 		    && clientWorkflowContext.isProceedWorkflow()) {
-		ProtocolMessage pm = protocolMessages.get(clientWorkflowContext.getProtocolMessagePointer());
+		ProtocolMessage pm = protocolMessages.get(clientWorkflowContext.getActionPointer());
 		if (!pm.isGoingToBeParsed()) {
 		    forwardMessage(pm);
 		} else {
@@ -115,16 +115,14 @@ public class MitMWorkflowExecutor {
 			setServer();
 			handleProtocolMessagesFromPeer(protocolMessages);
 			setClient();
-			while (clientWorkflowContext.getProtocolMessagePointer() != serverWorkflowContext
-				.getProtocolMessagePointer()) {
+			while (clientWorkflowContext.getActionPointer() != serverWorkflowContext.getActionPointer()) {
 			    handleMyProtocolMessage(protocolMessages);
 			}
 		    } else {
 			setClient();
 			handleProtocolMessagesFromPeer(protocolMessages);
 			setServer();
-			while (clientWorkflowContext.getProtocolMessagePointer() != serverWorkflowContext
-				.getProtocolMessagePointer()) {
+			while (clientWorkflowContext.getActionPointer() != serverWorkflowContext.getActionPointer()) {
 			    handleMyProtocolMessage(protocolMessages);
 			}
 		    }
@@ -134,7 +132,7 @@ public class MitMWorkflowExecutor {
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
 	} finally {
 	    // remove all unused protocol messages
-	    this.removeNextProtocolMessages(protocolMessages, workflowContext.getProtocolMessagePointer());
+	    this.removeNextProtocolMessages(protocolMessages, workflowContext.getActionPointer());
 	}
 	serverTlsContext.setMitMAttack(false);
 	clientTlsContext.setMitMAttack(false);
@@ -180,16 +178,16 @@ public class MitMWorkflowExecutor {
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
 	}
 
-	serverWorkflowContext.incrementProtocolMessagePointer();
-	clientWorkflowContext.incrementProtocolMessagePointer();
+	serverWorkflowContext.incrementActionPointer();
+	clientWorkflowContext.incrementActionPointer();
     }
 
     private void handleMyProtocolMessage(List<ProtocolMessage> protocolMessages) throws IOException {
-	ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
+	ProtocolMessage pm = protocolMessages.get(workflowContext.getActionPointer());
 	prepareMyProtocolMessageBytes(pm);
 	prepareMyRecordsIfNeeded(pm);
 	sendDataIfMyLastMessage(protocolMessages);
-	workflowContext.incrementProtocolMessagePointer();
+	workflowContext.incrementActionPointer();
     }
 
     /**
@@ -262,7 +260,7 @@ public class MitMWorkflowExecutor {
      * @throws IOException
      */
     protected void sendDataIfMyLastMessage(List<ProtocolMessage> protocolMessages) throws IOException {
-	if (handlingMyLastProtocolMessage(protocolMessages, workflowContext.getProtocolMessagePointer())
+	if (handlingMyLastProtocolMessage(protocolMessages, workflowContext.getActionPointer())
 		&& messageBytesCollector.getRecordBytes().length != 0) {
 	    LOGGER.debug("Records going to be sent: {}",
 		    ArrayConverter.bytesToHexString(messageBytesCollector.getRecordBytes()));
@@ -286,7 +284,7 @@ public class MitMWorkflowExecutor {
 		    .getContentType().getValue());
 	    parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages, protocolMessageType);
 	    if (!renegotiation) {
-		ProtocolMessage pm = protocolMessages.get(workflowContext.getProtocolMessagePointer() - 1);
+		ProtocolMessage pm = protocolMessages.get(workflowContext.getActionPointer() - 1);
 		pm.setRecords(recordsOfSameContent);
 	    } else {
 		handleRenegotiation();
@@ -320,7 +318,7 @@ public class MitMWorkflowExecutor {
 		    LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
 		}
 		handleIncomingAlert(pmh);
-		workflowContext.incrementProtocolMessagePointer();
+		workflowContext.incrementActionPointer();
 	    }
 	}
     }
@@ -347,8 +345,8 @@ public class MitMWorkflowExecutor {
      */
     private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler pmh) {
 	ProtocolMessage pm = null;
-	if (workflowContext.getProtocolMessagePointer() < protocolMessages.size()) {
-	    pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
+	if (workflowContext.getActionPointer() < protocolMessages.size()) {
+	    pm = protocolMessages.get(workflowContext.getActionPointer());
 	}
 	if (pm != null && pmh.isCorrectProtocolMessage(pm)) {
 	    pmh.setProtocolMessage(pm);
@@ -358,7 +356,7 @@ public class MitMWorkflowExecutor {
 	    // next protocol messages
 	    LOGGER.debug("The configured protocol message is not equal to "
 		    + "the message being parsed or the message was not found.");
-	    this.removeNextProtocolMessages(protocolMessages, workflowContext.getProtocolMessagePointer());
+	    this.removeNextProtocolMessages(protocolMessages, workflowContext.getActionPointer());
 	    pmh.initializeProtocolMessage();
 	    pm = pmh.getProtocolMessage();
 	    protocolMessages.add(pm);

@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
@@ -17,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -31,6 +31,7 @@ public final class TlsContextAnalyzer {
     private static final Logger LOGGER = LogManager.getLogger(TlsContextAnalyzer.class);
 
     public enum AnalyzerResponse {
+
 	ALERT,
 	NO_ALERT,
 	NO_MODIFICATION
@@ -47,13 +48,11 @@ public final class TlsContextAnalyzer {
      * @param position
      * @return
      */
-    public static ProtocolMessage getNextProtocolMessageFromPeer(TlsContext tlsContext, int position) {
+    public static ProtocolMessage getNextReceiveProtocolMessage(TlsContext tlsContext, int position) {
 	ConnectionEnd peer = tlsContext.getMyConnectionEnd().getPeer();
-	for (int i = position; i < tlsContext.getWorkflowTrace().getProtocolMessages().size(); i++) {
-	    ProtocolMessage pm = tlsContext.getWorkflowTrace().getProtocolMessages().get(i);
-	    if (peer == pm.getMessageIssuer()) {
-		return pm;
-	    }
+	for (int i = position; i < tlsContext.getWorkflowTrace().getAllConfiguredReceivingMessages().size(); i++) {
+	    ProtocolMessage pm = tlsContext.getWorkflowTrace().getAllConfiguredReceivingMessages().get(i);
+	    return pm;
 	}
 	return null;
     }
@@ -68,17 +67,19 @@ public final class TlsContextAnalyzer {
      *         modification
      */
     public static boolean checkConfiguredProtocolMessagesOrder(TlsContext tlsContext) {
-	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
-	List<ProtocolMessageTypeHolder> configuredProtocolMessageOrder = tlsContext.getPreconfiguredProtocolMessages();
+	List<ProtocolMessage> configuredProtocolMessageOrder = tlsContext.getWorkflowTrace()
+		.getAllConfiguredReceivingMessages();
+	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getAllActuallyReceivedMessages();
 	int min = (protocolMessages.size() < configuredProtocolMessageOrder.size()) ? protocolMessages.size()
 		: configuredProtocolMessageOrder.size();
 	LOGGER.info("The configured message order contains {}, there are {} protocol messages",
 		configuredProtocolMessageOrder.size(), protocolMessages.size());
 	for (int i = 0; i < min; i++) {
 	    ProtocolMessageTypeHolder typeWorkflow = new ProtocolMessageTypeHolder(protocolMessages.get(i));
-	    ProtocolMessageTypeHolder typeConfigured = configuredProtocolMessageOrder.get(i);
+	    ProtocolMessageTypeHolder typeConfigured = new ProtocolMessageTypeHolder(configuredProtocolMessageOrder
+		    .get(i).getProtocolMessageType());
 	    if (!typeConfigured.equals(typeWorkflow)) {
-		ProtocolMessage pm = getNextProtocolMessageFromPeer(tlsContext, i - 1);
+		ProtocolMessage pm = getNextReceiveProtocolMessage(tlsContext, i - 1);
 		if (pm.getProtocolMessageType() != ProtocolMessageType.ALERT) {
 		    LOGGER.info("The configured message order was not equal to the executed one. Our peer has NOT "
 			    + "responded with an Alert. Verify the message flow manually");
@@ -101,12 +102,13 @@ public final class TlsContextAnalyzer {
      * @param tlsContext
      * @return
      */
+    // Does not analyze the actually received
     public static AnalyzerResponse containsAlertAfterModifiedMessage(TlsContext tlsContext) {
 	int position = getModifiedMessagePosition(tlsContext);
 	if (position == -1) {
 	    return AnalyzerResponse.NO_MODIFICATION;
 	} else {
-	    ProtocolMessage pm = getNextProtocolMessageFromPeer(tlsContext, position);
+	    ProtocolMessage pm = getNextReceiveProtocolMessage(tlsContext, position);
 	    if (pm != null && pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
 		return AnalyzerResponse.ALERT;
 	    } else {
@@ -115,48 +117,70 @@ public final class TlsContextAnalyzer {
 	}
     }
 
-    /**
-     * Returns true in case the workflow contains a message, which has not been
-     * sent by our peer and this message is followed by an alert. This test is
-     * executed only in the handshake messages.
-     * 
-     * @param tlsContext
-     * @return
-     */
-    public static AnalyzerResponse containsAlertAfterMissingMessage(TlsContext tlsContext) {
-	int position = getMissingMessagePosition(tlsContext);
-	if (position == -1) {
-	    return AnalyzerResponse.NO_MODIFICATION;
-	} else {
-	    ProtocolMessage pm = getNextProtocolMessageFromPeer(tlsContext, position);
-	    if (pm != null && pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-		return AnalyzerResponse.ALERT;
-	    } else {
-		return AnalyzerResponse.NO_ALERT;
-	    }
-	}
-    }
-
-    /**
-     * Returns true in case the workflow contains a message, which has been sent
-     * directly after an unexpected message.
-     * 
-     * @param tlsContext
-     * @return
-     */
-    public static AnalyzerResponse containsAlertAfterUnexpectedMessage(TlsContext tlsContext) {
-	int position = getUnexpectedMessagePosition(tlsContext);
-	if (position == -1) {
-	    return AnalyzerResponse.NO_MODIFICATION;
-	} else {
-	    ProtocolMessage pm = getNextProtocolMessageFromPeer(tlsContext, position);
-	    if (pm != null && pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-		return AnalyzerResponse.ALERT;
-	    } else {
-		return AnalyzerResponse.NO_ALERT;
-	    }
-	}
-    }
+    //
+    // /**
+    // * //TODO Deprecated
+    // * Returns true in case the workflow contains a message, which has not
+    // been
+    // * sent by our peer and this message is followed by an alert. This test is
+    // * executed only in the handshake messages.
+    // *
+    // * @param tlsContext
+    // * @return
+    // */
+    // public static AnalyzerResponse
+    // containsAlertAfterMissingMessage(TlsContext tlsContext)
+    // {
+    // int position = getMissingMessagePosition(tlsContext);
+    // if (position == -1)
+    // {
+    // return AnalyzerResponse.NO_MODIFICATION;
+    // }
+    // else
+    // {
+    // ProtocolMessage pm = getNextReceiveProtocolMessage(tlsContext, position);
+    // if (pm != null && pm.getProtocolMessageType() ==
+    // ProtocolMessageType.ALERT)
+    // {
+    // return AnalyzerResponse.ALERT;
+    // }
+    // else
+    // {
+    // return AnalyzerResponse.NO_ALERT;
+    // }
+    // }
+    // }
+    //
+    // /**
+    // * Returns true in case the workflow contains a message, which has been
+    // sent
+    // * directly after an unexpected message.
+    // *
+    // * @param tlsContext
+    // * @return
+    // */
+    // public static AnalyzerResponse
+    // containsAlertAfterUnexpectedMessage(TlsContext tlsContext)
+    // {
+    // int position = getUnexpectedMessagePosition(tlsContext);
+    // if (position == -1)
+    // {
+    // return AnalyzerResponse.NO_MODIFICATION;
+    // }
+    // else
+    // {
+    // ProtocolMessage pm = getNextReceiveProtocolMessage(tlsContext, position);
+    // if (pm != null && pm.getProtocolMessageType() ==
+    // ProtocolMessageType.ALERT)
+    // {
+    // return AnalyzerResponse.ALERT;
+    // }
+    // else
+    // {
+    // return AnalyzerResponse.NO_ALERT;
+    // }
+    // }
+    // }
 
     public static boolean containsFullWorkflowWithModifiedMessage(TlsContext tlsContext) {
 	return containsFullWorkflow(tlsContext) && containsModifiedMessage(tlsContext);
@@ -166,8 +190,8 @@ public final class TlsContextAnalyzer {
 	return containsFullWorkflow(tlsContext) && containsMissingMessage(tlsContext);
     }
 
-    public static boolean containsServerFinishedWithModifiedHandshake(TlsContext tlsContext) {
-	return containsServerFinishedMessage(tlsContext) && containsModifiedHandshake(tlsContext);
+    public static boolean receivedFinishedWithModifiedHandshake(TlsContext tlsContext) {
+	return receivedFinishedMessage(tlsContext) && containsModifiedHandshake(tlsContext);
     }
 
     /**
@@ -177,14 +201,14 @@ public final class TlsContextAnalyzer {
      * @return
      */
     public static boolean containsFullWorkflow(TlsContext tlsContext) {
-	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
-	List<ProtocolMessageTypeHolder> configuredProtocolMessageOrder = tlsContext.getPreconfiguredProtocolMessages();
-	if (protocolMessages.size() != configuredProtocolMessageOrder.size()) {
+	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getAllConfiguredReceivingMessages();
+	List<ProtocolMessage> actuallyReveivedMessages = tlsContext.getWorkflowTrace().getAllActuallyReceivedMessages();
+	if (protocolMessages.size() != actuallyReveivedMessages.size()) {
 	    return false;
 	}
 	for (int i = 0; i < protocolMessages.size(); i++) {
 	    ProtocolMessage pm = protocolMessages.get(i);
-	    ProtocolMessageTypeHolder typeConfigured = configuredProtocolMessageOrder.get(i);
+	    ProtocolMessageTypeHolder typeConfigured = new ProtocolMessageTypeHolder(actuallyReveivedMessages.get(i));
 	    if (!typeConfigured.equals(new ProtocolMessageTypeHolder(pm))) {
 		return false;
 	    }
@@ -205,9 +229,8 @@ public final class TlsContextAnalyzer {
 
     private static int getModifiedMessagePosition(TlsContext tlsContext) {
 	int position = 0;
-	for (ProtocolMessage pm : tlsContext.getWorkflowTrace().getProtocolMessages()) {
-	    if ((pm.getMessageIssuer() == tlsContext.getMyConnectionEnd())
-		    && (containsModifiableVariableModification(pm))) {
+	for (ProtocolMessage pm : tlsContext.getWorkflowTrace().getAllConfiguredMessages()) {
+	    if (containsModifiableVariableModification(pm)) {
 		return position;
 	    }
 	    position++;
@@ -222,8 +245,8 @@ public final class TlsContextAnalyzer {
      * @return
      */
     public static boolean containsModifiedHandshake(TlsContext tlsContext) {
-	int unexpected = getUnexpectedMessagePosition(tlsContext);
-	int finished = getServerFinishedMessagePosition(tlsContext);
+	int unexpected = getMessageActionPositionWithUnexpectedMessage(tlsContext.getWorkflowTrace());
+	int finished = getReceiveFinishedMessagePosition(tlsContext);
 	if (unexpected != -1) {
 	    if (finished == -1) {
 		return true;
@@ -248,9 +271,8 @@ public final class TlsContextAnalyzer {
 
     private static int getMissingMessagePosition(TlsContext tlsContext) {
 	int position = 0;
-	for (ProtocolMessage pm : tlsContext.getWorkflowTrace().getProtocolMessages()) {
-	    if ((pm.getMessageIssuer() == tlsContext.getMyConnectionEnd())
-		    && (!pm.isGoingToBeSent())
+	for (ProtocolMessage pm : tlsContext.getWorkflowTrace().getAllConfiguredMessages()) {
+	    if (!pm.isGoingToBeSent()
 		    && (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE || pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC)) {
 		return position;
 	    }
@@ -266,22 +288,31 @@ public final class TlsContextAnalyzer {
      * @param tlsContext
      * @return
      */
-    public static boolean containsUnexpectedMessage(TlsContext tlsContext) {
-	return (getUnexpectedMessagePosition(tlsContext) != -1);
+    public static boolean containsUnexpectedMessage(WorkflowTrace trace) {
+	return (getMessageActionPositionWithUnexpectedMessage(trace) != -1);
     }
 
-    private static int getUnexpectedMessagePosition(TlsContext tlsContext) {
-	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
-	List<ProtocolMessageTypeHolder> configuredProtocolMessageOrder = tlsContext.getPreconfiguredProtocolMessages();
-	int min = (protocolMessages.size() < configuredProtocolMessageOrder.size()) ? protocolMessages.size()
-		: configuredProtocolMessageOrder.size();
-	for (int i = 0; i < min; i++) {
-	    ProtocolMessage pm = protocolMessages.get(i);
-	    ProtocolMessageTypeHolder typeConfigured = configuredProtocolMessageOrder.get(i);
-	    if ((pm.getMessageIssuer() == tlsContext.getMyConnectionEnd())
-		    && (!typeConfigured.equals(new ProtocolMessageTypeHolder(pm)))) {
-		return i;
+    private static int getMessageActionPositionWithUnexpectedMessage(WorkflowTrace trace) {
+	List<ReceiveAction> receiveActions = trace.getReceiveActions();
+	int counter = 0;
+	for (ReceiveAction action : receiveActions) {
+	    if (action.getActualMessages().size() != action.getConfiguredMessages().size()) {
+		return counter;
 	    }
+	    // Check if Messages are the same
+	    for (int i = 0; i < action.getActualMessages().size(); i++) {
+		ProtocolMessage receivedMessage = action.getActualMessages().get(i);
+		ProtocolMessage expectedMessage = action.getConfiguredMessages().get(i);
+		if (receivedMessage.getProtocolMessageType() == expectedMessage.getProtocolMessageType()) {
+		    if (!receivedMessage.getClass().equals(expectedMessage.getClass())) {
+			return counter;
+		    }
+		} else {
+		    return counter;
+		}
+
+	    }
+	    counter++;
 	}
 	return -1;
     }
@@ -292,16 +323,15 @@ public final class TlsContextAnalyzer {
      * @param tlsContext
      * @return
      */
-    public static boolean containsServerFinishedMessage(TlsContext tlsContext) {
-	return (getServerFinishedMessagePosition(tlsContext) != -1);
+    public static boolean receivedFinishedMessage(TlsContext tlsContext) {
+	return (getReceiveFinishedMessagePosition(tlsContext) != -1);
     }
 
-    private static int getServerFinishedMessagePosition(TlsContext tlsContext) {
-	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getProtocolMessages();
+    private static int getReceiveFinishedMessagePosition(TlsContext tlsContext) {
+	List<ProtocolMessage> protocolMessages = tlsContext.getWorkflowTrace().getAllConfiguredReceivingMessages();
 	for (int i = 0; i < protocolMessages.size(); i++) {
 	    ProtocolMessage pm = protocolMessages.get(i);
-	    if ((pm.getMessageIssuer() != tlsContext.getMyConnectionEnd())
-		    && (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE)) {
+	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
 		HandshakeMessage hm = (HandshakeMessage) pm;
 		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
 		    return i;

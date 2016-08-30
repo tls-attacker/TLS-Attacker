@@ -14,6 +14,7 @@ import Result.Result;
 import TestVector.TestVectorSerializer;
 import WorkFlowType.WorkflowTraceType;
 import WorkFlowType.WorkflowTraceTypeManager;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class UniqueFlowsRule extends Rule {
     @Override
     public boolean applys(Result result) {
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
-		.getTrace());
+		.getTrace(), ConnectionEnd.CLIENT);
 	type.clean();
 	return !typeSet.contains(type);
 
@@ -61,7 +62,7 @@ public class UniqueFlowsRule extends Rule {
     public void onApply(Result result) {
 
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
-		.getTrace());
+		.getTrace(), ConnectionEnd.CLIENT);
 	type.clean();
 	if (typeSet.add(type)) {
 	    found++;

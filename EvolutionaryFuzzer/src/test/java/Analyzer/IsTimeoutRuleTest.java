@@ -13,6 +13,7 @@ import Graphs.BranchTrace;
 import Result.Result;
 import TestVector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import org.junit.After;
@@ -50,10 +51,12 @@ public class IsTimeoutRuleTest {
     @Test
     public void testApplys() {
 	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit3.test");
+		null, ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
+		"unit3.test");
 	assertTrue(rule.applys(result));
 	result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-		null), new TestVector(new WorkflowTrace(), null, null, null), "unit3.test");
+		ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
+		"unit3.test");
 	assertFalse(rule.applys(result));
 
     }
@@ -65,7 +68,8 @@ public class IsTimeoutRuleTest {
     public void testOnApply() {
 	// TODO we dont check if the file is actually created
 	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit3.test");
+		null, ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
+		"unit3.test");
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -85,7 +89,8 @@ public class IsTimeoutRuleTest {
     public void testReport() {
 	assertNull(rule.report());
 	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, null), new TestVector(new WorkflowTrace(), null, null, null), "unit3.test");
+		null, ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
+		"unit3.test");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

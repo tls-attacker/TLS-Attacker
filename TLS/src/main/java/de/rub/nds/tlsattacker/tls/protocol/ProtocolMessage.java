@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
@@ -40,11 +41,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      * content type
      */
     protected ProtocolMessageType protocolMessageType;
-
-    /**
-     * describes if the messages are coming from the client or the server.
-     */
-    protected ConnectionEnd messageIssuer;
 
     /**
      * List of preconfigured records for this protocol message
@@ -95,14 +91,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public ProtocolMessageType getProtocolMessageType() {
 	return protocolMessageType;
-    }
-
-    public ConnectionEnd getMessageIssuer() {
-	return messageIssuer;
-    }
-
-    public void setMessageIssuer(ConnectionEnd messageIssuer) {
-	this.messageIssuer = messageIssuer;
     }
 
     @XmlElementWrapper
@@ -184,6 +172,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
 	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
 		completeResultingMessage);
+    }
+
+    public boolean isHandshakeMessage() {
+	return this instanceof HandshakeMessage;
     }
 
     public abstract String toCompactString();

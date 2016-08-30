@@ -7,7 +7,6 @@
  */
 package Analyzer;
 
-import Config.Analyzer.IsTimeoutRuleConfig;
 import Config.Analyzer.ProtocolVersionRuleConfig;
 import Config.EvolutionaryFuzzerConfig;
 import Result.Result;
@@ -15,11 +14,13 @@ import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
@@ -62,14 +63,16 @@ public class ProtocolVersionRule extends Rule {
 	ProtocolVersion serverVersion = null;
 
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
-	ClientHelloMessage clientMessage = (ClientHelloMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_HELLO);
-	ServerHelloMessage serverMessage = (ServerHelloMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.SERVER_HELLO);
-
-	if (clientMessage == null || serverMessage == null) {
+	List<HandshakeMessage> sentClientHellos = trace
+		.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
+	List<HandshakeMessage> receivedServerHellos = trace
+		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
+	if (sentClientHellos.isEmpty() || receivedServerHellos.isEmpty()) {
 	    return false;
 	}
+	ClientHelloMessage clientMessage = (ClientHelloMessage) sentClientHellos.get(0);
+	ServerHelloMessage serverMessage = (ServerHelloMessage) receivedServerHellos.get(0);
+
 	byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
 	byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
 
@@ -115,10 +118,13 @@ public class ProtocolVersionRule extends Rule {
     @Override
     public void onApply(Result result) {
 	WorkflowTrace trace = result.getExecutedVector().getTrace();
-	ClientHelloMessage clientMessage = (ClientHelloMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_HELLO);
-	ServerHelloMessage serverMessage = (ServerHelloMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.SERVER_HELLO);
+	List<HandshakeMessage> sentClientHellos = trace
+		.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
+	List<HandshakeMessage> receivedServerHellos = trace
+		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
+	ClientHelloMessage clientMessage = (ClientHelloMessage) sentClientHellos.get(0);
+	ServerHelloMessage serverMessage = (ServerHelloMessage) receivedServerHellos.get(0);
+
 	byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
 	byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
 

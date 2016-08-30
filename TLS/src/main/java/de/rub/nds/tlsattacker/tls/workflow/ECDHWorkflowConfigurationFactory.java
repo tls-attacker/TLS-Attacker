@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
@@ -22,6 +23,10 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Creates configuration of implemented ECDH(E) functionality in the protocol.
@@ -30,85 +35,47 @@ import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
  */
 public class ECDHWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    private final CommandConfig config;
-
     ECDHWorkflowConfigurationFactory(CommandConfig config) {
-	this.config = config;
+	super(config);
     }
 
     @Override
-    public TlsContext createClientHelloTlsContext() {
-	TlsContext context = new TlsContext();
-	context.setProtocolVersion(config.getProtocolVersion());
-
-	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
-	WorkflowTrace workflowTrace = new WorkflowTrace();
-
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	workflowTrace.add(ch);
-
-	ch.setSupportedCipherSuites(config.getCipherSuites());
-	ch.setSupportedCompressionMethods(config.getCompressionMethods());
-
-	initializeClientHelloExtensions(config, ch);
-
-	context.setWorkflowTrace(workflowTrace);
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
-    @Override
-    public TlsContext createHandshakeTlsContext() {
-	TlsContext context = this.createClientHelloTlsContext();
+    public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
+	TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+	List<ProtocolMessage> messages = new LinkedList<>();
 	WorkflowTrace workflowTrace = context.getWorkflowTrace();
-
-	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
-	CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
-	crm.setRequired(false);
+	messages.add(new ServerHelloMessage());
+	messages.add(new CertificateMessage());
 
 	if (config.getCipherSuites().get(0).isEphemeral()) {
-	    workflowTrace.add(new ECDHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(crm);
+	    messages.add(new ECDHEServerKeyExchangeMessage());
 	}
 
 	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
+	    messages.add(new CertificateRequestMessage());
+	    messages.add(new ServerHelloDoneMessage());
+	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+	    messages = new LinkedList<>();
+	    messages.add(new CertificateMessage());
+	    messages.add(new ECDHClientKeyExchangeMessage());
+	    messages.add(new CertificateVerifyMessage());
 	} else {
-	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    messages.add(new ServerHelloDoneMessage());
+	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+	    messages = new LinkedList<>();
+	    messages.add(new ECDHClientKeyExchangeMessage());
 	}
 
-	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	workflowTrace.add(new FinishedMessage(ConnectionEnd.CLIENT));
-
-	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	workflowTrace.add(new FinishedMessage(ConnectionEnd.SERVER));
+	messages.add(new ChangeCipherSpecMessage());
+	messages.add(new FinishedMessage());
+	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+	messages = new LinkedList<>();
+	messages.add(new ChangeCipherSpecMessage());
+	messages.add(new FinishedMessage());
+	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
 
 	initializeProtocolMessageOrder(context);
 
 	return context;
     }
-
-    @Override
-    public TlsContext createFullTlsContext() {
-	TlsContext context = this.createHandshakeTlsContext();
-
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
-	workflowTrace.add(new ApplicationMessage(ConnectionEnd.CLIENT));
-
-	if (config.getHeartbeatMode() != null) {
-	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	}
-
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
 }

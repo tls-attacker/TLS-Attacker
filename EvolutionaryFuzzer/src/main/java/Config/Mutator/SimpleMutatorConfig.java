@@ -35,8 +35,17 @@ public class SimpleMutatorConfig implements Serializable {
     private Integer changeClientCert = 1;
     private Integer duplicateMessagePercentage = 1;
     private Integer multipleModifications = 1;
+    private Integer addFlightPercentage = 20;
 
     public SimpleMutatorConfig() {
+    }
+
+    public Integer getAddFlightPercentage() {
+	return addFlightPercentage;
+    }
+
+    public void setAddFlightPercentage(Integer addFlightPercentage) {
+	this.addFlightPercentage = addFlightPercentage;
     }
 
     public Integer getMultipleModifications() {

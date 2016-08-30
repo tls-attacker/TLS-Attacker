@@ -30,11 +30,6 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 	this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
     }
 
-    public ChangeCipherSpecMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
-    }
-
     public ModifiableByte getCcsProtocolType() {
 	return ccsProtocolType;
     }

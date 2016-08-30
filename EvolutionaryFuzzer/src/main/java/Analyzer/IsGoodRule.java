@@ -57,7 +57,7 @@ public class IsGoodRule extends Rule {
 	}
 	this.branch = new BranchTrace();
 	prepareConfigOutputFolder();
-        try {
+	try {
 	    f = new File(evoConfig.getOutputFolder() + config.getOutputFileGraph());
 	    if (evoConfig.isCleanStart()) {
 		f.delete();
@@ -88,11 +88,11 @@ public class IsGoodRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-        //Write statistics
-        outWriter.println(System.currentTimeMillis()-lastGoodTimestamp);
+	// Write statistics
+	outWriter.println(System.currentTimeMillis() - lastGoodTimestamp);
 	outWriter.flush();
-        lastGoodTimestamp = System.currentTimeMillis();
-        found++;
+	lastGoodTimestamp = System.currentTimeMillis();
+	found++;
 	result.setGoodTrace(true);
 	// It may be that we dont want to safe good Traces, for example if
 	// we execute already saved Traces
@@ -121,7 +121,8 @@ public class IsGoodRule extends Rule {
 
     @Override
     public String report() {
-	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found + " Last Good "+ (double)(System.currentTimeMillis()-lastGoodTimestamp)/1000.0+" seconds ago\n";
+	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
+		+ " Last Good " + (double) (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
     }
 
     @Override

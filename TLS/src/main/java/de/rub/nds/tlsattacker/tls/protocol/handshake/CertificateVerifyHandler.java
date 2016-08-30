@@ -125,9 +125,12 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 			} while (instance == null);
 			instance.initSign(ecKey);
 		    } else {
-                        //Dont always choose the first supported SignatureAlgorithm, choose one at random, this is important for fuzzing
+			// Dont always choose the first supported
+			// SignatureAlgorithm, choose one at random, this is
+			// important for fuzzing
 			Random r = new Random();
-			selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(r.nextInt(tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size()));
+			selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(
+				r.nextInt(tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size()));
 			instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
 			instance.initSign(ecKey);
 		    }

@@ -28,11 +28,6 @@ public class FinishedMessage extends HandshakeMessage {
 	super(HandshakeMessageType.FINISHED);
     }
 
-    public FinishedMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.FINISHED);
-	this.messageIssuer = messageIssuer;
-    }
-
     public ModifiableByteArray getVerifyData() {
 	return verifyData;
     }

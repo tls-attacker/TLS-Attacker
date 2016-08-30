@@ -68,8 +68,8 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 		    ex);
 	}
 
-	if (trace.containsServerFinished()) {
-	    ProtocolMessage lastMessage = trace.getLastServerMesssage();
+	if (trace.receivedFinished()) {
+	    ProtocolMessage lastMessage = trace.getLastReceiveMesssage();
 	    if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
 		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
 			"Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
