@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,15 +58,15 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
 	padding.setModification(modifier);
 
-	ApplicationMessage applicationMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
+	ApplicationMessage applicationMessage = new ApplicationMessage();
 	Record r = new Record();
 	r.setPadding(padding);
 	applicationMessage.addRecord(r);
 
-	AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
+	AlertMessage alertMessage = new AlertMessage();
 
-	trace.getProtocolMessages().add(applicationMessage);
-	trace.getProtocolMessages().add(allertMessage);
+	trace.add(new SendAction(applicationMessage));
+	trace.add(new ReceiveAction(alertMessage));
 
 	try {
 	    workflowExecutor.executeWorkflow();

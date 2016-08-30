@@ -57,12 +57,6 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public ECDHClientKeyExchangeMessage() {
 	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public ECDHClientKeyExchangeMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableBigInteger getPublicKeyBaseX() {

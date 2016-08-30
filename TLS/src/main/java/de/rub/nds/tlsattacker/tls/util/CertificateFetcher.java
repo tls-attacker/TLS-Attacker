@@ -21,8 +21,12 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.jce.provider.X509CertificateObject;
@@ -65,19 +69,18 @@ public class CertificateFetcher {
 	context.setProtocolVersion(config.getProtocolVersion());
 	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
 	WorkflowTrace workflowTrace = new WorkflowTrace();
-
 	List<ProtocolMessage> protocolMessages = new LinkedList<>();
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
-	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
+	ClientHelloMessage clientHellp = new ClientHelloMessage();
+	protocolMessages.add(clientHellp);
+	workflowTrace.add(new SendAction(protocolMessages));
+	protocolMessages = new LinkedList<>();
+	protocolMessages.add(new ServerHelloMessage());
+	protocolMessages.add(new CertificateMessage());
+	workflowTrace.add(new ReceiveAction(protocolMessages));
+	clientHellp.setSupportedCipherSuites(config.getCipherSuites());
+	clientHellp.setSupportedCompressionMethods(config.getCompressionMethods());
 
-	ch.setSupportedCipherSuites(config.getCipherSuites());
-	ch.setSupportedCompressionMethods(config.getCompressionMethods());
-
-	WorkflowConfigurationFactory.initializeClientHelloExtensions(config, ch);
-	workflowTrace.setProtocolMessages(protocolMessages);
-
+	WorkflowConfigurationFactory.initializeClientHelloExtensions(config, clientHellp);
 	context.setWorkflowTrace(workflowTrace);
 
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, context);

@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.PublicKey;
@@ -68,14 +70,19 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
 	List<ProtocolMessage> protocolMessages = new LinkedList<>();
-	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-
-	RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+	protocolMessages.add(new ServerHelloMessage());
+	protocolMessages.add(new CertificateMessage());
+	protocolMessages.add(new ServerHelloDoneMessage());
+	tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
+	protocolMessages = new LinkedList<>();
+	RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage();
 	protocolMessages.add(cke);
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(new AlertMessage(ConnectionEnd.SERVER));
+	protocolMessages.add(new ChangeCipherSpecMessage());
+	tlsContext.getWorkflowTrace().add(new SendAction(protocolMessages));
+
+	protocolMessages = new LinkedList<>();
+	protocolMessages.add(new AlertMessage());
+	tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
 
 	ModifiableByteArray pms = new ModifiableByteArray();
 	pms.setModification(ByteArrayModificationFactory.explicitValue(msg));

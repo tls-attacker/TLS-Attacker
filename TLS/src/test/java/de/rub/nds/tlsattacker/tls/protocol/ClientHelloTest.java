@@ -13,11 +13,15 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerAddModification;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -48,7 +52,7 @@ public class ClientHelloTest {
 	writer = new StringWriter();
 	context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
 		ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-		ModifiableVariable.class);
+		ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class);
 	m = context.createMarshaller();
 	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	m.setAdapter(new ByteArrayAdapter());
@@ -94,7 +98,7 @@ public class ClientHelloTest {
     public void simpleSerialization2() throws Exception {
 	ClientCommandConfig config = new ClientCommandConfig();
 	WorkflowConfigurationFactory cf = WorkflowConfigurationFactory.createInstance(config);
-	TlsContext context = cf.createHandshakeTlsContext();
+	TlsContext context = cf.createHandshakeTlsContext(ConnectionEnd.CLIENT);
 
 	m.marshal(context.getWorkflowTrace(), writer);
 

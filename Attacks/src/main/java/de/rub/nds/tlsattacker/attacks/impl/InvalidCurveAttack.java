@@ -64,7 +64,7 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
 	    for (int i = 0; i < PROTOCOL_FLOWS; i++) {
 		try {
 		    WorkflowTrace trace = executeProtocolFlow(configHandler);
-		    if (trace.containsServerFinished()) {
+		    if (trace.receivedFinished()) {
 			LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable to the invalid curve attack.");
 			vulnerable = true;
 			return;
@@ -86,7 +86,7 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 	ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+		.getFirstConfiguredHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
 
 	// modify public point base X coordinate
 	ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();

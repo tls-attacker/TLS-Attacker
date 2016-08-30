@@ -14,21 +14,21 @@ package de.rub.nds.tlsattacker.tls.workflow;
  */
 public class WorkflowContext {
 
-    private int protocolMessagePointer;
+    private int actionPointer;
 
     private boolean proceedWorkflow;
 
     public WorkflowContext() {
-	protocolMessagePointer = 0;
+	actionPointer = 0;
 	proceedWorkflow = true;
     }
 
-    public int getProtocolMessagePointer() {
-	return protocolMessagePointer;
+    public int getActionPointer() {
+	return actionPointer;
     }
 
-    public void setProtocolMessagePointer(int protocolMessagePointer) {
-	this.protocolMessagePointer = protocolMessagePointer;
+    public void setActionPointer(int actionPointer) {
+	this.actionPointer = actionPointer;
     }
 
     public boolean isProceedWorkflow() {
@@ -39,11 +39,11 @@ public class WorkflowContext {
 	this.proceedWorkflow = proceedWorkflow;
     }
 
-    public void incrementProtocolMessagePointer() {
-	protocolMessagePointer++;
+    public void incrementActionPointer() {
+	actionPointer++;
     }
 
-    public void decrementProtocolMessagePointer() {
-	protocolMessagePointer--;
+    public void decrementActionPointer() {
+	actionPointer--;
     }
 }

@@ -28,11 +28,6 @@ public class ApplicationMessage extends ProtocolMessage {
 	this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
 
-    public ApplicationMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
-    }
-
     public ModifiableByteArray getData() {
 	return data;
     }

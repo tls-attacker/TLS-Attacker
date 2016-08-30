@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.LinkedHashSet;
@@ -97,13 +99,11 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-	ApplicationMessage applicationMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
+	ApplicationMessage applicationMessage = new ApplicationMessage();
 	applicationMessage.addRecord(record);
-
-	AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
-
-	trace.getProtocolMessages().add(applicationMessage);
-	trace.getProtocolMessages().add(allertMessage);
+	trace.add(new SendAction(applicationMessage));
+	AlertMessage alertMessage = new AlertMessage();
+	trace.add(new ReceiveAction(alertMessage));
 
 	try {
 	    workflowExecutor.executeWorkflow();
@@ -111,7 +111,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
 	}
 
-	lastMessages.add(trace.getLastProtocolMesssage());
+	lastMessages.add(trace.getLastConfiguredProtocolMesssage());
 	tlsContexts.add(tlsContext);
 
 	transportHandler.closeConnection();

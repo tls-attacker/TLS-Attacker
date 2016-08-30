@@ -7,46 +7,28 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * A wrapper class over a list of protocol messages maintained in the TLS
- * context.
+ * A wrapper class over a list of protocol configuredMessages maintained in the
+ * TLS context.
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -58,29 +40,11 @@ public class WorkflowTrace implements Serializable {
      * Workflow
      */
     @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-	    @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
-	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-	    @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
-	    @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-	    @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-	    @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-	    @XmlElement(type = FinishedMessage.class, name = "Finished"),
-	    @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-	    @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-	    @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-	    @XmlElement(type = AlertMessage.class, name = "Alert"),
-	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
-	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest") })
-    private List<ProtocolMessage> protocolMessages;
+    @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
+	    @XmlElement(type = MessageAction.class, name = "MessageAction"),
+	    @XmlElement(type = SendAction.class, name = "SendAction"),
+	    @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"), })
+    private List<TLSAction> tlsActions;
 
     private String name = null;
     private String description = null;
@@ -103,9 +67,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Initializes the workflow trace with an empty list of protocol messages
+     * Initializes the workflow trace with an empty list of protocol
+     * configuredMessages
      */
     public WorkflowTrace() {
+	this.tlsActions = new LinkedList<>();
 	this.protocolMessages = new LinkedList<>();
     }
 
@@ -123,24 +89,44 @@ public class WorkflowTrace implements Serializable {
      * @param pm
      * @return Returns true if the list was changed
      */
-    public boolean add(ProtocolMessage pm) {
-	return protocolMessages.add(pm);
+    public boolean add(TLSAction action) {
+	return tlsActions.add(action);
     }
 
-    public ProtocolMessage remove(int index) {
-	return protocolMessages.remove(index);
+    public TLSAction remove(int index) {
+	return tlsActions.remove(index);
     }
 
-    public List<ProtocolMessage> getProtocolMessages() {
-	return protocolMessages;
+    public List<ReceiveAction> getReceiveActions() {
+	List<ReceiveAction> receiveActions = new LinkedList<>();
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof ReceiveAction) {
+		receiveActions.add((ReceiveAction) action);
+	    }
+	}
+	return receiveActions;
     }
 
-    public void setProtocolMessages(List<ProtocolMessage> protocolMessages) {
-	this.protocolMessages = protocolMessages;
+    public List<SendAction> getSendActions() {
+	List<SendAction> sendActions = new LinkedList<>();
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof SendAction) {
+		sendActions.add((SendAction) action);
+	    }
+	}
+	return sendActions;
+    }
+
+    public List<TLSAction> getTLSActions() {
+	return tlsActions;
+    }
+
+    public void setTLSActions(List<TLSAction> tlsActions) {
+	this.tlsActions = tlsActions;
     }
 
     /**
-     * Returns a list of protocol messages of a specific type
+     * Returns a list of protocol configuredMessages of a specific type
      * 
      * @param type
      * @return
@@ -148,7 +134,7 @@ public class WorkflowTrace implements Serializable {
     public List<Integer> getProtocolMessagePositions(ProtocolMessageType type) {
 	List<Integer> positions = new LinkedList<>();
 	int position = 0;
-	for (ProtocolMessage pm : protocolMessages) {
+	for (ProtocolMessage pm : getAllConfiguredMessages()) {
 	    if (pm.getProtocolMessageType() == type) {
 		positions.add(position);
 	    }
@@ -185,16 +171,16 @@ public class WorkflowTrace implements Serializable {
      * @return
      */
     public ProtocolMessage getFirstProtocolMessage(ProtocolMessageType type) {
-	for (ProtocolMessage pm : protocolMessages) {
+	for (ProtocolMessage pm : getAllConfiguredMessages()) {
 	    if (pm.getProtocolMessageType() == type) {
 		return pm;
 	    }
 	}
-        return null;
+	return null;
     }
 
     /**
-     * Returns a list of handshake messages of a given type.
+     * Returns a list of handshake configuredMessages of a given type.
      * 
      * @param type
      * @return
@@ -202,11 +188,16 @@ public class WorkflowTrace implements Serializable {
     public List<Integer> getHandshakeMessagePositions(HandshakeMessageType type) {
 	List<Integer> positions = new LinkedList<>();
 	int position = 0;
-	for (ProtocolMessage pm : protocolMessages) {
-	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-		HandshakeMessage hm = (HandshakeMessage) pm;
-		if (hm.getHandshakeMessageType() == type) {
-		    positions.add(position);
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof MessageAction) {
+		for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
+		    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+			HandshakeMessage hm = (HandshakeMessage) pm;
+			if (hm.getHandshakeMessageType() == type) {
+			    positions.add(position);
+			}
+		    }
+
 		}
 	    }
 	    position++;
@@ -247,73 +238,143 @@ public class WorkflowTrace implements Serializable {
      * @param type
      * @return
      */
-    public HandshakeMessage getFirstHandshakeMessage(HandshakeMessageType type) {
-	for (ProtocolMessage pm : protocolMessages) {
-	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-		HandshakeMessage hm = (HandshakeMessage) pm;
-		if (hm.getHandshakeMessageType() == type) {
-		    return hm;
+    public HandshakeMessage getFirstConfiguredHandshakeMessage(HandshakeMessageType type) {
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof MessageAction) {
+		for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
+		    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+			HandshakeMessage hm = (HandshakeMessage) pm;
+			if (hm.getHandshakeMessageType() == type) {
+			    return hm;
+			}
+		    }
 		}
 	    }
 	}
 	return null;
     }
 
-    public ProtocolMessage getLastProtocolMesssage() {
-	int size = protocolMessages.size();
-	return protocolMessages.get(size - 1);
+    public ProtocolMessage getLastConfiguredProtocolMesssage() {
+	int size = getAllConfiguredMessages().size();
+	return getAllConfiguredMessages().get(size - 1);
     }
 
-    private List<ProtocolMessage> getMessages(ConnectionEnd peer) {
+    public List<ProtocolMessage> getAllConfiguredMessages() {
 	List<ProtocolMessage> messages = new LinkedList<>();
-	for (ProtocolMessage pm : protocolMessages) {
-	    if (pm.getMessageIssuer() == peer) {
-		messages.add(pm);
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof MessageAction) {
+		for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
+		    messages.add(pm);
+		}
 	    }
 	}
 	return messages;
     }
 
-    public List<ProtocolMessage> getClientMessages() {
-	return getMessages(ConnectionEnd.CLIENT);
+    public List<ProtocolMessage> getAllExecutedMessages() {
+	List<ProtocolMessage> messages = new LinkedList<>();
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof MessageAction) {
+		for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
+		    messages.add(pm);
+		}
+	    }
+	}
+	return messages;
     }
 
-    public List<ProtocolMessage> getServerMessages() {
-	return getMessages(ConnectionEnd.SERVER);
+    public List<ProtocolMessage> getConfiguredReceivingMessages() {
+	List<ProtocolMessage> messages = new LinkedList<>();
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof ReceiveAction) {
+		for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
+
+		    messages.add(pm);
+
+		}
+	    }
+	}
+	return messages;
     }
 
-    public ProtocolMessage getLastClientMesssage() {
-	List<ProtocolMessage> clientMessages = getClientMessages();
+    public List<ProtocolMessage> getActuallyReceivedMessages() {
+	List<ProtocolMessage> messages = new LinkedList<>();
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof ReceiveAction) {
+		for (ProtocolMessage pm : ((ReceiveAction) action).getActualMessages()) {
+
+		    messages.add(pm);
+
+		}
+	    }
+	}
+	return messages;
+    }
+
+    public List<ProtocolMessage> getConfiguredSendMessages() {
+	List<ProtocolMessage> messages = new LinkedList<>();
+	for (TLSAction action : tlsActions) {
+	    if (action instanceof SendAction) {
+		for (ProtocolMessage pm : ((SendAction) action).getConfiguredMessages()) {
+		    messages.add(pm);
+		}
+	    }
+	}
+	return messages;
+    }
+
+    public ProtocolMessage getLastSendMesssage() {
+	List<ProtocolMessage> clientMessages = getConfiguredSendMessages();
 	int size = clientMessages.size();
 	return clientMessages.get(size - 1);
     }
 
-    public ProtocolMessage getLastServerMesssage() {
-	List<ProtocolMessage> serverMessages = getServerMessages();
+    public TLSAction getLastAction() {
+	int size = tlsActions.size();
+	return tlsActions.get(size - 1);
+    }
+
+    public MessageAction getLastMessageAction() {
+	for (int i = tlsActions.size() - 1; i > 0; i--) {
+	    if (tlsActions.get(i) instanceof MessageAction) {
+		return (MessageAction) (tlsActions.get(i));
+	    }
+	}
+	return null;
+    }
+
+    public ProtocolMessage getLastReceiveMesssage() {
+	List<ProtocolMessage> serverMessages = getConfiguredReceivingMessages();
 	int size = serverMessages.size();
 	return serverMessages.get(size - 1);
     }
 
-    public boolean containsFinishedMessage(ConnectionEnd peer) {
-	for (ProtocolMessage pm : protocolMessages) {
+    public boolean receivedFinished() {
+	for (ProtocolMessage pm : getActuallyReceivedMessages()) {
 	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
 		HandshakeMessage hm = (HandshakeMessage) pm;
 		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
-		    if (hm.getMessageIssuer() == peer) {
-			return true;
-		    }
+
+		    return true;
+
 		}
 	    }
 	}
 	return false;
     }
 
-    public boolean containsClientFinished() {
-	return containsFinishedMessage(ConnectionEnd.CLIENT);
-    }
+    public boolean sentFinished() {
+	for (ProtocolMessage pm : getConfiguredSendMessages()) {
+	    if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+		HandshakeMessage hm = (HandshakeMessage) pm;
+		if (hm.getHandshakeMessageType() == HandshakeMessageType.FINISHED) {
 
-    public boolean containsServerFinished() {
-	return containsFinishedMessage(ConnectionEnd.SERVER);
+		    return true;
+
+		}
+	    }
+	}
+	return false;
     }
 
     public String getName() {

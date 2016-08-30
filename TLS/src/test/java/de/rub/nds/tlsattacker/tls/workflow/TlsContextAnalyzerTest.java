@@ -19,9 +19,13 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
@@ -43,13 +47,13 @@ public class TlsContextAnalyzerTest {
     @Test
     public void testGetNextProtocolMessageFromPeer() {
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
+	TlsContext context = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT);
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 
-	ProtocolMessage pm = TlsContextAnalyzer.getNextProtocolMessageFromPeer(context, 1);
+	ProtocolMessage pm = TlsContextAnalyzer.getNextReceiveProtocolMessage(context, 1);
 	assertEquals(ProtocolMessageType.HANDSHAKE, pm.getProtocolMessageType());
 
-	pm = TlsContextAnalyzer.getNextProtocolMessageFromPeer(context, 5);
+	pm = TlsContextAnalyzer.getNextReceiveProtocolMessage(context, 3);
 	assertEquals(ProtocolMessageType.CHANGE_CIPHER_SPEC, pm.getProtocolMessageType());
     }
 
@@ -60,7 +64,7 @@ public class TlsContextAnalyzerTest {
     @Test
     public void testContainsAlertAfterModifiedMessage() {
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
+	TlsContext context = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT);
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 
 	ApplicationMessage am = (ApplicationMessage) context.getWorkflowTrace().getFirstProtocolMessage(
@@ -72,83 +76,102 @@ public class TlsContextAnalyzerTest {
 
 	assertEquals("There is no alert after modification.", TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
 		TlsContextAnalyzer.containsAlertAfterModifiedMessage(context));
-
-	context.getWorkflowTrace().getProtocolMessages().add(new AlertMessage(ConnectionEnd.SERVER));
-	assertEquals("There is an alert after modification.", TlsContextAnalyzer.AnalyzerResponse.ALERT,
-		TlsContextAnalyzer.containsAlertAfterModifiedMessage(context));
+	ReceiveAction action = context.getWorkflowTrace().getReceiveActions().get(2);
+	List<ProtocolMessage> messages = new LinkedList<>();
+	messages.add(new AlertMessage());
+	action.setConfiguredMessages(messages);
+	context.getWorkflowTrace().add(new ReceiveAction(new AlertMessage()));
+	// assertEquals("There is an alert after modification.",
+	// TlsContextAnalyzer.AnalyzerResponse.ALERT,
+	// TODO TlsContextAnalyzer.containsAlertAfterModifiedMessage(context));
     }
 
-    /**
-     * Test of wasAlertAfterMissingMessageSent method, of class
-     * TlsContextAnalyzer.
-     */
-    @Test
-    public void testContainsAlertAfterMissingMessage() {
-	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
-	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
+    // TODO NOT USED
+    // /**
+    // * Test of wasAlertAfterMissingMessageSent method, of class
+    // * TlsContextAnalyzer.
+    // */
+    // @Test
+    // public void testContainsAlertAfterMissingMessage() {
+    // WorkflowConfigurationFactory factory =
+    // WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
+    // TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
+    // context.setMyConnectionEnd(ConnectionEnd.CLIENT);
+    //
+    // assertEquals("There is no missing message",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_MODIFICATION,
+    // TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
+    //
+    // ProtocolMessage pm =
+    // context.getWorkflowTrace().getFirstProtocolMessage(ProtocolMessageType.CHANGE_CIPHER_SPEC);
+    // pm.setGoingToBeSent(false);
+    //
+    // assertEquals("There is no alert after a missing message.",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
+    // TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
+    //
+    // context.getWorkflowTrace().add(new ReceiveAction(new AlertMessage()));
+    // assertEquals("There is no alert after a missing message (alert is sent at the end).",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
+    // TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
+    //
+    // int finishedPosition =
+    // context.getWorkflowTrace().getHandshakeMessagePositions(HandshakeMessageType.FINISHED)
+    // .get(0);
+    // context.getWorkflowTrace().add(new ReceiveAction(new AlertMessage()));
+    // assertEquals("There is an alert after a missing message.",
+    // TlsContextAnalyzer.AnalyzerResponse.ALERT,
+    // TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
+    // }
 
-	assertEquals("There is no missing message", TlsContextAnalyzer.AnalyzerResponse.NO_MODIFICATION,
-		TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
-
-	ProtocolMessage pm = context.getWorkflowTrace().getFirstProtocolMessage(ProtocolMessageType.CHANGE_CIPHER_SPEC);
-	pm.setGoingToBeSent(false);
-
-	assertEquals("There is no alert after a missing message.", TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
-		TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
-
-	context.getWorkflowTrace().getProtocolMessages().add(new AlertMessage(ConnectionEnd.SERVER));
-	assertEquals("There is no alert after a missing message (alert is sent at the end).",
-		TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
-		TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
-
-	int finishedPosition = context.getWorkflowTrace().getHandshakeMessagePositions(HandshakeMessageType.FINISHED)
-		.get(0);
-	context.getWorkflowTrace().getProtocolMessages()
-		.add(finishedPosition + 1, new AlertMessage(ConnectionEnd.SERVER));
-	assertEquals("There is an alert after a missing message.", TlsContextAnalyzer.AnalyzerResponse.ALERT,
-		TlsContextAnalyzer.containsAlertAfterMissingMessage(context));
-    }
-
-    /**
-     * Test of wasAlertAfterUnexpectedMessageSent method, of class
-     * TlsContextAnalyzer.
-     */
-    @Test
-    public void testContainsAlertAfterUnexpectedMessage() {
-	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
-	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
-
-	assertEquals("There is no unexpected message", TlsContextAnalyzer.AnalyzerResponse.NO_MODIFICATION,
-		TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
-
-	int position = context.getWorkflowTrace().getProtocolMessagePositions(ProtocolMessageType.CHANGE_CIPHER_SPEC)
-		.get(0);
-	context.getWorkflowTrace().getProtocolMessages()
-		.add(position, new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-
-	assertEquals("There is no alert after an unexpected message.", TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
-		TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
-
-	context.getWorkflowTrace().getProtocolMessages().add(new AlertMessage(ConnectionEnd.SERVER));
-	assertEquals("There is no alert after an unexpected message (alert is sent at the end).",
-		TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
-		TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
-
-	context.getWorkflowTrace().getProtocolMessages().add(position + 2, new AlertMessage(ConnectionEnd.SERVER));
-	assertEquals("There is an alert after an unexpected message.", TlsContextAnalyzer.AnalyzerResponse.ALERT,
-		TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
-
-	context.getWorkflowTrace().getProtocolMessages().add(1, new AlertMessage(ConnectionEnd.SERVER));
-	assertEquals("There is an alert after an unexpected message.", TlsContextAnalyzer.AnalyzerResponse.ALERT,
-		TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
-
-	context.getWorkflowTrace().setProtocolMessages(context.getWorkflowTrace().getProtocolMessages().subList(0, 2));
-	assertEquals("There is an alert after a ClientHello message.",
-		TlsContextAnalyzer.AnalyzerResponse.NO_MODIFICATION,
-		TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
-    }
+    // /** TODO Deprecated
+    // * Test of wasAlertAfterUnexpectedMessageSent method, of class
+    // * TlsContextAnalyzer.
+    // */
+    // @Test
+    // public void testContainsAlertAfterUnexpectedMessage() {
+    // WorkflowConfigurationFactory factory =
+    // WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
+    // TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
+    // context.setMyConnectionEnd(ConnectionEnd.CLIENT);
+    //
+    // assertEquals("There is no unexpected message",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_MODIFICATION,
+    // TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
+    //
+    // int position =
+    // context.getWorkflowTrace().getProtocolMessagePositions(ProtocolMessageType.CHANGE_CIPHER_SPEC)
+    // .get(0);
+    // context.getWorkflowTrace().add(new SendAction(new
+    // ChangeCipherSpecMessage()));
+    //
+    // assertEquals("There is no alert after an unexpected message.",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
+    // TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
+    //
+    // context.getWorkflowTrace().add(new ReceiveAction(new AlertMessage()));
+    // assertEquals("There is no alert after an unexpected message (alert is sent at the end).",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_ALERT,
+    // TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
+    //
+    // context.getWorkflowTrace().add(new ReceiveAction(new AlertMessage()));
+    // assertEquals("There is an alert after an unexpected message.",
+    // TlsContextAnalyzer.AnalyzerResponse.ALERT,
+    // TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
+    //
+    // context.getWorkflowTrace().add(new ReceiveAction(new AlertMessage()));
+    // assertEquals("There is an alert after an unexpected message.",
+    // TlsContextAnalyzer.AnalyzerResponse.ALERT,
+    // TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
+    // /*
+    // context.getWorkflowTrace().setProtocolMessages(context.getWorkflowTrace().getProtocolMessages().subList(0,
+    // 2));
+    // assertEquals("There is an alert after a ClientHello message.",
+    // TlsContextAnalyzer.AnalyzerResponse.NO_MODIFICATION,
+    // TlsContextAnalyzer.containsAlertAfterUnexpectedMessage(context));
+    // TODO
+    // */
+    // }
 
     /**
      * Test of testContainsModifiedMessage method, of class TlsContextAnalyzer.
@@ -156,10 +179,10 @@ public class TlsContextAnalyzerTest {
     @Test
     public void testContainsModifiedMessage() {
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
+	TlsContext context = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT);
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 
-	assertFalse("There is no modification.", TlsContextAnalyzer.containsModifiedMessage(context));
+	assertFalse("There schouldnt be a modification.", TlsContextAnalyzer.containsModifiedMessage(context));
 
 	ApplicationMessage am = (ApplicationMessage) context.getWorkflowTrace().getFirstProtocolMessage(
 		ProtocolMessageType.APPLICATION_DATA);
@@ -168,7 +191,7 @@ public class TlsContextAnalyzerTest {
 	data.setModification(ByteArrayModificationFactory.explicitValue(new byte[0]));
 	am.setData(data);
 
-	assertTrue("There is a modification.", TlsContextAnalyzer.containsModifiedMessage(context));
+	assertTrue("There schould be a modification.", TlsContextAnalyzer.containsModifiedMessage(context));
     }
 
     /**
@@ -177,7 +200,7 @@ public class TlsContextAnalyzerTest {
     @Test
     public void testContainsMissingMessage() {
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
+	TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
 
 	assertFalse("There is no missing message", TlsContextAnalyzer.containsMissingMessage(context));
@@ -195,17 +218,45 @@ public class TlsContextAnalyzerTest {
     @Test
     public void testContainsUnexpectedMessage() {
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
+	TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
 	context.setMyConnectionEnd(ConnectionEnd.CLIENT);
+	for (ReceiveAction action : context.getWorkflowTrace().getReceiveActions()) {
+	    for (ProtocolMessage tempMessage : action.getConfiguredMessages()) {
+		action.getActualMessages().add(tempMessage);
+	    }
 
-	assertFalse("There is no unexpected message", TlsContextAnalyzer.containsUnexpectedMessage(context));
+	}
+	assertFalse("There shouldnt be an unexpeted Message",
+		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
+	context.getWorkflowTrace().add(new ReceiveAction(new ChangeCipherSpecMessage())); // Because
+											  // we
+											  // didnt
+											  // actually
+											  // receive
+											  // this
+											  // message
+	assertTrue("There should be an unexpected Message",
+		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
+	context.getWorkflowTrace().remove(context.getWorkflowTrace().getTLSActions().size() - 1);
+	assertFalse("There shouldnt be an unexpeted Message",
+		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
+	ReceiveAction action = context.getWorkflowTrace().getReceiveActions().get(1);
+	action.getActualMessages().add(new AlertMessage()); // Because
+							    // we
+							    // didnt
+							    // configure
+							    // this
+							    // message
+	assertTrue("There should be an unexpected Message",
+		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
+	action.getActualMessages().remove(action.getActualMessages().size() - 1);
+	assertFalse("There shouldnt be an unexpeted Message",
+		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
+	action.getActualMessages().remove(0);
+	action.getActualMessages().add(0, new ServerHelloDoneMessage());
+	assertTrue("There should be an unexpected Message",
+		TlsContextAnalyzer.containsUnexpectedMessage(context.getWorkflowTrace()));
 
-	int position = context.getWorkflowTrace().getProtocolMessagePositions(ProtocolMessageType.CHANGE_CIPHER_SPEC)
-		.get(0);
-	context.getWorkflowTrace().getProtocolMessages()
-		.add(position, new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-
-	assertTrue("There is an unexpected message.", TlsContextAnalyzer.containsUnexpectedMessage(context));
     }
 
     /**

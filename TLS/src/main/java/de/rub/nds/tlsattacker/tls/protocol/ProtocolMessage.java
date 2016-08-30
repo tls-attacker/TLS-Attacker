@@ -42,11 +42,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected ProtocolMessageType protocolMessageType;
 
     /**
-     * describes if the messages are coming from the client or the server.
-     */
-    protected ConnectionEnd messageIssuer;
-
-    /**
      * List of preconfigured records for this protocol message
      */
     protected List<Record> records;
@@ -95,14 +90,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public ProtocolMessageType getProtocolMessageType() {
 	return protocolMessageType;
-    }
-
-    public ConnectionEnd getMessageIssuer() {
-	return messageIssuer;
-    }
-
-    public void setMessageIssuer(ConnectionEnd messageIssuer) {
-	this.messageIssuer = messageIssuer;
     }
 
     @XmlElementWrapper

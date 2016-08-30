@@ -30,12 +30,6 @@ public class ClientHelloDtlsMessage extends ClientHelloMessage {
     public ClientHelloDtlsMessage() {
 	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
 	cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public ClientHelloDtlsMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableByteArray getCookie() {

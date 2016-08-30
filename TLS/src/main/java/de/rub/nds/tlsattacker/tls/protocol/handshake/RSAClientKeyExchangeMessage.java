@@ -34,12 +34,6 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public RSAClientKeyExchangeMessage() {
 	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public RSAClientKeyExchangeMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = messageIssuer;
     }
 
     public ModifiableInteger getEncryptedPremasterSecretLength() {

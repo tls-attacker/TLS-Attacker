@@ -35,8 +35,8 @@ public class WorkflowTraceTest {
     @Test
     public void testDeepCopy() {
 	WorkflowTrace copy = (WorkflowTrace) UnoptimizedDeepCopy.copy(trace);
-	assertEquals("The number of messages in both traces has to be equal", trace.getProtocolMessages().size(), copy
-		.getProtocolMessages().size());
+	assertEquals("The number of messages in both traces has to be equal", trace.getAllConfiguredMessages().size(),
+		copy.getAllConfiguredMessages().size());
     }
 
 }

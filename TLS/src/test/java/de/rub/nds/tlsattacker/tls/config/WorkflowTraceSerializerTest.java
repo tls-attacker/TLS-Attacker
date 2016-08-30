@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -47,11 +48,11 @@ public class WorkflowTraceSerializerTest {
     @Test
     public void testWriteRead() throws Exception {
 	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-	TlsContext context = factory.createFullTlsContext();
+	TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
 
 	// pick random protocol message and initialize a record with modifiable
 	// variable
-	List<ProtocolMessage> pms = context.getWorkflowTrace().getProtocolMessages();
+	List<ProtocolMessage> pms = context.getWorkflowTrace().getAllConfiguredMessages();
 	int random = RandomHelper.getRandom().nextInt(pms.size());
 	List<Record> records = new LinkedList<>();
 	Record r = new Record();
@@ -69,12 +70,15 @@ public class WorkflowTraceSerializerTest {
 	String serializedWorkflow = new String(os.toByteArray());
 
 	LOGGER.debug(serializedWorkflow);
+	System.out.println(serializedWorkflow);
 
 	ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
 	WorkflowTrace wt = WorkflowTraceSerializer.read(bis);
 
 	os = new ByteArrayOutputStream();
 	WorkflowTraceSerializer.write(os, wt);
+
+	System.out.println(new String(os.toByteArray()));
 
 	Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
 		os.toByteArray());

@@ -28,6 +28,11 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,7 +42,7 @@ import java.util.List;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class RenegotiationWorkflowConfiguration {
-
+    // TODO Shouldnt this extend the WorkflowConfigurationFactiory?
     private final TlsContext tlsContext;
 
     public RenegotiationWorkflowConfiguration(TlsContext tlsContext) {
@@ -45,12 +50,14 @@ public class RenegotiationWorkflowConfiguration {
     }
 
     public void createWorkflow() {
-	ProtocolMessage lastMessage = tlsContext.getWorkflowTrace().getLastProtocolMesssage();
+	MessageAction action = tlsContext.getWorkflowTrace().getLastMessageAction();
 	WorkflowTrace workflowTrace;
-	if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+	if (action.getConfiguredMessages().get(action.getConfiguredMessages().size() - 1).getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
 	    workflowTrace = createHandshakeWorkflow();
-	} else if (lastMessage.getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA
-		&& lastMessage.getMessageIssuer() == ConnectionEnd.CLIENT) {
+	} else if (action.getConfiguredMessages().get(action.getConfiguredMessages().size() - 1)
+		.getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA
+		&& ((tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT && action instanceof SendAction) || (tlsContext
+			.getMyConnectionEnd() == ConnectionEnd.SERVER && action instanceof ReceiveAction))) {
 	    workflowTrace = createFullWorkflow();
 	} else {
 	    workflowTrace = createFullSRWorkflow();
@@ -69,57 +76,60 @@ public class RenegotiationWorkflowConfiguration {
 
 	List<ProtocolMessage> protocolMessages = new LinkedList<>();
 
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
-
+	ClientHelloMessage clientHello = new ClientHelloMessage();
+	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+		clientHello));
 	List<CipherSuite> ciphers = new LinkedList<>();
 	ciphers.add(tlsContext.getSelectedCipherSuite());
-	ch.setSupportedCipherSuites(ciphers);
+	clientHello.setSupportedCipherSuites(ciphers);
 	List<CompressionMethod> compressions = new LinkedList<>();
 	compressions.add(CompressionMethod.NULL);
-	ch.setSupportedCompressionMethods(compressions);
+	clientHello.setSupportedCompressionMethods(compressions);
 
-	protocolMessages.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new CertificateMessage(ConnectionEnd.SERVER));
+	protocolMessages.add(new ServerHelloMessage());
+	protocolMessages.add(new CertificateMessage());
 
 	if (tlsContext.getSelectedCipherSuite().isEphemeral()) {
 	    if (tlsContext.getSelectedCipherSuite().name().contains("_DHE_")) {
-		protocolMessages.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
+		protocolMessages.add(new DHEServerKeyExchangeMessage());
 	    } else {
-		protocolMessages.add(new ECDHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
+		protocolMessages.add(new ECDHEServerKeyExchangeMessage());
 	    }
 	}
 
 	if (tlsContext.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
+	    protocolMessages.add(new CertificateRequestMessage());
 	}
 
-	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-
+	protocolMessages.add(new ServerHelloDoneMessage());
+	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
+		protocolMessages));
+	protocolMessages = new LinkedList<>();
 	if (tlsContext.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
+	    protocolMessages.add(new CertificateMessage());
 	}
 
 	if (tlsContext.getSelectedCipherSuite().name().contains("_DH")) {
-	    protocolMessages.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    protocolMessages.add(new DHClientKeyExchangeMessage());
 	} else if (tlsContext.getSelectedCipherSuite().name().contains("_ECDH")) {
-	    protocolMessages.add(new ECDHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    protocolMessages.add(new ECDHClientKeyExchangeMessage());
 	} else {
-	    protocolMessages.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
+	    protocolMessages.add(new RSAClientKeyExchangeMessage());
 	}
 
 	if (tlsContext.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
+	    protocolMessages.add(new CertificateVerifyMessage());
 	}
 
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
-
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new FinishedMessage(ConnectionEnd.SERVER));
-
-	workflowTrace.setProtocolMessages(protocolMessages);
-
+	protocolMessages.add(new ChangeCipherSpecMessage());
+	protocolMessages.add(new FinishedMessage());
+	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+		protocolMessages));
+	protocolMessages = new LinkedList<>();
+	protocolMessages.add(new ChangeCipherSpecMessage());
+	protocolMessages.add(new FinishedMessage());
+	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
+		protocolMessages));
 	return workflowTrace;
 
     }
@@ -127,12 +137,8 @@ public class RenegotiationWorkflowConfiguration {
     private WorkflowTrace createFullWorkflow() {
 
 	WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
-
-	List<ProtocolMessage> protocolMessages = workflowTrace.getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.CLIENT));
-
-	workflowTrace.setProtocolMessages(protocolMessages);
+	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+		new ApplicationMessage()));
 
 	return workflowTrace;
     }
@@ -140,13 +146,8 @@ public class RenegotiationWorkflowConfiguration {
     private WorkflowTrace createFullSRWorkflow() {
 
 	WorkflowTrace workflowTrace = this.createFullWorkflow();
-
-	List<ProtocolMessage> protocolMessages = workflowTrace.getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.SERVER));
-
-	workflowTrace.setProtocolMessages(protocolMessages);
-
+	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
+		new ApplicationMessage()));
 	return workflowTrace;
     }
 
