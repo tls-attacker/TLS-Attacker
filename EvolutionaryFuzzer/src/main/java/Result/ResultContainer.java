@@ -1,6 +1,6 @@
 package Result;
 
-import Analyzer.Analyzer;
+import Analyzer.RuleAnalyzer;
 import Config.EvolutionaryFuzzerConfig;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -35,14 +35,14 @@ public class ResultContainer {
     }
 
     private int executed = 0;
-    private Analyzer analyzer;
+    private RuleAnalyzer analyzer;
 
     private ResultContainer() {
 
 	goodVectors = new ArrayList<>();
 
 	evolutionaryFuzzerConfig = Config.ConfigManager.getInstance().getConfig();
-	analyzer = new Analyzer(evolutionaryFuzzerConfig);
+	analyzer = new RuleAnalyzer(evolutionaryFuzzerConfig);
 
     }
 
@@ -76,7 +76,7 @@ public class ResultContainer {
 	goodVectors.add(vector);
     }
 
-    public Analyzer getAnalyzer() {
+    public RuleAnalyzer getAnalyzer() {
 	return analyzer;
     }
 
