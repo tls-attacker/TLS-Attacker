@@ -136,13 +136,13 @@ public final class TestVectorSerializer {
 		    vector.getTrace().setName(file.getAbsolutePath());
 		    list.add(vector);
 		} catch (JAXBException ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
 		} catch (IOException ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
 		} catch (XMLStreamException ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
 		} catch (Throwable ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
 		}
 	    }
 	    return list;
