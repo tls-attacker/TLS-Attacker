@@ -23,7 +23,9 @@ public class AgentFactory {
 		return new AFLAgent(keypair);
 	    case "PIN":
 		return new PINAgent(keypair);
-	    default:
+            case "BLIND":
+		return new PINAgent(keypair);
+            default:
 		throw new RuntimeException("Could not find Agent!");
 	}
     }
