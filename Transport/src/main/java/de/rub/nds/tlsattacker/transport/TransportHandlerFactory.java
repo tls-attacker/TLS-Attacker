@@ -25,13 +25,13 @@ public class TransportHandlerFactory {
 	switch (type) {
 	    case TCP:
 		SimpleTransportHandler th = new SimpleTransportHandler();
-		th.setTlsTimeout(tlsTimeout);
+		th.setTimeout(tlsTimeout);
 		return th;
 	    case EAP_TLS:
 		return new EAPTLSTransportHandler();
 	    case UDP:
 		UDPTransportHandler udpth = new UDPTransportHandler();
-		udpth.setTlsTimeout(tlsTimeout);
+		udpth.setTimeout(tlsTimeout);
 		return udpth;
 	    default:
 		throw new UnsupportedOperationException("This transport handler " + "type is not supported");

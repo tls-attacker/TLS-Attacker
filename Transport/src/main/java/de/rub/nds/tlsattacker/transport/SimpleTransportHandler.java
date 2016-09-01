@@ -151,9 +151,4 @@ public class SimpleTransportHandler extends TransportHandler {
 	    LOGGER.debug(e);
 	}
     }
-
-
-    public void setTlsTimeout(int tlsTimeout) {
-	this.timeout = tlsTimeout;
-    }
 }

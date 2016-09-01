@@ -83,8 +83,8 @@ public class UDPTransportHandler extends TransportHandler {
 	datagramSocket.close();
 	LOGGER.debug("Socket closed.");
     }
-
-    public void setTlsTimeout(int tlsTimeout) {
+    @Override
+    public void setTimeout(long tlsTimeout) {
 	this.timeout = tlsTimeout;
 	if (datagramSocket != null) {
 	    try {
