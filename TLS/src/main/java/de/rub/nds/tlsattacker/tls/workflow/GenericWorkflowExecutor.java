@@ -61,6 +61,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
 		action.execute(tlsContext, actionExecutor);
 		workflowContext.incrementActionPointer();
 	    }
+	    tlsContext.getTransportHandler().closeConnection();
 	} catch (WorkflowExecutionException | IOException e) {
 	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
 	}

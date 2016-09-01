@@ -68,8 +68,7 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 
 	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 
-
-	    if (tlsContext.getMyConnectionEnd()== ConnectionEnd.SERVER) {
+	    if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
 		tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
 		tlsContext.setX509ServerCertificateObject(x509CertObject);
 	    } else {
@@ -125,7 +124,7 @@ public class CertificateHandler<HandshakeMessage extends CertificateMessage> ext
 	    Certificate tlsCerts = Certificate.parse(new ByteArrayInputStream(message, currentPointer, protocolMessage
 		    .getCertificatesLength().getValue() + HandshakeByteLength.CERTIFICATES_LENGTH));
 	    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-	    if (tlsContext.getMyConnectionPeer()== ConnectionEnd.SERVER) {
+	    if (tlsContext.getMyConnectionPeer() == ConnectionEnd.SERVER) {
 		tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
 		tlsContext.setX509ServerCertificateObject(x509CertObject);
 	    } else {

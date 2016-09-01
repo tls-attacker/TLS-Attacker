@@ -52,22 +52,26 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import java.util.Set;
+import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.ErrorCollector;
 
 /**
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class TlsClientTest {
-
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
 
     private TLSServer tlsServer;
 
     private static final int PORT = 56789;
 
-    private static final int TIMEOUT = 2000;
+    private static final int TIMEOUT = 400;
 
     public TlsClientTest() {
 	Security.addProvider(new BouncyCastleProvider());
@@ -76,12 +80,14 @@ public class TlsClientTest {
     @Test
     public void testRSAWorkflows() {
 	try {
+
 	    KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
 	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
 	    tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
 	    new Thread(tlsServer).start();
 	    while (!tlsServer.isInitialized())
 		;
+	    LOGGER.log(Level.INFO, "Testing RSA");
 	    testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
 	    tlsServer.shutdown();
 	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
@@ -100,6 +106,7 @@ public class TlsClientTest {
 	    new Thread(tlsServer).start();
 	    while (!tlsServer.isInitialized())
 		;
+	    LOGGER.log(Level.INFO, "Testing EC");
 	    testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
 	    tlsServer.shutdown();
 	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
@@ -120,13 +127,12 @@ public class TlsClientTest {
 	generalConfig.setLogLevel(Level.INFO);
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 	configHandler.initialize(generalConfig);
-
 	ClientCommandConfig config = new ClientCommandConfig();
 	config.setConnect("localhost:" + port);
 	config.setTlsTimeout(TIMEOUT);
+	configHandler.initializeTransportHandler(config);
 
 	List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
-
 	config.setProtocolVersion(ProtocolVersion.TLS10);
 	testProtocolCompatibility(serverList, configHandler, config, algorithm);
 	config.setProtocolVersion(ProtocolVersion.TLS11);
@@ -137,6 +143,7 @@ public class TlsClientTest {
 	if (algorithm == PublicKeyAlgorithm.RSA) {
 	    testCustomWorkflow(port);
 	}
+
     }
 
     private void testProtocolCompatibility(List<String> serverList, ConfigHandler configHandler,
@@ -147,18 +154,20 @@ public class TlsClientTest {
 	    requiredAlgorithms.remove(algorithm);
 	    if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getProtocolVersion())
 		    && requiredAlgorithms.isEmpty()) {
-		LOGGER.info("Testing: {}", cs);
 		LinkedList<CipherSuite> cslist = new LinkedList<>();
 		cslist.add(cs);
 		config.setCipherSuites(cslist);
-		testExecuteWorkflow(configHandler, config);
+		boolean result = testExecuteWorkflow(configHandler, config);
+		LOGGER.info("Testing: " + cs.name() + " Succes:" + result);
+		collector.checkThat("" + cs.name() + " failed.", result, is(true));
 	    }
 	}
     }
 
-    private void testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config) {
+    private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config) {
 
 	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+
 	TlsContext tlsContext = configHandler.initializeTlsContext(config);
 	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 	try {
@@ -167,8 +176,7 @@ public class TlsClientTest {
 	    E.printStackTrace();
 	}
 	transportHandler.closeConnection();
-
-	assertTrue(!tlsContext.getWorkflowTrace()
+	return (!tlsContext.getWorkflowTrace()
 		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 

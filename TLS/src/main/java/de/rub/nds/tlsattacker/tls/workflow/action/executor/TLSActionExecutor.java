@@ -31,6 +31,7 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSActionExecutor extends ActionExecutor {
+
     private TlsContext context;
 
     public TLSActionExecutor(TlsContext context) {
@@ -111,6 +112,15 @@ public class TLSActionExecutor extends ActionExecutor {
 	}
     }
 
+    private boolean containsArbitaryMessage(List<ProtocolMessage> protocolMessages) {
+	for (ProtocolMessage message : protocolMessages) {
+	    if (message instanceof ArbitraryMessage) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
     /**
      * 
      * @param protocolMessages
@@ -119,30 +129,31 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     protected List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages,
 	    TlsContext context) throws IOException {
-	List<Record> records = fetchRecords(context);
-	if (records.isEmpty()) {
-	    ProtocolMessage pm = protocolMessages.get(0);
-	    if (pm != null && pm.getClass() == ArbitraryMessage.class) {
-		return new LinkedList<>(); // We received no messages
-	    } else {
-		throw new WorkflowExecutionException("The configured protocol message was not found, "
-			+ "the TLS peer does not send any data.");
-	    }
-	}
 
-	List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
 	List<ProtocolMessage> receivedMessages = new LinkedList<>();
-	for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
-	    byte[] rawProtocolMessageBytes = getRawProtocolBytesFromRecords(recordsOfSameContent);
-	    ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent.get(0)
-		    .getContentType().getValue());
-	    receivedMessages.addAll(parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages,
-		    protocolMessageType, context));
-	    if (!context.isRenegotiation()) {
-		ProtocolMessage pm = protocolMessages.get(pointer - 1);
-		pm.setRecords(recordsOfSameContent);
-	    } else {
-		handleRenegotiation(context);
+	List<Record> records = fetchRecords(context);
+	while (records != null && records.size() > 0) {
+	    List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
+	    for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
+		byte[] rawProtocolMessageBytes = getRawProtocolBytesFromRecords(recordsOfSameContent);
+		ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent
+			.get(0).getContentType().getValue());
+		receivedMessages.addAll(parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages,
+			protocolMessageType, context));
+		if (!context.isRenegotiation()) {
+		    ProtocolMessage pm = protocolMessages.get(pointer - 1);
+		    pm.setRecords(recordsOfSameContent);
+		} else {
+		    handleRenegotiation(context);
+		}
+	    }
+
+	    records = parseFinishedBytes(context);
+	    if (records == null) {
+		// Do we expect more data?
+		if (receivedMessages.size() != protocolMessages.size() || containsArbitaryMessage(protocolMessages)) {
+		    records = fetchRecords(context);
+		}
 	    }
 	}
 	return receivedMessages;
@@ -291,6 +302,9 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     protected List<List<Record>> createListsOfRecordsOfTheSameContentType(List<Record> records) {
 	List<List<Record>> result = new LinkedList();
+	if (records == null || records.isEmpty()) {
+	    return result;
+	}
 	int recordPointer = 0;
 	Record record = records.get(recordPointer);
 	List<Record> currentRecords = new LinkedList<>();
@@ -322,16 +336,22 @@ public class TLSActionExecutor extends ActionExecutor {
      * @throws IOException
      */
     protected List<Record> fetchRecords(TlsContext context) throws IOException {
-	List<Record> records;
-	// parse stored Finished bytes into a record
-	if (context.getRecordHandler().getFinishedBytes() != null) {
-	    records = context.getRecordHandler().parseRecords(context.getRecordHandler().getFinishedBytes());
-	    context.getRecordHandler().setFinishedBytes(null);
-	} else {
+	List<Record> records = null;
+	if (records == null) {
 	    byte[] rawResponse = context.getTransportHandler().fetchData();
 	    while ((records = context.getRecordHandler().parseRecords(rawResponse)) == null) {
 		rawResponse = ArrayConverter.concatenate(rawResponse, context.getTransportHandler().fetchData());
 	    }
+	}
+	return records;
+    }
+
+    protected List<Record> parseFinishedBytes(TlsContext context) throws IOException {
+	List<Record> records = null;
+	// parse stored Finished bytes into a record
+	if (context.getRecordHandler().getFinishedBytes() != null) {
+	    records = context.getRecordHandler().parseRecords(context.getRecordHandler().getFinishedBytes());
+	    context.getRecordHandler().setFinishedBytes(null);
 	}
 	return records;
     }

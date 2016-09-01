@@ -22,8 +22,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class CertificateMessage extends HandshakeMessage
-{
+public class CertificateMessage extends HandshakeMessage {
 
     /**
      * certificates length
@@ -37,39 +36,32 @@ public class CertificateMessage extends HandshakeMessage
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.CERTIFICATE)
     ModifiableByteArray x509CertificateBytes;
 
-    public CertificateMessage()
-    {
-        super(HandshakeMessageType.CERTIFICATE);
+    public CertificateMessage() {
+	super(HandshakeMessageType.CERTIFICATE);
     }
 
-    public ModifiableInteger getCertificatesLength()
-    {
-        return certificatesLength;
+    public ModifiableInteger getCertificatesLength() {
+	return certificatesLength;
     }
 
-    public void setCertificatesLength(ModifiableInteger certificatesLength)
-    {
-        this.certificatesLength = certificatesLength;
+    public void setCertificatesLength(ModifiableInteger certificatesLength) {
+	this.certificatesLength = certificatesLength;
     }
 
-    public void setCertificatesLength(int length)
-    {
-        this.certificatesLength = ModifiableVariableFactory.safelySetValue(certificatesLength, length);
+    public void setCertificatesLength(int length) {
+	this.certificatesLength = ModifiableVariableFactory.safelySetValue(certificatesLength, length);
     }
 
-    public ModifiableByteArray getX509CertificateBytes()
-    {
-        return x509CertificateBytes;
+    public ModifiableByteArray getX509CertificateBytes() {
+	return x509CertificateBytes;
     }
 
-    public void setX509CertificateBytes(ModifiableByteArray x509CertificateBytes)
-    {
-        this.x509CertificateBytes = x509CertificateBytes;
+    public void setX509CertificateBytes(ModifiableByteArray x509CertificateBytes) {
+	this.x509CertificateBytes = x509CertificateBytes;
     }
 
-    public void setX509CertificateBytes(byte[] array)
-    {
-        this.x509CertificateBytes = ModifiableVariableFactory.safelySetValue(x509CertificateBytes, array);
+    public void setX509CertificateBytes(byte[] array) {
+	this.x509CertificateBytes = ModifiableVariableFactory.safelySetValue(x509CertificateBytes, array);
     }
 
     // public List<ModifiableInteger> getCertificateLengths() {
@@ -105,20 +97,17 @@ public class CertificateMessage extends HandshakeMessage
     // this.certificates.add(cert);
     // }
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder(super.toString());
-        if (certificatesLength != null)
-        {
-            sb.append("\n  Certificates Length: ");
-            sb.append(certificatesLength.getValue());
-        }
-        if (x509CertificateBytes != null)
-        {
-            sb.append("\n  Certificate:\n");
-            sb.append(ArrayConverter.bytesToHexString(x509CertificateBytes.getValue()));
-        }
-        return sb.toString();
+    public String toString() {
+	StringBuilder sb = new StringBuilder(super.toString());
+	if (certificatesLength != null) {
+	    sb.append("\n  Certificates Length: ");
+	    sb.append(certificatesLength.getValue());
+	}
+	if (x509CertificateBytes != null) {
+	    sb.append("\n  Certificate:\n");
+	    sb.append(ArrayConverter.bytesToHexString(x509CertificateBytes.getValue()));
+	}
+	return sb.toString();
     }
 
     // public PublicKey getPublicKey() {
@@ -126,10 +115,9 @@ public class CertificateMessage extends HandshakeMessage
     // return cert.getPublicKey();
     // }
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext)
-    {
-        ProtocolMessageHandler handler = new CertificateHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler handler = new CertificateHandler(tlsContext);
+	handler.setProtocolMessage(this);
+	return handler;
     }
 }

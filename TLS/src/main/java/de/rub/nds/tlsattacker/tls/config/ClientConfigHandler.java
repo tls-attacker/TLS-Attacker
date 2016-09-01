@@ -45,6 +45,7 @@ public class ClientConfigHandler extends ConfigHandler {
 	    String host = hp[0];
 	    int port = Integer.parseInt(hp[1]);
 	    th.initialize(host, port);
+	    th.setTimeout(config.getTlsTimeout());
 	    return th;
 	} catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
 	    throw new ConfigurationException(ccConfig.getConnect()
