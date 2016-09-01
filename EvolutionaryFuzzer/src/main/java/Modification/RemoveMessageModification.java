@@ -20,7 +20,7 @@ public class RemoveMessageModification extends Modification {
     private final SendAction action;
 
     public RemoveMessageModification(ProtocolMessage message, SendAction action, int position) {
-	super(ModificationType.ADD_MESSAGE);
+	super(ModificationType.REMOVE_MESSAGE);
 	this.message = message;
 	this.position = position;
 	this.action = action;
