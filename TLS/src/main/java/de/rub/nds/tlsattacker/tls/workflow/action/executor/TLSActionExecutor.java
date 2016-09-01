@@ -55,7 +55,7 @@ public class TLSActionExecutor extends ActionExecutor {
 	    throws IOException {
 	pointer = 0;
 	List<ProtocolMessage> receivedList = handleProtocolMessagesFromPeer(messages, tlsContext);
-	return messages;
+	return receivedList;
 
     }
 
