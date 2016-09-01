@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class SimpleTransportHandler implements TransportHandler {
+public class SimpleTransportHandler extends TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(SimpleTransportHandler.class);
 
@@ -43,10 +43,10 @@ public class SimpleTransportHandler implements TransportHandler {
 
     private BufferedInputStream bis;
 
-    private int tlsTimeout;
+
 
     public SimpleTransportHandler() {
-	tlsTimeout = DEFAULT_TLS_TIMEOUT;
+	this.timeout = DEFAULT_TLS_TIMEOUT;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class SimpleTransportHandler implements TransportHandler {
     @Override
     public byte[] fetchData() throws IOException {
 	byte[] response = new byte[0];
-	long minTimeMillies = System.currentTimeMillis() + tlsTimeout;
+	long minTimeMillies = System.currentTimeMillis() + timeout;
 	// long maxTimeMillies = System.currentTimeMillis() + timeout;
 	while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0)) {
 	    // while ((System.currentTimeMillis() < maxTimeMillies) &&
@@ -152,11 +152,8 @@ public class SimpleTransportHandler implements TransportHandler {
 	}
     }
 
-    public int getTlsTimeout() {
-	return tlsTimeout;
-    }
 
     public void setTlsTimeout(int tlsTimeout) {
-	this.tlsTimeout = tlsTimeout;
+	this.timeout = tlsTimeout;
     }
 }

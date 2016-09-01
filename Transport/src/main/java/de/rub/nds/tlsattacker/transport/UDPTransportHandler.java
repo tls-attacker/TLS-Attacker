@@ -20,13 +20,11 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class UDPTransportHandler implements TransportHandler {
+public class UDPTransportHandler extends TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(UDPTransportHandler.class);
 
     private static final int DEFAULT_TLS_TIMEOUT = 3000;
-
-    private int tlsTimeout = DEFAULT_TLS_TIMEOUT;
 
     private DatagramSocket datagramSocket;
 
@@ -36,9 +34,16 @@ public class UDPTransportHandler implements TransportHandler {
 
     private long responseNanos = -1;
 
+    public UDPTransportHandler()
+    {
+        timeout = DEFAULT_TLS_TIMEOUT;
+    }
+
+    
     @Override
     public void initialize(String remoteAddress, int remotePort) throws IOException {
 	datagramSocket = new DatagramSocket();
+        
 	datagramSocket.setSoTimeout(DEFAULT_TLS_TIMEOUT);
 	datagramSocket.connect(InetAddress.getByName(remoteAddress), remotePort);
 
@@ -79,15 +84,11 @@ public class UDPTransportHandler implements TransportHandler {
 	LOGGER.debug("Socket closed.");
     }
 
-    public int getTlsTimeout() {
-	return tlsTimeout;
-    }
-
     public void setTlsTimeout(int tlsTimeout) {
-	this.tlsTimeout = tlsTimeout;
+	this.timeout = tlsTimeout;
 	if (datagramSocket != null) {
 	    try {
-		datagramSocket.setSoTimeout(this.tlsTimeout);
+		datagramSocket.setSoTimeout((int)(this.timeout));
 	    } catch (SocketException e) {
 		LOGGER.debug("Failed to set socket timeout. Exception:\n{}", e.getMessage());
 	    }

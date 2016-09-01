@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author root
  */
-class EAPTLSTransportHandler implements TransportHandler {
+class EAPTLSTransportHandler extends TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(EAPTLSTransportHandler.class);
 
@@ -45,6 +45,7 @@ class EAPTLSTransportHandler implements TransportHandler {
 
     @Override
     public void initialize(String address, int port) throws IOException {
+        //TODO DOES NOT DEFINE A TIMEOUT AND DOES NOT USE IT
 	nic.init();
 
 	while (true) {
