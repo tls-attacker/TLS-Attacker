@@ -15,9 +15,14 @@ import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +82,7 @@ public class RecordHandler {
 	    byte[] ctArray = { record.getContentType().getValue() };
 	    byte[] pv = record.getProtocolVersion().getValue();
 	    byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
-	    if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	    if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
 		byte[] pm = record.getProtocolMessageBytes().getValue();
 		result = ArrayConverter.concatenate(result, ctArray, pv, rl, pm);
 	    } else {
@@ -142,6 +147,21 @@ public class RecordHandler {
 	record.setProtocolMessageBytes(pmData);
 
 	if (encryptSending && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+	    if (recordCipher == null && tlsContext.isFuzzingMode()) {
+		try {
+		    recordCipher = new TlsRecordBlockCipher(tlsContext);
+		} catch (NoSuchAlgorithmException ex) {
+		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (NoSuchPaddingException ex) {
+		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InvalidKeyException ex) {
+		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (InvalidAlgorithmParameterException ex) {
+		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	    } else if (recordCipher == null) {
+		throw new WorkflowExecutionException("Cannot encrypt Record, RecordCipher is not yet initialized");
+	    }
 	    byte[] mac = recordCipher.calculateMac(tlsContext.getProtocolVersion(), contentType, record
 		    .getProtocolMessageBytes().getValue());
 	    record.setMac(mac);
@@ -198,6 +218,7 @@ public class RecordHandler {
 	    // them into a record
 	    if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC && lastByte < rawRecordData.length) {
 		finishedBytes = Arrays.copyOfRange(rawRecordData, lastByte, rawRecordData.length);
+
 		lastByte = rawRecordData.length;
 	    }
 
