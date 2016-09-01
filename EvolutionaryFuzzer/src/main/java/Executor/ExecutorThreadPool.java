@@ -157,6 +157,7 @@ public class ExecutorThreadPool implements Runnable {
 		    }
 		} catch (Throwable ex) {
 		    ex.printStackTrace();
+                    server.release();
 		}
 
 	    }

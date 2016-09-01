@@ -82,6 +82,7 @@ public class SimpleMutator extends Mutator {
             }
             tempVector.getModificationList().clear();
 	    Modification modification = null;
+            trace = tempVector.getTrace();
 	    if (r.nextInt(100) <= simpleConfig.getChangeServerCert()) {
                 ServerCertificateStructure serverKeyCertPair = certMutator.getServerCertificateStructure();
 		modification = new ChangeServerCertificateModification(serverKeyCertPair);
