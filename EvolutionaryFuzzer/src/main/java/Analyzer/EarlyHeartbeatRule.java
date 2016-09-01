@@ -50,7 +50,7 @@ public class EarlyHeartbeatRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	WorkflowTrace trace = result.getExecutedVector().getTrace();
+	WorkflowTrace trace = result.getVector().getTrace();
 	if (!trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT).isEmpty()) {
 	    return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);
 	} else {
@@ -63,12 +63,12 @@ public class EarlyHeartbeatRule extends Rule {
 	found++;
 	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
-	    result.getExecutedVector()
+	    result.getVector()
 		    .getTrace()
 		    .setDescription(
 			    "WorkflowTrace has a Heartbeat from the Server before the Server send his finished message!");
 	    f.createNewFile();
-	    TestVectorSerializer.write(f, result.getExecutedVector());
+	    TestVectorSerializer.write(f, result.getVector());
 	} catch (JAXBException | IOException E) {
 	    LOG.log(Level.SEVERE,
 		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "

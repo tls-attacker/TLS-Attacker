@@ -22,6 +22,7 @@ import Server.TLSServer;
 import TestVector.TestVector;
 import TestVector.TestVectorSerializer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -113,6 +114,10 @@ public class ExecutorThreadPool implements Runnable {
 			server = ServerManager.getInstance().getFreeServer();
 			Agent agent = AgentFactory.generateAgent(config, list.get(i).getServerKeyCert());
 			Runnable worker = new TLSExecutor(list.get(i), server, agent);
+                        for (TLSAction action : list.get(i).getTrace().getTLSActions()) {
+                            action.reset();
+                        }
+                        list.get(i).getModificationList().clear();
 			executor.submit(worker);
 			runs++;
 		    } else {

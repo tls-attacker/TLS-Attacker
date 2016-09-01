@@ -51,8 +51,8 @@ public class UniqueFlowsRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
-		.getTrace(), ConnectionEnd.CLIENT);
+	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
+		ConnectionEnd.CLIENT);
 	type.clean();
 	return !typeSet.contains(type);
 
@@ -61,8 +61,8 @@ public class UniqueFlowsRule extends Rule {
     @Override
     public void onApply(Result result) {
 
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getExecutedVector()
-		.getTrace(), ConnectionEnd.CLIENT);
+	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
+		ConnectionEnd.CLIENT);
 	type.clean();
 	if (typeSet.add(type)) {
 	    found++;
@@ -73,7 +73,7 @@ public class UniqueFlowsRule extends Rule {
 	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	    try {
 		f.createNewFile();
-		TestVectorSerializer.write(f, result.getExecutedVector());
+		TestVectorSerializer.write(f, result.getVector());
 	    } catch (JAXBException | IOException E) {
 		LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
 			+ f.getAbsolutePath(), E);

@@ -40,6 +40,7 @@ import Server.TLSServer;
 import TestVector.TestVector;
 import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.FileInputStream;
 import java.security.cert.Certificate;
@@ -63,7 +64,6 @@ public class TLSExecutor extends Executor {
 
     private final TestVector testVector;
     private final TLSServer server;
-    private final TestVector backupVector;
     private final Agent agent;
 
     /**
@@ -78,7 +78,7 @@ public class TLSExecutor extends Executor {
 	this.testVector = testVector;
 	this.server = server;
 	this.agent = agent;
-	backupVector = (TestVector) UnoptimizedDeepCopy.copy(testVector);
+	
     }
 
     /**
@@ -95,6 +95,7 @@ public class TLSExecutor extends Executor {
 	    try {
 		// Load clientCertificate
 		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
+                //TODO This can be a problem when running with mutliple threads
 		fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
 		fc.setPassword(testVector.getClientKeyCert().getPassword());
 		fc.setAlias(testVector.getClientKeyCert().getAlias());
@@ -194,7 +195,7 @@ public class TLSExecutor extends Executor {
 		agent.applicationStop(server);
 		File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
 			+ "/" + server.getID());
-		Result r = agent.collectResults(branchTrace, backupVector, testVector);
+		Result r = agent.collectResults(branchTrace, testVector);
 		r.setDidTimeout(timeout);
 		branchTrace.delete();
 		ResultContainer.getInstance().commit(r);

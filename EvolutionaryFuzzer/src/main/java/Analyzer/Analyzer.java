@@ -10,12 +10,11 @@ package Analyzer;
 import Result.Result;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Analyzer
-{
+public abstract class Analyzer {
     public abstract void analyze(Result result);
 
-    public abstract String getReport();   
+    public abstract String getReport();
 }

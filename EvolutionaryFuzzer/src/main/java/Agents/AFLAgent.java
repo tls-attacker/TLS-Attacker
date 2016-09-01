@@ -81,7 +81,7 @@ public class AFLAgent extends Agent {
     }
 
     @Override
-    public Result collectResults(File branchTrace, TestVector vector, TestVector executedVector) {
+    public Result collectResults(File branchTrace, TestVector vector) {
 	if (running) {
 	    throw new IllegalStateException("Can't collect Results, Agent still running!");
 	}
@@ -99,8 +99,8 @@ public class AFLAgent extends Agent {
 	}
 	BranchTrace t = getBranchTrace(branchTrace);
 
-	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, executedVector, LogFileIDManager
-		.getInstance().getFilename());
+	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+		.getFilename());
 
 	return result;
     }

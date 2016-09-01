@@ -64,7 +64,7 @@ public class FindAlertsRuleTest {
 	trace.add(new SendAction(new HeartbeatMessage()));
 	trace.add(new ReceiveAction(new HeartbeatMessage()));
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+		ExecutorType.TLS, null), "unittest.id");
 	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result)); // Should not apply cause it has no
 	// alert message
@@ -101,7 +101,7 @@ public class FindAlertsRuleTest {
 	trace.add(new SendAction(new HeartbeatMessage()));
 	trace.add(new ReceiveAction(new AlertMessage()));
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+		ExecutorType.TLS, null), "unittest.id");
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -113,7 +113,7 @@ public class FindAlertsRuleTest {
 	trace.add(new SendAction(new ClientHelloMessage()));
 	trace.add(new SendAction(new HeartbeatMessage()));
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "unittest.id");
+		ExecutorType.TLS, null), "unittest.id");
 	AlertMessage message = new AlertMessage();
 	message.setDescription((byte) 20);
 	trace.add(new ReceiveAction(message));
@@ -139,8 +139,7 @@ public class FindAlertsRuleTest {
     @Test
     public void testReport() {
 	rule.onApply(new Result(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-		ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
-		"2unit.test"));
+		ExecutorType.TLS, null), "2unit.test"));
 	assertNotNull(rule.report());
     }
 

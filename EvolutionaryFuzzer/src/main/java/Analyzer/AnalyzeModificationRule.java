@@ -59,7 +59,7 @@ public class AnalyzeModificationRule extends Rule {
     @Override
     public void onApply(Result result) {
 	executedTraces++;
-	for (Modification mod : result.getExecutedVector().getModificationList()) {
+	for (Modification mod : result.getVector().getModificationList()) {
 	    MutableInt i = typeMap.get(mod.getType());
 	    if (i == null) {
 		typeMap.put(mod.getType(), new MutableInt(1));

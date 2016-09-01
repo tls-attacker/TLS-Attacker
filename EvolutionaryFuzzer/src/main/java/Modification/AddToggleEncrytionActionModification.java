@@ -8,21 +8,19 @@
 package Modification;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AddToggleEncrytionActionModification extends Modification
-{
+public class AddToggleEncrytionActionModification extends Modification {
     private int actionPosition;
-    public AddToggleEncrytionActionModification(int ActionPosition)
-    {
-        super(ModificationType.TOGGLE_ENCRYPTION);
-        this.actionPosition = actionPosition;
+
+    public AddToggleEncrytionActionModification(int ActionPosition) {
+	super(ModificationType.TOGGLE_ENCRYPTION);
+	this.actionPosition = actionPosition;
     }
 
-    public int getActionPosition()
-    {
-        return actionPosition;
+    public int getActionPosition() {
+	return actionPosition;
     }
-    
+
 }

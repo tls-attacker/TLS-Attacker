@@ -57,9 +57,9 @@ public class IsTimeoutRule extends Rule {
 	found++;
 	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
-	    result.getExecutedVector().getTrace().setDescription("WorkflowTrace did Timeout!");
+	    result.getVector().getTrace().setDescription("WorkflowTrace did Timeout!");
 	    f.createNewFile();
-	    TestVectorSerializer.write(f, result.getExecutedVector());
+	    TestVectorSerializer.write(f, result.getVector());
 	} catch (JAXBException | IOException E) {
 	    LOG.log(Level.SEVERE,
 		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "

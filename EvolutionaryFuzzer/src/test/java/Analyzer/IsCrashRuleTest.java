@@ -51,12 +51,10 @@ public class IsCrashRuleTest {
     @Test
     public void testApplys() {
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
-		"unit2.test");
+		null, ExecutorType.TLS, null), "unit2.test");
 	assertTrue(rule.applys(result));
 	result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-		ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
-		"unit2.test");
+		ExecutorType.TLS, null), "unit2.test");
 	assertFalse(rule.applys(result));
 
     }
@@ -67,8 +65,7 @@ public class IsCrashRuleTest {
     @Test
     public void testOnApply() {
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
-		"unit2.test");
+		null, ExecutorType.TLS, null), "unit2.test");
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -88,8 +85,7 @@ public class IsCrashRuleTest {
     public void testReport() {
 	assertNull(rule.report());
 	Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, ExecutorType.TLS, null), new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null),
-		"unit2.test");
+		null, ExecutorType.TLS, null), "unit2.test");
 	rule.onApply(result);
 	assertNotNull(rule.report());
     }

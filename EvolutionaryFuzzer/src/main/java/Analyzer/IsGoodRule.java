@@ -100,7 +100,7 @@ public class IsGoodRule extends Rule {
 	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	    try {
 		f.createNewFile();
-		TestVectorSerializer.write(f, result.getExecutedVector());
+		TestVectorSerializer.write(f, result.getVector());
 	    } catch (JAXBException | IOException E) {
 		LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
 			+ f.getAbsolutePath(), E);

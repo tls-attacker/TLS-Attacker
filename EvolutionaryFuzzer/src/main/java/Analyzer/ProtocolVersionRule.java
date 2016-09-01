@@ -62,7 +62,7 @@ public class ProtocolVersionRule extends Rule {
 	ProtocolVersion clientVersion = null;
 	ProtocolVersion serverVersion = null;
 
-	WorkflowTrace trace = result.getExecutedVector().getTrace();
+	WorkflowTrace trace = result.getVector().getTrace();
 	List<HandshakeMessage> sentClientHellos = trace
 		.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
 	List<HandshakeMessage> receivedServerHellos = trace
@@ -117,7 +117,7 @@ public class ProtocolVersionRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-	WorkflowTrace trace = result.getExecutedVector().getTrace();
+	WorkflowTrace trace = result.getVector().getTrace();
 	List<HandshakeMessage> sentClientHellos = trace
 		.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
 	List<HandshakeMessage> receivedServerHellos = trace
@@ -131,13 +131,13 @@ public class ProtocolVersionRule extends Rule {
 	found++;
 	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
-	    result.getExecutedVector()
+	    result.getVector()
 		    .getTrace()
 		    .setDescription(
 			    "WorkflowTrace contains unusual Protocolversions: Client("
 				    + ArrayConverter.bytesToHexString(clientProtocolVersions) + ") Server("
 				    + ArrayConverter.bytesToHexString(serverProtocolVersions) + ")");
-	    TestVectorSerializer.write(f, result.getExecutedVector());
+	    TestVectorSerializer.write(f, result.getVector());
 	} catch (JAXBException | IOException E) {
 	    LOG.log(Level.SEVERE,
 		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "

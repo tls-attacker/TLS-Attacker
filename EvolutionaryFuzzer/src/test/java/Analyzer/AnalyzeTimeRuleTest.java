@@ -52,8 +52,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testApplys() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	assertTrue(rule.applys(result));
     }
 
@@ -62,8 +61,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testOnApply() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
     }
 
@@ -80,8 +78,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testReport() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	assertNull("Failure: Report should be null!", rule.report());
 	rule.onApply(result);
 	assertNotNull("Failure: Report should not be null!", rule.report());
@@ -100,8 +97,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetExecutedTimeTotal() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getExecutedTimeTotal() == 1000);
 	rule.onApply(result);
@@ -113,8 +109,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetNumberExecutedTraces() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getNumberExecutedTraces() == 1);
 	rule.onApply(result);
@@ -126,12 +121,10 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetSlowestTime() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getSlowestTime() == 1000);
-	result = new Result(false, false, 1000, 4000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	result = new Result(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getSlowestTime() == 3000);
     }
@@ -141,12 +134,10 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetFastestTime() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getFastestTime() == 1000);
-	result = new Result(false, false, 1000, 4000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	result = new Result(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getFastestTime() == 1000);
     }

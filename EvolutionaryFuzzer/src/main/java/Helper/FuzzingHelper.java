@@ -375,15 +375,15 @@ public class FuzzingHelper {
 	return holders;
     }
 
-    public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace)
-    {
-        TLSAction newAction = new ToggleEncryptionAction();
-        List<TLSAction> actionList = trace.getTLSActions();
-        Random r = new Random();
-        int positon = r.nextInt(actionList.size());
-        actionList.add(positon, newAction);
-        return new AddToggleEncrytionActionModification(positon);
+    public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
+	TLSAction newAction = new ToggleEncryptionAction();
+	List<TLSAction> actionList = trace.getTLSActions();
+	Random r = new Random();
+	int positon = r.nextInt(actionList.size());
+	actionList.add(positon, newAction);
+	return new AddToggleEncrytionActionModification(positon);
     }
+
     private FuzzingHelper() {
 
     }

@@ -49,8 +49,9 @@ public class BlindAgent extends Agent {
     protected boolean timeout;
     // If the Application did Crash
     protected boolean crash;
-    
+
     private final String prefix = "";
+
     /**
      * Default Constructor
      */
@@ -77,23 +78,22 @@ public class BlindAgent extends Agent {
 	}
 	stopTime = System.currentTimeMillis();
 	running = false;
-        if(!server.serverIsRunning())
-        {
-            crash = true;
-        }
+	if (!server.serverIsRunning()) {
+	    crash = true;
+	}
 	server.stop();
     }
 
     @Override
-    public Result collectResults(File branchTrace, TestVector vector, TestVector executedVector) {
+    public Result collectResults(File branchTrace, TestVector vector) {
 	if (running) {
 	    throw new IllegalStateException("Can't collect Results, Agent still running!");
 	}
 
 	BranchTrace t = new BranchTrace();
 
-	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, executedVector, LogFileIDManager
-		.getInstance().getFilename());
+	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+		.getFilename());
 
 	return result;
     }

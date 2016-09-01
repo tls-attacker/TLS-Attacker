@@ -64,7 +64,7 @@ public class ProtocolVersionRuleTest {
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	trace.add(new SendAction(clientHello));
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "test.unit");
+		ExecutorType.TLS, null), "test.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
 	assertFalse(rule.applys(result));
 	ServerHelloMessage serverHello = new ServerHelloMessage();
@@ -122,7 +122,7 @@ public class ProtocolVersionRuleTest {
 	trace.add(new ReceiveAction(serverHello));
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "test.unit");
+		ExecutorType.TLS, null), "test.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -151,7 +151,7 @@ public class ProtocolVersionRuleTest {
 	trace.add(new ReceiveAction(serverHello));
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "test.unit");
+		ExecutorType.TLS, null), "test.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
 	rule.onApply(result);
 	assertNotNull(rule.report());

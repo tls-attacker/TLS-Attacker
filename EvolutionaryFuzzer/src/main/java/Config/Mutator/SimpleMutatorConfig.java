@@ -37,21 +37,18 @@ public class SimpleMutatorConfig implements Serializable {
     private Integer multipleModifications = 1;
     private Integer addFlightPercentage = 20;
     private Integer addToggleEncrytionPercentage = 2;
-    
 
     public SimpleMutatorConfig() {
     }
 
-    public Integer getAddToggleEncrytionPercentage()
-    {
-        return addToggleEncrytionPercentage;
+    public Integer getAddToggleEncrytionPercentage() {
+	return addToggleEncrytionPercentage;
     }
 
-    public void setAddToggleEncrytionPercentage(Integer addToggleEncrytionPercentage)
-    {
-        this.addToggleEncrytionPercentage = addToggleEncrytionPercentage;
+    public void setAddToggleEncrytionPercentage(Integer addToggleEncrytionPercentage) {
+	this.addToggleEncrytionPercentage = addToggleEncrytionPercentage;
     }
-    
+
     public Integer getAddFlightPercentage() {
 	return addFlightPercentage;
     }

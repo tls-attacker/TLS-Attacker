@@ -48,6 +48,7 @@ public class TestVector implements Serializable {
     }
 
     public TestVector() {
+        modificationList = new LinkedList<>();
     }
 
     public ExecutorType getExecutorType() {
@@ -62,6 +63,16 @@ public class TestVector implements Serializable {
 	return trace;
     }
 
+    public void setServerKeyCert(ServerCertificateStructure serverKeyCert)
+    {
+        this.serverKeyCert = serverKeyCert;
+    }
+
+    public void setClientKeyCert(ClientCertificateStructure clientKeyCert)
+    {
+        this.clientKeyCert = clientKeyCert;
+    }
+    
     public ClientCertificateStructure getClientKeyCert() {
 	return clientKeyCert;
     }

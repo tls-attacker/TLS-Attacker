@@ -36,7 +36,6 @@ public class RuleAnalyzer extends Analyzer {
 	ruleList.add(new EarlyHeartbeatRule(config));
     }
 
-
     public Rule getRule(Class tempClass) {
 	for (Rule r : ruleList) {
 	    if (r.getClass().equals(tempClass)) {
@@ -45,33 +44,26 @@ public class RuleAnalyzer extends Analyzer {
 	}
 	return null;
     }
-    public void analyze(Result result)
-    {
-        for (Rule r : ruleList)
-        {
-            if (r.applys(result))
-            {
-                r.onApply(result);
-            }
-            else
-            {
-                r.onDecline(result);
-            }
-        }
+
+    public void analyze(Result result) {
+	for (Rule r : ruleList) {
+	    if (r.applys(result)) {
+		r.onApply(result);
+	    } else {
+		r.onDecline(result);
+	    }
+	}
     }
 
-    public String getReport()
-    {
-        StringBuilder builder = new StringBuilder();
-        for (Rule r : ruleList)
-        {
-            String temp = r.report();
-            if (temp != null)
-            {
-                builder.append(r.report());
-            }
-        }
-        return builder.toString();
+    public String getReport() {
+	StringBuilder builder = new StringBuilder();
+	for (Rule r : ruleList) {
+	    String temp = r.report();
+	    if (temp != null) {
+		builder.append(r.report());
+	    }
+	}
+	return builder.toString();
     }
 
 }

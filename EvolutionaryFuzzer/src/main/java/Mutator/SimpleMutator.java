@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 import Result.ResultContainer;
 import TestVector.TestVector;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.io.File;
 import javax.xml.bind.JAXB;
 
@@ -60,9 +61,8 @@ public class SimpleMutator extends Mutator {
 	// chose a random trace from the list
 	TestVector tempVector;
 	WorkflowTrace trace = null;
-	ServerCertificateStructure serverKeyCertPair;
-	ClientCertificateStructure clientKeyCertPair;
-	TestVector newTestVector;
+	
+	
 	boolean modified = false;
 	do {
 	    if (ResultContainer.getInstance().getGoodVectors().isEmpty()) {
@@ -75,48 +75,50 @@ public class SimpleMutator extends Mutator {
 		// Choose a random Trace to modify
 		tempVector = ResultContainer.getInstance().getGoodVectors()
 			.get(r.nextInt(ResultContainer.getInstance().getGoodVectors().size()));
+                tempVector = (TestVector) UnoptimizedDeepCopy.copy(tempVector);
 	    }
-	    serverKeyCertPair = tempVector.getServerKeyCert();
-	    clientKeyCertPair = tempVector.getClientKeyCert();
-	    trace = (WorkflowTrace) UnoptimizedDeepCopy.copy(tempVector.getTrace());
+            for (TLSAction action : tempVector.getTrace().getTLSActions()) {
+                action.reset();
+            }
+            tempVector.getModificationList().clear();
 	    Modification modification = null;
 	    if (r.nextInt(100) <= simpleConfig.getChangeServerCert()) {
-		serverKeyCertPair = certMutator.getServerCertificateStructure();
+                ServerCertificateStructure serverKeyCertPair = certMutator.getServerCertificateStructure();
 		modification = new ChangeServerCertificateModification(serverKeyCertPair);
+                tempVector.setServerKeyCert(serverKeyCertPair);
 		modified = true;
 	    }
 	    if (r.nextInt(100) <= simpleConfig.getChangeClientCert()) {
-		clientKeyCertPair = certMutator.getClientCertificateStructure();
+		ClientCertificateStructure clientKeyCertPair = certMutator.getClientCertificateStructure();
 		modification = new ChangeClientCertificateModification(clientKeyCertPair);
+                tempVector.setClientKeyCert(clientKeyCertPair);
 		modified = true;
 	    }
-	    newTestVector = new TestVector(trace, serverKeyCertPair, clientKeyCertPair, tempVector.getExecutorType(),
-		    tempVector);
 	    if (modification != null) {
-		newTestVector.addModification(modification);
+		tempVector.addModification(modification);
 	    }
 	    // perhaps add a flight
 	    if (trace.getTLSActions().isEmpty() || r.nextInt(100) < simpleConfig.getAddFlightPercentage()) {
-		newTestVector.addModification(FuzzingHelper.addMessageFlight(trace));
+		tempVector.addModification(FuzzingHelper.addMessageFlight(trace));
 		modified = true;
 	    }
 	    if (r.nextInt(100) < simpleConfig.getAddMessagePercentage()) {
-		newTestVector.addModification(FuzzingHelper.addRandomMessage(trace));
+		tempVector.addModification(FuzzingHelper.addRandomMessage(trace));
 		modified = true;
 	    }
 	    // perhaps remove a message
 	    if (r.nextInt(100) <= simpleConfig.getRemoveMessagePercentage()) {
-		newTestVector.addModification(FuzzingHelper.removeRandomMessage(trace));
+		tempVector.addModification(FuzzingHelper.removeRandomMessage(trace));
 		modified = true;
 	    }
-            // perhaps toggle Encryption
-            if (r.nextInt(100) <= simpleConfig.getAddToggleEncrytionPercentage()) {
-		newTestVector.addModification(FuzzingHelper.addToggleEncrytionActionModification(trace));
+	    // perhaps toggle Encryption
+	    if (r.nextInt(100) <= simpleConfig.getAddToggleEncrytionPercentage()) {
+		tempVector.addModification(FuzzingHelper.addToggleEncrytionActionModification(trace));
 		modified = true;
 	    }
 	    // perhaps add records
 	    if (r.nextInt(100) <= simpleConfig.getAddRecordPercentage()) {
-		newTestVector.addModification(FuzzingHelper.addRecordAtRandom(trace));
+		tempVector.addModification(FuzzingHelper.addRecordAtRandom(trace));
 		modified = true;
 	    }
 	    // Modify a random field:
@@ -130,17 +132,17 @@ public class SimpleMutator extends Mutator {
 		    // field.getObject().getClass().getSimpleName();
 		    // LOG.log(Level.INFO, "Fieldname:{0} Message:{1}", new
 		    // Object[]{currentFieldName, currentMessageName});
-		    newTestVector.addModification(executeModifiableVariableModification(
+		    tempVector.addModification(executeModifiableVariableModification(
 			    (ModifiableVariableHolder) field.getObject(), field.getField()));
 		    modified = true;
 		}
 	    }
 	    if (r.nextInt(100) <= simpleConfig.getDuplicateMessagePercentage()) {
-		newTestVector.addModification(FuzzingHelper.duplicateRandomProtocolMessage(trace));
+		tempVector.addModification(FuzzingHelper.duplicateRandomProtocolMessage(trace));
 		modified = true;
 	    }
 	} while (!modified || r.nextInt(100) <= simpleConfig.getMultipleModifications());
-	return newTestVector;
+	return tempVector;
 
     }
 

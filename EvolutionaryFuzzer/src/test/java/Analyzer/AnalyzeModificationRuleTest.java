@@ -74,8 +74,7 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testApplys() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), new TestVector(),
-		"unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 	assertTrue(rule.applys(result));
     }
 
@@ -84,7 +83,7 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testOnApply() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, vector, "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
 	rule.onApply(result);
     }
 
@@ -101,7 +100,7 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testReport() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, vector, "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
 	assertNull(rule.report());
 	rule.onApply(result);
 	assertNotNull(rule.report());
@@ -120,7 +119,7 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testGetExecutedTraces() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, vector, "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
 	rule.onApply(result);
 	assertTrue(rule.getExecutedTraces() == 1);
 	rule.onApply(result);
@@ -133,7 +132,7 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testGetTypeMap() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, vector, "unittest.id");
+	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
 	rule.onApply(result);
 	vector.addModification(new AddMessageModification(new ServerHelloDoneMessage(), new SendAction()));
 	rule.onApply(result);

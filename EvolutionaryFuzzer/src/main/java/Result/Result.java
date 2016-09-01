@@ -17,7 +17,7 @@ import TestVector.TestVector;
  * This class summarizes a the Results of FuzzingVector. It contains information
  * about a potential timeout, or crash. It containts information about the Time
  * the Vector took to Execute, the Controlflow Branches that were executed by
- * the Vector and the Vector that was executed.
+ * the Vector.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -35,23 +35,20 @@ public class Result {
     private final long stopTime;
     // File Containing all the ProbeIDs
     private final BranchTrace branchTrace;
-    // Workflowtrace that should be Executed
+
     private final TestVector vector;
-    // Workflowtrace that was executed
-    private final TestVector executedVector;
     // Each Result get an id for easier referencing, the id is also in
     private final String id;
     private Boolean goodTrace = null;
 
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
-	    TestVector vector, TestVector executedVector, String id) {
+	    TestVector vector, String id) {
 	this.hasCrashed = hasCrashed;
 	this.didTimeout = didTimeout;
 	this.startTime = startTime;
 	this.stopTime = stopTime;
 	this.branchTrace = branchTrace;
 	this.vector = vector;
-	this.executedVector = executedVector;
 	this.id = id;
     }
 
@@ -74,10 +71,6 @@ public class Result {
      */
     public String getId() {
 	return id;
-    }
-
-    public TestVector getExecutedVector() {
-	return executedVector;
     }
 
     /**

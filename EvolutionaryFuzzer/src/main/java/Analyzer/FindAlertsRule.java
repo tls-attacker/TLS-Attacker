@@ -67,7 +67,7 @@ public class FindAlertsRule extends Rule {
 
     @Override
     public boolean applys(Result result) {
-	WorkflowTrace trace = result.getExecutedVector().getTrace();
+	WorkflowTrace trace = result.getVector().getTrace();
 	List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
 	if (!messages.isEmpty()) {
 	    for (ProtocolMessage message : messages) {
@@ -92,7 +92,7 @@ public class FindAlertsRule extends Rule {
 
     @Override
     public void onApply(Result result) {
-	WorkflowTrace trace = result.getExecutedVector().getTrace();
+	WorkflowTrace trace = result.getVector().getTrace();
 	List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
 	StringBuilder containsAlerts = new StringBuilder("");
 	if (config.isSaveOneOfEach()) {
@@ -107,10 +107,10 @@ public class FindAlertsRule extends Rule {
 	found++;
 	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
 	try {
-	    result.getExecutedVector()
+	    result.getVector()
 		    .getTrace()
 		    .setDescription("WorkflowTrace contains interesting Alert Messages, in specially:" + containsAlerts);
-	    TestVectorSerializer.write(f, result.getExecutedVector());
+	    TestVectorSerializer.write(f, result.getVector());
 	} catch (JAXBException | IOException E) {
 	    LOG.log(Level.SEVERE,
 		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
