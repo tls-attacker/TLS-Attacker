@@ -15,13 +15,13 @@ import java.io.IOException;
  */
 public abstract class TransportHandler {
     protected long timeout = 4000;
-    abstract void closeConnection();
+    public abstract void closeConnection();
 
-    abstract byte[] fetchData() throws IOException;
+    public abstract byte[] fetchData() throws IOException;
 
-    abstract void initialize(String address, int port) throws IOException;
+    public abstract void initialize(String address, int port) throws IOException;
 
-    abstract void sendData(byte[] data) throws IOException;
+    public abstract void sendData(byte[] data) throws IOException;
 
     public void setTimeout(long timeoutInMs)
     {
