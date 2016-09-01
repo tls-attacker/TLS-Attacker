@@ -86,7 +86,7 @@ public class TLSActionExecutor extends ActionExecutor {
 	LOG.log(Level.FINER, "Preparing the following protocol message to send: {}", message.getClass());
 	ProtocolMessageHandler handler = message.getProtocolMessageHandler(context);
 	byte[] pmBytes = handler.prepareMessage();
-	//LOG.log(Level.FINEST, message.toString());
+	// LOG.log(Level.FINEST, message.toString());
 
 	// append the prepared protocol message bytes
 	if (message.isGoingToBeSent()) {

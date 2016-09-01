@@ -37,4 +37,6 @@ public abstract class TLSAction implements Serializable {
     public boolean isMessageAction() {
 	return this instanceof MessageAction;
     }
+
+    public abstract void reset();
 }

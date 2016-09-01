@@ -7,6 +7,7 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -41,6 +42,9 @@ public class SendAction extends MessageAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws IOException {
+	if (executed) {
+	    throw new WorkflowExecutionException("Action already executed!");
+	}
 	tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionEnd());
 	ensureMyLastProtocolMessagesHaveRecords(configuredMessages); // I dont
 								     // think we

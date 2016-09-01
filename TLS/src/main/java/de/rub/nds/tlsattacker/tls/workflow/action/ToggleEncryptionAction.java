@@ -13,26 +13,22 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ToggleEncryptionAction extends TLSAction
-{
+public class ToggleEncryptionAction extends TLSAction {
 
-    public ToggleEncryptionAction()
-    {
-    }
-    
-    @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException
-    {
-        tlsContext.getRecordHandler().setEncryptSending(!tlsContext.getRecordHandler().isEncryptSending());
+    public ToggleEncryptionAction() {
     }
 
     @Override
-    public void reset()
-    {
-        executed = false;
+    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+	tlsContext.getRecordHandler().setEncryptSending(!tlsContext.getRecordHandler().isEncryptSending());
     }
-    
+
+    @Override
+    public void reset() {
+	executed = false;
+    }
+
 }

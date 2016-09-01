@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
@@ -63,6 +64,7 @@ public abstract class MessageAction extends TLSAction {
 	    @XmlElement(type = AlertMessage.class, name = "Alert"),
 	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
 	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
 	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     @HoldsModifiableVariable
     protected List<ProtocolMessage> configuredMessages;
@@ -83,6 +85,12 @@ public abstract class MessageAction extends TLSAction {
 
     public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
 	this.configuredMessages = configuredMessages;
+    }
+
+    @Override
+    public void reset() {
+	executed = false;
+	actualMessages = new LinkedList<>();
     }
 
 }
