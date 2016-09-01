@@ -35,7 +35,7 @@ public class UnsupportedWorkflowConfigurationFactory extends WorkflowConfigurati
 
     private final CommandConfig config;
 
-    UnsupportedWorkflowConfigurationFactory(CommandConfig config) {
+    public UnsupportedWorkflowConfigurationFactory(CommandConfig config) {
 	super(config);
 	this.config = config;
     }
