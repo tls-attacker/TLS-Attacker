@@ -61,7 +61,7 @@ public class UniqueFlowsRuleTest {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new SendAction(new CertificateRequestMessage()));
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "tes2t.unit");
+		ExecutorType.TLS, null),  "tes2t.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
 	assertTrue(rule.applys(result));// Should apply since its the first time
 					// the rule has seen this tracetype
@@ -77,8 +77,7 @@ public class UniqueFlowsRuleTest {
     public void testOnApply() {
 	WorkflowTrace trace = new WorkflowTrace();
 	trace.add(new SendAction(new CertificateRequestMessage()));
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "tes2t.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, ExecutorType.TLS, null), "tes2t.unit");
 	rule.onApply(result);
 	WorkFlowTraceFakeExecuter.execute(trace);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -103,8 +102,7 @@ public class UniqueFlowsRuleTest {
 	trace.add(new SendAction(clientHello));
 	ServerHelloMessage serverHello = new ServerHelloMessage();
 	trace.add(new ReceiveAction(serverHello));
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), new TestVector(trace, null, null, ExecutorType.TLS, null), "tes2t.unit");
+	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null, ExecutorType.TLS, null), "tes2t.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
 	rule.onApply(result);
 	assertNotNull(rule.report());
