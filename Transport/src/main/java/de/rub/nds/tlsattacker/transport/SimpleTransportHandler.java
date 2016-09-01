@@ -43,8 +43,6 @@ public class SimpleTransportHandler extends TransportHandler {
 
     private BufferedInputStream bis;
 
-
-
     public SimpleTransportHandler() {
 	this.timeout = DEFAULT_TLS_TIMEOUT;
     }

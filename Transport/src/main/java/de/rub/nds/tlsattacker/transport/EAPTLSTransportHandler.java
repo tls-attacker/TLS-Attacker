@@ -45,7 +45,7 @@ class EAPTLSTransportHandler extends TransportHandler {
 
     @Override
     public void initialize(String address, int port) throws IOException {
-        //TODO DOES NOT DEFINE A TIMEOUT AND DOES NOT USE IT
+	// TODO DOES NOT DEFINE A TIMEOUT AND DOES NOT USE IT
 	nic.init();
 
 	while (true) {

@@ -34,16 +34,14 @@ public class UDPTransportHandler extends TransportHandler {
 
     private long responseNanos = -1;
 
-    public UDPTransportHandler()
-    {
-        timeout = DEFAULT_TLS_TIMEOUT;
+    public UDPTransportHandler() {
+	timeout = DEFAULT_TLS_TIMEOUT;
     }
 
-    
     @Override
     public void initialize(String remoteAddress, int remotePort) throws IOException {
 	datagramSocket = new DatagramSocket();
-        
+
 	datagramSocket.setSoTimeout(DEFAULT_TLS_TIMEOUT);
 	datagramSocket.connect(InetAddress.getByName(remoteAddress), remotePort);
 
@@ -83,12 +81,13 @@ public class UDPTransportHandler extends TransportHandler {
 	datagramSocket.close();
 	LOGGER.debug("Socket closed.");
     }
+
     @Override
     public void setTimeout(long tlsTimeout) {
 	this.timeout = tlsTimeout;
 	if (datagramSocket != null) {
 	    try {
-		datagramSocket.setSoTimeout((int)(this.timeout));
+		datagramSocket.setSoTimeout((int) (this.timeout));
 	    } catch (SocketException e) {
 		LOGGER.debug("Failed to set socket timeout. Exception:\n{}", e.getMessage());
 	    }

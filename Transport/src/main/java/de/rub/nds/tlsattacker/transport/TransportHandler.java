@@ -15,6 +15,7 @@ import java.io.IOException;
  */
 public abstract class TransportHandler {
     protected long timeout = 4000;
+
     public abstract void closeConnection();
 
     public abstract byte[] fetchData() throws IOException;
@@ -23,13 +24,12 @@ public abstract class TransportHandler {
 
     public abstract void sendData(byte[] data) throws IOException;
 
-    public void setTimeout(long timeoutInMs)
-    {
-        this.timeout = timeoutInMs;
+    public void setTimeout(long timeoutInMs) {
+	this.timeout = timeoutInMs;
     }
-    public long getTimeout()
-    {
-        return this.timeout;
+
+    public long getTimeout() {
+	return this.timeout;
     }
-    
+
 }
