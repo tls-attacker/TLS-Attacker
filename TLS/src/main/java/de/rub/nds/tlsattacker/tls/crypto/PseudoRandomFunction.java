@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.tls.crypto;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.lang.reflect.Field;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.crypto.tls.TlsUtils;
@@ -81,8 +84,32 @@ public final class PseudoRandomFunction {
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm) {
 	try {
 	    byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(), seed);
-
-	    SecretKeySpec keySpec = new SecretKeySpec(secret, macAlgorithm);
+	    SecretKeySpec keySpec = null;
+	    try {
+		if (secret.length == 0) {
+		    // empty key, but we still want to try to compute the
+		    // SecretKeySpec
+		    // Create an object using a fake key and then change that
+		    // key back to a zero key with reflections
+		    keySpec = new SecretKeySpec(new byte[] { 0, 0 }, macAlgorithm);
+		    try {
+			Field field = keySpec.getClass().getDeclaredField("key");
+			field.setAccessible(true);
+			field.set(keySpec, new byte[0]);
+		    } catch (NoSuchFieldException ex) {
+			Logger.getLogger(PseudoRandomFunction.class.getName()).log(Level.SEVERE, null, ex);
+		    } catch (SecurityException ex) {
+			Logger.getLogger(PseudoRandomFunction.class.getName()).log(Level.SEVERE, null, ex);
+		    } catch (IllegalAccessException ex) {
+			Logger.getLogger(PseudoRandomFunction.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+		} else {
+		    keySpec = new SecretKeySpec(secret, macAlgorithm);
+		}
+	    } catch (java.lang.IllegalArgumentException E) {
+		System.out.println("");
+		E.printStackTrace();
+	    }
 	    Mac mac = Mac.getInstance(macAlgorithm);
 	    mac.init(keySpec);
 
