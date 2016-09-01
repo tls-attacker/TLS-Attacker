@@ -36,6 +36,7 @@ public class CertificateMessage extends HandshakeMessage {
     /**
      * Certificate for pretty printing etc.
      */
+    @XmlTransient
     X509CertificateObject x509CertificateObject;
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.CERTIFICATE)
