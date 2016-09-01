@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    DHWorkflowConfigurationFactory(CommandConfig config) {
+    public DHWorkflowConfigurationFactory(CommandConfig config) {
 	super(config);
     }
 

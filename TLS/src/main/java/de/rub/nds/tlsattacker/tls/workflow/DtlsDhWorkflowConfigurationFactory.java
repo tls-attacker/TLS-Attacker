@@ -38,7 +38,7 @@ import java.util.LinkedList;
  */
 public class DtlsDhWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    DtlsDhWorkflowConfigurationFactory(CommandConfig config) {
+    public DtlsDhWorkflowConfigurationFactory(CommandConfig config) {
 	super(config);
     }
 

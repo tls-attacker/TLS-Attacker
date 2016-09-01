@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    RsaWorkflowConfigurationFactory(CommandConfig config) {
+    public RsaWorkflowConfigurationFactory(CommandConfig config) {
 	super(config);
     }
 

@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class ECDHWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    ECDHWorkflowConfigurationFactory(CommandConfig config) {
+    public ECDHWorkflowConfigurationFactory(CommandConfig config) {
 	super(config);
     }
 
