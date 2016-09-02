@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
@@ -23,12 +24,15 @@ import org.bouncycastle.asn1.x509.Certificate;
 public class ChangeClientCertificateAction extends TLSAction
 {
     private Certificate newValue;
+    private X509CertificateObject x509newValue;
     private Certificate oldValue = null;
+    private X509CertificateObject x509oldValue = null;
 
-    public ChangeClientCertificateAction(Certificate newValue)
+    public ChangeClientCertificateAction(Certificate newValue ,X509CertificateObject x509newValue)
     {
         super();
         this.newValue = newValue;
+        this.x509newValue = x509newValue;
     }
     public Certificate getNewValue()
     {
@@ -46,7 +50,9 @@ public class ChangeClientCertificateAction extends TLSAction
 	    throw new WorkflowExecutionException("Action already executed!");
 	}
         oldValue = tlsContext.getClientCertificate();
+        x509oldValue = tlsContext.getX509ClientCertificateObject();
         tlsContext.setClientCertificate(newValue);
+        tlsContext.setX509ClientCertificateObject(x509newValue);
     }
 
     @Override

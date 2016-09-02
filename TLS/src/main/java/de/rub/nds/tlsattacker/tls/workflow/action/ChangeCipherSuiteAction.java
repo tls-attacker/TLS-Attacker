@@ -25,6 +25,7 @@ public class ChangeCipherSuiteAction extends TLSAction
 
     public ChangeCipherSuiteAction(CipherSuite newValue)
     {
+        //TODO can be better implemented with generics?
         super();
         this.newValue = newValue;
     }
