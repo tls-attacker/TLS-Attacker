@@ -14,6 +14,14 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCompressionAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeMasterSecretAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangePreMasterSecretAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeProtocolVersionAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerCertificateAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
@@ -46,7 +54,15 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = MessageAction.class, name = "MessageAction"),
 	    @XmlElement(type = SendAction.class, name = "SendAction"),
 	    @XmlElement(type = ToggleEncryptionAction.class, name = "ToggleEncryptionAction"),
-	    @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"), })
+	    @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
+	    @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
+	    @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
+	    @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
+	    @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
+	    @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
+	    @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
+	    @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction")})
+            
     private List<TLSAction> tlsActions;
 
     private String name = null;
