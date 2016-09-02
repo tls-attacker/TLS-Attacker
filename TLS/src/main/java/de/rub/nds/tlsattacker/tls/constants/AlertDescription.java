@@ -40,6 +40,7 @@ public enum AlertDescription {
     PROTOCOL_VERSION((byte) 70),
     INSUFFICIENT_SECURITY((byte) 71),
     INTERNAL_ERROR((byte) 80),
+    INAPPROPRIATE_FALLBACK((byte) 86),
     USER_CANCELED((byte) 90),
     NO_RENEGOTIATION((byte) 100),
     UNSUPPORTED_EXTENSION((byte) 110),
