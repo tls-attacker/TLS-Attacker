@@ -222,7 +222,7 @@ public class RandomKeyGeneratorHelper {
 		    break;
 
 	    }
-	} while (curveName != null);
+	} while (curveName == null);
 	return curveName;
     }
 
