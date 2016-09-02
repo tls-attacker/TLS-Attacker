@@ -29,6 +29,10 @@ public abstract class Mutator {
 	this.certMutator = certMutator;
     }
 
+    public CertificateMutator getCertMutator() {
+	return certMutator;
+    }
+
     /**
      * Generates a new WorkflowTrace to Fuzz the Application
      * 

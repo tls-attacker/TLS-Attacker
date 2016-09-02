@@ -61,8 +61,7 @@ public class SimpleMutator extends Mutator {
 	// chose a random trace from the list
 	TestVector tempVector;
 	WorkflowTrace trace = null;
-	
-	
+
 	boolean modified = false;
 	do {
 	    if (ResultContainer.getInstance().getGoodVectors().isEmpty()) {
@@ -75,24 +74,24 @@ public class SimpleMutator extends Mutator {
 		// Choose a random Trace to modify
 		tempVector = ResultContainer.getInstance().getGoodVectors()
 			.get(r.nextInt(ResultContainer.getInstance().getGoodVectors().size()));
-                tempVector = (TestVector) UnoptimizedDeepCopy.copy(tempVector);
+		tempVector = (TestVector) UnoptimizedDeepCopy.copy(tempVector);
 	    }
-            for (TLSAction action : tempVector.getTrace().getTLSActions()) {
-                action.reset();
-            }
-            tempVector.getModificationList().clear();
+	    for (TLSAction action : tempVector.getTrace().getTLSActions()) {
+		action.reset();
+	    }
+	    tempVector.getModificationList().clear();
 	    Modification modification = null;
-            trace = tempVector.getTrace();
+	    trace = tempVector.getTrace();
 	    if (r.nextInt(100) <= simpleConfig.getChangeServerCert()) {
-                ServerCertificateStructure serverKeyCertPair = certMutator.getServerCertificateStructure();
+		ServerCertificateStructure serverKeyCertPair = certMutator.getServerCertificateStructure();
 		modification = new ChangeServerCertificateModification(serverKeyCertPair);
-                tempVector.setServerKeyCert(serverKeyCertPair);
+		tempVector.setServerKeyCert(serverKeyCertPair);
 		modified = true;
 	    }
 	    if (r.nextInt(100) <= simpleConfig.getChangeClientCert()) {
 		ClientCertificateStructure clientKeyCertPair = certMutator.getClientCertificateStructure();
 		modification = new ChangeClientCertificateModification(clientKeyCertPair);
-                tempVector.setClientKeyCert(clientKeyCertPair);
+		tempVector.setClientKeyCert(clientKeyCertPair);
 		modified = true;
 	    }
 	    if (modification != null) {

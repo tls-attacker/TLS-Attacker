@@ -82,7 +82,7 @@ public class WorkflowTraceTypeManager {
 		} else {
 		    for (ProtocolMessage message : msgAction.getActualMessages()) {
 			MessageFlow flow = new MessageFlow(message.getClass(),
-				myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.CLIENT : ConnectionEnd.SERVER);
+				myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT);
 			type.addMessageFlow(flow);
 		    }
 

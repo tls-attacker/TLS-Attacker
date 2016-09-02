@@ -78,7 +78,7 @@ public class TLSExecutor extends Executor {
 	this.testVector = testVector;
 	this.server = server;
 	this.agent = agent;
-	
+
     }
 
     /**
@@ -95,7 +95,7 @@ public class TLSExecutor extends Executor {
 	    try {
 		// Load clientCertificate
 		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-                //TODO This can be a problem when running with mutliple threads
+		// TODO This can be a problem when running with mutliple threads
 		fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
 		fc.setPassword(testVector.getClientKeyCert().getPassword());
 		fc.setAlias(testVector.getClientKeyCert().getAlias());

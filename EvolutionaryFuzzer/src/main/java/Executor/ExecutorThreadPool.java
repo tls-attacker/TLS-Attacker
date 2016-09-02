@@ -22,7 +22,20 @@ import Server.TLSServer;
 import TestVector.TestVector;
 import TestVector.TestVectorSerializer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.workflow.DHWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.DtlsDhWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.DtlsEcdhWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.DtlsRsaWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.ECDHWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.RsaWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.UnsupportedWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -81,12 +94,43 @@ public class ExecutorThreadPool implements Runnable {
 	File f = new File(config.getArchiveFolder());
 	list = TestVectorSerializer.readFolder(f);
 	LOG.log(Level.INFO, "Loaded Archive Vectors:{0}", list.size());
+	if (list.isEmpty()) {
+	    LOG.log(Level.INFO, "Creating Fuzzer Seed:");
+	    list.addAll(generateSeed());
+	}
 	// We need to fix Server responses before we can use the workflowtraces
 	// for mutation
 	LOG.log(Level.INFO, "Preparing Vectors:{0}", list.size());
 	for (TestVector vector : list) {
 	    vector.getTrace().makeGeneric();
 	}
+    }
+
+    private List<TestVector> generateSeed() {
+	List<TestVector> newList = new LinkedList<TestVector>();
+	List<WorkflowConfigurationFactory> factoryList = new LinkedList<>();
+	factoryList.add(new DHWorkflowConfigurationFactory(new ClientCommandConfig()));
+	factoryList.add(new DtlsDhWorkflowConfigurationFactory(new ClientCommandConfig()));
+	factoryList.add(new DtlsEcdhWorkflowConfigurationFactory(new ClientCommandConfig()));
+	factoryList.add(new DtlsRsaWorkflowConfigurationFactory(new ClientCommandConfig()));
+	factoryList.add(new ECDHWorkflowConfigurationFactory(new ClientCommandConfig()));
+	factoryList.add(new RsaWorkflowConfigurationFactory(new ClientCommandConfig()));
+	factoryList.add(new UnsupportedWorkflowConfigurationFactory(new ClientCommandConfig()));
+	for (WorkflowConfigurationFactory factory : factoryList) {
+	    WorkflowTrace trace = factory.createClientHelloTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+	    trace = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+	    trace = factory.createFullTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+	    trace = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+	}
+	return newList;
     }
 
     /**
@@ -114,10 +158,10 @@ public class ExecutorThreadPool implements Runnable {
 			server = ServerManager.getInstance().getFreeServer();
 			Agent agent = AgentFactory.generateAgent(config, list.get(i).getServerKeyCert());
 			Runnable worker = new TLSExecutor(list.get(i), server, agent);
-                        for (TLSAction action : list.get(i).getTrace().getTLSActions()) {
-                            action.reset();
-                        }
-                        list.get(i).getModificationList().clear();
+			for (TLSAction action : list.get(i).getTrace().getTLSActions()) {
+			    action.reset();
+			}
+			list.get(i).getModificationList().clear();
 			executor.submit(worker);
 			runs++;
 		    } else {
@@ -157,7 +201,9 @@ public class ExecutorThreadPool implements Runnable {
 		    }
 		} catch (Throwable ex) {
 		    ex.printStackTrace();
-                    server.release();
+		    if (server != null) {
+			server.release();
+		    }
 		}
 
 	    }
