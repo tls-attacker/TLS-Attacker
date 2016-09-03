@@ -66,7 +66,7 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+	throw new UnsupportedOperationException("Server name indication extension parsing not supported yet.");
     }
 
 }

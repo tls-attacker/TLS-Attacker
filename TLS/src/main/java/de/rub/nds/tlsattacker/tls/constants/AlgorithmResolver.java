@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -90,6 +91,8 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.DHE_DSS;
         } else if (cipher.startsWith("TLS_DHE_RSA_")) {
             return KeyExchangeAlgorithm.DHE_RSA;
+        } else if (cipher.startsWith("TLS_DHE_PSK")) {
+            return KeyExchangeAlgorithm.DHE_PSK;
         } else if (cipher.startsWith("TLS_DH_ANON_")) {
             return KeyExchangeAlgorithm.DH_ANON;
         } else if (cipher.startsWith("TLS_ECDH_")) {
@@ -111,7 +114,7 @@ public class AlgorithmResolver {
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
             return KeyExchangeAlgorithm.CECPQ1;
         }
-        throw new UnsupportedOperationException("The key exchange algorithm is not supported yet.");
+        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
     }
 
     /**
@@ -167,6 +170,8 @@ public class AlgorithmResolver {
             return CipherAlgorithm.CAMELLIA_128_CBC;
         } else if (cipher.contains("CAMELLIA_256_CBC")) {
             return CipherAlgorithm.CAMELLIA_256_CBC;
+        } else if (cipher.contains("SEED_CBC")) {
+            return CipherAlgorithm.SEED_CBC;
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }
@@ -184,7 +189,7 @@ public class AlgorithmResolver {
         } else if (cipher.contains("RC4")) {
             return CipherType.STREAM;
         }
-        throw new UnsupportedOperationException("The cipher algorithm is not supported yet.");
+        throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
 
     public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {

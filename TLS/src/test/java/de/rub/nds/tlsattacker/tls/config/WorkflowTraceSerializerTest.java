@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -76,4 +78,46 @@ public class WorkflowTraceSerializerTest {
 		os.toByteArray());
     }
 
+    /**
+     * Test of write method, of class WorkflowTraceSerializer.
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testWriteReadDtls() throws Exception {
+        ClientCommandConfig ccc = new ClientCommandConfig();
+        ccc.setProtocolVersion(ProtocolVersion.DTLS12);
+	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(ccc);
+	TlsContext context = factory.createFullTlsContext();
+
+	// pick random protocol message and initialize a record with modifiable
+	// variable
+	List<ProtocolMessage> pms = context.getWorkflowTrace().getProtocolMessages();
+	int random = RandomHelper.getRandom().nextInt(pms.size());
+	List<Record> records = new LinkedList<>();
+	DtlsRecord r = new DtlsRecord();
+	ModifiableInteger mv = ModifiableVariableFactory.createIntegerModifiableVariable();
+	VariableModification<Integer> iam = IntegerModificationFactory.createRandomModification();
+	iam.setPostModification(IntegerModificationFactory.explicitValue(random));
+	mv.setModification(iam);
+	r.setLength(mv);
+	records.add(r);
+	pms.get(random).setRecords(records);
+
+	ByteArrayOutputStream os = new ByteArrayOutputStream();
+	WorkflowTraceSerializer.write(os, context.getWorkflowTrace());
+
+	String serializedWorkflow = new String(os.toByteArray());
+
+	LOGGER.debug(serializedWorkflow);
+
+	ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
+	WorkflowTrace wt = WorkflowTraceSerializer.read(bis);
+
+	os = new ByteArrayOutputStream();
+	WorkflowTraceSerializer.write(os, wt);
+
+	Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
+		os.toByteArray());
+    }
 }

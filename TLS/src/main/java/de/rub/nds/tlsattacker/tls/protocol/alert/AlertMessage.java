@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class AlertMessage extends ProtocolMessage {
+public final class AlertMessage extends ProtocolMessage {
 
     /**
      * config array used to configure alert message
@@ -42,94 +42,100 @@ public class AlertMessage extends ProtocolMessage {
     ModifiableByte description;
 
     public AlertMessage() {
-	this.protocolMessageType = ProtocolMessageType.ALERT;
+        this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
     public AlertMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
+        this();
+        this.messageIssuer = messageIssuer;
+    }
+
+    public AlertMessage(ConnectionEnd messageIssuer, AlertLevel level, AlertDescription description) {
+        this();
+        this.messageIssuer = messageIssuer;
+        setConfig(level, description);
     }
 
     public ModifiableByte getLevel() {
-	return level;
+        return level;
     }
 
     public void setLevel(byte level) {
-	this.level = ModifiableVariableFactory.safelySetValue(this.level, level);
+        this.level = ModifiableVariableFactory.safelySetValue(this.level, level);
     }
 
     public void setLevel(ModifiableByte level) {
-	this.level = level;
+        this.level = level;
     }
 
     public ModifiableByte getDescription() {
-	return description;
+        return description;
     }
 
     public void setDescription(byte description) {
-	this.description = ModifiableVariableFactory.safelySetValue(this.description, description);
+        this.description = ModifiableVariableFactory.safelySetValue(this.description, description);
     }
 
     public void setDescription(ModifiableByte description) {
-	this.description = description;
+        this.description = description;
     }
 
     public byte[] getConfig() {
-	return config;
+        return config;
     }
 
     public void setConfig(byte[] config) {
-	this.config = config;
+        this.config = config;
     }
 
     public void setConfig(AlertLevel level, AlertDescription description) {
-	config = new byte[2];
-	config[0] = level.getValue();
-	config[1] = description.getValue();
+        config = new byte[2];
+        config[0] = level.getValue();
+        config[1] = description.getValue();
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nALERT message:\n  Level: ").append(AlertLevel.getAlertLevel(level.getValue()))
-		.append("\n  Description: ").append(AlertDescription.getAlertDescription(description.getValue()));
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nALERT message:\n  Level: ").append(AlertLevel.getAlertLevel(level.getValue()))
+                .append("\n  Description: ").append(AlertDescription.getAlertDescription(description.getValue()));
+        return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("ALERT (").append(AlertLevel.getAlertLevel(level.getValue())).append(", ")
-		.append(AlertDescription.getAlertDescription(description.getValue())).append(")");
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ALERT (").append(AlertLevel.getAlertLevel(level.getValue())).append(", ")
+                .append(AlertDescription.getAlertDescription(description.getValue())).append(")");
+        return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	AlertHandler ah = new AlertHandler(tlsContext);
-	ah.setProtocolMessage(this);
-	return ah;
+        AlertHandler ah = new AlertHandler(tlsContext);
+        ah.setProtocolMessage(this);
+        return ah;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (!(obj instanceof AlertMessage)) {
-	    return false;
-	}
-	if (obj == this) {
-	    return true;
-	}
-	AlertMessage alert = (AlertMessage) obj;
-	return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-		&& (Objects.equals(alert.getDescription().getValue(), alert.getDescription().getValue()));
+        if (!(obj instanceof AlertMessage)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        AlertMessage alert = (AlertMessage) obj;
+        return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
+                && (Objects.equals(alert.getDescription().getValue(), alert.getDescription().getValue()));
 
     }
 
     @Override
     public int hashCode() {
-	int hash = 7;
-	hash = 73 * hash + Objects.hashCode(this.level.getValue());
-	hash = 73 * hash + Objects.hashCode(this.description.getValue());
-	return hash;
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode(this.level.getValue());
+        hash = 73 * hash + Objects.hashCode(this.description.getValue());
+        return hash;
     }
 }

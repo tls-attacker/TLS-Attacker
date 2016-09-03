@@ -36,7 +36,7 @@ public enum BulkCipherAlgorithm {
 	} else if (cipher.contains("NULL")) {
 	    return NULL;
 	}
-	throw new UnsupportedOperationException("The cipher algorithm is not supported yet.");
+	throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
     }
 
     public String getJavaName() {

@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
 import java.util.List;
 
 /**

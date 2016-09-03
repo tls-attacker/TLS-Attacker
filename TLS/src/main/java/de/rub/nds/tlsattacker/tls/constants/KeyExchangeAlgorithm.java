@@ -16,6 +16,7 @@ public enum KeyExchangeAlgorithm {
     NULL,
     DHE_DSS,
     DHE_RSA,
+    DHE_PSK,
     DH_ANON,
     RSA,
     DH_DSS,
