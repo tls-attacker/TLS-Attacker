@@ -43,6 +43,7 @@
         <module>Fuzzer</module>
         <module>TestSuite</module>
         <module>Runnable</module>
+        <module>TestTLS</module>
     </modules>
 
     <dependencies>

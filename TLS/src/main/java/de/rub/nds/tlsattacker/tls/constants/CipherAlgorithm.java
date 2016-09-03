@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 /**
  * Symmetric cipher algorithm and its mapping to Java names
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum CipherAlgorithm {
@@ -26,16 +26,22 @@ public enum CipherAlgorithm {
     AES_256_GCM(32, 4, 8, "AES/GCM/NoPadding"),
     CAMELLIA_128_CBC(16, 16, 0, "Camellia/CBC/NoPadding"),
     CAMELLIA_256_CBC(32, 16, 0, "Camellia/CBC/NoPadding"),
-    IDEA_128(16, 16, 0, "IDEA/CBC/NoPadding");
+    IDEA_128(16, 16, 0, "IDEA/CBC/NoPadding"),
+    SEED_CBC(16, 16, 0, "SEED/CBC/NoPadding"), // TODO this is not verified
+    AES_128_CCM(16, 4, 8, "AES/CCM/NoPadding"),
+    AES_256_CCM(32, 4, 8, "AES/CCM/NoPadding"),
+    ChaCha20Poly1305(32, 12, 0, "ChaCha");
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, String javaName) {
-	this.keySize = keySize;
-	this.javaName = javaName;
-	this.nonceBytesFromHandshake = nonceBytesFromHandshake;
-	this.nonceBytesFromRecord = nonceBytesFromRecord;
+        this.keySize = keySize;
+        this.javaName = javaName;
+        this.nonceBytesFromHandshake = nonceBytesFromHandshake;
+        this.nonceBytesFromRecord = nonceBytesFromRecord;
     }
 
-    /** Key size for the underlying cipher */
+    /**
+     * Key size for the underlying cipher
+     */
     private final int keySize;
 
     /**
@@ -45,25 +51,29 @@ public enum CipherAlgorithm {
      */
     private final int nonceBytesFromHandshake;
 
-    /** Number of bytes generated with each new record. */
+    /**
+     * Number of bytes generated with each new record.
+     */
     private final int nonceBytesFromRecord;
 
-    /** java name mapping */
+    /**
+     * java name mapping
+     */
     private final String javaName;
 
     public int getKeySize() {
-	return keySize;
+        return keySize;
     }
 
     public String getJavaName() {
-	return javaName;
+        return javaName;
     }
 
     public int getNonceBytesFromHandshake() {
-	return nonceBytesFromHandshake;
+        return nonceBytesFromHandshake;
     }
 
     public int getNonceBytesFromRecord() {
-	return nonceBytesFromRecord;
+        return nonceBytesFromRecord;
     }
 }

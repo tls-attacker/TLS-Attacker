@@ -3,15 +3,14 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.testsuite.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
@@ -22,9 +21,8 @@ import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
-import de.rub.nds.tlsattacker.testsuite.config.ServerTestConfig;
+import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -51,11 +49,11 @@ public class ServerTestSuite extends TestSuite {
 
     public static Logger LOGGER = LogManager.getLogger(ServerTestSuite.class);
 
-    private final ServerTestConfig testConfig;
+    private final ServerTestSuiteConfig testConfig;
 
     private ConfigHandler configHandler;
 
-    public ServerTestSuite(ServerTestConfig serverTestConfig, GeneralConfig generalConfig) {
+    public ServerTestSuite(ServerTestSuiteConfig serverTestConfig, GeneralConfig generalConfig) {
         super(generalConfig);
         this.testConfig = serverTestConfig;
     }

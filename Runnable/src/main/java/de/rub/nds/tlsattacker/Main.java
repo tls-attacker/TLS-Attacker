@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker;
 
@@ -30,8 +31,10 @@ import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
 import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
-import de.rub.nds.tlsattacker.testsuite.config.ServerTestConfig;
+import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
+import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
+import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
@@ -94,8 +97,10 @@ public class Main {
         jc.addCommand(ClientCommandConfig.COMMAND, client);
         ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
         jc.addCommand(ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND, MitM_Attack);
-        ServerTestConfig stconfig = new ServerTestConfig();
-        jc.addCommand(ServerTestConfig.COMMAND, stconfig);
+        ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
+        jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
+        TestServerConfig testServerConfig = new TestServerConfig();
+        jc.addCommand(TestServerConfig.COMMAND, testServerConfig);
 
         jc.parse(args);
 
@@ -115,9 +120,17 @@ public class Main {
             case ClientCommandConfig.COMMAND:
                 startSimpleTls(generalConfig, client, jc);
                 return;
-            case ServerTestConfig.COMMAND:
+            case ServerTestSuiteConfig.COMMAND:
                 ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
                 boolean success = st.startTests();
+                if (success) {
+                    System.exit(0);
+                } else {
+                    System.exit(1);
+                }
+            case TestServerConfig.COMMAND:
+                TestTLSServer testTlsServer = new TestTLSServer(testServerConfig, generalConfig);
+                success = testTlsServer.startTests();
                 if (success) {
                     System.exit(0);
                 } else {

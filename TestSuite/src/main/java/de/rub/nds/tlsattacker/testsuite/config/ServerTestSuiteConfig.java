@@ -15,14 +15,14 @@ import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ServerTestConfig extends ClientCommandConfig {
+public class ServerTestSuiteConfig extends ClientCommandConfig {
 
     public static final String COMMAND = "testsuite_server";
 
     @Parameter(names = "-folder", description = "Root folder including the test cases.")
     String folder;
 
-    public ServerTestConfig() {
+    public ServerTestSuiteConfig() {
 	folder = "../resources/testsuite";
     }
 

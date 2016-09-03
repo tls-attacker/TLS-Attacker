@@ -61,6 +61,6 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+	throw new UnsupportedOperationException("Elliptic curve extension handler not supported yet.");
     }
 }

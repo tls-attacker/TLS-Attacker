@@ -255,7 +255,7 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	writeMac.update(data);
 
 	if (LOGGER.isDebugEnabled()) {
-	    LOGGER.debug("The MAC will be caluculated over the following data: {}", ArrayConverter
+	    LOGGER.debug("The MAC will be calculated over the following data: {}", ArrayConverter
 		    .bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
 			    ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
 	}
