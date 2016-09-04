@@ -23,7 +23,11 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     /**
      * byte length of the supported elliptic curves length
      */
-    public static final int SUPPORTED_ELLIPTIC_CURVES_LENGTH = 2;
+    public static final int SUPPORTED_ELLIPTIC_CURVES_LENGTH = 2;// TODO can
+								 // this be a
+								 // field of the
+								 // Message and
+								 // modifieable?
 
     private EllipticCurvesExtensionHandler() {
 
@@ -41,7 +45,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
      */
     @Override
     public void initializeClientHelloExtension(EllipticCurvesExtensionMessage extension) {
-	byte[] curves = null;
+	byte[] curves = new byte[0];
 	for (NamedCurve curve : extension.getSupportedCurvesConfig()) {
 	    curves = ArrayConverter.concatenate(curves, curve.getValue());
 	}

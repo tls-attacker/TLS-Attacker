@@ -39,7 +39,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
      */
     @Override
     public void initializeClientHelloExtension(SignatureAndHashAlgorithmsExtensionMessage extension) {
-	byte[] algorithms = null;
+	byte[] algorithms = new byte[0];
 	for (SignatureAndHashAlgorithm algorithm : extension.getSignatureAndHashAlgorithmsConfig()) {
 	    algorithms = ArrayConverter.concatenate(algorithms, algorithm.getByteValue());
 	}

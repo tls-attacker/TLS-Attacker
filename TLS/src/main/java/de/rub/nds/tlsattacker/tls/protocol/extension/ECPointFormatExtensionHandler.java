@@ -39,7 +39,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
 
     @Override
     public void initializeClientHelloExtension(ECPointFormatExtensionMessage extension) {
-	byte[] pointFormats = null;
+	byte[] pointFormats = new byte[0];
 	for (ECPointFormat format : extension.getPointFormatsConfig()) {
 	    pointFormats = ArrayConverter.concatenate(pointFormats, format.getArrayValue());
 	}
