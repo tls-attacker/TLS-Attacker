@@ -15,8 +15,11 @@ import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.PublicKeyAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
@@ -80,7 +83,7 @@ public class TlsClientTest {
     @Test
     public void testRSAWorkflows() {
 	try {
-
+            
 	    KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
 	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
 	    tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
@@ -176,8 +179,66 @@ public class TlsClientTest {
 	    E.printStackTrace();
 	}
 	transportHandler.closeConnection();
-	return (!tlsContext.getWorkflowTrace()
-		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
+	boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+	if (!result) {
+	    LOGGER.log(Level.INFO, "Failed vanilla execution");
+	    return result;
+	}
+	tlsContext.getWorkflowTrace().reset();
+	WorkflowTrace trace = tlsContext.getWorkflowTrace();
+	tlsContext = configHandler.initializeTlsContext(config);
+	tlsContext.setWorkflowTrace(trace);
+	transportHandler = configHandler.initializeTransportHandler(config);
+	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (Exception E) {
+	    E.printStackTrace();
+	}
+	transportHandler.closeConnection();
+	result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+	if (!result) {
+	    LOGGER.log(Level.INFO, "Failed reset execution");
+	    return result;
+	}
+	tlsContext.getWorkflowTrace().reset();
+	tlsContext.getWorkflowTrace().makeGeneric();
+	trace = tlsContext.getWorkflowTrace();
+	tlsContext = configHandler.initializeTlsContext(config);
+	tlsContext.setWorkflowTrace(trace);
+	transportHandler = configHandler.initializeTransportHandler(config);
+	workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+	try {
+	    workflowExecutor.executeWorkflow();
+	} catch (Exception E) {
+	    E.printStackTrace();
+	}
+	transportHandler.closeConnection();
+	result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+	if (!result) {
+	    LOGGER.log(Level.INFO, "Failed reset&generic execution");
+	}
+	return result;
+    }
+    private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
+	int counter = 0;
+	for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
+	    if (counter >= trace.getAllExecutedMessages().size()) {
+		return false;
+	    }
+	    ProtocolMessage receivedMessage = trace.getAllExecutedMessages().get(counter);
+	    if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
+		break;
+	    }
+	    if (configuredMessage.getClass() != receivedMessage.getClass()) {
+		if (configuredMessage.isRequired()) {
+		    return false;
+		}
+	    } else {
+		counter++;
+	    }
+	}
+	return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
     private void testCustomWorkflow(int port) {
