@@ -83,7 +83,7 @@ public class TlsClientTest {
     @Test
     public void testRSAWorkflows() {
 	try {
-            
+
 	    KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
 	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
 	    tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
