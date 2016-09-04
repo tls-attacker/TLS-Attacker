@@ -118,6 +118,9 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    LOGGER.debug("Encrypting the following padded premaster secret: {}",
 		    ArrayConverter.bytesToHexString(paddedPremasterSecret));
 	    // TODO can throw a tooMuchData for RSA Block exception
+	    if (paddedPremasterSecret.length == 0) {
+		paddedPremasterSecret = new byte[] { 0 };
+	    }
 	    if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
 		if (protocolMessage.isFuzzingMode()) {
 		    paddedPremasterSecret = masterSecret;
@@ -125,7 +128,13 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 		    throw new IllegalStateException("Trying to encrypt more data then modulus size!");
 		}
 	    }
-	    byte[] encrypted = cipher.doFinal(paddedPremasterSecret);
+	    byte[] encrypted = null;
+	    try {
+		encrypted = cipher.doFinal(paddedPremasterSecret);
+	    } catch (ArrayIndexOutOfBoundsException E) {
+		// too much data for RSA block
+		throw new UnsupportedOperationException(E);
+	    }
 	    protocolMessage.setEncryptedPremasterSecret(encrypted);
 	    protocolMessage
 		    .setEncryptedPremasterSecretLength(protocolMessage.getEncryptedPremasterSecret().getValue().length);
