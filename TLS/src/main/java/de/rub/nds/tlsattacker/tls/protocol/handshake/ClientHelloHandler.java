@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
@@ -72,22 +73,22 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 		.getRandom().getValue()));
 
 	byte[] cookieArray = new byte[0];
-	if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
-		|| tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
-	    de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage) protocolMessage;
+	// Ugly but more secure
+	if (protocolMessage instanceof ClientHelloDtlsMessage) {
+	    ClientHelloDtlsMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage) protocolMessage;
 	    dtlsClientHello.setCookie(tlsContext.getDtlsHandshakeCookie());
 	    dtlsClientHello.setCookieLength((byte) tlsContext.getDtlsHandshakeCookie().length);
 	    cookieArray = ArrayConverter.concatenate(new byte[] { dtlsClientHello.getCookieLength().getValue() },
 		    dtlsClientHello.getCookie().getValue());
 	}
 
-	byte[] cipherSuites = null;
+	byte[] cipherSuites = new byte[0];
 	for (CipherSuite cs : protocolMessage.getSupportedCipherSuites()) {
 	    cipherSuites = ArrayConverter.concatenate(cipherSuites, cs.getByteValue());
 	}
 	protocolMessage.setCipherSuites(cipherSuites);
-
-	int cipherSuiteLength = protocolMessage.getCipherSuites().getValue().length;
+	int cipherSuiteLength = 0;
+        cipherSuiteLength = protocolMessage.getCipherSuites().getValue().length;
 	protocolMessage.setCipherSuiteLength(cipherSuiteLength);
 
 	byte[] compressionMethods = null;
