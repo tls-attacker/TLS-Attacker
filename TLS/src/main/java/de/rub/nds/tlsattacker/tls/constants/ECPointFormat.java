@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,15 @@ public enum ECPointFormat {
 
     public byte getValue() {
 	return value;
+    }
+
+    public static ECPointFormat getRandom() {
+	ECPointFormat c = null;
+	while (c == null) {
+	    Object[] o = MAP.values().toArray();
+	    c = (ECPointFormat) o[RandomHelper.getRandom().nextInt(o.length)];
+	}
+	return c;
     }
 
     public byte[] getArrayValue() {

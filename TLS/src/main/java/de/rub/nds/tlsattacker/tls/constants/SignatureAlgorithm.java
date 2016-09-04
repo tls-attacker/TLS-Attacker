@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +47,15 @@ public enum SignatureAlgorithm {
 
     public byte[] getArrayValue() {
 	return new byte[] { value };
+    }
+
+    public static SignatureAlgorithm getRandom() {
+	SignatureAlgorithm c = null;
+	while (c == null) {
+	    Object[] o = MAP.values().toArray();
+	    c = (SignatureAlgorithm) o[RandomHelper.getRandom().nextInt(o.length)];
+	}
+	return c;
     }
 
     public String getJavaName() {

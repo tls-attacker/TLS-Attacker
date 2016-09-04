@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,5 +47,14 @@ public enum MaxFragmentLength {
 
     public byte[] getArrayValue() {
 	return new byte[] { value };
+    }
+
+    public static MaxFragmentLength getRandom() {
+	MaxFragmentLength c = null;
+	while (c == null) {
+	    Object[] o = MAP.values().toArray();
+	    c = (MaxFragmentLength) o[RandomHelper.getRandom().nextInt(o.length)];
+	}
+	return c;
     }
 }

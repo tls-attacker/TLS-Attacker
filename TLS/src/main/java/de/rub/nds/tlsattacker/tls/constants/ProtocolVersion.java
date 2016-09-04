@@ -7,6 +7,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,15 @@ public enum ProtocolVersion {
 	    return null;
 	}
 	return MAP.get(i);
+    }
+
+    public static ProtocolVersion getRandom() {
+	ProtocolVersion c = null;
+	while (c == null) {
+	    Object[] o = MAP.values().toArray();
+	    c = (ProtocolVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+	}
+	return c;
     }
 
     public byte[] getValue() {

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 
 /**
@@ -66,6 +67,10 @@ public class SignatureAndHashAlgorithm implements Serializable {
 
     public void setHashAlgorithm(HashAlgorithm hashAlgorithm) {
 	this.hashAlgorithm = hashAlgorithm;
+    }
+
+    public static SignatureAndHashAlgorithm getRandom() {
+	return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(), HashAlgorithm.getRandom());
     }
 
     public String getJavaName() {

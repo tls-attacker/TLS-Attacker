@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,5 +45,14 @@ public enum HeartbeatMode {
 
     public byte[] getArrayValue() {
 	return new byte[] { value };
+    }
+
+    public static HeartbeatMode getRandom() {
+	HeartbeatMode c = null;
+	while (c == null) {
+	    Object[] o = MAP.values().toArray();
+	    c = (HeartbeatMode) o[RandomHelper.getRandom().nextInt(o.length)];
+	}
+	return c;
     }
 }
