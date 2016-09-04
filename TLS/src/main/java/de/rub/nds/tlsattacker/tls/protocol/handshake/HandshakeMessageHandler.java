@@ -3,12 +3,12 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -97,12 +97,31 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 	byte[] preparePmBytes = new byte[messageBytes.length + 8];
 
 	System.arraycopy(messageBytes, 0, preparePmBytes, 0, 4);
-	System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getMessageSeq().getValue(), 2), 0, preparePmBytes,
-		4, 2);
-	System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getFragmentOffset().getValue(), 3), 0,
-		preparePmBytes, 6, 3);
-	System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getFragmentLength().getValue(), 3), 0,
-		preparePmBytes, 9, 3);
+
+	if (protocolMessage.getMessageSeq().getValue() != null) {
+	    System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getMessageSeq().getValue(), 2), 0,
+		    preparePmBytes, 4, 2);
+	} else if (tlsContext.isFuzzingMode()) {
+	    System.arraycopy(ArrayConverter.intToBytes(0, 2), 0, preparePmBytes, 4, 2);
+	} else {
+	    throw new WorkflowExecutionException("ProtocolMessage messageSequence is null!");
+	}
+	if (protocolMessage.getFragmentOffset().getValue() != null) {
+	    System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getFragmentOffset().getValue(), 3), 0,
+		    preparePmBytes, 6, 3);
+	} else if (tlsContext.isFuzzingMode()) {
+	    System.arraycopy(ArrayConverter.intToBytes(0, 3), 0, preparePmBytes, 6, 3);
+	} else {
+	    throw new WorkflowExecutionException("ProtocolMessage FragmentOffset is null!");
+	}
+	if (protocolMessage.getFragmentLength().getValue() != null) {
+	    System.arraycopy(ArrayConverter.intToBytes(protocolMessage.getFragmentLength().getValue(), 3), 0,
+		    preparePmBytes, 9, 3);
+	} else if (tlsContext.isFuzzingMode()) {
+	    System.arraycopy(ArrayConverter.intToBytes(0, 3), 0, preparePmBytes, 9, 3);
+	} else {
+	    throw new WorkflowExecutionException("ProtocolMessage FragmentOffset is null!");
+	}
 	System.arraycopy(messageBytes, 4, preparePmBytes, 12, messageBytes.length - 4);
 
 	return preparePmBytes;
