@@ -51,8 +51,8 @@ public class WorkflowTrace implements Serializable {
      */
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
-	    @XmlElement(type = MessageAction.class, name = "MessageAction"),
 	    @XmlElement(type = SendAction.class, name = "SendAction"),
+	    @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
 	    @XmlElement(type = ToggleEncryptionAction.class, name = "ToggleEncryptionAction"),
 	    @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
 	    @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
@@ -61,8 +61,7 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
 	    @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
 	    @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
-	    @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction")})
-            
+	    @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
     private List<TLSAction> tlsActions;
 
     private String name = null;
@@ -87,6 +86,12 @@ public class WorkflowTrace implements Serializable {
 	}
     }
 
+    public void reset() {
+	for (TLSAction action : getTLSActions()) {
+	    action.reset();
+	}
+    }
+
     public String getDescription() {
 	return description;
     }
@@ -103,6 +108,10 @@ public class WorkflowTrace implements Serializable {
      */
     public boolean add(TLSAction action) {
 	return tlsActions.add(action);
+    }
+
+    public void add(int position, TLSAction action) {
+	tlsActions.add(position, action);
     }
 
     public TLSAction remove(int index) {
