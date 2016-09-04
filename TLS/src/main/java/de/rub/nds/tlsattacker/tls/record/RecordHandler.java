@@ -151,9 +151,9 @@ public class RecordHandler {
 		try {
 		    recordCipher = new TlsRecordBlockCipher(tlsContext);
 		} catch (NoSuchAlgorithmException ex) {
-		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
+		    throw new UnsupportedOperationException(ex);
 		} catch (NoSuchPaddingException ex) {
-		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
+		    throw new UnsupportedOperationException(ex);
 		} catch (InvalidKeyException ex) {
 		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (InvalidAlgorithmParameterException ex) {
@@ -162,8 +162,13 @@ public class RecordHandler {
 	    } else if (recordCipher == null) {
 		throw new WorkflowExecutionException("Cannot encrypt Record, RecordCipher is not yet initialized");
 	    }
-	    byte[] mac = recordCipher.calculateMac(tlsContext.getProtocolVersion(), contentType, record
-		    .getProtocolMessageBytes().getValue());
+	    byte[] mac = null;
+	    try {
+		mac = recordCipher.calculateMac(tlsContext.getProtocolVersion().getValue(), contentType, record
+			.getProtocolMessageBytes().getValue());
+	    } catch (NullPointerException E) {
+		E.printStackTrace();
+	    }
 	    record.setMac(mac);
 	    byte[] macedData = ArrayConverter.concatenate(record.getProtocolMessageBytes().getValue(), record.getMac()
 		    .getValue());
