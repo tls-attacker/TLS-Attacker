@@ -219,10 +219,10 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
      * @param data
      * @return
      */
-    public byte[] calculateMac(ProtocolVersion protocolVersion, ProtocolMessageType contentType, byte[] data) {
+    public byte[] calculateMac(byte[] protocolVersion, ProtocolMessageType contentType, byte[] data) {
 
 	byte[] SQN = ArrayConverter.longToUint64Bytes(sequenceNumber);
-	byte[] HDR = ArrayConverter.concatenate(contentType.getArrayValue(), protocolVersion.getValue(),
+	byte[] HDR = ArrayConverter.concatenate(contentType.getArrayValue(), protocolVersion,
 		ArrayConverter.intToBytes(data.length, 2));
 
 	writeMac.update(SQN);
