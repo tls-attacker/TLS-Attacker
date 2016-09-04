@@ -231,13 +231,13 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
 	try {
 
-	     p = new BigInteger(1, protocolMessage.getSerializedP().getValue());
+	    p = new BigInteger(1, protocolMessage.getSerializedP().getValue());
 	    g = new BigInteger(1, protocolMessage.getSerializedG().getValue());
 	    BigInteger Ys = new BigInteger(1, protocolMessage.getSerializedPublicKey().getValue());
 	    ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(Ys,
 		    new DHParameters(p, g)));
 
-	    
+            
 	    tlsContext.setServerDHParameters(publicKeyParameters);
 
 	    KeyStore ks = tlsContext.getKeyStore();
