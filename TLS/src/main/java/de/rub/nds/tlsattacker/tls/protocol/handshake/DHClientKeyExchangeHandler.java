@@ -125,9 +125,13 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 	    tlsContext.setServerDHParameters(new ServerDHParams(parameters));
 
 	} else {
-	    kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext.getServerDHParameters().getPublicKey()
-		    .getParameters());
+	    try {
+		kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), tlsContext.getServerDHParameters().getPublicKey()
+			.getParameters());
 
+	    } catch (IllegalArgumentException E) {
+		throw new UnsupportedOperationException(E);
+	    }
 	}
 
 	DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) kp.getPublic();
