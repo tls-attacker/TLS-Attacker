@@ -22,18 +22,25 @@ public class ChangeProtocolVersionAction extends TLSAction {
 
     private ProtocolVersion newValue;
     private ProtocolVersion oldValue = null;
-    public ChangeProtocolVersionAction(ProtocolVersion newValue) {     
-        super();
-        this.newValue = newValue;
-    }
-    public ProtocolVersion getNewValue()
-    {
-        return newValue;
+
+    public ChangeProtocolVersionAction(ProtocolVersion newValue) {
+	super();
+	this.newValue = newValue;
     }
 
-    public ProtocolVersion getOldValue()
-    {
-        return oldValue;
+    public ChangeProtocolVersionAction() {
+    }
+
+    public void setNewValue(ProtocolVersion newValue) {
+	this.newValue = newValue;
+    }
+
+    public ProtocolVersion getNewValue() {
+	return newValue;
+    }
+
+    public ProtocolVersion getOldValue() {
+	return oldValue;
     }
 
     @Override
@@ -41,8 +48,8 @@ public class ChangeProtocolVersionAction extends TLSAction {
 	if (executed) {
 	    throw new WorkflowExecutionException("Action already executed!");
 	}
-        oldValue = tlsContext.getProtocolVersion();
-        tlsContext.setProtocolVersion(newValue);
+	oldValue = tlsContext.getProtocolVersion();
+	tlsContext.setProtocolVersion(newValue);
     }
 
     @Override

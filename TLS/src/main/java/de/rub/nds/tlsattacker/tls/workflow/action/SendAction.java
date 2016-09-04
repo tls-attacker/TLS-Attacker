@@ -8,6 +8,7 @@
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -61,6 +62,7 @@ public class SendAction extends MessageAction {
 								     // it
 	actualMessages = executor.sendMessages(tlsContext, configuredMessages);
 	executed = true;
+
     }
 
     private void ensureMyLastProtocolMessagesHaveRecords(List<ProtocolMessage> protocolMessages) {

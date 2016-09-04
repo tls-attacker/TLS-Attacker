@@ -18,47 +18,60 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeServerCertificateAction extends TLSAction
-{
-    private Certificate newValue;
-    private X509CertificateObject x509newValue;
+public class ChangeServerCertificateAction extends TLSAction {
+    @XmlTransient
+    private Certificate newValue = null;
+    @XmlTransient
+    private X509CertificateObject x509newValue = null;
+    @XmlTransient
     private Certificate oldValue = null;
+    @XmlTransient
     private X509CertificateObject x509oldValue = null;
-    
-    public ChangeServerCertificateAction(Certificate newValue ,X509CertificateObject x509newValue)
-    {
-        super();
-        this.newValue = newValue;
-        this.x509newValue = x509newValue;
-    }
-    public Certificate getNewValue()
-    {
-        return newValue;
+
+    // TODO I really like to add a ServerCertificateStructure constructor, but
+    // the
+    // Struct is not in the TLS package, perhaps i should mitigate it here for
+    // now we dont serialize the certs
+
+    public ChangeServerCertificateAction(Certificate newValue, X509CertificateObject x509newValue) {
+	super();
+	this.newValue = newValue;
+	this.x509newValue = x509newValue;
     }
 
-    public Certificate getOldValue()
-    {
-        return oldValue;
+    public Certificate getNewValue() {
+	return newValue;
     }
+
+    public Certificate getOldValue() {
+	return oldValue;
+    }
+
+    public X509CertificateObject getX509newValue() {
+	return x509newValue;
+    }
+
+    public X509CertificateObject getX509oldValue() {
+	return x509oldValue;
+    }
+
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException
-    {
-        if (executed) {
+    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+	if (executed) {
 	    throw new WorkflowExecutionException("Action already executed!");
 	}
-        oldValue = tlsContext.getServerCertificate();
-        tlsContext.setServerCertificate(newValue);
-        x509oldValue = tlsContext.getX509ServerCertificateObject();
-        tlsContext.setX509ServerCertificateObject(x509newValue);
+	oldValue = tlsContext.getServerCertificate();
+	tlsContext.setServerCertificate(newValue);
+	x509oldValue = tlsContext.getX509ServerCertificateObject();
+	tlsContext.setX509ServerCertificateObject(x509newValue);
     }
 
     @Override
-    public void reset()
-    {
-        oldValue = null;
+    public void reset() {
+	oldValue = null;
     }
-    
+
 }
