@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
@@ -52,7 +54,8 @@ public class ClientHelloTest {
 	writer = new StringWriter();
 	context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
 		ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-		ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class);
+		ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class,
+		ChangeClientCertificateAction.class, ChangeServerCertificateAction.class);
 	m = context.createMarshaller();
 	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	m.setAdapter(new ByteArrayAdapter());
