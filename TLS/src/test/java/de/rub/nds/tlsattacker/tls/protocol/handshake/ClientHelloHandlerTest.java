@@ -96,7 +96,7 @@ public class ClientHelloHandlerTest {
 
     @Test
     public void testPrepareMessageWithExtensions() {
-	handler.setProtocolMessage(new ClientHelloDtlsMessage());
+	handler.setProtocolMessage(new ClientHelloMessage());
 
 	de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
 		.getProtocolMessage();
