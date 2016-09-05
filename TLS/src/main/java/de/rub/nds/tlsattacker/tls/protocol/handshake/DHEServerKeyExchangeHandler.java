@@ -232,11 +232,13 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
 	try {
 	    p = new BigInteger(1, serializedP);
-            g = new BigInteger(1, serializedG);
-            BigInteger y= new BigInteger(1, serializedPublicKey);;
+	    g = new BigInteger(1, serializedG);
+	    BigInteger y = new BigInteger(1, serializedPublicKey);
+	    ;
 
-	    ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(y, new DHParameters(p, g)));
-            tlsContext.setServerDHParameters(publicKeyParameters);
+	    ServerDHParams publicKeyParameters = new ServerDHParams(
+		    new DHPublicKeyParameters(y, new DHParameters(p, g)));
+	    tlsContext.setServerDHParameters(publicKeyParameters);
 	    KeyStore ks = tlsContext.getKeyStore();
 
 	    // could be extended to choose the algorithms depending on the
@@ -248,8 +250,13 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
 	    Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
 
-	    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
-
+	    RSAPrivateCrtKey rsaKey = null;
+	    if (!key.getAlgorithm().equals("RSA")) {
+		// Load static key
+		ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+		key = ks.getKey("alias", "password".toCharArray());
+	    }
+	    rsaKey = (RSAPrivateCrtKey) key;
 	    Signature instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
 	    instance.initSign(rsaKey);
 	    LOGGER.debug("SignatureAndHashAlgorithm for ServerKeyExchange message: {}",
@@ -281,6 +288,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 		| SignatureException ex) {
 	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
 	}
+        catch (IOException | CertificateException ex)
+        {
+            java.util.logging.Logger.getLogger(DHEServerKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 	return protocolMessage.getCompleteResultingMessage().getValue();
     }
