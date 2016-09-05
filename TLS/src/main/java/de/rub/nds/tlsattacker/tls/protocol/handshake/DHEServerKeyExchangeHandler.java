@@ -47,6 +47,7 @@ import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsDHUtils;
+import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.util.BigIntegers;
 import sun.security.rsa.RSAKeyFactory;
 import sun.security.rsa.RSAKeyPairGenerator;
@@ -230,10 +231,12 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 	InputStream is = new ByteArrayInputStream(dhParams);
 
 	try {
-	    ServerDHParams publicKeyParameters = ServerDHParams.parse(is);
+	    p = new BigInteger(1, serializedP);
+            g = new BigInteger(1, serializedG);
+            BigInteger y= new BigInteger(1, serializedPublicKey);;
 
-	    tlsContext.setServerDHParameters(publicKeyParameters);
-
+	    ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(y, new DHParameters(p, g)));
+            tlsContext.setServerDHParameters(publicKeyParameters);
 	    KeyStore ks = tlsContext.getKeyStore();
 
 	    // could be extended to choose the algorithms depending on the
@@ -275,7 +278,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 		    ArrayConverter.longToUint32Bytes(header), result));
 
 	} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
-		| SignatureException | IOException ex) {
+		| SignatureException ex) {
 	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
 	}
 
