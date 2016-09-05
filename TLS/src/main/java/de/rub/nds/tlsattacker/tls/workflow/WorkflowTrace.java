@@ -64,7 +64,6 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
 	    @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
 	    @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
-    
     private List<TLSAction> tlsActions;
 
     private String name = null;
