@@ -9,7 +9,7 @@ package Main;
 
 import Config.ConfigManager;
 import Server.ServerManager;
-import Controller.FuzzerController;
+import Controller.CommandLineController;
 import Executor.DebugExecutor;
 import Controller.Controller;
 import Config.EvolutionaryFuzzerConfig;
@@ -78,7 +78,7 @@ public class Main {
 	switch (jc.getParsedCommand()) {
 	    case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
 		try {
-		    Controller controller = new FuzzerController(evoConfig);
+		    Controller controller = new CommandLineController(evoConfig);
 		    controller.startFuzzer();
 		    controller.startConsoleInput();
 		} catch (IllegalCertificateMutatorException ex) {
