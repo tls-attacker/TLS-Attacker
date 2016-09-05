@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCompressionAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangePreMasterSecretAction;
@@ -60,8 +61,10 @@ public class WorkflowTrace implements Serializable {
 	    @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
 	    @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
 	    @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
+	    @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
 	    @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
 	    @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
+    
     private List<TLSAction> tlsActions;
 
     private String name = null;
