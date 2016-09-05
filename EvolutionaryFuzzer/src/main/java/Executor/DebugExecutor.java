@@ -7,7 +7,6 @@
  */
 package Executor;
 
-import Agents.AFLAgent;
 import Agents.Agent;
 import Agents.AgentFactory;
 import Config.ConfigManager;
@@ -20,13 +19,11 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -49,7 +46,7 @@ public class DebugExecutor {
     private static final Logger LOG = Logger.getLogger(DebugExecutor.class.getName());
 
     public static void execute(TestVector vector, EvolutionaryFuzzerConfig config) {
-
+        vector.getTrace().reset();
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 
 	TransportHandler transportHandler = null;
@@ -61,7 +58,7 @@ public class DebugExecutor {
 	    agent.applicationStart(server);
 
 	    GeneralConfig gc = new GeneralConfig();
-	    gc.setLogLevel(Level.OFF);
+	    gc.setLogLevel(Level.ALL);
 	    configHandler.initialize(gc);
 
 	    long time = System.currentTimeMillis();
@@ -87,6 +84,7 @@ public class DebugExecutor {
 		}
 	    }
 	    TlsContext tlsContext = new TlsContext();
+            tlsContext.setFuzzingMode(true);
 	    tlsContext.setWorkflowTrace(vector.getTrace());
 
 	    KeyStore ks = KeystoreHandler.loadKeyStore(config.getKeystore(), config.getPassword());
