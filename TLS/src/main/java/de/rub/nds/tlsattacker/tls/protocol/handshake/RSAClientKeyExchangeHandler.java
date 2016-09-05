@@ -131,7 +131,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 	    byte[] encrypted = null;
 	    try {
 		encrypted = cipher.doFinal(paddedPremasterSecret);
-	    } catch (ArrayIndexOutOfBoundsException E) {
+	    } catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E) {
 		// too much data for RSA block
 		throw new UnsupportedOperationException(E);
 	    }
