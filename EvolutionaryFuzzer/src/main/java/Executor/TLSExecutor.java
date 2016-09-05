@@ -127,6 +127,7 @@ public class TLSExecutor extends Executor {
 			}
 		    }
 		}
+                transportHandler.setTimeout(ConfigManager.getInstance().getConfig().getTlsTimeout());
 		KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
 		TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
 		tlsContext.setFuzzingMode(true);
@@ -185,7 +186,7 @@ public class TLSExecutor extends Executor {
 		long t = System.currentTimeMillis();
 		while (!server.exited()) {
 		    if (t + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			timeout = true;
+			//timeout = true;
 			server.stop();
 			break;
 

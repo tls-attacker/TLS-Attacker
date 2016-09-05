@@ -110,15 +110,13 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     // Are we currently in serialization mode?
     private boolean serialize = false;
-
+    
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
      * and serverCommandFromFile to server/server.config
      */
     public EvolutionaryFuzzerConfig() {
 	outputFolder = "data/";
-	this.timeout = 10000;
-	this.tlsTimeout = 100;
 	setFuzzingMode(true);
 	setKeystore("../resources/rsa1024.jks");
 	setPassword("password");
