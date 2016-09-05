@@ -9,7 +9,9 @@ package Server;
 
 import Server.ServerSerializer;
 import Config.EvolutionaryFuzzerConfig;
+import Config.FuzzerGeneralConfig;
 import Helper.GitIgnoreFileFilter;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,7 @@ public class ServerManager {
 	serverList.add(server);
     }
 
-    public void init(EvolutionaryFuzzerConfig config) {
+    public void init(FuzzerGeneralConfig config) {
 	File file = new File(config.getServerCommandFromFile());
 	if (!file.exists()) {
 	    LOG.log(Level.INFO, "Could not find Server Configuration Files:" + file.getAbsolutePath());
@@ -97,7 +99,7 @@ public class ServerManager {
     public synchronized TLSServer getFreeServer() {
 	long startSearch = System.currentTimeMillis();
 	if (serverList.isEmpty()) {
-	    return null;
+	    throw new ConfigurationException("No Servers configured!");
 	}
 	int i = 0;
 	while (true) {
