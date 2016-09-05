@@ -7,23 +7,40 @@
  */
 package Helper;
 
+import Certificate.ClientCertificateStructure;
+import Certificate.ServerCertificateStructure;
+import Config.EvolutionaryFuzzerConfig;
+import Modification.AddContextActionModification;
+import Modification.AddExtensionModification;
 import Modification.AddMessageModification;
 import Modification.AddRecordModification;
 import Modification.AddMessageFlightModification;
 import Modification.AddToggleEncrytionActionModification;
 import Modification.DuplicateMessageModification;
+import Modification.Modification;
+import Modification.ModificationType;
 import Modification.ModifyFieldModification;
 import Modification.RemoveMessageModification;
+import Mutator.Certificate.CertificateMutator;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableListHolder;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.constants.NameType;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.ModificationException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
@@ -31,6 +48,13 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
@@ -46,20 +70,41 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientRandomAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCompressionAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeMasterSecretAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangePreMasterSecretAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeProtocolVersionAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerCertificateAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ToggleEncryptionAction;
+import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 public class FuzzingHelper {
 
@@ -153,7 +198,7 @@ public class FuzzingHelper {
 	    ProtocolMessage pm = protocolMessages.get(randomPM);
 	    Record r = new Record();
 	    r.setMaxRecordLengthConfig(random.nextInt(50));// TODO can we make
-							   // this more crazy?
+	    // this more crazy?
 	    pm.addRecord(r);
 	    return new AddRecordModification(pm);
 
@@ -211,6 +256,140 @@ public class FuzzingHelper {
 	Random r = new Random();
 	List<SendAction> sendActions = tempTrace.getSendActions();
 	return sendActions.get(r.nextInt(sendActions.size()));
+    }
+
+    public static AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
+	Random r = new Random();
+	AddContextActionModification modification = null;
+	TLSAction action = null;
+	ModificationType type = null;
+	int position = r.nextInt(tempTrace.getTLSActions().size());
+	switch (r.nextInt(9)) {
+	    case 0:
+		type = ModificationType.ADD_CHANGE_CIPHERSUITE_ACTION;
+		action = new ChangeCipherSuiteAction(CipherSuite.getRandom());
+		break;
+	    case 1:
+		// type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
+		// ClientCertificateStructure clientCert =
+		// mutator.getClientCertificateStructure();
+		// String alias = clientCert.getAlias();
+		// String password = clientCert.getPassword();
+		// java.security.cert.Certificate sunCert = null;
+		// KeyStore ks = null;
+		// try
+		// {
+		// ks =
+		// KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(),
+		// password);
+		// sunCert = ks.getCertificate(alias);
+		// if (alias == null || sunCert == null)
+		// {
+		// return null;
+		// }
+		// byte[] certBytes = sunCert.getEncoded();
+		// ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+		// org.bouncycastle.asn1.x509.Certificate cert =
+		// org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+		//
+		// org.bouncycastle.asn1.x509.Certificate[] certs = new
+		// org.bouncycastle.asn1.x509.Certificate[1];
+		// certs[0] = cert;
+		// Certificate tlsCerts = new Certificate(certs);
+		//
+		// X509CertificateObject x509CertObject = new
+		// X509CertificateObject(tlsCerts.getCertificateAt(0));
+		// action = new
+		// ChangeClientCertificateAction(cert,x509CertObject);
+		// return null;//TODO
+		// }
+		// catch (KeyStoreException | IOException |
+		// NoSuchAlgorithmException | CertificateException ex)
+		// {
+		// return null;
+		// }
+		return null;
+	    case 2:
+		type = ModificationType.ADD_CHANGE_CLIENT_RANDOM_ACTION;
+		byte[] newBytes = new byte[r.nextInt(1024)];
+		r.nextBytes(newBytes);
+		action = new ChangeClientRandomAction(newBytes);
+		break;
+	    case 3:
+		type = ModificationType.ADD_CHANGE_COMPRESSION_ACTION;
+		CompressionMethod method = CompressionMethod.getRandom();
+		action = new ChangeCompressionAction(method);
+		break;
+	    case 4:
+		type = ModificationType.ADD_CHANGE_MASTER_SECRET_ACTION;
+		newBytes = new byte[r.nextInt(1024)];
+		r.nextBytes(newBytes);
+		action = new ChangeMasterSecretAction(newBytes);
+		break;
+	    case 5:
+		type = ModificationType.ADD_CHANGE_PREMASTER_SECRET_ACTION;
+		newBytes = new byte[r.nextInt(1024)];
+		r.nextBytes(newBytes);
+		action = new ChangePreMasterSecretAction(newBytes);
+		break;
+	    case 6:
+		type = ModificationType.ADD_CHANGE_PROTOCOL_VERSION_ACTION;
+		ProtocolVersion verion = ProtocolVersion.getRandom();
+		action = new ChangeProtocolVersionAction(verion);
+		break;
+	    case 7:
+		// type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
+		// ClientCertificateStructure serverCert =
+		// mutator.getClientCertificateStructure();//TODO
+		// alias = serverCert.getAlias();
+		// password = serverCert.getPassword();
+		// sunCert = null;
+		// ks = null;
+		// try
+		// {
+		// ks =
+		// KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(),
+		// password);
+		// sunCert = ks.getCertificate(alias);
+		// if (alias == null || sunCert == null)
+		// {
+		// return null;
+		// }
+		// byte[] certBytes = sunCert.getEncoded();
+		// ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+		// org.bouncycastle.asn1.x509.Certificate cert =
+		// org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+		//
+		// org.bouncycastle.asn1.x509.Certificate[] certs = new
+		// org.bouncycastle.asn1.x509.Certificate[1];
+		// certs[0] = cert;
+		// Certificate tlsCerts = new Certificate(certs);
+		//
+		// X509CertificateObject x509CertObject = new
+		// X509CertificateObject(tlsCerts.getCertificateAt(0));
+		// action = new
+		// ChangeServerCertificateAction(cert,x509CertObject);
+		//
+		// }
+		// catch (KeyStoreException | IOException |
+		// NoSuchAlgorithmException | CertificateException ex)
+		// {
+		// return null;
+		// }
+		// return null;//TODO
+		return null;
+	    case 8:
+		type = ModificationType.ADD_CHANGE_SERVER_RANDOM_ACTION;
+		newBytes = new byte[r.nextInt(1024)];
+		r.nextBytes(newBytes);
+		action = new ChangeServerRandomAction(newBytes);
+		break;
+	}
+	if (action != null) {
+	    tempTrace.add(position, action);
+	    modification = new AddContextActionModification(type, action);
+	}
+	return modification;
     }
 
     private static ProtocolMessage generateRandomMessage() {
@@ -306,6 +485,79 @@ public class FuzzingHelper {
 		    break;
 	    }
 	} while (message == null);
+	return message;
+    }
+
+    public static AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
+	ExtensionMessage message = generateRandomExtensionMessage();
+	if (message != null) {
+	    List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
+	    Collections.shuffle(protocolMessages);
+	    for (ProtocolMessage pm : protocolMessages) {
+		if (pm instanceof ClientHelloMessage) {
+		    ((ClientHelloMessage) pm).addExtension(message);
+		    return new AddExtensionModification(message);
+		}
+		if (pm instanceof ClientHelloDtlsMessage) {
+		    ((ClientHelloDtlsMessage) pm).addExtension(message);
+		    return new AddExtensionModification(message);
+		}
+	    }
+	}
+	return null;
+    }
+
+    private static ExtensionMessage generateRandomExtensionMessage() {
+	ExtensionMessage message = null;
+	Random r = new Random();
+	switch (r.nextInt(6)) {
+	    case 0:
+		EllipticCurvesExtensionMessage ecc = new EllipticCurvesExtensionMessage();
+		List<NamedCurve> namedCurveList = new LinkedList<>();
+		for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+		{
+		    namedCurveList.add(NamedCurve.getRandom());
+		}
+		ecc.setSupportedCurvesConfig(namedCurveList);
+		message = ecc;
+		break;
+	    case 1:
+		ECPointFormatExtensionMessage pfc = new ECPointFormatExtensionMessage();
+		List<ECPointFormat> formatList = new LinkedList<>();
+		for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+		{
+		    formatList.add(ECPointFormat.getRandom());
+		}
+		pfc.setPointFormatsConfig(formatList);
+		message = pfc;
+		break;
+	    case 2:
+		HeartbeatExtensionMessage hem = new HeartbeatExtensionMessage();
+		hem.setHeartbeatModeConfig(HeartbeatMode.getRandom());
+		message = hem;
+		break;
+	    case 3:
+		MaxFragmentLengthExtensionMessage mle = new MaxFragmentLengthExtensionMessage();
+		mle.setMaxFragmentLengthConfig(MaxFragmentLength.getRandom());
+		message = mle;
+		break;
+	    case 4:
+		ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
+		sni.setNameTypeConfig(NameType.HOST_NAME);
+		sni.setServerNameConfig("127.0.0.1");// TODO
+		message = sni;
+		break;
+	    case 5:
+		SignatureAndHashAlgorithmsExtensionMessage sae = new SignatureAndHashAlgorithmsExtensionMessage();
+		List<SignatureAndHashAlgorithm> signatureHashList = new LinkedList<>();
+		for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+		{
+		    signatureHashList.add(SignatureAndHashAlgorithm.getRandom());
+		}
+		sae.setSignatureAndHashAlgorithmsConfig(signatureHashList);
+		message = sae;
+		break;
+	}
 	return message;
     }
 

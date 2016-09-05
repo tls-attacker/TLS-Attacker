@@ -76,9 +76,7 @@ public class SimpleMutator extends Mutator {
 			.get(r.nextInt(ResultContainer.getInstance().getGoodVectors().size()));
 		tempVector = (TestVector) UnoptimizedDeepCopy.copy(tempVector);
 	    }
-	    for (TLSAction action : tempVector.getTrace().getTLSActions()) {
-		action.reset();
-	    }
+	    tempVector.getTrace().reset();
 	    tempVector.getModificationList().clear();
 	    Modification modification = null;
 	    trace = tempVector.getTrace();
@@ -88,7 +86,7 @@ public class SimpleMutator extends Mutator {
 		tempVector.setServerKeyCert(serverKeyCertPair);
 		modified = true;
 	    }
-	    if (r.nextInt(100) <= simpleConfig.getChangeClientCert()) {
+	    if (r.nextInt(100) <= simpleConfig.getChangeClientCertPercentage()) {
 		ClientCertificateStructure clientKeyCertPair = certMutator.getClientCertificateStructure();
 		modification = new ChangeClientCertificateModification(clientKeyCertPair);
 		tempVector.setClientKeyCert(clientKeyCertPair);
@@ -96,6 +94,14 @@ public class SimpleMutator extends Mutator {
 	    }
 	    if (modification != null) {
 		tempVector.addModification(modification);
+	    }
+	    if (r.nextInt(100) < simpleConfig.getAddContextActionPercentage()) {
+		tempVector.addModification(FuzzingHelper.addContextAction(trace, certMutator));
+		modified = true;
+	    }
+	    if (r.nextInt(100) < simpleConfig.getAddExtensionPercentage()) {
+		tempVector.addModification(FuzzingHelper.addExtensionMessage(trace));
+		modified = true;
 	    }
 	    // perhaps add a flight
 	    if (trace.getTLSActions().isEmpty() || r.nextInt(100) < simpleConfig.getAddFlightPercentage()) {
