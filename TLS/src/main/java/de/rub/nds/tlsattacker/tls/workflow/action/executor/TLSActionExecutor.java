@@ -141,8 +141,11 @@ public class TLSActionExecutor extends ActionExecutor {
 		receivedMessages.addAll(parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages,
 			protocolMessageType, context));
 		if (!context.isRenegotiation()) {
-		    ProtocolMessage pm = protocolMessages.get(pointer - 1);
-		    pm.setRecords(recordsOfSameContent);
+		    for (ProtocolMessage pm : receivedMessages) {
+			pm.setRecords(recordsOfSameContent);
+			// If we received more than one message in the records
+			// we set the records of all messages
+		    }
 		} else {
 		    handleRenegotiation(context);
 		}
@@ -199,8 +202,13 @@ public class TLSActionExecutor extends ActionExecutor {
 	int dataPointer = 0;
 	List<ProtocolMessage> receivedMessages = new LinkedList<>();
 	while (dataPointer != rawProtocolMessageBytes.length) {
-	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
-		    rawProtocolMessageBytes[dataPointer], context);
+	    ProtocolMessageHandler pmh = null;
+	    try {
+		pmh = protocolMessageType.getProtocolMessageHandler(rawProtocolMessageBytes[dataPointer], context);
+	    } catch (IndexOutOfBoundsException E) {
+		// TODO
+		E.printStackTrace();
+	    }
 	    if (Arrays.equals(rawProtocolMessageBytes,
 		    new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
 		context.setRenegotiation(true);
@@ -238,8 +246,10 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param protocolMessages
      * @param protocolMessageHandler
      */
-    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages,
+    private List<ProtocolMessage> identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages,
 	    ProtocolMessageHandler protocolMessageHandler, TlsContext context) {
+	List<ProtocolMessage> identifiedMessages = new LinkedList<>();
+
 	ProtocolMessage protocolMessage = null;
 	if (pointer < protocolMessages.size()) {
 	    protocolMessage = protocolMessages.get(pointer);
@@ -247,25 +257,28 @@ public class TLSActionExecutor extends ActionExecutor {
 	if (protocolMessage != null && protocolMessage.getClass() == ArbitraryMessage.class) {
 	    protocolMessageHandler.initializeProtocolMessage();
 	    protocolMessage = protocolMessageHandler.getProtocolMessage();
-	    protocolMessages.add(pointer, protocolMessage);
+	    identifiedMessages.add(protocolMessage);
 	} else if (protocolMessage != null && protocolMessageHandler.isCorrectProtocolMessage(protocolMessage)) {
 	    protocolMessageHandler.setProtocolMessage(protocolMessage);
 	} else {
 	    if (protocolMessage == null || protocolMessage.isRequired()) {
+		// TODO Throw an exception if we are not in fuzzing mode?
 		// the configured message is not the same as
 		// the message being parsed, we clean the
 		// next protocol messages
 		LOG.log(Level.FINE, "The configured protocol message is not equal to "
 			+ "the message being parsed or the message was not found.");
-		removeNextProtocolMessages(protocolMessages, pointer);
 		protocolMessageHandler.initializeProtocolMessage();
 		protocolMessage = protocolMessageHandler.getProtocolMessage();
-		protocolMessages.add(protocolMessage);
+		identifiedMessages.add(protocolMessage);
 	    } else {
-		protocolMessages.remove(pointer);
-		identifyCorrectProtocolMessage(protocolMessages, protocolMessageHandler, context);
+		pointer++;
+		identifiedMessages.addAll(identifyCorrectProtocolMessage(protocolMessages, protocolMessageHandler,
+			context));
+
 	    }
 	}
+	return identifiedMessages;
     }
 
     /**
