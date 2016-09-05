@@ -225,7 +225,8 @@ public class CommandLineController extends Controller {
 				    try {
 					objectinputstream.close();
 				    } catch (IOException ex) {
-					Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+					Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
+						ex);
 				    }
 				}
 			    }
@@ -257,14 +258,16 @@ public class CommandLineController extends Controller {
 				    try {
 					fout.close();
 				    } catch (IOException ex) {
-					Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+					Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
+						ex);
 				    }
 				}
 				if (oos != null) {
 				    try {
 					oos.close();
 				    } catch (IOException ex) {
-					Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+					Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
+						ex);
 				    }
 				}
 			    }

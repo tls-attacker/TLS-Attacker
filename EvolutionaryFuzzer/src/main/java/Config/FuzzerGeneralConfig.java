@@ -17,14 +17,14 @@ import java.io.File;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzerGeneralConfig extends ClientCommandConfig {
-    
+
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN, BLIND")
     protected String agent = "AFL";
     @Parameter(names = "-config_folder", description = "The Folder in which the config Files are", converter = FileConverter.class)
     protected String configFolder = "config/";
     @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given File or Folder.", converter = FileConverter.class)
-    protected String serverCommandFromFile = configFolder+"server/";
-    
+    protected String serverCommandFromFile = configFolder + "server/";
+
     public String getCertificateMutatorConfigFolder() {
 	return configFolder + "mutator/certificate/";
     }

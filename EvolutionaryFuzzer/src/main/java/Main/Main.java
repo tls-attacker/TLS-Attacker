@@ -7,6 +7,8 @@
  */
 package Main;
 
+import Calibration.TimeoutCalibrator;
+import Config.CalibrationConfig;
 import Config.ConfigManager;
 import Server.ServerManager;
 import Controller.CommandLineController;
@@ -58,11 +60,13 @@ public class Main {
 	ServerConfig serverConfig = new ServerConfig();
 	TraceTypesConfig traceTypesConfig = new TraceTypesConfig();
 	ExecuteFaultyConfig faultyConfig = new ExecuteFaultyConfig();
+	CalibrationConfig calibrationConfig = new CalibrationConfig();
 	JCommander jc = new JCommander(generalConfig);
 	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
 	jc.addCommand("tracetypes", traceTypesConfig);
 	jc.addCommand("execute-faulty", faultyConfig);
 	jc.addCommand("new-server", serverConfig);
+	jc.addCommand("calibrate", calibrationConfig);
 	try {
 	    jc.parse(args);
 	    if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
@@ -129,6 +133,14 @@ public class Main {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Could not write Server to file!", ex);
 		    }
 		}
+		break;
+	    case "calibrate":
+		TimeoutCalibrator calibrator = new TimeoutCalibrator(calibrationConfig);
+		calibrator.setGainFactor(calibrationConfig.getGain());
+		calibrator.setLimit(calibrationConfig.getTimeoutLimit());
+		ServerManager.getInstance().init(calibrationConfig);
+		int timeout = calibrator.calibrateTimeout();
+		LOG.log(Level.INFO, "Recommended Timeout for this Server is:" + timeout);
 		break;
 	    default:
 		jc.usage();
