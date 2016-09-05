@@ -7,9 +7,8 @@
  */
 package Agents;
 
-import Agents.Agent;
-import Config.EvolutionaryFuzzerConfig;
 import Certificate.ServerCertificateStructure;
+import Config.FuzzerGeneralConfig;
 
 /**
  * 
@@ -17,7 +16,7 @@ import Certificate.ServerCertificateStructure;
  */
 public class AgentFactory {
 
-    public static Agent generateAgent(EvolutionaryFuzzerConfig config, ServerCertificateStructure keypair) {
+    public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
 	switch (config.getAgent()) {
 	    case "AFL":
 		return new AFLAgent(keypair);
