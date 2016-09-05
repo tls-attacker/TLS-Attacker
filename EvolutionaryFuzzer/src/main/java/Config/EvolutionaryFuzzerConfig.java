@@ -117,7 +117,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      */
     public EvolutionaryFuzzerConfig() {
 	outputFolder = "data/";
-	serverCommandFromFile = outputFolder + "server/";
 	this.timeout = 10000;
 	this.tlsTimeout = 100;
 	setFuzzingMode(true);

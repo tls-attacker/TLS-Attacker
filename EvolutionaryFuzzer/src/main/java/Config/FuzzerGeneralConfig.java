@@ -22,9 +22,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     protected String agent = "AFL";
     @Parameter(names = "-config_folder", description = "The Folder in which the config Files are", converter = FileConverter.class)
     protected String configFolder = "config/";
-    @Parameter(names = "-server_command_file", description = "Command for starting the server, initialized from a given File or Folder.", converter = FileConverter.class)
-    protected String serverCommandFromFile = configFolder + "server/";
-
+   
     public String getCertificateMutatorConfigFolder() {
 	return configFolder + "mutator/certificate/";
     }
@@ -65,15 +63,6 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
      * @return Path to the ServerConfig File
      */
     public String getServerCommandFromFile() {
-	return serverCommandFromFile;
-    }
-
-    /**
-     * Sets the path to the ServerConfig File
-     * 
-     * @param serverCommandFromFile
-     */
-    public void setServerCommandFromFile(String serverCommandFromFile) {
-	this.serverCommandFromFile = serverCommandFromFile;
+	return configFolder + "server/";
     }
 }
