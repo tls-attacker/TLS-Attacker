@@ -68,6 +68,14 @@ public class FixedCertificateMutator extends CertificateMutator {
 	r = new Random();
     }
 
+    public List<ClientCertificateStructure> getClientCertList() {
+	return clientCertList;
+    }
+
+    public List<ServerCertificateStructure> getServerPairList() {
+	return serverPairList;
+    }
+
     @Override
     public ClientCertificateStructure getClientCertificateStructure() {
 	return clientCertList.get(r.nextInt(clientCertList.size()));
