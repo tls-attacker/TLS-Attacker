@@ -98,7 +98,7 @@ public class CommandLineController extends Controller {
     }
 
     @Override
-    public void startConsoleInput() {
+    public void startInterface() {
 	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	while (true) {
 	    String s = null;

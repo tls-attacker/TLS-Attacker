@@ -80,7 +80,7 @@ public class Main {
 		try {
 		    Controller controller = new CommandLineController(evoConfig);
 		    controller.startFuzzer();
-		    controller.startConsoleInput();
+		    controller.startInterface();
 		} catch (IllegalCertificateMutatorException ex) {
 		    LOG.info("Unknown Certificate Mutator. Aborting...");
 		} catch (IllegalMutatorException ex) {

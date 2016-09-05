@@ -47,6 +47,6 @@ public abstract class Controller {
 	return isRunning;
     }
 
-    public abstract void startConsoleInput();
+    public abstract void startInterface();
 
 }
