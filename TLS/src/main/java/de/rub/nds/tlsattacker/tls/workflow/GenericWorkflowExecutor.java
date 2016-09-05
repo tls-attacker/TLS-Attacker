@@ -53,7 +53,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
 	    throw new IllegalStateException("The workflow has already been" + " executed. Create a new Workflow.");
 	}
 	executed = true;
-	ActionExecutor actionExecutor = ActionExecutorFactory.createActionExecutor(tlsContext, type);
+	ActionExecutor actionExecutor = ActionExecutorFactory.createActionExecutor(tlsContext, workflowContext, type);
 	List<TLSAction> tlsActions = tlsContext.getWorkflowTrace().getTLSActions();
 	try {
 	    while (workflowContext.getActionPointer() < tlsActions.size() && workflowContext.isProceedWorkflow()) {
