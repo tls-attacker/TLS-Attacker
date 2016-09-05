@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,9 +34,11 @@ import java.util.logging.Logger;
 public class TLSActionExecutor extends ActionExecutor {
 
     private TlsContext context;
+    private WorkflowContext workflowContext;
 
-    public TLSActionExecutor(TlsContext context) {
+    public TLSActionExecutor(TlsContext context, WorkflowContext workflowContext) {
 	this.context = context;
+	this.workflowContext = workflowContext;
     }
 
     private int pointer = 0;
@@ -218,7 +221,11 @@ public class TLSActionExecutor extends ActionExecutor {
 		dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
 		LOG.log(Level.FINE, "The following message was parsed: {}", pmh.getProtocolMessage().toString());
 		receivedMessages.add(pmh.getProtocolMessage());
-		handleIncomingAlert(pmh, context);
+		if (receivedFatalAlert(pmh, context)) {
+		    if (!context.isFuzzingMode()) {
+			workflowContext.setProceedWorkflow(false);
+		    }
+		}
 		pointer++;
 	    }
 	}
@@ -229,16 +236,15 @@ public class TLSActionExecutor extends ActionExecutor {
      * 
      * @param pmh
      */
-    private void handleIncomingAlert(ProtocolMessageHandler pmh, TlsContext context) {
+    private boolean receivedFatalAlert(ProtocolMessageHandler pmh, TlsContext context) {
 	if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
 	    AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
-	    if (!context.isFuzzingMode()) {
-		if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-		    LOG.log(Level.FINE, "The workflow execution is stopped because of a FATAL error");
-		    throw new FatalAertMessageException("Received a FatalAlertMessage:" + am.toString());
-		}
+	    if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
+		LOG.log(Level.FINE, "The workflow execution is stopped because of a FATAL error");
+		return true;
 	    }
 	}
+	return false;
     }
 
     /**
