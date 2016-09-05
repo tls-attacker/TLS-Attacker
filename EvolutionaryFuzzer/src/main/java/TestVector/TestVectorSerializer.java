@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,7 +60,7 @@ public final class TestVectorSerializer {
 	if (context == null) {
 	    context = JAXBContext.newInstance(TestVector.class, ExtensionMessage.class, WorkflowTrace.class,
 		    ProtocolMessage.class, ModificationFilter.class, VariableModification.class,
-		    ModifiableVariable.class, ServerCertificateStructure.class, File.class);
+		    ModifiableVariable.class, ServerCertificateStructure.class, File.class, TLSAction.class);
 	}
 	return context;
     }
@@ -135,14 +136,9 @@ public final class TestVectorSerializer {
 		    vector = TestVectorSerializer.read(new FileInputStream(file));
 		    vector.getTrace().setName(file.getAbsolutePath());
 		    list.add(vector);
-		} catch (JAXBException ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
-		} catch (IOException ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
-		} catch (XMLStreamException ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
-		} catch (Throwable ex) {
-		    Logger.getLogger(TestVectorSerializer.class.getName()).log(Level.SEVERE, file.getName(), ex);
+		} catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
+		    LOG.log(Level.INFO, "Could not load file:" + file.getAbsolutePath());
+		    LOG.log(Level.FINE, "Reason:", ex);
 		}
 	    }
 	    return list;
