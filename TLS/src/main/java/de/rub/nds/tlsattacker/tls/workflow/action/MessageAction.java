@@ -68,6 +68,28 @@ public abstract class MessageAction extends TLSAction {
 	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     @HoldsModifiableVariable
     protected List<ProtocolMessage> configuredMessages;
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+	    @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
+	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
+	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+	    @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
+	    @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
+	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
+	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
+	    @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
+	    @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+	    @XmlElement(type = FinishedMessage.class, name = "Finished"),
+	    @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
+	    @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
+	    @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
+	    @XmlElement(type = AlertMessage.class, name = "Alert"),
+	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
+	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
+	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     protected List<ProtocolMessage> actualMessages;
 
     public MessageAction(List<ProtocolMessage> messages) {
