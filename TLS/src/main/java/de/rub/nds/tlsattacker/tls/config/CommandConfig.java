@@ -66,7 +66,7 @@ public abstract class CommandConfig {
     protected String serverName;
 
     @Parameter(names = "-timeout", description = "Timeout for socket connection")
-    protected int timeout;
+    protected int timeout = 1000;
 
     // @Parameter(names = "-nextprotoneg", description =
     // "Enables NPN extension, considering named protocols supported "
