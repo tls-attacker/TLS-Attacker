@@ -31,12 +31,30 @@ public class SimpleMutatorConfig implements Serializable {
     private Integer addRecordPercentage = 50;
     private Integer addMessagePercentage = 50;
     private Integer removeMessagePercentage = 1;
-    private Integer changeServerCert = 1;
-    private Integer changeClientCert = 1;
+    private Integer changeServerCertPercentage = -1;
+    private Integer changeClientCertPercentage = -1;
     private Integer duplicateMessagePercentage = 1;
     private Integer multipleModifications = 1;
     private Integer addFlightPercentage = 20;
     private Integer addToggleEncrytionPercentage = 2;
+    private Integer addContextActionPercentage = 4;
+    private Integer addExtensionMessagePercentage = 50;
+
+    public Integer getAddExtensionPercentage() {
+	return addExtensionMessagePercentage;
+    }
+
+    public void setAddExtensionMessagePercentage(Integer addExtensionMessagePercentage) {
+	this.addExtensionMessagePercentage = addExtensionMessagePercentage;
+    }
+
+    public Integer getAddContextActionPercentage() {
+	return addContextActionPercentage;
+    }
+
+    public void setAddContextActionPercentage(Integer addContextActionPercentage) {
+	this.addContextActionPercentage = addContextActionPercentage;
+    }
 
     public SimpleMutatorConfig() {
     }
@@ -66,19 +84,19 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     public Integer getChangeServerCert() {
-	return changeServerCert;
+	return changeServerCertPercentage;
     }
 
     public void setChangeServerCert(Integer changeServerCert) {
-	this.changeServerCert = changeServerCert;
+	this.changeServerCertPercentage = changeServerCert;
     }
 
-    public Integer getChangeClientCert() {
-	return changeClientCert;
+    public Integer getChangeClientCertPercentage() {
+	return changeClientCertPercentage;
     }
 
-    public void setChangeClientCert(Integer changeClientCert) {
-	this.changeClientCert = changeClientCert;
+    public void setChangeClientCertPercentage(Integer changeClientCertPercentage) {
+	this.changeClientCertPercentage = changeClientCertPercentage;
     }
 
     public Integer getDuplicateMessagePercentage() {
