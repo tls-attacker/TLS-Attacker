@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.PublicKeyAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
@@ -133,8 +132,7 @@ public class TlsClientTest {
 	ClientCommandConfig config = new ClientCommandConfig();
 	config.setConnect("localhost:" + port);
 	config.setTlsTimeout(TIMEOUT);
-	configHandler.initializeTransportHandler(config);
-
+	
 	List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
 	config.setProtocolVersion(ProtocolVersion.TLS10);
 	testProtocolCompatibility(serverList, configHandler, config, algorithm);
