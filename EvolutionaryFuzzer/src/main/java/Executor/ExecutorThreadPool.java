@@ -24,7 +24,11 @@ import TestVector.TestVectorSerializer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.DHWorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.DtlsDhWorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.DtlsEcdhWorkflowConfigurationFactory;
@@ -130,6 +134,14 @@ public class ExecutorThreadPool implements Runnable {
 	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
 		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
 	}
+	for (TestVector vector : newList) {
+	    for (ProtocolMessage pm : vector.getTrace().getActuallySentHandshakeMessagesOfType(
+		    HandshakeMessageType.CLIENT_HELLO)) {
+		List<CipherSuite> suiteList = new LinkedList<>();
+		suiteList.add(CipherSuite.getRandom());
+		((ClientHelloMessage) pm).setSupportedCipherSuites(suiteList);
+	    }
+	}
 	return newList;
     }
 
@@ -152,20 +164,21 @@ public class ExecutorThreadPool implements Runnable {
 	config.setSerialize(false);
 	if (!config.isNoOld()) {
 	    for (int i = 0; i < list.size(); i++) {
+
 		TLSServer server = null;
 		try {
 		    if (!stopped) {
 			server = ServerManager.getInstance().getFreeServer();
-			Agent agent = AgentFactory.generateAgent(config, list.get(i).getServerKeyCert());
-			Runnable worker = new TLSExecutor(list.get(i), server, agent);
-			for (TLSAction action : list.get(i).getTrace().getTLSActions()) {
-			    action.reset();
-			}
-			list.get(i).getModificationList().clear();
+			TestVector vector = list.get(i);
+			vector.getTrace().reset();
+			vector.getTrace().makeGeneric();
+
+			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
+			Runnable worker = new TLSExecutor(vector, server, agent);
 			executor.submit(worker);
 			runs++;
+
 		    } else {
-			i--;
 			try {
 			    Thread.sleep(1000);
 			} catch (InterruptedException ex) {
@@ -173,8 +186,11 @@ public class ExecutorThreadPool implements Runnable {
 				    "Thread interruiped while the ThreadPool is paused.", ex);
 			}
 		    }
-		} catch (Throwable E) {
-		    E.printStackTrace();
+		} catch (Throwable ex) {
+		    ex.printStackTrace();
+		    if (server != null) {
+			server.release();
+		    }
 		}
 	    }
 
