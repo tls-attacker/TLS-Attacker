@@ -115,7 +115,7 @@ public class TLSExecutor extends Executor {
 			// It may happen that the implementation is not ready
 			// yet
 			if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			    LOG.log(java.util.logging.Level.INFO, "Could not start Server! Trying to Restart it!");
+			    LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
 			    agent.applicationStop(server);
 			    agent.applicationStart(server);
 			    time = System.currentTimeMillis();
@@ -183,16 +183,7 @@ public class TLSExecutor extends Executor {
 		if (transportHandler != null) {
 		    transportHandler.closeConnection();
 		}
-		long t = System.currentTimeMillis();
-		while (!server.exited()) {
-		    if (t + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			//timeout = true;
-			server.stop();
-			break;
-
-		    }
-		}
-
+		
 		agent.applicationStop(server);
 		File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
 			+ "/" + server.getID());
