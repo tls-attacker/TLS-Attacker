@@ -1,0 +1,91 @@
+package tlsattacker.fuzzer.result;
+
+import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+import tlsattacker.fuzzer.testvector.TestVector;
+
+/**
+ * This Class manages the BranchTraces and merges newly obtained Workflows with
+ * the BranchTrace
+ * 
+ * @author Robert Merget - robert.merget@rub.de
+ */
+public class ResultContainer {
+
+    private static final Logger LOG = Logger.getLogger(ResultContainer.class.getName());
+
+    /**
+     * Singleton
+     * 
+     * @return Instance of the ResultContainer
+     */
+    public static ResultContainer getInstance() {
+	return ResultContainerHolder.INSTANCE;
+    }
+
+    // List of old Results
+    private ArrayList<TestVector> goodVectors;
+
+    private EvolutionaryFuzzerConfig evolutionaryFuzzerConfig;
+
+    public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
+	this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
+    }
+
+    private int executed = 0;
+    private RuleAnalyzer analyzer;
+
+    private ResultContainer() {
+
+	goodVectors = new ArrayList<>();
+
+	evolutionaryFuzzerConfig = tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig();
+	analyzer = new RuleAnalyzer(evolutionaryFuzzerConfig);
+
+    }
+
+    /**
+     * Returns a list of WorkflowTraces that found new Branches or Vertices
+     * 
+     * @return ArrayList of good WorkflowTraces
+     */
+    public ArrayList<TestVector> getGoodVectors() {
+	return goodVectors;
+    }
+
+    /**
+     * Merges a Result with the BranchTrace and adds the Result to the
+     * ResultList
+     * 
+     * @param result
+     *            Result to be added in the Container
+     */
+    public void commit(Result result) {
+	executed++;
+	analyzer.analyze(result);
+
+    }
+
+    public int getExecuted() {
+	return executed;
+    }
+
+    public void addGoodVector(TestVector vector) {
+	goodVectors.add(vector);
+    }
+
+    public RuleAnalyzer getAnalyzer() {
+	return analyzer;
+    }
+
+    // Singleton
+    private static class ResultContainerHolder {
+
+	private static final ResultContainer INSTANCE = new ResultContainer();
+
+	private ResultContainerHolder() {
+	}
+    }
+}
