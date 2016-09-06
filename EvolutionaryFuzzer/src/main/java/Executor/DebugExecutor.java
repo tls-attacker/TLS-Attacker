@@ -46,7 +46,7 @@ public class DebugExecutor {
     private static final Logger LOG = Logger.getLogger(DebugExecutor.class.getName());
 
     public static void execute(TestVector vector, EvolutionaryFuzzerConfig config) {
-        vector.getTrace().reset();
+	vector.getTrace().reset();
 	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
 
 	TransportHandler transportHandler = null;
@@ -84,7 +84,7 @@ public class DebugExecutor {
 		}
 	    }
 	    TlsContext tlsContext = new TlsContext();
-            tlsContext.setFuzzingMode(true);
+	    tlsContext.setFuzzingMode(true);
 	    tlsContext.setWorkflowTrace(vector.getTrace());
 
 	    KeyStore ks = KeystoreHandler.loadKeyStore(config.getKeystore(), config.getPassword());
