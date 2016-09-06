@@ -36,6 +36,7 @@
         <module>Utils</module>
         <module>ModifiableVariable</module>
         <module>Transport</module>
+        <module>EAP</module>
         <module>TLS-Server</module>
         <module>TLS</module>
         <module>EvolutionaryFuzzer</module>
