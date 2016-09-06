@@ -39,7 +39,6 @@
         <module>EAP</module>
         <module>TLS-Server</module>
         <module>TLS</module>
-        <module>Runnable</module>
         <module>EvolutionaryFuzzer</module>
     </modules>
 
