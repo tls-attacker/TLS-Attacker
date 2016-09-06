@@ -298,7 +298,6 @@ public final class TLSServer
             {
                 p.destroy();
                 p.waitFor();
-                p = null;
                 //TODO Kill the process
             }
         }
