@@ -47,6 +47,8 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 	f.mkdirs();
 	f = new File(getAnalyzerConfigFolder());
 	f.mkdirs();
+        f = new File(getServerCommandFromFile());
+	f.mkdirs();
     }
 
     public String getAgent() {
