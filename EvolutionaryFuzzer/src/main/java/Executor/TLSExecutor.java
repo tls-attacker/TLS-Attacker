@@ -53,13 +53,14 @@ import java.util.Collection;
  * for the TLS Protocol. The whole Program is not completely generic in this
  * Fashion designed, but with a little work the Fuzzer can be adapted for other
  * Programs, as long as a new Executor is designed.
- * 
+ *
  * It is also possible to Design a new Executor which executes the
  * Workflowtraces with another Library than TLS-Attacker.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class TLSExecutor extends Executor {
+public class TLSExecutor extends Executor
+{
 
     private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 
@@ -69,16 +70,15 @@ public class TLSExecutor extends Executor {
 
     /**
      * Constructor for the TLSExecutor
-     * 
-     * @param trace
-     *            Trace that the Executor should execute
-     * @param server
-     *            Server on which the Executor should execute the Trace
+     *
+     * @param trace Trace that the Executor should execute
+     * @param server Server on which the Executor should execute the Trace
      */
-    public TLSExecutor(TestVector testVector, TLSServer server, Agent agent) {
-	this.testVector = testVector;
-	this.server = server;
-	this.agent = agent;
+    public TLSExecutor(TestVector testVector, TLSServer server, Agent agent)
+    {
+        this.testVector = testVector;
+        this.server = server;
+        this.agent = agent;
 
     }
 
@@ -86,138 +86,178 @@ public class TLSExecutor extends Executor {
      * Executes the Trace
      */
     @Override
-    public void run() {
+    public void run()
+    {
 
-	try {
-	    boolean timeout = false;
-	    ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	    TransportHandler transportHandler = null;
+        try
+        {
+            boolean timeout = false;
+            ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+            TransportHandler transportHandler = null;
 
-	    try {
-		// Load clientCertificate
-		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-		// TODO This can be a problem when running with mutliple threads
-		fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
-		fc.setPassword(testVector.getClientKeyCert().getPassword());
-		fc.setAlias(testVector.getClientKeyCert().getAlias());
-		agent.applicationStart(server);
-		GeneralConfig gc = new GeneralConfig();
-		gc.setLogLevel(Level.OFF);
-		configHandler.initialize(gc);
+            try
+            {
+                // Load clientCertificate
+                EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
+                // TODO This can be a problem when running with mutliple threads
+                fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
+                fc.setPassword(testVector.getClientKeyCert().getPassword());
+                fc.setAlias(testVector.getClientKeyCert().getAlias());
+                agent.applicationStart(server);
+                GeneralConfig gc = new GeneralConfig();
+                gc.setLogLevel(Level.OFF);
+                configHandler.initialize(gc);
 
-		long time = System.currentTimeMillis();
-		int counter = 0;
-		while (transportHandler == null) {
-		    try {
+                long time = System.currentTimeMillis();
+                int counter = 0;
+                while (transportHandler == null)
+                {
+                    try
+                    {
                         transportHandler = initTransportHandler(server, fc);
-		    } catch (ConfigurationException E) {
+                    }
+                    catch (ConfigurationException E)
+                    {
 			// It may happen that the implementation is not ready
-			// yet
-			if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			    LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
-			    agent.applicationStop(server);
-			    agent.applicationStart(server);
-			    time = System.currentTimeMillis();
-			    counter++;
-			}
-			if (counter >= 5) {
-			    throw new ConfigurationException(
-				    "Could not start TLS Server, check your configuration Files!");
-			}
-		    }
-		}
+                        // yet
+                        if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis())
+                        {
+                            LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
+                            agent.applicationStop(server);
+                            agent.applicationStart(server);
+                            time = System.currentTimeMillis();
+                            counter++;
+                        }
+                        if (counter >= 5)
+                        {
+                            throw new ConfigurationException(
+                                    "Could not start TLS Server, check your configuration Files!");
+                        }
+                    }
+                }
                 transportHandler.setTimeout(ConfigManager.getInstance().getConfig().getTlsTimeout());
-		KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
-		TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
-		tlsContext.setFuzzingMode(true);
-		tlsContext.setKeyStore(ks);
-		tlsContext.setAlias(fc.getAlias());
-		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
-			.generateCertificates(new FileInputStream(testVector.getServerKeyCert().getCertificateFile()));
+                KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
+                TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
+                tlsContext.setFuzzingMode(true);
+                tlsContext.setKeyStore(ks);
+                tlsContext.setAlias(fc.getAlias());
+                CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+                Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
+                        .generateCertificates(new FileInputStream(testVector.getServerKeyCert().getCertificateFile()));
 
-		Certificate sunCert = (Certificate) certs.toArray()[0];
-		byte[] certBytes = sunCert.getEncoded();
+                Certificate sunCert = (Certificate) certs.toArray()[0];
+                byte[] certBytes = sunCert.getEncoded();
 
-		ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-		org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
-			.getInstance(asn1Cert);
+                ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+                org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
+                        .getInstance(asn1Cert);
 
-		org.bouncycastle.asn1.x509.Certificate[] certs2 = new org.bouncycastle.asn1.x509.Certificate[1];
-		certs2[0] = cert;
-		org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs2);
+                org.bouncycastle.asn1.x509.Certificate[] certs2 = new org.bouncycastle.asn1.x509.Certificate[1];
+                certs2[0] = cert;
+                org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs2);
 
-		X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
+                X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 
-		tlsContext.setX509ServerCertificateObject(x509CertObject);
-		tlsContext.setServerCertificate(cert);
-		tlsContext.setWorkflowTrace(testVector.getTrace());
-		WorkflowExecutor workflowExecutor = null;
-		if (testVector.getExecutorType() == ExecutorType.TLS) {
-		    workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext,
-			    testVector.getExecutorType());
-		} else {
-		    workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
+                tlsContext.setX509ServerCertificateObject(x509CertObject);
+                tlsContext.setServerCertificate(cert);
+                tlsContext.setWorkflowTrace(testVector.getTrace());
+                WorkflowExecutor workflowExecutor = null;
+                if (testVector.getExecutorType() == ExecutorType.TLS)
+                {
+                    workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext,
+                            testVector.getExecutorType());
+                }
+                else
+                {
+                    workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
 
-		}
-		// tlsContext.setServerCertificate(certificate);
-		workflowExecutor.executeWorkflow();
-	    } catch (UnsupportedOperationException E) {
-		// Skip Workflows we dont support yet
-	    } catch (TimeoutException E) {
-		timeout = true;
-	    } catch (Throwable E) {
-		File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
-			+ LogFileIDManager.getInstance().getFilename());
+                }
+                // tlsContext.setServerCertificate(certificate);
+                workflowExecutor.executeWorkflow();
+            }
+            catch (UnsupportedOperationException E)
+            {
+                // Skip Workflows we dont support yet
+            }
+            catch (TimeoutException E)
+            {
+                timeout = true;
+            }
+            catch (Throwable E)
+            {
+                File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
+                        + LogFileIDManager.getInstance().getFilename());
 
-		try {
-		    TestVectorSerializer.write(f, testVector);
-		} catch (JAXBException | IOException Ex) {
-		    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
-		    Ex.printStackTrace();
-		}
-		LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
-		E.printStackTrace();
-	    } finally {
-		if (transportHandler != null) {
-		    transportHandler.closeConnection();
-		}
-		
-		agent.applicationStop(server);
-		File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
-			+ "/" + server.getID());
-		Result r = agent.collectResults(branchTrace, testVector);
-		r.setDidTimeout(timeout);
-		branchTrace.delete();
-		ResultContainer.getInstance().commit(r);
-		int id = server.getID();
+                try
+                {
+                    TestVectorSerializer.write(f, testVector);
+                }
+                catch (JAXBException | IOException Ex)
+                {
+                    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
+                    Ex.printStackTrace();
+                }
+                LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
+                E.printStackTrace();
+            }
+            finally
+            {
+                if (transportHandler != null)
+                {
+                    transportHandler.closeConnection();
+                }
 
-		// Cleanup
-		File file = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath() + "/"
-			+ id);
-		if (file.exists()) {
-		    file.delete();
-		}
-	    }
-	} finally {
-	    server.release();
-	}
+                agent.applicationStop(server);
+                File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
+                        + "/" + server.getID());
+                try
+                {
+                    Result r = agent.collectResults(branchTrace, testVector);
+                    r.setDidTimeout(timeout);
+                    branchTrace.delete();
+                    ResultContainer.getInstance().commit(r);
+                }
+                catch (Exception E)
+                {
+                    E.printStackTrace();
+                }
+                int id = server.getID();
+
+                // Cleanup
+                File file = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath() + "/"
+                        + id);
+                if (file.exists())
+                {
+                    file.delete();
+                }
+            }
+        }
+        finally
+        {
+            server.release();
+        }
 
     }
+
     private TransportHandler initTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config)
     {
         TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-		config.getTlsTimeout());
-	try {
-	    th.initialize(server.getIp(), server.getPort());
-	    th.setTimeout(config.getTlsTimeout());
-	    return th;
-	} catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
-	    throw new ConfigurationException("Server not properly configured!");
-	} catch (IOException ex) {
-	    throw new ConfigurationException("Unable to initialize the transport handler with: "
-		    + server.getIp()+ ":"+server.getPort(), ex);
-	}
+                config.getTlsTimeout());
+        try
+        {
+            th.initialize(server.getIp(), server.getPort());
+            th.setTimeout(config.getTlsTimeout());
+            return th;
+        }
+        catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex)
+        {
+            throw new ConfigurationException("Server not properly configured!");
+        }
+        catch (IOException ex)
+        {
+            throw new ConfigurationException("Unable to initialize the transport handler with: "
+                    + server.getIp() + ":" + server.getPort(), ex);
+        }
     }
 
 }

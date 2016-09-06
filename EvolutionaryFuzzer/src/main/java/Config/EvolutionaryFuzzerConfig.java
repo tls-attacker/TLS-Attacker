@@ -45,7 +45,8 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean cleanStart = false;
     @Parameter(names = "-random_port", description = "Uses random ports for the Server")
     private boolean randomPort = false;
-    
+    @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
+    private boolean injectPinChild = true;
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
@@ -206,6 +207,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	f.mkdirs();
 	this.tracesFolder = new File(outputFolder + "traces/");
 
+    }
+
+    public boolean getInjectPinChild()
+    {
+        return injectPinChild;
     }
 
 }

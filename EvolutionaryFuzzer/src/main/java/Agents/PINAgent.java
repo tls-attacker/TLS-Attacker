@@ -22,6 +22,7 @@ import Helper.LogFileIDManager;
 import Result.Result;
 import Server.TLSServer;
 import Certificate.ServerCertificateStructure;
+import Config.ConfigManager;
 import TestVector.TestVector;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class PINAgent extends Agent {
     protected boolean timeout;
     // If the Application did Crash
     protected boolean crash;
-    private final String prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
+    private final String prefix;
 
     /**
      * Default Constructor
@@ -54,7 +55,14 @@ public class PINAgent extends Agent {
 	super(keypair);
 	timeout = false;
 	crash = false;
-
+        if(ConfigManager.getInstance().getConfig().getInjectPinChild())
+        {
+            prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
+        }
+        else
+        {
+            prefix = "PIN/pin -log_inline -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
+        }
     }
 
     @Override
@@ -87,7 +95,8 @@ public class PINAgent extends Agent {
 	    BufferedReader br = new BufferedReader(new FileReader(branchTrace));
 
 	    String line = br.readLine();
-	    if (line.startsWith("S")) {
+            
+	    if (line != null && line.startsWith("S")) {
 		crash = true;
 		// Skip 2 lines
 		line = br.readLine();
@@ -99,6 +108,7 @@ public class PINAgent extends Agent {
 
 	} catch (IOException ex) {
 	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
 	}
 
 	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
