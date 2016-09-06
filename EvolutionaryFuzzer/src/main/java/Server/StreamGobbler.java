@@ -60,7 +60,7 @@ class StreamGobbler extends Thread {
 		if (pw != null) {
 		    pw.println(line);
 		}
-		if (line.equals(accepted)) {
+		if (line.contains(accepted)) {
 		    hasAccepted = true;
 		} else {
 
