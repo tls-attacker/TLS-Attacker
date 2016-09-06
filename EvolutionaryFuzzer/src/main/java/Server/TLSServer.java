@@ -13,6 +13,7 @@ import Exceptions.TimeoutException;
 import Helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -187,6 +188,12 @@ public final class TLSServer
             }
             try
             {
+                if(ConfigManager.getInstance().getConfig().isRandomPort())
+                {
+                    Random r = new Random();
+                    port = 1024+ r.nextInt(4096);
+                    
+                }
                 id = LogFileIDManager.getInstance().getID();
                 String command = (prefix + restartServerCommand).replace("[id]", "" + id);
                 command = command.replace("[output]", ConfigManager.getInstance().getConfig().getTracesFolder()

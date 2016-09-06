@@ -42,6 +42,7 @@ import TestVector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -108,9 +109,7 @@ public class TLSExecutor extends Executor {
 		int counter = 0;
 		while (transportHandler == null) {
 		    try {
-
-			transportHandler = configHandler.initializeTransportHandler(fc);
-
+                        transportHandler = initTransportHandler(server, fc);
 		    } catch (ConfigurationException E) {
 			// It may happen that the implementation is not ready
 			// yet
@@ -204,6 +203,21 @@ public class TLSExecutor extends Executor {
 	    server.release();
 	}
 
+    }
+    private TransportHandler initTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config)
+    {
+        TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
+		config.getTlsTimeout());
+	try {
+	    th.initialize(server.getIp(), server.getPort());
+	    th.setTimeout(config.getTlsTimeout());
+	    return th;
+	} catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
+	    throw new ConfigurationException("Server not properly configured!");
+	} catch (IOException ex) {
+	    throw new ConfigurationException("Unable to initialize the transport handler with: "
+		    + server.getIp()+ ":"+server.getPort(), ex);
+	}
     }
 
 }

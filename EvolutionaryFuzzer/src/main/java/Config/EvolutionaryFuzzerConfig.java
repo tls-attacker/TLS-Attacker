@@ -43,7 +43,9 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean startStopped = false;
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
-
+    @Parameter(names = "-random_port", description = "Uses random ports for the Server")
+    private boolean randomPort = false;
+    
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
@@ -60,6 +62,16 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	return archiveFolder;
     }
 
+    public boolean isRandomPort()
+    {
+        return randomPort;
+    }
+
+    public void setRandomPort(boolean randomPort)
+    {
+        this.randomPort = randomPort;
+    }
+    
     public void setArchiveFolder(String archiveFolder) {
 	this.archiveFolder = archiveFolder;
     }
