@@ -73,7 +73,7 @@ public class TlsClientTest {
 
     private static final int PORT = 56789;
 
-    private static final int TIMEOUT = 400;
+    private static final int TIMEOUT = 2000;
 
     public TlsClientTest() {
 	Security.addProvider(new BouncyCastleProvider());
@@ -132,7 +132,7 @@ public class TlsClientTest {
 	ClientCommandConfig config = new ClientCommandConfig();
 	config.setConnect("localhost:" + port);
 	config.setTlsTimeout(TIMEOUT);
-	
+
 	List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
 	config.setProtocolVersion(ProtocolVersion.TLS10);
 	testProtocolCompatibility(serverList, configHandler, config, algorithm);
