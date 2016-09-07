@@ -70,6 +70,7 @@ public class Main
         jc.addCommand("execute-faulty", faultyConfig);
         jc.addCommand("new-server", serverConfig);
         jc.addCommand("calibrate", calibrationConfig);
+        jc.addCommand("test-certificates", evoConfig);
         try
         {
             jc.parse(args);
