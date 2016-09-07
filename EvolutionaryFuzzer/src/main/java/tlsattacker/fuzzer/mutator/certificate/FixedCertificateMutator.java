@@ -110,42 +110,25 @@ public class FixedCertificateMutator extends CertificateMutator {
                 LOG.log(Level.INFO, "Could not find:"+serverStructure.getKeyFile().getAbsolutePath());
                 continue;
             }
-            WorkflowTrace trace = new WorkflowTrace();
-            ClientHelloMessage message = new ClientHelloDtlsMessage();
-            List<CipherSuite> suiteList = new LinkedList<>();
-            for(CipherSuite suite: CipherSuite.values())
-            {
-                suiteList.add(suite);
-            }
-            List<CompressionMethod> compressionList = new LinkedList<>();
-            for(CompressionMethod compression: CompressionMethod.values())
-            {
-                compressionList.add(compression);
-            }
-            message.setSupportedCompressionMethods(compressionList);
-            message.setSupportedCipherSuites(suiteList);
-            trace.add(new SendAction(message));
-            trace.add(new ReceiveAction(new ArbitraryMessage()));
-            
-            TestVector vector = new TestVector(trace, serverStructure, clientCertList.get(0), ExecutorType.TLS, null);
             TLSServer server = null;
             try
             {
                 server = ServerManager.getInstance().getFreeServer();
-                TLSExecutor executor = new TLSExecutor(vector, server ,new BlindAgent(serverStructure));
-                Thread t = new Thread(executor);
-                t.start();
-                while(t.isAlive())
+                try
                 {
-                    
+                    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
+                    if(server.serverIsRunning())
+                    {
+                        LOG.log(Level.INFO, ""+serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
+                    }
+                    else
+                    {
+                        LOG.log(Level.INFO, "Could not start Server with:"+serverStructure.getCertificateFile().getAbsolutePath());
+                    }
                 }
-                if(trace.getAllActuallyReceivedMessages().isEmpty())
+                catch(Exception E)
                 {
-                    LOG.log(Level.INFO,"Could not start Server with "+serverStructure.getCertificateFile().getAbsolutePath());
-                }
-                else
-                {
-                    LOG.log(Level.INFO,serverStructure.getCertificateFile().getAbsoluteFile() + " - OK");
+                    LOG.log(Level.INFO, "Could not start Server with:"+serverStructure.getCertificateFile().getAbsolutePath());
                 }
             }
             catch(Exception E)
