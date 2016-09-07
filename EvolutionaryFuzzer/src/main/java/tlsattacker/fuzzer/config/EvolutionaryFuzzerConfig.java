@@ -47,6 +47,10 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean randomPort = false;
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
     private boolean injectPinChild = true;
+    @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
+    private boolean certMutatorSelftest = false;
+
+
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
@@ -62,7 +66,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public String getArchiveFolder() {
 	return archiveFolder;
     }
-
+    
     public boolean isRandomPort()
     {
         return randomPort;
@@ -212,6 +216,16 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public boolean getInjectPinChild()
     {
         return injectPinChild;
+    }
+
+    public void setCertMutatorSelftest(boolean certMutatorSelftest)
+    {
+        this.certMutatorSelftest = certMutatorSelftest;
+    }
+    
+    public boolean isCertMutatorSelfTest()
+    {
+        return certMutatorSelftest;
     }
 
 }

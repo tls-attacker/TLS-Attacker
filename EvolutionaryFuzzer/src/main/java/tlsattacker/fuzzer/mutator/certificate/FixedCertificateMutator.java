@@ -7,6 +7,9 @@
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
+import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
+import de.rub.nds.tlsattacker.eap.ClientHello;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import tlsattacker.fuzzer.analyzer.Rule;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
@@ -16,6 +19,12 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.mutator.certificate.FixedCertificateMutatorConfig;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +35,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -34,6 +44,12 @@ import javax.xml.bind.JAXB;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
+import tlsattacker.fuzzer.agents.AgentFactory;
+import tlsattacker.fuzzer.agents.BlindAgent;
+import tlsattacker.fuzzer.executor.TLSExecutor;
+import tlsattacker.fuzzer.server.ServerManager;
+import tlsattacker.fuzzer.server.TLSServer;
+import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
  * 
@@ -65,9 +81,82 @@ public class FixedCertificateMutator extends CertificateMutator {
 		    "The CertificateMutator is not properly configured. Make sure that the FixedCertificateMutator knows atleast one Client and one Server CertificatePair");
 	    throw new ConfigurationException("CertificateMutator has not enough Certificates");
 	}
-	r = new Random();
+        r = new Random();
+        if(ConfigManager.getInstance().getConfig().isCertMutatorSelfTest())
+        {
+            selfTest();
+            ConfigManager.getInstance().getConfig().setCertMutatorSelftest(false);
+        }
     }
-
+    public void selfTest()
+    {
+        LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
+	for(ClientCertificateStructure clientCert : clientCertList)
+        {
+            if(!clientCert.getJKSfile().exists())
+            {
+                LOG.log(Level.INFO, "Could not find:"+clientCert.getJKSfile().getAbsolutePath());
+            }
+        }
+        for(ServerCertificateStructure serverStructure : serverPairList)
+        {
+            if(!serverStructure.getCertificateFile().exists() )
+            {
+                LOG.log(Level.INFO, "Could not find:"+serverStructure.getCertificateFile().getAbsolutePath());
+                continue;
+            }
+            if(!serverStructure.getKeyFile().exists())
+            {
+                LOG.log(Level.INFO, "Could not find:"+serverStructure.getKeyFile().getAbsolutePath());
+                continue;
+            }
+            WorkflowTrace trace = new WorkflowTrace();
+            ClientHelloMessage message = new ClientHelloDtlsMessage();
+            List<CipherSuite> suiteList = new LinkedList<>();
+            for(CipherSuite suite: CipherSuite.values())
+            {
+                suiteList.add(suite);
+            }
+            List<CompressionMethod> compressionList = new LinkedList<>();
+            for(CompressionMethod compression: CompressionMethod.values())
+            {
+                compressionList.add(compression);
+            }
+            message.setSupportedCompressionMethods(compressionList);
+            message.setSupportedCipherSuites(suiteList);
+            trace.add(new SendAction(message));
+            trace.add(new ReceiveAction(new ArbitraryMessage()));
+            
+            TestVector vector = new TestVector(trace, serverStructure, clientCertList.get(0), ExecutorType.TLS, null);
+            TLSServer server = null;
+            try
+            {
+                server = ServerManager.getInstance().getFreeServer();
+                TLSExecutor executor = new TLSExecutor(vector, server ,new BlindAgent(serverStructure));
+                Thread t = new Thread(executor);
+                t.start();
+                while(t.isAlive())
+                {
+                    
+                }
+                if(trace.getAllActuallyReceivedMessages().isEmpty())
+                {
+                    LOG.log(Level.INFO,"Could not start Server with "+serverStructure.getCertificateFile().getAbsolutePath());
+                }
+                else
+                {
+                    LOG.log(Level.INFO,serverStructure.getCertificateFile().getAbsoluteFile() + " - OK");
+                }
+            }
+            catch(Exception E)
+            {
+                
+            }
+            
+        }
+        LOG.log(Level.INFO, "Finished SelfTest");
+        
+    }
     public List<ClientCertificateStructure> getClientCertList() {
 	return clientCertList;
     }

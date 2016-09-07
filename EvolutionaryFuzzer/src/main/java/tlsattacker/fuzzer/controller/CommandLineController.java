@@ -68,7 +68,7 @@ public class CommandLineController extends Controller {
 	serverManager.init(config);
 
 	certMutator = CertificateMutatorFactory.getCertificateMutator(config);
-	mutator = MutatorFactory.getMutator(new FixedCertificateMutator(), config);
+	mutator = MutatorFactory.getMutator(certMutator, config);
 	int threads = config.getThreads();
 	if (threads == -1) {
 	    threads = serverManager.getNumberOfServers();
