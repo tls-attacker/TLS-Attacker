@@ -24,10 +24,9 @@ public class FixedCertificateMutatorConfig implements Serializable {
     private ArrayList<ClientCertificateStructure> clientCertificates;
     private ArrayList<ServerCertificateStructure> serverCertificates;
 
-    public FixedCertificateMutatorConfig() {
-    }
+   
 
-    public FixedCertificateMutatorConfig(String test) {
+    public FixedCertificateMutatorConfig() {
 	clientCertificates = new ArrayList<>();
 	// Initialize the Config File with some certificates if we can find them
 	new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();

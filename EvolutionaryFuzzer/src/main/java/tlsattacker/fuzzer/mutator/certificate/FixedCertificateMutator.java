@@ -55,7 +55,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    LOG.log(Level.FINE, "No ConfigFile found:" + configFileName);
 	}
 	if (config == null) {
-	    config = new FixedCertificateMutatorConfig("test");
+	    config = new FixedCertificateMutatorConfig();
 	    serialize(f);
 	}
 	this.clientCertList = config.getClientCertificates();
