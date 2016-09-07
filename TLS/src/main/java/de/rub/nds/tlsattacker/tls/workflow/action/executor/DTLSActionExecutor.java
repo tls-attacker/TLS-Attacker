@@ -433,16 +433,8 @@ public class DTLSActionExecutor extends ActionExecutor {
 	return transportHandler.fetchData();
     }
 
-    // TODO What?!?!?!?
     public void setMaxPacketSize(int maxPacketSize) {
-	// if (this.maxPacketSize > 16397)
-	// {
-	// this.maxPacketSize = 16397;
-	// }
-	// else
-	{
-	    this.maxPacketSize = maxPacketSize;
-	}
+	this.maxPacketSize = maxPacketSize;
     }
 
     private boolean isHandshakeOrCCS(ProtocolMessageType pmt) {
