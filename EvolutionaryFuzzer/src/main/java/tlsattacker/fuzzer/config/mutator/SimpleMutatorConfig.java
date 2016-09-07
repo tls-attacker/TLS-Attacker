@@ -26,18 +26,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class SimpleMutatorConfig implements Serializable {
 
-    private Integer modifyVariablePercentage = 90;
+    private Integer modifyVariablePercentage = 50;
     private Integer addRecordPercentage = 50;
-    private Integer addMessagePercentage = 50;
+    private Integer addMessagePercentage = 20;
     private Integer removeMessagePercentage = 1;
     private Integer changeServerCertPercentage = -1;
     private Integer changeClientCertPercentage = -1;
     private Integer duplicateMessagePercentage = 1;
     private Integer multipleModifications = 1;
-    private Integer addFlightPercentage = 20;
+    private Integer addFlightPercentage = 50;
     private Integer addToggleEncrytionPercentage = 2;
     private Integer addContextActionPercentage = 4;
-    private Integer addExtensionMessagePercentage = 50;
+    private Integer addExtensionMessagePercentage = 20;
 
     public Integer getAddExtensionPercentage() {
 	return addExtensionMessagePercentage;
