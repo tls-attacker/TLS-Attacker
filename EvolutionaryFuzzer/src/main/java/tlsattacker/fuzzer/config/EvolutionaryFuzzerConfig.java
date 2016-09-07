@@ -43,8 +43,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean startStopped = false;
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
-    @Parameter(names = "-random_port", description = "Uses random ports for the Server")
-    private boolean randomPort = false;
+    
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
     private boolean injectPinChild = true;
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
@@ -67,15 +66,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	return archiveFolder;
     }
     
-    public boolean isRandomPort()
-    {
-        return randomPort;
-    }
-
-    public void setRandomPort(boolean randomPort)
-    {
-        this.randomPort = randomPort;
-    }
+   
     
     public void setArchiveFolder(String archiveFolder) {
 	this.archiveFolder = archiveFolder;
