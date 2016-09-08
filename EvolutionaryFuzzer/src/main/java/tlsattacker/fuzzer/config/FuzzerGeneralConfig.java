@@ -24,6 +24,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     protected String configFolder = "config/";
     @Parameter(names = "-random_port", description = "Uses random ports for the Server")
     private boolean randomPort = false;
+
     public String getCertificateMutatorConfigFolder() {
 	return configFolder + "mutator/certificate/";
     }
@@ -35,15 +36,15 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getMutatorConfigFolder() {
 	return configFolder + "mutator/";
     }
-     public boolean isRandomPort()
-    {
-        return randomPort;
+
+    public boolean isRandomPort() {
+	return randomPort;
     }
 
-    public void setRandomPort(boolean randomPort)
-    {
-        this.randomPort = randomPort;
+    public void setRandomPort(boolean randomPort) {
+	this.randomPort = randomPort;
     }
+
     public String getAnalyzerConfigFolder() {
 	return configFolder + "analyzer/";
     }
@@ -56,7 +57,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 	f.mkdirs();
 	f = new File(getAnalyzerConfigFolder());
 	f.mkdirs();
-        f = new File(getServerCommandFromFile());
+	f = new File(getServerCommandFromFile());
 	f.mkdirs();
     }
 

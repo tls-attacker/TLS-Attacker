@@ -55,14 +55,11 @@ public class PINAgent extends Agent {
 	super(keypair);
 	timeout = false;
 	crash = false;
-        if(ConfigManager.getInstance().getConfig().getInjectPinChild())
-        {
-            prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
-        }
-        else
-        {
-            prefix = "PIN/pin -log_inline -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
-        }
+	if (ConfigManager.getInstance().getConfig().getInjectPinChild()) {
+	    prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
+	} else {
+	    prefix = "PIN/pin -log_inline -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
+	}
     }
 
     @Override
@@ -95,7 +92,7 @@ public class PINAgent extends Agent {
 	    BufferedReader br = new BufferedReader(new FileReader(branchTrace));
 
 	    String line = br.readLine();
-            
+
 	    if (line != null && line.startsWith("S")) {
 		crash = true;
 		// Skip 2 lines
@@ -108,7 +105,7 @@ public class PINAgent extends Agent {
 
 	} catch (IOException ex) {
 	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+	    ex.printStackTrace();
 	}
 
 	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()

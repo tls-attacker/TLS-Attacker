@@ -43,12 +43,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean startStopped = false;
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
-    
+
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
     private boolean injectPinChild = true;
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
     private boolean certMutatorSelftest = false;
-
 
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
@@ -65,9 +64,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public String getArchiveFolder() {
 	return archiveFolder;
     }
-    
-   
-    
+
     public void setArchiveFolder(String archiveFolder) {
 	this.archiveFolder = archiveFolder;
     }
@@ -118,7 +115,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     // Are we currently in serialization mode?
     private boolean serialize = false;
-    
+
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
      * and serverCommandFromFile to server/server.config
@@ -204,19 +201,16 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     }
 
-    public boolean getInjectPinChild()
-    {
-        return injectPinChild;
+    public boolean getInjectPinChild() {
+	return injectPinChild;
     }
 
-    public void setCertMutatorSelftest(boolean certMutatorSelftest)
-    {
-        this.certMutatorSelftest = certMutatorSelftest;
+    public void setCertMutatorSelftest(boolean certMutatorSelftest) {
+	this.certMutatorSelftest = certMutatorSelftest;
     }
-    
-    public boolean isCertMutatorSelfTest()
-    {
-        return certMutatorSelftest;
+
+    public boolean isCertMutatorSelfTest() {
+	return certMutatorSelftest;
     }
 
 }

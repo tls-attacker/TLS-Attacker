@@ -139,7 +139,7 @@ public final class TestVectorSerializer {
 		} catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
 		    LOG.log(Level.INFO, "Could not load file:" + file.getAbsolutePath());
 		    LOG.log(Level.FINE, "Reason:", ex);
-                    ex.printStackTrace();
+		    ex.printStackTrace();
 		}
 	    }
 	    return list;

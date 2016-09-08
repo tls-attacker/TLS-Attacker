@@ -81,65 +81,58 @@ public class FixedCertificateMutator extends CertificateMutator {
 		    "The CertificateMutator is not properly configured. Make sure that the FixedCertificateMutator knows atleast one Client and one Server CertificatePair");
 	    throw new ConfigurationException("CertificateMutator has not enough Certificates");
 	}
-        r = new Random();
-        if(ConfigManager.getInstance().getConfig().isCertMutatorSelfTest())
-        {
-            selfTest();
-            ConfigManager.getInstance().getConfig().setCertMutatorSelftest(false);
-        }
+	r = new Random();
+	if (ConfigManager.getInstance().getConfig().isCertMutatorSelfTest()) {
+	    selfTest();
+	    ConfigManager.getInstance().getConfig().setCertMutatorSelftest(false);
+	}
     }
-    public void selfTest()
-    {
-        LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
-	for(ClientCertificateStructure clientCert : clientCertList)
-        {
-            if(!clientCert.getJKSfile().exists())
-            {
-                LOG.log(Level.INFO, "Could not find:"+clientCert.getJKSfile().getAbsolutePath());
-            }
-        }
-        for(ServerCertificateStructure serverStructure : serverPairList)
-        {
-            if(!serverStructure.getCertificateFile().exists() )
-            {
-                LOG.log(Level.INFO, "Could not find:"+serverStructure.getCertificateFile().getAbsolutePath());
-                continue;
-            }
-            if(!serverStructure.getKeyFile().exists())
-            {
-                LOG.log(Level.INFO, "Could not find:"+serverStructure.getKeyFile().getAbsolutePath());
-                continue;
-            }
-            TLSServer server = null;
-            try
-            {
-                server = ServerManager.getInstance().getFreeServer();
-                try
-                {
-                    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
-                    if(server.serverIsRunning())
-                    {
-                        LOG.log(Level.INFO, ""+serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
-                    }
-                    else
-                    {
-                        LOG.log(Level.INFO, "Could not start Server with:"+serverStructure.getCertificateFile().getAbsolutePath());
-                    }
-                }
-                catch(Exception E)
-                {
-                    LOG.log(Level.INFO, "Could not start Server with:"+serverStructure.getCertificateFile().getAbsolutePath());
-                }
-            }
-            catch(Exception E)
-            {
-                
-            }
-            
-        }
-        LOG.log(Level.INFO, "Finished SelfTest");
-        
+
+    public void selfTest() {
+	LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
+	for (ClientCertificateStructure clientCert : clientCertList) {
+	    if (!clientCert.getJKSfile().exists()) {
+		LOG.log(Level.INFO, "Could not find:" + clientCert.getJKSfile().getAbsolutePath());
+	    }
+	}
+	for (ServerCertificateStructure serverStructure : serverPairList) {
+	    if (!serverStructure.getCertificateFile().exists()) {
+		LOG.log(Level.INFO, "Could not find:" + serverStructure.getCertificateFile().getAbsolutePath());
+		continue;
+	    }
+	    if (!serverStructure.getKeyFile().exists()) {
+		LOG.log(Level.INFO, "Could not find:" + serverStructure.getKeyFile().getAbsolutePath());
+		continue;
+	    }
+	    TLSServer server = null;
+	    try {
+		server = ServerManager.getInstance().getFreeServer();
+		try {
+		    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
+		    if (server.serverIsRunning()) {
+			LOG.log(Level.INFO, "" + serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
+		    } else {
+			LOG.log(Level.INFO, "Could not start Server with:"
+				+ serverStructure.getCertificateFile().getAbsolutePath());
+		    }
+		} catch (Exception E) {
+		    LOG.log(Level.INFO, "Could not start Server with:"
+			    + serverStructure.getCertificateFile().getAbsolutePath());
+		}
+	    } catch (Exception E) {
+		LOG.log(Level.INFO, "Could not start Server with:"
+			+ serverStructure.getCertificateFile().getAbsolutePath());
+	    } finally {
+		if (server != null) {
+		    server.release();
+		}
+	    }
+
+	}
+	LOG.log(Level.INFO, "Finished SelfTest");
+
     }
+
     public List<ClientCertificateStructure> getClientCertList() {
 	return clientCertList;
     }
