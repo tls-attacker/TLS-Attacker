@@ -168,13 +168,17 @@ public class TimeoutCalibrator
             result &= testExecuteWorkflow(configHandler, config, agent, server);
             agent.applicationStop(server);
         }
+        catch(Exception E)
+        {
+            return false;
+        }
         finally
         {
             server.release();
         }
         return result;
     }
-    //TODO cleanup
+    //TODO cleantup
     private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent, TLSServer server)
     {
 
