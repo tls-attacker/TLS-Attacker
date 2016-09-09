@@ -42,173 +42,215 @@ import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
+public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage>
+{
 
     private static final Logger LOGGER = LogManager.getLogger(RSAClientKeyExchangeHandler.class);
+    private static RSAPublicKey bufferedKey = null;
 
-    public RSAClientKeyExchangeHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = RSAClientKeyExchangeMessage.class;
-	this.keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
+    public RSAClientKeyExchangeHandler(TlsContext tlsContext)
+    {
+        super(tlsContext);
+        this.correctProtocolMessageClass = RSAClientKeyExchangeMessage.class;
+        this.keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
     }
 
     @Override
-    byte[] prepareKeyExchangeMessage() {
-	RSAPublicKey publicKey = null;
-	if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
+    byte[] prepareKeyExchangeMessage()
+    {
+        RSAPublicKey publicKey = null;
+        if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA"))
+        {
 
-	    if (protocolMessage.isFuzzingMode()) {
-		KeyPairGenerator keyGen = null;
-		try {
-		    keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-		} catch (NoSuchAlgorithmException ex) {
-		    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
-			    null, ex);
-		} catch (NoSuchProviderException ex) {
-		    java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
-			    null, ex);
-		}
-		publicKey = (RSAPublicKey) keyGen.genKeyPair().getPublic();
-	    }
-	} else {
-	    publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
+            if (protocolMessage.isFuzzingMode())
+            {
+                if (bufferedKey == null)
+                {
+                    KeyPairGenerator keyGen = null;
+                    try
+                    {
+                        keyGen = KeyPairGenerator.getInstance("RSA", "BC");
+                    }
+                    catch (NoSuchAlgorithmException ex)
+                    {
+                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
+                                null, ex);
+                    }
+                    catch (NoSuchProviderException ex)
+                    {
+                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
+                                null, ex);
+                    }
+                    bufferedKey = (RSAPublicKey) keyGen.genKeyPair().getPublic();
+                }
+                publicKey = bufferedKey;//TODO not multithreadable
+            }
+        }
+        else
+        {
+            publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
 
-	}
-	int keyByteLength = publicKey.getModulus().bitLength() / 8;
-	// the number of random bytes in the pkcs1 message
-	int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
-	byte[] padding = new byte[randomByteLength];
-	RandomHelper.getRandom().nextBytes(padding);
-	ArrayConverter.makeArrayNonZero(padding);
+        }
+        int keyByteLength = publicKey.getModulus().bitLength() / 8;
+        // the number of random bytes in the pkcs1 message
+        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
+        byte[] padding = new byte[randomByteLength];
+        RandomHelper.getRandom().nextBytes(padding);
+        ArrayConverter.makeArrayNonZero(padding);
 
-	byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-	// forward the PMS with the key of the target server during MitM
-	if (tlsContext.isMitMAttack()) {
-	    premasterSecret = protocolMessage.getPremasterSecret().getValue();
-	} else {
-	    RandomHelper.getRandom().nextBytes(premasterSecret);
-	    premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
-	    premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
-	}
+        byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+        // forward the PMS with the key of the target server during MitM
+        if (tlsContext.isMitMAttack())
+        {
+            premasterSecret = protocolMessage.getPremasterSecret().getValue();
+        }
+        else
+        {
+            RandomHelper.getRandom().nextBytes(premasterSecret);
+            premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
+            premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
+        }
 
-	protocolMessage.setPremasterSecret(premasterSecret);
+        protocolMessage.setPremasterSecret(premasterSecret);
 
-	LOGGER.debug("Computed PreMaster Secret: {}",
-		ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
+        LOGGER.debug("Computed PreMaster Secret: {}",
+                ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
-	protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding,
-		new byte[] { 0x00 }, protocolMessage.getPremasterSecret().getValue()));
+        protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[]
+        {
+            0x00, 0x02
+        }, padding,
+                new byte[]
+                {
+                    0x00
+                }, protocolMessage.getPremasterSecret().getValue()));
 
-	byte[] paddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
+        byte[] paddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
 
-	byte[] random = tlsContext.getClientServerRandom();
+        byte[] random = tlsContext.getClientServerRandom();
 
-	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
-		tlsContext.getSelectedCipherSuite());
-	byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
-		.getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
-	protocolMessage.setMasterSecret(masterSecret);
-	LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+                tlsContext.getSelectedCipherSuite());
+        byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
+                .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
+        protocolMessage.setMasterSecret(masterSecret);
+        LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
 
-	tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
+        tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
 
-	try {
-	    Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
-	    cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-	    LOGGER.debug("Encrypting the following padded premaster secret: {}",
-		    ArrayConverter.bytesToHexString(paddedPremasterSecret));
-	    // TODO can throw a tooMuchData for RSA Block exception
-	    if (paddedPremasterSecret.length == 0) {
-		paddedPremasterSecret = new byte[] { 0 };
-	    }
-	    if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
-		if (protocolMessage.isFuzzingMode()) {
-		    paddedPremasterSecret = masterSecret;
-		} else {
-		    throw new IllegalStateException("Trying to encrypt more data then modulus size!");
-		}
-	    }
-	    byte[] encrypted = null;
-	    try {
-		encrypted = cipher.doFinal(paddedPremasterSecret);
-	    } catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E) {
-		// too much data for RSA block
-		throw new UnsupportedOperationException(E);
-	    }
-	    protocolMessage.setEncryptedPremasterSecret(encrypted);
-	    protocolMessage
-		    .setEncryptedPremasterSecretLength(protocolMessage.getEncryptedPremasterSecret().getValue().length);
-	    return ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage
-		    .getEncryptedPremasterSecretLength().getValue(),
-		    HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH), protocolMessage
-		    .getEncryptedPremasterSecret().getValue());
-	} catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException
-		| NoSuchAlgorithmException | NoSuchPaddingException ex) {
-	    LOGGER.info(ex);
-	    throw new WorkflowExecutionException(ex.getLocalizedMessage());
-	}
+        try
+        {
+            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            LOGGER.debug("Encrypting the following padded premaster secret: {}",
+                    ArrayConverter.bytesToHexString(paddedPremasterSecret));
+            // TODO can throw a tooMuchData for RSA Block exception
+            if (paddedPremasterSecret.length == 0)
+            {
+                paddedPremasterSecret = new byte[]
+                {
+                    0
+                };
+            }
+            if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1)
+            {
+                if (protocolMessage.isFuzzingMode())
+                {
+                    paddedPremasterSecret = masterSecret;
+                }
+                else
+                {
+                    throw new IllegalStateException("Trying to encrypt more data then modulus size!");
+                }
+            }
+            byte[] encrypted = null;
+            try
+            {
+                encrypted = cipher.doFinal(paddedPremasterSecret);
+            }
+            catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E)
+            {
+                // too much data for RSA block
+                throw new UnsupportedOperationException(E);
+            }
+            protocolMessage.setEncryptedPremasterSecret(encrypted);
+            protocolMessage
+                    .setEncryptedPremasterSecretLength(protocolMessage.getEncryptedPremasterSecret().getValue().length);
+            return ArrayConverter.concatenate(ArrayConverter.intToBytes(protocolMessage
+                    .getEncryptedPremasterSecretLength().getValue(),
+                    HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH), protocolMessage
+                    .getEncryptedPremasterSecret().getValue());
+        }
+        catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex)
+        {
+            LOGGER.info(ex);
+            throw new WorkflowExecutionException(ex.getLocalizedMessage());
+        }
 
     }
 
     @Override
-    int parseKeyExchangeMessage(byte[] message, int currentPointer) {
-	int nextPointer = currentPointer + HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH;
-	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setEncryptedPremasterSecretLength(length);
-	currentPointer = nextPointer;
+    int parseKeyExchangeMessage(byte[] message, int currentPointer)
+    {
+        int nextPointer = currentPointer + HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH;
+        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setEncryptedPremasterSecretLength(length);
+        currentPointer = nextPointer;
 
-	nextPointer = currentPointer + length;
-	protocolMessage.setEncryptedPremasterSecret(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        nextPointer = currentPointer + length;
+        protocolMessage.setEncryptedPremasterSecret(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
-	byte[] encryptedPremasterSecret = protocolMessage.getEncryptedPremasterSecret().getValue();
+        byte[] encryptedPremasterSecret = protocolMessage.getEncryptedPremasterSecret().getValue();
 
-	KeyStore ks = tlsContext.getKeyStore();
+        KeyStore ks = tlsContext.getKeyStore();
 
-	try {
-	    Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
-	    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
+        try
+        {
+            Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
+            RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
 
-	    Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
-	    cipher.init(Cipher.DECRYPT_MODE, rsaKey);
-	    LOGGER.debug("Decrypting the following encrypted premaster secret: {}",
-		    ArrayConverter.bytesToHexString(encryptedPremasterSecret));
-	    byte[] decrypted = cipher.doFinal(encryptedPremasterSecret);
+            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
+            cipher.init(Cipher.DECRYPT_MODE, rsaKey);
+            LOGGER.debug("Decrypting the following encrypted premaster secret: {}",
+                    ArrayConverter.bytesToHexString(encryptedPremasterSecret));
+            byte[] decrypted = cipher.doFinal(encryptedPremasterSecret);
 
-	    protocolMessage.setPlainPaddedPremasterSecret(decrypted);
+            protocolMessage.setPlainPaddedPremasterSecret(decrypted);
 
-	} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
-		| NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
-	    throw new ConfigurationException(
-		    "Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
-	}
+        }
+        catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException | NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex)
+        {
+            throw new ConfigurationException(
+                    "Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
+        }
 
-	byte[] plainPaddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
+        byte[] plainPaddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
 
-	int plainPaddedPremasterSecretLength = plainPaddedPremasterSecret.length;
+        int plainPaddedPremasterSecretLength = plainPaddedPremasterSecret.length;
 
-	int plainPaddedPremasterSecretoffset = plainPaddedPremasterSecretLength - 48;
+        int plainPaddedPremasterSecretoffset = plainPaddedPremasterSecretLength - 48;
 
-	byte[] premasterSecret = Arrays.copyOfRange(plainPaddedPremasterSecret, plainPaddedPremasterSecretoffset,
-		plainPaddedPremasterSecretLength);
+        byte[] premasterSecret = Arrays.copyOfRange(plainPaddedPremasterSecret, plainPaddedPremasterSecretoffset,
+                plainPaddedPremasterSecretLength);
 
-	LOGGER.debug("Resulting premaster secret: {}", ArrayConverter.bytesToHexString(premasterSecret));
+        LOGGER.debug("Resulting premaster secret: {}", ArrayConverter.bytesToHexString(premasterSecret));
 
-	protocolMessage.setPremasterSecret(premasterSecret);
-	tlsContext.setPreMasterSecret(premasterSecret);
+        protocolMessage.setPremasterSecret(premasterSecret);
+        tlsContext.setPreMasterSecret(premasterSecret);
 
-	byte[] random = tlsContext.getClientServerRandom();
+        byte[] random = tlsContext.getClientServerRandom();
 
-	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
-		tlsContext.getSelectedCipherSuite());
-	byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
-		.getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
-	protocolMessage.setMasterSecret(masterSecret);
-	LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+                tlsContext.getSelectedCipherSuite());
+        byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
+                .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
+        protocolMessage.setMasterSecret(masterSecret);
+        LOGGER.debug("Computed Master Secret: {}", ArrayConverter.bytesToHexString(masterSecret));
 
-	tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
+        tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
 
-	currentPointer = nextPointer;
+        currentPointer = nextPointer;
 
-	return currentPointer;
+        return currentPointer;
     }
 }
