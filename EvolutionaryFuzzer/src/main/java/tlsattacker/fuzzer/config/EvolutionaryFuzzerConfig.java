@@ -55,14 +55,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
 
-    public boolean isUseKill() {
-	return useKill;
-    }
-
-    public void setUseKill(boolean useKill) {
-	this.useKill = useKill;
-    }
-
     public ActionExecutorTypeConfig getActionExecutorConfig() {
 	return actionExecutorConfig;
     }

@@ -24,11 +24,19 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     protected String configFolder = "config/";
     @Parameter(names = "-random_port", description = "Uses random ports for the Server")
     private boolean randomPort = false;
+    @Parameter(names = "-use_kill", description = "Uses the kill command specified in the server configuration files.")
+    private boolean useKill = false;
 
     public String getCertificateMutatorConfigFolder() {
 	return configFolder + "mutator/certificate/";
     }
+    public boolean isUseKill() {
+	return useKill;
+    }
 
+    public void setUseKill(boolean useKill) {
+	this.useKill = useKill;
+    }
     public String getConfigFolder() {
 	return configFolder;
     }
