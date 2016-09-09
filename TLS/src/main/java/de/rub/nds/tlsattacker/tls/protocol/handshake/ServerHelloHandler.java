@@ -62,7 +62,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 	nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
 	ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
 		currentPointer, nextPointer));
-	protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
+
+	protocolMessage.setProtocolVersion(Arrays.copyOfRange(message, currentPointer, nextPointer));
+	if (serverProtocolVersion == null) {
+	    System.out.println("Unknown protocolversion" + ArrayConverter.bytesToHexString(Arrays.copyOfRange(message, currentPointer, nextPointer)));//TODO
+	}
 
 	currentPointer = nextPointer;
 	nextPointer = currentPointer + HandshakeByteLength.UNIX_TIME;
