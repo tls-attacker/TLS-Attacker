@@ -28,6 +28,8 @@ public class ServerConfig {
     private String startcommand;
     @Parameter(names = "-output", required = true, description = "The File in which the Server is serialized to")
     private String output;
+    @Parameter(names = "-killCommand", required = false, description = "The Command needed to kill the Server after each execution, probably makes only sense in a single Threaded enviroment")
+    private String killCommand;
 
     public String getIp() {
 	return ip;
@@ -37,6 +39,11 @@ public class ServerConfig {
 	this.ip = ip;
     }
 
+    public String getKillCommand()
+    {
+        return killCommand;
+    }
+    
     public int getPort() {
 	return port;
     }

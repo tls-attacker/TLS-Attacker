@@ -35,6 +35,17 @@ public final class TLSServer {
     private int id = -1;
     private String restartServerCommand;
     private String accepted;
+    private String killServerCommand = "";
+
+    public String getKillServerCommand()
+    {
+        return killServerCommand;
+    }
+
+    public void setKillServerCommand(String killServerCommand)
+    {
+        this.killServerCommand = killServerCommand;
+    }
     private StreamGobbler errorGobbler;
     private StreamGobbler outputGobbler;
     // our end
@@ -60,12 +71,14 @@ public final class TLSServer {
      * @param accepted
      *            The String which the Server prints to the console when the
      *            Server is fully started
+     * @param killServerCommand
      */
-    public TLSServer(String ip, int port, String restartServerCommand, String accepted) {
+    public TLSServer(String ip, int port, String restartServerCommand, String accepted, String killServerCommand) {
 	this.ip = ip;
 	this.port = port;
 	this.restartServerCommand = restartServerCommand;
 	this.accepted = accepted;
+        this.killServerCommand = killServerCommand;
     }
 
     public String getAccepted() {
@@ -256,7 +269,9 @@ public final class TLSServer {
 	    if (p != null) {
 		p.destroy();
 		p.waitFor();
-		// TODO Kill the process
+		Runtime rt = Runtime.getRuntime();
+		p = rt.exec(killServerCommand);
+                p.waitFor();
 	    }
 	} catch (Exception E) {
 	    E.printStackTrace();

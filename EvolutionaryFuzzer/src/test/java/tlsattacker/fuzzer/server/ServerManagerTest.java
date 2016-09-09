@@ -34,11 +34,11 @@ public class ServerManagerTest {
     public void setUp() {
 	tlsattacker.fuzzer.config.ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
 	manager = ServerManager.getInstance();
-	manager.addServer(new TLSServer("127.0.0.1", 1, "command1", "ACCEPT"));
-	manager.addServer(new TLSServer("127.0.0.2", 2, "command2", "ACCEPT"));
-	manager.addServer(new TLSServer("127.0.0.3", 3, "command3", "ACCEPT"));
-	manager.addServer(new TLSServer("127.0.0.4", 4, "command4", "ACCEPT"));
-	manager.addServer(new TLSServer("127.0.0.5", 5, "command5", "ACCEPT"));
+	manager.addServer(new TLSServer("127.0.0.1", 1, "command1", "ACCEPT", ""));
+	manager.addServer(new TLSServer("127.0.0.2", 2, "command2", "ACCEPT", ""));
+	manager.addServer(new TLSServer("127.0.0.3", 3, "command3", "ACCEPT", ""));
+	manager.addServer(new TLSServer("127.0.0.4", 4, "command4", "ACCEPT", ""));
+	manager.addServer(new TLSServer("127.0.0.5", 5, "command5", "ACCEPT", ""));
 
     }
 

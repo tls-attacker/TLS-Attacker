@@ -48,10 +48,22 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean injectPinChild = true;
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
     private boolean certMutatorSelftest = false;
-
+    @Parameter(names = "-use_kill", description = "Uses the kill command specified in the server configuration files.")
+    private boolean useKill = false;
+    
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
+
+    public boolean isUseKill()
+    {
+        return useKill;
+    }
+
+    public void setUseKill(boolean useKill)
+    {
+        this.useKill = useKill;
+    }
 
     public ActionExecutorTypeConfig getActionExecutorConfig() {
 	return actionExecutorConfig;
