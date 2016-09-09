@@ -143,8 +143,15 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
 	    LOGGER.debug("Selected SignatureAndHashAlgorithm for CertificateVerify message: {}",
 		    selectedSignatureHashAlgo.getJavaName());
 	    instance.update(rawHandshakeBytes);
-	    byte[] signature = instance.sign();
-
+            byte[] signature = null;
+            try
+            {
+                signature = instance.sign();
+            }
+            catch(IllegalArgumentException E)
+            {
+                throw new UnsupportedOperationException(E);
+            }
 	    protocolMessage.setSignature(signature);
 	    protocolMessage.setSignatureLength(protocolMessage.getSignature().getValue().length);
 
