@@ -148,7 +148,7 @@ public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerify
             {
                 signature = instance.sign();
             }
-            catch(IllegalArgumentException E)
+            catch(Exception E)
             {
                 throw new UnsupportedOperationException(E);
             }
