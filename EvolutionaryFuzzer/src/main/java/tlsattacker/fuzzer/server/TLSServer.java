@@ -37,15 +37,14 @@ public final class TLSServer {
     private String accepted;
     private String killServerCommand = "";
 
-    public String getKillServerCommand()
-    {
-        return killServerCommand;
+    public String getKillServerCommand() {
+	return killServerCommand;
     }
 
-    public void setKillServerCommand(String killServerCommand)
-    {
-        this.killServerCommand = killServerCommand;
+    public void setKillServerCommand(String killServerCommand) {
+	this.killServerCommand = killServerCommand;
     }
+
     private StreamGobbler errorGobbler;
     private StreamGobbler outputGobbler;
     // our end
@@ -78,7 +77,7 @@ public final class TLSServer {
 	this.port = port;
 	this.restartServerCommand = restartServerCommand;
 	this.accepted = accepted;
-        this.killServerCommand = killServerCommand;
+	this.killServerCommand = killServerCommand;
     }
 
     public String getAccepted() {
@@ -269,9 +268,11 @@ public final class TLSServer {
 	    if (p != null) {
 		p.destroy();
 		p.waitFor();
-		Runtime rt = Runtime.getRuntime();
-		p = rt.exec(killServerCommand);
-                p.waitFor();
+		if (ConfigManager.getInstance().getConfig().isUseKill()) {
+		    Runtime rt = Runtime.getRuntime();
+		    p = rt.exec(killServerCommand);
+		    p.waitFor();
+		}
 	    }
 	} catch (Exception E) {
 	    E.printStackTrace();

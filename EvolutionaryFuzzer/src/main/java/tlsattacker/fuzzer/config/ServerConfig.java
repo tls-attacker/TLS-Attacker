@@ -39,11 +39,10 @@ public class ServerConfig {
 	this.ip = ip;
     }
 
-    public String getKillCommand()
-    {
-        return killCommand;
+    public String getKillCommand() {
+	return killCommand;
     }
-    
+
     public int getPort() {
 	return port;
     }

@@ -50,19 +50,17 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean certMutatorSelftest = false;
     @Parameter(names = "-use_kill", description = "Uses the kill command specified in the server configuration files.")
     private boolean useKill = false;
-    
+
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
 
-    public boolean isUseKill()
-    {
-        return useKill;
+    public boolean isUseKill() {
+	return useKill;
     }
 
-    public void setUseKill(boolean useKill)
-    {
-        this.useKill = useKill;
+    public void setUseKill(boolean useKill) {
+	this.useKill = useKill;
     }
 
     public ActionExecutorTypeConfig getActionExecutorConfig() {
