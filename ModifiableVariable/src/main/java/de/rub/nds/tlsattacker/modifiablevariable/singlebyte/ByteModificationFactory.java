@@ -36,7 +36,7 @@ final public class ByteModificationFactory {
 
     private static List<VariableModification<Byte>> modificationsFromFile;
 
-    public static final String FILE_NAME = "byte.vec";
+    public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/byte.vec";
 
     private ByteModificationFactory() {
     }
