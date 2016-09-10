@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.certificate;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 
@@ -44,4 +45,34 @@ public class ServerCertificateStructure implements Serializable {
 	this.certificateFile = certificateFile;
     }
 
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final ServerCertificateStructure other = (ServerCertificateStructure) obj;
+        if (!Objects.equals(this.keyFile, other.keyFile))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.certificateFile, other.certificateFile))
+        {
+            return false;
+        }
+        return true;
+    }
+    
 }
