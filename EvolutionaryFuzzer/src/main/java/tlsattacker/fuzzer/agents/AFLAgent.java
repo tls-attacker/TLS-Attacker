@@ -206,6 +206,10 @@ public class AFLAgent extends Agent
                 }
                 catch (NumberFormatException e)
                 {
+                    if(line.contains("CRASH") || line.contains("TIMEOUT"))
+                    {
+                        continue;
+                    }
                     throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
                 }
                 if (previousNumber != Long.MIN_VALUE)
