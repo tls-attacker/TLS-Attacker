@@ -36,7 +36,7 @@ final public class ByteModificationFactory {
 
     private static List<VariableModification<Byte>> modificationsFromFile;
 
-    public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/byte.vec";
+    public static final String FILE_NAME = "/de/rub/nds/tlsattacker/explicit/byte.vec";
 
     private ByteModificationFactory() {
     }
@@ -83,8 +83,7 @@ final public class ByteModificationFactory {
 	try {
 	    if (modificationsFromFile == null) {
 		modificationsFromFile = new LinkedList<>();
-		ClassLoader classLoader = ByteModificationFactory.class.getClassLoader();
-		InputStream is = classLoader.getResourceAsStream(FILE_NAME);
+		InputStream is = ByteModificationFactory.class.getResourceAsStream(FILE_NAME);
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String line;
 		while ((line = br.readLine()) != null) {

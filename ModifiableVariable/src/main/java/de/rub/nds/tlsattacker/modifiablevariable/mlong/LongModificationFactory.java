@@ -75,8 +75,7 @@ final public class LongModificationFactory {
 	try {
 	    if (modificationsFromFile == null) {
 		modificationsFromFile = new LinkedList<>();
-		ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
-		File file = new File(classLoader.getResource(IntegerModificationFactory.FILE_NAME).getFile());
+		File file = new File(IntegerModificationFactory.class.getResource(IntegerModificationFactory.FILE_NAME).getFile());
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		while ((line = br.readLine()) != null) {

@@ -31,7 +31,7 @@ final public class IntegerModificationFactory {
 
     private static List<VariableModification<Integer>> modificationsFromFile;
 
-    public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/integer.vec";
+    public static final String FILE_NAME = "/de/rub/nds/tlsattacker/explicit/integer.vec";
 
     private IntegerModificationFactory() {
     }
@@ -94,8 +94,7 @@ final public class IntegerModificationFactory {
 	try {
 	    if (modificationsFromFile == null) {
 		modificationsFromFile = new LinkedList<>();
-		ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
-		InputStream is = classLoader.getResourceAsStream(FILE_NAME);
+		InputStream is = IntegerModificationFactory.class.getResourceAsStream(FILE_NAME);
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String line;
 		while ((line = br.readLine()) != null) {
