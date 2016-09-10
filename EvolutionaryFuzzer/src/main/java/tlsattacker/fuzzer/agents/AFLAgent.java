@@ -32,10 +32,11 @@ import java.util.Set;
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
  * American Fuzzy Lop
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AFLAgent extends Agent {
+public class AFLAgent extends Agent
+{
 
     private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
@@ -54,145 +55,194 @@ public class AFLAgent extends Agent {
     /**
      * Default Constructor
      */
-    public AFLAgent(ServerCertificateStructure keypair) {
-	super(keypair);
-	timeout = false;
-	crash = false;
+    public AFLAgent(ServerCertificateStructure keypair)
+    {
+        super(keypair);
+        timeout = false;
+        crash = false;
     }
 
     @Override
-    public void applicationStart(TLSServer server) {
-	if (running) {
-	    throw new IllegalStateException("Cannot start a running AFL Agent");
-	}
-	startTime = System.currentTimeMillis();
-	running = true;
-	server.start(prefix, keypair.getCertificateFile(), keypair.getKeyFile());
+    public void applicationStart(TLSServer server)
+    {
+        if (running)
+        {
+            throw new IllegalStateException("Cannot start a running AFL Agent");
+        }
+        startTime = System.currentTimeMillis();
+        running = true;
+        server.start(prefix, keypair.getCertificateFile(), keypair.getKeyFile());
     }
 
     @Override
-    public void applicationStop(TLSServer server) {
-	if (!running) {
-	    throw new IllegalStateException("Cannot stop a stopped AFL Agent");
-	}
-	stopTime = System.currentTimeMillis();
-	running = false;
-	server.stop();
+    public void applicationStop(TLSServer server)
+    {
+        if (!running)
+        {
+            throw new IllegalStateException("Cannot stop a stopped AFL Agent");
+        }
+        stopTime = System.currentTimeMillis();
+        running = false;
+        server.stop();
     }
 
     @Override
-    public Result collectResults(File branchTrace, TestVector vector) {
-	if (running) {
-	    throw new IllegalStateException("Can't collect Results, Agent still running!");
-	}
+    public Result collectResults(File branchTrace, TestVector vector)
+    {
+        if (running)
+        {
+            throw new IllegalStateException("Can't collect Results, Agent still running!");
+        }
+        if (branchTrace.exists())
+        {
+            String tail = tail(branchTrace);
+            switch (tail)
+            {
+                case "CRASH":
+                    LOG.log(Level.INFO, "Found a Crash!");
+                    crash = true;
+                    break;
+                case "TIMEOUT":
+                    LOG.log(Level.INFO, "Found a Timeout!");
+                    timeout = true;
+                    break;
+            }
+            BranchTrace t = getBranchTrace(branchTrace);
 
-	String tail = tail(branchTrace);
-	switch (tail) {
-	    case "CRASH":
-		LOG.log(Level.INFO, "Found a Crash!");
-		crash = true;
-		break;
-	    case "TIMEOUT":
-		LOG.log(Level.INFO, "Found a Timeout!");
-		timeout = true;
-		break;
-	}
-	BranchTrace t = getBranchTrace(branchTrace);
+            Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+                    .getFilename());
 
-	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-		.getFilename());
-
-	return result;
+            return result;
+        }
+        else
+        {
+            LOG.log(Level.FINE,"Failed to collect instrumentation output");
+            return new Result(crash, timeout,startTime,startTime,new BranchTrace(),vector, LogFileIDManager.getInstance().getFilename());
+        }
     }
 
-    private String tail(File file) {
-	RandomAccessFile fileHandler = null;
-	try {
-	    fileHandler = new RandomAccessFile(file, "r");
-	    long fileLength = fileHandler.length() - 1;
-	    StringBuilder sb = new StringBuilder();
+    private String tail(File file)
+    {
+        RandomAccessFile fileHandler = null;
+        try
+        {
+            fileHandler = new RandomAccessFile(file, "r");
+            long fileLength = fileHandler.length() - 1;
+            StringBuilder sb = new StringBuilder();
 
-	    for (long filePointer = fileLength; filePointer != -1; filePointer--) {
-		fileHandler.seek(filePointer);
-		int readByte = fileHandler.readByte();
+            for (long filePointer = fileLength; filePointer != -1; filePointer--)
+            {
+                fileHandler.seek(filePointer);
+                int readByte = fileHandler.readByte();
 
-		if (readByte == 0xA) {
-		    if (filePointer == fileLength) {
-			continue;
-		    }
-		    break;
+                if (readByte == 0xA)
+                {
+                    if (filePointer == fileLength)
+                    {
+                        continue;
+                    }
+                    break;
 
-		} else if (readByte == 0xD) {
-		    if (filePointer == fileLength - 1) {
-			continue;
-		    }
-		    break;
-		}
+                }
+                else if (readByte == 0xD)
+                {
+                    if (filePointer == fileLength - 1)
+                    {
+                        continue;
+                    }
+                    break;
+                }
 
-		sb.append((char) readByte);
-	    }
+                sb.append((char) readByte);
+            }
 
-	    String lastLine = sb.reverse().toString();
-	    return lastLine;
-	} catch (java.io.FileNotFoundException e) {
-	    e.printStackTrace();
-	    return null;
-	} catch (java.io.IOException e) {
-	    e.printStackTrace();
-	    return null;
-	} finally {
-	    if (fileHandler != null) {
-		try {
-		    fileHandler.close();
-		} catch (IOException e) {
-		    /* ignore */
-		}
-	    }
-	}
+            String lastLine = sb.reverse().toString();
+            return lastLine;
+        }
+        catch (java.io.FileNotFoundException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        catch (java.io.IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        finally
+        {
+            if (fileHandler != null)
+            {
+                try
+                {
+                    fileHandler.close();
+                }
+                catch (IOException e)
+                {
+                    /* ignore */
+                }
+            }
+        }
     }
 
-    private static BranchTrace getBranchTrace(File f) {
-	BufferedReader br = null;
-	Set<Long> verticesSet = new HashSet<>();
-	Map<Edge, Edge> edgeMap = new HashMap<>();
-	try {
-	    br = new BufferedReader(new FileReader(f));
-	    long previousNumber = Long.MIN_VALUE;
-	    String line = null;
-	    while ((line = br.readLine()) != null) {
-		// Check if the Line can be parsed
-		long parsedNumber;
-		try {
-		    parsedNumber = Long.parseLong(line, 16);
-		    verticesSet.add(parsedNumber);
-		} catch (NumberFormatException e) {
-		    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
-		}
-		if (previousNumber != Long.MIN_VALUE) {
-		    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
-		    if (e == null) {
-			e = new Edge(previousNumber, parsedNumber);
-			edgeMap.put(e, e);
-		    }
-		    e.addCounter(1l);
+    private static BranchTrace getBranchTrace(File f)
+    {
+        BufferedReader br = null;
+        Set<Long> verticesSet = new HashSet<>();
+        Map<Edge, Edge> edgeMap = new HashMap<>();
+        try
+        {
+            br = new BufferedReader(new FileReader(f));
+            long previousNumber = Long.MIN_VALUE;
+            String line = null;
+            while ((line = br.readLine()) != null)
+            {
+                // Check if the Line can be parsed
+                long parsedNumber;
+                try
+                {
+                    parsedNumber = Long.parseLong(line, 16);
+                    verticesSet.add(parsedNumber);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
+                }
+                if (previousNumber != Long.MIN_VALUE)
+                {
+                    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
+                    if (e == null)
+                    {
+                        e = new Edge(previousNumber, parsedNumber);
+                        edgeMap.put(e, e);
+                    }
+                    e.addCounter(1l);
 
-		}
-		previousNumber = parsedNumber;
-	    }
-	    return new BranchTrace(verticesSet, edgeMap);
-	} catch (IOException ex) {
-	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
-		    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
-	} finally {
-	    try {
-		if (br != null) {
-		    br.close();
-		}
-	    } catch (IOException ex) {
-		Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
-	return new BranchTrace();
+                }
+                previousNumber = parsedNumber;
+            }
+            return new BranchTrace(verticesSet, edgeMap);
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
+                    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
+        }
+        finally
+        {
+            try
+            {
+                if (br != null)
+                {
+                    br.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return new BranchTrace();
     }
 
 }
