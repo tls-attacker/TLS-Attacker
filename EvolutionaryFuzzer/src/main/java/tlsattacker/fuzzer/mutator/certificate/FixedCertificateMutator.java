@@ -66,12 +66,12 @@ import tlsattacker.fuzzer.testvector.TestVector;
 public class FixedCertificateMutator extends CertificateMutator {
     private FixedCertificateMutatorConfig config;
     private List<ClientCertificateStructure> clientCertList;
-    private List<ServerCertificateStructure> serverPairList;
+    private List<ServerCertificateStructure> serverCertList;
     private Random r;
+    private final String configFileName = "fixed_cert.config";
 
     public FixedCertificateMutator() {
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
-	String configFileName = "fixed_cert.config";
 	File f = new File(evoConfig.getCertificateMutatorConfigFolder() + configFileName);
 	if (f.exists()) {
 	    config = JAXB.unmarshal(f, FixedCertificateMutatorConfig.class);
@@ -83,8 +83,8 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    serialize(f);
 	}
 	this.clientCertList = config.getClientCertificates();
-	this.serverPairList = config.getServerCertificates();
-	if (clientCertList.isEmpty() || serverPairList.isEmpty()) {
+	this.serverCertList = config.getServerCertificates();
+	if (clientCertList.isEmpty() || serverCertList.isEmpty()) {
 	    LOG.log(Level.INFO,
 		    "The CertificateMutator is not properly configured. Make sure that the FixedCertificateMutator knows atleast one Client and one Server CertificatePair");
 	    throw new ConfigurationException("CertificateMutator has not enough Certificates");
@@ -98,31 +98,43 @@ public class FixedCertificateMutator extends CertificateMutator {
 
     public void selfTest() {
 	LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
-	testClientCerts();
-        testServerCerts();
-	
+	clientCertList = testClientCerts();
+	serverCertList = testServerCerts();
+	if (config.isAutofix()) {
+	    config.setClientCertificates(clientCertList);
+	    config.setServerCertificates(serverCertList);
+	    File f = new File(ConfigManager.getInstance().getConfig().getCertificateMutatorConfigFolder()
+		    + configFileName);
+	    if (f.exists()) {
+		f.delete();
+            }
+            serialize(f);
+	}
+
 	LOG.log(Level.INFO, "Finished SelfTest");
     }
-    private void testClientCerts()
-    {
-        LOG.log(Level.INFO, "Testing Client Certificates");
-        for (ClientCertificateStructure clientCert : clientCertList) {
+
+    private List<ClientCertificateStructure> testClientCerts() {
+	List<ClientCertificateStructure> workingCerts = new LinkedList<>();
+	LOG.log(Level.INFO, "Testing Client Certificates");
+	for (ClientCertificateStructure clientCert : clientCertList) {
 	    if (!clientCert.getJKSfile().exists()) {
 		LOG.log(Level.INFO, "Could not find:" + clientCert.getJKSfile().getAbsolutePath());
-	    }
-            else
-            {
-              	LOG.log(Level.INFO, "" + clientCert.getJKSfile().getAbsolutePath() + " - OK");
+	    } else {
+		LOG.log(Level.INFO, "" + clientCert.getJKSfile().getAbsolutePath() + " - OK");
+		workingCerts.add(clientCert);
 	    }
 	}
-        LOG.log(Level.INFO, "Testing Client Certificates finished");
+	LOG.log(Level.INFO, "Testing Client Certificates finished");
+	return workingCerts;
     }
-    private void testServerCerts()
-    {
-        ConfigHandlerFactory.createConfigHandler("client").initialize(new GeneralConfig());
-        
-        LOG.log(Level.INFO, "Testing Server Certificates");
-	for (ServerCertificateStructure serverStructure : serverPairList) {
+
+    private List<ServerCertificateStructure> testServerCerts() {
+	List<ServerCertificateStructure> workingCerts = new LinkedList<>();
+	ConfigHandlerFactory.createConfigHandler("client").initialize(new GeneralConfig());
+
+	LOG.log(Level.INFO, "Testing Server Certificates");
+	for (ServerCertificateStructure serverStructure : serverCertList) {
 	    if (!serverStructure.getCertificateFile().exists()) {
 		LOG.log(Level.INFO, "Could not find:" + serverStructure.getCertificateFile().getAbsolutePath());
 		continue;
@@ -139,40 +151,38 @@ public class FixedCertificateMutator extends CertificateMutator {
 		    if (!server.serverIsRunning()) {
 			LOG.log(Level.INFO, "Could not start Server with:"
 				+ serverStructure.getCertificateFile().getAbsolutePath());
-                        continue;
+			continue;
 		    }
 		} catch (Exception E) {
 		    LOG.log(Level.INFO, "Could not start Server with:"
 			    + serverStructure.getCertificateFile().getAbsolutePath());
-                    continue;
-                }
+		    continue;
+		}
 	    } catch (Exception E) {
 		LOG.log(Level.INFO, "Could not start Server with:"
 			+ serverStructure.getCertificateFile().getAbsolutePath());
-                continue;
-            } finally {
+		continue;
+	    } finally {
 		if (server != null) {
 		    server.release();
 		}
 	    }
-            CertificateFactory certFactory;
-            try
-            {
-                certFactory = CertificateFactory.getInstance("X.509");
-                Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
+	    CertificateFactory certFactory;
+	    try {
+		certFactory = CertificateFactory.getInstance("X.509");
+		Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
 			.generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
-                LOG.log(Level.INFO, serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
-            }
-            catch (CertificateException | FileNotFoundException ex)
-            {
-                LOG.info("Certificate not supported by TLS-Attacker:"+serverStructure.getCertificateFile().getAbsolutePath());
-                continue;
-            }
-		
+		workingCerts.add(serverStructure);
+		LOG.log(Level.INFO, serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
+	    } catch (CertificateException | FileNotFoundException ex) {
+		LOG.info("Certificate not supported by TLS-Attacker:"
+			+ serverStructure.getCertificateFile().getAbsolutePath());
+		continue;
+	    }
 
 	}
-        LOG.log(Level.INFO, "Testing Server Certificates finished");
-	    
+	LOG.log(Level.INFO, "Testing Server Certificates finished");
+	return workingCerts;
     }
 
     public List<ClientCertificateStructure> getClientCertList() {
@@ -180,7 +190,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     public List<ServerCertificateStructure> getServerPairList() {
-	return serverPairList;
+	return serverCertList;
     }
 
     @Override
@@ -190,7 +200,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 
     @Override
     public ServerCertificateStructure getServerCertificateStructure() {
-	return serverPairList.get(r.nextInt(serverPairList.size()));
+	return serverCertList.get(r.nextInt(serverCertList.size()));
     }
 
     public void serialize(File file) {

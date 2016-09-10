@@ -13,6 +13,7 @@ import tlsattacker.fuzzer.config.ConfigManager;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -21,8 +22,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class FixedCertificateMutatorConfig implements Serializable {
-    private ArrayList<ClientCertificateStructure> clientCertificates;
-    private ArrayList<ServerCertificateStructure> serverCertificates;
+    // Fixes the configuration File after a selftest and serializes it
+    private boolean autofix = true;
+    private List<ClientCertificateStructure> clientCertificates;
+    private List<ServerCertificateStructure> serverCertificates;
 
     public FixedCertificateMutatorConfig() {
 	clientCertificates = new ArrayList<>();
@@ -68,19 +71,27 @@ public class FixedCertificateMutatorConfig implements Serializable {
 	}
     }
 
-    public ArrayList<ClientCertificateStructure> getClientCertificates() {
+    public boolean isAutofix() {
+	return autofix;
+    }
+
+    public void setAutofix(boolean autofix) {
+	this.autofix = autofix;
+    }
+
+    public List<ClientCertificateStructure> getClientCertificates() {
 	return clientCertificates;
     }
 
-    public void setClientCertificates(ArrayList<ClientCertificateStructure> clientCertificates) {
+    public void setClientCertificates(List<ClientCertificateStructure> clientCertificates) {
 	this.clientCertificates = clientCertificates;
     }
 
-    public ArrayList<ServerCertificateStructure> getServerCertificates() {
+    public List<ServerCertificateStructure> getServerCertificates() {
 	return serverCertificates;
     }
 
-    public void setServerCertificates(ArrayList<ServerCertificateStructure> serverCertificates) {
+    public void setServerCertificates(List<ServerCertificateStructure> serverCertificates) {
 	this.serverCertificates = serverCertificates;
     }
 
