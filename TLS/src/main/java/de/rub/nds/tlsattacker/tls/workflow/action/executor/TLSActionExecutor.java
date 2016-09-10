@@ -267,22 +267,21 @@ public class TLSActionExecutor extends ActionExecutor {
 	} else if (protocolMessage != null && protocolMessageHandler.isCorrectProtocolMessage(protocolMessage)) {
 	    protocolMessageHandler.setProtocolMessage(protocolMessage);
 	} else {
-	    if (protocolMessage == null || protocolMessage.isRequired()) {
-		// TODO Throw an exception if we are not in fuzzing mode?
-		// the configured message is not the same as
-		// the message being parsed, we clean the
-		// next protocol messages
-		LOG.log(Level.FINE, "The configured protocol message is not equal to "
+            if(protocolMessage != null && protocolMessage.isRequired())
+            {
+                LOG.log(Level.FINE, "The configured protocol message is not equal to "
 			+ "the message being parsed or the message was not found.");
-		protocolMessageHandler.initializeProtocolMessage();
-		protocolMessage = protocolMessageHandler.getProtocolMessage();
-		identifiedMessages.add(protocolMessage);
-	    } else {
-		pointer++;
-		identifiedMessages.addAll(identifyCorrectProtocolMessage(protocolMessages, protocolMessageHandler,
-			context));
-
-	    }
+		if(!context.isFuzzingMode()){
+                    workflowContext.setProceedWorkflow(false);
+                }
+            }
+	    protocolMessageHandler.initializeProtocolMessage();
+            protocolMessage = protocolMessageHandler.getProtocolMessage();
+            identifiedMessages.add(protocolMessage);
+            
+		//pointer++;
+		//identifiedMessages.addAll(identifyCorrectProtocolMessage(protocolMessages, protocolMessageHandler,
+		//	context));
 	}
 	return identifiedMessages;
     }
