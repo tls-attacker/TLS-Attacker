@@ -187,7 +187,7 @@ public class ExecutorThreadPool implements Runnable {
 			}
 		    }
 		} catch (Throwable ex) {
-		    ex.printStackTrace();
+                    LOG.log(Level.WARNING, "Exception encountered with TestVector",ex);
 		    if (server != null) {
 			server.release();
 		    }
@@ -216,7 +216,7 @@ public class ExecutorThreadPool implements Runnable {
 			}
 		    }
 		} catch (Throwable ex) {
-		    ex.printStackTrace();
+		    LOG.log(Level.WARNING, "Exception encountered with TestVector",ex);
 		    if (server != null) {
 			server.release();
 		    }
