@@ -174,7 +174,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 			.generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
 		workingCerts.add(serverStructure);
 		LOG.log(Level.INFO, serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
-	    } catch (CertificateException | FileNotFoundException ex) {
+	    } catch (Exception ex) {
 		LOG.info("Certificate not supported by TLS-Attacker:"
 			+ serverStructure.getCertificateFile().getAbsolutePath());
 		continue;
