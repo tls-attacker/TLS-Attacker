@@ -30,6 +30,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getCertificateMutatorConfigFolder() {
 	return configFolder + "mutator/certificate/";
     }
+
     public boolean isUseKill() {
 	return useKill;
     }
@@ -37,6 +38,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public void setUseKill(boolean useKill) {
 	this.useKill = useKill;
     }
+
     public String getConfigFolder() {
 	return configFolder;
     }

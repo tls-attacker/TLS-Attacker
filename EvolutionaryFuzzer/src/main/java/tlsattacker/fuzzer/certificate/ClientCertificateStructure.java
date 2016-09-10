@@ -57,40 +57,33 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        hash = 61 * hash + Objects.hashCode(this.password);
-        hash = 61 * hash + Objects.hashCode(this.alias);
-        hash = 61 * hash + Objects.hashCode(this.JKSfile);
-        return hash;
+    public int hashCode() {
+	int hash = 7;
+	hash = 61 * hash + Objects.hashCode(this.password);
+	hash = 61 * hash + Objects.hashCode(this.alias);
+	hash = 61 * hash + Objects.hashCode(this.JKSfile);
+	return hash;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == null)
-        {
-            return false;
-        }
-        if (getClass() != obj.getClass())
-        {
-            return false;
-        }
-        final ClientCertificateStructure other = (ClientCertificateStructure) obj;
-        if (!Objects.equals(this.password, other.password))
-        {
-            return false;
-        }
-        if (!Objects.equals(this.alias, other.alias))
-        {
-            return false;
-        }
-        if (!Objects.equals(this.JKSfile, other.JKSfile))
-        {
-            return false;
-        }
-        return true;
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final ClientCertificateStructure other = (ClientCertificateStructure) obj;
+	if (!Objects.equals(this.password, other.password)) {
+	    return false;
+	}
+	if (!Objects.equals(this.alias, other.alias)) {
+	    return false;
+	}
+	if (!Objects.equals(this.JKSfile, other.JKSfile)) {
+	    return false;
+	}
+	return true;
     }
 
 }

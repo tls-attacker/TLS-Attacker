@@ -48,7 +48,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean injectPinChild = true;
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
     private boolean certMutatorSelftest = false;
-    
+
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
