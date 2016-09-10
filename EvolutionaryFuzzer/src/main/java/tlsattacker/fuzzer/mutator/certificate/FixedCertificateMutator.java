@@ -9,6 +9,8 @@ package tlsattacker.fuzzer.mutator.certificate;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.eap.ClientHello;
+import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
+import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import tlsattacker.fuzzer.analyzer.Rule;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
@@ -27,13 +29,18 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +50,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import tlsattacker.fuzzer.agents.AgentFactory;
 import tlsattacker.fuzzer.agents.BlindAgent;
@@ -90,11 +98,30 @@ public class FixedCertificateMutator extends CertificateMutator {
 
     public void selfTest() {
 	LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
-	for (ClientCertificateStructure clientCert : clientCertList) {
+	testClientCerts();
+        testServerCerts();
+	
+	LOG.log(Level.INFO, "Finished SelfTest");
+    }
+    private void testClientCerts()
+    {
+        LOG.log(Level.INFO, "Testing Client Certificates");
+        for (ClientCertificateStructure clientCert : clientCertList) {
 	    if (!clientCert.getJKSfile().exists()) {
 		LOG.log(Level.INFO, "Could not find:" + clientCert.getJKSfile().getAbsolutePath());
 	    }
+            else
+            {
+              	LOG.log(Level.INFO, "" + clientCert.getJKSfile().getAbsolutePath() + " - OK");
+	    }
 	}
+        LOG.log(Level.INFO, "Testing Client Certificates finished");
+    }
+    private void testServerCerts()
+    {
+        ConfigHandlerFactory.createConfigHandler("client").initialize(new GeneralConfig());
+        
+        LOG.log(Level.INFO, "Testing Server Certificates");
 	for (ServerCertificateStructure serverStructure : serverPairList) {
 	    if (!serverStructure.getCertificateFile().exists()) {
 		LOG.log(Level.INFO, "Could not find:" + serverStructure.getCertificateFile().getAbsolutePath());
@@ -109,28 +136,43 @@ public class FixedCertificateMutator extends CertificateMutator {
 		server = ServerManager.getInstance().getFreeServer();
 		try {
 		    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
-		    if (server.serverIsRunning()) {
-			LOG.log(Level.INFO, "" + serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
-		    } else {
+		    if (!server.serverIsRunning()) {
 			LOG.log(Level.INFO, "Could not start Server with:"
 				+ serverStructure.getCertificateFile().getAbsolutePath());
+                        continue;
 		    }
 		} catch (Exception E) {
 		    LOG.log(Level.INFO, "Could not start Server with:"
 			    + serverStructure.getCertificateFile().getAbsolutePath());
-		}
+                    continue;
+                }
 	    } catch (Exception E) {
 		LOG.log(Level.INFO, "Could not start Server with:"
 			+ serverStructure.getCertificateFile().getAbsolutePath());
-	    } finally {
+                continue;
+            } finally {
 		if (server != null) {
 		    server.release();
 		}
 	    }
+            CertificateFactory certFactory;
+            try
+            {
+                certFactory = CertificateFactory.getInstance("X.509");
+                Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
+			.generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
+                LOG.log(Level.INFO, serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
+            }
+            catch (CertificateException | FileNotFoundException ex)
+            {
+                LOG.info("Certificate not supported by TLS-Attacker:"+serverStructure.getCertificateFile().getAbsolutePath());
+                continue;
+            }
+		
 
 	}
-	LOG.log(Level.INFO, "Finished SelfTest");
-
+        LOG.log(Level.INFO, "Testing Server Certificates finished");
+	    
     }
 
     public List<ClientCertificateStructure> getClientCertList() {
