@@ -7,57 +7,28 @@
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
-import de.rub.nds.tlsattacker.eap.ClientHello;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import tlsattacker.fuzzer.analyzer.Rule;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.analyzer.RuleConfig;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.mutator.certificate.FixedCertificateMutatorConfig;
-import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.provider.X509CertificateObject;
-import tlsattacker.fuzzer.agents.AgentFactory;
-import tlsattacker.fuzzer.agents.BlindAgent;
-import tlsattacker.fuzzer.executor.TLSExecutor;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
-import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
  * 
@@ -107,8 +78,8 @@ public class FixedCertificateMutator extends CertificateMutator {
 		    + configFileName);
 	    if (f.exists()) {
 		f.delete();
-            }
-            serialize(f);
+	    }
+	    serialize(f);
 	}
 
 	LOG.log(Level.INFO, "Finished SelfTest");
