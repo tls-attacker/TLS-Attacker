@@ -179,21 +179,36 @@ public class TlsRecordBlockCipher extends TlsRecordCipher {
 	    decryptIv = new IvParameterSpec(serverWriteIv);
 	    encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
 	    decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
-	    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
-	    decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);
-	    readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
-	    writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
-	} else {
+            try
+            {
+                encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
+                decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);
+                readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
+                writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
+            }
+            catch(Exception E)
+            {
+                throw new UnsupportedOperationException(E);
+            }
+        } else {
 	    decryptIv = new IvParameterSpec(clientWriteIv);
 	    encryptIv = new IvParameterSpec(serverWriteIv);
 	    // todo check if this correct???
-	    encryptCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
+	    try
+            {
+                encryptCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
 		    encryptIv);
-	    decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()),
+                decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()),
 		    decryptIv);
-	    readMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
-	    writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
-	}
+            
+                readMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
+                writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
+            }
+            catch(Exception E)
+            {
+                throw new UnsupportedOperationException(E);
+            }
+        }
 
 	if (offset != keyBlock.length) {
 	    throw new CryptoException("Offset exceeded the generated key block length");
