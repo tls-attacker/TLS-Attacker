@@ -204,7 +204,7 @@ public class TLSActionExecutor extends ActionExecutor {
 	    List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType, TlsContext context) {
 	int dataPointer = 0;
 	List<ProtocolMessage> receivedMessages = new LinkedList<>();
-	while (dataPointer <= rawProtocolMessageBytes.length) {
+	while (dataPointer < rawProtocolMessageBytes.length) {
 	    ProtocolMessageHandler pmh = null;
             pmh = protocolMessageType.getProtocolMessageHandler(rawProtocolMessageBytes[dataPointer], context);
             if (Arrays.equals(rawProtocolMessageBytes,
