@@ -185,5 +185,18 @@ public class FixedCertificateMutator extends CertificateMutator {
 	JAXB.marshal(config, file);
     }
 
+    @Override
+    public boolean isSupported(ServerCertificateStructure structure)
+    {
+        if(serverCertList.contains(structure))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
 }
