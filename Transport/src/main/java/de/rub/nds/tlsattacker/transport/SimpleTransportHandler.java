@@ -57,18 +57,18 @@ public class SimpleTransportHandler extends TransportHandler {
 	} else {
 	    socket = new Socket(address, port);
 	}
-
+        
 	OutputStream os = socket.getOutputStream();
 	bos = new BufferedOutputStream(os);
-
+        
 	InputStream is = socket.getInputStream();
 	bis = new BufferedInputStream(is);
     }
 
     @Override
     public void sendData(byte[] data) throws IOException {
-	bos.write(data);
 	try {
+            bos.write(data);
 	    bos.flush();
 	} catch (SocketException ex) {
 	    // While connecting to a Java server, a "Connection reset" failure
