@@ -45,6 +45,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import tlsattacker.fuzzer.result.ResultContainer;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
@@ -108,6 +109,10 @@ public class ExecutorThreadPool implements Runnable {
 	for (TestVector vector : list) {
 	    vector.getTrace().makeGeneric();
 	}
+        if(config.getAgent().equals("BLIND"))//TODO unlucky
+        {
+            ResultContainer.getInstance().getGoodVectors().addAll(list);
+        }
     }
 
     private List<TestVector> generateSeed() {
