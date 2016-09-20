@@ -109,10 +109,10 @@ public class ExecutorThreadPool implements Runnable {
 	for (TestVector vector : list) {
 	    vector.getTrace().makeGeneric();
 	}
-        if(config.getAgent().equals("BLIND"))//TODO unlucky
-        {
-            ResultContainer.getInstance().getGoodVectors().addAll(list);
-        }
+	if (config.getAgent().equals("BLIND"))// TODO unlucky
+	{
+	    ResultContainer.getInstance().getGoodVectors().addAll(list);
+	}
     }
 
     private List<TestVector> generateSeed() {

@@ -38,7 +38,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
+import tlsattacker.fuzzer.config.TestCrashesConfig;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
+import tlsattacker.fuzzer.result.Result;
 import weka.core.Utils;
 
 /**
@@ -62,6 +64,7 @@ public class Main {
 	TraceTypesConfig traceTypesConfig = new TraceTypesConfig();
 	ExecuteFaultyConfig faultyConfig = new ExecuteFaultyConfig();
 	CalibrationConfig calibrationConfig = new CalibrationConfig();
+	TestCrashesConfig testCrashedConfig = new TestCrashesConfig();
 	JCommander jc = new JCommander(generalConfig);
 	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
 	jc.addCommand("tracetypes", traceTypesConfig);
@@ -69,6 +72,7 @@ public class Main {
 	jc.addCommand("new-server", serverConfig);
 	jc.addCommand("calibrate", calibrationConfig);
 	jc.addCommand("test-certificates", evoConfig);
+	jc.addCommand("test-crashes", testCrashedConfig);
 	try {
 	    jc.parse(args);
 	    if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
@@ -116,7 +120,7 @@ public class Main {
 		break;
 	    case "execute-faulty":
 		ServerManager manager = ServerManager.getInstance();
-		manager.init(evoConfig);
+		manager.init(faultyConfig);
 		f = new File(evoConfig.getOutputFaultyFolder());
 		List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 		for (TestVector vector : vectors) {
@@ -148,6 +152,23 @@ public class Main {
 		ServerManager.getInstance().init(calibrationConfig);
 		FixedCertificateMutator mutator = new FixedCertificateMutator();
 		mutator.selfTest();
+		break;
+	    case "test-crashes":
+		ConfigManager.getInstance().setConfig(testCrashedConfig);
+		manager = ServerManager.getInstance();
+		manager.init(testCrashedConfig);
+		f = new File(testCrashedConfig.getCrashFolder());
+		vectors = TestVectorSerializer.readFolder(f);
+		for (TestVector vector : vectors) {
+		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
+		    for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
+			Result r = DebugExecutor.execute(vector, evoConfig);
+			if (r != null && r.hasCrashed()) {
+			    LOG.log(Level.INFO, "Confirmed");
+			    continue;
+			}
+		    }
+		}
 		break;
 	    default:
 		jc.usage();
