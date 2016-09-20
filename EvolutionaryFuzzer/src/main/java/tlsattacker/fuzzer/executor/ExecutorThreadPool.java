@@ -70,7 +70,7 @@ public class ExecutorThreadPool implements Runnable {
     private long runs = 0;
     // List of Workflowtraces that should be executed before we start generating
     // new Workflows
-    private final List<TestVector> list;
+    private List<TestVector> list;
     // The Config the ExecutorThreadPool uses
     private final EvolutionaryFuzzerConfig config;
 
@@ -103,6 +103,19 @@ public class ExecutorThreadPool implements Runnable {
 	    LOG.log(Level.INFO, "Creating Fuzzer Seed:");
 	    list.addAll(generateSeed());
 	}
+        else
+        {
+            List<TestVector> newList = new LinkedList<>();
+            //Fix certificates if not compatible with the Server
+            for(TestVector vector : list)
+            {
+                if(mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
+                {
+                    newList.add(vector);
+                }
+            }
+            list = newList;
+        }
 	// We need to fix Server responses before we can use the workflowtraces
 	// for mutation
 	LOG.log(Level.INFO, "Preparing Vectors:{0}", list.size());
