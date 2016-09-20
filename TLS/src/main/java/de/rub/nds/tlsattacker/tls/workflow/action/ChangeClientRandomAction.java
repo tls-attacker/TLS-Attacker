@@ -26,6 +26,9 @@ public class ChangeClientRandomAction extends TLSAction {
 	this.newValue = newValue;
     }
 
+    public ChangeClientRandomAction() {
+    }
+
     public void setNewValue(byte[] newValue) {
 	this.newValue = newValue;
     }
