@@ -204,15 +204,10 @@ public class TLSActionExecutor extends ActionExecutor {
 	    List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType, TlsContext context) {
 	int dataPointer = 0;
 	List<ProtocolMessage> receivedMessages = new LinkedList<>();
-	while (dataPointer != rawProtocolMessageBytes.length) {
+	while (dataPointer <= rawProtocolMessageBytes.length) {
 	    ProtocolMessageHandler pmh = null;
-	    try {
-		pmh = protocolMessageType.getProtocolMessageHandler(rawProtocolMessageBytes[dataPointer], context);
-	    } catch (IndexOutOfBoundsException E) {
-		// TODO
-		E.printStackTrace();
-	    }
-	    if (Arrays.equals(rawProtocolMessageBytes,
+            pmh = protocolMessageType.getProtocolMessageHandler(rawProtocolMessageBytes[dataPointer], context);
+            if (Arrays.equals(rawProtocolMessageBytes,
 		    new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
 		context.setRenegotiation(true);
 	    } else {
