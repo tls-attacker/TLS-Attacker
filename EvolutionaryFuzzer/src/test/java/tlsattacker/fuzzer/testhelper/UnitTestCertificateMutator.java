@@ -64,4 +64,18 @@ public class UnitTestCertificateMutator extends CertificateMutator {
 	return serverPairList.get(r.nextInt(serverPairList.size()));
     }
 
+    @Override
+    public boolean isSupported(ServerCertificateStructure structure)
+    {
+        if(serverPairList.contains(structure))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+
 }
