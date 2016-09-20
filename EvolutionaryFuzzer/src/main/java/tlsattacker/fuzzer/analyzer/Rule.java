@@ -61,15 +61,15 @@ public abstract class Rule {
     }
 
     protected void prepareConfigOutputFolder() {
-	File f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
+	ruleFolder = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	if (evoConfig.isCleanStart()) {
-	    if (f.exists()) {
-		for (File tempFile : f.listFiles()) {
+	    if (ruleFolder.exists()) {
+		for (File tempFile : ruleFolder.listFiles()) {
 		    tempFile.delete();
 		}
 	    }
 	}
-	f.mkdirs();
+	ruleFolder.mkdirs();
     }
 
     private static final Logger LOG = Logger.getLogger(Rule.class.getName());

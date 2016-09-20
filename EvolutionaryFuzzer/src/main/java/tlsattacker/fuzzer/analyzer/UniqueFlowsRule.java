@@ -18,11 +18,14 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
+import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
  * 
@@ -47,6 +50,12 @@ public class UniqueFlowsRule extends Rule {
 	}
 	typeSet = new HashSet<>();
 	prepareConfigOutputFolder();
+        List<TestVector> oldTestVectors = TestVectorSerializer.readFolder(getRuleFolder());
+        for(TestVector vector : oldTestVectors)
+        {
+            typeSet.add(WorkflowTraceTypeManager.generateWorkflowTraceType(vector.getTrace(),ConnectionEnd.CLIENT));
+        }
+        
     }
 
     @Override
