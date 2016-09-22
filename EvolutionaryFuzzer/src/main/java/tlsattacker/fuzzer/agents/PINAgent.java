@@ -93,8 +93,12 @@ public class PINAgent extends Agent {
 
 	    String line = br.readLine();
 
-	    if (line != null && line.startsWith("S")) {
+	    if (line != null
+		    && (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
+			    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
+				.contains("SIGALRM"))) {
 		crash = true;
+		LOG.log(Level.INFO, "Found a crash:" + line);
 		// Skip 2 lines
 		line = br.readLine();
 		line = br.readLine();
@@ -120,26 +124,33 @@ public class PINAgent extends Agent {
 	    Map<Edge, Edge> edgeMap = new HashMap<>();
 	    String line;
 	    while ((line = br.readLine()) != null) {
-		String[] split = line.split("\\s+");
-		// TODO nur notlösung
-		long src;
-		if (split[0].equals("0xffffffffffffffff")) {
-		    src = Long.MAX_VALUE;
-		} else {
-		    src = Long.parseLong(split[0].substring(2), 16);
+		try {
+		    if (line.equals("")) {
+			continue;
+		    }
+		    String[] split = line.split("\\s+");
+		    // TODO nur notlösung
+		    long src;
+		    if (split[0].equals("0xffffffffffffffff")) {
+			src = Long.MAX_VALUE;
+		    } else {
+			src = Long.parseLong(split[0].substring(2), 16);
+		    }
+		    long dst;
+		    if (split[1].equals("0xffffffffffffffff")) {
+			dst = Long.MAX_VALUE;
+		    } else {
+			dst = Long.parseLong(split[1].substring(2), 16);
+		    }
+		    int count = Integer.parseInt(split[3]);
+		    verticesSet.add(src);
+		    verticesSet.add(dst);
+		    Edge e = new Edge(src, dst);
+		    e.setCounter(count);
+		    edgeMap.put(e, e);
+		} catch (Exception E) {
+		    E.printStackTrace();
 		}
-		long dst;
-		if (split[1].equals("0xffffffffffffffff")) {
-		    dst = Long.MAX_VALUE;
-		} else {
-		    dst = Long.parseLong(split[1].substring(2), 16);
-		}
-		int count = Integer.parseInt(split[3]);
-		verticesSet.add(src);
-		verticesSet.add(dst);
-		Edge e = new Edge(src, dst);
-		e.setCounter(count);
-		edgeMap.put(e, e);
 	    }
 	    return new BranchTrace(verticesSet, edgeMap);
 
