@@ -171,8 +171,12 @@ public class ExecutorThreadPool implements Runnable {
 		TLSServer server = null;
 		try {
 		    if (!stopped) {
-			server = ServerManager.getInstance().getFreeServer();
 			TestVector vector = TestVectorSerializer.read(new FileInputStream(f.listFiles(new GitIgnoreFileFilter())[i]));
+			if(mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
+                        {
+                            continue;
+                        }
+                        server = ServerManager.getInstance().getFreeServer();
 			vector.getTrace().reset();
 			vector.getTrace().makeGeneric();
 
