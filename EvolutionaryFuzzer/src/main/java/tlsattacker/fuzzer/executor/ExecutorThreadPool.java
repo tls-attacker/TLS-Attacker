@@ -172,7 +172,7 @@ public class ExecutorThreadPool implements Runnable {
 		try {
 		    if (!stopped) {
 			TestVector vector = TestVectorSerializer.read(new FileInputStream(f.listFiles(new GitIgnoreFileFilter())[i]));
-			if(mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
+			if(!mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
                         {
                             continue;
                         }
@@ -209,6 +209,10 @@ public class ExecutorThreadPool implements Runnable {
 		    if (!stopped) {
 			server = ServerManager.getInstance().getFreeServer();
 			TestVector vector = mutator.getNewMutation();
+                        if(!mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
+                        {
+                            continue;
+                        }
 			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
 			Runnable worker = new TLSExecutor(vector, server, agent);
 			executor.submit(worker);
