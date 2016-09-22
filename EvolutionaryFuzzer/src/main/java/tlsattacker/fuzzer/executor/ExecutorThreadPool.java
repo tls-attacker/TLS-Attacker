@@ -39,6 +39,7 @@ import de.rub.nds.tlsattacker.tls.workflow.UnsupportedWorkflowConfigurationFacto
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -47,6 +48,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBException;
+import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.ResultContainer;
 
@@ -71,9 +73,6 @@ public class ExecutorThreadPool implements Runnable {
     private boolean stopped = true;
     // Counts the number of executed Tasks for statisticall purposes.
     private long runs = 0;
-    // List of Workflowtraces that should be executed before we start generating
-    // new Workflows
-    private List<TestVector> list;
     // The Config the ExecutorThreadPool uses
     private final EvolutionaryFuzzerConfig config;
 
@@ -97,14 +96,10 @@ public class ExecutorThreadPool implements Runnable {
 	executor = new BlockingThreadPoolExecutor(poolSize, poolSize, config.getTimeout(), TimeUnit.MICROSECONDS,
 		workQueue, threadFactory);
 
-	LOG.log(Level.INFO, "Reading Archive Vectors in:");
-
 	File f = new File(config.getArchiveFolder());
-	list = TestVectorSerializer.readFolder(f);
-	LOG.log(Level.INFO, "Loaded Archive Vectors:{0}", list.size());
-	if (list.isEmpty()) {
+	if (f.listFiles().length == 0) {
 	    LOG.log(Level.INFO, "Creating Fuzzer Seed:");
-	    list.addAll(generateSeed());
+            List<TestVector> list = generateSeed();
 	    for (TestVector vector : list) {
 		try {
 		    TestVectorSerializer.write(new File(config.getArchiveFolder()
@@ -113,21 +108,6 @@ public class ExecutorThreadPool implements Runnable {
 		    LOG.log(Level.SEVERE, "Could not write TestVector to archive Folder!", ex);
 		}
 	    }
-	} else {
-	    List<TestVector> newList = new LinkedList<>();
-	    // Fix certificates if not compatible with the Server
-	    for (TestVector vector : list) {
-		if (mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
-		    newList.add(vector);
-		}
-	    }
-	    list = newList;
-	}
-	// We need to fix Server responses before we can use the workflowtraces
-	// for mutation
-	LOG.log(Level.INFO, "Preparing Vectors:{0}", list.size());
-	for (TestVector vector : list) {
-	    vector.getTrace().makeGeneric();
 	}
 
     }
@@ -185,13 +165,14 @@ public class ExecutorThreadPool implements Runnable {
 	// Dont save old results
 	config.setSerialize(false);
 	if (!config.isNoOld()) {
-	    for (int i = 0; i < list.size(); i++) {
+            File f = new File(config.getArchiveFolder());
+	    for (int i = 0; i < f.listFiles(new GitIgnoreFileFilter()).length; i++) {
 
 		TLSServer server = null;
 		try {
 		    if (!stopped) {
 			server = ServerManager.getInstance().getFreeServer();
-			TestVector vector = list.get(i);
+			TestVector vector = TestVectorSerializer.read(new FileInputStream(f.listFiles(new GitIgnoreFileFilter())[i]));
 			vector.getTrace().reset();
 			vector.getTrace().makeGeneric();
 
