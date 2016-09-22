@@ -25,55 +25,18 @@ public class ResultContainer {
 	return ResultContainerHolder.INSTANCE;
     }
 
-    // List of old Results
-    private ArrayList<TestVector> goodVectors;
-
     private EvolutionaryFuzzerConfig evolutionaryFuzzerConfig;
 
     public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
 	this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
     }
 
-    private int executed = 0;
     private RuleAnalyzer analyzer;
 
     private ResultContainer() {
-
-	goodVectors = new ArrayList<>();
-
 	evolutionaryFuzzerConfig = tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig();
 	analyzer = new RuleAnalyzer(evolutionaryFuzzerConfig);
 
-    }
-
-    /**
-     * Returns a list of WorkflowTraces that found new Branches or Vertices
-     * 
-     * @return ArrayList of good WorkflowTraces
-     */
-    public ArrayList<TestVector> getGoodVectors() {
-	return goodVectors;
-    }
-
-    /**
-     * Merges a Result with the BranchTrace and adds the Result to the
-     * ResultList
-     * 
-     * @param result
-     *            Result to be added in the Container
-     */
-    public void commit(Result result) {
-	executed++;
-	analyzer.analyze(result);
-
-    }
-
-    public int getExecuted() {
-	return executed;
-    }
-
-    public void addGoodVector(TestVector vector) {
-	goodVectors.add(vector);
     }
 
     public RuleAnalyzer getAnalyzer() {
@@ -87,5 +50,9 @@ public class ResultContainer {
 
 	private ResultContainerHolder() {
 	}
+    }
+
+    public void commit(Result r) {
+	analyzer.analyze(r);
     }
 }

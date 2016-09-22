@@ -50,12 +50,11 @@ public class UniqueFlowsRule extends Rule {
 	}
 	typeSet = new HashSet<>();
 	prepareConfigOutputFolder();
-        List<TestVector> oldTestVectors = TestVectorSerializer.readFolder(getRuleFolder());
-        for(TestVector vector : oldTestVectors)
-        {
-            typeSet.add(WorkflowTraceTypeManager.generateWorkflowTraceType(vector.getTrace(),ConnectionEnd.CLIENT));
-        }
-        
+	List<TestVector> oldTestVectors = TestVectorSerializer.readFolder(getRuleFolder());
+	for (TestVector vector : oldTestVectors) {
+	    typeSet.add(WorkflowTraceTypeManager.generateWorkflowTraceType(vector.getTrace(), ConnectionEnd.CLIENT));
+	}
+
     }
 
     @Override

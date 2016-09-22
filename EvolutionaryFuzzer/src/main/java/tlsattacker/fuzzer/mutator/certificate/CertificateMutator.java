@@ -26,7 +26,7 @@ public abstract class CertificateMutator {
     public abstract ServerCertificateStructure getServerCertificateStructure();
 
     public abstract boolean isSupported(ServerCertificateStructure structure);
-    
+
     public void serialize(File file) {
 	if (!file.exists()) {
 	    try {

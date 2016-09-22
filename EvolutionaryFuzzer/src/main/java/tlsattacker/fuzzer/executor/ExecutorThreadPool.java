@@ -39,12 +39,15 @@ import de.rub.nds.tlsattacker.tls.workflow.UnsupportedWorkflowConfigurationFacto
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.xml.bind.JAXBException;
+import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.ResultContainer;
 
 /**
@@ -102,30 +105,31 @@ public class ExecutorThreadPool implements Runnable {
 	if (list.isEmpty()) {
 	    LOG.log(Level.INFO, "Creating Fuzzer Seed:");
 	    list.addAll(generateSeed());
+	    for (TestVector vector : list) {
+		try {
+		    TestVectorSerializer.write(new File(config.getArchiveFolder()
+			    + LogFileIDManager.getInstance().getFilename()), vector);
+		} catch (JAXBException | IOException ex) {
+		    LOG.log(Level.SEVERE, "Could not write TestVector to archive Folder!", ex);
+		}
+	    }
+	} else {
+	    List<TestVector> newList = new LinkedList<>();
+	    // Fix certificates if not compatible with the Server
+	    for (TestVector vector : list) {
+		if (mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
+		    newList.add(vector);
+		}
+	    }
+	    list = newList;
 	}
-        else
-        {
-            List<TestVector> newList = new LinkedList<>();
-            //Fix certificates if not compatible with the Server
-            for(TestVector vector : list)
-            {
-                if(mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
-                {
-                    newList.add(vector);
-                }
-            }
-            list = newList;
-        }
 	// We need to fix Server responses before we can use the workflowtraces
 	// for mutation
 	LOG.log(Level.INFO, "Preparing Vectors:{0}", list.size());
 	for (TestVector vector : list) {
 	    vector.getTrace().makeGeneric();
 	}
-	if (config.getAgent().equals("BLIND"))// TODO unlucky
-	{
-	    ResultContainer.getInstance().getGoodVectors().addAll(list);
-	}
+
     }
 
     private List<TestVector> generateSeed() {

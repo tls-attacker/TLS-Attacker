@@ -267,7 +267,7 @@ public final class TLSServer {
      */
     public void stop() {
 	try {
-            LOG.log(Level.FINE, "Stopping Server");
+	    LOG.log(Level.FINE, "Stopping Server");
 	    if (p != null) {
 		p.destroy();
 		p.waitFor();

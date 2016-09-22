@@ -107,7 +107,6 @@ public class IsGoodRule extends Rule {
 	    }
 	}
 	result.getVector().getTrace().makeGeneric();
-	ResultContainer.getInstance().addGoodVector(result.getVector());
     }
 
     public BranchTrace getBranchTrace() {
