@@ -128,12 +128,21 @@ public class ServerTestSuite extends TestSuite {
     private void startTestFromFiles() {
         File folder = new File(testConfig.getFolder());
         File[] testsuites = folder.listFiles(new DirectoryFilter());
+        if(null == testsuites) {
+            testsuites = new File[0];
+        }
         for (File testsuite : testsuites) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting {} Test Suite", testsuite.getName());
             File[] tests = testsuite.listFiles(new DirectoryFilter());
+            if(null == tests) {
+                tests = new File[0];
+            }
             for (File test : tests) {
                 LOGGER.info("Testing {} (one of these has to be succesful)", test.getName());
                 File[] testCases = test.listFiles(new DirectoryFilter());
+                if(null == testCases) {
+                    testCases = new File[0];
+                }
                 boolean successfulTest = false;
                 for (File testCase : testCases) {
                     LOGGER.info("  Running {}", testCase.getName());
@@ -172,6 +181,10 @@ public class ServerTestSuite extends TestSuite {
                 return name.toLowerCase().endsWith(".xml");
             }
         });
+
+        if(null == xmlFiles) {
+            xmlFiles = new File[0];
+        }
 
         for (File xmlFile : xmlFiles) {
             try {
