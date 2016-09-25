@@ -122,7 +122,7 @@ final public class ByteArrayModificationFactory {
 	return new ByteArrayShuffleModification(shuffle);
     }
 
-    public static List<VariableModification<byte[]>> modificationsFromFile() {
+    public static synchronized List<VariableModification<byte[]>> modificationsFromFile() {
         try {
             if (modificationsFromFile == null) {
                 modificationsFromFile = new LinkedList<>();

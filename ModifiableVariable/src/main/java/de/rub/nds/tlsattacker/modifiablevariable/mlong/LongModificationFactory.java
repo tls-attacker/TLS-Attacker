@@ -73,7 +73,7 @@ final public class LongModificationFactory {
         return modifications.get(pos);
     }
 
-    public static List<VariableModification<Long>> modificationsFromFile() {
+    public static synchronized List<VariableModification<Long>> modificationsFromFile() {
         try {
             if (modificationsFromFile == null) {
                 modificationsFromFile = new LinkedList<>();
