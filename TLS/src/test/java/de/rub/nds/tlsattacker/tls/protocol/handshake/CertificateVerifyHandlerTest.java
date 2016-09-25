@@ -31,13 +31,13 @@ import static org.junit.Assert.*;
  */
 public class CertificateVerifyHandlerTest {
 
-    CertificateVerifyHandler handler;
+    CertificateVerifyHandler<CertificateVerifyMessage> handler;
 
     TlsContext tlsContext;
 
     public CertificateVerifyHandlerTest() {
 	tlsContext = new TlsContext();
-	handler = new CertificateVerifyHandler(tlsContext);
+	handler = new CertificateVerifyHandler<>(tlsContext);
     }
 
     /**

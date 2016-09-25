@@ -29,10 +29,10 @@ import static org.junit.Assert.*;
  */
 public class CertificateRequestHandlerTest {
 
-    private CertificateRequestHandler handler;
+    private CertificateRequestHandler<CertificateRequestMessage> handler;
 
     public CertificateRequestHandlerTest() {
-	handler = new CertificateRequestHandler(new TlsContext());
+	handler = new CertificateRequestHandler<>(new TlsContext());
     }
 
     /**

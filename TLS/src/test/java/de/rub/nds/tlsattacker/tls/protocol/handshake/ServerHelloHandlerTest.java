@@ -154,12 +154,12 @@ public class ServerHelloHandlerTest {
 
 	EllipticCurvesExtensionMessage ecc;
 	ecc = new EllipticCurvesExtensionMessage();
-	List<NamedCurve> curve = new ArrayList();
+	List<NamedCurve> curve = new ArrayList<>();
 	curve.add(NamedCurve.SECP160K1);
 	curve.add(NamedCurve.SECT163K1);
 	ecc.setSupportedCurvesConfig(curve);
 
-	List<ExtensionMessage> extensions = new ArrayList();
+	List<ExtensionMessage> extensions = new ArrayList<>();
 	extensions.add(heart);
 	extensions.add(ecc);
 	message.setExtensions(extensions);

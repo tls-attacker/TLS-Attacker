@@ -64,7 +64,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
 	LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
 
-	LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet();
+	LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
 	for (int i = 0; i < lastMessages.size(); i++) {
 	    ProtocolMessage pm = lastMessages.get(i);
 	    pmSet.add(pm);
@@ -118,7 +118,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     }
 
     private List<Record> createRecordsWithPlainData() {
-	List<Record> records = new LinkedList();
+	List<Record> records = new LinkedList<>();
 	for (int i = 0; i < 64; i++) {
 	    byte[] padding = createPaddingBytes(i);
 	    int messageSize = config.getBlockSize() - (padding.length % config.getBlockSize());
@@ -152,7 +152,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     }
 
     private List<Record> createRecordsWithModifiedPadding() {
-	List<Record> records = new LinkedList();
+	List<Record> records = new LinkedList<>();
 
 	Record r = new Record();
 	ModifiableByteArray padding = new ModifiableByteArray();
@@ -165,7 +165,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     }
 
     private List<Record> createRecordsWithModifiedMac() {
-	List<Record> records = new LinkedList();
+	List<Record> records = new LinkedList<>();
 
 	Record r = new Record();
 	ModifiableByteArray mac = new ModifiableByteArray();

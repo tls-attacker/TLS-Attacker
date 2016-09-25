@@ -76,7 +76,7 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
 	return extensionTypeConstant;
     }
 
-    public abstract ExtensionHandler getExtensionHandler();
+    public abstract ExtensionHandler<? extends ExtensionMessage> getExtensionHandler();
 
     @Override
     public String toString() {

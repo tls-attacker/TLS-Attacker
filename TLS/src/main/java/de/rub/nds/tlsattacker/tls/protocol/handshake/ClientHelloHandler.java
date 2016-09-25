@@ -225,7 +225,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 		// Not implemented/unknown extensions will generate an Exception
 		// ...
 		try {
-		    ExtensionHandler eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
+		    ExtensionHandler<? extends ExtensionMessage> eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
 		    currentPointer = eh.parseExtension(message, currentPointer);
 		    protocolMessage.addExtension(eh.getExtensionMessage());
 		}

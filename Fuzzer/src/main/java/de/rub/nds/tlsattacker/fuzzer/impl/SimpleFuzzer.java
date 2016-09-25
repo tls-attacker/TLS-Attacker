@@ -183,7 +183,7 @@ public class SimpleFuzzer extends Fuzzer {
     }
 
     private void startCryptoFuzzing() {
-        Attacker attacker;
+        Attacker<? extends CommandConfig> attacker;
 
         try {
 

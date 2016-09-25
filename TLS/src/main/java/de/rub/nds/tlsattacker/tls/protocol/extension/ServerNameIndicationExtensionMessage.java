@@ -111,7 +111,7 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getExtensionHandler() {
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
 	return ServerNameIndicationExtensionHandler.getInstance();
     }
 

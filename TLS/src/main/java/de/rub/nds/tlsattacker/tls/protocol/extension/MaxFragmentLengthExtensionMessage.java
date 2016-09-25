@@ -56,7 +56,7 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getExtensionHandler() {
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
 	return MaxFragmentLengthExtensionHandler.getInstance();
     }
 

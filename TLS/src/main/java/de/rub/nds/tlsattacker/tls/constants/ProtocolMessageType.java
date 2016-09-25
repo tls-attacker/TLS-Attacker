@@ -60,7 +60,7 @@ public enum ProtocolMessageType {
     }
 
     public ProtocolMessageHandler getProtocolMessageHandler(byte value, TlsContext tlsContext) {
-	ProtocolMessageHandler pmh = null;
+	ProtocolMessageHandler<? extends ProtocolMessage> pmh = null;
 	LOGGER.debug("Trying to get a protocol message handler for the following content type: {}", this);
 	switch (this) {
 	    case HANDSHAKE:

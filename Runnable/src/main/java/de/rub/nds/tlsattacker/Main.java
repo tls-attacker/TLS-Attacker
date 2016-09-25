@@ -109,7 +109,7 @@ public class Main {
             return;
         }
 
-        Attacker attacker;
+        Attacker<? extends CommandConfig> attacker;
         switch (jc.getParsedCommand()) {
             case MultiFuzzerConfig.COMMAND:
                 startMultiFuzzer(cmconfig, generalConfig, jc);

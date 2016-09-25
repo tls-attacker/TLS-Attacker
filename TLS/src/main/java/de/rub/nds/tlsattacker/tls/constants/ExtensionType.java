@@ -73,8 +73,8 @@ public enum ExtensionType {
 	return value[1];
     }
 
-    public ExtensionHandler getExtensionHandler() {
-	ExtensionHandler eh = null;
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
+	ExtensionHandler<? extends ExtensionMessage> eh = null;
 	switch (this) {
 	    case SERVER_NAME_INDICATION:
 		eh = ServerNameIndicationExtensionHandler.getInstance();

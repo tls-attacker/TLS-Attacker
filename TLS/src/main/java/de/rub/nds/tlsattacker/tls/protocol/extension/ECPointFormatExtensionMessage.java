@@ -63,7 +63,7 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getExtensionHandler() {
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
 	return ECPointFormatExtensionHandler.getInstance();
     }
 

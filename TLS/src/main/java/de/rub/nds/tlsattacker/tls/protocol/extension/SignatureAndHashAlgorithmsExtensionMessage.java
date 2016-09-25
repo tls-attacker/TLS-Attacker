@@ -62,7 +62,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     }
 
     @Override
-    public ExtensionHandler getExtensionHandler() {
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
 	return SignatureAndHashAlgorithmsExtensionHandler.getInstance();
     }
 

@@ -107,7 +107,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      */
     protected void prepareMyProtocolMessageBytes(ProtocolMessage pm) {
         LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
-        ProtocolMessageHandler handler = pm.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> handler = pm.getProtocolMessageHandler(tlsContext);
         byte[] pmBytes = handler.prepareMessage();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(pm.toString());
@@ -194,7 +194,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
             List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType) {
         int dataPointer = 0;
         while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
-            ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
+            ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessageType.getProtocolMessageHandler(
                     rawProtocolMessageBytes[dataPointer], tlsContext);
             if (Arrays.equals(rawProtocolMessageBytes,
                     new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00})) {
@@ -282,7 +282,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      * @return
      */
     protected List<List<Record>> createListsOfRecordsOfTheSameContentType(List<Record> records) {
-        List<List<Record>> result = new LinkedList();
+        List<List<Record>> result = new LinkedList<>();
         int recordPointer = 0;
         Record record = records.get(recordPointer);
         List<Record> currentRecords = new LinkedList<>();
