@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.modifiablevariable;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -50,5 +52,23 @@ public class ModifiableVariableTest {
 	array.createRandomModificationAtRuntime();
 	LOGGER.info("Randomly modified byte array: " + ArrayConverter.bytesToHexString(array.getValue()));
 	assertNotNull(array.getModification());
+    }
+    
+    @Test
+    public void testRandomSingleByteModification() throws Exception {
+	ModifiableByte singleByte = ModifiableVariableFactory.createByteModifiableVariable();
+	singleByte.setOriginalValue((byte)0);
+	singleByte.createRandomModificationAtRuntime();
+	LOGGER.info("Randomly modified byte: " + ArrayConverter.bytesToHexString(new byte[] { singleByte.getValue() }));
+	assertNotNull(singleByte.getModification());
+    }
+    
+    @Test
+    public void testRandomLongModification() throws Exception {
+	ModifiableLong modLong = ModifiableVariableFactory.createLongModifiableVariable();
+	modLong.setOriginalValue(new Long(0));
+	modLong.createRandomModificationAtRuntime();
+	LOGGER.info("Randomly modified Long: " + modLong.getValue());
+	assertNotNull(modLong.getModification());
     }
 }
