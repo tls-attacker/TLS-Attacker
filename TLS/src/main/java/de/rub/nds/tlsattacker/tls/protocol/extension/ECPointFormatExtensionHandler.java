@@ -47,7 +47,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
 
 	extension.setExtensionType(ExtensionType.EC_POINT_FORMATS.getValue());
 	extension.setPointFormats(pointFormats);
-	extension.setPointFormatsLength(pointFormats.length);
+	extension.setPointFormatsLength(pointFormats != null ? pointFormats.length : 0);
 	extension.setExtensionLength(extension.getPointFormatsLength().getValue() + EC_POINT_FORMATS_LENGTH);
 
 	byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
