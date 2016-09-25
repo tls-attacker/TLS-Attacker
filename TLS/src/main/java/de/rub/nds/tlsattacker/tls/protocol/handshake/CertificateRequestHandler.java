@@ -29,12 +29,13 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * @param <HandshakeMessage>
  */
-public class CertificateRequestHandler<HandshakeMessage extends CertificateRequestMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class CertificateRequestHandler<Message extends CertificateRequestMessage> extends
+	HandshakeMessageHandler<Message> {
 
+    @SuppressWarnings("unchecked")
     public CertificateRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = CertificateRequestMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) CertificateRequestMessage.class;
     }
 
     @Override

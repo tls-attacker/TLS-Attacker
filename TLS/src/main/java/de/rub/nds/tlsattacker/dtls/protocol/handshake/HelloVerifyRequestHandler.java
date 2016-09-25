@@ -23,12 +23,13 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  * @param <HandshakeMessage>
  */
-public class HelloVerifyRequestHandler<HandshakeMessage extends HelloVerifyRequestMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class HelloVerifyRequestHandler<Message extends HelloVerifyRequestMessage> extends
+	HandshakeMessageHandler<Message> {
 
+    @SuppressWarnings("unchecked")
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = HelloVerifyRequestMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) HelloVerifyRequestMessage.class;
     }
 
     @Override

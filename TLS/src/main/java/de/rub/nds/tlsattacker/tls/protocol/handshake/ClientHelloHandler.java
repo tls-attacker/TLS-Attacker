@@ -32,12 +32,13 @@ import de.rub.nds.tlsattacker.util.Time;
  * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
-public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class ClientHelloHandler<Message extends ClientHelloMessage> extends
+	HandshakeMessageHandler<Message> {
 
+    @SuppressWarnings("unchecked")
     public ClientHelloHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = ClientHelloMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) ClientHelloMessage.class;
     }
 
     @Override
