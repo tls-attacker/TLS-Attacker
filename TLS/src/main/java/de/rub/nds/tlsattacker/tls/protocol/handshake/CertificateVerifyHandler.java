@@ -49,14 +49,15 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
-public class CertificateVerifyHandler<HandshakeMessage extends CertificateVerifyMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class CertificateVerifyHandler<Message extends CertificateVerifyMessage> extends
+	HandshakeMessageHandler<Message> {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateVerifyHandler.class);
 
+    @SuppressWarnings("unchecked")
     public CertificateVerifyHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = CertificateVerifyMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) CertificateVerifyMessage.class;
     }
 
     @Override

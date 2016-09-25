@@ -25,8 +25,8 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
-public abstract class ClientKeyExchangeHandler<HandshakeMessage extends ClientKeyExchangeMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
+	HandshakeMessageHandler<Message> {
 
     KeyExchangeAlgorithm keyExchangeAlgorithm;
 
