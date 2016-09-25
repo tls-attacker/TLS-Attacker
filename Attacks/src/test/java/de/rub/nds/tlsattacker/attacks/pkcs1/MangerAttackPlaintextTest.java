@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Collections;
 import java.util.LinkedList;

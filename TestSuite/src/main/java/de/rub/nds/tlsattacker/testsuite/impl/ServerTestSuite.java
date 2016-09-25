@@ -8,6 +8,14 @@
  */
 package de.rub.nds.tlsattacker.testsuite.impl;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
@@ -23,6 +31,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -33,13 +42,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *

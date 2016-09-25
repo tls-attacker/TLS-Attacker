@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,6 +16,11 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 
 /**
  * @author

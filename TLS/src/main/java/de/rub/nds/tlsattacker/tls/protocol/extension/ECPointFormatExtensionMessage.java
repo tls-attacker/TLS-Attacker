@@ -8,17 +8,16 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
-import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

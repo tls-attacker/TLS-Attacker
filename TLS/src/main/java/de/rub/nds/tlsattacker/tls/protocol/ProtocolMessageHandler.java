@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

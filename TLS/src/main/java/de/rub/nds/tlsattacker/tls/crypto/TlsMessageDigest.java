@@ -8,13 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
-import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * Computes message digest for two algorithms at once, typically for MD5 and

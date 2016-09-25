@@ -8,6 +8,26 @@
  */
 package de.rub.nds.tlsattacker.fuzzer.impl;
 
+import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.MAX_MODIFICATION_COUNT;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import javax.xml.bind.JAXBException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.x509.Certificate;
+
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
@@ -18,10 +38,10 @@ import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.fuzzer.config.SimpleFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper;
-import static de.rub.nds.tlsattacker.fuzzer.util.FuzzingHelper.MAX_MODIFICATION_COUNT;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -39,21 +59,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ServerStartCommandExecutor;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import javax.xml.bind.JAXBException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.x509.Certificate;
 
 /**
  *

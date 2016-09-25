@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayXorModificat
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.AccessModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.ModificationFilterFactory;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
