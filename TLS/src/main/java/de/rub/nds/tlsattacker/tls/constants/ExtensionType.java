@@ -97,6 +97,7 @@ public enum ExtensionType {
 	    case HEARTBEAT:
 		eh = HeartbeatExtensionHandler.getInstance();
 		break;
+	    default:
 	}
 	if (eh == null) {
 	    throw new UnsupportedOperationException("Extension not supported yet");
