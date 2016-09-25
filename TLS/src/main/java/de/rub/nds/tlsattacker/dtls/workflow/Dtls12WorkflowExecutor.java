@@ -122,7 +122,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyNonHandshakeMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
 
         byte[] messageBytes = pmh.prepareMessage();
 
@@ -140,7 +140,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyChangeCipherSpecMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
         byte[] messageBytes = pmh.prepareMessage();
 
         retransmitList.add(messageBytes);
@@ -156,7 +156,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
-        ProtocolMessageHandler pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
         handshakeMessage.setMessageSeq(sendHandshakeMessageSeq);
         byte[] handshakeMessageBytes = pmh.prepareMessage();
 

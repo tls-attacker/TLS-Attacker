@@ -51,18 +51,18 @@ public class ClientHelloHandlerTest {
 
     static byte[] cookie = ArrayConverter.hexStringToByteArray("1122334455667788");
 
-    ClientHelloHandler handler;
-    ClientHelloHandler dtlshandler;
+    ClientHelloHandler<ClientHelloDtlsMessage> handler;
+    ClientHelloHandler<ClientHelloDtlsMessage> dtlshandler;
 
     TlsContext tlsContext = new TlsContext();
     TlsContext dtlsContext = new TlsContext();
 
     public ClientHelloHandlerTest() {
 	tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
-	handler = new ClientHelloHandler(tlsContext);
+	handler = new ClientHelloHandler<>(tlsContext);
 	dtlsContext.setDtlsHandshakeCookie(cookie);
 	dtlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
-	dtlshandler = new ClientHelloHandler(dtlsContext);
+	dtlshandler = new ClientHelloHandler<>(dtlsContext);
 
     }
 
@@ -75,11 +75,11 @@ public class ClientHelloHandlerTest {
 
 	ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
 
-	List<CipherSuite> cipherSuites = new ArrayList();
+	List<CipherSuite> cipherSuites = new ArrayList<>();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
 	message.setSupportedCipherSuites(cipherSuites);
 
-	List<CompressionMethod> compressionMethods = new ArrayList();
+	List<CompressionMethod> compressionMethods = new ArrayList<>();
 	compressionMethods.add(CompressionMethod.NULL);
 	message.setSupportedCompressionMethods(compressionMethods);
 
@@ -101,11 +101,11 @@ public class ClientHelloHandlerTest {
 	de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
 		.getProtocolMessage();
 
-	List<CipherSuite> cipherSuites = new ArrayList();
+	List<CipherSuite> cipherSuites = new ArrayList<>();
 	cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
 	message.setSupportedCipherSuites(cipherSuites);
 
-	List<CompressionMethod> compressionMethods = new ArrayList();
+	List<CompressionMethod> compressionMethods = new ArrayList<>();
 	compressionMethods.add(CompressionMethod.NULL);
 	message.setSupportedCompressionMethods(compressionMethods);
 
@@ -115,12 +115,12 @@ public class ClientHelloHandlerTest {
 
 	EllipticCurvesExtensionMessage ecc;
 	ecc = new EllipticCurvesExtensionMessage();
-	List<NamedCurve> curve = new ArrayList();
+	List<NamedCurve> curve = new ArrayList<>();
 	curve.add(NamedCurve.SECP160K1);
 	curve.add(NamedCurve.SECT163K1);
 	ecc.setSupportedCurvesConfig(curve);
 
-	List<ExtensionMessage> extensions = new ArrayList();
+	List<ExtensionMessage> extensions = new ArrayList<>();
 	extensions.add(heart);
 	extensions.add(ecc);
 	message.setExtensions(extensions);

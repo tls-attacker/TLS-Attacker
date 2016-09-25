@@ -58,7 +58,7 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getExtensionHandler() {
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
 	return EllipticCurvesExtensionHandler.getInstance();
     }
 

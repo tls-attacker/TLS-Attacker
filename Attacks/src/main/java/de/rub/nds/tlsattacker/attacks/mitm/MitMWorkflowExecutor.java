@@ -199,7 +199,7 @@ public class MitMWorkflowExecutor {
      */
     protected void prepareMyProtocolMessageBytes(ProtocolMessage pm) {
 	LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
-	ProtocolMessageHandler handler = pm.getProtocolMessageHandler(tlsContext);
+	ProtocolMessageHandler<? extends ProtocolMessage> handler = pm.getProtocolMessageHandler(tlsContext);
 	byte[] pmBytes;
 	boolean finished = pm.getClass().toString()
 		.equals("class de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage");
@@ -385,7 +385,7 @@ public class MitMWorkflowExecutor {
      * @return
      */
     protected List<List<Record>> createListsOfRecordsOfTheSameContentType(List<Record> records) {
-	List<List<Record>> result = new LinkedList();
+	List<List<Record>> result = new LinkedList<>();
 	int recordPointer = 0;
 	Record record = records.get(recordPointer);
 	List<Record> currentRecords = new LinkedList<>();

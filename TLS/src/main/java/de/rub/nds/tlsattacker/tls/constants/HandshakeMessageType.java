@@ -47,7 +47,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
                 @Override
                 ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
-                    return new ClientHelloHandler(tlsContext);
+                    return new ClientHelloHandler<>(tlsContext);
                 }
             },
     SERVER_HELLO((byte) 2) {
@@ -60,7 +60,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
     HELLO_VERIFY_REQUEST((byte) 3) {
                 @Override
                 ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
-                    return new HelloVerifyRequestHandler(tlsContext);
+                    return new HelloVerifyRequestHandler<>(tlsContext);
                 }
             },
     NEW_SESSION_TICKET((byte) 4) {
@@ -74,7 +74,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
                 @Override
                 ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
-                    return new CertificateHandler(tlsContext);
+                    return new CertificateHandler<>(tlsContext);
                 }
             },
     SERVER_KEY_EXCHANGE((byte) 12) {
@@ -101,7 +101,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
                 @Override
                 ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
-                    return new CertificateRequestHandler(tlsContext);
+                    return new CertificateRequestHandler<>(tlsContext);
                 }
             },
     SERVER_HELLO_DONE((byte) 14) {
@@ -115,7 +115,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
                 @Override
                 ProtocolMessageHandler getMessageHandler(TlsContext tlsContext) {
-                    return new CertificateVerifyHandler(tlsContext);
+                    return new CertificateVerifyHandler<>(tlsContext);
                 }
             },
     CLIENT_KEY_EXCHANGE((byte) 16) {

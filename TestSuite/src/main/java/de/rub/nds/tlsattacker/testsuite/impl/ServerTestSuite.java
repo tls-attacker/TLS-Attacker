@@ -69,7 +69,7 @@ public class ServerTestSuite extends TestSuite {
     }
 
     private void startAttackTests() {
-        Attacker attacker;
+        Attacker<? extends CommandConfig> attacker;
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
 	bb.setConnect(testConfig.getConnect());
 	attacker = new BleichenbacherAttack(bb);
