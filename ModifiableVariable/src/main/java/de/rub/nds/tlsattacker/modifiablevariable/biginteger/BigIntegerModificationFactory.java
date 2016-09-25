@@ -97,11 +97,12 @@ final public class BigIntegerModificationFactory {
                 modificationsFromFile = new LinkedList<>();
                 ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
                 File file = new File(classLoader.getResource(IntegerModificationFactory.FILE_NAME).getFile());
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String value = line.trim().split(" ")[0];
-                    modificationsFromFile.add(explicitValue(value));
+                try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String value = line.trim().split(" ")[0];
+                        modificationsFromFile.add(explicitValue(value));
+                    }
                 }
             }
             return modificationsFromFile;
