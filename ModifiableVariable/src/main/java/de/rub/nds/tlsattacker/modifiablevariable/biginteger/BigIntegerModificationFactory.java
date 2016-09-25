@@ -92,7 +92,7 @@ final public class BigIntegerModificationFactory {
         return modifications.get(pos);
     }
 
-    public static List<VariableModification<BigInteger>> modificationsFromFile() {
+    public static synchronized List<VariableModification<BigInteger>> modificationsFromFile() {
         try {
             if (modificationsFromFile == null) {
                 modificationsFromFile = new LinkedList<>();

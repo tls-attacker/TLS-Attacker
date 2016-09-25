@@ -92,7 +92,7 @@ final public class IntegerModificationFactory {
         return modifications.get(pos);
     }
 
-    public static List<VariableModification<Integer>> modificationsFromFile() {
+    public static synchronized List<VariableModification<Integer>> modificationsFromFile() {
         try {
             if (modificationsFromFile == null) {
                 modificationsFromFile = new LinkedList<>();
