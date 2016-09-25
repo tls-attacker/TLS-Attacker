@@ -35,13 +35,13 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     protected ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSeq;
+    private ModifiableInteger messageSeq = null;
 
     @ModifiableVariableProperty
-    private ModifiableInteger fragmentOffset;
+    private ModifiableInteger fragmentOffset = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger fragmentLength;
+    private ModifiableInteger fragmentLength = null;
 
     boolean includeInDigest = true;
 
