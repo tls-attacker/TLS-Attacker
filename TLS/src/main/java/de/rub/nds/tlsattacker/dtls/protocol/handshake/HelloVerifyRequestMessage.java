@@ -23,13 +23,13 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion;
+    ModifiableByteArray protocolVersion = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableByte cookieLength;
+    ModifiableByte cookieLength = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    ModifiableByteArray cookie;
+    ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
 	super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
