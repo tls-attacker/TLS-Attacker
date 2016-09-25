@@ -172,7 +172,7 @@ public final class TlsMessageDigest {
 	    this.rawBytes = rawBytes;
 	    updateDigest(rawBytes);
 	} else {
-	    rawBytes = new byte[0];
+	    this.rawBytes = new byte[0];
 	}
     }
 }
