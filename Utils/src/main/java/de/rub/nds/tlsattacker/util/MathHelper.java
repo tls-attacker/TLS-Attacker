@@ -86,7 +86,7 @@ public class MathHelper {
 
 	BigInteger b = extendedEuclid(a, p).b;
 	while (b.compareTo(BigInteger.ZERO) < 0) {
-	    b.add(p);
+	    b = b.add(p);
 	}
 	return b;
     }
