@@ -144,8 +144,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler pmh = handshakeMessageType.getProtocolMessageHandler(tlsContext);
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
+	ProtocolMessageHandler<? extends ProtocolMessage> pmh = handshakeMessageType.getProtocolMessageHandler(tlsContext);
 	pmh.setProtocolMessage(this);
 	return pmh;
     }

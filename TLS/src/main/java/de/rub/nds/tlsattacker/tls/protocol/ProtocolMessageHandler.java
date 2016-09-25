@@ -176,7 +176,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * @param protocolMessage
      */
-    public void setProtocolMessage(Message protocolMessage) {
-	this.protocolMessage = protocolMessage;
+    @SuppressWarnings("unchecked")
+    public void setProtocolMessage(ProtocolMessage protocolMessage) {
+	this.protocolMessage = (Message) protocolMessage;
     }
 }

@@ -97,7 +97,7 @@ public class HeartbeatMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
 	HeartbeatHandler hmh = new HeartbeatHandler(tlsContext);
 	hmh.setProtocolMessage(this);
 	return hmh;

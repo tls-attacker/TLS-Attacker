@@ -309,7 +309,7 @@ public class MitMWorkflowExecutor {
 	    List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType) {
 	int dataPointer = 0;
 	while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
-	    ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
+	    ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessageType.getProtocolMessageHandler(
 		    rawProtocolMessageBytes[dataPointer], tlsContext);
 	    if (Arrays.equals(rawProtocolMessageBytes,
 		    new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
@@ -331,7 +331,7 @@ public class MitMWorkflowExecutor {
      * 
      * @param pmh
      */
-    private void handleIncomingAlert(ProtocolMessageHandler pmh) {
+    private void handleIncomingAlert(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
 	if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
 	    AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
 	    am.setMessageIssuer(ConnectionEnd.SERVER);
@@ -347,7 +347,7 @@ public class MitMWorkflowExecutor {
      * @param protocolMessages
      * @param pmh
      */
-    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler pmh) {
+    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
 	ProtocolMessage pm = null;
 	if (workflowContext.getProtocolMessagePointer() < protocolMessages.size()) {
 	    pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());

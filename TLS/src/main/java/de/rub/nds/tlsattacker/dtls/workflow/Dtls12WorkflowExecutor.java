@@ -244,7 +244,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         byte[] rawMessageBytes = rcvRecord.getProtocolMessageBytes().getValue();
         ProtocolMessageType rcvRecordContentType = ProtocolMessageType.getContentType(rcvRecord.getContentType()
                 .getValue());
-        ProtocolMessageHandler pmh = rcvRecordContentType.getProtocolMessageHandler(
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = rcvRecordContentType.getProtocolMessageHandler(
                 rawMessageBytes[messageParseBufferOffset], tlsContext);
 
         if (!pmh.isCorrectProtocolMessage(pm)) {
@@ -291,7 +291,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         return null;
     }
 
-    private boolean handleIncomingAlert(ProtocolMessageHandler pmh) {
+    private boolean handleIncomingAlert(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
         am.setMessageIssuer(ConnectionEnd.SERVER);
         if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
@@ -301,7 +301,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         return true;
     }
 
-    private ProtocolMessage wrongMessageFound(ProtocolMessageHandler pmh) {
+    private ProtocolMessage wrongMessageFound(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         LOGGER.debug("The configured protocol message is not equal to the message being parsed or the message was not found.");
         removeNextProtocolMessages(protocolMessages, workflowContext.getProtocolMessagePointer());
         pmh.initializeProtocolMessage();

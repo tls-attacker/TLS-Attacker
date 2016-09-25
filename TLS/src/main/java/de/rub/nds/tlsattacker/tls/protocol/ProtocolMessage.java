@@ -80,7 +80,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected ModifiableByteArray completeResultingMessage;
 
     @Override
-    public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
+    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext);
 
     public ProtocolMessageType getProtocolMessageType() {
 	return protocolMessageType;

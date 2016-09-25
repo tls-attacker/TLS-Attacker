@@ -112,7 +112,7 @@ public final class AlertMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
         AlertHandler ah = new AlertHandler(tlsContext);
         ah.setProtocolMessage(this);
         return ah;
