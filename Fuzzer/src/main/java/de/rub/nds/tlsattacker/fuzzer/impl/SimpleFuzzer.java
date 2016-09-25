@@ -130,6 +130,9 @@ public class SimpleFuzzer extends Fuzzer {
         LOGGER.info("Gathering workflows from {}", fuzzerConfig.getWorkflowFolder());
         File folder = new File(fuzzerConfig.getWorkflowFolder());
         File[] listOfFiles = folder.listFiles();
+        if(null == listOfFiles) {
+            listOfFiles = new File[0];
+        }
 
         List<File> xmlFiles = new LinkedList<>();
         for (File file : listOfFiles) {
