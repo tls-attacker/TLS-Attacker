@@ -47,7 +47,7 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
 	ChangeCipherSpecHandler ccsh = new ChangeCipherSpecHandler(tlsContext);
 	ccsh.setProtocolMessage(this);
 	return ccsh;

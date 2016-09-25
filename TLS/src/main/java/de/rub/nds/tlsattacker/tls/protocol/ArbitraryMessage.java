@@ -22,7 +22,7 @@ public class ArbitraryMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
         throw new UnsupportedOperationException("Arbitrary message protocol handler not supported yet."); 
     }
 

@@ -218,7 +218,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      *
      * @param pmh
      */
-    private void handleIncomingAlert(ProtocolMessageHandler pmh) {
+    private void handleIncomingAlert(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
             am.setMessageIssuer(ConnectionEnd.SERVER);
@@ -234,7 +234,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      * @param protocolMessages
      * @param pmh
      */
-    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler pmh) {
+    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         ProtocolMessage pm = null;
         if (workflowContext.getProtocolMessagePointer() < protocolMessages.size()) {
             pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());

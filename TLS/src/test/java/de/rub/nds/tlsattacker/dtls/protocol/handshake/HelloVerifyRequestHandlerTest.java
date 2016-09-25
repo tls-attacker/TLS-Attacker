@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class HelloVerifyRequestHandlerTest {
 
-    ProtocolMessageHandler handler;
+    ProtocolMessageHandler<? extends ProtocolMessage> handler;
 
     TlsContext tlsContext = new TlsContext();
 

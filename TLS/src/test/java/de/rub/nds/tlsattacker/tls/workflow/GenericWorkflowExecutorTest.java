@@ -59,7 +59,7 @@ public class GenericWorkflowExecutorTest {
      * @param mockedTlsContext
      */
     @Test
-    public void testPrepareMyProtocolMessageBytes(@Mocked final ProtocolMessageHandler mockedHandler,
+    public void testPrepareMyProtocolMessageBytes(@Mocked final ProtocolMessageHandler<? extends ProtocolMessage> mockedHandler,
 	    @Mocked final ProtocolMessage mockedProtocolMessageMessage, @Mocked final TlsContext mockedTlsContext) {
 	// Record expectations if/as needed:
 	new NonStrictExpectations() {

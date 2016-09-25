@@ -49,7 +49,7 @@ public class ApplicationMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
 	ApplicationHandler ah = new ApplicationHandler(tlsContext);
 	ah.setProtocolMessage(this);
 	return ah;
