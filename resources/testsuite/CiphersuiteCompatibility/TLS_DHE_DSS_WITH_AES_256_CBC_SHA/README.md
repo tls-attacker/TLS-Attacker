@@ -1,0 +1,1 @@
+If TLS_DHE_DSS_WITH_AES_256_CBC_SHA is supported, it should be accepted with TLS10, TLS11 and TLS12
