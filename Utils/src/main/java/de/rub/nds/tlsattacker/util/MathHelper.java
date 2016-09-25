@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.util;
 
 import java.math.BigInteger;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import java.util.Arrays;
+
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
@@ -16,7 +18,6 @@ import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
 
 /**
  * 
