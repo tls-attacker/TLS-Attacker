@@ -17,6 +17,9 @@
         <Certificate>
             <messageIssuer>SERVER</messageIssuer>
         </Certificate>
+        <DHEServerKeyExchange>
+            <messageIssuer>SERVER</messageIssuer>
+        </DHEServerKeyExchange>
         <ServerHelloDone>
             <messageIssuer>SERVER</messageIssuer>
         </ServerHelloDone>
