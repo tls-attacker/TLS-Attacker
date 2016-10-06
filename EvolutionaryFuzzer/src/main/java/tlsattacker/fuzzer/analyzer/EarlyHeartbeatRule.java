@@ -49,7 +49,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     @Override
-    public boolean applys(Result result) {
+    public boolean applies(Result result) {
 	WorkflowTrace trace = result.getVector().getTrace();
 	if (!trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT).isEmpty()) {
 	    return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);

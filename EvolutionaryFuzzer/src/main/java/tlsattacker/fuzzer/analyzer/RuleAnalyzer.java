@@ -47,7 +47,7 @@ public class RuleAnalyzer extends Analyzer {
 
     public void analyze(Result result) {
 	for (Rule r : ruleList) {
-	    if (r.applys(result)) {
+	    if (r.applies(result)) {
 		r.onApply(result);
 	    } else {
 		r.onDecline(result);

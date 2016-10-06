@@ -66,13 +66,13 @@ public class FindAlertsRule extends Rule {
     }
 
     @Override
-    public boolean applys(Result result) {
+    public boolean applies(Result result) {
 	WorkflowTrace trace = result.getVector().getTrace();
 	List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
 	if (!messages.isEmpty()) {
 	    for (ProtocolMessage message : messages) {
 		AlertMessage pm = (AlertMessage) message;
-		// If Message is in blacklist it applys
+		// If Message is in blacklist it applies
 		if (config.getBlacklist().contains(pm.getDescription().getOriginalValue().byteValue())) {
 		    return true;
 		}

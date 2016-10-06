@@ -43,7 +43,7 @@ public abstract class Rule {
 
     public abstract RuleConfig getConfig();
 
-    public abstract boolean applys(Result result);
+    public abstract boolean applies(Result result);
 
     public abstract void onApply(Result result);
 

@@ -73,7 +73,7 @@ public class IsGoodRule extends Rule {
     }
 
     @Override
-    public boolean applys(Result result) {
+    public boolean applies(Result result) {
 	MergeResult r = null;
 	r = branch.merge(result.getBranchTrace());
 

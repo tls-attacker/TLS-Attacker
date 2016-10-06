@@ -58,7 +58,7 @@ public class ProtocolVersionRule extends Rule {
     }
 
     @Override
-    public boolean applys(Result result) {
+    public boolean applies(Result result) {
 	ProtocolVersion clientVersion = null;
 	ProtocolVersion serverVersion = null;
 

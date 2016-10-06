@@ -58,7 +58,7 @@ public class UniqueFlowsRule extends Rule {
     }
 
     @Override
-    public boolean applys(Result result) {
+    public boolean applies(Result result) {
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
 		ConnectionEnd.CLIENT);
 	type.clean();

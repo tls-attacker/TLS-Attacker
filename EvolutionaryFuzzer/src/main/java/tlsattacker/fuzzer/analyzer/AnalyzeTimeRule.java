@@ -61,7 +61,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     @Override
-    public boolean applys(Result result) {
+    public boolean applies(Result result) {
 	return true;
     }
 
