@@ -8,25 +8,27 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
-import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -107,7 +109,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      */
     protected void prepareMyProtocolMessageBytes(ProtocolMessage pm) {
         LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
-        ProtocolMessageHandler handler = pm.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> handler = pm.getProtocolMessageHandler(tlsContext);
         byte[] pmBytes = handler.prepareMessage();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(pm.toString());
@@ -194,7 +196,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
             List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType) {
         int dataPointer = 0;
         while (dataPointer != rawProtocolMessageBytes.length && workflowContext.isProceedWorkflow()) {
-            ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
+            ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessageType.getProtocolMessageHandler(
                     rawProtocolMessageBytes[dataPointer], tlsContext);
             if (Arrays.equals(rawProtocolMessageBytes,
                     new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00})) {
@@ -216,7 +218,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      *
      * @param pmh
      */
-    private void handleIncomingAlert(ProtocolMessageHandler pmh) {
+    private void handleIncomingAlert(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
             am.setMessageIssuer(ConnectionEnd.SERVER);
@@ -232,7 +234,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      * @param protocolMessages
      * @param pmh
      */
-    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler pmh) {
+    private void identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages, ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         ProtocolMessage pm = null;
         if (workflowContext.getProtocolMessagePointer() < protocolMessages.size()) {
             pm = protocolMessages.get(workflowContext.getProtocolMessagePointer());
@@ -282,7 +284,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
      * @return
      */
     protected List<List<Record>> createListsOfRecordsOfTheSameContentType(List<Record> records) {
-        List<List<Record>> result = new LinkedList();
+        List<List<Record>> result = new LinkedList<>();
         int recordPointer = 0;
         Record record = records.get(recordPointer);
         List<Record> currentRecords = new LinkedList<>();

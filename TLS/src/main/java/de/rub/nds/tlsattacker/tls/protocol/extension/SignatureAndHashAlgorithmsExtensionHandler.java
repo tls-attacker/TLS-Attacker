@@ -46,7 +46,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
 
 	extension.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
 	extension.setSignatureAndHashAlgorithms(algorithms);
-	extension.setSignatureAndHashAlgorithmsLength(algorithms.length);
+	extension.setSignatureAndHashAlgorithmsLength(algorithms != null ? algorithms.length : 0);
 	extension.setExtensionLength(extension.getSignatureAndHashAlgorithmsLength().getValue()
 		+ ExtensionByteLength.EXTENSIONS);
 

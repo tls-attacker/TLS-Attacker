@@ -8,17 +8,20 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionHandler;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -73,8 +76,8 @@ public enum ExtensionType {
 	return value[1];
     }
 
-    public ExtensionHandler getExtensionHandler() {
-	ExtensionHandler eh = null;
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
+	ExtensionHandler<? extends ExtensionMessage> eh = null;
 	switch (this) {
 	    case SERVER_NAME_INDICATION:
 		eh = ServerNameIndicationExtensionHandler.getInstance();
@@ -94,6 +97,7 @@ public enum ExtensionType {
 	    case HEARTBEAT:
 		eh = HeartbeatExtensionHandler.getInstance();
 		break;
+	    default:
 	}
 	if (eh == null) {
 	    throw new UnsupportedOperationException("Extension not supported yet");

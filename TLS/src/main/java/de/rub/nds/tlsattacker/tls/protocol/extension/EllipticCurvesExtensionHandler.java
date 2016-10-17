@@ -48,7 +48,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
 	extension.setExtensionType(ExtensionType.ELLIPTIC_CURVES.getValue());
 	extension.setSupportedCurves(curves);
-	extension.setSupportedCurvesLength(curves.length);
+	extension.setSupportedCurvesLength(curves != null ? curves.length : 0);
 	extension.setExtensionLength(extension.getSupportedCurvesLength().getValue() + ExtensionByteLength.EXTENSIONS);
 
 	byte[] ecExtensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter

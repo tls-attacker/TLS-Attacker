@@ -8,6 +8,14 @@
  */
 package de.rub.nds.tlsattacker.testsuite.impl;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
@@ -23,6 +31,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -33,13 +42,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -69,7 +71,7 @@ public class ServerTestSuite extends TestSuite {
     }
 
     private void startAttackTests() {
-        Attacker attacker;
+        Attacker<? extends CommandConfig> attacker;
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
 	bb.setConnect(testConfig.getConnect());
 	attacker = new BleichenbacherAttack(bb);
@@ -126,12 +128,21 @@ public class ServerTestSuite extends TestSuite {
     private void startTestFromFiles() {
         File folder = new File(testConfig.getFolder());
         File[] testsuites = folder.listFiles(new DirectoryFilter());
+        if(null == testsuites) {
+            testsuites = new File[0];
+        }
         for (File testsuite : testsuites) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting {} Test Suite", testsuite.getName());
             File[] tests = testsuite.listFiles(new DirectoryFilter());
+            if(null == tests) {
+                tests = new File[0];
+            }
             for (File test : tests) {
                 LOGGER.info("Testing {} (one of these has to be succesful)", test.getName());
                 File[] testCases = test.listFiles(new DirectoryFilter());
+                if(null == testCases) {
+                    testCases = new File[0];
+                }
                 boolean successfulTest = false;
                 for (File testCase : testCases) {
                     LOGGER.info("  Running {}", testCase.getName());
@@ -170,6 +181,10 @@ public class ServerTestSuite extends TestSuite {
                 return name.toLowerCase().endsWith(".xml");
             }
         });
+
+        if(null == xmlFiles) {
+            xmlFiles = new File[0];
+        }
 
         for (File xmlFile : xmlFiles) {
             try {

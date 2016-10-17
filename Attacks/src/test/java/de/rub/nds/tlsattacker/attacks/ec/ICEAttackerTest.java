@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.ec;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECOracle;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECSunOracle;
 import java.math.BigInteger;
-import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;

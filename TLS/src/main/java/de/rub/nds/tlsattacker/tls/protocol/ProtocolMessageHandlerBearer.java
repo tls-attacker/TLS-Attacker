@@ -15,5 +15,5 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public interface ProtocolMessageHandlerBearer {
 
-    public abstract ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext);
+    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext);
 }

@@ -8,13 +8,24 @@
  */
 package de.rub.nds.tlsattacker;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.beust.jcommander.JCommander;
+
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
@@ -22,9 +33,9 @@ import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107;
 import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
-import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.ManInTheMiddleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
@@ -49,16 +60,8 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-import javax.xml.bind.JAXBException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
@@ -109,7 +112,7 @@ public class Main {
             return;
         }
 
-        Attacker attacker;
+        Attacker<? extends CommandConfig> attacker;
         switch (jc.getParsedCommand()) {
             case MultiFuzzerConfig.COMMAND:
                 startMultiFuzzer(cmconfig, generalConfig, jc);

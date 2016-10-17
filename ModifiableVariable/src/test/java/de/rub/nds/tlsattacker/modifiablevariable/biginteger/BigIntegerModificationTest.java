@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Before;

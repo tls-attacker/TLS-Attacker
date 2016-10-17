@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionHandler;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -52,7 +49,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getExtensionHandler() {
+    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
 	return HeartbeatExtensionHandler.getInstance();
     }
 
