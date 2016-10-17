@@ -8,30 +8,32 @@
  */
 package de.rub.nds.tlsattacker.dtls.workflow;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.Arrays;
+
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeFragmentHandler;
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
+import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.util.Arrays;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
@@ -122,7 +124,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyNonHandshakeMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
 
         byte[] messageBytes = pmh.prepareMessage();
 
@@ -140,7 +142,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyChangeCipherSpecMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
         byte[] messageBytes = pmh.prepareMessage();
 
         retransmitList.add(messageBytes);
@@ -156,7 +158,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     }
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
-        ProtocolMessageHandler pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
         handshakeMessage.setMessageSeq(sendHandshakeMessageSeq);
         byte[] handshakeMessageBytes = pmh.prepareMessage();
 
@@ -242,7 +244,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         byte[] rawMessageBytes = rcvRecord.getProtocolMessageBytes().getValue();
         ProtocolMessageType rcvRecordContentType = ProtocolMessageType.getContentType(rcvRecord.getContentType()
                 .getValue());
-        ProtocolMessageHandler pmh = rcvRecordContentType.getProtocolMessageHandler(
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = rcvRecordContentType.getProtocolMessageHandler(
                 rawMessageBytes[messageParseBufferOffset], tlsContext);
 
         if (!pmh.isCorrectProtocolMessage(pm)) {
@@ -289,7 +291,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         return null;
     }
 
-    private boolean handleIncomingAlert(ProtocolMessageHandler pmh) {
+    private boolean handleIncomingAlert(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
         am.setMessageIssuer(ConnectionEnd.SERVER);
         if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
@@ -299,7 +301,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         return true;
     }
 
-    private ProtocolMessage wrongMessageFound(ProtocolMessageHandler pmh) {
+    private ProtocolMessage wrongMessageFound(ProtocolMessageHandler<? extends ProtocolMessage> pmh) {
         LOGGER.debug("The configured protocol message is not equal to the message being parsed or the message was not found.");
         removeNextProtocolMessages(protocolMessages, workflowContext.getProtocolMessagePointer());
         pmh.initializeProtocolMessage();

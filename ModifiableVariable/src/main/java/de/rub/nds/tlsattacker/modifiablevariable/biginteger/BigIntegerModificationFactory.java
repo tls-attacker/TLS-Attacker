@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,6 +16,11 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 
 /**
  * @author
@@ -91,17 +92,18 @@ final public class BigIntegerModificationFactory {
         return modifications.get(pos);
     }
 
-    public static List<VariableModification<BigInteger>> modificationsFromFile() {
+    public static synchronized List<VariableModification<BigInteger>> modificationsFromFile() {
         try {
             if (modificationsFromFile == null) {
                 modificationsFromFile = new LinkedList<>();
                 ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
                 File file = new File(classLoader.getResource(IntegerModificationFactory.FILE_NAME).getFile());
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String value = line.trim().split(" ")[0];
-                    modificationsFromFile.add(explicitValue(value));
+                try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String value = line.trim().split(" ")[0];
+                        modificationsFromFile.add(explicitValue(value));
+                    }
                 }
             }
             return modificationsFromFile;

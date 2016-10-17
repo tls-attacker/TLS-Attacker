@@ -8,16 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
-import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.logging.log4j.LogManager;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
+
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
@@ -141,11 +143,11 @@ public class TlsMessageDigestTest {
 	TlsMessageDigest digestTest = null;
 	try {
 	    digestTest = new TlsMessageDigest(DigestAlgorithm.LEGACY);
+	    digestTest.setRawBytes(result);
+	    assertArrayEquals(digestTest.digest(), digresult);
 	} catch (NoSuchAlgorithmException ex) {
 	    Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
 	}
-	digestTest.setRawBytes(result);
-	assertArrayEquals(digestTest.digest(), digresult);
 	digest1.setRawBytes(testarray);
 	digest1.update(testarray2); // sollte byte Array anhängen
 	result = digest1.getRawBytes();
@@ -161,11 +163,11 @@ public class TlsMessageDigestTest {
 	digestTest = null;
 	try {
 	    digestTest = new TlsMessageDigest(DigestAlgorithm.LEGACY);
+	    digestTest.setRawBytes(result);
+	    assertArrayEquals(digestTest.digest(), digresult);
 	} catch (NoSuchAlgorithmException ex) {
 	    Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
 	}
-	digestTest.setRawBytes(result);
-	assertArrayEquals(digestTest.digest(), digresult);
 	digest1.setRawBytes(testarray);
 	int testLength = 2;
 	int testPosition = 2;
@@ -185,11 +187,11 @@ public class TlsMessageDigestTest {
 	digestTest = null;
 	try {
 	    digestTest = new TlsMessageDigest(DigestAlgorithm.LEGACY);
+	    digestTest.setRawBytes(result);
+	    assertArrayEquals(digestTest.digest(), digresult);
 	} catch (NoSuchAlgorithmException ex) {
 	    Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
 	}
-	digestTest.setRawBytes(result);
-	assertArrayEquals(digestTest.digest(), digresult);
     }
 
     /**
@@ -245,6 +247,8 @@ public class TlsMessageDigestTest {
 	} catch (NoSuchAlgorithmException ex) {
 	    e = ex;
 	    LOGGER.info("Could not Create default Digest with ProtocolVersion TLS10 Constructor");
+	    fail();
+	    return;
 	}
 	assertNull(e);
 	digest1.digest();

@@ -8,17 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.LinkedList;
+
+import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -28,12 +29,13 @@ import java.util.LinkedList;
 /**
  * @param <HandshakeMessage>
  */
-public class CertificateRequestHandler<HandshakeMessage extends CertificateRequestMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class CertificateRequestHandler<Message extends CertificateRequestMessage> extends
+	HandshakeMessageHandler<Message> {
 
+    @SuppressWarnings("unchecked")
     public CertificateRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = CertificateRequestMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) CertificateRequestMessage.class;
     }
 
     @Override

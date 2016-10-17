@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -32,7 +33,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * type of the protocol message class
      */
-    protected Class<? extends ProtocolMessage> correctProtocolMessageClass;
+    protected Class<? extends Message> correctProtocolMessageClass;
 
     /**
      * 
@@ -156,8 +157,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public void initializeProtocolMessage() {
 
 	try {
-	    Constructor c = correctProtocolMessageClass.getConstructor();
-	    Message pm = (Message) c.newInstance();
+	    Constructor<? extends Message> c = correctProtocolMessageClass.getConstructor();
+	    Message pm = c.newInstance();
 	    this.protocolMessage = pm;
 	} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException
 		| InvocationTargetException | NoSuchMethodException ex) {
@@ -175,7 +176,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * @param protocolMessage
      */
-    public void setProtocolMessage(Message protocolMessage) {
-	this.protocolMessage = protocolMessage;
+    @SuppressWarnings("unchecked")
+    public void setProtocolMessage(ProtocolMessage protocolMessage) {
+	this.protocolMessage = (Message) protocolMessage;
     }
 }

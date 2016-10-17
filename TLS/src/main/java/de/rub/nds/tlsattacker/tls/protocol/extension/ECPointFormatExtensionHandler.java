@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension;
 
+import java.util.Arrays;
+
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -46,7 +47,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
 
 	extension.setExtensionType(ExtensionType.EC_POINT_FORMATS.getValue());
 	extension.setPointFormats(pointFormats);
-	extension.setPointFormatsLength(pointFormats.length);
+	extension.setPointFormatsLength(pointFormats != null ? pointFormats.length : 0);
 	extension.setExtensionLength(extension.getPointFormatsLength().getValue() + EC_POINT_FORMATS_LENGTH);
 
 	byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),

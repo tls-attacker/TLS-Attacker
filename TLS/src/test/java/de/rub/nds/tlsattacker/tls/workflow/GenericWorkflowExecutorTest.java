@@ -8,13 +8,21 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
+
+import org.junit.Test;
+
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
@@ -23,11 +31,6 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.util.LinkedList;
-import java.util.List;
-import mockit.Mocked;
-import mockit.NonStrictExpectations;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -56,7 +59,7 @@ public class GenericWorkflowExecutorTest {
      * @param mockedTlsContext
      */
     @Test
-    public void testPrepareMyProtocolMessageBytes(@Mocked final ProtocolMessageHandler mockedHandler,
+    public void testPrepareMyProtocolMessageBytes(@Mocked final ProtocolMessageHandler<? extends ProtocolMessage> mockedHandler,
 	    @Mocked final ProtocolMessage mockedProtocolMessageMessage, @Mocked final TlsContext mockedTlsContext) {
 	// Record expectations if/as needed:
 	new NonStrictExpectations() {

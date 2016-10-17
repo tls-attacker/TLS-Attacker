@@ -24,7 +24,6 @@ import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateParsingException;
-import java.util.Arrays;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;

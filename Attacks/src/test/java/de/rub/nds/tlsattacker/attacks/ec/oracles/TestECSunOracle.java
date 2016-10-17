@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
 import de.rub.nds.tlsattacker.attacks.ec.oracles.ECOracle;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
 import java.math.BigInteger;

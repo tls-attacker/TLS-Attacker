@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 
 /**
@@ -23,13 +23,13 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion;
+    ModifiableByteArray protocolVersion = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableByte cookieLength;
+    ModifiableByte cookieLength = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    ModifiableByteArray cookie;
+    ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
 	super(HandshakeMessageType.HELLO_VERIFY_REQUEST);

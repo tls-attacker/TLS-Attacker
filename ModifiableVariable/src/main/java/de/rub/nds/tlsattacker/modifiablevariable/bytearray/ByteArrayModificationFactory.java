@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +15,11 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 
 final public class ByteArrayModificationFactory {
     
@@ -121,7 +122,7 @@ final public class ByteArrayModificationFactory {
 	return new ByteArrayShuffleModification(shuffle);
     }
 
-    public static List<VariableModification<byte[]>> modificationsFromFile() {
+    public static synchronized List<VariableModification<byte[]>> modificationsFromFile() {
         try {
             if (modificationsFromFile == null) {
                 modificationsFromFile = new LinkedList<>();
