@@ -13,14 +13,32 @@ import java.io.IOException;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public interface TransportHandler {
+public abstract class TransportHandler {
 
-    void closeConnection();
+    long lastSystemNano;
 
-    byte[] fetchData() throws IOException;
+    long lastMeasurement;
 
-    void initialize(String address, int port) throws IOException;
+    boolean measuringTiming;
 
-    void sendData(byte[] data) throws IOException;
+    public abstract void closeConnection();
+
+    public abstract byte[] fetchData() throws IOException;
+
+    public abstract void initialize(String address, int port) throws IOException;
+
+    public abstract void sendData(byte[] data) throws IOException;
+
+    public void measureTiming(boolean b) {
+        measuringTiming = b;
+    }
+
+    public long getLastMeasurement() {
+        return lastMeasurement;
+    }
+
+    public boolean isMeasuringTiming() {
+        return measuringTiming;
+    }
 
 }

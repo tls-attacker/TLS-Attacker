@@ -23,22 +23,31 @@ public class Lucky13CommandConfig extends ClientCommandConfig {
 
     @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
     Integer blockSize = 16;
-    
+
     @Parameter(names = "-measurements", description = "Number of timing measurement iterations")
     Integer measurements = 100;
 
+    @Parameter(names = "-mona_file", description = "File output for Mona timing lib. If set, the output is generated and written.")
+    String monaFile;
+
+    @Parameter(names = "-paddings", description = "Paddings to check for differences, column separated.")
+    String paddings = "0,255";
+
+    @Parameter(names = "-blocks", description = "Number of blocks to encrypt (default is set to the value from the Lucky 13 paper, Section 3)")
+    Integer blocks = 18;
+
     public Lucky13CommandConfig() {
-	cipherSuites = new LinkedList<>();
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+        cipherSuites = new LinkedList<>();
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
     }
 
     public Integer getBlockSize() {
-	return blockSize;
+        return blockSize;
     }
 
     public void setBlockSize(Integer blockSize) {
-	this.blockSize = blockSize;
+        this.blockSize = blockSize;
     }
 
     public Integer getMeasurements() {
@@ -47,6 +56,30 @@ public class Lucky13CommandConfig extends ClientCommandConfig {
 
     public void setMeasurements(Integer measurements) {
         this.measurements = measurements;
+    }
+
+    public String getMonaFile() {
+        return monaFile;
+    }
+
+    public void setMonaFile(String monaFile) {
+        this.monaFile = monaFile;
+    }
+
+    public String getPaddings() {
+        return paddings;
+    }
+
+    public void setPaddings(String paddings) {
+        this.paddings = paddings;
+    }
+
+    public Integer getBlocks() {
+        return blocks;
+    }
+
+    public void setBlocks(Integer blocks) {
+        this.blocks = blocks;
     }
 
 }
