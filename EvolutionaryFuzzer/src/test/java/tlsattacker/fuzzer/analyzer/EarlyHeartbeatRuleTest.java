@@ -59,7 +59,7 @@ public class EarlyHeartbeatRuleTest {
     }
 
     /**
-     * Test of applys method, of class EarlyHeartbeatRule.
+     * Test of applies method, of class EarlyHeartbeatRule.
      */
     @Test
     public void testApplys() {
@@ -70,10 +70,10 @@ public class EarlyHeartbeatRuleTest {
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "unittest.id");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applys(result));
+	assertTrue(rule.applies(result));
 	trace.add(new ReceiveAction(new FinishedMessage()));
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applys(result));
+	assertTrue(rule.applies(result));
 	trace = new WorkflowTrace();
 	trace.add(new SendAction(new ClientHelloMessage()));
 	trace.add(new ReceiveAction(new FinishedMessage()));
@@ -81,21 +81,21 @@ public class EarlyHeartbeatRuleTest {
 	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "unittest.id");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result));
+	assertFalse(rule.applies(result));
 	trace = new WorkflowTrace();
 	trace.add(new SendAction(new ClientHelloMessage()));
 	trace.add(new ReceiveAction(new FinishedMessage()));
 	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "unittest.id");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result));
+	assertFalse(rule.applies(result));
 	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "unittest.id");
 	trace = new WorkflowTrace();
 	trace.add(new SendAction(new ClientHelloMessage()));
 	trace.add(new ReceiveAction(new ServerHelloMessage()));
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result));
+	assertFalse(rule.applies(result));
     }
 
     /**

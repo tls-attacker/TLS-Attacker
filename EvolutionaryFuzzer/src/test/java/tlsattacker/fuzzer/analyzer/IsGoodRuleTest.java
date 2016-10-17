@@ -53,7 +53,7 @@ public class IsGoodRuleTest {
     }
 
     /**
-     * Test of applys method, of class IsGoodRule.
+     * Test of applies method, of class IsGoodRule.
      */
     @Test
     public void testApplys() {
@@ -69,20 +69,20 @@ public class IsGoodRuleTest {
 	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
 		ExecutorType.TLS, null), "unit1.test");
-	assertTrue(rule.applys(result));
-	assertFalse(rule.applys(result)); // The same trace should not apply
+	assertTrue(rule.applies(result));
+	assertFalse(rule.applies(result)); // The same trace should not apply
 					  // twice
 	tempEdge = new Edge(1, 3);
 	edgeMap.put(tempEdge, tempEdge);
 	trace = new BranchTrace(verticesSet, edgeMap);
 	result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
 		ExecutorType.TLS, null), "unit1.test");
-	assertTrue(rule.applys(result));
+	assertTrue(rule.applies(result));
 	verticesSet.add(4l);
 	trace = new BranchTrace(verticesSet, edgeMap);
 	result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
 		ExecutorType.TLS, null), "unit1.test");
-	assertTrue(rule.applys(result));
+	assertTrue(rule.applies(result));
     }
 
     /**
@@ -125,7 +125,7 @@ public class IsGoodRuleTest {
 	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
 	Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
 		ExecutorType.TLS, null), "unit1.test");
-	rule.applys(result);
+	rule.applies(result);
 	trace = rule.getBranchTrace();
 	assertNotNull(result);
 

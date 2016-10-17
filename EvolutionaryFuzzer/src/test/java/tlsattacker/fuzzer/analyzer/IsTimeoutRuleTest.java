@@ -47,16 +47,16 @@ public class IsTimeoutRuleTest {
     }
 
     /**
-     * Test of applys method, of class IsCrashRule.
+     * Test of applies method, of class IsCrashRule.
      */
     @Test
     public void testApplys() {
 	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
 		null, ExecutorType.TLS, null), "unit3.test");
-	assertTrue(rule.applys(result));
+	assertTrue(rule.applies(result));
 	result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
 		ExecutorType.TLS, null), "unit3.test");
-	assertFalse(rule.applys(result));
+	assertFalse(rule.applies(result));
 
     }
 

@@ -55,7 +55,7 @@ public class UniqueFlowsRuleTest {
     }
 
     /**
-     * Test of applys method, of class UniqueFlowsRule.
+     * Test of applies method, of class UniqueFlowsRule.
      */
     @Test
     public void testApplys() {
@@ -64,9 +64,9 @@ public class UniqueFlowsRuleTest {
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "tes2t.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applys(result));// Should apply since its the first time
+	assertTrue(rule.applies(result));// Should apply since its the first time
 					// the rule has seen this tracetype
-	assertTrue(rule.applys(result));// Should not apply since its the second
+	assertTrue(rule.applies(result));// Should not apply since its the second
 					// time the rule has seen this tracetype
 
     }

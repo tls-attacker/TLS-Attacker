@@ -71,12 +71,12 @@ public class AnalyzeModificationRuleTest {
     }
 
     /**
-     * Test of applys method, of class AnalyzeModificationRule.
+     * Test of applies method, of class AnalyzeModificationRule.
      */
     @Test
     public void testApplys() {
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
-	assertTrue(rule.applys(result));
+	assertTrue(rule.applies(result));
     }
 
     /**

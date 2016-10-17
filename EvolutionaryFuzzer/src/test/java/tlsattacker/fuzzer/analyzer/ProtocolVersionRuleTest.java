@@ -56,7 +56,7 @@ public class ProtocolVersionRuleTest {
     }
 
     /**
-     * Test of applys method, of class ProtocolVersionRule.
+     * Test of applies method, of class ProtocolVersionRule.
      */
     @Test
     public void testApplys() {
@@ -67,46 +67,46 @@ public class ProtocolVersionRuleTest {
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "test.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result));
+	assertFalse(rule.applies(result));
 	ServerHelloMessage serverHello = new ServerHelloMessage();
 	trace.add(new ReceiveAction(serverHello));
 	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result));
+	assertFalse(rule.applies(result));
 	serverHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-	assertTrue(rule.applys(result)); // This is not the highest support
+	assertTrue(rule.applies(result)); // This is not the highest support
 					 // version
 	clientHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-	assertFalse(rule.applys(result)); // This should not apply, since the
+	assertFalse(rule.applies(result)); // This should not apply, since the
 					  // client
 					  // also only support tls1.1
 	clientHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	assertTrue(rule.applys(result)); // This should appyl since SSL2 is on
+	assertTrue(rule.applies(result)); // This should appyl since SSL2 is on
 					 // the blacklist and should never be
 					 // negotiated
 	serverHello.setProtocolVersion(new byte[] { 31, 24 });
-	assertTrue(rule.applys(result)); // This should apply, since the
+	assertTrue(rule.applies(result)); // This should apply, since the
 					 // ServerVersion is not standart
 	clientHello.setProtocolVersion(new byte[] { 22, 34 });
-	assertTrue(rule.applys(result)); // This should apply, since the
+	assertTrue(rule.applies(result)); // This should apply, since the
 					 // ServerVersion is not standart
 	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	clientHello.setProtocolVersion(new byte[] { 4 });
-	assertTrue(rule.applys(result)); // This should apply, since the client
+	assertTrue(rule.applies(result)); // This should apply, since the client
 					 // field size is too short
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	serverHello.setProtocolVersion(new byte[] { 4 });
-	assertTrue(rule.applys(result)); // This should apply, since the client
+	assertTrue(rule.applies(result)); // This should apply, since the client
 					 // field size is too short
 	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	clientHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
-	assertTrue(rule.applys(result)); // TLS DTLS MISMATCH
-	assertTrue(rule.applys(result)); // This should apply, since the client
+	assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
+	assertTrue(rule.applies(result)); // This should apply, since the client
 					 // field size is too short
 	serverHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	assertTrue(rule.applys(result)); // TLS DTLS MISMATCH
+	assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
 
     }
 

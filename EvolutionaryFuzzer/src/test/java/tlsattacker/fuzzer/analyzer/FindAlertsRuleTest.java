@@ -56,7 +56,7 @@ public class FindAlertsRuleTest {
     }
 
     /**
-     * Test of applys method, of class FindAlertsRule.
+     * Test of applies method, of class FindAlertsRule.
      */
     @Test
     public void testApplys() {
@@ -67,27 +67,27 @@ public class FindAlertsRuleTest {
 	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "unittest.id");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result)); // Should not apply cause it has no
+	assertFalse(rule.applies(result)); // Should not apply cause it has no
 	// alert message
 	AlertMessage message = new AlertMessage();
 	message.setDescription((byte) 0xFE);
 	trace.add(new SendAction(message));
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result)); // Should not apply cause the alert
+	assertFalse(rule.applies(result)); // Should not apply cause the alert
 	// message is sent by the client
 	message = new AlertMessage();
 	message.setDescription((byte) 20);
 	trace.add(new ReceiveAction(message));
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applys(result)); // Should not apply since the alert
+	assertFalse(rule.applies(result)); // Should not apply since the alert
 	// Message is on the WhiteList
 	message.setDescription((byte) 127);
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applys(result)); // Should apply since the description
+	assertTrue(rule.applies(result)); // Should apply since the description
 	// // is not on the whitelist
 	message.setDescription((byte) 60);
 
-	assertTrue(rule.applys(result)); // Should apply since the description
+	assertTrue(rule.applies(result)); // Should apply since the description
 	// is on the blacklist
 
     }
@@ -120,9 +120,9 @@ public class FindAlertsRuleTest {
 	trace.add(new ReceiveAction(message));
 	WorkFlowTraceFakeExecuter.execute(trace);
 
-	assertTrue(rule.applys(result)); // Should apply since it is the first
+	assertTrue(rule.applies(result)); // Should apply since it is the first
 	rule.onApply(result); // time the rule sees the alert code
-	assertFalse(rule.applys(result)); // Should not apply since the rule has
+	assertFalse(rule.applies(result)); // Should not apply since the rule has
 	// already seen the alert code
     }
 
