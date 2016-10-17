@@ -200,10 +200,15 @@
     
     <profiles>
         <profile>
-            <id>travis</id>
             <properties>
                 <exclude.tests>**/TlsClientTest.java</exclude.tests>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>extended</id>
         </profile>
     </profiles>
 </project>
