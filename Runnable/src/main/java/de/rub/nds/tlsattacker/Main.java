@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfi
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
@@ -36,6 +38,7 @@ import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
+import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attack;
 import de.rub.nds.tlsattacker.attacks.impl.ManInTheMiddleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
@@ -86,6 +89,8 @@ public class Main {
         jc.addCommand(InvalidCurveAttackFullCommandConfig.ATTACK_COMMAND, elliptic);
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
         jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
+        Lucky13CommandConfig lucky13 = new Lucky13CommandConfig();
+        jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
         PaddingOracleCommandConfig paddingOracle = new PaddingOracleCommandConfig();
         jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
         PoodleCommandConfig poodle = new PoodleCommandConfig();
@@ -150,6 +155,9 @@ public class Main {
                 break;
             case HeartbleedCommandConfig.ATTACK_COMMAND:
                 attacker = new HeartbleedAttack(heartbleed);
+                break;
+            case Lucky13CommandConfig.ATTACK_COMMAND:
+                attacker = new Lucky13Attack(lucky13);
                 break;
             case PoodleCommandConfig.ATTACK_COMMAND:
                 attacker = new PoodleAttack(poodle);
