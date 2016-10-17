@@ -25,7 +25,7 @@ public class RuleAnalyzer extends Analyzer {
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;
 	ruleList = new LinkedList<Rule>();
-	// THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
+	//THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
 	ruleList.add(new IsGoodRule(config));
 	ruleList.add(new FindAlertsRule(config));
 	ruleList.add(new IsCrashRule(config));
