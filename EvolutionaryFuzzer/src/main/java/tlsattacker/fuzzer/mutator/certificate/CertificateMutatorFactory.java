@@ -18,7 +18,7 @@ public class CertificateMutatorFactory {
     public static CertificateMutator getCertificateMutator(EvolutionaryFuzzerConfig config)
 	    throws IllegalCertificateMutatorException {
 	switch (config.getCertMutator()) {
-	    case "fixed":
+            case FixedCertificateMutator.optionName:
 		return new FixedCertificateMutator();
 	    default:
 		throw new IllegalCertificateMutatorException("Illegal Value for Certificate Mutator:"

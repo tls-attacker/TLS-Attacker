@@ -39,6 +39,7 @@ public class BlindAgent extends Agent {
 
     private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
+    public static final String optionName = "BLIND";
     // Is a fuzzing Progress Running?
     protected boolean running = false;
     // StartTime of the last Fuzzing Vektor

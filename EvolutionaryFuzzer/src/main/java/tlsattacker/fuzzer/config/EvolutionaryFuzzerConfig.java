@@ -11,6 +11,10 @@ import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 import java.io.File;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
+import tlsattacker.fuzzer.controller.CommandLineController;
+import tlsattacker.fuzzer.mutator.NoneMutator;
+import tlsattacker.fuzzer.mutator.SimpleMutator;
+import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * A Config File which controls the EvolutionaryFuzzer.
@@ -33,9 +37,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private String archiveFolder = "./archive/";
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
-    @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors (Default: simple). Possible: simple")
-    private String mutator = "simple";
-    @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates (Default: fixed). Possible: fixed")
+    @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors. Possible: "+SimpleMutator.optionName+", "+NoneMutator.optionName+"")
+    private String mutator = SimpleMutator.optionName;
+    @Parameter(names = "-controller", description = "The Controller that is used to communicate with the Operator. Possible: "+CommandLineController.optionName)
+    private String controller = CommandLineController.optionName;
+    @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates. Possible: "+FixedCertificateMutator.optionName)
     private String certMutator = "fixed";
     @Parameter(names = "-no_old", description = "The mutator wont run WorkflowTraces he finds in the Good WorkflowTrace Folder, before he starts generating new Mutations")
     private boolean noOld = false;
@@ -43,7 +49,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean startStopped = false;
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
-
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
     private boolean injectPinChild = true;
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
@@ -53,6 +58,16 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
 
+    public String getController()
+    {
+        return controller;
+    }
+
+    public void setController(String controller)
+    {
+        this.controller = controller;
+    }
+    
     public ActionExecutorTypeConfig getActionExecutorConfig() {
 	return actionExecutorConfig;
     }

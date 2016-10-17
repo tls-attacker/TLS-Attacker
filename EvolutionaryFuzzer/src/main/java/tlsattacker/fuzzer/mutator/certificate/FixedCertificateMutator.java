@@ -41,6 +41,8 @@ public class FixedCertificateMutator extends CertificateMutator {
     private Random r;
     private final String configFileName = "fixed_cert.config";
 
+    public static final String optionName = "fixed";
+    
     public FixedCertificateMutator() {
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
 	File f = new File(evoConfig.getCertificateMutatorConfigFolder() + configFileName);

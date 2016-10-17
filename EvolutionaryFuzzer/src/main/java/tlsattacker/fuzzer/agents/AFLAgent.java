@@ -39,6 +39,7 @@ public class AFLAgent extends Agent {
 
     private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
+    public static final String optionName = "AFL";
     // Is a fuzzing Progress Running?
     protected boolean running = false;
     // StartTime of the last Fuzzing Vektor

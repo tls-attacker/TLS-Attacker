@@ -47,6 +47,7 @@ public class CommandLineController extends Controller {
 
     private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
 
+    public static final String optionName = "commandline";
     // Chosen Mutator
     private final Mutator mutator;
     // Chosen Certificate Mutator

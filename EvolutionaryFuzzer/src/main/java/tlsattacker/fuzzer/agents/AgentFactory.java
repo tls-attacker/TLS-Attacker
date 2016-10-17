@@ -18,11 +18,11 @@ public class AgentFactory {
 
     public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
 	switch (config.getAgent()) {
-	    case "AFL":
+	    case AFLAgent.optionName:
 		return new AFLAgent(keypair);
-	    case "PIN":
+	    case PINAgent.optionName:
 		return new PINAgent(keypair);
-	    case "BLIND":
+	    case BlindAgent.optionName:
 		return new BlindAgent(keypair);
 	    default:
 		throw new RuntimeException("Could not find Agent!");

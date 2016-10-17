@@ -36,6 +36,7 @@ public class PINAgent extends Agent {
 
     private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
+    public static final String optionName = "PIN";
     // Is a fuzzing Progress Running?
     protected boolean running = false;
     // StartTime of the last Fuzzing Vektor

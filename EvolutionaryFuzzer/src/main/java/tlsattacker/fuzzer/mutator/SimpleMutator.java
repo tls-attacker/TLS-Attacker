@@ -43,6 +43,7 @@ public class SimpleMutator extends Mutator {
 
     private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 
+    public static final String optionName = "simple";
     private SimpleMutatorConfig simpleConfig;
 
     /**

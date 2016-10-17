@@ -44,6 +44,7 @@ public class NoneMutator extends Mutator
 
     private static final Logger LOG = Logger.getLogger(NoneMutator.class.getName());
 
+    public static final String optionName = "none";
     private SimpleMutatorConfig simpleConfig;
 
     /**

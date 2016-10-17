@@ -20,6 +20,8 @@ public class RuleAnalyzer extends Analyzer {
     private List<Rule> ruleList;
     private EvolutionaryFuzzerConfig config;
 
+    public static final String optionName = "rule";
+    
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;
 	ruleList = new LinkedList<Rule>();

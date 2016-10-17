@@ -63,6 +63,7 @@ public class TLSExecutor extends Executor {
 
     private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 
+    public static final String optionName = "tlsexecutor";
     private final TestVector testVector;
     private final TLSServer server;
     private final Agent agent;
