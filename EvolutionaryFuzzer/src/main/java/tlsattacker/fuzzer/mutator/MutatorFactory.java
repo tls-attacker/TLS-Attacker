@@ -21,6 +21,8 @@ public class MutatorFactory {
 	switch (config.getMutator()) {
 	    case "simple":
 		return new SimpleMutator(config, certMutator);
+            case "none":
+                return new NoneMutator(config, certMutator);
 	    default:
 		throw new IllegalMutatorException("Illegal Value for Mutator:" + config.getMutator());
 
