@@ -130,7 +130,6 @@ public class PINAgent extends Agent {
 			continue;
 		    }
 		    String[] split = line.split("\\s+");
-		    // TODO nur notlösung
 		    long src;
 		    if (split[0].equals("0xffffffffffffffff")) {
 			src = Long.MAX_VALUE;
