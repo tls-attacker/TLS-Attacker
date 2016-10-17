@@ -65,11 +65,11 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testOnApply() {
-	// TODO we dont check if the file is actually created
 	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
 		null, ExecutorType.TLS, null), "unit3.test");
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        
     }
 
     /**
