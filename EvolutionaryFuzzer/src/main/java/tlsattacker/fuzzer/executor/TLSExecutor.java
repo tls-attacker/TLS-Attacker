@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.executor;
 import tlsattacker.fuzzer.agents.Agent;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.exceptions.TimeoutException;
+import tlsattacker.fuzzer.exceptions.ServerDoesNotStartException;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -165,8 +165,8 @@ public class TLSExecutor extends Executor {
 		workflowExecutor.executeWorkflow();
 	    } catch (UnsupportedOperationException E) {
 		// Skip Workflows we dont support yet
-	    } catch (TimeoutException E) {
-		timeout = true;
+	    } catch (ServerDoesNotStartException E) {
+		timeout = true; //TODO
 	    } catch (Throwable E) {
 		File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
 			+ LogFileIDManager.getInstance().getFilename());

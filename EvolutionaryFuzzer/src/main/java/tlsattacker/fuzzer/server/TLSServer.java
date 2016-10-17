@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.server;
 
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.exceptions.TimeoutException;
+import tlsattacker.fuzzer.exceptions.ServerDoesNotStartException;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
@@ -215,7 +215,7 @@ public final class TLSServer {
 		    if (System.currentTimeMillis() - time >= 50000) { // TODO
 								      // put in
 								      // config
-			throw new TimeoutException("Timeout in StreamGobler, Server never finished starting");
+			throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
 		    }
 		}
 	    } catch (IOException t) {
