@@ -14,7 +14,7 @@ make
 cd ..
 cd implementations/openssl
 ./config -fsanitize=address --prefix=`pwd`/openssl/ --openssldir=`pwd`/openssl/ no-shared -funroll-loops -Wall -D_FORTIFY_SOURCE=2 -g -Wno-pointer-sign
-make -j10
+make
 make install
 cd ..
 cd openssl_afl
