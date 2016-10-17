@@ -212,9 +212,7 @@ public final class TLSServer {
 		    } catch (InterruptedException ex) {
 			Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
 		    }
-		    if (System.currentTimeMillis() - time >= 50000) { // TODO
-								      // put in
-								      // config
+		    if (System.currentTimeMillis() - time >= ConfigManager.getInstance().getConfig().getBootTimeout()) {	     
 			throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
 		    }
 		}

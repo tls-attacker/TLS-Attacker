@@ -53,10 +53,22 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean injectPinChild = true;
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
     private boolean certMutatorSelftest = false;
-
+    @Parameter(names = "-boot_timeout", description = "The time the fuzzer maximal waits till the implementation boots up.")
+    private Integer bootTimeout = 50000;
+    
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
+
+    public Integer getBootTimeout()
+    {
+        return bootTimeout;
+    }
+
+    public void setBootTimeout(Integer bootTimeout)
+    {
+        this.bootTimeout = bootTimeout;
+    }
 
     public String getController()
     {
