@@ -45,6 +45,7 @@ import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
+import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
