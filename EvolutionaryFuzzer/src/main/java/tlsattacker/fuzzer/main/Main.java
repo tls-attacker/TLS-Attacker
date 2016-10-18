@@ -12,7 +12,6 @@ import tlsattacker.fuzzer.config.CalibrationConfig;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.controller.CommandLineController;
-import tlsattacker.fuzzer.executor.DebugExecutor;
 import tlsattacker.fuzzer.controller.Controller;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.ExecuteFaultyConfig;
@@ -20,7 +19,6 @@ import tlsattacker.fuzzer.config.ServerConfig;
 import tlsattacker.fuzzer.config.TraceTypesConfig;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
-import tlsattacker.fuzzer.flowui.GraphWindow;
 import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -38,9 +36,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
+import tlsattacker.fuzzer.agents.AgentFactory;
 import tlsattacker.fuzzer.config.TestCrashesConfig;
+import tlsattacker.fuzzer.executor.TLSExecutor;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
-import tlsattacker.fuzzer.result.Result;
 import weka.core.Utils;
 
 /**
@@ -103,30 +102,31 @@ public class Main {
 		    List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 
 		    LOG.log(Level.INFO, "Fininshed reading.");
-		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateTypeList(vectors,
+		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
 			    ConnectionEnd.CLIENT);
-
 		    LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
-
-		    set = WorkflowTraceTypeManager.generateCleanTypeList(vectors, ConnectionEnd.CLIENT);
-
-		    LOG.log(Level.INFO, "Found " + set.size() + " different clean TraceTypes");
-		    // AutomataWindow.showWindow(WorkflowAutomataBuilder.generateWorkflowAutomata(set));
-		    DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
-		    GraphWindow.showWindow(graph);
+                    DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
+		    LOG.log(Level.INFO, "Printing out graph in .DOT format.");
+                    String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
+                    LOG.log(Level.INFO,dotFormat);
 		} else {
 		    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:" + f.getAbsolutePath());
 		}
 		break;
 	    case "execute-faulty":
+                ConfigManager.getInstance().setConfig(faultyConfig);
 		ServerManager manager = ServerManager.getInstance();
 		manager.init(faultyConfig);
-		f = new File(evoConfig.getOutputFaultyFolder());
+		f = new File(faultyConfig.getOutputFaultyFolder());
 		List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 		for (TestVector vector : vectors) {
 		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
-		    DebugExecutor.execute(vector, evoConfig);
-		}
+		    vector.getTrace().reset();
+                    vector.getTrace().makeGeneric();
+                    TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(), AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
+                    Thread t  = new Thread(executor);
+                    t.start();
+                }
 		break;
 	    case "new-server":
 		TLSServer server = new TLSServer(serverConfig.getIp(), serverConfig.getPort(),
@@ -162,11 +162,11 @@ public class Main {
 		for (TestVector vector : vectors) {
 		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
 		    for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
-			Result r = DebugExecutor.execute(vector, evoConfig);
-			if (r != null && r.hasCrashed()) {
-			    LOG.log(Level.INFO, "Confirmed");
-			    continue;
-			}
+                        vector.getTrace().reset();
+			vector.getTrace().makeGeneric();
+                        TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(), AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
+			Thread t  = new Thread(executor);
+                        t.start();
 		    }
 		}
 		break;

@@ -20,6 +20,27 @@ import org.jgrapht.graph.ListenableDirectedGraph;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class WorkflowGraphBuilder {
+    public static String generateDOTGraph(Set <WorkflowTraceType> typeList)
+    {
+        String result = "digraph output{\n";
+        int vertexIndex = 0;
+	int uniquer = 0;
+        
+	
+        DirectedMultigraph<Integer, MessageFlow> graph = generateWorkflowGraph(typeList);
+	for(Integer i : graph.vertexSet())
+        {
+            result += ""+i + " [label=\""+i+"\"];\n";
+        }
+        for(MessageFlow flow : graph.edgeSet())
+        {
+            result += ""+graph.getEdgeSource(flow)+" -> " +graph.getEdgeTarget(flow)+" [label=\""+flow.toString()+"\"];\n";
+        }
+        result += "}";
+        
+
+	return result;
+    }
     public static DirectedMultigraph<Integer, MessageFlow> generateWorkflowGraph(Set<WorkflowTraceType> typeList) {
 	DirectedMultigraph<Integer, MessageFlow> graph = new DirectedMultigraph<>(MessageFlow.class);
 	int vertexIndex = 0;
