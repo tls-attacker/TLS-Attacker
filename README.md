@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v1.1-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v1.2-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
@@ -26,7 +26,7 @@ TLS-Attacker consists of several (maven) projects:
 - Attacks: Implementation of some well-known attacks and tests for these attacks.
 - Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
 
-![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/design.png)
+![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
 You can find more information about these modules in the Wiki.
 
