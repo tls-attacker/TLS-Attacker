@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
@@ -200,10 +200,15 @@
     
     <profiles>
         <profile>
-            <id>travis</id>
             <properties>
                 <exclude.tests>**/TlsClientTest.java</exclude.tests>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>extended</id>
         </profile>
     </profiles>
 </project>

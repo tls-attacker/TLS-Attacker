@@ -53,4 +53,6 @@ openssl pkcs12 -in ec256.p12 -out ec256key.pem -nocerts
 openssl ec -in ec256key.pem -out ec256key.pem
 
 
+You can also use the keygen.sh script to generate new keys.
+
 For more information on the different formats, see: http://web-in-security.blogspot.de/2015/11/playing-with-certificates-from.html
