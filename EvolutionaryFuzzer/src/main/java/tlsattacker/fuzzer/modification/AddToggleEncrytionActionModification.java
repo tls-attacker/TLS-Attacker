@@ -13,13 +13,25 @@ package tlsattacker.fuzzer.modification;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AddToggleEncrytionActionModification extends Modification {
+
+    /**
+     *
+     */
     private int actionPosition;
 
+    /**
+     *
+     * @param ActionPosition
+     */
     public AddToggleEncrytionActionModification(int ActionPosition) {
 	super(ModificationType.TOGGLE_ENCRYPTION);
 	this.actionPosition = actionPosition;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getActionPosition() {
 	return actionPosition;
     }

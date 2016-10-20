@@ -19,11 +19,23 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 public abstract class Controller {
 
     // The config used by the Fuzzer
-    protected EvolutionaryFuzzerConfig config;
+
+    /**
+     *
+     */
+        protected EvolutionaryFuzzerConfig config;
 
     // Is the Fuzzing Process running?
-    protected boolean isRunning;
 
+    /**
+     *
+     */
+        protected boolean isRunning;
+
+    /**
+     *
+     * @param config
+     */
     public Controller(EvolutionaryFuzzerConfig config) {
 	this.config = config;
     }
@@ -47,6 +59,9 @@ public abstract class Controller {
 	return isRunning;
     }
 
+    /**
+     *
+     */
     public abstract void startInterface();
 
 }

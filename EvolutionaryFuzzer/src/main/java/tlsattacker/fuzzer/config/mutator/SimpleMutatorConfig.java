@@ -11,90 +11,212 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class SimpleMutatorConfig implements Serializable {
 
+    /**
+     *
+     */
     private Integer modifyVariablePercentage = 50;
+
+    /**
+     *
+     */
     private Integer addRecordPercentage = 50;
+
+    /**
+     *
+     */
     private Integer addMessagePercentage = 20;
+
+    /**
+     *
+     */
     private Integer removeMessagePercentage = 1;
+
+    /**
+     *
+     */
     private Integer changeServerCertPercentage = -1;
+
+    /**
+     *
+     */
     private Integer changeClientCertPercentage = -1;
+
+    /**
+     *
+     */
     private Integer duplicateMessagePercentage = 1;
+
+    /**
+     *
+     */
     private Integer multipleModifications = 1;
+
+    /**
+     *
+     */
     private Integer addFlightPercentage = 50;
+
+    /**
+     *
+     */
     private Integer addToggleEncrytionPercentage = 2;
+
+    /**
+     *
+     */
     private Integer addContextActionPercentage = 4;
+
+    /**
+     *
+     */
     private Integer addExtensionMessagePercentage = 20;
 
+    /**
+     *
+     */
     public SimpleMutatorConfig() {
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getAddExtensionPercentage() {
         return addExtensionMessagePercentage;
     }
 
+    /**
+     *
+     * @param addExtensionMessagePercentage
+     */
     public void setAddExtensionMessagePercentage(Integer addExtensionMessagePercentage) {
         this.addExtensionMessagePercentage = addExtensionMessagePercentage;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getAddContextActionPercentage() {
         return addContextActionPercentage;
     }
 
+    /**
+     *
+     * @param addContextActionPercentage
+     */
     public void setAddContextActionPercentage(Integer addContextActionPercentage) {
         this.addContextActionPercentage = addContextActionPercentage;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getAddToggleEncrytionPercentage() {
 	return addToggleEncrytionPercentage;
     }
 
+    /**
+     *
+     * @param addToggleEncrytionPercentage
+     */
     public void setAddToggleEncrytionPercentage(Integer addToggleEncrytionPercentage) {
 	this.addToggleEncrytionPercentage = addToggleEncrytionPercentage;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getAddFlightPercentage() {
 	return addFlightPercentage;
     }
 
+    /**
+     *
+     * @param addFlightPercentage
+     */
     public void setAddFlightPercentage(Integer addFlightPercentage) {
 	this.addFlightPercentage = addFlightPercentage;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getMultipleModifications() {
 	return multipleModifications;
     }
 
+    /**
+     *
+     * @param multipleModifications
+     */
     public void setMultipleModifications(Integer multipleModifications) {
 	this.multipleModifications = multipleModifications;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getChangeServerCert() {
 	return changeServerCertPercentage;
     }
 
+    /**
+     *
+     * @param changeServerCert
+     */
     public void setChangeServerCert(Integer changeServerCert) {
 	this.changeServerCertPercentage = changeServerCert;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getChangeClientCertPercentage() {
 	return changeClientCertPercentage;
     }
 
+    /**
+     *
+     * @param changeClientCertPercentage
+     */
     public void setChangeClientCertPercentage(Integer changeClientCertPercentage) {
 	this.changeClientCertPercentage = changeClientCertPercentage;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getDuplicateMessagePercentage() {
 	return duplicateMessagePercentage;
     }
 
+    /**
+     *
+     * @param duplicateMessagePercentage
+     */
     public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
 	this.duplicateMessagePercentage = duplicateMessagePercentage;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getRemoveMessagePercentage() {
 	return removeMessagePercentage;
     }
 
+    /**
+     *
+     * @param removeMessagePercentage
+     */
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
 	this.removeMessagePercentage = removeMessagePercentage;
 	if (removeMessagePercentage > 100) {

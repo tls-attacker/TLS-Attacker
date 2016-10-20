@@ -15,19 +15,40 @@ import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ModifyFieldModification extends Modification {
+
+    /**
+     *
+     */
     private final String fieldName;
+
+    /**
+     *
+     */
     private final ModifiableVariableHolder modificationHolder;
 
+    /**
+     *
+     * @param fieldName
+     * @param modificationHolder
+     */
     public ModifyFieldModification(String fieldName, ModifiableVariableHolder modificationHolder) {
 	super(ModificationType.MODIFY_FIELD);
 	this.fieldName = fieldName;
 	this.modificationHolder = modificationHolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFieldName() {
 	return fieldName;
     }
 
+    /**
+     *
+     * @return
+     */
     public ModifiableVariableHolder getModificationHolder() {
 	return modificationHolder;
     }

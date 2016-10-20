@@ -26,11 +26,21 @@ import static org.junit.Assert.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsTimeoutRuleTest {
+
+    /**
+     *
+     */
     private IsTimeoutRule rule;
 
+    /**
+     *
+     */
     public IsTimeoutRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -39,6 +49,9 @@ public class IsTimeoutRuleTest {
 	rule = new IsTimeoutRule(config);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

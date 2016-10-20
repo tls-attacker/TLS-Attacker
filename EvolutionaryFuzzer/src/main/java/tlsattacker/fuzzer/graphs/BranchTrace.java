@@ -32,13 +32,29 @@ import tlsattacker.fuzzer.result.MergeResult;
  */
 public class BranchTrace implements Serializable {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 
     // A Map which maps ProbeIDs to Vertices to better Acess the Vertices in the
     // Graph
-    private Set<Long> verticesSet = null;
+
+    /**
+     *
+     */
+        private Set<Long> verticesSet = null;
+
+    /**
+     *
+     */
     private Map<Edge, Edge> edgeMap = null;
 
+    /**
+     *
+     * @param verticesSet
+     * @param edgeMap
+     */
     public BranchTrace(Set<Long> verticesSet, Map<Edge, Edge> edgeMap) {
         this.verticesSet = verticesSet;
         this.edgeMap = edgeMap;
@@ -53,14 +69,27 @@ public class BranchTrace implements Serializable {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public Set<Long> getVerticesSet() {
 	return Collections.unmodifiableSet(verticesSet);
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<Edge, Edge> getEdgeMap() {
 	return Collections.unmodifiableMap(edgeMap);
     }
 
+    /**
+     *
+     * @param trace
+     * @return
+     */
     public MergeResult merge(BranchTrace trace) {
 	int newVertices = 0;
 	int hitVertices = trace.verticesSet.size();
@@ -83,10 +112,18 @@ public class BranchTrace implements Serializable {
 	return new MergeResult(newVertices, newEdges, hitVertices);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getVerticesCount() {
 	return verticesSet.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getBranchCount() {
 	return edgeMap.size();
     }

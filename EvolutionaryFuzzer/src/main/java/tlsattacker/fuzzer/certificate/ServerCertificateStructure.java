@@ -17,31 +17,63 @@ import java.util.Objects;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerCertificateStructure implements Serializable {
+
+    /**
+     *
+     */
     private File keyFile;
+
+    /**
+     *
+     */
     private File certificateFile;
 
+    /**
+     *
+     * @param keyFile
+     * @param certificateFile
+     */
     public ServerCertificateStructure(File keyFile, File certificateFile) {
 	this.keyFile = keyFile;
 	this.certificateFile = certificateFile;
     }
 
+    /**
+     *
+     */
     public ServerCertificateStructure() {
 	this.keyFile = null;
 	this.certificateFile = null;
     }
 
+    /**
+     *
+     * @return
+     */
     public File getKeyFile() {
 	return keyFile;
     }
 
+    /**
+     *
+     * @param keyFile
+     */
     public void setKeyFile(File keyFile) {
 	this.keyFile = keyFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public File getCertificateFile() {
 	return certificateFile;
     }
 
+    /**
+     *
+     * @param certificateFile
+     */
     public void setCertificateFile(File certificateFile) {
 	this.certificateFile = certificateFile;
     }

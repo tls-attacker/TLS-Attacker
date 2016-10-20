@@ -35,13 +35,36 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProtocolVersionRule extends Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ProtocolVersionRule.class.getName());
 
+    /**
+     *
+     */
     private int found = 0;
+
+    /**
+     *
+     */
     private final ProtocolVersion highestTLSSupported;
+
+    /**
+     *
+     */
     private final ProtocolVersion highestDTLSSupported;
+
+    /**
+     *
+     */
     private ProtocolVersionRuleConfig config;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public ProtocolVersionRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "highest_version.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -58,6 +81,11 @@ public class ProtocolVersionRule extends Rule {
 	highestDTLSSupported = ProtocolVersion.DTLS12;
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	ProtocolVersion clientVersion = null;
@@ -116,6 +144,10 @@ public class ProtocolVersionRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	WorkflowTrace trace = result.getVector().getTrace();
@@ -147,10 +179,18 @@ public class ProtocolVersionRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 
@@ -161,6 +201,10 @@ public class ProtocolVersionRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ProtocolVersionRuleConfig getConfig() {
 	return config;

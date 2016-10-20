@@ -24,11 +24,26 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsCrashRule extends Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(IsCrashRule.class.getName());
 
+    /**
+     *
+     */
     private int found = 0;
+
+    /**
+     *
+     */
     private IsCrashRuleConfig config;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public IsCrashRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_crash.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -42,11 +57,20 @@ public class IsCrashRule extends Rule {
 	prepareConfigOutputFolder();
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
         return result.hasCrashed();
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	found++;
@@ -62,10 +86,18 @@ public class IsCrashRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	if (found > 0) {
@@ -75,6 +107,10 @@ public class IsCrashRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public IsCrashRuleConfig getConfig() {
 	return config;

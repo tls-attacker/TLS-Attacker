@@ -32,11 +32,21 @@ import static org.junit.Assert.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class UniqueFlowsRuleTest {
+
+    /**
+     *
+     */
     private UniqueFlowsRule rule;
 
+    /**
+     *
+     */
     public UniqueFlowsRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -45,6 +55,9 @@ public class UniqueFlowsRuleTest {
 	rule = new UniqueFlowsRule(config);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

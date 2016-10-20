@@ -24,6 +24,9 @@ import java.util.logging.Logger;
  */
 public class ServerManager {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 
     /**
@@ -35,8 +38,14 @@ public class ServerManager {
 	return ServerManagerHolder.INSTANCE;
     }
 
+    /**
+     *
+     */
     private ArrayList<TLSServer> serverList;
 
+    /**
+     *
+     */
     private ServerManager() {
 	serverList = new ArrayList<>();
     }
@@ -50,6 +59,10 @@ public class ServerManager {
 	serverList.add(server);
     }
 
+    /**
+     *
+     * @param config
+     */
     public void init(FuzzerGeneralConfig config) {
 	File file = new File(config.getServerCommandFromFile());
 	if (!file.exists()) {
@@ -135,10 +148,18 @@ public class ServerManager {
 	return serverList.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getServerCount() {
 	return serverList.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getFreeServerCount() {
 	int count = 0;
 	for (TLSServer server : serverList) {
@@ -149,15 +170,29 @@ public class ServerManager {
 	return serverList.size();
     }
 
+    /**
+     *
+     * @return
+     */
     public List<TLSServer> getAllServers() {
 	return Collections.unmodifiableList(serverList);
     }
 
     // Singleton
-    private static class ServerManagerHolder {
 
-	private static final ServerManager INSTANCE = new ServerManager();
+    /**
+     *
+     */
+        private static class ServerManagerHolder {
 
+        /**
+         *
+         */
+        private static final ServerManager INSTANCE = new ServerManager();
+
+        /**
+         *
+         */
         private ServerManagerHolder()
         {
         }

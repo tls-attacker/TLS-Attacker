@@ -15,13 +15,25 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AddExtensionModification extends Modification {
+
+    /**
+     *
+     */
     private ExtensionMessage message;
 
+    /**
+     *
+     * @param message
+     */
     public AddExtensionModification(ExtensionMessage message) {
 	super(ModificationType.ADD_EXTENSION);
 	this.message = message;
     }
 
+    /**
+     *
+     * @return
+     */
     public ExtensionMessage getMessage() {
 	return message;
     }

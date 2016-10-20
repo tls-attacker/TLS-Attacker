@@ -32,11 +32,30 @@ import tlsattacker.fuzzer.testvector.TestVector;
  */
 public class UniqueFlowsRule extends Rule {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRule.class.getName());
+
+    /**
+     *
+     */
     private UniqueFlowsRuleConfig config;
+
+    /**
+     *
+     */
     private final Set<WorkflowTraceType> typeSet;
+
+    /**
+     *
+     */
     private int found = 0;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public UniqueFlowsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "unique_flows.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -56,6 +75,11 @@ public class UniqueFlowsRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
@@ -65,6 +89,10 @@ public class UniqueFlowsRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 
@@ -89,15 +117,27 @@ public class UniqueFlowsRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	return "WorkflowTraceTypes observed:" + typeSet.size() + " WorkFlowTraceTypes found:" + found + "\n";
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public UniqueFlowsRuleConfig getConfig() {
 	return config;

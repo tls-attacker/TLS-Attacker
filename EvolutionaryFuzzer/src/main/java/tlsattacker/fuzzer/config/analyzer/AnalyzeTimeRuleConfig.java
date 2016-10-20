@@ -16,16 +16,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AnalyzeTimeRuleConfig extends RuleConfig {
 
+    /**
+     *
+     */
     private String outputFile = "timing.results";
 
+    /**
+     *
+     */
     public AnalyzeTimeRuleConfig() {
 	super(null);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getOutputFile() {
 	return outputFile;
     }
 
+    /**
+     *
+     * @param outputFile
+     */
     public void setOutputFile(String outputFile) {
 	this.outputFile = outputFile;
     }

@@ -17,13 +17,25 @@ import com.beust.jcommander.Parameters;
  */
 @Parameters(commandDescription = "Analyzes a Folder with TestVector Files and opens a GraphWindow with a report of the different TraceTypes")
 public class TraceTypesConfig {
+
+    /**
+     *
+     */
     @Parameter(names = "-output", description = "The Folder with the TestVectors which should be analyzed")
     String traceTypesFolder = "data/uniqueFlows";
 
+    /**
+     *
+     * @return
+     */
     public String getTraceTypesFolder() {
 	return traceTypesFolder;
     }
 
+    /**
+     *
+     * @param traceTypesFolder
+     */
     public void setTraceTypesFolder(String traceTypesFolder) {
 	this.traceTypesFolder = traceTypesFolder;
     }

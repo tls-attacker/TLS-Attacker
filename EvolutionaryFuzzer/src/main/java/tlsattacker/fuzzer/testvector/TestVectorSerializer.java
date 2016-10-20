@@ -45,6 +45,10 @@ public class TestVectorSerializer {
      * context initialization is expensive, we need to do that only once
      */
     private static JAXBContext context;
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(TestVectorSerializer.class.getName());
 
     /**
@@ -89,6 +93,7 @@ public class TestVectorSerializer {
     /**
      * 
      * @param outputStream
+     * @param vector
      * @param workflowTrace
      * @throws JAXBException
      * @throws IOException
@@ -121,6 +126,11 @@ public class TestVectorSerializer {
         return vector;
     }
 
+    /**
+     *
+     * @param f
+     * @return
+     */
     public static List<TestVector> readFolder(File f) {
         if (f.isDirectory()) {
             ArrayList<TestVector> list = new ArrayList<>();
@@ -147,6 +157,9 @@ public class TestVectorSerializer {
 
     }
 
+    /**
+     *
+     */
     private TestVectorSerializer() {
 
     }

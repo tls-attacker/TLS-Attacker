@@ -16,23 +16,47 @@ import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CalibrationConfig extends FuzzerGeneralConfig {
+
+    /**
+     *
+     */
     @Parameter(names = "-gain", required = false, description = "Increase Timeout by this factor")
     private double gain = 1.2;
+
+    /**
+     *
+     */
     @Parameter(names = "-limit", required = false, description = "Do not look for timeouts greater than this Limit", validateWith = PercentageValidator.class)
     private int timeoutLimit = 4000;
 
+    /**
+     *
+     * @return
+     */
     public double getGain() {
 	return gain;
     }
 
+    /**
+     *
+     * @param gain
+     */
     public void setGain(double gain) {
 	this.gain = gain;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTimeoutLimit() {
 	return timeoutLimit;
     }
 
+    /**
+     *
+     * @param timeoutLimit
+     */
     public void setTimeoutLimit(int timeoutLimit) {
 	this.timeoutLimit = timeoutLimit;
     }

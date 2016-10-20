@@ -17,23 +17,47 @@ import com.beust.jcommander.Parameters;
  */
 @Parameters(commandDescription = "Executes all TestVectors which crashed the Server while Fuzzing. This is useful to test if the Testvectors can reproduce the crash.")
 public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
+
+    /**
+     *
+     */
     @Parameter(names = "-crash_folder", required = false, description = "The Folder which contains the crashes that should be tested")
     private String crashFolder = "data/crash/";
+
+    /**
+     *
+     */
     @Parameter(names = "-execute_times", description = "How often the crashes should be executed before they are discarded")
     private int executeNumber = 100;
 
+    /**
+     *
+     * @return
+     */
     public String getCrashFolder() {
 	return crashFolder;
     }
 
+    /**
+     *
+     * @param crashFolder
+     */
     public void setCrashFolder(String crashFolder) {
 	this.crashFolder = crashFolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getExecuteNumber() {
 	return executeNumber;
     }
 
+    /**
+     *
+     * @param executeNumber
+     */
     public void setExecuteNumber(int executeNumber) {
 	this.executeNumber = executeNumber;
     }

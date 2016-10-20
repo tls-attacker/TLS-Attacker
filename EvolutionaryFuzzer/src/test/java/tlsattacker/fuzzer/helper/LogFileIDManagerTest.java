@@ -21,6 +21,10 @@ import org.junit.Test;
  * @author ic0ns
  */
 public class LogFileIDManagerTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(LogFileIDManagerTest.class.getName());
 
     /**

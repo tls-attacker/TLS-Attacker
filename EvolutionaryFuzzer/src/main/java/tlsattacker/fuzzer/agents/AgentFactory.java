@@ -16,6 +16,12 @@ import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
  */
 public class AgentFactory {
 
+    /**
+     *
+     * @param config
+     * @param keypair
+     * @return
+     */
     public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
 	switch (config.getAgent()) {
 	    case AFLAgent.optionName:
@@ -29,6 +35,9 @@ public class AgentFactory {
 	}
     }
 
+    /**
+     *
+     */
     private AgentFactory()
     {
     }

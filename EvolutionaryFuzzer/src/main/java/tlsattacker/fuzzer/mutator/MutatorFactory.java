@@ -17,6 +17,14 @@ import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MutatorFactory {
+
+    /**
+     *
+     * @param certMutator
+     * @param config
+     * @return
+     * @throws IllegalMutatorException
+     */
     public static Mutator getMutator(CertificateMutator certMutator, EvolutionaryFuzzerConfig config)
 	    throws IllegalMutatorException {
 	switch (config.getMutator()) {
@@ -30,6 +38,9 @@ public class MutatorFactory {
 	}
     }
 
+    /**
+     *
+     */
     private MutatorFactory()
     {
     }

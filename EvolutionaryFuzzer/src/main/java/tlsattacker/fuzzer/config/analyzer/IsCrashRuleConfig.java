@@ -17,6 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class IsCrashRuleConfig extends RuleConfig {
 
+    /**
+     *
+     */
     public IsCrashRuleConfig() {
 	super("crash/");
     }

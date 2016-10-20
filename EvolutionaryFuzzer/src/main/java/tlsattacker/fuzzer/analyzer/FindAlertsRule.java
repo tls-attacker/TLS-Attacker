@@ -31,12 +31,31 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FindAlertsRule extends Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(FindAlertsRule.class.getName());
 
+    /**
+     *
+     */
     private int found = 0;
+
+    /**
+     *
+     */
     private boolean[] alertMap = new boolean[Byte.MAX_VALUE];
+
+    /**
+     *
+     */
     private FindAlertsRuleConfig config;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public FindAlertsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "find_alerts.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -64,6 +83,11 @@ public class FindAlertsRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	WorkflowTrace trace = result.getVector().getTrace();
@@ -89,6 +113,10 @@ public class FindAlertsRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	WorkflowTrace trace = result.getVector().getTrace();
@@ -118,10 +146,18 @@ public class FindAlertsRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 
@@ -146,6 +182,10 @@ public class FindAlertsRule extends Rule {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public FindAlertsRuleConfig getConfig() {
 	return config;

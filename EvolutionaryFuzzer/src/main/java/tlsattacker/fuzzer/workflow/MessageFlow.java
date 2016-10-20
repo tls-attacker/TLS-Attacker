@@ -16,27 +16,60 @@ import java.util.Objects;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
+
+    /**
+     *
+     */
     private final Class<? extends Object> message;
+
+    /**
+     *
+     */
     private final ConnectionEnd issuer;
+
+    /**
+     *
+     */
     private int uniquer = 0;
 
+    /**
+     *
+     * @param message
+     * @param issuer
+     */
     public MessageFlow(Class<? extends Object> message, ConnectionEnd issuer) {
 	this.message = message;
 	this.issuer = issuer;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getUniquer() {
 	return uniquer;
     }
 
+    /**
+     *
+     * @param uniquer
+     */
     public void setUniquer(int uniquer) {
 	this.uniquer = uniquer;
     }
 
+    /**
+     *
+     * @return
+     */
     public Class<?> getMessage() {
 	return message;
     }
 
+    /**
+     *
+     * @return
+     */
     public ConnectionEnd getIssuer() {
 	return issuer;
     }

@@ -37,15 +37,45 @@ import tlsattacker.fuzzer.server.TLSServer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FixedCertificateMutator extends CertificateMutator {
+
+    /**
+     *
+     */
     public static final String optionName = "fixed";
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
+
+    /**
+     *
+     */
     private FixedCertificateMutatorConfig config;
+
+    /**
+     *
+     */
     private List<ClientCertificateStructure> clientCertList;
+
+    /**
+     *
+     */
     private List<ServerCertificateStructure> serverCertList;
+
+    /**
+     *
+     */
     private Random r;
+
+    /**
+     *
+     */
     private final String configFileName = "fixed_cert.config";
 
-    
+    /**
+     *
+     */
     public FixedCertificateMutator() {
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
 	File f = new File(evoConfig.getCertificateMutatorConfigFolder() + configFileName);
@@ -72,6 +102,9 @@ public class FixedCertificateMutator extends CertificateMutator {
 	}
     }
 
+    /**
+     *
+     */
     public void selfTest() {
 	LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
 	clientCertList = testClientCerts();
@@ -90,6 +123,10 @@ public class FixedCertificateMutator extends CertificateMutator {
 	LOG.log(Level.INFO, "Finished SelfTest");
     }
 
+    /**
+     *
+     * @return
+     */
     private List<ClientCertificateStructure> testClientCerts() {
 	List<ClientCertificateStructure> workingCerts = new LinkedList<>();
 	LOG.log(Level.INFO, "Testing Client Certificates");
@@ -105,6 +142,10 @@ public class FixedCertificateMutator extends CertificateMutator {
 	return workingCerts;
     }
 
+    /**
+     *
+     * @return
+     */
     private List<ServerCertificateStructure> testServerCerts() {
 	List<ServerCertificateStructure> workingCerts = new LinkedList<>();
 	ConfigHandlerFactory.createConfigHandler("client").initialize(new GeneralConfig());
@@ -161,24 +202,44 @@ public class FixedCertificateMutator extends CertificateMutator {
 	return workingCerts;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<ClientCertificateStructure> getClientCertList() {
 	return Collections.unmodifiableList(clientCertList);
     }
 
+    /**
+     *
+     * @return
+     */
     public List<ServerCertificateStructure> getServerPairList() {
 	return Collections.unmodifiableList(serverCertList);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ClientCertificateStructure getClientCertificateStructure() {
 	return clientCertList.get(r.nextInt(clientCertList.size()));
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ServerCertificateStructure getServerCertificateStructure() {
 	return serverCertList.get(r.nextInt(serverCertList.size()));
     }
 
+    /**
+     *
+     * @param file
+     */
     public void serialize(File file) {
 	if (!file.exists()) {
 	    try {
@@ -190,6 +251,11 @@ public class FixedCertificateMutator extends CertificateMutator {
 	JAXB.marshal(config, file);
     }
 
+    /**
+     *
+     * @param structure
+     * @return
+     */
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
         return serverCertList.contains(structure);

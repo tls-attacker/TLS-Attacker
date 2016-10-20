@@ -30,15 +30,46 @@ import tlsattacker.fuzzer.modification.Modification;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TestVector implements Serializable {
 
+    /**
+     *
+     */
     private WorkflowTrace trace = null;
+
+    /**
+     *
+     */
     private ServerCertificateStructure serverKeyCert = null;
+
+    /**
+     *
+     */
     private ClientCertificateStructure clientKeyCert = null;
+
+    /**
+     *
+     */
     @XmlTransient
     private TestVector parent = null;
+
+    /**
+     *
+     */
     @XmlTransient
     private List<Modification> modificationList = null;
+
+    /**
+     *
+     */
     private ExecutorType executorType;
 
+    /**
+     *
+     * @param trace
+     * @param keyCertPair
+     * @param clientKeyCert
+     * @param executorType
+     * @param parent
+     */
     public TestVector(WorkflowTrace trace, ServerCertificateStructure keyCertPair,
 	    ClientCertificateStructure clientKeyCert, ExecutorType executorType, TestVector parent) {
 	this.trace = trace;
@@ -49,48 +80,91 @@ public class TestVector implements Serializable {
 	this.executorType = executorType;
     }
 
+    /**
+     *
+     */
     public TestVector() {
 	modificationList = new LinkedList<>();
     }
 
+    /**
+     *
+     * @return
+     */
     public ExecutorType getExecutorType() {
 	return executorType;
     }
 
+    /**
+     *
+     * @param executorType
+     */
     public void setExecutorType(ExecutorType executorType) {
 	this.executorType = executorType;
     }
 
+    /**
+     *
+     * @return
+     */
     public WorkflowTrace getTrace() {
 	return trace;
     }
 
+    /**
+     *
+     * @param serverKeyCert
+     */
     public void setServerKeyCert(ServerCertificateStructure serverKeyCert) {
 	this.serverKeyCert = serverKeyCert;
     }
 
+    /**
+     *
+     * @param clientKeyCert
+     */
     public void setClientKeyCert(ClientCertificateStructure clientKeyCert) {
 	this.clientKeyCert = clientKeyCert;
     }
 
+    /**
+     *
+     * @return
+     */
     public ClientCertificateStructure getClientKeyCert() {
 	return clientKeyCert;
     }
 
+    /**
+     *
+     * @return
+     */
     public ServerCertificateStructure getServerKeyCert() {
 	return serverKeyCert;
     }
 
+    /**
+     *
+     * @param modification
+     */
     public void addModification(Modification modification) {
 	if (modification != null) {
 	    modificationList.add(modification);
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Modification> getModificationList() {
 	return Collections.unmodifiableList(modificationList);
     }
 
+    /**
+     *
+     * @return
+     */
     public TestVector getParent() {
 	return parent;
     }

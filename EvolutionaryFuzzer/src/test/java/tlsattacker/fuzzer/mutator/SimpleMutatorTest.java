@@ -22,6 +22,10 @@ import tlsattacker.fuzzer.mutator.SimpleMutator;
  * @author ic0ns
  */
 public class SimpleMutatorTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(SimpleMutatorTest.class.getName());
 
     /**

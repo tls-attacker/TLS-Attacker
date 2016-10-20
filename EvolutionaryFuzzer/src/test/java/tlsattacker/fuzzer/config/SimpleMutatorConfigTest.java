@@ -19,17 +19,29 @@ import static org.junit.Assert.*;
  */
 public class SimpleMutatorConfigTest {
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     public SimpleMutatorConfigTest() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testEvolutionaryFuzzerPercentage() {
 	SimpleMutatorConfig config = new SimpleMutatorConfig();

@@ -30,10 +30,26 @@ import javax.xml.bind.JAXBException;
  * @author ic0ns
  */
 public class EarlyHeartbeatRule extends Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
+
+    /**
+     *
+     */
     private EarlyHeartbeatRuleConfig config;
+
+    /**
+     *
+     */
     private int found = 0;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "early_heartbeat.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -47,6 +63,11 @@ public class EarlyHeartbeatRule extends Rule {
 	prepareConfigOutputFolder();
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	WorkflowTrace trace = result.getVector().getTrace();
@@ -57,6 +78,10 @@ public class EarlyHeartbeatRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	found++;
@@ -75,10 +100,18 @@ public class EarlyHeartbeatRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	if (found > 0) {
@@ -88,11 +121,20 @@ public class EarlyHeartbeatRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public EarlyHeartbeatRuleConfig getConfig() {
 	return config;
     }
 
+    /**
+     *
+     * @param trace
+     * @return
+     */
     public boolean hasHeartbeatWithoutFinished(WorkflowTrace trace) {
 	List<HandshakeMessage> finishedMessages = trace
 		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED);
@@ -101,6 +143,11 @@ public class EarlyHeartbeatRule extends Rule {
 	return (finishedMessages.isEmpty() && !heartBeatMessages.isEmpty());
     }
 
+    /**
+     *
+     * @param trace
+     * @return
+     */
     public boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
 	return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
     }

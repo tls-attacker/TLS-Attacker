@@ -22,6 +22,10 @@ import org.junit.Test;
  * @author ic0ns
  */
 public class BranchVertexTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(BranchVertexTest.class.getName());
 
     /**

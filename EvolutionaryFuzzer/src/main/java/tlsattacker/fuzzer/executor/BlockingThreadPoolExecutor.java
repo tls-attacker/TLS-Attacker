@@ -20,7 +20,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
 
-    private Semaphore semaphore;
+    /**
+     *
+     */
+    private    /**
+     *
+     * @param corePoolSize
+     * @param maximumPoolSize
+     * @param keepAliveTime
+     * @param unit
+     * @param workQueue
+     * @param threadFactory
+     */
+ Semaphore semaphore;
 
     public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
 	    BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {

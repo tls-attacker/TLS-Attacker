@@ -22,9 +22,15 @@ import static org.junit.Assert.*;
  */
 public class ExecutorThreadPoolTest {
 
+    /**
+     *
+     */
     public ExecutorThreadPoolTest() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testConstructor() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -35,6 +41,9 @@ public class ExecutorThreadPoolTest {
 	assertTrue("Failure: Pool is not stopped on creation", pool.isStopped());
     }
 
+    /**
+     *
+     */
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));

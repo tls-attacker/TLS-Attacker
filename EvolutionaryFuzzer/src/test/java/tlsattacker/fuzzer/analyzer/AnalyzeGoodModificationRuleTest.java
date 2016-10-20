@@ -38,12 +38,25 @@ import static org.junit.Assert.*;
  */
 public class AnalyzeGoodModificationRuleTest {
 
+    /**
+     *
+     */
     private AnalyzeGoodModificationRule rule;
+
+    /**
+     *
+     */
     private TestVector vector;
 
+    /**
+     *
+     */
     public AnalyzeGoodModificationRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -59,6 +72,9 @@ public class AnalyzeGoodModificationRuleTest {
 
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

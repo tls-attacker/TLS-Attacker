@@ -23,6 +23,10 @@ import org.junit.Test;
  * @author ic0ns
  */
 public class NodeTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(NodeTest.class.getName());
 
     /**
@@ -39,6 +43,9 @@ public class NodeTest {
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     Node<Object> node = null;
 
     /**

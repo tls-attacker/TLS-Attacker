@@ -18,6 +18,10 @@ import org.junit.Test;
  * @author ic0ns
  */
 public class GlobalBranchTreeTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(GlobalBranchTreeTest.class.getName());
 
     /**

@@ -24,10 +24,26 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsTimeoutRule extends Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());
+
+    /**
+     *
+     */
     private int found = 0;
+
+    /**
+     *
+     */
     private IsTimeoutRuleConfig config;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public IsTimeoutRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_timeout.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -41,11 +57,20 @@ public class IsTimeoutRule extends Rule {
 	prepareConfigOutputFolder();
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
         return result.didTimeout();
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	found++;
@@ -61,10 +86,18 @@ public class IsTimeoutRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	if (found > 0) {
@@ -74,6 +107,10 @@ public class IsTimeoutRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public IsTimeoutRuleConfig getConfig() {
 	return config;

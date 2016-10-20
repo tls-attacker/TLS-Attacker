@@ -15,13 +15,25 @@ import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeClientCertificateModification extends Modification {
+
+    /**
+     *
+     */
     private final ClientCertificateStructure keyCertPair;
 
+    /**
+     *
+     * @param keyCertPair
+     */
     public ChangeClientCertificateModification(ClientCertificateStructure keyCertPair) {
 	super(ModificationType.CHANGE_CLIENT_CERT);
 	this.keyCertPair = keyCertPair;
     }
 
+    /**
+     *
+     * @return
+     */
     public ClientCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }

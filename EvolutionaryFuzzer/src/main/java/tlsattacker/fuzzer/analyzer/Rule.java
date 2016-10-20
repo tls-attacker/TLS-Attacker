@@ -23,36 +23,93 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(Rule.class.getName());
 
+    /**
+     *
+     */
     protected File ruleFolder;
+
+    /**
+     *
+     */
     protected final String configFileName;
+
+    /**
+     *
+     */
     protected EvolutionaryFuzzerConfig evoConfig;
+
+    /**
+     *
+     */
     private boolean isActive = true;
 
+    /**
+     *
+     * @param evoConfig
+     * @param configFileName
+     */
     protected Rule(EvolutionaryFuzzerConfig evoConfig, String configFileName) {
 	this.configFileName = configFileName;
 	this.evoConfig = evoConfig;
     }
 
+    /**
+     *
+     * @return
+     */
     public File getRuleFolder() {
 	return ruleFolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isActive() {
 	return isActive;
     }
 
+    /**
+     *
+     * @return
+     */
     public abstract RuleConfig getConfig();
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     public abstract boolean applies(Result result);
 
+    /**
+     *
+     * @param result
+     */
     public abstract void onApply(Result result);
 
+    /**
+     *
+     * @param result
+     */
     public abstract void onDecline(Result result);
 
+    /**
+     *
+     * @return
+     */
     public abstract String report();
 
+    /**
+     *
+     * @param c
+     */
     protected void writeConfig(RuleConfig c) {
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
@@ -62,6 +119,9 @@ public abstract class Rule {
 	}
     }
 
+    /**
+     *
+     */
     protected void prepareConfigOutputFolder() {
 	ruleFolder = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
 	if (evoConfig.isCleanStart()) {

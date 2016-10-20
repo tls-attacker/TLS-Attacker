@@ -26,38 +26,100 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      *
      */
     public static final String ATTACK_COMMAND = "fuzzer";
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 
+    /**
+     *
+     */
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./data/";
+
+    /**
+     *
+     */
     @Parameter(names = "-archive_folder", description = "Archive Folder that contains TestVectors that should seed the Fuzzer", converter = FileConverter.class)
     private String archiveFolder = "./archive/";
+
+    /**
+     *
+     */
     @Parameter(names = "-threads", description = "Number of Threads running Simultaniously, (Default:Number of Server in Config)", validateWith = PositiveInteger.class)
     private Integer threads = -1;
+
+    /**
+     *
+     */
     @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors. Possible: "+SimpleMutator.optionName+", "+NoneMutator.optionName+"")
     private String mutator = SimpleMutator.optionName;
+
+    /**
+     *
+     */
     @Parameter(names = "-controller", description = "The Controller that is used to communicate with the Operator. Possible: "+CommandLineController.optionName)
     private String controller = CommandLineController.optionName;
+
+    /**
+     *
+     */
     @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates. Possible: "+FixedCertificateMutator.optionName)
     private String certMutator = "fixed";
+
+    /**
+     *
+     */
     @Parameter(names = "-no_old", description = "The mutator wont run WorkflowTraces he finds in the Good WorkflowTrace Folder, before he starts generating new Mutations")
     private boolean noOld = false;
+
+    /**
+     *
+     */
     @Parameter(names = "-start_stopped", description = "Starts the Fuzzer in a stopped state.")
     private boolean startStopped = false;
+
+    /**
+     *
+     */
     @Parameter(names = "-clean_start", description = "Deletes previous good Workflows on startup")
     private boolean cleanStart = false;
+
+    /**
+     *
+     */
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
     private boolean injectPinChild = true;
+
+    /**
+     *
+     */
     @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
     private boolean certMutatorSelftest = false;
+
+    /**
+     *
+     */
     @Parameter(names = "-boot_timeout", description = "The time the fuzzer maximal waits till the implementation boots up.")
     private Integer bootTimeout = 50000;
     
+    /**
+     *
+     */
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
-    private ActionExecutorTypeConfig actionExecutorConfig;
+
+    /**
+     *
+     */
+        private ActionExecutorTypeConfig actionExecutorConfig;
     // Are we currently in serialization mode?
-    private boolean serialize = false;
+
+    /**
+     *
+     */
+        private boolean serialize = false;
 
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
@@ -89,98 +151,189 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public Integer getBootTimeout()
     {
         return bootTimeout;
     }
 
+    /**
+     *
+     * @param bootTimeout
+     */
     public void setBootTimeout(Integer bootTimeout)
     {
         this.bootTimeout = bootTimeout;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getController()
     {
         return controller;
     }
     
+    /**
+     *
+     * @param controller
+     */
     public void setController(String controller) {
         this.controller = controller;
     }
     
+    /**
+     *
+     * @return
+     */
     public ActionExecutorTypeConfig getActionExecutorConfig() {
         return actionExecutorConfig;
     }
 
+    /**
+     *
+     * @param actionExecutorConfig
+     */
     public void setActionExecutorConfig(ActionExecutorTypeConfig actionExecutorConfig) {
         this.actionExecutorConfig = actionExecutorConfig;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getArchiveFolder() {
         return archiveFolder;
     }
 
+    /**
+     *
+     * @param archiveFolder
+     */
     public void setArchiveFolder(String archiveFolder) {
 	this.archiveFolder = archiveFolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public File getTracesFolder() {
 	return tracesFolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getCertMutator() {
 	return certMutator;
     }
 
+    /**
+     *
+     * @param certMutator
+     */
     public void setCertMutator(String certMutator) {
         this.certMutator = certMutator;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMutator() {
         return mutator;
     }
 
+    /**
+     *
+     * @param mutator
+     */
     public void setMutator(String mutator) {
         this.mutator = mutator;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCleanStart() {
         return cleanStart;
     }
 
+    /**
+     *
+     * @param cleanStart
+     */
     public void setCleanStart(boolean cleanStart) {
         this.cleanStart = cleanStart;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isStartStopped() {
         return startStopped;
     }
 
+    /**
+     *
+     * @param startStopped
+     */
     public void setStartStopped(boolean startStopped) {
 	this.startStopped = startStopped;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isNoOld() {
 	return noOld;
     }
 
-
+    /**
+     *
+     * @param noOld
+     */
     public void setNoOld(boolean noOld) {
 	this.noOld = noOld;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSerialize() {
 	return serialize;
     }
 
+    /**
+     *
+     * @param serialize
+     */
     public void setSerialize(boolean serialize) {
 	this.serialize = serialize;
     }
 
+    /**
+     *
+     * @return
+     */
     public Integer getThreads() {
 	return threads;
     }
 
+    /**
+     *
+     * @param threads
+     */
     public void setThreads(Integer threads) {
 	this.threads = threads;
     }
@@ -195,18 +348,34 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	return outputFolder;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getOutputCertificateFolder() {
 	return outputFolder + "certificates/";
     }
 
+    /**
+     *
+     * @return
+     */
     public String getOutputClientCertificateFolder() {
 	return outputFolder + "certificates/client/";
     }
 
+    /**
+     *
+     * @return
+     */
     public String getOutputServerCertificateFolder() {
 	return outputFolder + "certificates/server/";
     }
 
+    /**
+     *
+     * @return
+     */
     public String getOutputFaultyFolder() {
 	return outputFolder + "faulty/";
     }
@@ -225,14 +394,26 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getInjectPinChild() {
 	return injectPinChild;
     }
 
+    /**
+     *
+     * @param certMutatorSelftest
+     */
     public void setCertMutatorSelftest(boolean certMutatorSelftest) {
 	this.certMutatorSelftest = certMutatorSelftest;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCertMutatorSelfTest() {
 	return certMutatorSelftest;
     }

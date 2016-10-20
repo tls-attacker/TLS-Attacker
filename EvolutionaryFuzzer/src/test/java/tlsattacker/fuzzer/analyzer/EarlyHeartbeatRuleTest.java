@@ -34,12 +34,21 @@ import static org.junit.Assert.*;
  */
 public class EarlyHeartbeatRuleTest {
 
+    /**
+     *
+     */
     private EarlyHeartbeatRule rule;
 
+    /**
+     *
+     */
     public EarlyHeartbeatRuleTest() {
 
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -48,6 +57,9 @@ public class EarlyHeartbeatRuleTest {
 	rule = new EarlyHeartbeatRule(config);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

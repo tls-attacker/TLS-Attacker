@@ -25,24 +25,54 @@ import tlsattacker.fuzzer.testvector.TestVector;
  */
 public class BlindAgent extends Agent {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
+    /**
+     *
+     */
     public static final String optionName = "BLIND";
     // Is a fuzzing Progress Running?
-    protected boolean running = false;
-    // StartTime of the last Fuzzing Vektor
-    protected long startTime;
-    // StopTime of the last Fuzzing Vektor
-    protected long stopTime;
-    // If the Application did Timeout
-    protected boolean timeout;
-    // If the Application did Crash
-    protected boolean crash;
 
+    /**
+     *
+     */
+        protected boolean running = false;
+    // StartTime of the last Fuzzing Vektor
+
+    /**
+     *
+     */
+        protected long startTime;
+    // StopTime of the last Fuzzing Vektor
+
+    /**
+     *
+     */
+        protected long stopTime;
+    // If the Application did Timeout
+
+    /**
+     *
+     */
+        protected boolean timeout;
+    // If the Application did Crash
+
+    /**
+     *
+     */
+        protected boolean crash;
+
+    /**
+     *
+     */
     private final String prefix = "";
 
     /**
      * Default Constructor
+     * @param keypair
      */
     public BlindAgent(ServerCertificateStructure keypair) {
 	super(keypair);

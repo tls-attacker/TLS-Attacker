@@ -24,11 +24,21 @@ import static org.junit.Assert.*;
  * @author ic0ns
  */
 public class AnalyzeTimeRuleTest {
+
+    /**
+     *
+     */
     private AnalyzeTimeRule rule;
 
+    /**
+     *
+     */
     public AnalyzeTimeRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -38,6 +48,9 @@ public class AnalyzeTimeRuleTest {
 
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

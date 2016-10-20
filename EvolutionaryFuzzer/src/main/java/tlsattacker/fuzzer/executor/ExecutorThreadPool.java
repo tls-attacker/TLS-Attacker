@@ -56,21 +56,48 @@ import tlsattacker.fuzzer.helper.LogFileIDManager;
  */
 public class ExecutorThreadPool implements Runnable {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 
     // Number of Threads which execute FuzzingVectors
-    private final int poolSize;
+
+    /**
+     *
+     */
+        private final int poolSize;
     //
-    private final ThreadPoolExecutor executor;
+
+    /**
+     *
+     */
+        private final ThreadPoolExecutor executor;
     // The Mutator used by the ExecutorPool to fetch new Tasks
-    private final Mutator mutator;
+
+    /**
+     *
+     */
+        private final Mutator mutator;
     // The Executor thread pool will continuasly fetch and execute new Tasks
     // while this is false
-    private boolean stopped = true;
+
+    /**
+     *
+     */
+        private boolean stopped = true;
     // Counts the number of executed Tasks for statisticall purposes.
-    private long runs = 0;
+
+    /**
+     *
+     */
+        private long runs = 0;
     // The Config the ExecutorThreadPool uses
-    private final EvolutionaryFuzzerConfig config;
+
+    /**
+     *
+     */
+        private final EvolutionaryFuzzerConfig config;
 
     /**
      * Constructor for the ExecutorThreadPool
@@ -80,6 +107,7 @@ public class ExecutorThreadPool implements Runnable {
      * @param mutator
      *            Mutator which is used for the Generation of new
      *            FuzzingVectors.
+     * @param config
      */
     public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config) {
 	this.config = config;
@@ -108,6 +136,10 @@ public class ExecutorThreadPool implements Runnable {
 
     }
 
+    /**
+     *
+     * @return
+     */
     private List<TestVector> generateSeed() {
 	List<TestVector> newList = new LinkedList<TestVector>();
 	List<WorkflowConfigurationFactory> factoryList = new LinkedList<>();
@@ -255,6 +287,10 @@ public class ExecutorThreadPool implements Runnable {
 	this.stopped = stopped;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized boolean hasRunningThreads() {
 	return executor.getActiveCount() == 0;
     }

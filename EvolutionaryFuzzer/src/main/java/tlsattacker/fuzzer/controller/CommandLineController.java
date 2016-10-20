@@ -39,15 +39,33 @@ import java.util.Set;
  */
 public class CommandLineController extends Controller {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
 
+    /**
+     *
+     */
     public static final String optionName = "commandline";
     // Chosen Mutator
-    private final Mutator mutator;
+
+    /**
+     *
+     */
+        private final Mutator mutator;
     // Chosen Certificate Mutator
-    private final CertificateMutator certMutator;
+
+    /**
+     *
+     */
+        private final CertificateMutator certMutator;
     // ThreadPool to start or stop
-    private final ExecutorThreadPool pool;
+
+    /**
+     *
+     */
+        private final ExecutorThreadPool pool;
 
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
@@ -55,6 +73,7 @@ public class CommandLineController extends Controller {
      * 
      * @param config
      *            Configuration used by the Controller
+     * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      */
     public CommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
 	    IllegalCertificateMutatorException {
@@ -92,6 +111,9 @@ public class CommandLineController extends Controller {
 	pool.setStopped(true);
     }
 
+    /**
+     *
+     */
     @Override
     public void startInterface() {
 	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

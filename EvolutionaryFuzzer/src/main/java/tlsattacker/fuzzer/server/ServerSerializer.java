@@ -22,6 +22,9 @@ public class ServerSerializer {
      */
     private static JAXBContext context;
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
 
     /**
@@ -40,6 +43,7 @@ public class ServerSerializer {
      * 
      * @param file
      * @return
+     * @throws java.io.FileNotFoundException
      * @throws Exception
      */
     public static TLSServer read(File file) throws FileNotFoundException {
@@ -49,6 +53,9 @@ public class ServerSerializer {
 	return o;
     }
 
+    /**
+     *
+     */
     private ServerSerializer() {
     }
 }

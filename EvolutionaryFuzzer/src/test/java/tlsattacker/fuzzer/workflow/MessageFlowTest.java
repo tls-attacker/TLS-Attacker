@@ -20,6 +20,9 @@ import org.junit.Test;
  */
 public class MessageFlowTest {
 
+    /**
+     *
+     */
     public MessageFlowTest() {
     }
 

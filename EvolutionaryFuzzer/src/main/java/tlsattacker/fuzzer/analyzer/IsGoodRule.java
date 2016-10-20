@@ -30,14 +30,41 @@ import javax.xml.bind.JAXBException;
  */
 public class IsGoodRule extends Rule {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
+
+    /**
+     *
+     */
     private PrintWriter outWriter;
     // BranchTrace with which other Workflows are merged
-    private final BranchTrace branch;
+
+    /**
+     *
+     */
+        private final BranchTrace branch;
+
+    /**
+     *
+     */
     private int found = 0;
+
+    /**
+     *
+     */
     private IsGoodRuleConfig config;
+
+    /**
+     *
+     */
     private long lastGoodTimestamp = System.currentTimeMillis();
 
+    /**
+     *
+     * @param evoConfig
+     */
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_good.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -65,6 +92,11 @@ public class IsGoodRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	MergeResult r = null;
@@ -79,6 +111,10 @@ public class IsGoodRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	// Write statistics
@@ -102,21 +138,37 @@ public class IsGoodRule extends Rule {
 	result.getVector().getTrace().makeGeneric();
     }
 
+    /**
+     *
+     * @return
+     */
     public BranchTrace getBranchTrace() {
 	return branch;
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
 	result.setGoodTrace(Boolean.FALSE);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
 		+ " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public IsGoodRuleConfig getConfig() {
 	return config;

@@ -19,17 +19,29 @@ import org.junit.Test;
  */
 public class PINTest {
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     public PINTest() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testPinExists() {
 	File f = new File("PIN/pin");

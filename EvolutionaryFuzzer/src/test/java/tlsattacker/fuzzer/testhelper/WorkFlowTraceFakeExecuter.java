@@ -17,6 +17,11 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class WorkFlowTraceFakeExecuter {
+
+    /**
+     *
+     * @param trace
+     */
     public static void execute(WorkflowTrace trace) {
 	List<TLSAction> actionList = trace.getTLSActions();
 	for (TLSAction action : actionList) {

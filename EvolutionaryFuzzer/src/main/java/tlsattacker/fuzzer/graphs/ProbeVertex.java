@@ -16,9 +16,16 @@ import java.util.logging.Logger;
  */
 public class ProbeVertex {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ProbeVertex.class.getName());
     // The stored probeID
-    private final long probeID;
+
+    /**
+     *
+     */
+        private final long probeID;
 
     /**
      * Default Constructor

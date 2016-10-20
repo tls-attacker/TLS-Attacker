@@ -22,6 +22,10 @@ import org.junit.Test;
  * @author ic0ns
  */
 public class CountVertexTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(CountVertexTest.class.getName());
 
     /**

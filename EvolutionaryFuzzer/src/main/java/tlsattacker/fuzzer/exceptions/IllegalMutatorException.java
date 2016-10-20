@@ -14,6 +14,10 @@ package tlsattacker.fuzzer.exceptions;
  */
 public class IllegalMutatorException extends Exception {
 
+    /**
+     *
+     * @param string
+     */
     public IllegalMutatorException(String string) {
 	super(string);
     }

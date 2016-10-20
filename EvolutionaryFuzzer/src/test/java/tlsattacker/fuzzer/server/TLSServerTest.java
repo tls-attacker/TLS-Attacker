@@ -21,6 +21,10 @@ import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
  * @author ic0ns
  */
 public class TLSServerTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(TLSServerTest.class.getName());
 
     /**
@@ -37,6 +41,9 @@ public class TLSServerTest {
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     private TLSServer server = null;
 
     /**
@@ -123,6 +130,9 @@ public class TLSServerTest {
 	server.occupie();
     }
 
+    /**
+     *
+     */
     @Test(expected = IllegalStateException.class)
     public void testWrongRelease() {
 	server.release();

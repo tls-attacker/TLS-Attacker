@@ -19,6 +19,10 @@ public class IsTimeoutRuleConfig extends RuleConfig {
     // The Timeout is not defined in the Timeout config, since the Timeout Rule
     // sees the WorkflowTrace first after it already Timedout
 
+    /**
+     *
+     */
+    
     public IsTimeoutRuleConfig() {
 	super("timeout/");
     }

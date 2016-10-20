@@ -17,10 +17,29 @@ import java.util.logging.Logger;
  */
 public class Edge implements Serializable {
 
+    /**
+     *
+     */
     private static final long serialVersionUID = 1L;
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(Edge.class.getName());
+
+    /**
+     *
+     */
     private long a;
+
+    /**
+     *
+     */
     private long b;
+
+    /**
+     *
+     */
     private long counter = 0;
 
     /**
@@ -34,22 +53,42 @@ public class Edge implements Serializable {
 	this.b = b;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getA() {
 	return a;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getB() {
 	return b;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getCounter() {
 	return counter;
     }
 
+    /**
+     *
+     * @param counter
+     */
     public void setCounter(long counter) {
 	this.counter = counter;
     }
 
+    /**
+     *
+     * @param counter
+     */
     public void addCounter(long counter) {
 	this.counter += counter;
     }

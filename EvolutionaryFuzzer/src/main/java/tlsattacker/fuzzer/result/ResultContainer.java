@@ -12,6 +12,9 @@ import java.util.logging.Logger;
  */
 public class ResultContainer {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ResultContainer.class.getName());
 
     /**
@@ -23,37 +26,66 @@ public class ResultContainer {
 	return ResultContainerHolder.INSTANCE;
     }
 
+    /**
+     *
+     */
     private EvolutionaryFuzzerConfig evolutionaryFuzzerConfig;
 
-
+    /**
+     *
+     */
     private RuleAnalyzer analyzer;
 
+    /**
+     *
+     */
     private ResultContainer() {
 	evolutionaryFuzzerConfig = tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig();
 	analyzer = new RuleAnalyzer(evolutionaryFuzzerConfig);
 
     }
 
+    /**
+     *
+     * @param evolutionaryFuzzerConfig
+     */
     public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
         this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
     }
 
-
+    /**
+     *
+     * @return
+     */
     public RuleAnalyzer getAnalyzer() {
         return analyzer;
     }
 
+    /**
+     *
+     * @param r
+     */
     public void commit(Result r)
     {
         analyzer.analyze(r);
     }
 
     // Singleton
-    private static class ResultContainerHolder
+
+    /**
+     *
+     */
+        private static class ResultContainerHolder
     {
         
+        /**
+         *
+         */
         private static final ResultContainer INSTANCE = new ResultContainer();
 
+        /**
+         *
+         */
         private ResultContainerHolder()
         {
         }

@@ -35,10 +35,21 @@ import java.util.Set;
  */
 public class AFLAgent extends Agent {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
+    /**
+     *
+     */
     public static final String optionName = "AFL";
 
+    /**
+     *
+     * @param f
+     * @return
+     */
     private static BranchTrace getBranchTrace(File f)
     {
         BufferedReader br = null;
@@ -87,19 +98,44 @@ public class AFLAgent extends Agent {
         return new BranchTrace();
     }
     // Is a fuzzing Progress Running?
-    protected boolean running = false;
+
+    /**
+     *
+     */
+        protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
-    protected long startTime;
+
+    /**
+     *
+     */
+        protected long startTime;
     // StopTime of the last Fuzzing Vektor
-    protected long stopTime;
+
+    /**
+     *
+     */
+        protected long stopTime;
     // If the Application did Timeout
-    protected boolean timeout;
+
+    /**
+     *
+     */
+        protected boolean timeout;
     // If the Application did Crash
-    protected boolean crash;
+
+    /**
+     *
+     */
+        protected boolean crash;
+
+    /**
+     *
+     */
     private final String prefix = "AFL/afl-showmap -m none -o [output]/[id] ";
 
     /**
      * Default Constructor
+     * @param keypair
      */
     public AFLAgent(ServerCertificateStructure keypair) {
 	super(keypair);
@@ -157,6 +193,11 @@ public class AFLAgent extends Agent {
 	}
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     */
     private String tail(File file) {
 	RandomAccessFile fileHandler = null;
 	try {

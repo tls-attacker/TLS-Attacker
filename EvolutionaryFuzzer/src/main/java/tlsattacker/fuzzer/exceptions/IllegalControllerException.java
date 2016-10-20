@@ -14,6 +14,10 @@ package tlsattacker.fuzzer.exceptions;
  */
 public class IllegalControllerException extends Exception {
 
+    /**
+     *
+     * @param string
+     */
     public IllegalControllerException(String string) {
 	super(string);
     }

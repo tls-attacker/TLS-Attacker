@@ -18,22 +18,37 @@ import org.junit.Test;
  */
 public class ConfigManagerTest {
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     public ConfigManagerTest() {
     }
 
+    /**
+     *
+     */
     @Test
     public void testSingleTon() {
 	ConfigManager.getInstance();
     }
 
+    /**
+     *
+     */
     @Test
     public void testGetConfig() {
 	assertNotNull("Failure: Could get a ConfigManager Instance", ConfigManager.getInstance().getConfig());

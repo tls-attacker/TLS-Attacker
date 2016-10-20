@@ -41,42 +41,85 @@ import tlsattacker.fuzzer.config.ConfigManager;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TimeoutCalibrator {
+
+    /**
+     *
+     */
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
             .getName());
     // We try to find the lowest Timeout that does not alter with Workflow
     // execution and
     // then multiply the number with the gain Factor
 
+    /**
+     *
+     */
     private double gainFactor = 0.2;
+
+    /**
+     *
+     */
     private int limit = 1000;
+
+    /**
+     *
+     */
     private final CalibrationConfig config;
 
+    /**
+     *
+     * @param config
+     */
     public TimeoutCalibrator(CalibrationConfig config) {
         this.config = config;
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLimit() {
 	return limit;
     }
 
+    /**
+     *
+     * @param limit
+     */
     public void setLimit(int limit) {
         this.limit = limit;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getGainFactor() {
 	return gainFactor;
     }
 
+    /**
+     *
+     * @param gainFactor
+     */
     public void setGainFactor(double gainFactor) {
         this.gainFactor = gainFactor;
     }
 
+    /**
+     *
+     * @return
+     */
     public int calibrateTimeout() {
 	LOG.log(Level.INFO, "Calibrating Timeout, this may take some time.");
 	return (int) (getHighestTimeoutGlobal() * gainFactor);
     }
 
+    /**
+     *
+     * @return
+     */
     private int getHighestTimeoutGlobal() {
 	int highestTimeout = 0;
 	FixedCertificateMutator mutator = new FixedCertificateMutator();
@@ -100,6 +143,11 @@ public class TimeoutCalibrator {
 	return highestTimeout;
     }
 
+    /**
+     *
+     * @param serverCerts
+     * @return
+     */
     private List<CipherSuite> getWorkingCiphersuites(ServerCertificateStructure serverCerts) {
 	List<CipherSuite> workingCipherSuites = new LinkedList<>();
 	List<CipherSuite> ciperSuiteList = CipherSuite.getImplemented();
@@ -117,6 +165,7 @@ public class TimeoutCalibrator {
      * 
      * @param algorithm
      * @param port
+     * @return 
      */
     public boolean testCiphersuite(ServerCertificateStructure serverCerts, CipherSuite suite, int timeout) {
 
@@ -152,7 +201,16 @@ public class TimeoutCalibrator {
     }
 
     // TODO cleantup
-    private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent,
+
+    /**
+     *
+     * @param configHandler
+     * @param config
+     * @param agent
+     * @param server
+     * @return
+     */
+        private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent,
 	    TLSServer server) {
 
 	long time = System.currentTimeMillis();
@@ -193,6 +251,11 @@ public class TimeoutCalibrator {
 	return isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
     }
 
+    /**
+     *
+     * @param trace
+     * @return
+     */
     private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
 	int counter = 0;
 	for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
@@ -214,7 +277,12 @@ public class TimeoutCalibrator {
 	return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
-
+    /**
+     *
+     * @param serverCerts
+     * @param suite
+     * @return
+     */
     private int getSmallestTimeoutPossible(ServerCertificateStructure serverCerts, CipherSuite suite) {
 	int lowerEnd = 0;
 	int higherEnd = limit;

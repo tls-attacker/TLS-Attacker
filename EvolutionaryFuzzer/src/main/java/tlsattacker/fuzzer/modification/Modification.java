@@ -15,12 +15,24 @@ import java.io.Serializable;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Modification implements Serializable {
+
+    /**
+     *
+     */
     private final ModificationType type;
 
+    /**
+     *
+     * @param type
+     */
     public Modification(ModificationType type) {
 	this.type = type;
     }
 
+    /**
+     *
+     * @return
+     */
     public ModificationType getType() {
 	return type;
     }

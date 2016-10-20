@@ -22,6 +22,9 @@ import java.util.logging.Logger;
  */
 public class LogFileIDManager {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
 
     /**
@@ -33,7 +36,14 @@ public class LogFileIDManager {
 	return LogFileIDManagerHolder.INSTANCE;
     }
 
+    /**
+     *
+     */
     private int id = 0;
+
+    /**
+     *
+     */
     private int run = 0;
 
     /**
@@ -75,6 +85,10 @@ public class LogFileIDManager {
 	return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized String getFilename() {
 	id++;
 	return "" + run + "." + id;
@@ -85,9 +99,15 @@ public class LogFileIDManager {
      */
     private static class LogFileIDManagerHolder {
 
-	private static final LogFileIDManager INSTANCE = new LogFileIDManager();
+        /**
+         *
+         */
+        private static final LogFileIDManager INSTANCE = new LogFileIDManager();
 
-	private LogFileIDManagerHolder() {
+        /**
+         *
+         */
+        private LogFileIDManagerHolder() {
 	}
     }
 

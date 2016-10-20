@@ -24,6 +24,10 @@ import tlsattacker.fuzzer.exceptions.InstrumentationException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class GlobalBranchTree {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(GlobalBranchTree.class.getName());
     //Work in progress 
     
@@ -218,6 +222,9 @@ public class GlobalBranchTree {
 	return v;
     }
 
+    /**
+     *
+     */
     private GlobalBranchTree() {
     }
 

@@ -92,6 +92,9 @@ import java.util.logging.Level;
  */
 public class FuzzingHelper {
 
+    /**
+     *
+     */
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
 	    .getName());
 
@@ -100,6 +103,11 @@ public class FuzzingHelper {
      */
     public static final int MAX_MODIFICATION_COUNT = 5;
 
+    /**
+     *
+     * @param fields
+     * @return
+     */
     public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
 	Random r = new Random();
 	int fieldNumber = r.nextInt(fields.size());
@@ -122,6 +130,11 @@ public class FuzzingHelper {
 	return result;
     }
 
+    /**
+     *
+     * @param object
+     * @return
+     */
     public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
 	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
 	List<ModifiableVariableField> fields = new LinkedList<>();
@@ -143,6 +156,7 @@ public class FuzzingHelper {
      * 
      * @param object
      * @param field
+     * @return 
      */
     public static ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
 	    Field field) {
@@ -173,6 +187,7 @@ public class FuzzingHelper {
      * 
      * @param trace
      * @param messageIssuer
+     * @return 
      */
     public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
 	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
@@ -190,6 +205,11 @@ public class FuzzingHelper {
 	return null;
     }
 
+    /**
+     *
+     * @param tempTrace
+     * @return
+     */
     public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
 	SendAction action = getRandomSendAction(tempTrace);
 	if (action.getConfiguredMessages().size() <= 1) {
@@ -236,12 +256,23 @@ public class FuzzingHelper {
 	}
     }
 
+    /**
+     *
+     * @param tempTrace
+     * @return
+     */
     private static SendAction getRandomSendAction(WorkflowTrace tempTrace) {
 	Random r = new Random();
 	List<SendAction> sendActions = tempTrace.getSendActions();
 	return sendActions.get(r.nextInt(sendActions.size()));
     }
 
+    /**
+     *
+     * @param tempTrace
+     * @param mutator
+     * @return
+     */
     public static AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
 	Random r = new Random();
 	AddContextActionModification modification = null;
@@ -376,6 +407,10 @@ public class FuzzingHelper {
 	return modification;
     }
 
+    /**
+     *
+     * @return
+     */
     private static ProtocolMessage generateRandomMessage() {
 	ProtocolMessage message = null;
 	Random r = new Random();
@@ -472,6 +507,11 @@ public class FuzzingHelper {
 	return message;
     }
 
+    /**
+     *
+     * @param trace
+     * @return
+     */
     public static AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
 	ExtensionMessage message = generateRandomExtensionMessage();
 	if (message != null) {
@@ -491,6 +531,10 @@ public class FuzzingHelper {
 	return null;
     }
 
+    /**
+     *
+     * @return
+     */
     private static ExtensionMessage generateRandomExtensionMessage() {
 	ExtensionMessage message = null;
 	Random r = new Random();
@@ -549,6 +593,7 @@ public class FuzzingHelper {
      * 
      * @param trace
      * @param messageIssuer
+     * @return 
      */
     public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
 	Random r = new Random();
@@ -572,7 +617,6 @@ public class FuzzingHelper {
      * including this instance.
      * 
      * @param object
-     * @param myPeer
      * @return
      */
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
@@ -611,6 +655,11 @@ public class FuzzingHelper {
 	return holders;
     }
 
+    /**
+     *
+     * @param trace
+     * @return
+     */
     public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
 	TLSAction newAction = new ToggleEncryptionAction();
 	List<TLSAction> actionList = trace.getTLSActions();
@@ -620,6 +669,9 @@ public class FuzzingHelper {
 	return new AddToggleEncrytionActionModification(positon);
     }
 
+    /**
+     *
+     */
     private FuzzingHelper() {
 
     }

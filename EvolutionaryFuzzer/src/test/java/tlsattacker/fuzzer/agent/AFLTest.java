@@ -8,7 +8,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+/**
+ *
+ * @author ic0ns
+ */
 public class AFLTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(AFLTest.class.getName());
 
     /**

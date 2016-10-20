@@ -30,6 +30,9 @@ import static org.junit.Assert.assertTrue;
  */
 public class BranchTest {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
 
     /**
@@ -46,6 +49,9 @@ public class BranchTest {
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     private BranchTrace tree;
 
     /**
@@ -71,17 +77,28 @@ public class BranchTest {
 	tree = null;
     }
 
+    /**
+     *
+     */
     @Test
     public void testConstructor() {
 
 	tree = new BranchTrace();
     }
 
+    /**
+     *
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     @Test(expected = NullPointerException.class)
     public void testMergeNull() throws FileNotFoundException, IOException {
 	tree.merge(null);
     }
 
+    /**
+     *
+     */
     @Test
     public void testMerge() {
 	Set<Long> verticesSet = new HashSet<>();

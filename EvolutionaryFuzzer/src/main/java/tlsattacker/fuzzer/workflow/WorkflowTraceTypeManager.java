@@ -32,6 +32,7 @@ public class WorkflowTraceTypeManager {
      * Implementation at some Point.
      * 
      * @param traces
+     * @param connectionEnd
      * @return
      */
     public static Set<WorkflowTraceType> generateTypeList(List<TestVector> vectors, ConnectionEnd connectionEnd) {
@@ -42,6 +43,13 @@ public class WorkflowTraceTypeManager {
 	}
 	return set;
     }
+
+    /**
+     *
+     * @param vectors
+     * @param connectionEnd
+     * @return
+     */
     public static Set<WorkflowTraceType> generateResponseTypeList(List<TestVector> vectors, ConnectionEnd connectionEnd) {
 	Set<WorkflowTraceType> set = new HashSet<>();
 	for (TestVector vector : vectors) {
@@ -59,6 +67,7 @@ public class WorkflowTraceTypeManager {
      * Server in different States.
      * 
      * @param traces
+     * @param myConnectionEnd
      * @return
      */
     public static Set<WorkflowTraceType> generateCleanTypeList(List<TestVector> vectors, ConnectionEnd myConnectionEnd) {
@@ -70,7 +79,14 @@ public class WorkflowTraceTypeManager {
 	}
 	return set;
     }
-     public static Set<WorkflowTraceType> generateCleanResponseTypeList(List<TestVector> vectors, ConnectionEnd myConnectionEnd) {
+
+    /**
+     *
+     * @param vectors
+     * @param myConnectionEnd
+     * @return
+     */
+    public static Set<WorkflowTraceType> generateCleanResponseTypeList(List<TestVector> vectors, ConnectionEnd myConnectionEnd) {
 	Set<WorkflowTraceType> set = new HashSet<>();
 	for (TestVector vector : vectors) {
 	    WorkflowTraceType type = generateWorkflowTraceTypeResponse(vector.getTrace(), myConnectionEnd);
@@ -84,6 +100,7 @@ public class WorkflowTraceTypeManager {
      * 
      * @param trace
      *            Trace for which the WorkflowTraceType should be generated
+     * @param myConnectionEnd
      * @return
      */
     public static WorkflowTraceType generateWorkflowTraceTypeResponse(WorkflowTrace trace, ConnectionEnd myConnectionEnd) {
@@ -106,6 +123,7 @@ public class WorkflowTraceTypeManager {
      * 
      * @param trace
      *            Trace for which the WorkflowTraceType should be generated
+     * @param myConnectionEnd
      * @return
      */
     public static WorkflowTraceType generateWorkflowTraceType(WorkflowTrace trace, ConnectionEnd myConnectionEnd) {
@@ -131,6 +149,9 @@ public class WorkflowTraceTypeManager {
 	return type;
     }
 
+    /**
+     *
+     */
     private WorkflowTraceTypeManager()
     {
     }

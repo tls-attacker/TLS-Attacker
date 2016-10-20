@@ -15,13 +15,26 @@ import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AddContextActionModification extends Modification {
+
+    /**
+     *
+     */
     private final TLSAction action;
 
+    /**
+     *
+     * @param type
+     * @param action
+     */
     public AddContextActionModification(ModificationType type, TLSAction action) {
 	super(type);
 	this.action = action;
     }
 
+    /**
+     *
+     * @return
+     */
     public TLSAction getAction() {
 	return action;
     }

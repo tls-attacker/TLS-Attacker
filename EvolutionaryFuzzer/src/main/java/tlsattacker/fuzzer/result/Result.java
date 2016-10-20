@@ -20,25 +20,70 @@ import tlsattacker.fuzzer.testvector.TestVector;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Result {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(Result.class.getName());
 
     // If the Implementation has Crashed
 
+    /**
+     *
+     */
+    
     private final boolean hasCrashed;
     // If the Implementation did Timeout
-    private boolean didTimeout;
-    // The Unixtime @ which the Vector started executing
-    private final long startTime;
-    // The Unixtime @ which the Vector finished executing
-    private final long stopTime;
-    // File Containing all the ProbeIDs
-    private final BranchTrace branchTrace;
 
+    /**
+     *
+     */
+        private boolean didTimeout;
+    // The Unixtime @ which the Vector started executing
+
+    /**
+     *
+     */
+        private final long startTime;
+    // The Unixtime @ which the Vector finished executing
+
+    /**
+     *
+     */
+        private final long stopTime;
+    // File Containing all the ProbeIDs
+
+    /**
+     *
+     */
+        private final BranchTrace branchTrace;
+
+    /**
+     *
+     */
     private final TestVector vector;
     // Each Result get an id for easier referencing, the id is also in
-    private final String id;
+
+    /**
+     *
+     */
+        private final String id;
+
+    /**
+     *
+     */
     private Boolean goodTrace = null;
 
+    /**
+     *
+     * @param hasCrashed
+     * @param didTimeout
+     * @param startTime
+     * @param stopTime
+     * @param branchTrace
+     * @param vector
+     * @param id
+     */
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
 	    TestVector vector, String id) {
 	this.hasCrashed = hasCrashed;
@@ -50,14 +95,26 @@ public class Result {
 	this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public Boolean isGoodTrace() {
 	return goodTrace;
     }
 
+    /**
+     *
+     * @param wasGoodTrace
+     */
     public void setGoodTrace(Boolean wasGoodTrace) {
 	this.goodTrace = wasGoodTrace;
     }
 
+    /**
+     *
+     * @param didTimeout
+     */
     public void setDidTimeout(boolean didTimeout) {
 	this.didTimeout = didTimeout;
     }
@@ -122,6 +179,10 @@ public class Result {
 		+ ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
     }
 
+    /**
+     *
+     * @return
+     */
     public TestVector getVector() {
 	return vector;
     }

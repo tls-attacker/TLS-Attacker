@@ -17,42 +17,87 @@ import java.util.Objects;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientCertificateStructure implements Serializable {
+
+    /**
+     *
+     */
     private String password;
+
+    /**
+     *
+     */
     private String alias;
+
+    /**
+     *
+     */
     private File JKSfile;
 
+    /**
+     *
+     * @param password
+     * @param alias
+     * @param JKSfile
+     */
     public ClientCertificateStructure(String password, String alias, File JKSfile) {
 	this.password = password;
 	this.alias = alias;
 	this.JKSfile = JKSfile;
     }
 
+    /**
+     *
+     */
     public ClientCertificateStructure() {
 	password = null;
 	alias = null;
 	JKSfile = null;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPassword() {
 	return password;
     }
 
+    /**
+     *
+     * @param password
+     */
     public void setPassword(String password) {
 	this.password = password;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAlias() {
 	return alias;
     }
 
+    /**
+     *
+     * @param alias
+     */
     public void setAlias(String alias) {
 	this.alias = alias;
     }
 
+    /**
+     *
+     * @return
+     */
     public File getJKSfile() {
 	return JKSfile;
     }
 
+    /**
+     *
+     * @param JKSfile
+     */
     public void setJKSfile(File JKSfile) {
 	this.JKSfile = JKSfile;
     }

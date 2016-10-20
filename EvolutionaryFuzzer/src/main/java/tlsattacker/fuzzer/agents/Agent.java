@@ -25,8 +25,15 @@ import tlsattacker.fuzzer.testvector.TestVector;
  */
 public abstract class Agent {
 
+    /**
+     *
+     */
     protected ServerCertificateStructure keypair;
 
+    /**
+     *
+     * @param keypair
+     */
     public Agent(ServerCertificateStructure keypair) {
 	this.keypair = keypair;
     }
@@ -52,6 +59,7 @@ public abstract class Agent {
      * 
      * @param branchTrace
      *            File containing the Branch Information
+     * @param vector
      * @param trace
      *            Workflowtrace which was executed (Fuzzingvector)
      * @param executedTrace

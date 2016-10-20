@@ -17,6 +17,10 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProcMon implements Runnable {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());
 
     /**
@@ -37,7 +41,15 @@ public class ProcMon implements Runnable {
 
     //
 
+    /**
+     *
+     */
+    
     private final Process _proc;
+
+    /**
+     *
+     */
     private volatile boolean _complete;
 
     /**

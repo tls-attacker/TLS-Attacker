@@ -23,10 +23,25 @@ import java.util.logging.Logger;
  *            Type of Data organized by the Node
  */
 public class Node<T> {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(Node.class.getName());
 
+    /**
+     *
+     */
     private final T data;
+
+    /**
+     *
+     */
     private Node<T> parent = null;
+
+    /**
+     *
+     */
     private final List<Node<T>> children;
 
     /**
@@ -97,6 +112,10 @@ public class Node<T> {
 	return data;
     }
 
+    /**
+     *
+     * @param parent
+     */
     private void setParent(Node<T> parent) {
 	if (parent == null) {
 	    throw new NullPointerException("Cannot add null as Parent!");

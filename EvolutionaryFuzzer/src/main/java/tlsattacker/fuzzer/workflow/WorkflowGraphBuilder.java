@@ -17,6 +17,12 @@ import org.jgrapht.graph.DirectedMultigraph;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class WorkflowGraphBuilder {
+
+    /**
+     *
+     * @param typeList
+     * @return
+     */
     public static String generateDOTGraph(Set <WorkflowTraceType> typeList)
     {
         String result = "digraph output{\n";
@@ -38,6 +44,12 @@ public class WorkflowGraphBuilder {
 
 	return result;
     }
+
+    /**
+     *
+     * @param typeList
+     * @return
+     */
     public static DirectedMultigraph<Integer, MessageFlow> generateWorkflowGraph(Set<WorkflowTraceType> typeList) {
 	DirectedMultigraph<Integer, MessageFlow> graph = new DirectedMultigraph<>(MessageFlow.class);
 	int vertexIndex = 0;
@@ -66,6 +78,13 @@ public class WorkflowGraphBuilder {
 	return graph;
     }
 
+    /**
+     *
+     * @param graph
+     * @param flow
+     * @param current
+     * @return
+     */
     public static MessageFlow returnOutGoingFlow(DirectedMultigraph<Integer, MessageFlow> graph, MessageFlow flow,
 	    Integer current) {
 	for (MessageFlow f : graph.outgoingEdgesOf(current)) {
@@ -76,6 +95,9 @@ public class WorkflowGraphBuilder {
 	return null;
     }
 
+    /**
+     *
+     */
     private WorkflowGraphBuilder()
     {
     }

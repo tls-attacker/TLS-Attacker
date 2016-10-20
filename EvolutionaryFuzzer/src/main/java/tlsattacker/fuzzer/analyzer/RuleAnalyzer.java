@@ -17,11 +17,26 @@ import tlsattacker.fuzzer.result.Result;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {
+
+    /**
+     *
+     */
     public static final String optionName = "rule";
+
+    /**
+     *
+     */
     private List<Rule> ruleList;
+
+    /**
+     *
+     */
     private EvolutionaryFuzzerConfig config;
 
-    
+    /**
+     *
+     * @param config
+     */
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;
 	ruleList = new LinkedList<Rule>();
@@ -38,6 +53,11 @@ public class RuleAnalyzer extends Analyzer {
 	ruleList.add(new EarlyHeartbeatRule(config));
     }
 
+    /**
+     *
+     * @param tempClass
+     * @return
+     */
     public Rule getRule(Class tempClass) {
 	for (Rule r : ruleList) {
 	    if (r.getClass().equals(tempClass)) {
@@ -47,6 +67,10 @@ public class RuleAnalyzer extends Analyzer {
 	return null;
     }
 
+    /**
+     *
+     * @param result
+     */
     public void analyze(Result result) {
 	for (Rule r : ruleList) {
 	    if (r.applies(result)) {
@@ -57,6 +81,10 @@ public class RuleAnalyzer extends Analyzer {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     public String getReport() {
 	StringBuilder builder = new StringBuilder();
 	for (Rule r : ruleList) {

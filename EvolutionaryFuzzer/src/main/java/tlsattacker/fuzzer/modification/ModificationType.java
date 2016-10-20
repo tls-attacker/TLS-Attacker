@@ -13,23 +13,99 @@ package tlsattacker.fuzzer.modification;
  * @author Robert Merget - robert.merget@rub.de
  */
 public enum ModificationType {
+
+    /**
+     *
+     */
     ADD_MESSAGE,
+
+    /**
+     *
+     */
     DUPLICATE_MESSAGE,
+
+    /**
+     *
+     */
     REMOVE_MESSAGE,
+
+    /**
+     *
+     */
     MODIFY_FIELD,
+
+    /**
+     *
+     */
     ADD_RECORD,
+
+    /**
+     *
+     */
     CHANGE_SERVER_CERT,
+
+    /**
+     *
+     */
     CHANGE_CLIENT_CERT,
+
+    /**
+     *
+     */
     ADD_MESSAGE_FLIGHT,
+
+    /**
+     *
+     */
     TOGGLE_ENCRYPTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_CIPHERSUITE_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_CLIENT_CERTIFICATE_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_CLIENT_RANDOM_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_COMPRESSION_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_MASTER_SECRET_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_PREMASTER_SECRET_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_PROTOCOL_VERSION_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_SERVER_CERTIFICATE_ACTION,
+
+    /**
+     *
+     */
     ADD_CHANGE_SERVER_RANDOM_ACTION,
+
+    /**
+     *
+     */
     ADD_EXTENSION
 }

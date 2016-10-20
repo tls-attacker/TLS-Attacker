@@ -15,8 +15,15 @@ import static org.junit.Assert.assertNull;
  * @author ic0ns
  */
 public class ServerManagerTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(ServerManagerTest.class.getName());
 
+    /**
+     *
+     */
     ServerManager manager = null;
 
     /**
@@ -49,6 +56,9 @@ public class ServerManagerTest {
 	manager.clear();
     }
 
+    /**
+     *
+     */
     @Test(expected = RuntimeException.class)
     public void TestOccupyAllServers() {
 	tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig().setTimeout(10);
@@ -67,6 +77,9 @@ public class ServerManagerTest {
 	assertNotNull("Failure: Could not get a free Server", server);
     }
 
+    /**
+     *
+     */
     public void TestEmptyServer() {
 	tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig().setTimeout(10);
 	manager.clear();

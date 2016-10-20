@@ -16,10 +16,28 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RemoveMessageModification extends Modification {
+
+    /**
+     *
+     */
     private final ProtocolMessage message;
+
+    /**
+     *
+     */
     private final int position;
+
+    /**
+     *
+     */
     private final SendAction action;
 
+    /**
+     *
+     * @param message
+     * @param action
+     * @param position
+     */
     public RemoveMessageModification(ProtocolMessage message, SendAction action, int position) {
 	super(ModificationType.REMOVE_MESSAGE);
 	this.message = message;
@@ -27,14 +45,26 @@ public class RemoveMessageModification extends Modification {
 	this.action = action;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPosition() {
 	return position;
     }
 
+    /**
+     *
+     * @return
+     */
     public SendAction getAction() {
 	return action;
     }
 
+    /**
+     *
+     * @return
+     */
     public ProtocolMessage getMessage() {
 	return message;
     }

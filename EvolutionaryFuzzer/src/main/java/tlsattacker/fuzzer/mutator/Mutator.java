@@ -20,14 +20,30 @@ import tlsattacker.fuzzer.testvector.TestVector;
  */
 public abstract class Mutator {
 
+    /**
+     *
+     */
     protected EvolutionaryFuzzerConfig config;
+
+    /**
+     *
+     */
     protected CertificateMutator certMutator;
 
+    /**
+     *
+     * @param config
+     * @param certMutator
+     */
     public Mutator(EvolutionaryFuzzerConfig config, CertificateMutator certMutator) {
 	this.config = config;
 	this.certMutator = certMutator;
     }
 
+    /**
+     *
+     * @return
+     */
     public CertificateMutator getCertMutator() {
 	return certMutator;
     }

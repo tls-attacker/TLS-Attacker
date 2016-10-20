@@ -15,7 +15,16 @@ import tlsattacker.fuzzer.result.Result;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Analyzer {
+
+    /**
+     *
+     * @param result
+     */
     public abstract void analyze(Result result);
 
+    /**
+     *
+     * @return
+     */
     public abstract String getReport();
 }

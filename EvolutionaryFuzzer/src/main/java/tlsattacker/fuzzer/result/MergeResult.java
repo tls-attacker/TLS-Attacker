@@ -16,10 +16,25 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MergeResult {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(MergeResult.class.getName());
 
+    /**
+     *
+     */
     private int newVertices = 0;
+
+    /**
+     *
+     */
     private int newBranches = 0;
+
+    /**
+     *
+     */
     private int hitVertices = 0;
 
     /**

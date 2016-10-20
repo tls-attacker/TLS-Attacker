@@ -24,25 +24,70 @@ import java.util.logging.Logger;
  */
 public class TLSServer {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 
+    /**
+     *
+     */
     private Process p = null;
+
+    /**
+     *
+     */
     private boolean free = true;
+
+    /**
+     *
+     */
     private String ip;
 
+    /**
+     *
+     */
     private int port;
+
+    /**
+     *
+     */
     private int id = -1;
+
+    /**
+     *
+     */
     private String restartServerCommand;
+
+    /**
+     *
+     */
     private String accepted;
+
+    /**
+     *
+     */
     private String killServerCommand = "";
 
-
+    /**
+     *
+     */
     private StreamGobbler errorGobbler;
+
+    /**
+     *
+     */
     private StreamGobbler outputGobbler;
     // our end
 
+    /**
+     *
+     */
     private ProcMon procmon = null;
 
+    /**
+     *
+     */
     public TLSServer() {
 	ip = null;
 	port = 0;
@@ -72,18 +117,34 @@ public class TLSServer {
 	this.killServerCommand = killServerCommand;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getKillServerCommand() {
         return killServerCommand;
     }
 
+    /**
+     *
+     * @param killServerCommand
+     */
     public void setKillServerCommand(String killServerCommand) {
         this.killServerCommand = killServerCommand;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAccepted() {
         return accepted;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getRestartServerCommand() {
         return restartServerCommand;
     }
@@ -106,18 +167,34 @@ public class TLSServer {
 	return port;
     }
 
+    /**
+     *
+     * @param ip
+     */
     public void setIp(String ip) {
 	this.ip = ip;
     }
 
+    /**
+     *
+     * @param port
+     */
     public void setPort(int port) {
 	this.port = port;
     }
 
+    /**
+     *
+     * @param restartServerCommand
+     */
     public void setRestartServerCommand(String restartServerCommand) {
         this.restartServerCommand = restartServerCommand;
     }
 
+    /**
+     *
+     * @param accepted
+     */
     public void setAccepted(String accepted) {
 	this.accepted = accepted;
     }
@@ -155,6 +232,7 @@ public class TLSServer {
 
     /**
      * Starts the Server by executing the restart Server command
+     * @param keyFile
      */
     public synchronized void start(String prefix, File certificateFile, File keyFile) {
         
@@ -171,6 +249,7 @@ public class TLSServer {
 
     /**
      * Restarts the Server by executing the restart Server command
+     * @param keyFile
      */
     public synchronized void restart(String prefix, File certificateFile, File keyFile) {
         if (!this.isFree()) {
@@ -226,6 +305,10 @@ public class TLSServer {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized boolean serverIsRunning() {
         return outputGobbler != null && outputGobbler.accepted() && p != null;
     }
@@ -248,6 +331,7 @@ public class TLSServer {
      * Returns the ID assigned to the currently started Server, the ID changes
      * after every restart
      * 
+     * @return 
      * @returnID assigned to the currently started Server
      */
     public synchronized int getID() {

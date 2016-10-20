@@ -16,14 +16,23 @@ import org.junit.BeforeClass;
  */
 public class CommandLineController {
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     */
     public CommandLineController() {
     }
 

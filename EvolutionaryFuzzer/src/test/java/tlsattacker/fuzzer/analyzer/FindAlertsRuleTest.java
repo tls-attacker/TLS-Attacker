@@ -33,11 +33,20 @@ import static org.junit.Assert.*;
  */
 public class FindAlertsRuleTest {
 
+    /**
+     *
+     */
     private FindAlertsRule rule;
 
+    /**
+     *
+     */
     public FindAlertsRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -47,6 +56,9 @@ public class FindAlertsRuleTest {
 	rule.getConfig().setSaveOneOfEach(false);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));
@@ -105,6 +117,9 @@ public class FindAlertsRuleTest {
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
 
+    /**
+     *
+     */
     @Test
     public void testOneOfEach() {
 	rule.getConfig().setSaveOneOfEach(true);

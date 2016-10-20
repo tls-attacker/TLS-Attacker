@@ -9,10 +9,21 @@ import java.util.logging.Logger;
  */
 public class CountEdge extends org.jgrapht.graph.DefaultEdge {
 
+    /**
+     *
+     */
     private static final long serialVersionUID = 1L;
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(CountEdge.class.getName());
     // Branch Counter
-    private int count = 1;
+
+    /**
+     *
+     */
+        private int count = 1;
 
     /**
      * Default Constructor
@@ -27,6 +38,10 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
 	count++;
     }
 
+    /**
+     *
+     * @param count
+     */
     public void add(int count) {
 	this.count += count;
     }

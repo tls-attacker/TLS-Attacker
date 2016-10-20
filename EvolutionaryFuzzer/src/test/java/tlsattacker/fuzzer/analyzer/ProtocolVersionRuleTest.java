@@ -33,11 +33,21 @@ import static org.junit.Assert.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProtocolVersionRuleTest {
+
+    /**
+     *
+     */
     private ProtocolVersionRule rule;
 
+    /**
+     *
+     */
     public ProtocolVersionRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -46,6 +56,9 @@ public class ProtocolVersionRuleTest {
 	rule = new ProtocolVersionRule(config);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output/"));

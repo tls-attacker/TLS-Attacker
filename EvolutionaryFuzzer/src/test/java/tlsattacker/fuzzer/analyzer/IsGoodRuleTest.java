@@ -31,11 +31,21 @@ import static org.junit.Assert.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsGoodRuleTest {
+
+    /**
+     *
+     */
     private IsGoodRule rule;
 
+    /**
+     *
+     */
     public IsGoodRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -45,6 +55,9 @@ public class IsGoodRuleTest {
 	rule = new IsGoodRule(config);
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

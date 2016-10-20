@@ -17,16 +17,30 @@ import java.util.ArrayList;
  */
 public class WorkflowTraceType {
 
+    /**
+     *
+     */
     private ArrayList<MessageFlow> flows;
 
+    /**
+     *
+     */
     public WorkflowTraceType() {
 	flows = new ArrayList<>();
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<MessageFlow> getFlows() {
 	return flows;
     }
 
+    /**
+     *
+     * @param flow
+     */
     public void addMessageFlow(MessageFlow flow) {
 	flows.add(flow);
     }
@@ -57,6 +71,9 @@ public class WorkflowTraceType {
 	return true;
     }
 
+    /**
+     *
+     */
     public void clean() {
 	for (int i = flows.size() - 1; i >= 0; i--) {
 	    MessageFlow flow = flows.get(i);

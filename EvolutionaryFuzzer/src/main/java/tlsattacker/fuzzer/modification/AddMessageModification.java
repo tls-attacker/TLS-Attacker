@@ -16,15 +16,32 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AddMessageModification extends Modification {
+
+    /**
+     *
+     */
     private final ProtocolMessage message;
+
+    /**
+     *
+     */
     private final SendAction action;
 
+    /**
+     *
+     * @param message
+     * @param action
+     */
     public AddMessageModification(ProtocolMessage message, SendAction action) {
 	super(ModificationType.ADD_MESSAGE);
 	this.message = message;
 	this.action = action;
     }
 
+    /**
+     *
+     * @return
+     */
     public ProtocolMessage getMessage() {
 	return message;
     }

@@ -38,12 +38,25 @@ import static org.junit.Assert.*;
  */
 public class AnalyzeModificationRuleTest {
 
+    /**
+     *
+     */
     private AnalyzeModificationRule rule;
+
+    /**
+     *
+     */
     private TestVector vector;
 
+    /**
+     *
+     */
     public AnalyzeModificationRuleTest() {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
 	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
@@ -59,6 +72,9 @@ public class AnalyzeModificationRuleTest {
 
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
 	FileHelper.deleteFolder(new File("unit_test_output"));

@@ -34,6 +34,10 @@ import static org.junit.Assert.assertTrue;
  * @author ic0ns
  */
 public class AflAgentTest {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
 
     /**
@@ -47,10 +51,24 @@ public class AflAgentTest {
         
     }
 
-
+    /**
+     *
+     */
     private AFLAgent agent = null;
+
+    /**
+     *
+     */
     private TLSServer server = null;
+
+    /**
+     *
+     */
     private UnitTestCertificateMutator mut = null;
+
+    /**
+     *
+     */
     private ServerCertificateStructure pair = null;
 
     /**
@@ -59,6 +77,9 @@ public class AflAgentTest {
     public AflAgentTest() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
         FileHelper.deleteFolder(new File("unit_test_output"));
@@ -129,6 +150,9 @@ public class AflAgentTest {
         agent.applicationStop(server);
     }
 
+    /**
+     *
+     */
     @Test
     public void testCollectResults()
     {

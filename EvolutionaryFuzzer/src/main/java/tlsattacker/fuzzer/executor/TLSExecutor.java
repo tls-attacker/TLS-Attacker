@@ -56,11 +56,29 @@ import java.util.Collection;
  */
 public class TLSExecutor extends Executor {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 
+    /**
+     *
+     */
     public static final String optionName = "tlsexecutor";
+
+    /**
+     *
+     */
     private final TestVector testVector;
+
+    /**
+     *
+     */
     private final TLSServer server;
+
+    /**
+     *
+     */
     private final Agent agent;
 
     /**
@@ -70,6 +88,7 @@ public class TLSExecutor extends Executor {
      *            Trace that the Executor should execute
      * @param server
      *            Server on which the Executor should execute the Trace
+     * @param agent
      */
     public TLSExecutor(TestVector testVector, TLSServer server, Agent agent) {
 	this.testVector = testVector;
@@ -205,6 +224,12 @@ public class TLSExecutor extends Executor {
 
     }
 
+    /**
+     *
+     * @param server
+     * @param config
+     * @return
+     */
     private TransportHandler initTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
 	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
 		config.getTlsTimeout());

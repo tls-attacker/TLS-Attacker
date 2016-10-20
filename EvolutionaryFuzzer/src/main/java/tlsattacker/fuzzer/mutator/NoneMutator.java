@@ -26,14 +26,25 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 public class NoneMutator extends Mutator
 {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(NoneMutator.class.getName());
 
+    /**
+     *
+     */
     public static final String optionName = "none";
+
+    /**
+     *
+     */
     private SimpleMutatorConfig simpleConfig;
 
     /**
      *
      * @param config
+     * @param certMutator
      */
     public NoneMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator)
     {
@@ -50,6 +61,10 @@ public class NoneMutator extends Mutator
         }
     }
 
+    /**
+     *
+     * @return
+     */
     private boolean goodVectorsExist()
     {
         File f = new File("data/good/");
@@ -57,12 +72,24 @@ public class NoneMutator extends Mutator
 
     }
 
+    /**
+     *
+     * @return
+     */
     private boolean archiveVectorsExist()
     {
         File f = new File("archive/");
         return f.listFiles().length > 0;
     }
 
+    /**
+     *
+     * @param folder
+     * @return
+     * @throws IOException
+     * @throws JAXBException
+     * @throws XMLStreamException
+     */
     private TestVector chooseRandomTestVectorFromFolder(File folder) throws IOException, JAXBException,
                                                                             XMLStreamException
     {

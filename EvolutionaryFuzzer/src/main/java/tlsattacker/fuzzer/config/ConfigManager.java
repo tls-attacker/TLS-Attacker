@@ -15,28 +15,55 @@ package tlsattacker.fuzzer.config;
 @Deprecated
 public class ConfigManager {
 
+    /**
+     *
+     * @return
+     */
     public static ConfigManager getInstance() {
 	return ConfigManagerHolder.INSTANCE;
     }
 
+    /**
+     *
+     */
     private EvolutionaryFuzzerConfig config;
 
+    /**
+     *
+     */
     private ConfigManager() {
 	config = new EvolutionaryFuzzerConfig();
     }
 
+    /**
+     *
+     * @return
+     */
     public EvolutionaryFuzzerConfig getConfig() {
 	return config;
     }
 
+    /**
+     *
+     * @param config
+     */
     public void setConfig(EvolutionaryFuzzerConfig config) {
 	this.config = config;
     }
 
+    /**
+     *
+     */
     private static class ConfigManagerHolder {
 
-	private static final ConfigManager INSTANCE = new ConfigManager();
+        /**
+         *
+         */
+        private static final ConfigManager INSTANCE = new ConfigManager();
 
+        /**
+         *
+         */
         private ConfigManagerHolder()
         {
         }

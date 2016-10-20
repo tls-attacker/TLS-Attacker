@@ -33,10 +33,21 @@ import java.util.Set;
  */
 public class PINAgent extends Agent {
 
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
+    /**
+     *
+     */
     public static final String optionName = "PIN";
 
+    /**
+     *
+     * @param br
+     * @return
+     */
     private static BranchTrace getBranchTrace(BufferedReader br)
     {
         try {
@@ -80,19 +91,44 @@ public class PINAgent extends Agent {
         return new BranchTrace();
     }
     // Is a fuzzing Progress Running?
-    protected boolean running = false;
+
+    /**
+     *
+     */
+        protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
-    protected long startTime;
+
+    /**
+     *
+     */
+        protected long startTime;
     // StopTime of the last Fuzzing Vektor
-    protected long stopTime;
+
+    /**
+     *
+     */
+        protected long stopTime;
     // If the Application did Timeout
-    protected boolean timeout;
+
+    /**
+     *
+     */
+        protected boolean timeout;
     // If the Application did Crash
-    protected boolean crash;
+
+    /**
+     *
+     */
+        protected boolean crash;
+
+    /**
+     *
+     */
     private final String prefix;
 
     /**
      * Default Constructor
+     * @param keypair
      */
     public PINAgent(ServerCertificateStructure keypair) {
 	super(keypair);

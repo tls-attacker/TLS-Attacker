@@ -20,6 +20,9 @@ import static org.junit.Assert.*;
  */
 public class WorkFlowTraceTypeTest {
 
+    /**
+     *
+     */
     public WorkFlowTraceTypeTest() {
     }
 

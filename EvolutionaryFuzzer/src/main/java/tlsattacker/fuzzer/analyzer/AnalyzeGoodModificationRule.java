@@ -25,12 +25,31 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeGoodModificationRule extends Rule {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 
+    /**
+     *
+     */
     private long executedTraces = 0;
+
+    /**
+     *
+     */
     private HashMap<ModificationType, MutableInt> typeMap;
+
+    /**
+     *
+     */
     private AnalyzeModificationRuleConfig config;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public AnalyzeGoodModificationRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_good_modification.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -45,11 +64,20 @@ public class AnalyzeGoodModificationRule extends Rule {
 
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	return result.isGoodTrace() == Boolean.TRUE;
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	executedTraces++;
@@ -63,10 +91,18 @@ public class AnalyzeGoodModificationRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	if (executedTraces > 0) {
@@ -80,15 +116,27 @@ public class AnalyzeGoodModificationRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     public long getExecutedTraces() {
 	return executedTraces;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<ModificationType, MutableInt> getTypeMap() {
 	// TODO can we do sth like unmodifiable map?
 	return typeMap;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public AnalyzeModificationRuleConfig getConfig() {
 	return config;

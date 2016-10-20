@@ -22,10 +22,25 @@ import java.util.Random;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class UnitTestCertificateMutator extends CertificateMutator {
+
+    /**
+     *
+     */
     private List<ClientCertificateStructure> clientPairList;
+
+    /**
+     *
+     */
     private List<ServerCertificateStructure> serverPairList;
+
+    /**
+     *
+     */
     private Random r;
 
+    /**
+     *
+     */
     public UnitTestCertificateMutator() {
 	this.clientPairList = new ArrayList<>();
 	this.serverPairList = new ArrayList<>();
@@ -38,16 +53,29 @@ public class UnitTestCertificateMutator extends CertificateMutator {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ClientCertificateStructure getClientCertificateStructure() {
 	return clientPairList.get(r.nextInt(clientPairList.size()));
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ServerCertificateStructure getServerCertificateStructure() {
 	return serverPairList.get(r.nextInt(serverPairList.size()));
     }
 
+    /**
+     *
+     * @param structure
+     * @return
+     */
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
         return serverPairList.contains(structure);

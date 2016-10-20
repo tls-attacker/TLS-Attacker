@@ -20,6 +20,15 @@ import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
  */
 public class ControllerFactory
 {
+
+    /**
+     *
+     * @param config
+     * @return
+     * @throws IllegalControllerException
+     * @throws IllegalMutatorException
+     * @throws IllegalCertificateMutatorException
+     */
     public static Controller getController(EvolutionaryFuzzerConfig config)
             throws IllegalControllerException, IllegalMutatorException, IllegalCertificateMutatorException {
 	switch (config.getMutator()) {
@@ -31,6 +40,9 @@ public class ControllerFactory
 	}
     }
 
+    /**
+     *
+     */
     private ControllerFactory()
     {
     }

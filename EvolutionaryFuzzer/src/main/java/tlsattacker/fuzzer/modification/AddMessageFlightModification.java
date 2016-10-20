@@ -16,19 +16,40 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AddMessageFlightModification extends Modification {
+
+    /**
+     *
+     */
     private final SendAction sendAction;
+
+    /**
+     *
+     */
     private final ReceiveAction receiveAction;
 
+    /**
+     *
+     * @param sendAction
+     * @param receiveAction
+     */
     public AddMessageFlightModification(SendAction sendAction, ReceiveAction receiveAction) {
 	super(ModificationType.ADD_MESSAGE_FLIGHT);
 	this.sendAction = sendAction;
 	this.receiveAction = receiveAction;
     }
 
+    /**
+     *
+     * @return
+     */
     public SendAction getSendAction() {
 	return sendAction;
     }
 
+    /**
+     *
+     * @return
+     */
     public ReceiveAction getReceiveAction() {
 	return receiveAction;
     }

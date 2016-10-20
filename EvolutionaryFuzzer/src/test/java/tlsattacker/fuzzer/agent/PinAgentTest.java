@@ -35,7 +35,14 @@ import org.junit.Before;
  */
 public class PinAgentTest {
 
+    /**
+     *
+     */
     private static PINAgent agent;
+
+    /**
+     *
+     */
     private static TLSServer server;
 
     /**
@@ -47,12 +54,26 @@ public class PinAgentTest {
         File f = new File("JUNIT/");
         FileHelper.deleteFolder(f);
     }
+
+    /**
+     *
+     */
     private UnitTestCertificateMutator mut = null;
+
+    /**
+     *
+     */
     private ServerCertificateStructure pair = null;
 
+    /**
+     *
+     */
     public PinAgentTest() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
         FileHelper.deleteFolder(new File("unit_test_output"));
@@ -62,6 +83,9 @@ public class PinAgentTest {
         server = null;
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();

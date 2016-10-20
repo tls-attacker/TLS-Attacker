@@ -26,15 +26,51 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeTimeRule extends Rule {
+
+    /**
+     *
+     */
     private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());
+
+    /**
+     *
+     */
     private PrintWriter outWriter;
+
+    /**
+     *
+     */
     private double executedTimeTotal;
+
+    /**
+     *
+     */
     private int numberExecutedTraces = 0;
+
+    /**
+     *
+     */
     private double slowestTime = Double.MIN_VALUE;
+
+    /**
+     *
+     */
     private double fastestTime = Double.MAX_VALUE;
+
+    /**
+     *
+     */
     private AnalyzeTimeRuleConfig config;
 
+    /**
+     *
+     * @param evoConfig
+     */
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_time.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -60,11 +96,20 @@ public class AnalyzeTimeRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @param result
+     * @return
+     */
     @Override
     public boolean applies(Result result) {
 	return true;
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onApply(Result result) {
 	numberExecutedTraces++;
@@ -79,10 +124,18 @@ public class AnalyzeTimeRule extends Rule {
 	outWriter.flush();
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDecline(Result result) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String report() {
 	if (numberExecutedTraces > 0) {
@@ -95,23 +148,43 @@ public class AnalyzeTimeRule extends Rule {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public AnalyzeTimeRuleConfig getConfig() {
 	return config;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getExecutedTimeTotal() {
 	return executedTimeTotal;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNumberExecutedTraces() {
 	return numberExecutedTraces;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getSlowestTime() {
 	return slowestTime;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getFastestTime() {
 	return fastestTime;
     }
