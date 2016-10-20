@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
+ * A rule which counts the applied modifications
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

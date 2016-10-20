@@ -31,6 +31,7 @@ import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 
 /**
+ * An implementation of the CertificateMutator that does not modify the Certificates and instead exchanges them completely.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

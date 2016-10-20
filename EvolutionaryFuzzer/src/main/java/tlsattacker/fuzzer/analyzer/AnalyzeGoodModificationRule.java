@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
+ * A Rule which counts the applied modifications which resulted in good TestVectors
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

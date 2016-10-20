@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.exceptions;
 
 /**
+ * Exception thrown when an undefined CertificateMutator is configured
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

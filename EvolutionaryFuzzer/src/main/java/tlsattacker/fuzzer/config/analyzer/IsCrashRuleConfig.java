@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.config.analyzer;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * A configuration class for the IsCrashRule
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

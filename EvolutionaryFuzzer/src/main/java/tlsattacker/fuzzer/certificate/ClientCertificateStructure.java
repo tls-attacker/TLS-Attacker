@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * A wrapper class which logically binds the JKSFile with the assosiated password and alias.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

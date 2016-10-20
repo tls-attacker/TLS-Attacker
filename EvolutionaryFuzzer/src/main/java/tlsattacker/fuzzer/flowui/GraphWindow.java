@@ -17,6 +17,7 @@ import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedMultigraph;
 
 /**
+ * A window which tries to visualizes a directed graph
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

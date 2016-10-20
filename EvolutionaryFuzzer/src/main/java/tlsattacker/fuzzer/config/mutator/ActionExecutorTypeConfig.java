@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 /**
+ * The configuration file for the ActionExecutors used while fuzzing
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

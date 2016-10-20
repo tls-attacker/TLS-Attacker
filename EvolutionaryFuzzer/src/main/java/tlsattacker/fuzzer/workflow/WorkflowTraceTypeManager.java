@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * A helper class which translates TestVectors into WorkflowTraceTypes
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

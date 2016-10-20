@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.config.analyzer;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 
+ * A configuration class for the analyze time rule
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlRootElement

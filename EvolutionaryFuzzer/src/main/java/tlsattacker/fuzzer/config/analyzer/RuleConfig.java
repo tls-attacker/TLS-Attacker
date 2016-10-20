@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.config.analyzer;
 
 /**
+ * The super class for all Rule configuration classes
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

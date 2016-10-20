@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 
 /**
+ * A modification which indicates that a new Message was added to a SendAction
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

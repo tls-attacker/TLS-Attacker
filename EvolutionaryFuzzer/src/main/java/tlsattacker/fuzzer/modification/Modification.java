@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.modification;
 import java.io.Serializable;
 
 /**
+ * A modification represents something that was changed in a TestVector
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

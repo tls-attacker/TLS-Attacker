@@ -28,6 +28,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
+ * A rule that tries to find TestVectors which allowed Heartbeat messages before the handshake has finished
  * 
  * @author ic0ns
  */

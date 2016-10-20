@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.modification;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 
 /**
+ * A modification which indicates that the server certificate in the TestVector has changed.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

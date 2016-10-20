@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
+ * A helper class to serialize and deserialize TestVectors.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

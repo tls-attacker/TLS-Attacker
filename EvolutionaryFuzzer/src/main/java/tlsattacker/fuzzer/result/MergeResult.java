@@ -11,6 +11,7 @@ package tlsattacker.fuzzer.result;
 import java.util.logging.Logger;
 
 /**
+ * A class which represents the outcome of a BranchTrace merge operation. It contains statistics about the different new found vertices, branches, and hit vertices at all.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

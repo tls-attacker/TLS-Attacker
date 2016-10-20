@@ -11,6 +11,7 @@ import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 
 /**
+ * A modification which indicates that the client certificate in the TestVector was changed
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

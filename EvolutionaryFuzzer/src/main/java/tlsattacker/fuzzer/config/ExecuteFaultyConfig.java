@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.config;
 import com.beust.jcommander.Parameters;
 
 /**
+ * A config class which allows the configuration of the execute-faulty command.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

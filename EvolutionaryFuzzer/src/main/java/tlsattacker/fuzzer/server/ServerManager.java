@@ -17,7 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * Manages the different Servers that the fuzzer is configured with.
+ * 
+ * @author Robert Merget - robert.merget@rub.de
+ */
 public class ServerManager {
 
     private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());

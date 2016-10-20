@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.util.ArrayList;
 
 /**
+ * A higher level representation of the a TLS Handshake which consists of multiple MessageFlows
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

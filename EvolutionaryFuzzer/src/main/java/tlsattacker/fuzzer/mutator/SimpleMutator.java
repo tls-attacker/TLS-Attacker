@@ -36,6 +36,7 @@ import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
+ * A simple Mutator implementations that applies modifications to random good TestVectors as specified in a configuration file.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

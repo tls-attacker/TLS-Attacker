@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.controller;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 
 /**
- * The Controller controls the genereal Programm. It links the Components
+ * The Controller controls the general program. It links the Components
  * together and starts and stop the Fuzzing Process. I am unsure if it is ever
  * necessarry to create more than one Implementation.
  * 

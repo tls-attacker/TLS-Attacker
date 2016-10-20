@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.exceptions;
 import java.util.logging.Logger;
 
 /**
- * This Exception should be thrown if a Bug in the Instrumentation is suspected!
+ * Exception that indicates that the server did not start properly
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

@@ -12,6 +12,7 @@ import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 
 /**
+ * A factory class which chooses the correct mutator as specified in the configuration file.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

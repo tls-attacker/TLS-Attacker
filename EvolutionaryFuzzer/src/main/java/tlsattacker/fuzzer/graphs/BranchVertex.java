@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
+ * A class which represents a node from a branch.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * A wrapper which logically binds a server private key file and a server certificate file
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

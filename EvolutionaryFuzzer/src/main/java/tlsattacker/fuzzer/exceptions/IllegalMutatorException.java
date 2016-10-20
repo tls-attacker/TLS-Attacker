@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.exceptions;
 
 /**
+ * Exception thrown when an undefined Mutator is configured
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

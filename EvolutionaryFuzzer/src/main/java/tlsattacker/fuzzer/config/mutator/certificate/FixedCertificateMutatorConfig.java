@@ -17,6 +17,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * A configuration class for the FixedCertificateMutator
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

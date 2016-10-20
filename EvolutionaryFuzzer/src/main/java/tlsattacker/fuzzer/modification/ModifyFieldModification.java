@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 
 /**
+ * A modification which indicates that a field in the WorkflowTrace was changed.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

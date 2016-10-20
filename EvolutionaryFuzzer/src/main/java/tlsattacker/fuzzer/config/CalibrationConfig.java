@@ -12,6 +12,7 @@ import com.beust.jcommander.validators.PositiveInteger;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 
 /**
+ * The configuration class for the "calibrate" command
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

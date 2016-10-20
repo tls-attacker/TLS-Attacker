@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * A Config File which controls the EvolutionaryFuzzer.
+ * A Config File which controls the SimpleMutator.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

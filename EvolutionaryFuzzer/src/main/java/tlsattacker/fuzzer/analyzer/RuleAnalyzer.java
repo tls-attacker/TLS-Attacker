@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ * An analyzer implementation which uses a set of Rules to find interesting TestVectors.
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {

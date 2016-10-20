@@ -22,6 +22,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
+ * A rule which records TestVectors that crash the server
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

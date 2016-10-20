@@ -54,7 +54,7 @@ import tlsattacker.fuzzer.result.ResultContainer;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
- * responsible for the continious exectution of new Fuzzingvectors.
+ * responsible for the continious exectution of new TestVectors.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

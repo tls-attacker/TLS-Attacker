@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
+ * A rule which keeps track of different execution time statistics
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

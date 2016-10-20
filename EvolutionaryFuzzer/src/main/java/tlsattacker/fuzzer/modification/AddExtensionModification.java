@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.modification;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 
 /**
+ * A modification which indicates that a new Extension was added to a Hello message
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

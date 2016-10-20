@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
 
 /**
+ * A configuration class which configures the options for the "new-server" command.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

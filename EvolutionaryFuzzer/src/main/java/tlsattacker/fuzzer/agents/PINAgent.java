@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * An Agent implemented with dynamic instrumentation with the aid of Intels Pin tool. 
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

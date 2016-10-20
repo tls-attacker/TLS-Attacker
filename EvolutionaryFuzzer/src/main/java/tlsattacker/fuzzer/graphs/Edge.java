@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 
 /**
+ * An edge class wbich represents an edge from one probe id to another. Carries a counter to count how often it appeared.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

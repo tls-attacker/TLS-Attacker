@@ -17,7 +17,9 @@ import tlsattacker.fuzzer.mutator.SimpleMutator;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 
 /**
- *
+ * A factory class which generates the correct controller depending on the controller specified in the 
+ * configuration object
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ControllerFactory

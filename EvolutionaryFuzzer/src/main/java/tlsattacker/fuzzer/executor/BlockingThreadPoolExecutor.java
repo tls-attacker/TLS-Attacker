@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A thread pool which blocks once the the queque is full
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

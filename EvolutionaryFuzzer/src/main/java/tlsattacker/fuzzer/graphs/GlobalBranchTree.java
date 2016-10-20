@@ -25,8 +25,8 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  */
 public class GlobalBranchTree {
     private static final Logger LOG = Logger.getLogger(GlobalBranchTree.class.getName());
-
-    // TODO Does not work yet
+    //Work in progress 
+    
     /**
      * Trys to generate a Path which contains all Paths threw a Program. The
      * Function needs the Debug Information provided by the AFL DebugTree Output

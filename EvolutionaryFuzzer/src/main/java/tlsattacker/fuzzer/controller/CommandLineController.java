@@ -39,7 +39,7 @@ import java.util.Set;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
- * complete executions
+ * the fuzzer with a commandline interface.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

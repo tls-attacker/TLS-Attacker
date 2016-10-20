@@ -32,6 +32,7 @@ import javax.xml.bind.JAXBException;
 import org.jgrapht.DirectedGraph;
 
 /**
+ * A rule which analyzes if the TestVector reached new codepaths and set a flag in the Result object accordingly.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

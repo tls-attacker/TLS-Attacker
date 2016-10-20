@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 /**
+ * A configuration class for the "test-crashes" command
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

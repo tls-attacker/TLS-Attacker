@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.modification;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 
 /**
+ * A modification which indicates that a new record was added to the WorkflowTrace
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

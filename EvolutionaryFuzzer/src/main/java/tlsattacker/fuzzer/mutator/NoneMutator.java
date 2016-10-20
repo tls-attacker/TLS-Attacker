@@ -36,7 +36,8 @@ import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
- *
+ * A mutator implementation that does not modify the TestVectors
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class NoneMutator extends Mutator

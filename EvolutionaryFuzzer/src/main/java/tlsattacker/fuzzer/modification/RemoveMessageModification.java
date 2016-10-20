@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 
 /**
+ * A modification which indicates that a message was removed to a WorkflowTrace
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

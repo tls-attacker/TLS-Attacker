@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
+ * A FileFilter that ignores .gitignore files
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

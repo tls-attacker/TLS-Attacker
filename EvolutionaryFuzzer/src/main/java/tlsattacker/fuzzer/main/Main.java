@@ -43,6 +43,7 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 import weka.core.Utils;
 
 /**
+ * Tha main class which parses the commands passed to the fuzzer and starts it
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

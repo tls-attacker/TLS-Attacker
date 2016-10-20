@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.modification;
 
 /**
+ * An enum for every modification.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

@@ -17,6 +17,7 @@ import javax.xml.bind.JAXB;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
+ * A mutator super class that modifies Certificates.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

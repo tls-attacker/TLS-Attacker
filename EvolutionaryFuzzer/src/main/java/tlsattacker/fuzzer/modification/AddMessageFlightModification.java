@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 
 /**
+ * A modification which indicates that new pair of SendAction and ReceiveAction was added to the WorkflowTrace.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

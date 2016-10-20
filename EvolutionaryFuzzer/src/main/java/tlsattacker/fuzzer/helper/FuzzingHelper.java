@@ -105,7 +105,11 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
-
+/**
+ * A helper class which implements useful methods to modify a TestVector on a higher level.
+ * 
+ * @author Robert Merget - robert.merget@rub.de
+ */
 public class FuzzingHelper {
 
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class

@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.modification;
 
 /**
+ * A modification which indicates that a new ToggleEncryptionAction was added to the WorkflowTrace
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

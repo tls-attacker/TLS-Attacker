@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.util.Objects;
 
 /**
+ * An abstraction layer of a Handshake which represents a single message object class and a direction that message was sent
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

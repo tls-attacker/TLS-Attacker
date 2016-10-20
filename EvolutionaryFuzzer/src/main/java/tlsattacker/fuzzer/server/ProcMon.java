@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * A Processmonitor which can tell you, when a command has finished in a non
- * blocking way. //TODO got this tool from the internet, do i need to mark it?
+ * blocking way. //TODO Rename
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

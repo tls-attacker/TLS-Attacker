@@ -44,6 +44,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import tlsattacker.fuzzer.config.ConfigManager;
 
 /**
+ * A class that tries to find the lowest tls_timeout possible to such that normal handshakes still execute probably with a tested Server.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

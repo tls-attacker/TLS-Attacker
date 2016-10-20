@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.result.Result;
 
 /**
+ * The Analyzer class which can analyze Result objects
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

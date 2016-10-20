@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
+ * A configuration class for the ProtocolVersionRule
  * 
  * @author ic0ns
  */

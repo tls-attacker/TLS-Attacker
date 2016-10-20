@@ -11,7 +11,7 @@ import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
 /**
- * 
+ * A Factory class that generates the right Agent depending on the agent set in the Config.
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AgentFactory {

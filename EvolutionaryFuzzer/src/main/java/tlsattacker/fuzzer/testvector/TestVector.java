@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ * A class which unites the Information needed to run a single fuzzer iteration.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

@@ -28,6 +28,7 @@ import javax.xml.bind.JAXBException;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
+ * A rule which finds different executed protocol flows and records them.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

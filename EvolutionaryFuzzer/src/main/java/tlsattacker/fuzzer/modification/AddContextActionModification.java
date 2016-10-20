@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.modification;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 
 /**
+ * A modification which indicates that a new action was added to the WorkflowTrace which changes a field in the TlsContext
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

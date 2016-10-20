@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.config.analyzer;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * The configuration class for the UniqueFlowsRule
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
+ * A is a class that can be used to analyze TestVectors. 
+ * It seperates the different things an operator might want to look for in a
+ * TestVector into different Classes.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

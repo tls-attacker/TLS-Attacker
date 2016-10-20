@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * A configuration class for the FindAlertsRule
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

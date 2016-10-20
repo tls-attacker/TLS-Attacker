@@ -29,6 +29,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
+ * A rule which records the different observed alert descriptions and records unusual alerts.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

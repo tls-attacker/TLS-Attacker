@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import java.io.File;
 
 /**
- * 
+ * A super class for configuration classes which allows for the configuration of different commands.
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzerGeneralConfig extends ClientCommandConfig {

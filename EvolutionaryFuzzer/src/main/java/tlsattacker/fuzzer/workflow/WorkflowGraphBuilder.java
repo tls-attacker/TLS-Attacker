@@ -16,6 +16,7 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.ListenableDirectedGraph;
 
 /**
+ * A helper class which helps in the generation of visualizable workflow data 
  * 
  * @author Robert Merget - robert.merget@rub.de
  */

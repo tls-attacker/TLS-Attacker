@@ -23,6 +23,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
+ * A rule which records TestVectors that caused a timeout.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
