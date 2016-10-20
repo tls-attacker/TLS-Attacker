@@ -135,7 +135,6 @@ public class FindAlertsRule extends Rule {
 		    AlertDescription desc = AlertDescription.getAlertDescription((byte) i);
 		    if (desc != null) {
 			builder.append(desc.toString()).append("\n");
-			;
 		    } else {
 			builder.append(i).append("\n");
 
