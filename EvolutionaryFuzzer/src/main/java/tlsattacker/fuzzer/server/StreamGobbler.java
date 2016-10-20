@@ -24,20 +24,60 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author ic0ns
+ */
 class StreamGobbler extends Thread {
+
+    /**
+     *
+     */
     private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
 
+    /**
+     *
+     */
     private InputStream is;
+
+    /**
+     *
+     */
     private String type;
+
+    /**
+     *
+     */
     private OutputStream os;
+
+    /**
+     *
+     */
     private volatile boolean hasAccepted = false;
+
+    /**
+     *
+     */
     private String accepted;
 
+    /**
+     *
+     * @param is
+     * @param type
+     * @param accepted
+     */
     StreamGobbler(InputStream is, String type, String accepted) {
 	this(is, type, null, accepted);
 
     }
 
+    /**
+     *
+     * @param is
+     * @param type
+     * @param redirect
+     * @param accepted
+     */
     StreamGobbler(InputStream is, String type, OutputStream redirect, String accepted) {
 	this.is = is;
 	this.type = type;
@@ -75,6 +115,9 @@ class StreamGobbler extends Thread {
 	}
     }
 
+    /**
+     *
+     */
     public void close() {
 	try {
 	    os.close();
