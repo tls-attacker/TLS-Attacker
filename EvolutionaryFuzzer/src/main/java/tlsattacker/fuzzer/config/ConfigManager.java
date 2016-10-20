@@ -36,5 +36,9 @@ public class ConfigManager {
     private static class ConfigManagerHolder {
 
 	private static final ConfigManager INSTANCE = new ConfigManager();
+
+        private ConfigManagerHolder()
+        {
+        }
     }
 }

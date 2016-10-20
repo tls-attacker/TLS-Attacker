@@ -44,4 +44,8 @@ public class GraphWindow {
 
     private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
 
+    private GraphWindow()
+    {
+    }
+
 }

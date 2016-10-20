@@ -28,4 +28,8 @@ public class AgentFactory {
 		throw new RuntimeException("Could not find Agent!");
 	}
     }
+
+    private AgentFactory()
+    {
+    }
 }

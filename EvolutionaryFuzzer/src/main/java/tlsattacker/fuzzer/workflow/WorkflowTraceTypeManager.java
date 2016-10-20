@@ -130,4 +130,8 @@ public class WorkflowTraceTypeManager {
 	}
 	return type;
     }
+
+    private WorkflowTraceTypeManager()
+    {
+    }
 }

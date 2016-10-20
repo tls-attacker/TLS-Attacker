@@ -29,4 +29,8 @@ public class MutatorFactory {
 
 	}
     }
+
+    private MutatorFactory()
+    {
+    }
 }

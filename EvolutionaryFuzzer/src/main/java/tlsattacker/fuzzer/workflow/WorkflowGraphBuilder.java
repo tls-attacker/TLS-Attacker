@@ -79,4 +79,8 @@ public class WorkflowGraphBuilder {
 	}
 	return null;
     }
+
+    private WorkflowGraphBuilder()
+    {
+    }
 }

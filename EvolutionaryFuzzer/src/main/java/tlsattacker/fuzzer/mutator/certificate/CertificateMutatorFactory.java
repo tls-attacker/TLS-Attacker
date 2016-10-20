@@ -26,4 +26,8 @@ public class CertificateMutatorFactory {
 			+ config.getMutator());
 	}
     }
+
+    private CertificateMutatorFactory()
+    {
+    }
 }

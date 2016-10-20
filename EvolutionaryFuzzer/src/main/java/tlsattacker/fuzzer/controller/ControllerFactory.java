@@ -34,4 +34,8 @@ public class ControllerFactory
 
 	}
     }
+
+    private ControllerFactory()
+    {
+    }
 }

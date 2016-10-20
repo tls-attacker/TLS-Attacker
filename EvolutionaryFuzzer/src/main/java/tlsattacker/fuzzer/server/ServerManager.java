@@ -157,5 +157,9 @@ public class ServerManager {
     private static class ServerManagerHolder {
 
 	private static final ServerManager INSTANCE = new ServerManager();
+
+        private ServerManagerHolder()
+        {
+        }
     }
 }
