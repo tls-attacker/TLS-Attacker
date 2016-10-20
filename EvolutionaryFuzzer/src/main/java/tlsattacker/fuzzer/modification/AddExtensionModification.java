@@ -20,7 +20,7 @@ public class AddExtensionModification extends Modification {
     /**
      *
      */
-    private ExtensionMessage message;
+    private final ExtensionMessage message;
 
     /**
      *

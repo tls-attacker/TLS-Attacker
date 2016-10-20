@@ -34,7 +34,7 @@ public class ResultContainer {
     /**
      *
      */
-    private RuleAnalyzer analyzer;
+    private final RuleAnalyzer analyzer;
 
     /**
      *

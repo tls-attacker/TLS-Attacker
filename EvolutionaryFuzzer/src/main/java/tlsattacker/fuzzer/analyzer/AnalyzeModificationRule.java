@@ -39,7 +39,7 @@ public class AnalyzeModificationRule extends Rule {
     /**
      *
      */
-    private HashMap<ModificationType, MutableInt> typeMap;
+    private final HashMap<ModificationType, MutableInt> typeMap;
 
     /**
      *

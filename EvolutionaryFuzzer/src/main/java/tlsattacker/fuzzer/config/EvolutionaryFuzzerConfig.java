@@ -90,7 +90,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      *
      */
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
-    private boolean injectPinChild = true;
+    private final boolean injectPinChild = true;
 
     /**
      *

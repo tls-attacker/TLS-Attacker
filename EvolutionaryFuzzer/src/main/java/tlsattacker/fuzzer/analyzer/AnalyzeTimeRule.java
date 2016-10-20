@@ -30,7 +30,7 @@ public class AnalyzeTimeRule extends Rule {
     /**
      *
      */
-    private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0.##");
 
     /**
      *

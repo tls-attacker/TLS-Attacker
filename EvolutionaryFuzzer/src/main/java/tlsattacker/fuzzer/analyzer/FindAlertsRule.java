@@ -45,7 +45,7 @@ public class FindAlertsRule extends Rule {
     /**
      *
      */
-    private boolean[] alertMap = new boolean[Byte.MAX_VALUE];
+    private final boolean[] alertMap = new boolean[Byte.MAX_VALUE];
 
     /**
      *

@@ -21,7 +21,7 @@ public class WorkflowTraceType {
     /**
      *
      */
-    private ArrayList<MessageFlow> flows;
+    private final ArrayList<MessageFlow> flows;
 
     /**
      *

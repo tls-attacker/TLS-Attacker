@@ -27,12 +27,12 @@ public class RuleAnalyzer extends Analyzer {
     /**
      *
      */
-    private List<Rule> ruleList;
+    private final List<Rule> ruleList;
 
     /**
      *
      */
-    private EvolutionaryFuzzerConfig config;
+    private final EvolutionaryFuzzerConfig config;
 
     /**
      *

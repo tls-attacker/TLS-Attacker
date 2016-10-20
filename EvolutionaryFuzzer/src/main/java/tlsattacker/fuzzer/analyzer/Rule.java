@@ -47,7 +47,7 @@ public abstract class Rule {
     /**
      *
      */
-    private boolean isActive = true;
+    private final boolean isActive = true;
 
     /**
      *

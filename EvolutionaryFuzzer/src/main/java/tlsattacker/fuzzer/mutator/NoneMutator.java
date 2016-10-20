@@ -39,7 +39,7 @@ public class NoneMutator extends Mutator
     /**
      *
      */
-    private SimpleMutatorConfig simpleConfig;
+    private final SimpleMutatorConfig simpleConfig;
 
     /**
      *

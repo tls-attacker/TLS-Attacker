@@ -49,7 +49,7 @@ public class SimpleMutator extends Mutator {
     /**
      *
      */
-    private SimpleMutatorConfig simpleConfig;
+    private final SimpleMutatorConfig simpleConfig;
 
     /**
      * 

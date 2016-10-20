@@ -27,17 +27,17 @@ public class UnitTestCertificateMutator extends CertificateMutator {
     /**
      *
      */
-    private List<ClientCertificateStructure> clientPairList;
+    private final List<ClientCertificateStructure> clientPairList;
 
     /**
      *
      */
-    private List<ServerCertificateStructure> serverPairList;
+    private final List<ServerCertificateStructure> serverPairList;
 
     /**
      *
      */
-    private Random r;
+    private final Random r;
 
     /**
      *

@@ -24,7 +24,7 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     /**
      *
      */
-    private    /**
+    private final    /**
      *
      * @param corePoolSize
      * @param maximumPoolSize

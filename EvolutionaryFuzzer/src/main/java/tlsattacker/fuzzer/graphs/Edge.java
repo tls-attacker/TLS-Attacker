@@ -30,12 +30,12 @@ public class Edge implements Serializable {
     /**
      *
      */
-    private long a;
+    private final long a;
 
     /**
      *
      */
-    private long b;
+    private final long b;
 
     /**
      *
