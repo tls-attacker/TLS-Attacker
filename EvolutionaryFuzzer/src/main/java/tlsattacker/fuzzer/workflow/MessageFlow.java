@@ -108,4 +108,10 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     }
     private static final Logger LOG = Logger.getLogger(MessageFlow.class.getName());
 
+    @Override
+    public Object clone()
+    {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

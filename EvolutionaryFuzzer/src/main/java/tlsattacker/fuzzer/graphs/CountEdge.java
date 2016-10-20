@@ -54,4 +54,10 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
     public int getCount() {
 	return count;
     }
+
+    @Override
+    public Object clone()
+    {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
 }
