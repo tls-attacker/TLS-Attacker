@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.config.analyzer;
 import tlsattacker.fuzzer.config.analyzer.RuleConfig;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import javax.xml.bind.annotation.XmlRootElement;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * A configuration class for the ProtocolVersionRule

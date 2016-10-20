@@ -1,20 +1,20 @@
 package tlsattacker.fuzzer.server;
 
-import tlsattacker.fuzzer.agent.AflAgentTest;
-import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
+import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import tlsattacker.fuzzer.agent.AflAgentTest;
+import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
-import java.io.File;
-import java.util.logging.Level;
-import org.junit.Assert;
 
 /**
  * 

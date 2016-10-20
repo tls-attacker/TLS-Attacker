@@ -7,11 +7,10 @@
  */
 package tlsattacker.fuzzer.config;
 
-import tlsattacker.fuzzer.config.ConfigManager;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertNotNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 

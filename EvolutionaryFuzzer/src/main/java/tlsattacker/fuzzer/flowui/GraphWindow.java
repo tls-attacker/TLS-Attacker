@@ -7,14 +7,13 @@
  */
 package tlsattacker.fuzzer.flowui;
 
-import tlsattacker.fuzzer.workflow.MessageFlow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JFrame;
 import org.jgraph.JGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedMultigraph;
+import tlsattacker.fuzzer.workflow.MessageFlow;
 
 /**
  * A window which tries to visualizes a directed graph

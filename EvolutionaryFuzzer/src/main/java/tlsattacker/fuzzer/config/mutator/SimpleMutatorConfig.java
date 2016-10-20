@@ -1,21 +1,6 @@
 package tlsattacker.fuzzer.config.mutator;
 
-import tlsattacker.fuzzer.server.TLSServer;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.validators.PositiveInteger;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
-import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.Serializable;
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

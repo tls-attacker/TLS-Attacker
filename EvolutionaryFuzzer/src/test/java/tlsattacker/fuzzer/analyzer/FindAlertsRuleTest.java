@@ -8,13 +8,11 @@
 package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.analyzer.FindAlertsRule;
-import tlsattacker.fuzzer.config.analyzer.FindAlertsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.testvector.TestVector;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;

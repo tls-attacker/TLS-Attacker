@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.server;
 
 import tlsattacker.fuzzer.server.ServerSerializer;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;

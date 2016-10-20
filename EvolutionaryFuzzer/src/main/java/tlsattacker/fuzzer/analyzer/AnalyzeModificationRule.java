@@ -8,22 +8,14 @@
 package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
-import tlsattacker.fuzzer.config.analyzer.RuleConfig;
-import tlsattacker.fuzzer.config.analyzer.UniqueFlowsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.modification.Modification;
 import tlsattacker.fuzzer.modification.ModificationType;
 import tlsattacker.fuzzer.result.Result;
 import de.rub.nds.tlsattacker.wrapper.MutableInt;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 

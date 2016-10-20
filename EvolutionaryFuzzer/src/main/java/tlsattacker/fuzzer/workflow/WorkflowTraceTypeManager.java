@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.workflow;
 
-import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -18,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
  * A helper class which translates TestVectors into WorkflowTraceTypes

@@ -7,12 +7,10 @@
  */
 package tlsattacker.fuzzer.agents;
 
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;

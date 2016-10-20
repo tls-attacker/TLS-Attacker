@@ -7,8 +7,6 @@
  */
 package tlsattacker.fuzzer.result;
 
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import java.io.File;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.testvector.TestVector;

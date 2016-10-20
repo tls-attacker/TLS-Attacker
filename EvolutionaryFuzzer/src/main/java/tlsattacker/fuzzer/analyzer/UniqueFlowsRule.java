@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.analyzer.ProtocolVersionRuleConfig;
 import tlsattacker.fuzzer.config.analyzer.UniqueFlowsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;
@@ -18,7 +17,6 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;

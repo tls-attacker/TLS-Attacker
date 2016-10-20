@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.analyzer.AnalyzeModificationRule;
-import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.modification.AddMessageModification;
@@ -21,7 +20,6 @@ import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
@@ -30,9 +28,7 @@ import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
 import java.util.HashMap;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

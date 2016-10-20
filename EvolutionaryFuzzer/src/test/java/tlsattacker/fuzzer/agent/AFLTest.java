@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import static org.junit.Assert.*;
 
 public class AFLTest {
     private static final Logger LOG = Logger.getLogger(AFLTest.class.getName());

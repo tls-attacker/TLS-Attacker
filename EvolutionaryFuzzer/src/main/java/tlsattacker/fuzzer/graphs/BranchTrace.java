@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.graphs;
 
-import tlsattacker.fuzzer.result.MergeResult;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import tlsattacker.fuzzer.result.MergeResult;
 
 /**
  * This Class organizes the Controlflow of previous executed FuzzVectors. The

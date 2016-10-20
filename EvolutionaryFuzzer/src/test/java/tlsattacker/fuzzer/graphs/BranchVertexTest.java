@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.graphs;
 
-import tlsattacker.fuzzer.graphs.BranchVertex;
-import tlsattacker.fuzzer.graphs.Blocktype;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;

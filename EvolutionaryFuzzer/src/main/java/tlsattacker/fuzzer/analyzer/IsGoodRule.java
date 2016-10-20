@@ -7,19 +7,12 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.analyzer.FindAlertsRuleConfig;
-import tlsattacker.fuzzer.config.analyzer.IsCrashRuleConfig;
 import tlsattacker.fuzzer.config.analyzer.IsGoodRuleConfig;
-import tlsattacker.fuzzer.config.analyzer.UniqueFlowsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.graphs.CountEdge;
-import tlsattacker.fuzzer.graphs.ProbeVertex;
 import tlsattacker.fuzzer.result.MergeResult;
 import tlsattacker.fuzzer.result.Result;
-import tlsattacker.fuzzer.result.ResultContainer;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
-import org.jgrapht.DirectedGraph;
 
 /**
  * A rule which analyzes if the TestVector reached new codepaths and set a flag in the Result object accordingly.

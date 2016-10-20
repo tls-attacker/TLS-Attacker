@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.config;
 
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

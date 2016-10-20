@@ -7,12 +7,8 @@
  */
 package tlsattacker.fuzzer.controller;
 
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.controller.CommandLineController;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 

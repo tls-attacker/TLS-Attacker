@@ -7,9 +7,7 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
 import tlsattacker.fuzzer.config.analyzer.AnalyzeTimeRuleConfig;
-import tlsattacker.fuzzer.config.analyzer.UniqueFlowsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;
 import java.io.BufferedWriter;

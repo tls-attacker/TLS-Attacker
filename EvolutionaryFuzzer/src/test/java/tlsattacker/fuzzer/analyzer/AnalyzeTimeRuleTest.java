@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.analyzer.AnalyzeTimeRule;
-import tlsattacker.fuzzer.config.analyzer.AnalyzeTimeRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.Result;
@@ -16,9 +15,7 @@ import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

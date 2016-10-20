@@ -9,7 +9,6 @@ package tlsattacker.fuzzer.workflow;
 
 import tlsattacker.fuzzer.workflow.MessageFlow;
 import tlsattacker.fuzzer.workflow.WorkflowTraceType;
-import de.rub.nds.tlsattacker.eap.ClientHello;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import org.junit.Test;

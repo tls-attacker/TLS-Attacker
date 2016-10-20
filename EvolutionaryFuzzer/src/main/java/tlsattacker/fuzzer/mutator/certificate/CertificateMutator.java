@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * A mutator super class that modifies Certificates.

@@ -9,8 +9,6 @@ package tlsattacker.fuzzer.helper;
 
 import tlsattacker.fuzzer.helper.FuzzingHelper;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
-import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableListHolder;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;

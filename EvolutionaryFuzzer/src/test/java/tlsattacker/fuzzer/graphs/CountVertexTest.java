@@ -8,7 +8,6 @@
  */
 package tlsattacker.fuzzer.graphs;
 
-import tlsattacker.fuzzer.graphs.ProbeVertex;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;

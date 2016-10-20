@@ -11,7 +11,6 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.executor.ExecutorThreadPool;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 import tlsattacker.fuzzer.mutator.SimpleMutator;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import org.junit.Test;

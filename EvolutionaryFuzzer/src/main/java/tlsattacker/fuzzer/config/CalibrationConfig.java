@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameter;
-import com.beust.jcommander.validators.PositiveInteger;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 
 /**

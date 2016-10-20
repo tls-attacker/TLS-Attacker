@@ -7,15 +7,15 @@
  */
 package tlsattacker.fuzzer.config.mutator.certificate;
 
-import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
-import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.ConfigManager;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
+import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.config.ConfigManager;
 
 /**
  * A configuration class for the FixedCertificateMutator

@@ -8,10 +8,8 @@
 package tlsattacker.fuzzer.config.analyzer;
 
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 

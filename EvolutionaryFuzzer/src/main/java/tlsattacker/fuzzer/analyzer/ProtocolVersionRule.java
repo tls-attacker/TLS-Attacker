@@ -7,10 +7,6 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.analyzer.ProtocolVersionRuleConfig;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
-import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
@@ -25,6 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.analyzer.ProtocolVersionRuleConfig;
+import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
  * This Rule checks, if the Client and the Server negotiated the highest

@@ -1,13 +1,10 @@
 package tlsattacker.fuzzer.config;
 
 import tlsattacker.fuzzer.config.mutator.ActionExecutorTypeConfig;
-import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
-import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
 import java.io.File;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;

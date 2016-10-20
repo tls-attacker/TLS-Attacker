@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.agent;
 import tlsattacker.fuzzer.agents.PINAgent;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.server.TLSServer;

@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.mutator;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.testvector.TestVector;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 
 /**
  * The Mutator is the generator of new FuzzingVectors, different Implementations

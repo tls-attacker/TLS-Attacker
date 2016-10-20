@@ -11,7 +11,6 @@ import tlsattacker.fuzzer.mutator.Mutator;
 import tlsattacker.fuzzer.agents.AgentFactory;
 import tlsattacker.fuzzer.agents.Agent;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.util.List;
@@ -23,7 +22,6 @@ import tlsattacker.fuzzer.testvector.TestVector;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -37,7 +35,6 @@ import de.rub.nds.tlsattacker.tls.workflow.ECDHWorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.RsaWorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.UnsupportedWorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBException;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-import tlsattacker.fuzzer.result.ResultContainer;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is

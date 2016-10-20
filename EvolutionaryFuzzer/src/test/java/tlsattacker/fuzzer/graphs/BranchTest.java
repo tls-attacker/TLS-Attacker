@@ -9,28 +9,19 @@ package tlsattacker.fuzzer.graphs;
  */
 import tlsattacker.fuzzer.graphs.Edge;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import tlsattacker.fuzzer.result.MergeResult;
-import tlsattacker.fuzzer.result.Result;
-import tlsattacker.fuzzer.testvector.TestVector;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import org.junit.Assert;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**

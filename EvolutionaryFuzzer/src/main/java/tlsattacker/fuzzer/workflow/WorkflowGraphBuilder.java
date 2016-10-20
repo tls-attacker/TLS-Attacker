@@ -7,13 +7,9 @@
  */
 package tlsattacker.fuzzer.workflow;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DirectedMultigraph;
-import org.jgrapht.graph.ListenableDirectedGraph;
 
 /**
  * A helper class which helps in the generation of visualizable workflow data 

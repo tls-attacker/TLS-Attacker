@@ -8,28 +8,12 @@
 package tlsattacker.fuzzer.testhelper;
 
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
-import tlsattacker.fuzzer.config.ConfigManager;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.x509.Certificate;
-import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * This mutator does not rely on a certificate Config File to generate

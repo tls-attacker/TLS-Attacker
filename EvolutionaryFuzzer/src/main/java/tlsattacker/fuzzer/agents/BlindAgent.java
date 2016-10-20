@@ -8,26 +8,14 @@
 package tlsattacker.fuzzer.agents;
 
 import tlsattacker.fuzzer.agents.Agent;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.graphs.Edge;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.testvector.TestVector;
-import de.rub.nds.tlsattacker.tls.config.ServerCertificateKey;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * An Agent implemented with the modified Binary Instrumentation used by

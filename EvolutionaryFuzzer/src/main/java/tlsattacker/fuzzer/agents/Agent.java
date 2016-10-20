@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.agents;
 
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.server.TLSServer;

@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.graphs;
 
-import tlsattacker.fuzzer.exceptions.InstrumentationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import tlsattacker.fuzzer.exceptions.InstrumentationException;
 
 /**
  * This Class tries to build a graph containing all possible Paths threw a

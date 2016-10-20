@@ -7,10 +7,10 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
 import java.util.LinkedList;
 import java.util.List;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.result.Result;
 
 /**
  * An analyzer implementation which uses a set of Rules to find interesting TestVectors.

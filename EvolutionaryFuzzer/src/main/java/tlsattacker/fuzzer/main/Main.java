@@ -7,26 +7,6 @@
  */
 package tlsattacker.fuzzer.main;
 
-import tlsattacker.fuzzer.calibration.TimeoutCalibrator;
-import tlsattacker.fuzzer.config.CalibrationConfig;
-import tlsattacker.fuzzer.config.ConfigManager;
-import tlsattacker.fuzzer.server.ServerManager;
-import tlsattacker.fuzzer.controller.CommandLineController;
-import tlsattacker.fuzzer.controller.Controller;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.config.ExecuteFaultyConfig;
-import tlsattacker.fuzzer.config.ServerConfig;
-import tlsattacker.fuzzer.config.TraceTypesConfig;
-import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
-import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
-import tlsattacker.fuzzer.server.ServerSerializer;
-import tlsattacker.fuzzer.server.TLSServer;
-import tlsattacker.fuzzer.testvector.TestVector;
-import tlsattacker.fuzzer.testvector.TestVectorSerializer;
-import tlsattacker.fuzzer.workflow.MessageFlow;
-import tlsattacker.fuzzer.workflow.WorkflowGraphBuilder;
-import tlsattacker.fuzzer.workflow.WorkflowTraceType;
-import tlsattacker.fuzzer.workflow.WorkflowTraceTypeManager;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
@@ -37,9 +17,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
 import tlsattacker.fuzzer.agents.AgentFactory;
+import tlsattacker.fuzzer.calibration.TimeoutCalibrator;
+import tlsattacker.fuzzer.config.CalibrationConfig;
+import tlsattacker.fuzzer.config.ConfigManager;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.ExecuteFaultyConfig;
+import tlsattacker.fuzzer.config.ServerConfig;
 import tlsattacker.fuzzer.config.TestCrashesConfig;
+import tlsattacker.fuzzer.config.TraceTypesConfig;
+import tlsattacker.fuzzer.controller.CommandLineController;
+import tlsattacker.fuzzer.controller.Controller;
+import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
+import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.executor.TLSExecutor;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
+import tlsattacker.fuzzer.server.ServerManager;
+import tlsattacker.fuzzer.server.ServerSerializer;
+import tlsattacker.fuzzer.server.TLSServer;
+import tlsattacker.fuzzer.testvector.TestVector;
+import tlsattacker.fuzzer.testvector.TestVectorSerializer;
+import tlsattacker.fuzzer.workflow.MessageFlow;
+import tlsattacker.fuzzer.workflow.WorkflowGraphBuilder;
+import tlsattacker.fuzzer.workflow.WorkflowTraceType;
+import tlsattacker.fuzzer.workflow.WorkflowTraceTypeManager;
 import weka.core.Utils;
 
 /**

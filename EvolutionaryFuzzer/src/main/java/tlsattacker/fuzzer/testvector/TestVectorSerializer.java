@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.testvector;
 
-import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
@@ -33,6 +32,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 
 /**
  * A helper class to serialize and deserialize TestVectors.

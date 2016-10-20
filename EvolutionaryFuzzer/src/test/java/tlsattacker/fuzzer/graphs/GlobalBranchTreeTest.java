@@ -1,9 +1,5 @@
 package tlsattacker.fuzzer.graphs;
 
-import tlsattacker.fuzzer.graphs.GlobalBranchTree;
-import tlsattacker.fuzzer.graphs.BranchVertex;
-import tlsattacker.fuzzer.graphs.CountEdge;
-import tlsattacker.fuzzer.graphs.Blocktype;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.DirectedGraph;

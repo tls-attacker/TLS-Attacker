@@ -9,9 +9,9 @@ package tlsattacker.fuzzer.agent;
 
 import java.io.File;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 

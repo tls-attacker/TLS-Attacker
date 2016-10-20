@@ -7,13 +7,10 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.analyzer.FindAlertsRuleConfig;
 import tlsattacker.fuzzer.config.analyzer.IsCrashRuleConfig;
-import tlsattacker.fuzzer.config.analyzer.UniqueFlowsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;

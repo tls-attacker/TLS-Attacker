@@ -7,9 +7,6 @@
  */
 package tlsattacker.fuzzer.testvector;
 
-import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
-import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.modification.Modification;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.Serializable;
@@ -20,6 +17,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
+import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.modification.Modification;
 
 /**
  * A class which unites the Information needed to run a single fuzzer iteration.

@@ -9,13 +9,10 @@ package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.analyzer.EarlyHeartbeatRule;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
-import tlsattacker.fuzzer.config.analyzer.EarlyHeartbeatRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVector;
-import de.rub.nds.tlsattacker.eap.ClientHello;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;

@@ -2,9 +2,7 @@ package tlsattacker.fuzzer.result;
 
 import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import java.util.ArrayList;
 import java.util.logging.Logger;
-import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
  * This Class manages the BranchTraces and merges newly obtained Workflows with

@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.server;
 
 import tlsattacker.fuzzer.config.ConfigManager;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.ServerDoesNotStartException;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import java.io.File;

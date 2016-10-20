@@ -9,11 +9,6 @@ package tlsattacker.fuzzer.mutator.certificate;
 
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
-import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
-import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.ConfigManager;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.config.mutator.certificate.FixedCertificateMutatorConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +23,11 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
+import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
+import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.config.ConfigManager;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.mutator.certificate.FixedCertificateMutatorConfig;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 

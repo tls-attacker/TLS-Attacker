@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.analyzer.IsGoodRule;
-import tlsattacker.fuzzer.config.analyzer.IsGoodRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.graphs.Edge;

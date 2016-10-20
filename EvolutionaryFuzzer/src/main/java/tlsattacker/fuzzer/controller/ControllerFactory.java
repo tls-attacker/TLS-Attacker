@@ -11,10 +11,6 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalControllerException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
-import tlsattacker.fuzzer.mutator.Mutator;
-import tlsattacker.fuzzer.mutator.NoneMutator;
-import tlsattacker.fuzzer.mutator.SimpleMutator;
-import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 
 /**
  * A factory class which generates the correct controller depending on the controller specified in the 

@@ -7,10 +7,7 @@
  */
 package tlsattacker.fuzzer.modification;
 
-import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 
 /**
  * A modification which indicates that a field in the WorkflowTrace was changed.

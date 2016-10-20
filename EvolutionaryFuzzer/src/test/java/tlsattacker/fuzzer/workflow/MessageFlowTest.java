@@ -7,12 +7,12 @@
  */
 package tlsattacker.fuzzer.workflow;
 
-import tlsattacker.fuzzer.workflow.MessageFlow;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 
