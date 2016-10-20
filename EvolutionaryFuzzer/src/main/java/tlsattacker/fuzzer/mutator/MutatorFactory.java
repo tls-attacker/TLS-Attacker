@@ -13,14 +13,15 @@ import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 
 /**
- * A factory class which chooses the correct mutator as specified in the configuration file.
+ * A factory class which chooses the correct mutator as specified in the
+ * configuration file.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MutatorFactory {
 
     /**
-     *
+     * 
      * @param certMutator
      * @param config
      * @return
@@ -31,8 +32,8 @@ public class MutatorFactory {
 	switch (config.getMutator()) {
 	    case SimpleMutator.optionName:
 		return new SimpleMutator(config, certMutator);
-            case NoneMutator.optionName:
-                return new NoneMutator(config, certMutator);
+	    case NoneMutator.optionName:
+		return new NoneMutator(config, certMutator);
 	    default:
 		throw new IllegalMutatorException("Illegal Value for Mutator:" + config.getMutator());
 
@@ -42,8 +43,8 @@ public class MutatorFactory {
     /**
      *
      */
-    private MutatorFactory()
-    {
+    private MutatorFactory() {
     }
+
     private static final Logger LOG = Logger.getLogger(MutatorFactory.class.getName());
 }

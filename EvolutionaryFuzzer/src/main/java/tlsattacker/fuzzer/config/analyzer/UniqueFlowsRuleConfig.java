@@ -24,5 +24,6 @@ public class UniqueFlowsRuleConfig extends RuleConfig {
     public UniqueFlowsRuleConfig() {
 	super("uniqueFlows/");
     }
+
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRuleConfig.class.getName());
 }

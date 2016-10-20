@@ -75,10 +75,13 @@ public class UniqueFlowsRuleTest {
 	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
 		ExecutorType.TLS, null), "tes2t.unit");
 	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applies(result));// Should apply since its the first time
-					// the rule has seen this tracetype
-	assertTrue(rule.applies(result));// Should not apply since its the second
-					// time the rule has seen this tracetype
+	assertTrue(rule.applies(result));// Should apply since its the first
+					 // time
+					 // the rule has seen this tracetype
+	assertTrue(rule.applies(result));// Should not apply since its the
+					 // second
+					 // time the rule has seen this
+					 // tracetype
 
     }
 
@@ -129,6 +132,7 @@ public class UniqueFlowsRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRuleTest.class.getName());
 
 }

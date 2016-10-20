@@ -62,7 +62,7 @@ public class ProtocolVersionRule extends Rule {
     private ProtocolVersionRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public ProtocolVersionRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -82,7 +82,7 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -145,7 +145,7 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -180,7 +180,7 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -188,7 +188,7 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -202,13 +202,12 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public ProtocolVersionRuleConfig getConfig() {
 	return config;
     }
-
 
 }

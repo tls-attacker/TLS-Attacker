@@ -53,19 +53,22 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     /**
      *
      */
-    @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors. Possible: "+SimpleMutator.optionName+", "+NoneMutator.optionName+"")
+    @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors. Possible: "
+	    + SimpleMutator.optionName + ", " + NoneMutator.optionName + "")
     private String mutator = SimpleMutator.optionName;
 
     /**
      *
      */
-    @Parameter(names = "-controller", description = "The Controller that is used to communicate with the Operator. Possible: "+CommandLineController.optionName)
+    @Parameter(names = "-controller", description = "The Controller that is used to communicate with the Operator. Possible: "
+	    + CommandLineController.optionName)
     private String controller = CommandLineController.optionName;
 
     /**
      *
      */
-    @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates. Possible: "+FixedCertificateMutator.optionName)
+    @Parameter(names = "-certificate_mutator", description = "The Mutator the Fuzzer uses to generate new Certificates. Possible: "
+	    + FixedCertificateMutator.optionName)
     private String certMutator = "fixed";
 
     /**
@@ -103,7 +106,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      */
     @Parameter(names = "-boot_timeout", description = "The time the fuzzer maximal waits till the implementation boots up.")
     private Integer bootTimeout = 50000;
-    
+
     /**
      *
      */
@@ -113,105 +116,101 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     /**
      *
      */
-        private ActionExecutorTypeConfig actionExecutorConfig;
+    private ActionExecutorTypeConfig actionExecutorConfig;
     // Are we currently in serialization mode?
 
     /**
      *
      */
-        private boolean serialize = false;
+    private boolean serialize = false;
 
     /**
      * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
      * and serverCommandFromFile to server/server.config
      */
-    public EvolutionaryFuzzerConfig()
-    {
-        outputFolder = "data/";
-        setFuzzingMode(true);
-        setKeystore("../resources/rsa1024.jks");
-        setPassword("password");
-        setAlias("alias");
-        this.tracesFolder = new File(outputFolder + "traces/");
-        tracesFolder.mkdirs();
-        new File(getOutputCertificateFolder()).mkdirs();
-        new File(getOutputClientCertificateFolder()).mkdirs();
-        new File(getOutputFolder()).mkdirs();
-        new File(getOutputServerCertificateFolder()).mkdirs();
-        new File(getCertificateMutatorConfigFolder()).mkdirs();
-        new File(getAnalyzerConfigFolder()).mkdirs();
-        new File(getOutputFaultyFolder()).mkdirs();
-        new File(getArchiveFolder()).mkdirs();
-        File f = new File(getMutatorConfigFolder() + "action_executor.conf");
-        if (f.exists()) {
-            actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
-        } else {
-            actionExecutorConfig = new ActionExecutorTypeConfig();
-            JAXB.marshal(actionExecutorConfig, f);
-        }
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public Integer getBootTimeout()
-    {
-        return bootTimeout;
+    public EvolutionaryFuzzerConfig() {
+	outputFolder = "data/";
+	setFuzzingMode(true);
+	setKeystore("../resources/rsa1024.jks");
+	setPassword("password");
+	setAlias("alias");
+	this.tracesFolder = new File(outputFolder + "traces/");
+	tracesFolder.mkdirs();
+	new File(getOutputCertificateFolder()).mkdirs();
+	new File(getOutputClientCertificateFolder()).mkdirs();
+	new File(getOutputFolder()).mkdirs();
+	new File(getOutputServerCertificateFolder()).mkdirs();
+	new File(getCertificateMutatorConfigFolder()).mkdirs();
+	new File(getAnalyzerConfigFolder()).mkdirs();
+	new File(getOutputFaultyFolder()).mkdirs();
+	new File(getArchiveFolder()).mkdirs();
+	File f = new File(getMutatorConfigFolder() + "action_executor.conf");
+	if (f.exists()) {
+	    actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
+	} else {
+	    actionExecutorConfig = new ActionExecutorTypeConfig();
+	    JAXB.marshal(actionExecutorConfig, f);
+	}
     }
 
     /**
-     *
+     * 
+     * @return
+     */
+    public Integer getBootTimeout() {
+	return bootTimeout;
+    }
+
+    /**
+     * 
      * @param bootTimeout
      */
-    public void setBootTimeout(Integer bootTimeout)
-    {
-        this.bootTimeout = bootTimeout;
+    public void setBootTimeout(Integer bootTimeout) {
+	this.bootTimeout = bootTimeout;
     }
 
     /**
-     *
+     * 
      * @return
      */
-    public String getController()
-    {
-        return controller;
+    public String getController() {
+	return controller;
     }
-    
+
     /**
-     *
+     * 
      * @param controller
      */
     public void setController(String controller) {
-        this.controller = controller;
+	this.controller = controller;
     }
-    
+
     /**
-     *
+     * 
      * @return
      */
     public ActionExecutorTypeConfig getActionExecutorConfig() {
-        return actionExecutorConfig;
+	return actionExecutorConfig;
     }
 
     /**
-     *
+     * 
      * @param actionExecutorConfig
      */
     public void setActionExecutorConfig(ActionExecutorTypeConfig actionExecutorConfig) {
-        this.actionExecutorConfig = actionExecutorConfig;
+	this.actionExecutorConfig = actionExecutorConfig;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getArchiveFolder() {
-        return archiveFolder;
+	return archiveFolder;
     }
 
     /**
-     *
+     * 
      * @param archiveFolder
      */
     public void setArchiveFolder(String archiveFolder) {
@@ -219,7 +218,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public File getTracesFolder() {
@@ -227,7 +226,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getCertMutator() {
@@ -235,55 +234,55 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param certMutator
      */
     public void setCertMutator(String certMutator) {
-        this.certMutator = certMutator;
+	this.certMutator = certMutator;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getMutator() {
-        return mutator;
+	return mutator;
     }
 
     /**
-     *
+     * 
      * @param mutator
      */
     public void setMutator(String mutator) {
-        this.mutator = mutator;
+	this.mutator = mutator;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isCleanStart() {
-        return cleanStart;
+	return cleanStart;
     }
 
     /**
-     *
+     * 
      * @param cleanStart
      */
     public void setCleanStart(boolean cleanStart) {
-        this.cleanStart = cleanStart;
+	this.cleanStart = cleanStart;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isStartStopped() {
-        return startStopped;
+	return startStopped;
     }
 
     /**
-     *
+     * 
      * @param startStopped
      */
     public void setStartStopped(boolean startStopped) {
@@ -291,7 +290,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isNoOld() {
@@ -299,7 +298,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param noOld
      */
     public void setNoOld(boolean noOld) {
@@ -307,7 +306,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isSerialize() {
@@ -315,7 +314,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param serialize
      */
     public void setSerialize(boolean serialize) {
@@ -323,7 +322,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getThreads() {
@@ -331,7 +330,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param threads
      */
     public void setThreads(Integer threads) {
@@ -349,7 +348,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputCertificateFolder() {
@@ -357,7 +356,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputClientCertificateFolder() {
@@ -365,7 +364,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputServerCertificateFolder() {
@@ -373,7 +372,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputFaultyFolder() {
@@ -395,7 +394,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean getInjectPinChild() {
@@ -403,7 +402,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param certMutatorSelftest
      */
     public void setCertMutatorSelftest(boolean certMutatorSelftest) {
@@ -411,7 +410,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isCertMutatorSelfTest() {

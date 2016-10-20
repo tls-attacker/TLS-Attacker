@@ -36,6 +36,7 @@ public class CommandLineController {
      */
     public CommandLineController() {
     }
+
     private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
 
 }

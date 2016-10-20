@@ -14,7 +14,9 @@ import java.io.File;
 import java.util.logging.Logger;
 
 /**
- * A super class for configuration classes which allows for the configuration of different commands.
+ * A super class for configuration classes which allows for the configuration of
+ * different commands.
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzerGeneralConfig extends ClientCommandConfig {
@@ -44,7 +46,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     private boolean useKill = false;
 
     /**
-     *
+     * 
      * @return
      */
     public String getCertificateMutatorConfigFolder() {
@@ -52,7 +54,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isUseKill() {
@@ -60,7 +62,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @param useKill
      */
     public void setUseKill(boolean useKill) {
@@ -68,7 +70,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getConfigFolder() {
@@ -76,7 +78,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getMutatorConfigFolder() {
@@ -84,7 +86,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isRandomPort() {
@@ -92,7 +94,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @param randomPort
      */
     public void setRandomPort(boolean randomPort) {
@@ -100,7 +102,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getAnalyzerConfigFolder() {
@@ -108,7 +110,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @param configFolder
      */
     public void setConfigFolder(String configFolder) {
@@ -124,7 +126,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getAgent() {
@@ -132,7 +134,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     /**
-     *
+     * 
      * @param agent
      */
     public void setAgent(String agent) {
@@ -147,5 +149,6 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getServerCommandFromFile() {
 	return configFolder + "server/";
     }
+
     private static final Logger LOG = Logger.getLogger(FuzzerGeneralConfig.class.getName());
 }

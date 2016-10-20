@@ -23,26 +23,26 @@ import javax.xml.bind.JAXB;
 public abstract class CertificateMutator {
 
     /**
-     *
+     * 
      * @return
      */
     public abstract ClientCertificateStructure getClientCertificateStructure();
 
     /**
-     *
+     * 
      * @return
      */
     public abstract ServerCertificateStructure getServerCertificateStructure();
 
     /**
-     *
+     * 
      * @param structure
      * @return
      */
     public abstract boolean isSupported(ServerCertificateStructure structure);
 
     /**
-     *
+     * 
      * @param file
      */
     public void serialize(File file) {

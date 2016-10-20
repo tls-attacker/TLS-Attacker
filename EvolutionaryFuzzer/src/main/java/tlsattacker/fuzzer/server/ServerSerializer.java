@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
+
 /**
  * A class which is used to serialize and deserialize Server objects
  * 

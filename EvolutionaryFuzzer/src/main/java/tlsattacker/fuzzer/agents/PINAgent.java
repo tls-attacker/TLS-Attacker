@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An Agent implemented with dynamic instrumentation with the aid of Intels Pin tool. 
+ * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
+ * tool.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -44,82 +45,82 @@ public class PINAgent extends Agent {
     public static final String optionName = "PIN";
 
     /**
-     *
+     * 
      * @param br
      * @return
      */
-    private static BranchTrace getBranchTrace(BufferedReader br)
-    {
-        try {
-            Set<Long> verticesSet = new HashSet<>();
-            Map<Edge, Edge> edgeMap = new HashMap<>();
-            String line;
-            while ((line = br.readLine()) != null) {
-                try {
-                    if (line.isEmpty()) {
-                        continue;
-                    }
-                    String[] split = line.split("\\s+");
-                    long src;
-                    if (split[0].equals("0xffffffffffffffff")) {
-                        src = Long.MAX_VALUE;
-                    } else {
-                        src = Long.parseLong(split[0].substring(2), 16);
-                    }
-                    long dst;
-                    if (split[1].equals("0xffffffffffffffff")) {
-                        dst = Long.MAX_VALUE;
-                    } else {
-                        dst = Long.parseLong(split[1].substring(2), 16);
-                    }
-                    int count = Integer.parseInt(split[3]);
-                    verticesSet.add(src);
-                    verticesSet.add(dst);
-                    Edge e = new Edge(src, dst);
-                    e.setCounter(count);
-                    edgeMap.put(e, e);
-                } catch (Exception E) {
-                    E.printStackTrace();
-                }
-            }
-            return new BranchTrace(verticesSet, edgeMap);
-            
-        } catch (IOException ex) {
-            Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE,
-                    "Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
-        }
-        return new BranchTrace();
+    private static BranchTrace getBranchTrace(BufferedReader br) {
+	try {
+	    Set<Long> verticesSet = new HashSet<>();
+	    Map<Edge, Edge> edgeMap = new HashMap<>();
+	    String line;
+	    while ((line = br.readLine()) != null) {
+		try {
+		    if (line.isEmpty()) {
+			continue;
+		    }
+		    String[] split = line.split("\\s+");
+		    long src;
+		    if (split[0].equals("0xffffffffffffffff")) {
+			src = Long.MAX_VALUE;
+		    } else {
+			src = Long.parseLong(split[0].substring(2), 16);
+		    }
+		    long dst;
+		    if (split[1].equals("0xffffffffffffffff")) {
+			dst = Long.MAX_VALUE;
+		    } else {
+			dst = Long.parseLong(split[1].substring(2), 16);
+		    }
+		    int count = Integer.parseInt(split[3]);
+		    verticesSet.add(src);
+		    verticesSet.add(dst);
+		    Edge e = new Edge(src, dst);
+		    e.setCounter(count);
+		    edgeMap.put(e, e);
+		} catch (Exception E) {
+		    E.printStackTrace();
+		}
+	    }
+	    return new BranchTrace(verticesSet, edgeMap);
+
+	} catch (IOException ex) {
+	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE,
+		    "Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
+	}
+	return new BranchTrace();
     }
+
     // Is a fuzzing Progress Running?
 
     /**
      *
      */
-        protected boolean running = false;
+    protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
 
     /**
      *
      */
-        protected long startTime;
+    protected long startTime;
     // StopTime of the last Fuzzing Vektor
 
     /**
      *
      */
-        protected long stopTime;
+    protected long stopTime;
     // If the Application did Timeout
 
     /**
      *
      */
-        protected boolean timeout;
+    protected boolean timeout;
     // If the Application did Crash
 
     /**
      *
      */
-        protected boolean crash;
+    protected boolean crash;
 
     /**
      *
@@ -128,6 +129,7 @@ public class PINAgent extends Agent {
 
     /**
      * Default Constructor
+     * 
      * @param keypair
      */
     public PINAgent(ServerCertificateStructure keypair) {
@@ -196,6 +198,5 @@ public class PINAgent extends Agent {
 
 	return result;
     }
-
 
 }

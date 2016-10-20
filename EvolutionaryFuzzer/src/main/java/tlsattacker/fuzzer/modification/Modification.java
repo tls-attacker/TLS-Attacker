@@ -22,7 +22,7 @@ public abstract class Modification implements Serializable {
     private final ModificationType type;
 
     /**
-     *
+     * 
      * @param type
      */
     public Modification(ModificationType type) {
@@ -30,7 +30,7 @@ public abstract class Modification implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ModificationType getType() {

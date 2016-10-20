@@ -31,7 +31,7 @@ public abstract class Agent {
     protected ServerCertificateStructure keypair;
 
     /**
-     *
+     * 
      * @param keypair
      */
     public Agent(ServerCertificateStructure keypair) {

@@ -31,32 +31,32 @@ public class Result {
     /**
      *
      */
-    
+
     private final boolean hasCrashed;
     // If the Implementation did Timeout
 
     /**
      *
      */
-        private boolean didTimeout;
+    private boolean didTimeout;
     // The Unixtime @ which the Vector started executing
 
     /**
      *
      */
-        private final long startTime;
+    private final long startTime;
     // The Unixtime @ which the Vector finished executing
 
     /**
      *
      */
-        private final long stopTime;
+    private final long stopTime;
     // File Containing all the ProbeIDs
 
     /**
      *
      */
-        private final BranchTrace branchTrace;
+    private final BranchTrace branchTrace;
 
     /**
      *
@@ -67,7 +67,7 @@ public class Result {
     /**
      *
      */
-        private final String id;
+    private final String id;
 
     /**
      *
@@ -75,7 +75,7 @@ public class Result {
     private Boolean goodTrace = null;
 
     /**
-     *
+     * 
      * @param hasCrashed
      * @param didTimeout
      * @param startTime
@@ -96,7 +96,7 @@ public class Result {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Boolean isGoodTrace() {
@@ -104,7 +104,7 @@ public class Result {
     }
 
     /**
-     *
+     * 
      * @param wasGoodTrace
      */
     public void setGoodTrace(Boolean wasGoodTrace) {
@@ -112,7 +112,7 @@ public class Result {
     }
 
     /**
-     *
+     * 
      * @param didTimeout
      */
     public void setDidTimeout(boolean didTimeout) {
@@ -180,7 +180,7 @@ public class Result {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public TestVector getVector() {

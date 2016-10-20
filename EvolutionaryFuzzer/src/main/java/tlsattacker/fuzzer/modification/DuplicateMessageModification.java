@@ -12,7 +12,8 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import java.util.logging.Logger;
 
 /**
- * A modification which indicates that a message was duplicated in the WorkflowTrace
+ * A modification which indicates that a message was duplicated in the
+ * WorkflowTrace
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -34,7 +35,7 @@ public class DuplicateMessageModification extends Modification {
     private final SendAction action;
 
     /**
-     *
+     * 
      * @param message
      * @param action
      * @param position
@@ -47,7 +48,7 @@ public class DuplicateMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public SendAction getAction() {
@@ -55,7 +56,7 @@ public class DuplicateMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getPosition() {
@@ -63,12 +64,13 @@ public class DuplicateMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ProtocolMessage getMessage() {
 	return message;
     }
+
     private static final Logger LOG = Logger.getLogger(DuplicateMessageModification.class.getName());
 
 }

@@ -29,7 +29,7 @@ public class AddMessageModification extends Modification {
     private final SendAction action;
 
     /**
-     *
+     * 
      * @param message
      * @param action
      */
@@ -40,12 +40,13 @@ public class AddMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ProtocolMessage getMessage() {
 	return message;
     }
+
     private static final Logger LOG = Logger.getLogger(AddMessageModification.class.getName());
 
 }

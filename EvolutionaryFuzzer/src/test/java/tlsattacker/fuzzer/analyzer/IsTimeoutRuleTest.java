@@ -82,7 +82,7 @@ public class IsTimeoutRuleTest {
 		null, ExecutorType.TLS, null), "unit3.test");
 	rule.onApply(result);
 	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
-        
+
     }
 
     /**
@@ -112,6 +112,7 @@ public class IsTimeoutRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(IsTimeoutRuleTest.class.getName());
 
 }

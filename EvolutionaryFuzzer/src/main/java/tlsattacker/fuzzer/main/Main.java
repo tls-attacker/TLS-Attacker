@@ -109,16 +109,17 @@ public class Main {
 		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
 			    ConnectionEnd.CLIENT);
 		    LOG.log(Level.INFO, "Found {0} different TraceTypes", set.size());
-                    DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
+		    DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
 		    LOG.log(Level.INFO, "Printing out graph in .DOT format.");
-                    String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
-                    LOG.log(Level.INFO,dotFormat);
+		    String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
+		    LOG.log(Level.INFO, dotFormat);
 		} else {
-		    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:{0}", f.getAbsolutePath());
+		    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:{0}",
+			    f.getAbsolutePath());
 		}
 		break;
 	    case "execute-faulty":
-                ConfigManager.getInstance().setConfig(faultyConfig);
+		ConfigManager.getInstance().setConfig(faultyConfig);
 		ServerManager manager = ServerManager.getInstance();
 		manager.init(faultyConfig);
 		f = new File(faultyConfig.getOutputFaultyFolder());
@@ -126,11 +127,12 @@ public class Main {
 		for (TestVector vector : vectors) {
 		    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
 		    vector.getTrace().reset();
-                    vector.getTrace().makeGeneric();
-                    TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(), AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
-                    Thread t  = new Thread(executor);
-                    t.start();
-                }
+		    vector.getTrace().makeGeneric();
+		    TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
+			    AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
+		    Thread t = new Thread(executor);
+		    t.start();
+		}
 		break;
 	    case "new-server":
 		TLSServer server = new TLSServer(serverConfig.getIp(), serverConfig.getPort(),
@@ -166,11 +168,12 @@ public class Main {
 		for (TestVector vector : vectors) {
 		    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
 		    for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
-                        vector.getTrace().reset();
+			vector.getTrace().reset();
 			vector.getTrace().makeGeneric();
-                        TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(), AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
-			Thread t  = new Thread(executor);
-                        t.start();
+			TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
+				AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
+			Thread t = new Thread(executor);
+			t.start();
 		    }
 		}
 		break;

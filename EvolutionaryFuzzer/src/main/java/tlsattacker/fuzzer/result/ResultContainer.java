@@ -46,28 +46,27 @@ public class ResultContainer {
     }
 
     /**
-     *
+     * 
      * @param evolutionaryFuzzerConfig
      */
     public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
-        this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
+	this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public RuleAnalyzer getAnalyzer() {
-        return analyzer;
+	return analyzer;
     }
 
     /**
-     *
+     * 
      * @param r
      */
-    public void commit(Result r)
-    {
-        analyzer.analyze(r);
+    public void commit(Result r) {
+	analyzer.analyze(r);
     }
 
     // Singleton
@@ -75,19 +74,17 @@ public class ResultContainer {
     /**
      *
      */
-        private static class ResultContainerHolder
-    {
-        
-        /**
-         *
-         */
-        private static final ResultContainer INSTANCE = new ResultContainer();
+    private static class ResultContainerHolder {
 
-        /**
+	/**
          *
          */
-        private ResultContainerHolder()
-        {
-        }
+	private static final ResultContainer INSTANCE = new ResultContainer();
+
+	/**
+         *
+         */
+	private ResultContainerHolder() {
+	}
     }
 }

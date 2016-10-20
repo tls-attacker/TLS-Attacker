@@ -133,6 +133,7 @@ public class FuzzingHelperTest {
 	int size = FuzzingHelper.getAllModifiableVariableFieldsRecursively(trace).size();
 	assertTrue("Failure: Trace should contain more than zero Holders", size > 0);
     }
+
     private static final Logger LOG = Logger.getLogger(FuzzingHelperTest.class.getName());
 
 }

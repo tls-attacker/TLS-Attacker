@@ -28,7 +28,7 @@ public class ModifyFieldModification extends Modification {
     private final ModifiableVariableHolder modificationHolder;
 
     /**
-     *
+     * 
      * @param fieldName
      * @param modificationHolder
      */
@@ -39,7 +39,7 @@ public class ModifyFieldModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getFieldName() {
@@ -47,12 +47,13 @@ public class ModifyFieldModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ModifiableVariableHolder getModificationHolder() {
 	return modificationHolder;
     }
+
     private static final Logger LOG = Logger.getLogger(ModifyFieldModification.class.getName());
 
 }

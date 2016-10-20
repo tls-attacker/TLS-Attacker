@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A configuration class for the analyze modification rule
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlRootElement
@@ -23,6 +24,7 @@ public class AnalyzeModificationRuleConfig extends RuleConfig {
     public AnalyzeModificationRuleConfig() {
 	super(null);
     }
+
     private static final Logger LOG = Logger.getLogger(AnalyzeModificationRuleConfig.class.getName());
 
 }

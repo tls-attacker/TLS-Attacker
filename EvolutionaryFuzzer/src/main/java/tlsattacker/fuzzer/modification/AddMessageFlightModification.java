@@ -12,7 +12,8 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import java.util.logging.Logger;
 
 /**
- * A modification which indicates that new pair of SendAction and ReceiveAction was added to the WorkflowTrace.
+ * A modification which indicates that new pair of SendAction and ReceiveAction
+ * was added to the WorkflowTrace.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -29,7 +30,7 @@ public class AddMessageFlightModification extends Modification {
     private final ReceiveAction receiveAction;
 
     /**
-     *
+     * 
      * @param sendAction
      * @param receiveAction
      */
@@ -40,7 +41,7 @@ public class AddMessageFlightModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public SendAction getSendAction() {
@@ -48,12 +49,13 @@ public class AddMessageFlightModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ReceiveAction getReceiveAction() {
 	return receiveAction;
     }
+
     private static final Logger LOG = Logger.getLogger(AddMessageFlightModification.class.getName());
 
 }

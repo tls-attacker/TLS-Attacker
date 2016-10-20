@@ -41,7 +41,7 @@ public class IsTimeoutRule extends Rule {
     private IsTimeoutRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public IsTimeoutRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -58,17 +58,17 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
     @Override
     public boolean applies(Result result) {
-        return result.didTimeout();
+	return result.didTimeout();
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -87,7 +87,7 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -95,7 +95,7 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -108,13 +108,12 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public IsTimeoutRuleConfig getConfig() {
 	return config;
     }
-
 
 }

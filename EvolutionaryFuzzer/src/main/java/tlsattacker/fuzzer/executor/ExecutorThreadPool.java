@@ -66,38 +66,38 @@ public class ExecutorThreadPool implements Runnable {
     /**
      *
      */
-        private final int poolSize;
+    private final int poolSize;
     //
 
     /**
      *
      */
-        private final ThreadPoolExecutor executor;
+    private final ThreadPoolExecutor executor;
     // The Mutator used by the ExecutorPool to fetch new Tasks
 
     /**
      *
      */
-        private final Mutator mutator;
+    private final Mutator mutator;
     // The Executor thread pool will continuasly fetch and execute new Tasks
     // while this is false
 
     /**
      *
      */
-        private boolean stopped = true;
+    private boolean stopped = true;
     // Counts the number of executed Tasks for statisticall purposes.
 
     /**
      *
      */
-        private long runs = 0;
+    private long runs = 0;
     // The Config the ExecutorThreadPool uses
 
     /**
      *
      */
-        private final EvolutionaryFuzzerConfig config;
+    private final EvolutionaryFuzzerConfig config;
 
     /**
      * Constructor for the ExecutorThreadPool
@@ -123,7 +123,7 @@ public class ExecutorThreadPool implements Runnable {
 	File f = new File(config.getArchiveFolder());
 	if (f.listFiles().length == 0) {
 	    LOG.log(Level.INFO, "Creating Fuzzer Seed:");
-            List<TestVector> list = generateSeed();
+	    List<TestVector> list = generateSeed();
 	    for (TestVector vector : list) {
 		try {
 		    TestVectorSerializer.write(new File(config.getArchiveFolder()
@@ -137,7 +137,7 @@ public class ExecutorThreadPool implements Runnable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private List<TestVector> generateSeed() {
@@ -193,18 +193,18 @@ public class ExecutorThreadPool implements Runnable {
 	// Dont save old results
 	config.setSerialize(false);
 	if (!config.isNoOld()) {
-            File f = new File(config.getArchiveFolder());
+	    File f = new File(config.getArchiveFolder());
 	    for (int i = 0; i < f.listFiles(new GitIgnoreFileFilter()).length; i++) {
 
 		TLSServer server = null;
 		try {
 		    if (!stopped) {
-			TestVector vector = TestVectorSerializer.read(new FileInputStream(f.listFiles(new GitIgnoreFileFilter())[i]));
-			if(!mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
-                        {
-                            continue;
-                        }
-                        server = ServerManager.getInstance().getFreeServer();
+			TestVector vector = TestVectorSerializer.read(new FileInputStream(f
+				.listFiles(new GitIgnoreFileFilter())[i]));
+			if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
+			    continue;
+			}
+			server = ServerManager.getInstance().getFreeServer();
 			vector.getTrace().reset();
 			vector.getTrace().makeGeneric();
 
@@ -237,10 +237,9 @@ public class ExecutorThreadPool implements Runnable {
 		    if (!stopped) {
 			server = ServerManager.getInstance().getFreeServer();
 			TestVector vector = mutator.getNewMutation();
-                        if(!mutator.getCertMutator().isSupported(vector.getServerKeyCert()))
-                        {
-                            continue;
-                        }
+			if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
+			    continue;
+			}
 			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
 			Runnable worker = new TLSExecutor(vector, server, agent);
 			executor.submit(worker);
@@ -288,7 +287,7 @@ public class ExecutorThreadPool implements Runnable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public synchronized boolean hasRunningThreads() {

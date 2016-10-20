@@ -13,7 +13,8 @@ import com.beust.jcommander.validators.PositiveInteger;
 import java.util.logging.Logger;
 
 /**
- * A configuration class which configures the options for the "new-server" command.
+ * A configuration class which configures the options for the "new-server"
+ * command.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -57,7 +58,7 @@ public class ServerConfig {
     private String killCommand;
 
     /**
-     *
+     * 
      * @return
      */
     public String getIp() {
@@ -65,7 +66,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @param ip
      */
     public void setIp(String ip) {
@@ -73,7 +74,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getKillCommand() {
@@ -81,7 +82,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getPort() {
@@ -89,7 +90,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @param port
      */
     public void setPort(int port) {
@@ -97,7 +98,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getAccept() {
@@ -105,7 +106,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @param accept
      */
     public void setAccept(String accept) {
@@ -113,7 +114,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getStartcommand() {
@@ -121,7 +122,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @param startcommand
      */
     public void setStartcommand(String startcommand) {
@@ -129,7 +130,7 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutput() {
@@ -137,12 +138,13 @@ public class ServerConfig {
     }
 
     /**
-     *
+     * 
      * @param output
      */
     public void setOutput(String output) {
 	this.output = output;
     }
+
     private static final Logger LOG = Logger.getLogger(ServerConfig.class.getName());
 
 }

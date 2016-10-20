@@ -10,7 +10,8 @@ package tlsattacker.fuzzer.modification;
 import java.util.logging.Logger;
 
 /**
- * A modification which indicates that a new ToggleEncryptionAction was added to the WorkflowTrace
+ * A modification which indicates that a new ToggleEncryptionAction was added to
+ * the WorkflowTrace
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -22,7 +23,7 @@ public class AddToggleEncrytionActionModification extends Modification {
     private int actionPosition;
 
     /**
-     *
+     * 
      * @param ActionPosition
      */
     public AddToggleEncrytionActionModification(int ActionPosition) {
@@ -31,12 +32,13 @@ public class AddToggleEncrytionActionModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getActionPosition() {
 	return actionPosition;
     }
+
     private static final Logger LOG = Logger.getLogger(AddToggleEncrytionActionModification.class.getName());
 
 }

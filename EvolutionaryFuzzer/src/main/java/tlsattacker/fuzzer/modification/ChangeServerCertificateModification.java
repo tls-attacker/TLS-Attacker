@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 
 /**
- * A modification which indicates that the server certificate in the TestVector has changed.
+ * A modification which indicates that the server certificate in the TestVector
+ * has changed.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -23,7 +24,7 @@ public class ChangeServerCertificateModification extends Modification {
     private final ServerCertificateStructure keyCertPair;
 
     /**
-     *
+     * 
      * @param keyCertPair
      */
     public ChangeServerCertificateModification(ServerCertificateStructure keyCertPair) {
@@ -32,12 +33,13 @@ public class ChangeServerCertificateModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ServerCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }
+
     private static final Logger LOG = Logger.getLogger(ChangeServerCertificateModification.class.getName());
 
 }

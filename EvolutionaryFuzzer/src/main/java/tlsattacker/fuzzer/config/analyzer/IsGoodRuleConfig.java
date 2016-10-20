@@ -31,7 +31,7 @@ public class IsGoodRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputFileGraph() {
@@ -39,12 +39,13 @@ public class IsGoodRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param outputFileGraph
      */
     public void setOutputFileGraph(String outputFileGraph) {
 	this.outputFileGraph = outputFileGraph;
     }
+
     private static final Logger LOG = Logger.getLogger(IsGoodRuleConfig.class.getName());
 
 }

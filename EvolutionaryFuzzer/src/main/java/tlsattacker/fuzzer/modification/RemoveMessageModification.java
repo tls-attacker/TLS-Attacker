@@ -34,7 +34,7 @@ public class RemoveMessageModification extends Modification {
     private final SendAction action;
 
     /**
-     *
+     * 
      * @param message
      * @param action
      * @param position
@@ -47,7 +47,7 @@ public class RemoveMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getPosition() {
@@ -55,7 +55,7 @@ public class RemoveMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public SendAction getAction() {
@@ -63,12 +63,13 @@ public class RemoveMessageModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ProtocolMessage getMessage() {
 	return message;
     }
+
     private static final Logger LOG = Logger.getLogger(RemoveMessageModification.class.getName());
 
 }

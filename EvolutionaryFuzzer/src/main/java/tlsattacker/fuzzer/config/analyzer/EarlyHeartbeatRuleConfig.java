@@ -24,6 +24,7 @@ public class EarlyHeartbeatRuleConfig extends RuleConfig {
     public EarlyHeartbeatRuleConfig() {
 	super("early_heartbeat/");
     }
+
     private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRuleConfig.class.getName());
 
 }

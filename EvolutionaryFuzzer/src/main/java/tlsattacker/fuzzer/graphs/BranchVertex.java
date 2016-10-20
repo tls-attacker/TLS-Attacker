@@ -101,13 +101,12 @@ public class BranchVertex {
     }
 
     @Override
-    public int hashCode()
-    {
-        int hash = 7;
-        hash = 83 * hash + (int) (this.probeID ^ (this.probeID >>> 32));
-        hash = 83 * hash + Objects.hashCode(this.type);
-        hash = 83 * hash + Objects.hashCode(this.label);
-        return hash;
+    public int hashCode() {
+	int hash = 7;
+	hash = 83 * hash + (int) (this.probeID ^ (this.probeID >>> 32));
+	hash = 83 * hash + Objects.hashCode(this.type);
+	hash = 83 * hash + Objects.hashCode(this.label);
+	return hash;
     }
 
     /**

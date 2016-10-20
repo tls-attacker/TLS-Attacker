@@ -10,9 +10,9 @@ package tlsattacker.fuzzer.controller;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 
 /**
- * The Controller controls the general program. It links the Components
- * together and starts and stop the Fuzzing Process. I am unsure if it is ever
- * necessarry to create more than one Implementation.
+ * The Controller controls the general program. It links the Components together
+ * and starts and stop the Fuzzing Process. I am unsure if it is ever necessarry
+ * to create more than one Implementation.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -23,17 +23,17 @@ public abstract class Controller {
     /**
      *
      */
-        protected EvolutionaryFuzzerConfig config;
+    protected EvolutionaryFuzzerConfig config;
 
     // Is the Fuzzing Process running?
 
     /**
      *
      */
-        protected boolean isRunning;
+    protected boolean isRunning;
 
     /**
-     *
+     * 
      * @param config
      */
     public Controller(EvolutionaryFuzzerConfig config) {

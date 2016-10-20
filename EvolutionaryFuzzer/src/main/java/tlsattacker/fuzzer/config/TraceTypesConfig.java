@@ -26,7 +26,7 @@ public class TraceTypesConfig {
     String traceTypesFolder = "data/uniqueFlows";
 
     /**
-     *
+     * 
      * @return
      */
     public String getTraceTypesFolder() {
@@ -34,12 +34,13 @@ public class TraceTypesConfig {
     }
 
     /**
-     *
+     * 
      * @param traceTypesFolder
      */
     public void setTraceTypesFolder(String traceTypesFolder) {
 	this.traceTypesFolder = traceTypesFolder;
     }
+
     private static final Logger LOG = Logger.getLogger(TraceTypesConfig.class.getName());
 
 }

@@ -64,7 +64,7 @@ public class TestVector implements Serializable {
     private ExecutorType executorType;
 
     /**
-     *
+     * 
      * @param trace
      * @param keyCertPair
      * @param clientKeyCert
@@ -89,7 +89,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ExecutorType getExecutorType() {
@@ -97,7 +97,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param executorType
      */
     public void setExecutorType(ExecutorType executorType) {
@@ -105,7 +105,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public WorkflowTrace getTrace() {
@@ -113,7 +113,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param serverKeyCert
      */
     public void setServerKeyCert(ServerCertificateStructure serverKeyCert) {
@@ -121,7 +121,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param clientKeyCert
      */
     public void setClientKeyCert(ClientCertificateStructure clientKeyCert) {
@@ -129,7 +129,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ClientCertificateStructure getClientKeyCert() {
@@ -137,7 +137,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ServerCertificateStructure getServerKeyCert() {
@@ -145,7 +145,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param modification
      */
     public void addModification(Modification modification) {
@@ -155,7 +155,7 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public List<Modification> getModificationList() {
@@ -163,12 +163,13 @@ public class TestVector implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public TestVector getParent() {
 	return parent;
     }
+
     private static final Logger LOG = Logger.getLogger(TestVector.class.getName());
 
 }

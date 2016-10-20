@@ -12,14 +12,15 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 
 /**
- * A factory class which chooses the certificate mutator as specified in the configuration object
+ * A factory class which chooses the certificate mutator as specified in the
+ * configuration object
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateMutatorFactory {
 
     /**
-     *
+     * 
      * @param config
      * @return
      * @throws IllegalCertificateMutatorException
@@ -27,7 +28,7 @@ public class CertificateMutatorFactory {
     public static CertificateMutator getCertificateMutator(EvolutionaryFuzzerConfig config)
 	    throws IllegalCertificateMutatorException {
 	switch (config.getCertMutator()) {
-            case FixedCertificateMutator.optionName:
+	    case FixedCertificateMutator.optionName:
 		return new FixedCertificateMutator();
 	    default:
 		throw new IllegalCertificateMutatorException("Illegal Value for Certificate Mutator:"
@@ -38,8 +39,8 @@ public class CertificateMutatorFactory {
     /**
      *
      */
-    private CertificateMutatorFactory()
-    {
+    private CertificateMutatorFactory() {
     }
+
     private static final Logger LOG = Logger.getLogger(CertificateMutatorFactory.class.getName());
 }

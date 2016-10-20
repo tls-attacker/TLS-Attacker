@@ -26,7 +26,8 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
- * A rule which records the different observed alert descriptions and records unusual alerts.
+ * A rule which records the different observed alert descriptions and records
+ * unusual alerts.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -53,7 +54,7 @@ public class FindAlertsRule extends Rule {
     private FindAlertsRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public FindAlertsRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -84,7 +85,7 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -114,7 +115,7 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -147,7 +148,7 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -155,7 +156,7 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -183,13 +184,12 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public FindAlertsRuleConfig getConfig() {
 	return config;
     }
-
 
 }

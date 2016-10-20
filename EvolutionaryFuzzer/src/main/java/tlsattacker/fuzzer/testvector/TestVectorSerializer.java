@@ -59,12 +59,12 @@ public class TestVectorSerializer {
      * @throws IOException
      */
     private static JAXBContext getJAXBContext() throws JAXBException, IOException {
-        if (context == null) {
-            context = JAXBContext.newInstance(TestVector.class, ExtensionMessage.class, WorkflowTrace.class,
-                    ProtocolMessage.class, ModificationFilter.class, VariableModification.class,
-                    ModifiableVariable.class, ServerCertificateStructure.class, File.class, TLSAction.class);
-        }
-        return context;
+	if (context == null) {
+	    context = JAXBContext.newInstance(TestVector.class, ExtensionMessage.class, WorkflowTrace.class,
+		    ProtocolMessage.class, ModificationFilter.class, VariableModification.class,
+		    ModifiableVariable.class, ServerCertificateStructure.class, File.class, TLSAction.class);
+	}
+	return context;
     }
 
     /**
@@ -83,10 +83,10 @@ public class TestVectorSerializer {
      *             the File
      */
     public static void write(File file, TestVector vector) throws FileNotFoundException, JAXBException, IOException {
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        FileOutputStream fos = new FileOutputStream(file);
+	if (!file.exists()) {
+	    file.createNewFile();
+	}
+	FileOutputStream fos = new FileOutputStream(file);
 	TestVectorSerializer.write(fos, vector);
     }
 
@@ -99,9 +99,9 @@ public class TestVectorSerializer {
      * @throws IOException
      */
     public static void write(OutputStream outputStream, TestVector vector) throws JAXBException, IOException {
-        context = getJAXBContext();
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	context = getJAXBContext();
+	Marshaller m = context.createMarshaller();
+	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	m.marshal(vector, outputStream);
 	outputStream.close();
     }
@@ -115,42 +115,42 @@ public class TestVectorSerializer {
      * @throws XMLStreamException
      */
     public static TestVector read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
-        context = getJAXBContext();
-        Unmarshaller m = context.createUnmarshaller();
-        XMLInputFactory xif = XMLInputFactory.newFactory();
-        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-        TestVector vector = (TestVector) m.unmarshal(xsr);
-        inputStream.close();
-        return vector;
+	context = getJAXBContext();
+	Unmarshaller m = context.createUnmarshaller();
+	XMLInputFactory xif = XMLInputFactory.newFactory();
+	xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+	xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+	XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+	TestVector vector = (TestVector) m.unmarshal(xsr);
+	inputStream.close();
+	return vector;
     }
 
     /**
-     *
+     * 
      * @param f
      * @return
      */
     public static List<TestVector> readFolder(File f) {
-        if (f.isDirectory()) {
-            ArrayList<TestVector> list = new ArrayList<>();
-            for (File file : f.listFiles()) {
-                if (file.getName().startsWith(".")) {
-                    // We ignore the .gitignore File
-                    continue;
-                }
-                TestVector vector;
-                try {
-                    vector = TestVectorSerializer.read(new FileInputStream(file));
-                    vector.getTrace().setName(file.getAbsolutePath());
-                    list.add(vector);
-                } catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
-                    LOG.log(Level.INFO, "Could not load file:{0}", file.getAbsolutePath());
-                    LOG.log(Level.FINE, "Reason:", ex);
-                    ex.printStackTrace();
-                }
-            }
-            return list;
+	if (f.isDirectory()) {
+	    ArrayList<TestVector> list = new ArrayList<>();
+	    for (File file : f.listFiles()) {
+		if (file.getName().startsWith(".")) {
+		    // We ignore the .gitignore File
+		    continue;
+		}
+		TestVector vector;
+		try {
+		    vector = TestVectorSerializer.read(new FileInputStream(file));
+		    vector.getTrace().setName(file.getAbsolutePath());
+		    list.add(vector);
+		} catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
+		    LOG.log(Level.INFO, "Could not load file:{0}", file.getAbsolutePath());
+		    LOG.log(Level.FINE, "Reason:", ex);
+		    ex.printStackTrace();
+		}
+	    }
+	    return list;
 	} else {
 	    throw new IllegalArgumentException("Cannot read Folder, because its not a Folder:" + f.getAbsolutePath());
 	}
@@ -163,6 +163,5 @@ public class TestVectorSerializer {
     private TestVectorSerializer() {
 
     }
-
 
 }

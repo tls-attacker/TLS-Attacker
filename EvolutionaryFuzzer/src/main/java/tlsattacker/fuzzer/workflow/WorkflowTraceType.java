@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * A higher level representation of the a TLS Handshake which consists of multiple MessageFlows
+ * A higher level representation of the a TLS Handshake which consists of
+ * multiple MessageFlows
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -31,7 +32,7 @@ public class WorkflowTraceType {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ArrayList<MessageFlow> getFlows() {
@@ -39,7 +40,7 @@ public class WorkflowTraceType {
     }
 
     /**
-     *
+     * 
      * @param flow
      */
     public void addMessageFlow(MessageFlow flow) {
@@ -94,6 +95,7 @@ public class WorkflowTraceType {
 	}
 	return sb.toString();
     }
+
     private static final Logger LOG = Logger.getLogger(WorkflowTraceType.class.getName());
 
 }

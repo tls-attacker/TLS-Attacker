@@ -51,5 +51,6 @@ public class PINTest {
 	assertTrue("Failure: Could not find PIN script", f.exists());
 
     }
+
     private static final Logger LOG = Logger.getLogger(PINTest.class.getName());
 }

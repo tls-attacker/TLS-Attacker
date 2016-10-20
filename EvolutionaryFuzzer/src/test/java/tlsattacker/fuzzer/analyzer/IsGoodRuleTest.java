@@ -84,7 +84,7 @@ public class IsGoodRuleTest {
 		ExecutorType.TLS, null), "unit1.test");
 	assertTrue(rule.applies(result));
 	assertFalse(rule.applies(result)); // The same trace should not apply
-					  // twice
+					   // twice
 	tempEdge = new Edge(1, 3);
 	edgeMap.put(tempEdge, tempEdge);
 	trace = new BranchTrace(verticesSet, edgeMap);
@@ -185,6 +185,7 @@ public class IsGoodRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(IsGoodRuleTest.class.getName());
 
 }

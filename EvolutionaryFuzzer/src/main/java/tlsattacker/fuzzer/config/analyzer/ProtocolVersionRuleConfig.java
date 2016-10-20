@@ -64,27 +64,27 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
      *
      */
     public ProtocolVersionRuleConfig() {
-        super("faulty_version/");
+	super("faulty_version/");
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isLogOnWrongFieldSizes() {
-        return logOnWrongFieldSizes;
+	return logOnWrongFieldSizes;
     }
 
     /**
-     *
+     * 
      * @param logOnWrongFieldSizes
      */
     public void setLogOnWrongFieldSizes(boolean logOnWrongFieldSizes) {
-        this.logOnWrongFieldSizes = logOnWrongFieldSizes;
+	this.logOnWrongFieldSizes = logOnWrongFieldSizes;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowSSL2() {
@@ -92,7 +92,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowDTLS10() {
@@ -100,7 +100,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowDTLS10
      */
     public void setAllowDTLS10(boolean allowDTLS10) {
@@ -108,7 +108,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowDTLS12() {
@@ -116,7 +116,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowDTLS12
      */
     public void setAllowDTLS12(boolean allowDTLS12) {
@@ -124,7 +124,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowSSL2
      */
     public void setAllowSSL2(boolean allowSSL2) {
@@ -132,7 +132,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowSSL3() {
@@ -140,7 +140,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowSSL3
      */
     public void setAllowSSL3(boolean allowSSL3) {
@@ -148,7 +148,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowTLS10() {
@@ -156,7 +156,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowTLS10
      */
     public void setAllowTLS10(boolean allowTLS10) {
@@ -164,7 +164,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowTLS11() {
@@ -172,7 +172,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowTLS11
      */
     public void setAllowTLS11(boolean allowTLS11) {
@@ -180,7 +180,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowTLS12() {
@@ -188,7 +188,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param allowTLS12
      */
     public void setAllowTLS12(boolean allowTLS12) {
@@ -196,7 +196,7 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param version
      * @return
      */
@@ -219,5 +219,6 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
 	    throw new UnsupportedOperationException();
 	}
     }
+
     private static final Logger LOG = Logger.getLogger(ProtocolVersionRuleConfig.class.getName());
 }

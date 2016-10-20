@@ -65,6 +65,7 @@ public class WorkFlowTraceTypeTest {
 	instance.clean();
 	assertEquals(instance, instance2);
     }
+
     private static final Logger LOG = Logger.getLogger(WorkFlowTraceTypeTest.class.getName());
 
 }

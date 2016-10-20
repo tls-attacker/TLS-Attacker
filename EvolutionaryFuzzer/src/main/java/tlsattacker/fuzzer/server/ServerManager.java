@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * Manages the different Servers that the fuzzer is configured with.
  * 
@@ -60,7 +61,7 @@ public class ServerManager {
     }
 
     /**
-     *
+     * 
      * @param config
      */
     public void init(FuzzerGeneralConfig config) {
@@ -74,7 +75,8 @@ public class ServerManager {
 	    if (file.isDirectory()) {
 		File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
 		if (filesInDic.length == 0) {
-		    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}", file.getAbsolutePath());
+		    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}",
+			    file.getAbsolutePath());
 		    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
 		    System.exit(-1);
 		} else {
@@ -148,7 +150,7 @@ public class ServerManager {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getServerCount() {
@@ -156,7 +158,7 @@ public class ServerManager {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getFreeServerCount() {
@@ -170,7 +172,7 @@ public class ServerManager {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public List<TLSServer> getAllServers() {
@@ -182,18 +184,17 @@ public class ServerManager {
     /**
      *
      */
-        private static class ServerManagerHolder {
+    private static class ServerManagerHolder {
 
-        /**
+	/**
          *
          */
-        private static final ServerManager INSTANCE = new ServerManager();
+	private static final ServerManager INSTANCE = new ServerManager();
 
-        /**
+	/**
          *
          */
-        private ServerManagerHolder()
-        {
-        }
+	private ServerManagerHolder() {
+	}
     }
 }

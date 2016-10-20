@@ -111,6 +111,7 @@ public class IsCrashRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(IsCrashRuleTest.class.getName());
 
 }

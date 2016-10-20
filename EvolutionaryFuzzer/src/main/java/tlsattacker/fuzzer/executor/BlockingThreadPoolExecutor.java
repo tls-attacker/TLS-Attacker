@@ -24,16 +24,16 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     /**
      *
      */
-    private final    /**
-     *
-     * @param corePoolSize
-     * @param maximumPoolSize
-     * @param keepAliveTime
-     * @param unit
-     * @param workQueue
-     * @param threadFactory
-     */
- Semaphore semaphore;
+    private final/**
+		  *
+		  * @param corePoolSize
+		  * @param maximumPoolSize
+		  * @param keepAliveTime
+		  * @param unit
+		  * @param workQueue
+		  * @param threadFactory
+		  */
+    Semaphore semaphore;
 
     public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
 	    BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
@@ -69,6 +69,6 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     protected void afterExecute(Runnable r, Throwable t) {
 	semaphore.release();
     }
-    
+
     private static final Logger LOG = Logger.getLogger(BlockingThreadPoolExecutor.class.getName());
 }

@@ -14,7 +14,9 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;
 
 /**
- * An analyzer implementation which uses a set of Rules to find interesting TestVectors.
+ * An analyzer implementation which uses a set of Rules to find interesting
+ * TestVectors.
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {
@@ -35,13 +37,13 @@ public class RuleAnalyzer extends Analyzer {
     private final EvolutionaryFuzzerConfig config;
 
     /**
-     *
+     * 
      * @param config
      */
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;
 	ruleList = new LinkedList<Rule>();
-	//THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
+	// THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
 	ruleList.add(new IsGoodRule(config));
 	ruleList.add(new FindAlertsRule(config));
 	ruleList.add(new IsCrashRule(config));
@@ -55,7 +57,7 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     /**
-     *
+     * 
      * @param tempClass
      * @return
      */
@@ -69,7 +71,7 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     public void analyze(Result result) {
@@ -83,7 +85,7 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getReport() {
@@ -96,6 +98,7 @@ public class RuleAnalyzer extends Analyzer {
 	}
 	return builder.toString();
     }
+
     private static final Logger LOG = Logger.getLogger(RuleAnalyzer.class.getName());
 
 }

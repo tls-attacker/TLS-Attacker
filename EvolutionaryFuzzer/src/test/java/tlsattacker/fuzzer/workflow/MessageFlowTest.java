@@ -40,6 +40,7 @@ public class MessageFlowTest {
 	instance2 = new MessageFlow(ServerHelloDoneMessage.class, ConnectionEnd.CLIENT);
 	assertNotSame("Failure: MessageFlows have different MessageClasses", instance, instance2);
     }
+
     private static final Logger LOG = Logger.getLogger(MessageFlowTest.class.getName());
 
 }

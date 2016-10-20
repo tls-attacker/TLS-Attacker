@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class AFLTest {

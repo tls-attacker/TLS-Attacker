@@ -13,7 +13,8 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
- * A wrapper which logically binds a server private key file and a server certificate file
+ * A wrapper which logically binds a server private key file and a server
+ * certificate file
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -30,7 +31,7 @@ public class ServerCertificateStructure implements Serializable {
     private File certificateFile;
 
     /**
-     *
+     * 
      * @param keyFile
      * @param certificateFile
      */
@@ -48,7 +49,7 @@ public class ServerCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public File getKeyFile() {
@@ -56,7 +57,7 @@ public class ServerCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param keyFile
      */
     public void setKeyFile(File keyFile) {
@@ -64,7 +65,7 @@ public class ServerCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public File getCertificateFile() {
@@ -72,7 +73,7 @@ public class ServerCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param certificateFile
      */
     public void setCertificateFile(File certificateFile) {
@@ -99,6 +100,7 @@ public class ServerCertificateStructure implements Serializable {
 	}
 	return Objects.equals(this.certificateFile, other.certificateFile);
     }
+
     private static final Logger LOG = Logger.getLogger(ServerCertificateStructure.class.getName());
 
 }

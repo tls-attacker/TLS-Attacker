@@ -148,8 +148,8 @@ public class TLSExecutor extends Executor {
 		tlsContext.setKeyStore(ks);
 		tlsContext.setAlias(fc.getAlias());
 		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		Collection<? extends Certificate> certs = certFactory
-                        .generateCertificates(new FileInputStream(testVector.getServerKeyCert().getCertificateFile()));
+		Collection<? extends Certificate> certs = certFactory.generateCertificates(new FileInputStream(
+			testVector.getServerKeyCert().getCertificateFile()));
 
 		Certificate sunCert = (Certificate) certs.toArray()[0];
 		byte[] certBytes = sunCert.getEncoded();
@@ -180,7 +180,7 @@ public class TLSExecutor extends Executor {
 	    } catch (UnsupportedOperationException E) {
 		// Skip Workflows we dont support yet
 	    } catch (ServerDoesNotStartException E) {
-		timeout = true; //TODO
+		timeout = true; // TODO
 	    } catch (Throwable E) {
 		File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
 			+ LogFileIDManager.getInstance().getFilename());
@@ -225,7 +225,7 @@ public class TLSExecutor extends Executor {
     }
 
     /**
-     *
+     * 
      * @param server
      * @param config
      * @return

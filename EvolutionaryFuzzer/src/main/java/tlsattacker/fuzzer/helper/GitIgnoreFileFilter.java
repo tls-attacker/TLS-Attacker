@@ -22,6 +22,7 @@ public class GitIgnoreFileFilter implements FilenameFilter {
     public boolean accept(File dir, String name) {
 	return !name.equals(".gitignore");
     }
+
     private static final Logger LOG = Logger.getLogger(GitIgnoreFileFilter.class.getName());
 
 }

@@ -25,7 +25,8 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
- * A rule that tries to find TestVectors which allowed Heartbeat messages before the handshake has finished
+ * A rule that tries to find TestVectors which allowed Heartbeat messages before
+ * the handshake has finished
  * 
  * @author ic0ns
  */
@@ -47,7 +48,7 @@ public class EarlyHeartbeatRule extends Rule {
     private int found = 0;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -64,7 +65,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -79,7 +80,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -101,7 +102,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -109,7 +110,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -122,7 +123,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -131,7 +132,7 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param trace
      * @return
      */
@@ -144,13 +145,12 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param trace
      * @return
      */
     public boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
 	return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
     }
-
 
 }

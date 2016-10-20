@@ -30,7 +30,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     /**
      *
      */
-        private boolean autofix = true;
+    private boolean autofix = true;
 
     /**
      *
@@ -90,7 +90,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAutofix() {
@@ -98,7 +98,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param autofix
      */
     public void setAutofix(boolean autofix) {
@@ -106,7 +106,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public List<ClientCertificateStructure> getClientCertificates() {
@@ -114,7 +114,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param clientCertificates
      */
     public void setClientCertificates(List<ClientCertificateStructure> clientCertificates) {
@@ -122,7 +122,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public List<ServerCertificateStructure> getServerCertificates() {
@@ -130,12 +130,13 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param serverCertificates
      */
     public void setServerCertificates(List<ServerCertificateStructure> serverCertificates) {
 	this.serverCertificates = serverCertificates;
     }
+
     private static final Logger LOG = Logger.getLogger(FixedCertificateMutatorConfig.class.getName());
 
 }

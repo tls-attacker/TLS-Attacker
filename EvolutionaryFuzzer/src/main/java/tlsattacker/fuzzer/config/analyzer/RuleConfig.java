@@ -25,7 +25,7 @@ public abstract class RuleConfig {
     protected String outputFolderName;
 
     /**
-     *
+     * 
      * @param outputFolderName
      */
     public RuleConfig(String outputFolderName) {
@@ -33,7 +33,7 @@ public abstract class RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isActive() {
@@ -41,7 +41,7 @@ public abstract class RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param active
      */
     public void setActive(boolean active) {
@@ -49,7 +49,7 @@ public abstract class RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputFolder() {
@@ -57,7 +57,7 @@ public abstract class RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param outputFolder
      */
     public void setOutputFolder(String outputFolder) {

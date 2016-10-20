@@ -31,7 +31,7 @@ public class CalibrationConfig extends FuzzerGeneralConfig {
     private int timeoutLimit = 4000;
 
     /**
-     *
+     * 
      * @return
      */
     public double getGain() {
@@ -39,7 +39,7 @@ public class CalibrationConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param gain
      */
     public void setGain(double gain) {
@@ -47,7 +47,7 @@ public class CalibrationConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getTimeoutLimit() {
@@ -55,12 +55,13 @@ public class CalibrationConfig extends FuzzerGeneralConfig {
     }
 
     /**
-     *
+     * 
      * @param timeoutLimit
      */
     public void setTimeoutLimit(int timeoutLimit) {
 	this.timeoutLimit = timeoutLimit;
     }
+
     private static final Logger LOG = Logger.getLogger(CalibrationConfig.class.getName());
 
 }

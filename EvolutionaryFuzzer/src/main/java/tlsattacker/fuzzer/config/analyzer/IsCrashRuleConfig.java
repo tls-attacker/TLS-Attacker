@@ -24,6 +24,7 @@ public class IsCrashRuleConfig extends RuleConfig {
     public IsCrashRuleConfig() {
 	super("crash/");
     }
+
     private static final Logger LOG = Logger.getLogger(IsCrashRuleConfig.class.getName());
 
 }

@@ -24,7 +24,8 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
- * A rule which analyzes if the TestVector reached new codepaths and set a flag in the Result object accordingly.
+ * A rule which analyzes if the TestVector reached new codepaths and set a flag
+ * in the Result object accordingly.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -44,7 +45,7 @@ public class IsGoodRule extends Rule {
     /**
      *
      */
-        private final BranchTrace branch;
+    private final BranchTrace branch;
 
     /**
      *
@@ -62,7 +63,7 @@ public class IsGoodRule extends Rule {
     private long lastGoodTimestamp = System.currentTimeMillis();
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -93,7 +94,7 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -112,7 +113,7 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -139,7 +140,7 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public BranchTrace getBranchTrace() {
@@ -147,7 +148,7 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -156,7 +157,7 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -166,7 +167,7 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override

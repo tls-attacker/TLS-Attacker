@@ -26,28 +26,28 @@ public class FindAlertsRuleConfig extends RuleConfig {
     /**
      *
      */
-        private Set<Byte> blacklist;
+    private Set<Byte> blacklist;
     // Set of RFC Comform Alert Codes, every Code that is not in this list is
     // saved
 
     /**
      *
      */
-        private Set<Byte> whitelist;
+    private Set<Byte> whitelist;
     // The Pokemon method, the Rule is advised to save one example testvector
     // for each alert message
 
     /**
      *
      */
-        private boolean saveOneOfEach = true;
+    private boolean saveOneOfEach = true;
 
     // Output folder relative to the evolutionaryConfig output folder
 
     /**
      *
      */
-    
+
     public FindAlertsRuleConfig() {
 	super("alerts/");
 	this.blacklist = new HashSet<>();
@@ -64,7 +64,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Set<Byte> getBlacklist() {
@@ -72,7 +72,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param blackList
      */
     public void setBlacklist(Set<Byte> blackList) {
@@ -80,7 +80,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Set<Byte> getWhitelist() {
@@ -88,7 +88,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param whitelist
      */
     public void setWhitelist(Set<Byte> whitelist) {
@@ -96,7 +96,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isSaveOneOfEach() {
@@ -104,11 +104,12 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param saveOneOfEach
      */
     public void setSaveOneOfEach(boolean saveOneOfEach) {
 	this.saveOneOfEach = saveOneOfEach;
     }
+
     private static final Logger LOG = Logger.getLogger(FindAlertsRuleConfig.class.getName());
 }

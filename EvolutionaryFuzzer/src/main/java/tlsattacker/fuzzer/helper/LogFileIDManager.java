@@ -86,7 +86,7 @@ public class LogFileIDManager {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public synchronized String getFilename() {
@@ -99,15 +99,15 @@ public class LogFileIDManager {
      */
     private static class LogFileIDManagerHolder {
 
-        /**
+	/**
          *
          */
-        private static final LogFileIDManager INSTANCE = new LogFileIDManager();
+	private static final LogFileIDManager INSTANCE = new LogFileIDManager();
 
-        /**
+	/**
          *
          */
-        private LogFileIDManagerHolder() {
+	private LogFileIDManagerHolder() {
 	}
     }
 

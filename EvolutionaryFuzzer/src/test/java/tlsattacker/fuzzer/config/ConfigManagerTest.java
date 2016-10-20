@@ -54,6 +54,7 @@ public class ConfigManagerTest {
     public void testGetConfig() {
 	assertNotNull("Failure: Could get a ConfigManager Instance", ConfigManager.getInstance().getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(ConfigManagerTest.class.getName());
 
 }

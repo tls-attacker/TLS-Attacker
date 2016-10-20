@@ -55,7 +55,7 @@ public class UnitTestCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -64,7 +64,7 @@ public class UnitTestCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -73,14 +73,15 @@ public class UnitTestCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @param structure
      * @return
      */
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
-        return serverPairList.contains(structure);
+	return serverPairList.contains(structure);
     }
+
     private static final Logger LOG = Logger.getLogger(UnitTestCertificateMutator.class.getName());
 
 }

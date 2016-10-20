@@ -41,7 +41,7 @@ public class IsCrashRule extends Rule {
     private IsCrashRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public IsCrashRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -58,17 +58,17 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
     @Override
     public boolean applies(Result result) {
-        return result.hasCrashed();
+	return result.hasCrashed();
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -87,7 +87,7 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -95,7 +95,7 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -108,13 +108,12 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public IsCrashRuleConfig getConfig() {
 	return config;
     }
-
 
 }

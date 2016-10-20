@@ -14,28 +14,27 @@ import tlsattacker.fuzzer.exceptions.IllegalControllerException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 
 /**
- * A factory class which generates the correct controller depending on the controller specified in the 
- * configuration object
+ * A factory class which generates the correct controller depending on the
+ * controller specified in the configuration object
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ControllerFactory
-{
+public class ControllerFactory {
 
     /**
-     *
+     * 
      * @param config
      * @return
      * @throws IllegalControllerException
      * @throws IllegalMutatorException
      * @throws IllegalCertificateMutatorException
      */
-    public static Controller getController(EvolutionaryFuzzerConfig config)
-            throws IllegalControllerException, IllegalMutatorException, IllegalCertificateMutatorException {
+    public static Controller getController(EvolutionaryFuzzerConfig config) throws IllegalControllerException,
+	    IllegalMutatorException, IllegalCertificateMutatorException {
 	switch (config.getMutator()) {
-            case CommandLineController.optionName:
+	    case CommandLineController.optionName:
 		return new CommandLineController(config);
-            default:
+	    default:
 		throw new IllegalControllerException("Illegal Value for Controller:" + config.getController());
 
 	}
@@ -44,8 +43,8 @@ public class ControllerFactory
     /**
      *
      */
-    private ControllerFactory()
-    {
+    private ControllerFactory() {
     }
+
     private static final Logger LOG = Logger.getLogger(ControllerFactory.class.getName());
 }

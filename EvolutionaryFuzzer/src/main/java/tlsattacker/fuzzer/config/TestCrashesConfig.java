@@ -32,7 +32,7 @@ public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
     private int executeNumber = 100;
 
     /**
-     *
+     * 
      * @return
      */
     public String getCrashFolder() {
@@ -40,7 +40,7 @@ public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
     }
 
     /**
-     *
+     * 
      * @param crashFolder
      */
     public void setCrashFolder(String crashFolder) {
@@ -48,7 +48,7 @@ public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getExecuteNumber() {
@@ -56,12 +56,13 @@ public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
     }
 
     /**
-     *
+     * 
      * @param executeNumber
      */
     public void setExecuteNumber(int executeNumber) {
 	this.executeNumber = executeNumber;
     }
+
     private static final Logger LOG = Logger.getLogger(TestCrashesConfig.class.getName());
 
 }

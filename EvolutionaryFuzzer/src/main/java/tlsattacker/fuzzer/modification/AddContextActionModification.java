@@ -11,7 +11,8 @@ import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.logging.Logger;
 
 /**
- * A modification which indicates that a new action was added to the WorkflowTrace which changes a field in the TlsContext
+ * A modification which indicates that a new action was added to the
+ * WorkflowTrace which changes a field in the TlsContext
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -23,7 +24,7 @@ public class AddContextActionModification extends Modification {
     private final TLSAction action;
 
     /**
-     *
+     * 
      * @param type
      * @param action
      */
@@ -33,12 +34,13 @@ public class AddContextActionModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public TLSAction getAction() {
 	return action;
     }
+
     private static final Logger LOG = Logger.getLogger(AddContextActionModification.class.getName());
 
 }

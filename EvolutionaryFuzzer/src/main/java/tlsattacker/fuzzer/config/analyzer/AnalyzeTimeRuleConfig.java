@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A configuration class for the analyze time rule
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlRootElement
@@ -30,7 +31,7 @@ public class AnalyzeTimeRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getOutputFile() {
@@ -38,12 +39,13 @@ public class AnalyzeTimeRuleConfig extends RuleConfig {
     }
 
     /**
-     *
+     * 
      * @param outputFile
      */
     public void setOutputFile(String outputFile) {
 	this.outputFile = outputFile;
     }
+
     private static final Logger LOG = Logger.getLogger(AnalyzeTimeRuleConfig.class.getName());
 
 }

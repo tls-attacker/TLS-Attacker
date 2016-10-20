@@ -46,87 +46,87 @@ public class AFLAgent extends Agent {
     public static final String optionName = "AFL";
 
     /**
-     *
+     * 
      * @param f
      * @return
      */
-    private static BranchTrace getBranchTrace(File f)
-    {
-        BufferedReader br = null;
-        Set<Long> verticesSet = new HashSet<>();
-        Map<Edge, Edge> edgeMap = new HashMap<>();
-        try {
-            br = new BufferedReader(new FileReader(f));
-            long previousNumber = Long.MIN_VALUE;
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                // Check if the Line can be parsed
-                long parsedNumber;
-                try {
-                    parsedNumber = Long.parseLong(line, 16);
-                    verticesSet.add(parsedNumber);
-                } catch (NumberFormatException e) {
-                    if (line.contains("CRASH") || line.contains("TIMEOUT")) {
-                        continue;
-                    }
-                    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
-                }
-                if (previousNumber != Long.MIN_VALUE) {
-                    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
-                    if (e == null) {
-                        e = new Edge(previousNumber, parsedNumber);
-                        edgeMap.put(e, e);
-                    }
-                    e.addCounter(1l);
-                    
-                }
-                previousNumber = parsedNumber;
-            }
-            return new BranchTrace(verticesSet, edgeMap);
-        } catch (IOException ex) {
-            Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
-                    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return new BranchTrace();
+    private static BranchTrace getBranchTrace(File f) {
+	BufferedReader br = null;
+	Set<Long> verticesSet = new HashSet<>();
+	Map<Edge, Edge> edgeMap = new HashMap<>();
+	try {
+	    br = new BufferedReader(new FileReader(f));
+	    long previousNumber = Long.MIN_VALUE;
+	    String line = null;
+	    while ((line = br.readLine()) != null) {
+		// Check if the Line can be parsed
+		long parsedNumber;
+		try {
+		    parsedNumber = Long.parseLong(line, 16);
+		    verticesSet.add(parsedNumber);
+		} catch (NumberFormatException e) {
+		    if (line.contains("CRASH") || line.contains("TIMEOUT")) {
+			continue;
+		    }
+		    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
+		}
+		if (previousNumber != Long.MIN_VALUE) {
+		    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
+		    if (e == null) {
+			e = new Edge(previousNumber, parsedNumber);
+			edgeMap.put(e, e);
+		    }
+		    e.addCounter(1l);
+
+		}
+		previousNumber = parsedNumber;
+	    }
+	    return new BranchTrace(verticesSet, edgeMap);
+	} catch (IOException ex) {
+	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
+		    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
+	} finally {
+	    try {
+		if (br != null) {
+		    br.close();
+		}
+	    } catch (IOException ex) {
+		Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
+	return new BranchTrace();
     }
+
     // Is a fuzzing Progress Running?
 
     /**
      *
      */
-        protected boolean running = false;
+    protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
 
     /**
      *
      */
-        protected long startTime;
+    protected long startTime;
     // StopTime of the last Fuzzing Vektor
 
     /**
      *
      */
-        protected long stopTime;
+    protected long stopTime;
     // If the Application did Timeout
 
     /**
      *
      */
-        protected boolean timeout;
+    protected boolean timeout;
     // If the Application did Crash
 
     /**
      *
      */
-        protected boolean crash;
+    protected boolean crash;
 
     /**
      *
@@ -135,6 +135,7 @@ public class AFLAgent extends Agent {
 
     /**
      * Default Constructor
+     * 
      * @param keypair
      */
     public AFLAgent(ServerCertificateStructure keypair) {
@@ -194,7 +195,7 @@ public class AFLAgent extends Agent {
     }
 
     /**
-     *
+     * 
      * @param file
      * @return
      */
@@ -243,6 +244,5 @@ public class AFLAgent extends Agent {
 	    }
 	}
     }
-
 
 }

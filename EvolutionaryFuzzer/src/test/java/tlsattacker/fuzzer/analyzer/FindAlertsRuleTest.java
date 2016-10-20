@@ -136,7 +136,8 @@ public class FindAlertsRuleTest {
 
 	assertTrue(rule.applies(result)); // Should apply since it is the first
 	rule.onApply(result); // time the rule sees the alert code
-	assertFalse(rule.applies(result)); // Should not apply since the rule has
+	assertFalse(rule.applies(result)); // Should not apply since the rule
+					   // has
 	// already seen the alert code
     }
 
@@ -165,6 +166,7 @@ public class FindAlertsRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(FindAlertsRuleTest.class.getName());
 
 }

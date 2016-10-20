@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class ConfigManager {
 
     /**
-     *
+     * 
      * @return
      */
     public static ConfigManager getInstance() {
@@ -38,7 +38,7 @@ public class ConfigManager {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public EvolutionaryFuzzerConfig getConfig() {
@@ -46,7 +46,7 @@ public class ConfigManager {
     }
 
     /**
-     *
+     * 
      * @param config
      */
     public void setConfig(EvolutionaryFuzzerConfig config) {
@@ -58,17 +58,17 @@ public class ConfigManager {
      */
     private static class ConfigManagerHolder {
 
-        /**
+	/**
          *
          */
-        private static final ConfigManager INSTANCE = new ConfigManager();
+	private static final ConfigManager INSTANCE = new ConfigManager();
 
-        /**
+	/**
          *
          */
-        private ConfigManagerHolder()
-        {
-        }
+	private ConfigManagerHolder() {
+	}
     }
+
     private static final Logger LOG = Logger.getLogger(ConfigManager.class.getName());
 }

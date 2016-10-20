@@ -49,10 +49,9 @@ public class PinAgentTest {
      *
      */
     @AfterClass
-    public static void tearDownClass()
-    {
-        File f = new File("JUNIT/");
-        FileHelper.deleteFolder(f);
+    public static void tearDownClass() {
+	File f = new File("JUNIT/");
+	FileHelper.deleteFolder(f);
     }
 
     /**
@@ -76,11 +75,11 @@ public class PinAgentTest {
      */
     @After
     public void tearDown() {
-        FileHelper.deleteFolder(new File("unit_test_output"));
-        FileHelper.deleteFolder(new File("unit_test_config"));
-        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
-        server.stop();
-        server = null;
+	FileHelper.deleteFolder(new File("unit_test_output"));
+	FileHelper.deleteFolder(new File("unit_test_config"));
+	ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
+	server.stop();
+	server = null;
     }
 
     /**
@@ -88,23 +87,23 @@ public class PinAgentTest {
      */
     @Before
     public void setUp() {
-        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        config.setOutputFolder("unit_test_output/");
-        config.setConfigFolder("unit_test_config/");
-        ConfigManager.getInstance().setConfig(config);
-        mut = new UnitTestCertificateMutator();
-        pair = mut.getServerCertificateStructure();
-        agent = new PINAgent(pair);
-        File f = new File("../resources/EvolutionaryFuzzer/TestServer/normal.config");
-        if (!f.exists()) {
-            Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
-        }
-        try {
-            server = ServerSerializer.read(f);
-        } catch (Exception ex) {
-            Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        server.occupie();
+	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+	config.setOutputFolder("unit_test_output/");
+	config.setConfigFolder("unit_test_config/");
+	ConfigManager.getInstance().setConfig(config);
+	mut = new UnitTestCertificateMutator();
+	pair = mut.getServerCertificateStructure();
+	agent = new PINAgent(pair);
+	File f = new File("../resources/EvolutionaryFuzzer/TestServer/normal.config");
+	if (!f.exists()) {
+	    Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
+	}
+	try {
+	    server = ServerSerializer.read(f);
+	} catch (Exception ex) {
+	    Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	server.occupie();
     }
 
     /**
@@ -112,8 +111,8 @@ public class PinAgentTest {
      */
     @Test
     public void testStartStop() {
-        agent.applicationStart(server);
-        agent.applicationStop(server);
+	agent.applicationStart(server);
+	agent.applicationStop(server);
     }
 
     /**
@@ -121,7 +120,7 @@ public class PinAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testDoubleStart() {
-        agent.applicationStart(server);
+	agent.applicationStart(server);
 	agent.applicationStart(server);
     }
 
@@ -130,7 +129,7 @@ public class PinAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testNotStarted() {
-        agent.applicationStop(server);
+	agent.applicationStop(server);
     }
 
     /**
@@ -138,10 +137,10 @@ public class PinAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testDoubleStop() {
-        agent.applicationStart(server);
-        agent.applicationStop(server);
-        agent.applicationStop(server);
-        
+	agent.applicationStart(server);
+	agent.applicationStop(server);
+	agent.applicationStop(server);
+
     }
 
     /**
@@ -150,7 +149,7 @@ public class PinAgentTest {
     @Test
     public void testCollectResults() {
 	TestVector t = new TestVector(null, null, null, ExecutorType.TLS, null);
-        agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/test.trace"), t);
+	agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/test.trace"), t);
     }
 
     /**
@@ -159,14 +158,14 @@ public class PinAgentTest {
      */
     @Test
     public void testCollectResultsGraph() {
-        TestVector t = new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null);
-        Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/graph.trace"), t);
+	TestVector t = new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null);
+	Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/graph.trace"), t);
 	assertTrue("Failure: Test result should have exactly 4 Vertices",
 		r.getBranchTrace().getVerticesSet().size() == 4);
 	assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getEdgeMap().size() == 6);
 
     }
-    private static final Logger LOG = Logger.getLogger(PinAgentTest.class.getName());
 
+    private static final Logger LOG = Logger.getLogger(PinAgentTest.class.getName());
 
 }

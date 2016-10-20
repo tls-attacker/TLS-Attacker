@@ -68,7 +68,7 @@ public class AnalyzeTimeRule extends Rule {
     private AnalyzeTimeRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -97,7 +97,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -107,7 +107,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -125,7 +125,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -133,7 +133,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -149,7 +149,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -158,7 +158,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public double getExecutedTimeTotal() {
@@ -166,7 +166,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getNumberExecutedTraces() {
@@ -174,7 +174,7 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public double getSlowestTime() {
@@ -182,12 +182,11 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public double getFastestTime() {
 	return fastestTime;
     }
-
 
 }

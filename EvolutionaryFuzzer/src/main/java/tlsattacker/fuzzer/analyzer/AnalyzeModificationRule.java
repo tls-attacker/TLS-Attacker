@@ -47,7 +47,7 @@ public class AnalyzeModificationRule extends Rule {
     private AnalyzeModificationRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -65,7 +65,7 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -75,7 +75,7 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -92,7 +92,7 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -100,7 +100,7 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -117,7 +117,7 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public long getExecutedTraces() {
@@ -125,7 +125,7 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public HashMap<ModificationType, MutableInt> getTypeMap() {
@@ -134,13 +134,12 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public AnalyzeModificationRuleConfig getConfig() {
 	return config;
     }
-
 
 }

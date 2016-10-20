@@ -13,41 +13,37 @@ import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
 
 /**
- * A helper class which helps in the generation of visualizable workflow data 
+ * A helper class which helps in the generation of visualizable workflow data
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class WorkflowGraphBuilder {
 
     /**
-     *
+     * 
      * @param typeList
      * @return
      */
-    public static String generateDOTGraph(Set <WorkflowTraceType> typeList)
-    {
-        String result = "digraph output{\n";
-        int vertexIndex = 0;
+    public static String generateDOTGraph(Set<WorkflowTraceType> typeList) {
+	String result = "digraph output{\n";
+	int vertexIndex = 0;
 	int uniquer = 0;
-        
-	
-        DirectedMultigraph<Integer, MessageFlow> graph = generateWorkflowGraph(typeList);
-	for(Integer i : graph.vertexSet())
-        {
-            result += ""+i + " [label=\""+i+"\"];\n";
-        }
-        for(MessageFlow flow : graph.edgeSet())
-        {
-            result += ""+graph.getEdgeSource(flow)+" -> " +graph.getEdgeTarget(flow)+" [label=\""+flow.toString()+"\"];\n";
-        }
-        result += "}";
-        
+
+	DirectedMultigraph<Integer, MessageFlow> graph = generateWorkflowGraph(typeList);
+	for (Integer i : graph.vertexSet()) {
+	    result += "" + i + " [label=\"" + i + "\"];\n";
+	}
+	for (MessageFlow flow : graph.edgeSet()) {
+	    result += "" + graph.getEdgeSource(flow) + " -> " + graph.getEdgeTarget(flow) + " [label=\""
+		    + flow.toString() + "\"];\n";
+	}
+	result += "}";
 
 	return result;
     }
 
     /**
-     *
+     * 
      * @param typeList
      * @return
      */
@@ -80,7 +76,7 @@ public class WorkflowGraphBuilder {
     }
 
     /**
-     *
+     * 
      * @param graph
      * @param flow
      * @param current
@@ -99,8 +95,8 @@ public class WorkflowGraphBuilder {
     /**
      *
      */
-    private WorkflowGraphBuilder()
-    {
+    private WorkflowGraphBuilder() {
     }
+
     private static final Logger LOG = Logger.getLogger(WorkflowGraphBuilder.class.getName());
 }

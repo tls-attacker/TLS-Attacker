@@ -28,34 +28,32 @@ public class GraphWindow {
     private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
 
     /**
-     *
+     * 
      * @param incomingGraph
      */
-    public static void showWindow(DirectedMultigraph<Integer, MessageFlow> incomingGraph)
-    {
-        
-        JFrame frame = new JFrame();
-        frame.setSize(400, 400);
-        JGraphModelAdapter adapter = new JGraphModelAdapter(incomingGraph);
-        
-        JGraph jgraph = new JGraph(adapter);
-        
-        frame.getContentPane().add(jgraph);
-        frame.setVisible(true);
-        while (true) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GraphWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+    public static void showWindow(DirectedMultigraph<Integer, MessageFlow> incomingGraph) {
+
+	JFrame frame = new JFrame();
+	frame.setSize(400, 400);
+	JGraphModelAdapter adapter = new JGraphModelAdapter(incomingGraph);
+
+	JGraph jgraph = new JGraph(adapter);
+
+	frame.getContentPane().add(jgraph);
+	frame.setVisible(true);
+	while (true) {
+	    try {
+		Thread.sleep(2000);
+	    } catch (InterruptedException ex) {
+		Logger.getLogger(GraphWindow.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
     }
 
     /**
      *
      */
-    private GraphWindow()
-    {
+    private GraphWindow() {
     }
 
 }

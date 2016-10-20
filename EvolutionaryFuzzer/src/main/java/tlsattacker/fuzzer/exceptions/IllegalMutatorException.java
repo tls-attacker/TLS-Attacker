@@ -17,12 +17,13 @@ import java.util.logging.Logger;
 public class IllegalMutatorException extends Exception {
 
     /**
-     *
+     * 
      * @param string
      */
     public IllegalMutatorException(String string) {
 	super(string);
     }
+
     private static final Logger LOG = Logger.getLogger(IllegalMutatorException.class.getName());
 
 }

@@ -30,7 +30,8 @@ import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
- * A simple Mutator implementations that applies modifications to random good TestVectors as specified in a configuration file.
+ * A simple Mutator implementations that applies modifications to random good
+ * TestVectors as specified in a configuration file.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -68,7 +69,7 @@ public class SimpleMutator extends Mutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private boolean goodVectorsExist() {
@@ -78,7 +79,7 @@ public class SimpleMutator extends Mutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private boolean archiveVectorsExist() {
@@ -87,7 +88,7 @@ public class SimpleMutator extends Mutator {
     }
 
     /**
-     *
+     * 
      * @param folder
      * @return
      * @throws IOException

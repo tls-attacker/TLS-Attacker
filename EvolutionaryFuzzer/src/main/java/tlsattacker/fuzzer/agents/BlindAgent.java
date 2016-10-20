@@ -39,31 +39,31 @@ public class BlindAgent extends Agent {
     /**
      *
      */
-        protected boolean running = false;
+    protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
 
     /**
      *
      */
-        protected long startTime;
+    protected long startTime;
     // StopTime of the last Fuzzing Vektor
 
     /**
      *
      */
-        protected long stopTime;
+    protected long stopTime;
     // If the Application did Timeout
 
     /**
      *
      */
-        protected boolean timeout;
+    protected boolean timeout;
     // If the Application did Crash
 
     /**
      *
      */
-        protected boolean crash;
+    protected boolean crash;
 
     /**
      *
@@ -72,6 +72,7 @@ public class BlindAgent extends Agent {
 
     /**
      * Default Constructor
+     * 
      * @param keypair
      */
     public BlindAgent(ServerCertificateStructure keypair) {

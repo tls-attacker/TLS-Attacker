@@ -36,7 +36,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import tlsattacker.fuzzer.config.ConfigManager;
 
 /**
- * A class that tries to find the lowest tls_timeout possible to such that normal handshakes still execute probably with a tested Server.
+ * A class that tries to find the lowest tls_timeout possible to such that
+ * normal handshakes still execute probably with a tested Server.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -46,7 +47,7 @@ public class TimeoutCalibrator {
      *
      */
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
-            .getName());
+	    .getName());
     // We try to find the lowest Timeout that does not alter with Workflow
     // execution and
     // then multiply the number with the gain Factor
@@ -67,16 +68,16 @@ public class TimeoutCalibrator {
     private final CalibrationConfig config;
 
     /**
-     *
+     * 
      * @param config
      */
     public TimeoutCalibrator(CalibrationConfig config) {
-        this.config = config;
-        Security.addProvider(new BouncyCastleProvider());
+	this.config = config;
+	Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getLimit() {
@@ -84,15 +85,15 @@ public class TimeoutCalibrator {
     }
 
     /**
-     *
+     * 
      * @param limit
      */
     public void setLimit(int limit) {
-        this.limit = limit;
+	this.limit = limit;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public double getGainFactor() {
@@ -100,15 +101,15 @@ public class TimeoutCalibrator {
     }
 
     /**
-     *
+     * 
      * @param gainFactor
      */
     public void setGainFactor(double gainFactor) {
-        this.gainFactor = gainFactor;
+	this.gainFactor = gainFactor;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int calibrateTimeout() {
@@ -117,7 +118,7 @@ public class TimeoutCalibrator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private int getHighestTimeoutGlobal() {
@@ -125,13 +126,14 @@ public class TimeoutCalibrator {
 	FixedCertificateMutator mutator = new FixedCertificateMutator();
 
 	for (ServerCertificateStructure serverCert : mutator.getServerPairList()) {
-	    LOG.log(Level.INFO, "Grabbing supported Ciphersuites for {0}", serverCert.getCertificateFile().getAbsolutePath());
+	    LOG.log(Level.INFO, "Grabbing supported Ciphersuites for {0}", serverCert.getCertificateFile()
+		    .getAbsolutePath());
 	    List<CipherSuite> supportedList = getWorkingCiphersuites(serverCert);
 	    LOG.log(Level.INFO, "Finished grabbing");
 
 	    for (CipherSuite suite : supportedList) {
 		int localSmall = getSmallestTimeoutPossible(serverCert, suite);
-		LOG.log(Level.INFO, "Lowest Timeout for {0} is {1}", new Object[]{suite.name(), localSmall});
+		LOG.log(Level.INFO, "Lowest Timeout for {0} is {1}", new Object[] { suite.name(), localSmall });
 		if (localSmall > highestTimeout) {
 		    LOG.log(Level.INFO, "Found a new highest timeout!");
 		    highestTimeout = localSmall;
@@ -143,7 +145,7 @@ public class TimeoutCalibrator {
     }
 
     /**
-     *
+     * 
      * @param serverCerts
      * @return
      */
@@ -164,7 +166,7 @@ public class TimeoutCalibrator {
      * 
      * @param algorithm
      * @param port
-     * @return 
+     * @return
      */
     public boolean testCiphersuite(ServerCertificateStructure serverCerts, CipherSuite suite, int timeout) {
 
@@ -202,14 +204,14 @@ public class TimeoutCalibrator {
     // TODO cleantup
 
     /**
-     *
+     * 
      * @param configHandler
      * @param config
      * @param agent
      * @param server
      * @return
      */
-        private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent,
+    private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent,
 	    TLSServer server) {
 
 	long time = System.currentTimeMillis();
@@ -251,7 +253,7 @@ public class TimeoutCalibrator {
     }
 
     /**
-     *
+     * 
      * @param trace
      * @return
      */
@@ -277,7 +279,7 @@ public class TimeoutCalibrator {
     }
 
     /**
-     *
+     * 
      * @param serverCerts
      * @param suite
      * @return

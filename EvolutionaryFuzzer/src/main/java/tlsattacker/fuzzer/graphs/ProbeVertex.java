@@ -25,7 +25,7 @@ public class ProbeVertex {
     /**
      *
      */
-        private final long probeID;
+    private final long probeID;
 
     /**
      * Default Constructor

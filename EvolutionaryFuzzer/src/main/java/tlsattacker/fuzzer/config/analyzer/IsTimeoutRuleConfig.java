@@ -23,9 +23,10 @@ public class IsTimeoutRuleConfig extends RuleConfig {
     /**
      *
      */
-    
+
     public IsTimeoutRuleConfig() {
 	super("timeout/");
     }
+
     private static final Logger LOG = Logger.getLogger(IsTimeoutRuleConfig.class.getName());
 }

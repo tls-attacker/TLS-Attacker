@@ -11,7 +11,8 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import java.util.logging.Logger;
 
 /**
- * A modification which indicates that a new record was added to the WorkflowTrace
+ * A modification which indicates that a new record was added to the
+ * WorkflowTrace
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -23,7 +24,7 @@ public class AddRecordModification extends Modification {
     private final ProtocolMessage message;
 
     /**
-     *
+     * 
      * @param message
      */
     public AddRecordModification(ProtocolMessage message) {
@@ -32,12 +33,13 @@ public class AddRecordModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ProtocolMessage getMessage() {
 	return message;
     }
+
     private static final Logger LOG = Logger.getLogger(AddRecordModification.class.getName());
 
 }

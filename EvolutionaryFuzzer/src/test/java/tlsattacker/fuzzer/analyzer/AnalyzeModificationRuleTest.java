@@ -156,5 +156,6 @@ public class AnalyzeModificationRuleTest {
 	val = typeMap.get(ModificationType.ADD_MESSAGE);
 	assertTrue(val.getValue() == 3);
     }
+
     private static final Logger LOG = Logger.getLogger(AnalyzeModificationRuleTest.class.getName());
 }

@@ -1,7 +1,7 @@
-
 package tlsattacker.fuzzer.graphs;
 
 import java.util.logging.Logger;
+
 /**
  * An implementation of JGrapgTs default edge which carries a counter.
  * 
@@ -23,7 +23,7 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
     /**
      *
      */
-        private int count = 1;
+    private int count = 1;
 
     /**
      * Default Constructor
@@ -39,7 +39,7 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
     }
 
     /**
-     *
+     * 
      * @param count
      */
     public void add(int count) {
@@ -56,8 +56,8 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
     }
 
     @Override
-    public Object clone()
-    {
-        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    public Object clone() {
+	return super.clone(); // To change body of generated methods, choose
+			      // Tools | Templates.
     }
 }

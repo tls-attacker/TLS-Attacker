@@ -20,7 +20,8 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
- * A Rule which counts the applied modifications which resulted in good TestVectors
+ * A Rule which counts the applied modifications which resulted in good
+ * TestVectors
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -47,7 +48,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     private AnalyzeModificationRuleConfig config;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public AnalyzeGoodModificationRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -65,7 +66,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -75,7 +76,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -92,7 +93,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -100,7 +101,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -117,7 +118,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public long getExecutedTraces() {
@@ -125,7 +126,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public HashMap<ModificationType, MutableInt> getTypeMap() {
@@ -134,13 +135,12 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
     public AnalyzeModificationRuleConfig getConfig() {
 	return config;
     }
-
 
 }

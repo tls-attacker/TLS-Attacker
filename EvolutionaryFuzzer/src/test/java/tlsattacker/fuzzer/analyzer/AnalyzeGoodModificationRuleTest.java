@@ -160,5 +160,6 @@ public class AnalyzeGoodModificationRuleTest {
 	val = typeMap.get(ModificationType.ADD_MESSAGE);
 	assertTrue(val.getValue() == 3);
     }
+
     private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRuleTest.class.getName());
 }

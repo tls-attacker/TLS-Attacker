@@ -53,7 +53,7 @@ public class UniqueFlowsRule extends Rule {
     private int found = 0;
 
     /**
-     *
+     * 
      * @param evoConfig
      */
     public UniqueFlowsRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -76,7 +76,7 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
@@ -90,7 +90,7 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -118,7 +118,7 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @param result
      */
     @Override
@@ -126,7 +126,7 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -135,7 +135,7 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override

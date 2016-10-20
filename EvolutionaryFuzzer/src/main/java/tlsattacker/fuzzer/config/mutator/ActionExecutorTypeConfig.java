@@ -37,7 +37,7 @@ public class ActionExecutorTypeConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowTLS() {
@@ -45,7 +45,7 @@ public class ActionExecutorTypeConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param allowTLS
      */
     public void setAllowTLS(boolean allowTLS) {
@@ -53,7 +53,7 @@ public class ActionExecutorTypeConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isAllowDTLS() {
@@ -61,7 +61,7 @@ public class ActionExecutorTypeConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param allowDTLS
      */
     public void setAllowDTLS(boolean allowDTLS) {
@@ -69,7 +69,7 @@ public class ActionExecutorTypeConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ExecutorType getRandomExecutorType() {
@@ -86,5 +86,6 @@ public class ActionExecutorTypeConfig implements Serializable {
 	}
 
     }
+
     private static final Logger LOG = Logger.getLogger(ActionExecutorTypeConfig.class.getName());
 }

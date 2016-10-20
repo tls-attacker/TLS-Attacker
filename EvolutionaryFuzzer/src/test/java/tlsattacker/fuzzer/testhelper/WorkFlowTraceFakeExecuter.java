@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class WorkFlowTraceFakeExecuter {
 
     /**
-     *
+     * 
      * @param trace
      */
     public static void execute(WorkflowTrace trace) {
@@ -34,5 +34,6 @@ public class WorkFlowTraceFakeExecuter {
 	    }
 	}
     }
+
     private static final Logger LOG = Logger.getLogger(WorkFlowTraceFakeExecuter.class.getName());
 }

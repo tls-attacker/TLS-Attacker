@@ -85,8 +85,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
+
 /**
- * A helper class which implements useful methods to modify a TestVector on a higher level.
+ * A helper class which implements useful methods to modify a TestVector on a
+ * higher level.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -104,7 +106,7 @@ public class FuzzingHelper {
     public static final int MAX_MODIFICATION_COUNT = 5;
 
     /**
-     *
+     * 
      * @param fields
      * @return
      */
@@ -131,7 +133,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @param object
      * @return
      */
@@ -156,7 +158,7 @@ public class FuzzingHelper {
      * 
      * @param object
      * @param field
-     * @return 
+     * @return
      */
     public static ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
 	    Field field) {
@@ -187,7 +189,7 @@ public class FuzzingHelper {
      * 
      * @param trace
      * @param messageIssuer
-     * @return 
+     * @return
      */
     public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
 	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
@@ -206,7 +208,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @param tempTrace
      * @return
      */
@@ -257,7 +259,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @param tempTrace
      * @return
      */
@@ -268,7 +270,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @param tempTrace
      * @param mutator
      * @return
@@ -408,7 +410,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private static ProtocolMessage generateRandomMessage() {
@@ -508,7 +510,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @param trace
      * @return
      */
@@ -532,7 +534,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private static ExtensionMessage generateRandomExtensionMessage() {
@@ -593,7 +595,7 @@ public class FuzzingHelper {
      * 
      * @param trace
      * @param messageIssuer
-     * @return 
+     * @return
      */
     public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
 	Random r = new Random();
@@ -656,7 +658,7 @@ public class FuzzingHelper {
     }
 
     /**
-     *
+     * 
      * @param trace
      * @return
      */

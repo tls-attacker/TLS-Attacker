@@ -49,6 +49,7 @@ public class ExecutorThreadPoolTest {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
     }
+
     private static final Logger LOG = Logger.getLogger(ExecutorThreadPoolTest.class.getName());
 
 }

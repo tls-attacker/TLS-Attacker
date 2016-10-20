@@ -75,5 +75,6 @@ public class SimpleMutatorConfigTest {
 	}
 	assertNotNull("Failure: setRemoveMessagePercentage can be risen above 100%", E);
     }
+
     private static final Logger LOG = Logger.getLogger(SimpleMutatorConfigTest.class.getName());
 }

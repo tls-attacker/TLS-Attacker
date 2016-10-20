@@ -153,6 +153,7 @@ public class AnalyzeTimeRuleTest {
 	rule.onApply(result);
 	assertTrue(rule.getFastestTime() == 1000);
     }
+
     private static final Logger LOG = Logger.getLogger(AnalyzeTimeRuleTest.class.getName());
 
 }

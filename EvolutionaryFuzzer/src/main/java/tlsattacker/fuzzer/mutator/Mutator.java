@@ -31,7 +31,7 @@ public abstract class Mutator {
     protected CertificateMutator certMutator;
 
     /**
-     *
+     * 
      * @param config
      * @param certMutator
      */
@@ -41,7 +41,7 @@ public abstract class Mutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public CertificateMutator getCertMutator() {

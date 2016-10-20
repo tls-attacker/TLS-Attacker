@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
- * A is a class that can be used to analyze TestVectors. 
- * It seperates the different things an operator might want to look for in a
- * TestVector into different Classes.
+ * A is a class that can be used to analyze TestVectors. It seperates the
+ * different things an operator might want to look for in a TestVector into
+ * different Classes.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -50,7 +50,7 @@ public abstract class Rule {
     private final boolean isActive = true;
 
     /**
-     *
+     * 
      * @param evoConfig
      * @param configFileName
      */
@@ -60,7 +60,7 @@ public abstract class Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public File getRuleFolder() {
@@ -68,7 +68,7 @@ public abstract class Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public boolean isActive() {
@@ -76,38 +76,38 @@ public abstract class Rule {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public abstract RuleConfig getConfig();
 
     /**
-     *
+     * 
      * @param result
      * @return
      */
     public abstract boolean applies(Result result);
 
     /**
-     *
+     * 
      * @param result
      */
     public abstract void onApply(Result result);
 
     /**
-     *
+     * 
      * @param result
      */
     public abstract void onDecline(Result result);
 
     /**
-     *
+     * 
      * @return
      */
     public abstract String report();
 
     /**
-     *
+     * 
      * @param c
      */
     protected void writeConfig(RuleConfig c) {
@@ -133,6 +133,5 @@ public abstract class Rule {
 	}
 	ruleFolder.mkdirs();
     }
-
 
 }

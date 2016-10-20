@@ -43,7 +43,7 @@ public class BranchTrace implements Serializable {
     /**
      *
      */
-        private Set<Long> verticesSet = null;
+    private Set<Long> verticesSet = null;
 
     /**
      *
@@ -51,26 +51,26 @@ public class BranchTrace implements Serializable {
     private Map<Edge, Edge> edgeMap = null;
 
     /**
-     *
+     * 
      * @param verticesSet
      * @param edgeMap
      */
     public BranchTrace(Set<Long> verticesSet, Map<Edge, Edge> edgeMap) {
-        this.verticesSet = verticesSet;
-        this.edgeMap = edgeMap;
+	this.verticesSet = verticesSet;
+	this.edgeMap = edgeMap;
     }
 
     /**
      * Default Constructor
      */
     public BranchTrace() {
-        verticesSet = new HashSet<>();
-        edgeMap = new HashMap<>();
+	verticesSet = new HashSet<>();
+	edgeMap = new HashMap<>();
 
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Set<Long> getVerticesSet() {
@@ -78,7 +78,7 @@ public class BranchTrace implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Map<Edge, Edge> getEdgeMap() {
@@ -86,7 +86,7 @@ public class BranchTrace implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param trace
      * @return
      */
@@ -113,7 +113,7 @@ public class BranchTrace implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getVerticesCount() {
@@ -121,7 +121,7 @@ public class BranchTrace implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getBranchCount() {

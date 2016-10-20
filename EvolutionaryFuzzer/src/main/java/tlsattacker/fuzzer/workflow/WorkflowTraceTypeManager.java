@@ -46,7 +46,7 @@ public class WorkflowTraceTypeManager {
     }
 
     /**
-     *
+     * 
      * @param vectors
      * @param connectionEnd
      * @return
@@ -59,6 +59,7 @@ public class WorkflowTraceTypeManager {
 	}
 	return set;
     }
+
     /**
      * Generates a Set of WorkFlowTraceTypes, each WorkflowTraceType represents
      * a Category of Workflowtraces which reached a new Branch in the
@@ -82,12 +83,13 @@ public class WorkflowTraceTypeManager {
     }
 
     /**
-     *
+     * 
      * @param vectors
      * @param myConnectionEnd
      * @return
      */
-    public static Set<WorkflowTraceType> generateCleanResponseTypeList(List<TestVector> vectors, ConnectionEnd myConnectionEnd) {
+    public static Set<WorkflowTraceType> generateCleanResponseTypeList(List<TestVector> vectors,
+	    ConnectionEnd myConnectionEnd) {
 	Set<WorkflowTraceType> set = new HashSet<>();
 	for (TestVector vector : vectors) {
 	    WorkflowTraceType type = generateWorkflowTraceTypeResponse(vector.getTrace(), myConnectionEnd);
@@ -96,6 +98,7 @@ public class WorkflowTraceTypeManager {
 	}
 	return set;
     }
+
     /**
      * Generates a WorkflowTraceType for a WorkflowTrace.
      * 
@@ -114,11 +117,12 @@ public class WorkflowTraceTypeManager {
 			MessageFlow flow = new MessageFlow(message.getClass(), myConnectionEnd);
 			type.addMessageFlow(flow);
 		    }
-                }
+		}
 	    }
 	}
 	return type;
     }
+
     /**
      * Generates a WorkflowTraceType for a WorkflowTrace.
      * 
@@ -153,8 +157,8 @@ public class WorkflowTraceTypeManager {
     /**
      *
      */
-    private WorkflowTraceTypeManager()
-    {
+    private WorkflowTraceTypeManager() {
     }
+
     private static final Logger LOG = Logger.getLogger(WorkflowTraceTypeManager.class.getName());
 }

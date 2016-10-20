@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 
 /**
- * A modification which indicates that the client certificate in the TestVector was changed
+ * A modification which indicates that the client certificate in the TestVector
+ * was changed
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -23,7 +24,7 @@ public class ChangeClientCertificateModification extends Modification {
     private final ClientCertificateStructure keyCertPair;
 
     /**
-     *
+     * 
      * @param keyCertPair
      */
     public ChangeClientCertificateModification(ClientCertificateStructure keyCertPair) {
@@ -32,12 +33,13 @@ public class ChangeClientCertificateModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ClientCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }
+
     private static final Logger LOG = Logger.getLogger(ChangeClientCertificateModification.class.getName());
 
 }

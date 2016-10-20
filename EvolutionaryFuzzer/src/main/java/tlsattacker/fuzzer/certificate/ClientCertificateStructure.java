@@ -13,7 +13,8 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
- * A wrapper class which logically binds the JKSFile with the assosiated password and alias.
+ * A wrapper class which logically binds the JKSFile with the assosiated
+ * password and alias.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -35,7 +36,7 @@ public class ClientCertificateStructure implements Serializable {
     private File JKSfile;
 
     /**
-     *
+     * 
      * @param password
      * @param alias
      * @param JKSfile
@@ -56,7 +57,7 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getPassword() {
@@ -64,7 +65,7 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param password
      */
     public void setPassword(String password) {
@@ -72,7 +73,7 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public String getAlias() {
@@ -80,7 +81,7 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param alias
      */
     public void setAlias(String alias) {
@@ -88,7 +89,7 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public File getJKSfile() {
@@ -96,7 +97,7 @@ public class ClientCertificateStructure implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param JKSfile
      */
     public void setJKSfile(File JKSfile) {
@@ -129,6 +130,7 @@ public class ClientCertificateStructure implements Serializable {
 	}
 	return Objects.equals(this.JKSfile, other.JKSfile);
     }
+
     private static final Logger LOG = Logger.getLogger(ClientCertificateStructure.class.getName());
 
 }

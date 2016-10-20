@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 class StreamGobbler extends Thread {
@@ -61,7 +61,7 @@ class StreamGobbler extends Thread {
     private String accepted;
 
     /**
-     *
+     * 
      * @param is
      * @param type
      * @param accepted
@@ -72,7 +72,7 @@ class StreamGobbler extends Thread {
     }
 
     /**
-     *
+     * 
      * @param is
      * @param type
      * @param redirect

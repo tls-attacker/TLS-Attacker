@@ -17,12 +17,13 @@ import java.util.logging.Logger;
 public class IllegalControllerException extends Exception {
 
     /**
-     *
+     * 
      * @param string
      */
     public IllegalControllerException(String string) {
 	super(string);
     }
+
     private static final Logger LOG = Logger.getLogger(IllegalControllerException.class.getName());
 
 }

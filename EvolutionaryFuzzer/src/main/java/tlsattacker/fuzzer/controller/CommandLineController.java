@@ -53,19 +53,19 @@ public class CommandLineController extends Controller {
     /**
      *
      */
-        private final Mutator mutator;
+    private final Mutator mutator;
     // Chosen Certificate Mutator
 
     /**
      *
      */
-        private final CertificateMutator certMutator;
+    private final CertificateMutator certMutator;
     // ThreadPool to start or stop
 
     /**
      *
      */
-        private final ExecutorThreadPool pool;
+    private final ExecutorThreadPool pool;
 
     /**
      * Basic Constructor, initializes the Server List, generates the necessary

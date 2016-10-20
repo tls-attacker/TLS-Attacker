@@ -44,7 +44,7 @@ public class ProcMon implements Runnable {
     /**
      *
      */
-    
+
     private final Process _proc;
 
     /**

@@ -11,7 +11,8 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 
 /**
- * An edge class wbich represents an edge from one probe id to another. Carries a counter to count how often it appeared.
+ * An edge class wbich represents an edge from one probe id to another. Carries
+ * a counter to count how often it appeared.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -54,7 +55,7 @@ public class Edge implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public long getA() {
@@ -62,7 +63,7 @@ public class Edge implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public long getB() {
@@ -70,7 +71,7 @@ public class Edge implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public long getCounter() {
@@ -78,7 +79,7 @@ public class Edge implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param counter
      */
     public void setCounter(long counter) {
@@ -86,7 +87,7 @@ public class Edge implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param counter
      */
     public void addCounter(long counter) {

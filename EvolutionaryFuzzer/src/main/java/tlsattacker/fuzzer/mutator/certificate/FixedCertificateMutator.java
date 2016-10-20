@@ -32,7 +32,8 @@ import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 
 /**
- * An implementation of the CertificateMutator that does not modify the Certificates and instead exchanges them completely.
+ * An implementation of the CertificateMutator that does not modify the
+ * Certificates and instead exchanges them completely.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -124,7 +125,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private List<ClientCertificateStructure> testClientCerts() {
@@ -143,7 +144,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     private List<ServerCertificateStructure> testServerCerts() {
@@ -166,15 +167,18 @@ public class FixedCertificateMutator extends CertificateMutator {
 		try {
 		    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
 		    if (!server.serverIsRunning()) {
-			LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
+			LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile()
+				.getAbsolutePath());
 			continue;
 		    }
 		} catch (Exception E) {
-		    LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
+		    LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile()
+			    .getAbsolutePath());
 		    continue;
 		}
 	    } catch (Exception E) {
-		LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
+		LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile()
+			.getAbsolutePath());
 		continue;
 	    } finally {
 		if (server != null) {
@@ -184,12 +188,13 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    CertificateFactory certFactory;
 	    try {
 		certFactory = CertificateFactory.getInstance("X.509");
-		Collection<? extends Certificate> certs = certFactory
-                        .generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
+		Collection<? extends Certificate> certs = certFactory.generateCertificates(new FileInputStream(
+			serverStructure.getCertificateFile()));
 		workingCerts.add(serverStructure);
 		LOG.log(Level.INFO, "{0} - OK", serverStructure.getCertificateFile().getAbsolutePath());
 	    } catch (Exception ex) {
-		LOG.log(Level.INFO, "Certificate not supported by TLS-Attacker:{0}", serverStructure.getCertificateFile().getAbsolutePath());
+		LOG.log(Level.INFO, "Certificate not supported by TLS-Attacker:{0}", serverStructure
+			.getCertificateFile().getAbsolutePath());
 		continue;
 	    }
 
@@ -199,7 +204,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public List<ClientCertificateStructure> getClientCertList() {
@@ -207,7 +212,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public List<ServerCertificateStructure> getServerPairList() {
@@ -215,7 +220,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -224,7 +229,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @return
      */
     @Override
@@ -233,7 +238,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @param file
      */
     public void serialize(File file) {
@@ -248,13 +253,13 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * 
      * @param structure
      * @return
      */
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
-        return serverCertList.contains(structure);
+	return serverCertList.contains(structure);
     }
 
 }

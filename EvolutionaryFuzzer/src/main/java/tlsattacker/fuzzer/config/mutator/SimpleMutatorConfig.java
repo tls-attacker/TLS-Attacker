@@ -79,39 +79,39 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getAddExtensionPercentage() {
-        return addExtensionMessagePercentage;
+	return addExtensionMessagePercentage;
     }
 
     /**
-     *
+     * 
      * @param addExtensionMessagePercentage
      */
     public void setAddExtensionMessagePercentage(Integer addExtensionMessagePercentage) {
-        this.addExtensionMessagePercentage = addExtensionMessagePercentage;
+	this.addExtensionMessagePercentage = addExtensionMessagePercentage;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getAddContextActionPercentage() {
-        return addContextActionPercentage;
+	return addContextActionPercentage;
     }
 
     /**
-     *
+     * 
      * @param addContextActionPercentage
      */
     public void setAddContextActionPercentage(Integer addContextActionPercentage) {
-        this.addContextActionPercentage = addContextActionPercentage;
+	this.addContextActionPercentage = addContextActionPercentage;
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getAddToggleEncrytionPercentage() {
@@ -119,7 +119,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param addToggleEncrytionPercentage
      */
     public void setAddToggleEncrytionPercentage(Integer addToggleEncrytionPercentage) {
@@ -127,7 +127,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getAddFlightPercentage() {
@@ -135,7 +135,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param addFlightPercentage
      */
     public void setAddFlightPercentage(Integer addFlightPercentage) {
@@ -143,7 +143,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getMultipleModifications() {
@@ -151,7 +151,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param multipleModifications
      */
     public void setMultipleModifications(Integer multipleModifications) {
@@ -159,7 +159,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getChangeServerCert() {
@@ -167,7 +167,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param changeServerCert
      */
     public void setChangeServerCert(Integer changeServerCert) {
@@ -175,7 +175,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getChangeClientCertPercentage() {
@@ -183,7 +183,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param changeClientCertPercentage
      */
     public void setChangeClientCertPercentage(Integer changeClientCertPercentage) {
@@ -191,7 +191,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getDuplicateMessagePercentage() {
@@ -199,7 +199,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param duplicateMessagePercentage
      */
     public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
@@ -207,7 +207,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Integer getRemoveMessagePercentage() {
@@ -215,7 +215,7 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     /**
-     *
+     * 
      * @param removeMessagePercentage
      */
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
@@ -296,5 +296,6 @@ public class SimpleMutatorConfig implements Serializable {
 	    throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + addMessagePercentage);
 	}
     }
+
     private static final Logger LOG = Logger.getLogger(SimpleMutatorConfig.class.getName());
 }

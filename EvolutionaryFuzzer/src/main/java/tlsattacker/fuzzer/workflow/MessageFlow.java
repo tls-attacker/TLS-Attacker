@@ -12,7 +12,8 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
- * An abstraction layer of a Handshake which represents a single message object class and a direction that message was sent
+ * An abstraction layer of a Handshake which represents a single message object
+ * class and a direction that message was sent
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -34,7 +35,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     private int uniquer = 0;
 
     /**
-     *
+     * 
      * @param message
      * @param issuer
      */
@@ -44,7 +45,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public int getUniquer() {
@@ -52,7 +53,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     }
 
     /**
-     *
+     * 
      * @param uniquer
      */
     public void setUniquer(int uniquer) {
@@ -60,7 +61,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public Class<?> getMessage() {
@@ -68,7 +69,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ConnectionEnd getIssuer() {
@@ -106,12 +107,13 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     public String toString() {
 	return "" + message.getSimpleName() + ":" + issuer;
     }
+
     private static final Logger LOG = Logger.getLogger(MessageFlow.class.getName());
 
     @Override
-    public Object clone()
-    {
-        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    public Object clone() {
+	return super.clone(); // To change body of generated methods, choose
+			      // Tools | Templates.
     }
 
 }

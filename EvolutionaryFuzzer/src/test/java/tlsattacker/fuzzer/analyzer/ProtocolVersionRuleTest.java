@@ -86,35 +86,35 @@ public class ProtocolVersionRuleTest {
 	assertFalse(rule.applies(result));
 	serverHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
 	assertTrue(rule.applies(result)); // This is not the highest support
-					 // version
+					  // version
 	clientHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
 	assertFalse(rule.applies(result)); // This should not apply, since the
-					  // client
-					  // also only support tls1.1
+					   // client
+					   // also only support tls1.1
 	clientHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
 	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
 	assertTrue(rule.applies(result)); // This should appyl since SSL2 is on
-					 // the blacklist and should never be
-					 // negotiated
+					  // the blacklist and should never be
+					  // negotiated
 	serverHello.setProtocolVersion(new byte[] { 31, 24 });
 	assertTrue(rule.applies(result)); // This should apply, since the
-					 // ServerVersion is not standart
+					  // ServerVersion is not standart
 	clientHello.setProtocolVersion(new byte[] { 22, 34 });
 	assertTrue(rule.applies(result)); // This should apply, since the
-					 // ServerVersion is not standart
+					  // ServerVersion is not standart
 	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	clientHello.setProtocolVersion(new byte[] { 4 });
 	assertTrue(rule.applies(result)); // This should apply, since the client
-					 // field size is too short
+					  // field size is too short
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	serverHello.setProtocolVersion(new byte[] { 4 });
 	assertTrue(rule.applies(result)); // This should apply, since the client
-					 // field size is too short
+					  // field size is too short
 	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	clientHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
 	assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
 	assertTrue(rule.applies(result)); // This should apply, since the client
-					 // field size is too short
+					  // field size is too short
 	serverHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
@@ -176,6 +176,7 @@ public class ProtocolVersionRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+
     private static final Logger LOG = Logger.getLogger(ProtocolVersionRuleTest.class.getName());
 
 }

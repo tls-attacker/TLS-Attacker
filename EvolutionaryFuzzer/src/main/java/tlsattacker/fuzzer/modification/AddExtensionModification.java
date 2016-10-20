@@ -11,7 +11,8 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import java.util.logging.Logger;
 
 /**
- * A modification which indicates that a new Extension was added to a Hello message
+ * A modification which indicates that a new Extension was added to a Hello
+ * message
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -23,7 +24,7 @@ public class AddExtensionModification extends Modification {
     private final ExtensionMessage message;
 
     /**
-     *
+     * 
      * @param message
      */
     public AddExtensionModification(ExtensionMessage message) {
@@ -32,12 +33,13 @@ public class AddExtensionModification extends Modification {
     }
 
     /**
-     *
+     * 
      * @return
      */
     public ExtensionMessage getMessage() {
 	return message;
     }
+
     private static final Logger LOG = Logger.getLogger(AddExtensionModification.class.getName());
 
 }
