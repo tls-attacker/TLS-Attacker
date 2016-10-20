@@ -173,7 +173,6 @@ public class Main {
 		break;
 	    default:
 		jc.usage();
-		return;
 	}
 
     }
