@@ -122,7 +122,7 @@ public class IsGoodRule extends Rule {
     @Override
     public String report() {
 	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
-		+ " Last Good " + (double) (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
+		+ " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
     }
 
     @Override

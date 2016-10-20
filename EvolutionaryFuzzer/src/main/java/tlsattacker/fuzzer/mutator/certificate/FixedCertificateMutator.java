@@ -144,8 +144,8 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    CertificateFactory certFactory;
 	    try {
 		certFactory = CertificateFactory.getInstance("X.509");
-		Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
-			.generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
+		Collection<? extends Certificate> certs = certFactory
+                        .generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
 		workingCerts.add(serverStructure);
 		LOG.log(Level.INFO, serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
 	    } catch (Exception ex) {

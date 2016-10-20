@@ -134,8 +134,8 @@ public class TLSExecutor extends Executor {
 		tlsContext.setKeyStore(ks);
 		tlsContext.setAlias(fc.getAlias());
 		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		Collection<? extends Certificate> certs = (Collection<? extends Certificate>) certFactory
-			.generateCertificates(new FileInputStream(testVector.getServerKeyCert().getCertificateFile()));
+		Collection<? extends Certificate> certs = certFactory
+                        .generateCertificates(new FileInputStream(testVector.getServerKeyCert().getCertificateFile()));
 
 		Certificate sunCert = (Certificate) certs.toArray()[0];
 		byte[] certBytes = sunCert.getEncoded();
