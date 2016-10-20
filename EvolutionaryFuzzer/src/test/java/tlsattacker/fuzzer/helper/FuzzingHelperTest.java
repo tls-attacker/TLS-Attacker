@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -132,5 +133,6 @@ public class FuzzingHelperTest {
 	int size = FuzzingHelper.getAllModifiableVariableFieldsRecursively(trace).size();
 	assertTrue("Failure: Trace should contain more than zero Holders", size > 0);
     }
+    private static final Logger LOG = Logger.getLogger(FuzzingHelperTest.class.getName());
 
 }

@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a message was duplicated in the WorkflowTrace
@@ -68,5 +69,6 @@ public class DuplicateMessageModification extends Modification {
     public ProtocolMessage getMessage() {
 	return message;
     }
+    private static final Logger LOG = Logger.getLogger(DuplicateMessageModification.class.getName());
 
 }

@@ -132,9 +132,9 @@ public class FixedCertificateMutator extends CertificateMutator {
 	LOG.log(Level.INFO, "Testing Client Certificates");
 	for (ClientCertificateStructure clientCert : clientCertList) {
 	    if (!clientCert.getJKSfile().exists()) {
-		LOG.log(Level.INFO, "Could not find:" + clientCert.getJKSfile().getAbsolutePath());
+		LOG.log(Level.INFO, "Could not find:{0}", clientCert.getJKSfile().getAbsolutePath());
 	    } else {
-		LOG.log(Level.INFO, "" + clientCert.getJKSfile().getAbsolutePath() + " - OK");
+		LOG.log(Level.INFO, "{0} - OK", clientCert.getJKSfile().getAbsolutePath());
 		workingCerts.add(clientCert);
 	    }
 	}
@@ -153,11 +153,11 @@ public class FixedCertificateMutator extends CertificateMutator {
 	LOG.log(Level.INFO, "Testing Server Certificates");
 	for (ServerCertificateStructure serverStructure : serverCertList) {
 	    if (!serverStructure.getCertificateFile().exists()) {
-		LOG.log(Level.INFO, "Could not find:" + serverStructure.getCertificateFile().getAbsolutePath());
+		LOG.log(Level.INFO, "Could not find:{0}", serverStructure.getCertificateFile().getAbsolutePath());
 		continue;
 	    }
 	    if (!serverStructure.getKeyFile().exists()) {
-		LOG.log(Level.INFO, "Could not find:" + serverStructure.getKeyFile().getAbsolutePath());
+		LOG.log(Level.INFO, "Could not find:{0}", serverStructure.getKeyFile().getAbsolutePath());
 		continue;
 	    }
 	    TLSServer server = null;
@@ -166,18 +166,15 @@ public class FixedCertificateMutator extends CertificateMutator {
 		try {
 		    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
 		    if (!server.serverIsRunning()) {
-			LOG.log(Level.INFO, "Could not start Server with:"
-				+ serverStructure.getCertificateFile().getAbsolutePath());
+			LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
 			continue;
 		    }
 		} catch (Exception E) {
-		    LOG.log(Level.INFO, "Could not start Server with:"
-			    + serverStructure.getCertificateFile().getAbsolutePath());
+		    LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
 		    continue;
 		}
 	    } catch (Exception E) {
-		LOG.log(Level.INFO, "Could not start Server with:"
-			+ serverStructure.getCertificateFile().getAbsolutePath());
+		LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
 		continue;
 	    } finally {
 		if (server != null) {
@@ -190,10 +187,9 @@ public class FixedCertificateMutator extends CertificateMutator {
 		Collection<? extends Certificate> certs = certFactory
                         .generateCertificates(new FileInputStream(serverStructure.getCertificateFile()));
 		workingCerts.add(serverStructure);
-		LOG.log(Level.INFO, serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
+		LOG.log(Level.INFO, "{0} - OK", serverStructure.getCertificateFile().getAbsolutePath());
 	    } catch (Exception ex) {
-		LOG.info("Certificate not supported by TLS-Attacker:"
-			+ serverStructure.getCertificateFile().getAbsolutePath());
+		LOG.log(Level.INFO, "Certificate not supported by TLS-Attacker:{0}", serverStructure.getCertificateFile().getAbsolutePath());
 		continue;
 	    }
 

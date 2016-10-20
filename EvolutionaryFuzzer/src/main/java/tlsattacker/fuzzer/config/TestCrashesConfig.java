@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import java.util.logging.Logger;
 
 /**
  * A configuration class for the "test-crashes" command
@@ -61,5 +62,6 @@ public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
     public void setExecuteNumber(int executeNumber) {
 	this.executeNumber = executeNumber;
     }
+    private static final Logger LOG = Logger.getLogger(TestCrashesConfig.class.getName());
 
 }

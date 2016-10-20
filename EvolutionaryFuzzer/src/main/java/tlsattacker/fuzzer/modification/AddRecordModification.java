@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a new record was added to the WorkflowTrace
@@ -37,5 +38,6 @@ public class AddRecordModification extends Modification {
     public ProtocolMessage getMessage() {
 	return message;
     }
+    private static final Logger LOG = Logger.getLogger(AddRecordModification.class.getName());
 
 }

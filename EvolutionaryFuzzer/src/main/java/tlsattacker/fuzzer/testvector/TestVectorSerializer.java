@@ -145,7 +145,7 @@ public class TestVectorSerializer {
                     vector.getTrace().setName(file.getAbsolutePath());
                     list.add(vector);
                 } catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
-                    LOG.log(Level.INFO, "Could not load file:" + file.getAbsolutePath());
+                    LOG.log(Level.INFO, "Could not load file:{0}", file.getAbsolutePath());
                     LOG.log(Level.FINE, "Reason:", ex);
                     ex.printStackTrace();
                 }

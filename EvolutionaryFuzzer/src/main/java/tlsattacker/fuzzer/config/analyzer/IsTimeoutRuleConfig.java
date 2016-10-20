@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.config.analyzer;
 
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -26,4 +27,5 @@ public class IsTimeoutRuleConfig extends RuleConfig {
     public IsTimeoutRuleConfig() {
 	super("timeout/");
     }
+    private static final Logger LOG = Logger.getLogger(IsTimeoutRuleConfig.class.getName());
 }

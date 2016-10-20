@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.mutator;
 
+import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
@@ -44,4 +45,5 @@ public class MutatorFactory {
     private MutatorFactory()
     {
     }
+    private static final Logger LOG = Logger.getLogger(MutatorFactory.class.getName());
 }

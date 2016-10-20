@@ -113,7 +113,7 @@ public abstract class Rule {
     protected void writeConfig(RuleConfig c) {
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
-	    LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:" + configFileName);
+	    LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:{0}", configFileName);
 	} else {
 	    JAXB.marshal(c, f);
 	}

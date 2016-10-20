@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -184,5 +185,6 @@ public class IsGoodRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+    private static final Logger LOG = Logger.getLogger(IsGoodRuleTest.class.getName());
 
 }

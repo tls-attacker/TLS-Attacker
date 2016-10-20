@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.config;
 
+import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -74,4 +75,5 @@ public class SimpleMutatorConfigTest {
 	}
 	assertNotNull("Failure: setRemoveMessagePercentage can be risen above 100%", E);
     }
+    private static final Logger LOG = Logger.getLogger(SimpleMutatorConfigTest.class.getName());
 }

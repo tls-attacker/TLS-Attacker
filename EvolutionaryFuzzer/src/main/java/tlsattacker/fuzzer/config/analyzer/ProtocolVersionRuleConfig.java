@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.config.analyzer;
 
 import tlsattacker.fuzzer.config.analyzer.RuleConfig;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -218,4 +219,5 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
 	    throw new UnsupportedOperationException();
 	}
     }
+    private static final Logger LOG = Logger.getLogger(ProtocolVersionRuleConfig.class.getName());
 }

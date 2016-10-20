@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.agents;
 
+import java.util.logging.Logger;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
@@ -41,4 +42,5 @@ public class AgentFactory {
     private AgentFactory()
     {
     }
+    private static final Logger LOG = Logger.getLogger(AgentFactory.class.getName());
 }

@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a new Extension was added to a Hello message
@@ -37,5 +38,6 @@ public class AddExtensionModification extends Modification {
     public ExtensionMessage getMessage() {
 	return message;
     }
+    private static final Logger LOG = Logger.getLogger(AddExtensionModification.class.getName());
 
 }

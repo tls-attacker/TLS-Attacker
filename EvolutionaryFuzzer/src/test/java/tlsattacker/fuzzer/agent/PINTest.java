@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.agent;
 
 import java.io.File;
+import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
@@ -50,4 +51,5 @@ public class PINTest {
 	assertTrue("Failure: Could not find PIN script", f.exists());
 
     }
+    private static final Logger LOG = Logger.getLogger(PINTest.class.getName());
 }

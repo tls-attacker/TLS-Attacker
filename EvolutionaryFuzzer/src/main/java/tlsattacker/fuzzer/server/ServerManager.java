@@ -66,7 +66,7 @@ public class ServerManager {
     public void init(FuzzerGeneralConfig config) {
 	File file = new File(config.getServerCommandFromFile());
 	if (!file.exists()) {
-	    LOG.log(Level.INFO, "Could not find Server Configuration Files:" + file.getAbsolutePath());
+	    LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
 	    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
 	    System.exit(-1);
 
@@ -74,8 +74,7 @@ public class ServerManager {
 	    if (file.isDirectory()) {
 		File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
 		if (filesInDic.length == 0) {
-		    LOG.log(Level.INFO,
-			    "No Server Configurations Files in the Server Config Folder:" + file.getAbsolutePath());
+		    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}", file.getAbsolutePath());
 		    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
 		    System.exit(-1);
 		} else {
@@ -92,7 +91,7 @@ public class ServerManager {
 		    }
 		}
 	    } else {
-		LOG.log(Level.INFO, "Could not find Server Configuration Files:" + file.getAbsolutePath());
+		LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
 		LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
 		System.exit(-1);
 	    }

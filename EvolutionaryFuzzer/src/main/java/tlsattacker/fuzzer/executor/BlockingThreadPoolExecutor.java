@@ -12,6 +12,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * A thread pool which blocks once the the queque is full
@@ -68,4 +69,6 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     protected void afterExecute(Runnable r, Throwable t) {
 	semaphore.release();
     }
+    
+    private static final Logger LOG = Logger.getLogger(BlockingThreadPoolExecutor.class.getName());
 }

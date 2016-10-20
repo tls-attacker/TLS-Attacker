@@ -166,6 +166,7 @@ public class PinAgentTest {
 	assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getEdgeMap().size() == 6);
 
     }
+    private static final Logger LOG = Logger.getLogger(PinAgentTest.class.getName());
 
 
 }

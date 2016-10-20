@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.modification;
 
+import java.util.logging.Logger;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 
 /**
@@ -37,5 +38,6 @@ public class ChangeClientCertificateModification extends Modification {
     public ClientCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }
+    private static final Logger LOG = Logger.getLogger(ChangeClientCertificateModification.class.getName());
 
 }

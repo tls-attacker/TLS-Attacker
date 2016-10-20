@@ -13,6 +13,7 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 import tlsattacker.fuzzer.mutator.SimpleMutator;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -48,5 +49,6 @@ public class ExecutorThreadPoolTest {
 	FileHelper.deleteFolder(new File("unit_test_output"));
 	FileHelper.deleteFolder(new File("unit_test_config"));
     }
+    private static final Logger LOG = Logger.getLogger(ExecutorThreadPoolTest.class.getName());
 
 }

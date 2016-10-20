@@ -125,14 +125,13 @@ public class TimeoutCalibrator {
 	FixedCertificateMutator mutator = new FixedCertificateMutator();
 
 	for (ServerCertificateStructure serverCert : mutator.getServerPairList()) {
-	    LOG.log(Level.INFO, "Grabbing supported Ciphersuites for "
-		    + serverCert.getCertificateFile().getAbsolutePath());
+	    LOG.log(Level.INFO, "Grabbing supported Ciphersuites for {0}", serverCert.getCertificateFile().getAbsolutePath());
 	    List<CipherSuite> supportedList = getWorkingCiphersuites(serverCert);
 	    LOG.log(Level.INFO, "Finished grabbing");
 
 	    for (CipherSuite suite : supportedList) {
 		int localSmall = getSmallestTimeoutPossible(serverCert, suite);
-		LOG.log(Level.INFO, "Lowest Timeout for " + suite.name() + " is " + localSmall);
+		LOG.log(Level.INFO, "Lowest Timeout for {0} is {1}", new Object[]{suite.name(), localSmall});
 		if (localSmall > highestTimeout) {
 		    LOG.log(Level.INFO, "Found a new highest timeout!");
 		    highestTimeout = localSmall;

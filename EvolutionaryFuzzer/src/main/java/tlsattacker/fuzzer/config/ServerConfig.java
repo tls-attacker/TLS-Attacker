@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
+import java.util.logging.Logger;
 
 /**
  * A configuration class which configures the options for the "new-server" command.
@@ -142,5 +143,6 @@ public class ServerConfig {
     public void setOutput(String output) {
 	this.output = output;
     }
+    private static final Logger LOG = Logger.getLogger(ServerConfig.class.getName());
 
 }

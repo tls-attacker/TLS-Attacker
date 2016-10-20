@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import java.util.logging.Logger;
 
 /**
  * A configuration class for the "trace-types" command
@@ -39,5 +40,6 @@ public class TraceTypesConfig {
     public void setTraceTypesFolder(String traceTypesFolder) {
 	this.traceTypesFolder = traceTypesFolder;
     }
+    private static final Logger LOG = Logger.getLogger(TraceTypesConfig.class.getName());
 
 }

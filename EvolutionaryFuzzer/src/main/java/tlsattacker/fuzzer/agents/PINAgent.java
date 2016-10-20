@@ -177,7 +177,7 @@ public class PINAgent extends Agent {
 			    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
 				.contains("SIGALRM"))) {
 		crash = true;
-		LOG.log(Level.INFO, "Found a crash:" + line);
+		LOG.log(Level.INFO, "Found a crash:{0}", line);
 		// Skip 2 lines
 		line = br.readLine();
 		line = br.readLine();

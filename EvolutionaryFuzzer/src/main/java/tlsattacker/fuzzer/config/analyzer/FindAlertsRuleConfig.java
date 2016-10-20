@@ -11,6 +11,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -109,4 +110,5 @@ public class FindAlertsRuleConfig extends RuleConfig {
     public void setSaveOneOfEach(boolean saveOneOfEach) {
 	this.saveOneOfEach = saveOneOfEach;
     }
+    private static final Logger LOG = Logger.getLogger(FindAlertsRuleConfig.class.getName());
 }

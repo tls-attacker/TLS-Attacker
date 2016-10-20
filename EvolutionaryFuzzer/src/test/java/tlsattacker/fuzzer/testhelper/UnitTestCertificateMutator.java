@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * This mutator does not rely on a certificate Config File to generate
@@ -80,5 +81,6 @@ public class UnitTestCertificateMutator extends CertificateMutator {
     public boolean isSupported(ServerCertificateStructure structure) {
         return serverPairList.contains(structure);
     }
+    private static final Logger LOG = Logger.getLogger(UnitTestCertificateMutator.class.getName());
 
 }

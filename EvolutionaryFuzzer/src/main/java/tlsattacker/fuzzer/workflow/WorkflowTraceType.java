@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.workflow;
 
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * A higher level representation of the a TLS Handshake which consists of multiple MessageFlows
@@ -93,5 +94,6 @@ public class WorkflowTraceType {
 	}
 	return sb.toString();
     }
+    private static final Logger LOG = Logger.getLogger(WorkflowTraceType.class.getName());
 
 }

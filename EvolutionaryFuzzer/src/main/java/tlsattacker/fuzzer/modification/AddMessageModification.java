@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a new Message was added to a SendAction
@@ -45,5 +46,6 @@ public class AddMessageModification extends Modification {
     public ProtocolMessage getMessage() {
 	return message;
     }
+    private static final Logger LOG = Logger.getLogger(AddMessageModification.class.getName());
 
 }

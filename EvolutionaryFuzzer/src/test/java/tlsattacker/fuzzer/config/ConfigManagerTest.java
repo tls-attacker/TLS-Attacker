@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.config;
 
+import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
 import org.junit.BeforeClass;
@@ -53,5 +54,6 @@ public class ConfigManagerTest {
     public void testGetConfig() {
 	assertNotNull("Failure: Could get a ConfigManager Instance", ConfigManager.getInstance().getConfig());
     }
+    private static final Logger LOG = Logger.getLogger(ConfigManagerTest.class.getName());
 
 }

@@ -8,6 +8,7 @@
 package tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameters;
+import java.util.logging.Logger;
 
 /**
  * A config class which allows the configuration of the execute-faulty command.
@@ -16,5 +17,6 @@ import com.beust.jcommander.Parameters;
  */
 @Parameters(commandDescription = "Executes all TestVectors which caused an Exception while Fuzzing. This is useful for Debugging purposes.")
 public class ExecuteFaultyConfig extends EvolutionaryFuzzerConfig {
+    private static final Logger LOG = Logger.getLogger(ExecuteFaultyConfig.class.getName());
 
 }

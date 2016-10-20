@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.certificate;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * A wrapper class which logically binds the JKSFile with the assosiated password and alias.
@@ -128,5 +129,6 @@ public class ClientCertificateStructure implements Serializable {
 	}
 	return Objects.equals(this.JKSfile, other.JKSfile);
     }
+    private static final Logger LOG = Logger.getLogger(ClientCertificateStructure.class.getName());
 
 }

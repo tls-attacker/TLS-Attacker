@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
@@ -155,4 +156,5 @@ public class WorkflowTraceTypeManager {
     private WorkflowTraceTypeManager()
     {
     }
+    private static final Logger LOG = Logger.getLogger(WorkflowTraceTypeManager.class.getName());
 }

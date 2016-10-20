@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.controller;
 
+import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -35,5 +36,6 @@ public class CommandLineController {
      */
     public CommandLineController() {
     }
+    private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
 
 }

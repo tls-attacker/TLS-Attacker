@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.analyzer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;
 
@@ -95,5 +96,6 @@ public class RuleAnalyzer extends Analyzer {
 	}
 	return builder.toString();
     }
+    private static final Logger LOG = Logger.getLogger(RuleAnalyzer.class.getName());
 
 }

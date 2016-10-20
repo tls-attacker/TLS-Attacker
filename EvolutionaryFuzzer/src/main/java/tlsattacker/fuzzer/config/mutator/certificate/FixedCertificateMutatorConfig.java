@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
@@ -135,5 +136,6 @@ public class FixedCertificateMutatorConfig implements Serializable {
     public void setServerCertificates(List<ServerCertificateStructure> serverCertificates) {
 	this.serverCertificates = serverCertificates;
     }
+    private static final Logger LOG = Logger.getLogger(FixedCertificateMutatorConfig.class.getName());
 
 }

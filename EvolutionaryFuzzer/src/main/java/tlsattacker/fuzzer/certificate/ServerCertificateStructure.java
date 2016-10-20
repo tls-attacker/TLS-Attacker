@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.certificate;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * A wrapper which logically binds a server private key file and a server certificate file
@@ -98,5 +99,6 @@ public class ServerCertificateStructure implements Serializable {
 	}
 	return Objects.equals(this.certificateFile, other.certificateFile);
     }
+    private static final Logger LOG = Logger.getLogger(ServerCertificateStructure.class.getName());
 
 }

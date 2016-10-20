@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.config.analyzer;
 
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -43,5 +44,6 @@ public class AnalyzeTimeRuleConfig extends RuleConfig {
     public void setOutputFile(String outputFile) {
 	this.outputFile = outputFile;
     }
+    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRuleConfig.class.getName());
 
 }

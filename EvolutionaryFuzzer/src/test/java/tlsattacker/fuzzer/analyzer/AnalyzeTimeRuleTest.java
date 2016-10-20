@@ -14,6 +14,7 @@ import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -152,5 +153,6 @@ public class AnalyzeTimeRuleTest {
 	rule.onApply(result);
 	assertTrue(rule.getFastestTime() == 1000);
     }
+    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRuleTest.class.getName());
 
 }

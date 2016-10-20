@@ -1,6 +1,7 @@
 package tlsattacker.fuzzer.config.mutator;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -295,4 +296,5 @@ public class SimpleMutatorConfig implements Serializable {
 	    throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + addMessagePercentage);
 	}
     }
+    private static final Logger LOG = Logger.getLogger(SimpleMutatorConfig.class.getName());
 }

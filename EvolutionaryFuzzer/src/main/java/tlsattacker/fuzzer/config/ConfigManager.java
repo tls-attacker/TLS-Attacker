@@ -7,6 +7,8 @@
  */
 package tlsattacker.fuzzer.config;
 
+import java.util.logging.Logger;
+
 /**
  * A singleton which allows all classes access to the configuration file.
  * 
@@ -68,4 +70,5 @@ public class ConfigManager {
         {
         }
     }
+    private static final Logger LOG = Logger.getLogger(ConfigManager.class.getName());
 }

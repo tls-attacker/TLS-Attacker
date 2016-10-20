@@ -108,13 +108,13 @@ public class Main {
 		    LOG.log(Level.INFO, "Fininshed reading.");
 		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
 			    ConnectionEnd.CLIENT);
-		    LOG.log(Level.INFO, "Found " + set.size() + " different TraceTypes");
+		    LOG.log(Level.INFO, "Found {0} different TraceTypes", set.size());
                     DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
 		    LOG.log(Level.INFO, "Printing out graph in .DOT format.");
                     String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
                     LOG.log(Level.INFO,dotFormat);
 		} else {
-		    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:" + f.getAbsolutePath());
+		    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:{0}", f.getAbsolutePath());
 		}
 		break;
 	    case "execute-faulty":
@@ -124,7 +124,7 @@ public class Main {
 		f = new File(faultyConfig.getOutputFaultyFolder());
 		List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 		for (TestVector vector : vectors) {
-		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
+		    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
 		    vector.getTrace().reset();
                     vector.getTrace().makeGeneric();
                     TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(), AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
@@ -138,7 +138,7 @@ public class Main {
 		{
 		    try {
 			ServerSerializer.write(server, new File(serverConfig.getOutput()));
-			LOG.log(Level.INFO, "Wrote Server to:" + new File(serverConfig.getOutput()).getAbsolutePath());
+			LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
 		    } catch (Exception ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Could not write Server to file!", ex);
 		    }
@@ -150,7 +150,7 @@ public class Main {
 		calibrator.setLimit(calibrationConfig.getTimeoutLimit());
 		ServerManager.getInstance().init(calibrationConfig);
 		int timeout = calibrator.calibrateTimeout();
-		LOG.log(Level.INFO, "Recommended Timeout for this Server is:" + timeout);
+		LOG.log(Level.INFO, "Recommended Timeout for this Server is:{0}", timeout);
 		break;
 	    case "test-certificates":
 		ServerManager.getInstance().init(calibrationConfig);
@@ -164,7 +164,7 @@ public class Main {
 		f = new File(testCrashedConfig.getCrashFolder());
 		vectors = TestVectorSerializer.readFolder(f);
 		for (TestVector vector : vectors) {
-		    LOG.log(Level.INFO, "Trace:" + vector.getTrace().getName());
+		    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
 		    for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
                         vector.getTrace().reset();
 			vector.getTrace().makeGeneric();

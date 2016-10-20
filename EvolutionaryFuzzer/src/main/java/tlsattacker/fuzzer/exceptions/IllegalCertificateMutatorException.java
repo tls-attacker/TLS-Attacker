@@ -7,6 +7,8 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
+import java.util.logging.Logger;
+
 /**
  * Exception thrown when an undefined CertificateMutator is configured
  * 
@@ -21,5 +23,6 @@ public class IllegalCertificateMutatorException extends Exception {
     public IllegalCertificateMutatorException(String string) {
 	super(string);
     }
+    private static final Logger LOG = Logger.getLogger(IllegalCertificateMutatorException.class.getName());
 
 }

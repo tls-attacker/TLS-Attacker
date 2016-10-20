@@ -159,7 +159,7 @@ public class CommandLineController extends Controller {
 			if (split.length == 2) {
 			    file = split[1];
 			}
-			LOG.log(Level.INFO, "Dumping Edge Information to " + file);
+			LOG.log(Level.INFO, "Dumping Edge Information to {0}", file);
 			stopFuzzer();
 			do {
 			    try {
@@ -193,7 +193,7 @@ public class CommandLineController extends Controller {
 			if (split.length == 2) {
 			    file = split[1];
 			}
-			LOG.log(Level.INFO, "Dumping Vertex Information to " + file);
+			LOG.log(Level.INFO, "Dumping Vertex Information to {0}", file);
 			stopFuzzer();
 			do {
 			    try {
@@ -228,7 +228,7 @@ public class CommandLineController extends Controller {
 			    LOG.log(Level.INFO, "You need to specify a File to load");
 			} else {
 			    file = split[1];
-			    LOG.log(Level.INFO, "Loading from:" + file);
+			    LOG.log(Level.INFO, "Loading from:{0}", file);
 			    ObjectInputStream objectinputstream = null;
 			    try {
 				FileInputStream streamIn = new FileInputStream(file);
@@ -256,7 +256,7 @@ public class CommandLineController extends Controller {
 			    LOG.log(Level.INFO, "You need to specify a File to Save to");
 			} else {
 			    file = split[1];
-			    LOG.log(Level.INFO, "Saving to:" + file);
+			    LOG.log(Level.INFO, "Saving to:{0}", file);
 			    FileOutputStream fout = null;
 			    ObjectOutputStream oos = null;
 			    try {

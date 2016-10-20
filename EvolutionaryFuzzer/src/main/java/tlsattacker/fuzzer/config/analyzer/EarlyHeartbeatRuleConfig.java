@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.config.analyzer;
 
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,5 +24,6 @@ public class EarlyHeartbeatRuleConfig extends RuleConfig {
     public EarlyHeartbeatRuleConfig() {
 	super("early_heartbeat/");
     }
+    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRuleConfig.class.getName());
 
 }

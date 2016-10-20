@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * A super class for configuration classes which allows for the configuration of different commands.
@@ -146,4 +147,5 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getServerCommandFromFile() {
 	return configFolder + "server/";
     }
+    private static final Logger LOG = Logger.getLogger(FuzzerGeneralConfig.class.getName());
 }

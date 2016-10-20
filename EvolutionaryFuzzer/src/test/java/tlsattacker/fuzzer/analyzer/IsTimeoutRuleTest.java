@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,5 +112,6 @@ public class IsTimeoutRuleTest {
     public void testGetConfig() {
 	assertNotNull(rule.getConfig());
     }
+    private static final Logger LOG = Logger.getLogger(IsTimeoutRuleTest.class.getName());
 
 }
