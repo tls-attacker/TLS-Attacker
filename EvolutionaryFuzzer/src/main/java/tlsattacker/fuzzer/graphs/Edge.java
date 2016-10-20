@@ -74,10 +74,7 @@ public class Edge implements Serializable {
 	if (this.a != other.a) {
 	    return false;
 	}
-	if (this.b != other.b) {
-	    return false;
-	}
-	return true;
+	return this.b == other.b;
     }
 
 }

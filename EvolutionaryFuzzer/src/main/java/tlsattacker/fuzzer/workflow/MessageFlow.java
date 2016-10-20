@@ -65,10 +65,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
 	if (this.issuer != other.issuer) {
 	    return false;
 	}
-	if (uniquer != other.getUniquer()) {
-	    return false;
-	}
-	return true;
+	return uniquer == other.getUniquer();
     }
 
     @Override

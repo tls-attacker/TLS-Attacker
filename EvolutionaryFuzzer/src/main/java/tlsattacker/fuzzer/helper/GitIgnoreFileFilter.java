@@ -19,10 +19,7 @@ public class GitIgnoreFileFilter implements FilenameFilter {
 
     @Override
     public boolean accept(File dir, String name) {
-	if (name.equals(".gitignore")) {
-	    return false;
-	}
-	return true;
+	return !name.equals(".gitignore");
     }
 
 }

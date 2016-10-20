@@ -55,10 +55,7 @@ public class AnalyzeGoodModificationRule extends Rule {
 
     @Override
     public boolean applies(Result result) {
-	if (result.isGoodTrace() == Boolean.TRUE) {
-	    return true;
-	}
-	return false;
+	return result.isGoodTrace() == Boolean.TRUE;
     }
 
     @Override

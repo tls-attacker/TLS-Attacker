@@ -64,10 +64,7 @@ public class ServerCertificateStructure implements Serializable {
 	if (!Objects.equals(this.keyFile, other.keyFile)) {
 	    return false;
 	}
-	if (!Objects.equals(this.certificateFile, other.certificateFile)) {
-	    return false;
-	}
-	return true;
+	return Objects.equals(this.certificateFile, other.certificateFile);
     }
 
 }

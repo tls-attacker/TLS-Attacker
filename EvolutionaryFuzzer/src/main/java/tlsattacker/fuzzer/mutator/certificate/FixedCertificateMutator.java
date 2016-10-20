@@ -192,11 +192,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
-	if (serverCertList.contains(structure)) {
-	    return true;
-	} else {
-	    return false;
-	}
+        return serverCertList.contains(structure);
     }
 
 }

@@ -81,10 +81,7 @@ public class ClientCertificateStructure implements Serializable {
 	if (!Objects.equals(this.alias, other.alias)) {
 	    return false;
 	}
-	if (!Objects.equals(this.JKSfile, other.JKSfile)) {
-	    return false;
-	}
-	return true;
+	return Objects.equals(this.JKSfile, other.JKSfile);
     }
 
 }

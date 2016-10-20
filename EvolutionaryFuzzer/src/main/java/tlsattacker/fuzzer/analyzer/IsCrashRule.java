@@ -47,11 +47,7 @@ public class IsCrashRule extends Rule {
 
     @Override
     public boolean applies(Result result) {
-	if (result.hasCrashed()) {
-	    return true;
-	} else {
-	    return false;
-	}
+        return result.hasCrashed();
     }
 
     @Override

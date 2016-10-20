@@ -47,11 +47,7 @@ public class IsTimeoutRule extends Rule {
 
     @Override
     public boolean applies(Result result) {
-	if (result.didTimeout()) {
-	    return true;
-	} else {
-	    return false;
-	}
+        return result.didTimeout();
     }
 
     @Override

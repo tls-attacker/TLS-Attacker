@@ -66,11 +66,7 @@ public class UnitTestCertificateMutator extends CertificateMutator {
 
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
-	if (serverPairList.contains(structure)) {
-	    return true;
-	} else {
-	    return false;
-	}
+        return serverPairList.contains(structure);
     }
 
 }
