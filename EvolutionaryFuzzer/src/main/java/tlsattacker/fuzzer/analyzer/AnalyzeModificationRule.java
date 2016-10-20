@@ -108,7 +108,7 @@ public class AnalyzeModificationRule extends Rule {
 	if (executedTraces > 0) {
 	    StringBuilder b = new StringBuilder("Modifications which the Mutator applied:\n");
 	    for (Entry<ModificationType, MutableInt> e : typeMap.entrySet()) {
-		b.append(e.getKey().name() + " Count:" + e.getValue().getValue() + "\n");
+		b.append(e.getKey().name()).append(" Count:").append(e.getValue().getValue()).append("\n");
 	    }
 	    return b.toString();
 	} else {

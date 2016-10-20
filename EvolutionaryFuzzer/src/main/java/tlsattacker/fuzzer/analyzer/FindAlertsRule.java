@@ -126,7 +126,7 @@ public class FindAlertsRule extends Rule {
 	    for (ProtocolMessage message : messages) {
 		AlertMessage pm = (AlertMessage) message;
 		if (!alertMap[pm.getDescription().getOriginalValue()]) {
-		    containsAlerts.append("," + pm.getDescription().getOriginalValue());
+		    containsAlerts.append(",").append(pm.getDescription().getOriginalValue());
 		}
 		alertMap[pm.getDescription().getOriginalValue().byteValue()] = true;
 	    }

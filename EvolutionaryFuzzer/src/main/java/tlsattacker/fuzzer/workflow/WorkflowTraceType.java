@@ -90,7 +90,7 @@ public class WorkflowTraceType {
     public String toString() {
 	StringBuilder sb = new StringBuilder("WorkflowTraceType:\n");
 	for (MessageFlow flow : flows) {
-	    sb.append(flow.toString() + "\n");
+	    sb.append(flow.toString()).append("\n");
 	}
 	return sb.toString();
     }
