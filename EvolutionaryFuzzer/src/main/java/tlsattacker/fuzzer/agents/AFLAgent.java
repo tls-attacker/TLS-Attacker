@@ -40,6 +40,54 @@ public class AFLAgent extends Agent {
     private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
     public static final String optionName = "AFL";
+
+    private static BranchTrace getBranchTrace(File f)
+    {
+        BufferedReader br = null;
+        Set<Long> verticesSet = new HashSet<>();
+        Map<Edge, Edge> edgeMap = new HashMap<>();
+        try {
+            br = new BufferedReader(new FileReader(f));
+            long previousNumber = Long.MIN_VALUE;
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                // Check if the Line can be parsed
+                long parsedNumber;
+                try {
+                    parsedNumber = Long.parseLong(line, 16);
+                    verticesSet.add(parsedNumber);
+                } catch (NumberFormatException e) {
+                    if (line.contains("CRASH") || line.contains("TIMEOUT")) {
+                        continue;
+                    }
+                    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
+                }
+                if (previousNumber != Long.MIN_VALUE) {
+                    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
+                    if (e == null) {
+                        e = new Edge(previousNumber, parsedNumber);
+                        edgeMap.put(e, e);
+                    }
+                    e.addCounter(1l);
+                    
+                }
+                previousNumber = parsedNumber;
+            }
+            return new BranchTrace(verticesSet, edgeMap);
+        } catch (IOException ex) {
+            Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
+                    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return new BranchTrace();
+    }
     // Is a fuzzing Progress Running?
     protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
@@ -157,51 +205,5 @@ public class AFLAgent extends Agent {
 	}
     }
 
-    private static BranchTrace getBranchTrace(File f) {
-	BufferedReader br = null;
-	Set<Long> verticesSet = new HashSet<>();
-	Map<Edge, Edge> edgeMap = new HashMap<>();
-	try {
-	    br = new BufferedReader(new FileReader(f));
-	    long previousNumber = Long.MIN_VALUE;
-	    String line = null;
-	    while ((line = br.readLine()) != null) {
-		// Check if the Line can be parsed
-		long parsedNumber;
-		try {
-		    parsedNumber = Long.parseLong(line, 16);
-		    verticesSet.add(parsedNumber);
-		} catch (NumberFormatException e) {
-		    if (line.contains("CRASH") || line.contains("TIMEOUT")) {
-			continue;
-		    }
-		    throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
-		}
-		if (previousNumber != Long.MIN_VALUE) {
-		    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
-		    if (e == null) {
-			e = new Edge(previousNumber, parsedNumber);
-			edgeMap.put(e, e);
-		    }
-		    e.addCounter(1l);
-
-		}
-		previousNumber = parsedNumber;
-	    }
-	    return new BranchTrace(verticesSet, edgeMap);
-	} catch (IOException ex) {
-	    Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
-		    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
-	} finally {
-	    try {
-		if (br != null) {
-		    br.close();
-		}
-	    } catch (IOException ex) {
-		Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
-	return new BranchTrace();
-    }
 
 }

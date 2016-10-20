@@ -28,16 +28,16 @@ public class ProtocolVersionRuleConfig extends RuleConfig {
     private boolean allowDTLS12 = true;
     private boolean logOnWrongFieldSizes = true;
 
+    public ProtocolVersionRuleConfig() {
+        super("faulty_version/");
+    }
+
     public boolean isLogOnWrongFieldSizes() {
-	return logOnWrongFieldSizes;
+        return logOnWrongFieldSizes;
     }
 
     public void setLogOnWrongFieldSizes(boolean logOnWrongFieldSizes) {
-	this.logOnWrongFieldSizes = logOnWrongFieldSizes;
-    }
-
-    public ProtocolVersionRuleConfig() {
-	super("faulty_version/");
+        this.logOnWrongFieldSizes = logOnWrongFieldSizes;
     }
 
     public boolean isAllowSSL2() {

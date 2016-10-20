@@ -33,6 +33,7 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeGoodModificationRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 
     private long executedTraces = 0;
     private HashMap<ModificationType, MutableInt> typeMap;
@@ -104,6 +105,5 @@ public class AnalyzeGoodModificationRule extends Rule {
 	return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 
 }

@@ -34,6 +34,7 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FindAlertsRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(FindAlertsRule.class.getName());
 
     private int found = 0;
     private boolean[] alertMap = new boolean[Byte.MAX_VALUE];
@@ -154,6 +155,5 @@ public class FindAlertsRule extends Rule {
 	return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(FindAlertsRule.class.getName());
 
 }

@@ -28,12 +28,13 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeTimeRule extends Rule {
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
+    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());
     private PrintWriter outWriter;
     private double executedTimeTotal;
     private int numberExecutedTraces = 0;
     private double slowestTime = Double.MIN_VALUE;
     private double fastestTime = Double.MAX_VALUE;
-    private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
     private AnalyzeTimeRuleConfig config;
 
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
@@ -117,6 +118,5 @@ public class AnalyzeTimeRule extends Rule {
 	return fastestTime;
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());
 
 }

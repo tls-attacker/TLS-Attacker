@@ -36,13 +36,14 @@ import tlsattacker.fuzzer.server.TLSServer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FixedCertificateMutator extends CertificateMutator {
+    public static final String optionName = "fixed";
+    private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
     private FixedCertificateMutatorConfig config;
     private List<ClientCertificateStructure> clientCertList;
     private List<ServerCertificateStructure> serverCertList;
     private Random r;
     private final String configFileName = "fixed_cert.config";
 
-    public static final String optionName = "fixed";
     
     public FixedCertificateMutator() {
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
@@ -197,5 +198,4 @@ public class FixedCertificateMutator extends CertificateMutator {
 	}
     }
 
-    private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
 }

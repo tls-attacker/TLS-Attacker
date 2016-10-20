@@ -28,6 +28,7 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsTimeoutRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());
     private int found = 0;
     private IsTimeoutRuleConfig config;
 
@@ -86,6 +87,5 @@ public class IsTimeoutRule extends Rule {
 	return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());
 
 }

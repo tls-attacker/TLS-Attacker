@@ -35,6 +35,7 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProtocolVersionRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(ProtocolVersionRule.class.getName());
 
     private int found = 0;
     private final ProtocolVersion highestTLSSupported;
@@ -165,6 +166,5 @@ public class ProtocolVersionRule extends Rule {
 	return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(ProtocolVersionRule.class.getName());
 
 }

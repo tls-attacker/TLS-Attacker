@@ -33,6 +33,7 @@ import javax.xml.bind.JAXBException;
  * @author ic0ns
  */
 public class EarlyHeartbeatRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
     private EarlyHeartbeatRuleConfig config;
     private int found = 0;
 
@@ -107,6 +108,5 @@ public class EarlyHeartbeatRule extends Rule {
 	return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
     }
 
-    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
 
 }

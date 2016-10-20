@@ -27,9 +27,6 @@ public class ResultContainer {
 
     private EvolutionaryFuzzerConfig evolutionaryFuzzerConfig;
 
-    public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
-	this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
-    }
 
     private RuleAnalyzer analyzer;
 
@@ -39,20 +36,28 @@ public class ResultContainer {
 
     }
 
+    public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
+        this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
+    }
+
+
     public RuleAnalyzer getAnalyzer() {
-	return analyzer;
+        return analyzer;
+    }
+
+    public void commit(Result r)
+    {
+        analyzer.analyze(r);
     }
 
     // Singleton
-    private static class ResultContainerHolder {
+    private static class ResultContainerHolder
+    {
+        
+        private static final ResultContainer INSTANCE = new ResultContainer();
 
-	private static final ResultContainer INSTANCE = new ResultContainer();
-
-	private ResultContainerHolder() {
-	}
-    }
-
-    public void commit(Result r) {
-	analyzer.analyze(r);
+        private ResultContainerHolder()
+        {
+        }
     }
 }

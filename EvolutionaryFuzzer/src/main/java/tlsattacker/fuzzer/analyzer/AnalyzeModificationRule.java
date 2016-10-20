@@ -33,6 +33,7 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeModificationRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(AnalyzeModificationRule.class.getName());
 
     private long executedTraces = 0;
     private HashMap<ModificationType, MutableInt> typeMap;
@@ -101,6 +102,5 @@ public class AnalyzeModificationRule extends Rule {
 	return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzeModificationRule.class.getName());
 
 }

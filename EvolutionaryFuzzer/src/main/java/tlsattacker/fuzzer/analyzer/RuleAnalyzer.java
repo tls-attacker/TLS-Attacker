@@ -17,10 +17,10 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {
+    public static final String optionName = "rule";
     private List<Rule> ruleList;
     private EvolutionaryFuzzerConfig config;
 
-    public static final String optionName = "rule";
     
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;

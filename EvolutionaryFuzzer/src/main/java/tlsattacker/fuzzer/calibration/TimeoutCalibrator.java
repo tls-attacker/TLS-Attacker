@@ -49,6 +49,8 @@ import tlsattacker.fuzzer.config.ConfigManager;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TimeoutCalibrator {
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
+            .getName());
     // We try to find the lowest Timeout that does not alter with Workflow
     // execution and
     // then multiply the number with the gain Factor
@@ -57,12 +59,17 @@ public class TimeoutCalibrator {
     private int limit = 1000;
     private final CalibrationConfig config;
 
+    public TimeoutCalibrator(CalibrationConfig config) {
+        this.config = config;
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public int getLimit() {
 	return limit;
     }
 
     public void setLimit(int limit) {
-	this.limit = limit;
+        this.limit = limit;
     }
 
     public double getGainFactor() {
@@ -70,12 +77,7 @@ public class TimeoutCalibrator {
     }
 
     public void setGainFactor(double gainFactor) {
-	this.gainFactor = gainFactor;
-    }
-
-    public TimeoutCalibrator(CalibrationConfig config) {
-	this.config = config;
-	Security.addProvider(new BouncyCastleProvider());
+        this.gainFactor = gainFactor;
     }
 
     public int calibrateTimeout() {
@@ -220,8 +222,6 @@ public class TimeoutCalibrator {
 	return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
-	    .getName());
 
     private int getSmallestTimeoutPossible(ServerCertificateStructure serverCerts, CipherSuite suite) {
 	int lowerEnd = 0;

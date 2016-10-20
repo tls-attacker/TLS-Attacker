@@ -38,26 +38,26 @@ public class BranchTrace implements Serializable {
     private Set<Long> verticesSet = null;
     private Map<Edge, Edge> edgeMap = null;
 
-    public Set<Long> getVerticesSet() {
-	return verticesSet;
-    }
-
-    public Map<Edge, Edge> getEdgeMap() {
-	return edgeMap;
-    }
-
     public BranchTrace(Set<Long> verticesSet, Map<Edge, Edge> edgeMap) {
-	this.verticesSet = verticesSet;
-	this.edgeMap = edgeMap;
+        this.verticesSet = verticesSet;
+        this.edgeMap = edgeMap;
     }
 
     /**
      * Default Constructor
      */
     public BranchTrace() {
-	verticesSet = new HashSet<>();
-	edgeMap = new HashMap<>();
+        verticesSet = new HashSet<>();
+        edgeMap = new HashMap<>();
 
+    }
+
+    public Set<Long> getVerticesSet() {
+	return verticesSet;
+    }
+
+    public Map<Edge, Edge> getEdgeMap() {
+	return edgeMap;
     }
 
     public MergeResult merge(BranchTrace trace) {

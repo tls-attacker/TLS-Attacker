@@ -59,7 +59,39 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private File tracesFolder; // Temporary Folder which contains currently
 			       // executed traces
     private ActionExecutorTypeConfig actionExecutorConfig;
+    // Are we currently in serialization mode?
+    private boolean serialize = false;
 
+    /**
+     * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
+     * and serverCommandFromFile to server/server.config
+     */
+    public EvolutionaryFuzzerConfig()
+    {
+        outputFolder = "data/";
+        setFuzzingMode(true);
+        setKeystore("../resources/rsa1024.jks");
+        setPassword("password");
+        setAlias("alias");
+        this.tracesFolder = new File(outputFolder + "traces/");
+        tracesFolder.mkdirs();
+        new File(getOutputCertificateFolder()).mkdirs();
+        new File(getOutputClientCertificateFolder()).mkdirs();
+        new File(getOutputFolder()).mkdirs();
+        new File(getOutputServerCertificateFolder()).mkdirs();
+        new File(getCertificateMutatorConfigFolder()).mkdirs();
+        new File(getAnalyzerConfigFolder()).mkdirs();
+        new File(getOutputFaultyFolder()).mkdirs();
+        new File(getArchiveFolder()).mkdirs();
+        File f = new File(getMutatorConfigFolder() + "action_executor.conf");
+        if (f.exists()) {
+            actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
+        } else {
+            actionExecutorConfig = new ActionExecutorTypeConfig();
+            JAXB.marshal(actionExecutorConfig, f);
+        }
+    }
+    
     public Integer getBootTimeout()
     {
         return bootTimeout;
@@ -74,22 +106,21 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     {
         return controller;
     }
-
-    public void setController(String controller)
-    {
+    
+    public void setController(String controller) {
         this.controller = controller;
     }
     
     public ActionExecutorTypeConfig getActionExecutorConfig() {
-	return actionExecutorConfig;
+        return actionExecutorConfig;
     }
 
     public void setActionExecutorConfig(ActionExecutorTypeConfig actionExecutorConfig) {
-	this.actionExecutorConfig = actionExecutorConfig;
+        this.actionExecutorConfig = actionExecutorConfig;
     }
 
     public String getArchiveFolder() {
-	return archiveFolder;
+        return archiveFolder;
     }
 
     public void setArchiveFolder(String archiveFolder) {
@@ -105,27 +136,27 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     }
 
     public void setCertMutator(String certMutator) {
-	this.certMutator = certMutator;
+        this.certMutator = certMutator;
     }
 
     public String getMutator() {
-	return mutator;
+        return mutator;
     }
 
     public void setMutator(String mutator) {
-	this.mutator = mutator;
+        this.mutator = mutator;
     }
 
     public boolean isCleanStart() {
-	return cleanStart;
+        return cleanStart;
     }
 
     public void setCleanStart(boolean cleanStart) {
-	this.cleanStart = cleanStart;
+        this.cleanStart = cleanStart;
     }
 
     public boolean isStartStopped() {
-	return startStopped;
+        return startStopped;
     }
 
     public void setStartStopped(boolean startStopped) {
@@ -136,40 +167,9 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	return noOld;
     }
 
+
     public void setNoOld(boolean noOld) {
 	this.noOld = noOld;
-    }
-
-    // Are we currently in serialization mode?
-    private boolean serialize = false;
-
-    /**
-     * Constructor for EvolutionaryFuzzerConfig, defaults output Folder to "."
-     * and serverCommandFromFile to server/server.config
-     */
-    public EvolutionaryFuzzerConfig() {
-	outputFolder = "data/";
-	setFuzzingMode(true);
-	setKeystore("../resources/rsa1024.jks");
-	setPassword("password");
-	setAlias("alias");
-	this.tracesFolder = new File(outputFolder + "traces/");
-	tracesFolder.mkdirs();
-	new File(getOutputCertificateFolder()).mkdirs();
-	new File(getOutputClientCertificateFolder()).mkdirs();
-	new File(getOutputFolder()).mkdirs();
-	new File(getOutputServerCertificateFolder()).mkdirs();
-	new File(getCertificateMutatorConfigFolder()).mkdirs();
-	new File(getAnalyzerConfigFolder()).mkdirs();
-	new File(getOutputFaultyFolder()).mkdirs();
-	new File(getArchiveFolder()).mkdirs();
-	File f = new File(getMutatorConfigFolder() + "action_executor.conf");
-	if (f.exists()) {
-	    actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
-	} else {
-	    actionExecutorConfig = new ActionExecutorTypeConfig();
-	    JAXB.marshal(actionExecutorConfig, f);
-	}
     }
 
     public boolean isSerialize() {

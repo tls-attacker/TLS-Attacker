@@ -27,6 +27,7 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsCrashRule extends Rule {
+    private static final Logger LOG = Logger.getLogger(IsCrashRule.class.getName());
 
     private int found = 0;
     private IsCrashRuleConfig config;
@@ -86,6 +87,5 @@ public class IsCrashRule extends Rule {
 	return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(IsCrashRule.class.getName());
 
 }

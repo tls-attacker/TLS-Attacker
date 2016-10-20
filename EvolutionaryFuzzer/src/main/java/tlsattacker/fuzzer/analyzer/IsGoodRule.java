@@ -38,8 +38,8 @@ import org.jgrapht.DirectedGraph;
  */
 public class IsGoodRule extends Rule {
 
-    private PrintWriter outWriter;
     private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
+    private PrintWriter outWriter;
     // BranchTrace with which other Workflows are merged
     private final BranchTrace branch;
     private int found = 0;

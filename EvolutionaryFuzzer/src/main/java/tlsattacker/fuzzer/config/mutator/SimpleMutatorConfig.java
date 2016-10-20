@@ -39,23 +39,23 @@ public class SimpleMutatorConfig implements Serializable {
     private Integer addContextActionPercentage = 4;
     private Integer addExtensionMessagePercentage = 20;
 
+    public SimpleMutatorConfig() {
+    }
+
     public Integer getAddExtensionPercentage() {
-	return addExtensionMessagePercentage;
+        return addExtensionMessagePercentage;
     }
 
     public void setAddExtensionMessagePercentage(Integer addExtensionMessagePercentage) {
-	this.addExtensionMessagePercentage = addExtensionMessagePercentage;
+        this.addExtensionMessagePercentage = addExtensionMessagePercentage;
     }
 
     public Integer getAddContextActionPercentage() {
-	return addContextActionPercentage;
+        return addContextActionPercentage;
     }
 
     public void setAddContextActionPercentage(Integer addContextActionPercentage) {
-	this.addContextActionPercentage = addContextActionPercentage;
-    }
-
-    public SimpleMutatorConfig() {
+        this.addContextActionPercentage = addContextActionPercentage;
     }
 
     public Integer getAddToggleEncrytionPercentage() {

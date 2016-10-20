@@ -25,6 +25,7 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Rule {
+    private static final Logger LOG = Logger.getLogger(Rule.class.getName());
 
     protected File ruleFolder;
     protected final String configFileName;
@@ -75,6 +76,5 @@ public abstract class Rule {
 	ruleFolder.mkdirs();
     }
 
-    private static final Logger LOG = Logger.getLogger(Rule.class.getName());
 
 }

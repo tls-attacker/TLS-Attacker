@@ -38,6 +38,49 @@ public class PINAgent extends Agent {
     private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 
     public static final String optionName = "PIN";
+
+    private static BranchTrace getBranchTrace(BufferedReader br)
+    {
+        try {
+            Set<Long> verticesSet = new HashSet<>();
+            Map<Edge, Edge> edgeMap = new HashMap<>();
+            String line;
+            while ((line = br.readLine()) != null) {
+                try {
+                    if (line.equals("")) {
+                        continue;
+                    }
+                    String[] split = line.split("\\s+");
+                    long src;
+                    if (split[0].equals("0xffffffffffffffff")) {
+                        src = Long.MAX_VALUE;
+                    } else {
+                        src = Long.parseLong(split[0].substring(2), 16);
+                    }
+                    long dst;
+                    if (split[1].equals("0xffffffffffffffff")) {
+                        dst = Long.MAX_VALUE;
+                    } else {
+                        dst = Long.parseLong(split[1].substring(2), 16);
+                    }
+                    int count = Integer.parseInt(split[3]);
+                    verticesSet.add(src);
+                    verticesSet.add(dst);
+                    Edge e = new Edge(src, dst);
+                    e.setCounter(count);
+                    edgeMap.put(e, e);
+                } catch (Exception E) {
+                    E.printStackTrace();
+                }
+            }
+            return new BranchTrace(verticesSet, edgeMap);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE,
+                    "Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
+        }
+        return new BranchTrace();
+    }
     // Is a fuzzing Progress Running?
     protected boolean running = false;
     // StartTime of the last Fuzzing Vektor
@@ -120,46 +163,5 @@ public class PINAgent extends Agent {
 	return result;
     }
 
-    private static BranchTrace getBranchTrace(BufferedReader br) {
-	try {
-	    Set<Long> verticesSet = new HashSet<>();
-	    Map<Edge, Edge> edgeMap = new HashMap<>();
-	    String line;
-	    while ((line = br.readLine()) != null) {
-		try {
-		    if (line.equals("")) {
-			continue;
-		    }
-		    String[] split = line.split("\\s+");
-		    long src;
-		    if (split[0].equals("0xffffffffffffffff")) {
-			src = Long.MAX_VALUE;
-		    } else {
-			src = Long.parseLong(split[0].substring(2), 16);
-		    }
-		    long dst;
-		    if (split[1].equals("0xffffffffffffffff")) {
-			dst = Long.MAX_VALUE;
-		    } else {
-			dst = Long.parseLong(split[1].substring(2), 16);
-		    }
-		    int count = Integer.parseInt(split[3]);
-		    verticesSet.add(src);
-		    verticesSet.add(dst);
-		    Edge e = new Edge(src, dst);
-		    e.setCounter(count);
-		    edgeMap.put(e, e);
-		} catch (Exception E) {
-		    E.printStackTrace();
-		}
-	    }
-	    return new BranchTrace(verticesSet, edgeMap);
-
-	} catch (IOException ex) {
-	    Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE,
-		    "Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
-	}
-	return new BranchTrace();
-    }
 
 }
