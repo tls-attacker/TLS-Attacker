@@ -14,6 +14,7 @@ import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -150,7 +151,7 @@ public class ServerManager {
     }
 
     public List<TLSServer> getAllServers() {
-	return serverList;
+	return Collections.unmodifiableList(serverList);
     }
 
     // Singleton

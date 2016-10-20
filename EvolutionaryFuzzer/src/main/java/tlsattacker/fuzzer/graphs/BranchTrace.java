@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.graphs;
 
 import tlsattacker.fuzzer.result.MergeResult;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,11 +54,11 @@ public class BranchTrace implements Serializable {
     }
 
     public Set<Long> getVerticesSet() {
-	return verticesSet;
+	return Collections.unmodifiableSet(verticesSet);
     }
 
     public Map<Edge, Edge> getEdgeMap() {
-	return edgeMap;
+	return Collections.unmodifiableMap(edgeMap);
     }
 
     public MergeResult merge(BranchTrace trace) {

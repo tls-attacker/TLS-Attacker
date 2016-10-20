@@ -13,6 +13,7 @@ import tlsattacker.fuzzer.modification.Modification;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -87,7 +88,7 @@ public class TestVector implements Serializable {
     }
 
     public List<Modification> getModificationList() {
-	return modificationList;
+	return Collections.unmodifiableList(modificationList);
     }
 
     public TestVector getParent() {

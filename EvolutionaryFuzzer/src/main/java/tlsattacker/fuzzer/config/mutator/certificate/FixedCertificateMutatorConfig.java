@@ -13,6 +13,7 @@ import tlsattacker.fuzzer.config.ConfigManager;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -81,7 +82,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     public List<ClientCertificateStructure> getClientCertificates() {
-	return clientCertificates;
+	return Collections.unmodifiableList(clientCertificates);
     }
 
     public void setClientCertificates(List<ClientCertificateStructure> clientCertificates) {
@@ -89,7 +90,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     public List<ServerCertificateStructure> getServerCertificates() {
-	return serverCertificates;
+	return Collections.unmodifiableList(serverCertificates);
     }
 
     public void setServerCertificates(List<ServerCertificateStructure> serverCertificates) {

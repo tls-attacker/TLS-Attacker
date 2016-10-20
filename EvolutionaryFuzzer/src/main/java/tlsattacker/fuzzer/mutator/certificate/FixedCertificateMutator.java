@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -161,11 +162,11 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     public List<ClientCertificateStructure> getClientCertList() {
-	return clientCertList;
+	return Collections.unmodifiableList(clientCertList);
     }
 
     public List<ServerCertificateStructure> getServerPairList() {
-	return serverCertList;
+	return Collections.unmodifiableList(serverCertList);
     }
 
     @Override

@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.config.analyzer;
 
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     public Set<Byte> getBlacklist() {
-	return blacklist;
+	return Collections.unmodifiableSet(blacklist);
     }
 
     public void setBlacklist(Set<Byte> blackList) {
@@ -56,7 +57,7 @@ public class FindAlertsRuleConfig extends RuleConfig {
     }
 
     public Set<Byte> getWhitelist() {
-	return whitelist;
+	return Collections.unmodifiableSet(whitelist);
     }
 
     public void setWhitelist(Set<Byte> whitelist) {
