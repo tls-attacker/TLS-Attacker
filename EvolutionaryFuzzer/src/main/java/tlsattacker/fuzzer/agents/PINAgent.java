@@ -56,7 +56,7 @@ public class PINAgent extends Agent {
             String line;
             while ((line = br.readLine()) != null) {
                 try {
-                    if (line.equals("")) {
+                    if (line.isEmpty()) {
                         continue;
                     }
                     String[] split = line.split("\\s+");
