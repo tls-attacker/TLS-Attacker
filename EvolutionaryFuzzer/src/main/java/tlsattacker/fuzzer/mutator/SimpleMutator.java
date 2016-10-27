@@ -73,7 +73,11 @@ public class SimpleMutator extends Mutator {
      * @return
      */
     private boolean goodVectorsExist() {
-	File f = new File("data/good/");
+	File f = new File("data/good/"); //TODO read from config file
+        if(!f.exists())
+        {
+            f.mkdirs();
+        }
 	return f.listFiles().length > 0;
 
     }
@@ -148,7 +152,7 @@ public class SimpleMutator extends Mutator {
 				.getRandomExecutorType(), null);
 	    }
 	    tempVector.getTrace().reset();
-	    tempVector.getModificationList().clear();
+	    tempVector.clearModifications();
 	    Modification modification = null;
 	    trace = tempVector.getTrace();
 	    if (r.nextInt(100) <= simpleConfig.getChangeServerCert()) {
