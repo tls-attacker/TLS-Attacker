@@ -87,6 +87,11 @@ public class TestVector implements Serializable {
     public TestVector() {
 	modificationList = new LinkedList<>();
     }
+    
+    public void clearModifications()
+    {
+        modificationList = new LinkedList<>();
+    }
 
     /**
      * 
