@@ -360,7 +360,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      * @return
      */
     public String getOutputClientCertificateFolder() {
-	return outputFolder + "certificates/client/";
+	return configFolder + "certificates/client/";
     }
 
     /**
@@ -368,7 +368,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      * @return
      */
     public String getOutputServerCertificateFolder() {
-	return outputFolder + "certificates/server/";
+	return configFolder + "certificates/server/";
     }
 
     /**
