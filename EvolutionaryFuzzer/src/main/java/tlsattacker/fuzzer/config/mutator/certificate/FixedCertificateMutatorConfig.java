@@ -49,20 +49,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
 	clientCertificates = new ArrayList<>();
 	// Initialize the Config File with some certificates if we can find them
 	new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();
-	File jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()
-		+ "ec256.jks");
-	if (jksFile.exists()) {
-	    clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
-	}
-	jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder() + "rsa1024.jks");
-	if (jksFile.exists()) {
-	    clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
-	}
-	jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder() + "rsa4096.jks");
-	if (jksFile.exists()) {
-	    clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
-	}
-	jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder() + "rsa8192.jks");
+	File jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder() + "rsa1024.jks");
 	if (jksFile.exists()) {
 	    clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
 	}
@@ -71,19 +58,6 @@ public class FixedCertificateMutatorConfig implements Serializable {
 		+ "dsakey.pem");
 	File certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
 		+ "dsacert.pem");
-	if (keyFile.exists() && certFile.exists()) {
-	    serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
-	}
-	keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder() + "ec256key.pem");
-	certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-		+ "ec256cert.pem");
-	if (keyFile.exists() && certFile.exists()) {
-	    serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
-	}
-	keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-		+ "rsa4096cert.pem");
-	certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-		+ "rsa4096key.pem");
 	if (keyFile.exists() && certFile.exists()) {
 	    serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
 	}
