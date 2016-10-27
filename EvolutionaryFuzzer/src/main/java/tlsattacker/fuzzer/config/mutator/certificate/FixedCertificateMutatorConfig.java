@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
@@ -24,6 +26,7 @@ import tlsattacker.fuzzer.config.ConfigManager;
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FixedCertificateMutatorConfig implements Serializable {
     // Fixes the configuration File after a selftest and serializes it
 
