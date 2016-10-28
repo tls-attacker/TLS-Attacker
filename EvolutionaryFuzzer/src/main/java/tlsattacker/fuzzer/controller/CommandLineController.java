@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
+import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -160,8 +161,8 @@ public class CommandLineController extends Controller {
 			    }
 			} while (pool.hasRunningThreads());
 
-			BranchTrace trace = ((IsGoodRule) ((ResultContainer.getInstance().getAnalyzer()
-				.getRule(IsGoodRule.class)))).getBranchTrace();
+			BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer)(ResultContainer.getInstance().getAnalyzer()))
+				.getRule(IsGoodRule.class))).getBranchTrace();//TODO fix rule analyzer
 
 			PrintWriter writer;
 			try {
@@ -194,8 +195,8 @@ public class CommandLineController extends Controller {
 			    }
 			} while (pool.hasRunningThreads());
 
-			trace = ((IsGoodRule) ((ResultContainer.getInstance().getAnalyzer().getRule(IsGoodRule.class))))
-				.getBranchTrace();
+			trace = (((IsGoodRule) ((RuleAnalyzer)(ResultContainer.getInstance().getAnalyzer()))
+				.getRule(IsGoodRule.class))).getBranchTrace();//TODO fix rule analyzer
 			writer = null;
 			try {
 			    writer = new PrintWriter(file, "UTF-8");
@@ -213,8 +214,8 @@ public class CommandLineController extends Controller {
 			startFuzzer();
 			break;
 		    case "loadGraph":
-			trace = ((IsGoodRule) ((ResultContainer.getInstance().getAnalyzer().getRule(IsGoodRule.class))))
-				.getBranchTrace();
+			trace = (((IsGoodRule) ((RuleAnalyzer)(ResultContainer.getInstance().getAnalyzer()))
+				.getRule(IsGoodRule.class))).getBranchTrace();//TODO fix rule analyzer
 			if (split.length != 2) {
 			    LOG.log(Level.INFO, "You need to specify a File to load");
 			} else {
@@ -241,8 +242,8 @@ public class CommandLineController extends Controller {
 			}
 			break;
 		    case "saveGraph":
-			trace = ((IsGoodRule) ((ResultContainer.getInstance().getAnalyzer().getRule(IsGoodRule.class))))
-				.getBranchTrace();
+			trace = (((IsGoodRule) ((RuleAnalyzer)(ResultContainer.getInstance().getAnalyzer()))
+				.getRule(IsGoodRule.class))).getBranchTrace();//TODO fix rule analyzer
 			if (split.length != 2) {
 			    LOG.log(Level.INFO, "You need to specify a File to Save to");
 			} else {
