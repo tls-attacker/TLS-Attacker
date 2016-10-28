@@ -57,45 +57,33 @@ import tlsattacker.fuzzer.helper.LogFileIDManager;
 public class ExecutorThreadPool implements Runnable {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
-
-    // Number of Threads which execute FuzzingVectors
-
-    /**
-     *
+     * Number of Threads which execute FuzzingVectors
      */
     private final int poolSize;
-    //
-
+    
     /**
-     *
+     * The ThreadPoolExecutor that is used by the pool
      */
     private final ThreadPoolExecutor executor;
-    // The Mutator used by the ExecutorPool to fetch new Tasks
-
+    
     /**
-     *
+     * The Mutator used by the ExecutorPool to fetch new Tasks
      */
     private final Mutator mutator;
-    // The Executor thread pool will continuasly fetch and execute new Tasks
-    // while this is false
-
+   
     /**
-     *
+     * The Executor thread pool will continuasly fetch and execute new Tasks
+     * while this is false
      */
     private boolean stopped = true;
-    // Counts the number of executed Tasks for statisticall purposes.
-
+    
     /**
-     *
+     * Counts the number of executed Tasks for statisticall purposes.
      */
     private long runs = 0;
-    // The Config the ExecutorThreadPool uses
-
+    
     /**
-     *
+     * The Config the ExecutorThreadPool uses
      */
     private final EvolutionaryFuzzerConfig config;
 
@@ -137,8 +125,8 @@ public class ExecutorThreadPool implements Runnable {
     }
 
     /**
-     * 
-     * @return
+     * Generates a seed for the Fuzzer with normal TLS/DTLS Handshakes 
+     * @return A list of generated TestVectors
      */
     private List<TestVector> generateSeed() {
 	List<TestVector> newList = new LinkedList<TestVector>();
@@ -261,10 +249,6 @@ public class ExecutorThreadPool implements Runnable {
 		}
 
 	    }
-	    /*
-	     * executor.shutdown(); while (!executor.isTerminated()) { }
-	     * System.out.println('ExecutorThread Pool Shutdown');
-	     */
 	}
     }
 
@@ -287,10 +271,12 @@ public class ExecutorThreadPool implements Runnable {
     }
 
     /**
-     * 
-     * @return
+     * Returns true if atleast one thread is still running
+     * @return True if atleast one thread is still running
      */
     public synchronized boolean hasRunningThreads() {
 	return executor.getActiveCount() == 0;
     }
+    
+    private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 }

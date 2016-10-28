@@ -57,27 +57,22 @@ import java.util.Collection;
 public class TLSExecutor extends Executor {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
-
-    /**
-     *
+     * The name of the Executor when referred by command line
      */
     public static final String optionName = "tlsexecutor";
 
     /**
-     *
+     * The TestVector that the executor should execute
      */
     private final TestVector testVector;
 
     /**
-     *
+     * The TLSServer that the Executor should execute the TestVector on
      */
     private final TLSServer server;
 
     /**
-     *
+     * The Agent that the Executor should use
      */
     private final Agent agent;
 
@@ -124,7 +119,7 @@ public class TLSExecutor extends Executor {
 		int counter = 0;
 		while (transportHandler == null) {
 		    try {
-			transportHandler = initTransportHandler(server, fc);
+			transportHandler = generateTransportHandler(server, fc);
 		    } catch (ConfigurationException E) {
 			// It may happen that the implementation is not ready
 			// yet
@@ -225,12 +220,12 @@ public class TLSExecutor extends Executor {
     }
 
     /**
-     * 
-     * @param server
-     * @param config
-     * @return
+     * Generates a TransportHandler according to the TLSServer and the config
+     * @param server TLSServer to use
+     * @param config Config to use
+     * @return A newly generated Transporthandler
      */
-    private TransportHandler initTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
+    private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
 	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
 		config.getTlsTimeout());
 	try {
@@ -244,5 +239,6 @@ public class TLSExecutor extends Executor {
 		    + server.getPort(), ex);
 	}
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 }

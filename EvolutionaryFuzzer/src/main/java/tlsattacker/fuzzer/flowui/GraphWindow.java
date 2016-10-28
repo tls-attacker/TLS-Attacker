@@ -23,13 +23,8 @@ import tlsattacker.fuzzer.workflow.MessageFlow;
 public class GraphWindow {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
-
-    /**
-     * 
-     * @param incomingGraph
+     * Shows a Window which visualizes a graph
+     * @param incomingGraph The graph to visualize
      */
     public static void showWindow(DirectedMultigraph<Integer, MessageFlow> incomingGraph) {
 
@@ -50,10 +45,8 @@ public class GraphWindow {
 	}
     }
 
-    /**
-     *
-     */
     private GraphWindow() {
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
 }

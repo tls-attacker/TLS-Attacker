@@ -22,18 +22,9 @@ import java.util.logging.Logger;
 public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
 
     /**
-     *
+     * Semaphore that blocks the Executor
      */
-    private final/**
-		  *
-		  * @param corePoolSize
-		  * @param maximumPoolSize
-		  * @param keepAliveTime
-		  * @param unit
-		  * @param workQueue
-		  * @param threadFactory
-		  */
-    Semaphore semaphore;
+    private final Semaphore semaphore;
 
     public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
 	    BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
