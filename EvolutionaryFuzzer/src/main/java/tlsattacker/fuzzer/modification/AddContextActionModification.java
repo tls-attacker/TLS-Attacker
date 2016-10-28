@@ -19,24 +19,15 @@ import java.util.logging.Logger;
 public class AddContextActionModification extends Modification {
 
     /**
-     *
+     * The action that was added
      */
     private final TLSAction action;
 
-    /**
-     * 
-     * @param type
-     * @param action
-     */
     public AddContextActionModification(ModificationType type, TLSAction action) {
 	super(type);
 	this.action = action;
     }
 
-    /**
-     * 
-     * @return
-     */
     public TLSAction getAction() {
 	return action;
     }

@@ -19,27 +19,18 @@ import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 public class ChangeClientCertificateModification extends Modification {
 
     /**
-     *
+     * The client certificate to which was changed
      */
     private final ClientCertificateStructure keyCertPair;
 
-    /**
-     * 
-     * @param keyCertPair
-     */
     public ChangeClientCertificateModification(ClientCertificateStructure keyCertPair) {
 	super(ModificationType.CHANGE_CLIENT_CERT);
 	this.keyCertPair = keyCertPair;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ClientCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }
 
     private static final Logger LOG = Logger.getLogger(ChangeClientCertificateModification.class.getName());
-
 }

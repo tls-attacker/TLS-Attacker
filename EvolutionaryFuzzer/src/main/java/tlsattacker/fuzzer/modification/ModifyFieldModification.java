@@ -18,42 +18,28 @@ import java.util.logging.Logger;
 public class ModifyFieldModification extends Modification {
 
     /**
-     *
+     * The name of the field that was modified
      */
     private final String fieldName;
 
     /**
-     *
+     * The holder of the Field that was modifed
      */
     private final ModifiableVariableHolder modificationHolder;
 
-    /**
-     * 
-     * @param fieldName
-     * @param modificationHolder
-     */
     public ModifyFieldModification(String fieldName, ModifiableVariableHolder modificationHolder) {
 	super(ModificationType.MODIFY_FIELD);
 	this.fieldName = fieldName;
 	this.modificationHolder = modificationHolder;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getFieldName() {
 	return fieldName;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ModifiableVariableHolder getModificationHolder() {
 	return modificationHolder;
     }
 
     private static final Logger LOG = Logger.getLogger(ModifyFieldModification.class.getName());
-
 }

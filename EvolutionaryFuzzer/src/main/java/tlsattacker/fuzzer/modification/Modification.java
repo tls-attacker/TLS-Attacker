@@ -17,24 +17,15 @@ import java.io.Serializable;
 public abstract class Modification implements Serializable {
 
     /**
-     *
+     * The type of the modification
      */
     private final ModificationType type;
 
-    /**
-     * 
-     * @param type
-     */
     public Modification(ModificationType type) {
 	this.type = type;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ModificationType getType() {
 	return type;
     }
-
 }

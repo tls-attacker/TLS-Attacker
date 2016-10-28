@@ -20,42 +20,28 @@ import java.util.logging.Logger;
 public class AddMessageFlightModification extends Modification {
 
     /**
-     *
+     * The SendAction that was added
      */
     private final SendAction sendAction;
 
     /**
-     *
+     * The ReceiveAction that was added
      */
     private final ReceiveAction receiveAction;
 
-    /**
-     * 
-     * @param sendAction
-     * @param receiveAction
-     */
     public AddMessageFlightModification(SendAction sendAction, ReceiveAction receiveAction) {
 	super(ModificationType.ADD_MESSAGE_FLIGHT);
 	this.sendAction = sendAction;
 	this.receiveAction = receiveAction;
     }
 
-    /**
-     * 
-     * @return
-     */
     public SendAction getSendAction() {
 	return sendAction;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ReceiveAction getReceiveAction() {
 	return receiveAction;
     }
 
     private static final Logger LOG = Logger.getLogger(AddMessageFlightModification.class.getName());
-
 }

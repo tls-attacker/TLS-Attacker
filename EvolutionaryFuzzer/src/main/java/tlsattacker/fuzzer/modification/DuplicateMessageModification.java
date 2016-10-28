@@ -20,26 +20,20 @@ import java.util.logging.Logger;
 public class DuplicateMessageModification extends Modification {
 
     /**
-     *
+     * The ProtocolMessage that was duplicated 
      */
     private final ProtocolMessage message;
 
     /**
-     *
+     * The position to which the duplicate was pasted
      */
     private final int position;
 
     /**
-     *
+     * The Action in which the duplication appeared
      */
     private final SendAction action;
 
-    /**
-     * 
-     * @param message
-     * @param action
-     * @param position
-     */
     public DuplicateMessageModification(ProtocolMessage message, SendAction action, int position) {
 	super(ModificationType.DUPLICATE_MESSAGE);
 	this.message = message;
@@ -47,30 +41,17 @@ public class DuplicateMessageModification extends Modification {
 	this.action = action;
     }
 
-    /**
-     * 
-     * @return
-     */
     public SendAction getAction() {
 	return action;
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getPosition() {
 	return position;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ProtocolMessage getMessage() {
 	return message;
     }
 
     private static final Logger LOG = Logger.getLogger(DuplicateMessageModification.class.getName());
-
 }

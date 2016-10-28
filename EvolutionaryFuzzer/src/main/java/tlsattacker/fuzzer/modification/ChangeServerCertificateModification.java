@@ -19,23 +19,15 @@ import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 public class ChangeServerCertificateModification extends Modification {
 
     /**
-     *
+     * Server certificate to which was changed
      */
     private final ServerCertificateStructure keyCertPair;
 
-    /**
-     * 
-     * @param keyCertPair
-     */
     public ChangeServerCertificateModification(ServerCertificateStructure keyCertPair) {
 	super(ModificationType.CHANGE_SERVER_CERT);
 	this.keyCertPair = keyCertPair;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ServerCertificateStructure getKeyCertPair() {
 	return keyCertPair;
     }

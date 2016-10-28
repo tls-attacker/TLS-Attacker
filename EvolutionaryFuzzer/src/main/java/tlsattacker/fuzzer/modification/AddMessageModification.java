@@ -19,30 +19,21 @@ import java.util.logging.Logger;
 public class AddMessageModification extends Modification {
 
     /**
-     *
+     * The ProtocolMessage that was added
      */
     private final ProtocolMessage message;
 
     /**
-     *
+     * The SendAction to which the ProtocolMessage was added
      */
     private final SendAction action;
 
-    /**
-     * 
-     * @param message
-     * @param action
-     */
     public AddMessageModification(ProtocolMessage message, SendAction action) {
 	super(ModificationType.ADD_MESSAGE);
 	this.message = message;
 	this.action = action;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ProtocolMessage getMessage() {
 	return message;
     }

@@ -18,23 +18,15 @@ import java.util.logging.Logger;
 public class AddToggleEncrytionActionModification extends Modification {
 
     /**
-     *
+     * The position in the WorkflowTrace where the Action was added
      */
     private int actionPosition;
 
-    /**
-     * 
-     * @param ActionPosition
-     */
     public AddToggleEncrytionActionModification(int ActionPosition) {
 	super(ModificationType.TOGGLE_ENCRYPTION);
 	this.actionPosition = actionPosition;
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getActionPosition() {
 	return actionPosition;
     }

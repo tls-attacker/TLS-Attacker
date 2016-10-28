@@ -19,23 +19,15 @@ import java.util.logging.Logger;
 public class AddExtensionModification extends Modification {
 
     /**
-     *
+     * The ExtensionMessage that was added
      */
     private final ExtensionMessage message;
 
-    /**
-     * 
-     * @param message
-     */
     public AddExtensionModification(ExtensionMessage message) {
 	super(ModificationType.ADD_EXTENSION);
 	this.message = message;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ExtensionMessage getMessage() {
 	return message;
     }

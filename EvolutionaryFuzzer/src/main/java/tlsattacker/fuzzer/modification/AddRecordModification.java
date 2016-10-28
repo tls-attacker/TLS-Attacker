@@ -19,27 +19,18 @@ import java.util.logging.Logger;
 public class AddRecordModification extends Modification {
 
     /**
-     *
+     * The ProtocolMessage to which the Record was added
      */
     private final ProtocolMessage message;
 
-    /**
-     * 
-     * @param message
-     */
     public AddRecordModification(ProtocolMessage message) {
 	super(ModificationType.ADD_RECORD);
 	this.message = message;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ProtocolMessage getMessage() {
 	return message;
     }
 
     private static final Logger LOG = Logger.getLogger(AddRecordModification.class.getName());
-
 }
