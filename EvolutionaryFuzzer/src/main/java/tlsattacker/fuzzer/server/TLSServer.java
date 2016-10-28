@@ -78,7 +78,7 @@ public class TLSServer {
     /**
      * The ProcessMonitor to monitor for the process end
      */
-    private ProcMon procmon = null;
+    private ProcessMonitor procmon = null;
 
     public TLSServer() {
 	ip = null;
@@ -253,7 +253,7 @@ public class TLSServer {
 		// kick them off
 		errorGobbler.start();
 		outputGobbler.start();
-		procmon = ProcMon.create(p);
+		procmon = ProcessMonitor.create(p);
 		while (!outputGobbler.accepted()) {
 
 		    try {
