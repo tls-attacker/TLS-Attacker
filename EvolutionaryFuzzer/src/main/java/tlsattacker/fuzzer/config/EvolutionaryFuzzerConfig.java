@@ -224,7 +224,13 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public File getTracesFolder() {
 	return tracesFolder;
     }
-
+    /**
+     * 
+     * @param tracesFolder 
+     */
+    public void setTracesFolder(File tracesFolder) {
+        this.tracesFolder = tracesFolder;
+    }
     /**
      * 
      * @return
@@ -390,6 +396,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	File f = new File(outputFolder);
 	f.mkdirs();
 	this.tracesFolder = new File(outputFolder + "traces/");
+        tracesFolder.mkdirs();
 
     }
 
