@@ -269,7 +269,10 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 	f.mkdirs();
 	this.tracesFolder = new File(outputFolder + "traces/");
         tracesFolder.mkdirs();//TODO check
-
+        new File(getOutputFaultyFolder()).mkdirs();
+        new File(getOutputClientCertificateFolder()).mkdirs();
+        new File(getOutputCertificateFolder()).mkdirs();
+        new File(getOutputServerCertificateFolder()).mkdirs();
     }
 
     public boolean getInjectPinChild() {
