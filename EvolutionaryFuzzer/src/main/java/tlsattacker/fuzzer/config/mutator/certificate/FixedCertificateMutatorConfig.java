@@ -8,17 +8,21 @@
 package tlsattacker.fuzzer.config.mutator.certificate;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.ConfigManager;
+import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * A configuration class for the FixedCertificateMutator
@@ -62,7 +66,21 @@ public class FixedCertificateMutatorConfig implements Serializable {
 	    serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
 	}
     }
-
+    
+    /**
+     * Serializes this config to a File
+     * @param file File to serialize to
+     */
+    public void serialize(File file) {
+	if (!file.exists()) {
+	    try {
+		file.createNewFile();
+	    } catch (IOException ex) {
+		Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
+	JAXB.marshal(this, file);
+    }
     public boolean isAutofix() {
 	return autofix;
     }

@@ -50,13 +50,8 @@ import weka.core.Utils;
 public class Main {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(Main.class.getName());
-
-    /**
-     * 
-     * @param args
+     * Main function which Starts the fuzzer
+     * @param args Arguments which are parsed
      */
     public static void main(String args[]) {
 	LOG.log(Level.FINE, Utils.arrayToString(args));
@@ -182,4 +177,6 @@ public class Main {
 	}
 
     }
+    
+    private static final Logger LOG = Logger.getLogger(Main.class.getName());
 }

@@ -23,36 +23,21 @@ import javax.xml.bind.JAXB;
 public abstract class CertificateMutator {
 
     /**
-     * 
-     * @return
+     * Returns a newly generated client certificate
+     * @return Newly generated client certificate
      */
     public abstract ClientCertificateStructure getClientCertificateStructure();
 
     /**
-     * 
-     * @return
+     * Returns a newly generated server ceriticate
+     * @return Newly generated server certificate
      */
     public abstract ServerCertificateStructure getServerCertificateStructure();
 
     /**
-     * 
-     * @param structure
-     * @return
+     * Checks if the ServerCertificate is supported by the implementation
+     * @param structure ServerCertificate to check
+     * @return True if the ServerCertificate is supported
      */
     public abstract boolean isSupported(ServerCertificateStructure structure);
-
-    /**
-     * 
-     * @param file
-     */
-    public void serialize(File file) {
-	if (!file.exists()) {
-	    try {
-		file.createNewFile();
-	    } catch (IOException ex) {
-		Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
-	JAXB.marshal(this, file);
-    }
 }
