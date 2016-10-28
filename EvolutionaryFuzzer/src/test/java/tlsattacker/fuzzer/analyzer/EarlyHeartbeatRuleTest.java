@@ -7,7 +7,7 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.analyzer.EarlyHeartbeatRule;
+import tlsattacker.fuzzer.analyzer.rules.EarlyHeartbeatRule;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;

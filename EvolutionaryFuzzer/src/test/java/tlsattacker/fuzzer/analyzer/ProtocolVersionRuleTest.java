@@ -7,7 +7,7 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.analyzer.ProtocolVersionRule;
+import tlsattacker.fuzzer.analyzer.rules.ProtocolVersionRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.Result;

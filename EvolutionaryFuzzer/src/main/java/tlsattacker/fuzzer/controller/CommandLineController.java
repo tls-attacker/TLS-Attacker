@@ -1,6 +1,6 @@
 package tlsattacker.fuzzer.controller;
 
-import tlsattacker.fuzzer.analyzer.IsGoodRule;
+import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
 import tlsattacker.fuzzer.executor.ExecutorThreadPool;
 import tlsattacker.fuzzer.mutator.Mutator;
 import tlsattacker.fuzzer.controller.Controller;

@@ -7,6 +7,17 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
+import tlsattacker.fuzzer.analyzer.rules.ProtocolVersionRule;
+import tlsattacker.fuzzer.analyzer.rules.AnalyzeGoodModificationRule;
+import tlsattacker.fuzzer.analyzer.rules.Rule;
+import tlsattacker.fuzzer.analyzer.rules.FindAlertsRule;
+import tlsattacker.fuzzer.analyzer.rules.UniqueFlowsRule;
+import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
+import tlsattacker.fuzzer.analyzer.rules.IsTimeoutRule;
+import tlsattacker.fuzzer.analyzer.rules.AnalyzeModificationRule;
+import tlsattacker.fuzzer.analyzer.rules.EarlyHeartbeatRule;
+import tlsattacker.fuzzer.analyzer.rules.AnalyzeTimeRule;
+import tlsattacker.fuzzer.analyzer.rules.IsCrashRule;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;

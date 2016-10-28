@@ -7,7 +7,8 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.analyzer.AnalyzeModificationRule;
+import tlsattacker.fuzzer.analyzer.helpers.ModificationCounter;
+import tlsattacker.fuzzer.analyzer.rules.AnalyzeModificationRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.modification.AddMessageModification;
