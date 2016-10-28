@@ -101,11 +101,7 @@ public class ProtocolVersionRuleTest {
 					  // ServerVersion is not standart
 	clientHello.setProtocolVersion(new byte[] { 22, 34 });
 	assertTrue(rule.applies(result)); // This should apply, since the
-					  // ServerVersion is not standart
-	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	clientHello.setProtocolVersion(new byte[] { 4 });
-	assertTrue(rule.applies(result)); // This should apply, since the client
-					  // field size is too short
+					  // ServerVersion is not standard
 	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
 	serverHello.setProtocolVersion(new byte[] { 4 });
 	assertTrue(rule.applies(result)); // This should apply, since the client
