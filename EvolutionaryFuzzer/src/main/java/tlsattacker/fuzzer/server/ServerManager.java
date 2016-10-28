@@ -26,11 +26,6 @@ import java.util.logging.Logger;
 public class ServerManager {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
-
-    /**
      * Singleton
      * 
      * @return Instance of the ServerManager
@@ -40,13 +35,10 @@ public class ServerManager {
     }
 
     /**
-     *
+     * The List of servers that the Manager keeps track of
      */
     private ArrayList<TLSServer> serverList;
 
-    /**
-     *
-     */
     private ServerManager() {
 	serverList = new ArrayList<>();
     }
@@ -54,15 +46,15 @@ public class ServerManager {
     /**
      * Adds a TLSServer to the List of TLSServers
      * 
-     * @param server
+     * @param server Server to add
      */
     public void addServer(TLSServer server) {
 	serverList.add(server);
     }
 
     /**
-     * 
-     * @param config
+     * Reads the config files and adds Servers to the serverList accordingly
+     * @param config Config file used to find the correct config folder
      */
     public void init(FuzzerGeneralConfig config) {
 	File file = new File(config.getServerCommandFromFile());
@@ -150,7 +142,7 @@ public class ServerManager {
     }
 
     /**
-     * 
+     * Returns the number of Servers in the serverList
      * @return
      */
     public int getServerCount() {
@@ -158,7 +150,7 @@ public class ServerManager {
     }
 
     /**
-     * 
+     * Returns the number of currently free servers
      * @return
      */
     public int getFreeServerCount() {
@@ -172,29 +164,26 @@ public class ServerManager {
     }
 
     /**
-     * 
+     * Returns all Servers
      * @return
      */
     public List<TLSServer> getAllServers() {
 	return Collections.unmodifiableList(serverList);
     }
 
-    // Singleton
-
     /**
-     *
+     * Singleton
      */
     private static class ServerManagerHolder {
 
 	/**
-         *
+         * Singleton
          */
 	private static final ServerManager INSTANCE = new ServerManager();
 
-	/**
-         *
-         */
 	private ServerManagerHolder() {
 	}
     }
+    
+    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 }

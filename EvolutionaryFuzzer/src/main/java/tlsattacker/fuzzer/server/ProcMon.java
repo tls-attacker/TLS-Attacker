@@ -19,11 +19,6 @@ import java.util.logging.Logger;
 public class ProcMon implements Runnable {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());
-
-    /**
      * Creates a new ProcessMonitor for a Process
      * 
      * @param proc
@@ -39,27 +34,25 @@ public class ProcMon implements Runnable {
 	return procMon;
     }
 
-    //
-
     /**
-     *
+     * Process to monitor
      */
 
-    private final Process _proc;
+    private final Process process;
 
     /**
-     *
+     * If the Process has completed execution
      */
-    private volatile boolean _complete;
+    private volatile boolean completed;
 
     /**
      * Private Constructor, Objects should be created with the createProcMon
      * Method
      * 
-     * @param p
+     * @param p Process to monitor
      */
     private ProcMon(Process p) {
-	_proc = p;
+	process = p;
     }
 
     /**
@@ -68,7 +61,7 @@ public class ProcMon implements Runnable {
      * @return If the process is Completed
      */
     public boolean isComplete() {
-	return _complete;
+	return completed;
     }
 
     /**
@@ -77,11 +70,12 @@ public class ProcMon implements Runnable {
     @Override
     public void run() {
 	try {
-	    _proc.waitFor();
-	    _complete = true;
+	    process.waitFor();
+	    completed = true;
 	} catch (InterruptedException ex) {
 	    LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
 	}
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(ProcMon.class.getName());
 }

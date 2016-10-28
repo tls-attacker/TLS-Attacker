@@ -19,33 +19,27 @@ import javax.xml.bind.JAXBContext;
 public class ServerSerializer {
 
     /**
-     * context initialization is expensive, we need to do that only once
+     * Context initialization is expensive, we need to do that only once
      */
     private static JAXBContext context;
 
     /**
-     *
+     * Writes a TLSServer to a File in XML format
+     * @param server Server to serialize
+     * @param file File to write to
+     * @throws Exception Thrown if something goes wrong
      */
-    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
-
-    /**
-     * 
-     * @param f
-     * @param file
-     * @throws Exception
-     */
-    public static void write(TLSServer f, File file) throws Exception {
+    public static void write(TLSServer server, File file) throws Exception { //TODO fix exception type
 	XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
-	encoder.writeObject(f);
+	encoder.writeObject(server);
 	encoder.close();
     }
 
     /**
-     * 
-     * @param file
-     * @return
-     * @throws java.io.FileNotFoundException
-     * @throws Exception
+     * Read a TLSServer from an XML file
+     * @param file File to read from
+     * @return Read ServerObject
+     * @throws FileNotFoundException If the File does not exist
      */
     public static TLSServer read(File file) throws FileNotFoundException {
 	XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
@@ -54,9 +48,8 @@ public class ServerSerializer {
 	return o;
     }
 
-    /**
-     *
-     */
     private ServerSerializer() {
     }
+    
+    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
 }

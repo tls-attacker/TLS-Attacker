@@ -32,45 +32,38 @@ import tlsattacker.fuzzer.modification.Modification;
 public class TestVector implements Serializable {
 
     /**
-     *
+     * The WorkflowTrace that should be executed with the TestVector
      */
     private WorkflowTrace trace = null;
 
     /**
-     *
+     * The serverCertificate that should be used
      */
     private ServerCertificateStructure serverKeyCert = null;
 
     /**
-     *
+     * The clientCertificate that should be used
      */
     private ClientCertificateStructure clientKeyCert = null;
 
     /**
-     *
+     * The TestVector that this TestVector was mutated from, can be null if not needed
      */
     @XmlTransient
     private TestVector parent = null;
 
     /**
-     *
+     * The List of modifications that were used to generate this TestVector.
+     * Can be null if not needed.
      */
     @XmlTransient
     private List<Modification> modificationList = null;
 
     /**
-     *
+     * The Type of ActionExecutor that should be used to execute this TestVector
      */
     private ExecutorType executorType;
 
-    /**
-     * 
-     * @param trace
-     * @param keyCertPair
-     * @param clientKeyCert
-     * @param executorType
-     * @param parent
-     */
     public TestVector(WorkflowTrace trace, ServerCertificateStructure keyCertPair,
 	    ClientCertificateStructure clientKeyCert, ExecutorType executorType, TestVector parent) {
 	this.trace = trace;
@@ -81,9 +74,6 @@ public class TestVector implements Serializable {
 	this.executorType = executorType;
     }
 
-    /**
-     *
-     */
     public TestVector() {
 	modificationList = new LinkedList<>();
     }
@@ -93,65 +83,37 @@ public class TestVector implements Serializable {
         modificationList = new LinkedList<>();
     }
 
-    /**
-     * 
-     * @return
-     */
     public ExecutorType getExecutorType() {
 	return executorType;
     }
 
-    /**
-     * 
-     * @param executorType
-     */
     public void setExecutorType(ExecutorType executorType) {
 	this.executorType = executorType;
     }
 
-    /**
-     * 
-     * @return
-     */
     public WorkflowTrace getTrace() {
 	return trace;
     }
 
-    /**
-     * 
-     * @param serverKeyCert
-     */
     public void setServerKeyCert(ServerCertificateStructure serverKeyCert) {
 	this.serverKeyCert = serverKeyCert;
     }
 
-    /**
-     * 
-     * @param clientKeyCert
-     */
     public void setClientKeyCert(ClientCertificateStructure clientKeyCert) {
 	this.clientKeyCert = clientKeyCert;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ClientCertificateStructure getClientKeyCert() {
 	return clientKeyCert;
     }
 
-    /**
-     * 
-     * @return
-     */
     public ServerCertificateStructure getServerKeyCert() {
 	return serverKeyCert;
     }
 
     /**
-     * 
-     * @param modification
+     * Adds a modification to the modification List
+     * @param modification Modification to add
      */
     public void addModification(Modification modification) {
 	if (modification != null) {
@@ -159,22 +121,13 @@ public class TestVector implements Serializable {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     public List<Modification> getModificationList() {
 	return Collections.unmodifiableList(modificationList);
     }
 
-    /**
-     * 
-     * @return
-     */
     public TestVector getParent() {
 	return parent;
     }
 
     private static final Logger LOG = Logger.getLogger(TestVector.class.getName());
-
 }

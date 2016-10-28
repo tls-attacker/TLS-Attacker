@@ -47,11 +47,6 @@ public class TestVectorSerializer {
     private static JAXBContext context;
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(TestVectorSerializer.class.getName());
-
-    /**
      * Returns an initialized JaxbContext
      * 
      * @return
@@ -91,12 +86,11 @@ public class TestVectorSerializer {
     }
 
     /**
-     * 
-     * @param outputStream
-     * @param vector
-     * @param workflowTrace
-     * @throws JAXBException
-     * @throws IOException
+     * Writes a TestVector to an Outputstream
+     * @param outputStream Outputstream to write to
+     * @param vector TestVector to serializ
+     * @throws JAXBException If something goes wrong
+     * @throws IOException If something goes wrong
      */
     public static void write(OutputStream outputStream, TestVector vector) throws JAXBException, IOException {
 	context = getJAXBContext();
@@ -107,12 +101,12 @@ public class TestVectorSerializer {
     }
 
     /**
-     * 
-     * @param inputStream
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     * @throws XMLStreamException
+     * Reads a TestVector from an InputStream
+     * @param inputStream Inputstream to read from
+     * @return Read TestVector
+     * @throws JAXBException If something goes wrong
+     * @throws IOException If something goes wrong
+     * @throws XMLStreamException If something goes wrong
      */
     public static TestVector read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
 	context = getJAXBContext();
@@ -127,9 +121,9 @@ public class TestVectorSerializer {
     }
 
     /**
-     * 
-     * @param f
-     * @return
+     * Reads all TestVectors from a Folder
+     * @param f Folder to read from
+     * @return All TestVectors that were readable from the folder
      */
     public static List<TestVector> readFolder(File f) {
 	if (f.isDirectory()) {
@@ -157,11 +151,8 @@ public class TestVectorSerializer {
 
     }
 
-    /**
-     *
-     */
     private TestVectorSerializer() {
-
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(TestVectorSerializer.class.getName());
 }
