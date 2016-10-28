@@ -10,39 +10,32 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.modification.Modification;
-import tlsattacker.fuzzer.modification.ModificationType;
 import tlsattacker.fuzzer.result.Result;
-import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
- * A rule which counts the applied modifications
+ * A Rule which counts the applied modifications
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeModificationRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(AnalyzeModificationRule.class.getName());
-
-    /**
-     *
+     * The number of TestVectors this rule saw
      */
     private long executedTraces = 0;
 
     /**
-     *
+     * A list which stores counters how often it saw each modification type
      */
-    private final HashMap<ModificationType, MutableInt> typeMap;
+    private final List<ModificationCounter> counterList;
 
     /**
-     *
+     * The configuration object for this rule
      */
     private AnalyzeModificationRuleConfig config;
 
@@ -60,14 +53,14 @@ public class AnalyzeModificationRule extends Rule {
 	    config = new AnalyzeModificationRuleConfig();
 	    writeConfig(config);
 	}
-	typeMap = new HashMap<>();
+	counterList = new LinkedList<>();
 
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * This rule applies to all TestVectors
+     * @param result Result to analyze
+     * @return True
      */
     @Override
     public boolean applies(Result result) {
@@ -75,40 +68,59 @@ public class AnalyzeModificationRule extends Rule {
     }
 
     /**
-     * 
+     * Counts the modifications on the Result
      * @param result
      */
     @Override
     public void onApply(Result result) {
 	executedTraces++;
 	for (Modification mod : result.getVector().getModificationList()) {
-	    MutableInt i = typeMap.get(mod.getType());
-	    if (i == null) {
-		typeMap.put(mod.getType(), new MutableInt(1));
+	    ModificationCounter counter = getCounter(mod);
+	    if (counter == null) {
+		counter = new ModificationCounter(mod.getType());
+                counter.incrementCounter();
+                counterList.add(counter);
 	    } else {
-		i.addValue(1);
+		counter.incrementCounter();
 	    }
 	}
     }
+    
+    /**
+     * Tries to find a ModificationCounter in the counterList, if non is found null is returned
+     * @param type Type of counter to search for
+     * @return Found counter or null
+     */
+    public ModificationCounter getCounter(Modification type)
+    {
+        for(ModificationCounter counter : counterList)
+        {
+            if(type != null && counter.getType().equals(type.getType()))
+            {
+                return counter;
+            }
+        }
+        return null;
+    }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
     /**
-     * 
+     * Generates a status report
      * @return
      */
     @Override
     public String report() {
 	if (executedTraces > 0) {
-	    StringBuilder b = new StringBuilder("Modifications which the Mutator applied:\n");
-	    for (Entry<ModificationType, MutableInt> e : typeMap.entrySet()) {
-		b.append(e.getKey().name()).append(" Count:").append(e.getValue().getValue()).append("\n");
+	    StringBuilder b = new StringBuilder("Modifications applied:\n");
+	    for (ModificationCounter counter : counterList) {
+		b.append(counter.getType().name()).append(" Count:").append(counter.getCounter()).append("\n");
 	    }
 	    return b.toString();
 	} else {
@@ -116,30 +128,18 @@ public class AnalyzeModificationRule extends Rule {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     public long getExecutedTraces() {
 	return executedTraces;
     }
 
-    /**
-     * 
-     * @return
-     */
-    public HashMap<ModificationType, MutableInt> getTypeMap() {
-	// TODO can we do sth like unmodifiable map?
-	return typeMap;
+    public List<ModificationCounter> getCounterList() {
+	return counterList;
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public AnalyzeModificationRuleConfig getConfig() {
 	return config;
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 }

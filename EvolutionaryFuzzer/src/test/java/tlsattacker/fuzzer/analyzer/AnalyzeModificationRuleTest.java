@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.util.FileHelper;
 import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -150,11 +151,11 @@ public class AnalyzeModificationRuleTest {
 	rule.onApply(result);
 	vector.addModification(new AddMessageModification(new ServerHelloDoneMessage(), new SendAction()));
 	rule.onApply(result);
-	HashMap<ModificationType, MutableInt> typeMap = rule.getTypeMap();
-	MutableInt val = typeMap.get(ModificationType.ADD_RECORD);
-	assertTrue(val.getValue() == 2);
-	val = typeMap.get(ModificationType.ADD_MESSAGE);
-	assertTrue(val.getValue() == 3);
+	List<ModificationCounter> counterList= rule.getCounterList();
+	ModificationCounter counter = counterList.get(1);
+	assertTrue(counter.getCounter() == 2);
+	counter = counterList.get(0);
+	assertTrue(counter.getCounter() == 3);
     }
 
     private static final Logger LOG = Logger.getLogger(AnalyzeModificationRuleTest.class.getName());
