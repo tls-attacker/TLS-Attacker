@@ -21,61 +21,37 @@ import java.util.logging.Logger;
 public class ServerCertificateStructure implements Serializable {
 
     /**
-     *
+     * The file which contains the private key
      */
     private File keyFile;
 
     /**
-     *
+     * The file which contains the certificate
      */
     private File certificateFile;
 
-    /**
-     * 
-     * @param keyFile
-     * @param certificateFile
-     */
     public ServerCertificateStructure(File keyFile, File certificateFile) {
 	this.keyFile = keyFile;
 	this.certificateFile = certificateFile;
     }
 
-    /**
-     *
-     */
     public ServerCertificateStructure() {
 	this.keyFile = null;
 	this.certificateFile = null;
     }
 
-    /**
-     * 
-     * @return
-     */
     public File getKeyFile() {
 	return keyFile;
     }
 
-    /**
-     * 
-     * @param keyFile
-     */
     public void setKeyFile(File keyFile) {
 	this.keyFile = keyFile;
     }
 
-    /**
-     * 
-     * @return
-     */
     public File getCertificateFile() {
 	return certificateFile;
     }
 
-    /**
-     * 
-     * @param certificateFile
-     */
     public void setCertificateFile(File certificateFile) {
 	this.certificateFile = certificateFile;
     }

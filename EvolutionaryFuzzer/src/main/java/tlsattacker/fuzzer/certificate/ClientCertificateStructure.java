@@ -21,85 +21,52 @@ import java.util.logging.Logger;
 public class ClientCertificateStructure implements Serializable {
 
     /**
-     *
+     * Password for the JKS file
      */
     private String password;
 
     /**
-     *
+     * Alias of the Certificate in the JKS File
      */
     private String alias;
 
     /**
-     *
+     * The JKS file
      */
     private File JKSfile;
 
-    /**
-     * 
-     * @param password
-     * @param alias
-     * @param JKSfile
-     */
     public ClientCertificateStructure(String password, String alias, File JKSfile) {
 	this.password = password;
 	this.alias = alias;
 	this.JKSfile = JKSfile;
     }
 
-    /**
-     *
-     */
     public ClientCertificateStructure() {
 	password = null;
 	alias = null;
 	JKSfile = null;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getPassword() {
 	return password;
     }
 
-    /**
-     * 
-     * @param password
-     */
     public void setPassword(String password) {
 	this.password = password;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getAlias() {
 	return alias;
     }
 
-    /**
-     * 
-     * @param alias
-     */
     public void setAlias(String alias) {
 	this.alias = alias;
     }
 
-    /**
-     * 
-     * @return
-     */
     public File getJKSfile() {
 	return JKSfile;
     }
 
-    /**
-     * 
-     * @param JKSfile
-     */
     public void setJKSfile(File JKSfile) {
 	this.JKSfile = JKSfile;
     }

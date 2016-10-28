@@ -44,84 +44,57 @@ import tlsattacker.fuzzer.config.ConfigManager;
 public class TimeoutCalibrator {
 
     /**
-     *
-     */
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
-	    .getName());
-    // We try to find the lowest Timeout that does not alter with Workflow
-    // execution and
-    // then multiply the number with the gain Factor
-
-    /**
-     *
+     * We try to find the lowest Timeout that does not alter with Workflow
+     * execution and
+     * then multiply the number with the gain Factor
      */
     private double gainFactor = 0.2;
 
     /**
-     *
+     * The highest timeout the calibrator consideres as useful
      */
     private int limit = 1000;
 
     /**
-     *
+     * The configuration used for this command
      */
     private final CalibrationConfig config;
 
-    /**
-     * 
-     * @param config
-     */
     public TimeoutCalibrator(CalibrationConfig config) {
 	this.config = config;
 	Security.addProvider(new BouncyCastleProvider());
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getLimit() {
 	return limit;
     }
 
-    /**
-     * 
-     * @param limit
-     */
     public void setLimit(int limit) {
 	this.limit = limit;
     }
 
-    /**
-     * 
-     * @return
-     */
     public double getGainFactor() {
 	return gainFactor;
     }
 
-    /**
-     * 
-     * @param gainFactor
-     */
     public void setGainFactor(double gainFactor) {
 	this.gainFactor = gainFactor;
     }
 
     /**
-     * 
-     * @return
+     * Calibrates the lowest timeout that all ciphersuites did support and multiplies it with the gain factor
+     * @return Lowest timeout possible * gain factor
      */
     public int calibrateTimeout() {
 	LOG.log(Level.INFO, "Calibrating Timeout, this may take some time.");
-	return (int) (getHighestTimeoutGlobal() * gainFactor);
+	return (int) (getLowestTimoutGlobal() * gainFactor);
     }
 
     /**
-     * 
-     * @return
+     * Calibrates the lowest timeout that all ciphersuite did support
+     * @return Lowest timout supported
      */
-    private int getHighestTimeoutGlobal() {
+    private int getLowestTimoutGlobal() {
 	int highestTimeout = 0;
 	FixedCertificateMutator mutator = new FixedCertificateMutator();
 
@@ -145,9 +118,9 @@ public class TimeoutCalibrator {
     }
 
     /**
-     * 
-     * @param serverCerts
-     * @return
+     * Tries to find all Ciphersuites that the server certificate supports
+     * @param serverCerts The certificate to start the server with
+     * @return List of all ciphersuites that the server certificate supports
      */
     private List<CipherSuite> getWorkingCiphersuites(ServerCertificateStructure serverCerts) {
 	List<CipherSuite> workingCipherSuites = new LinkedList<>();
@@ -162,11 +135,12 @@ public class TimeoutCalibrator {
     }
 
     /**
-     * Test of executeWorkflow method, of class WorkflowExecutor.
+     * Tests if a ciphersuite leads to a succesful handshake with the server with the specified timeout and certificate
      * 
-     * @param algorithm
-     * @param port
-     * @return
+     * @param serverCerts The certificate the server should be started with
+     * @param suite The ciphersuite be tested
+     * @param timeout The timeout that should be used
+     * @return True if a successful handshake was executed with the server
      */
     public boolean testCiphersuite(ServerCertificateStructure serverCerts, CipherSuite suite, int timeout) {
 
@@ -191,7 +165,7 @@ public class TimeoutCalibrator {
 	    List<CipherSuite> supportedCipers = new LinkedList<>();
 	    supportedCipers.add(suite);
 	    config.setCipherSuites(supportedCipers);
-	    result &= testExecuteWorkflow(configHandler, config, agent, server);
+	    result &= executeWorkflow(configHandler, config, agent, server);
 	    agent.applicationStop(server);
 	} catch (Exception E) {
 	    return false;
@@ -201,17 +175,15 @@ public class TimeoutCalibrator {
 	return result;
     }
 
-    // TODO cleantup
-
     /**
-     * 
-     * @param configHandler
-     * @param config
-     * @param agent
-     * @param server
-     * @return
+     * Executes a workflow specified in the client command config
+     * @param configHandler Configuration handler used
+     * @param config ClientCommandConfig which ultimately contains the TLSContext
+     * @param agent The Agent that should be used
+     * @param server The Server that should be used
+     * @return True if the Workflowtrace did successfully execute
      */
-    private boolean testExecuteWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent,
+    private boolean executeWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent,
 	    TLSServer server) {
 
 	long time = System.currentTimeMillis();
@@ -253,9 +225,9 @@ public class TimeoutCalibrator {
     }
 
     /**
-     * 
-     * @param trace
-     * @return
+     * Tests if all required messages were actually received in a WorkflowTrace
+     * @param trace WorkflowTrace  to analyze
+     * @return True if all required messages were actually received
      */
     private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
 	int counter = 0;
@@ -279,10 +251,10 @@ public class TimeoutCalibrator {
     }
 
     /**
-     * 
-     * @param serverCerts
-     * @param suite
-     * @return
+     * Tries to find the lowest timeout for a ciphersuite
+     * @param serverCerts Certificate to start the Server with
+     * @param suite Ciphersuite to test
+     * @return Lowest timeout in milliseconds
      */
     private int getSmallestTimeoutPossible(ServerCertificateStructure serverCerts, CipherSuite suite) {
 	int lowerEnd = 0;
@@ -306,5 +278,7 @@ public class TimeoutCalibrator {
 	} while (testedTimeout != lowerEnd && testedTimeout != higherEnd);
 	return testedTimeout;
     }
-
+    
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
+	    .getName());
 }
