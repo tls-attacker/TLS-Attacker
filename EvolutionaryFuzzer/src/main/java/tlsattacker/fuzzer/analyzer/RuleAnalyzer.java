@@ -61,6 +61,13 @@ public class RuleAnalyzer extends Analyzer {
 	ruleList.add(new AnalyzeGoodModificationRule(config));
 	ruleList.add(new ProtocolVersionRule(config));
 	ruleList.add(new EarlyHeartbeatRule(config));
+        for(Rule r : ruleList)
+        {
+            if(!r.isActive())
+            {
+                ruleList.remove(r);
+            }
+        }
     }
 
     /**
