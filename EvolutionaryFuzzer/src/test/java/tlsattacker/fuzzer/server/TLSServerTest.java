@@ -86,7 +86,7 @@ public class TLSServerTest {
 	CertificateMutator mut = new UnitTestCertificateMutator();
 	ServerCertificateStructure cert = mut.getServerCertificateStructure();
 	server.start("", cert.getCertificateFile(), cert.getKeyFile());
-	server.serverIsRunning();
+	server.serverHasBooted();
     }
 
     /**
@@ -98,7 +98,7 @@ public class TLSServerTest {
 	CertificateMutator mut = new UnitTestCertificateMutator();
 	ServerCertificateStructure cert = mut.getServerCertificateStructure();
 	server.start("", cert.getCertificateFile(), cert.getKeyFile());
-	server.serverIsRunning();
+	server.serverHasBooted();
     }
 
     /**
