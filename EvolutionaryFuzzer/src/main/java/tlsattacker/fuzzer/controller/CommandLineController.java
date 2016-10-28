@@ -168,7 +168,7 @@ public class CommandLineController extends Controller {
 			    writer = new PrintWriter(file, "UTF-8");
 			    Map<Edge, Edge> set = trace.getEdgeMap();
 			    for (Edge edge : set.values()) {
-				writer.println(edge.getA() + " " + edge.getB());
+				writer.println(edge.getSource() + " " + edge.getDestination());
 			    }
 			    writer.close();
 			} catch (FileNotFoundException ex) {

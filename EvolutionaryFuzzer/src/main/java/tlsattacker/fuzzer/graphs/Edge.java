@@ -19,76 +19,49 @@ import java.util.logging.Logger;
 public class Edge implements Serializable {
 
     /**
-     *
+     * SerialVersion Unique Identifier for version compatibility
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     *
+     * Edge Source probeID
      */
-    private static final Logger LOG = Logger.getLogger(Edge.class.getName());
+    private final long source;
 
     /**
-     *
+     * Edge Destination probeID
      */
-    private final long a;
+    private final long Destination;
 
     /**
-     *
-     */
-    private final long b;
-
-    /**
-     *
+     * A counter which counts how often this edge has been seen
      */
     private long counter = 0;
 
-    /**
-     * Default Constructor
-     * 
-     * @param a
-     * @param b
-     */
-    public Edge(long a, long b) {
-	this.a = a;
-	this.b = b;
+    public Edge(long source, long destination) {
+	this.source = source;
+	this.Destination = destination;
     }
 
-    /**
-     * 
-     * @return
-     */
-    public long getA() {
-	return a;
+    public long getSource() {
+	return source;
     }
 
-    /**
-     * 
-     * @return
-     */
-    public long getB() {
-	return b;
+    public long getDestination() {
+	return Destination;
     }
 
-    /**
-     * 
-     * @return
-     */
     public long getCounter() {
 	return counter;
     }
 
-    /**
-     * 
-     * @param counter
-     */
     public void setCounter(long counter) {
 	this.counter = counter;
     }
 
     /**
-     * 
-     * @param counter
+     * Adds a value to counter
+     * @param counter Value to increase the counter by
      */
     public void addCounter(long counter) {
 	this.counter += counter;
@@ -97,8 +70,8 @@ public class Edge implements Serializable {
     @Override
     public int hashCode() {
 	int hash = 7;
-	hash = 41 * hash + (int) (this.a ^ (this.a >>> 32));
-	hash = 41 * hash + (int) (this.b ^ (this.b >>> 32));
+	hash = 41 * hash + (int) (this.source ^ (this.source >>> 32));
+	hash = 41 * hash + (int) (this.Destination ^ (this.Destination >>> 32));
 	return hash;
     }
 
@@ -111,10 +84,11 @@ public class Edge implements Serializable {
 	    return false;
 	}
 	final Edge other = (Edge) obj;
-	if (this.a != other.a) {
+	if (this.source != other.source) {
 	    return false;
 	}
-	return this.b == other.b;
+	return this.Destination == other.Destination;
     }
 
+    private static final Logger LOG = Logger.getLogger(Edge.class.getName());
 }

@@ -17,79 +17,45 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BranchVertex {
-
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(BranchVertex.class.getName());
-
-    /**
-     *
+     * The identifier of this Codeblock
      */
     private long probeID;
 
     /**
-     *
+     * The type of this codeblock
      */
     private Blocktype type;
 
     /**
-     *
+     * A label for this Codeblock
      */
     private String label;
 
-    /**
-     * 
-     * @param probeID
-     * @param type
-     */
     public BranchVertex(long probeID, Blocktype type) {
 	this.probeID = probeID;
 	this.type = type;
 	label = "";
     }
 
-    /**
-     * 
-     * @param probeID
-     * @param type
-     * @param label
-     */
     public BranchVertex(long probeID, Blocktype type, String label) {
 	this.probeID = probeID;
 	this.type = type;
 	this.label = label;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getLabel() {
 	return label;
     }
 
-    /**
-     * 
-     * @return
-     */
     public long getProbeID() {
 	return probeID;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Blocktype getType() {
 	return type;
     }
 
-    /**
-     * 
-     * @param other
-     * @return
-     */
     @Override
     public boolean equals(Object other) {
 	if (other.getClass().equals(this.getClass())) {
@@ -110,11 +76,13 @@ public class BranchVertex {
     }
 
     /**
-     * 
-     * @return
+     * Returns a Human readable representation of this Object
+     * @return A Human readable representation of this Object
      */
     @Override
     public String toString() {
 	return "CountVertice{" + "probeID=" + probeID + '}';
     }
+
+    private static final Logger LOG = Logger.getLogger(BranchVertex.class.getName());
 }

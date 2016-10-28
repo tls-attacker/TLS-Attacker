@@ -31,30 +31,16 @@ import tlsattacker.fuzzer.result.MergeResult;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BranchTrace implements Serializable {
-
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
-
-    // A Map which maps ProbeIDs to Vertices to better Acess the Vertices in the
-    // Graph
-
-    /**
-     *
+     * The set of already seen Codeblocks
      */
     private Set<Long> verticesSet = null;
 
     /**
-     *
+     * A map of already seen Edges, implemented as a Map for performance reasons
      */
     private Map<Edge, Edge> edgeMap = null;
 
-    /**
-     * 
-     * @param verticesSet
-     * @param edgeMap
-     */
     public BranchTrace(Set<Long> verticesSet, Map<Edge, Edge> edgeMap) {
 	this.verticesSet = verticesSet;
 	this.edgeMap = edgeMap;
@@ -68,27 +54,19 @@ public class BranchTrace implements Serializable {
 	edgeMap = new HashMap<>();
 
     }
-
-    /**
-     * 
-     * @return
-     */
+    
     public Set<Long> getVerticesSet() {
 	return Collections.unmodifiableSet(verticesSet);
     }
 
-    /**
-     * 
-     * @return
-     */
     public Map<Edge, Edge> getEdgeMap() {
 	return Collections.unmodifiableMap(edgeMap);
     }
 
     /**
-     * 
-     * @param trace
-     * @return
+     * Merges another BranchTrace into this one and returns a result object which shows how many new codeblocks or branches were detected. This BranchTrace contains all branches and codeblocks of both BranchTraces after execution.
+     * @param trace The BranchTrace to merge with
+     * @return A MergeResult which keeps track of merge statistics
      */
     public MergeResult merge(BranchTrace trace) {
 	int newVertices = 0;
@@ -112,20 +90,13 @@ public class BranchTrace implements Serializable {
 	return new MergeResult(newVertices, newEdges, hitVertices);
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getVerticesCount() {
 	return verticesSet.size();
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getBranchCount() {
 	return edgeMap.size();
     }
 
+    private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 }
