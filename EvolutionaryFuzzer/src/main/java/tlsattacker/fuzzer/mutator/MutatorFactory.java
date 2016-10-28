@@ -21,11 +21,11 @@ import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 public class MutatorFactory {
 
     /**
-     * 
-     * @param certMutator
-     * @param config
-     * @return
-     * @throws IllegalMutatorException
+     * Generates the correct mutator as specified in the config
+     * @param certMutator CertificateMutator to use
+     * @param config Config to use
+     * @return A newly generated Mutator
+     * @throws IllegalMutatorException If the specified Mutator is invalid
      */
     public static Mutator getMutator(CertificateMutator certMutator, EvolutionaryFuzzerConfig config)
 	    throws IllegalMutatorException {
@@ -40,9 +40,6 @@ public class MutatorFactory {
 	}
     }
 
-    /**
-     *
-     */
     private MutatorFactory() {
     }
 
