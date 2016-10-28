@@ -27,10 +27,10 @@ public class ServerSerializer {
      * Writes a TLSServer to a File in XML format
      * @param server Server to serialize
      * @param file File to write to
-     * @throws Exception Thrown if something goes wrong
+     * @throws FileNotFoundException Thrown if the File does not exist
      */
-    public static void write(TLSServer server, File file) throws Exception { //TODO fix exception type
-	XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
+    public static void write(TLSServer server, File file) throws FileNotFoundException { 
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
 	encoder.writeObject(server);
 	encoder.close();
     }
