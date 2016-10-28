@@ -20,27 +20,18 @@ import java.util.logging.Logger;
 public class TraceTypesConfig {
 
     /**
-     *
+     * The folder which contains the TestVectors that should be analyzed
      */
     @Parameter(names = "-output", description = "The Folder with the TestVectors which should be analyzed")
     String traceTypesFolder = "data/uniqueFlows";
 
-    /**
-     * 
-     * @return
-     */
     public String getTraceTypesFolder() {
 	return traceTypesFolder;
     }
 
-    /**
-     * 
-     * @param traceTypesFolder
-     */
     public void setTraceTypesFolder(String traceTypesFolder) {
 	this.traceTypesFolder = traceTypesFolder;
     }
 
     private static final Logger LOG = Logger.getLogger(TraceTypesConfig.class.getName());
-
 }

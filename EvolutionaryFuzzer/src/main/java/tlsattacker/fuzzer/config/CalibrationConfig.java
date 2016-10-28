@@ -19,45 +19,29 @@ import java.util.logging.Logger;
 public class CalibrationConfig extends FuzzerGeneralConfig {
 
     /**
-     *
+     * A factor by which the calibrator should increase the calculated timeout
      */
     @Parameter(names = "-gain", required = false, description = "Increase Timeout by this factor")
     private double gain = 1.2;
 
     /**
-     *
+     * The highest timeout the Calibrator should consider
      */
     @Parameter(names = "-limit", required = false, description = "Do not look for timeouts greater than this Limit", validateWith = PercentageValidator.class)
     private int timeoutLimit = 4000;
 
-    /**
-     * 
-     * @return
-     */
     public double getGain() {
 	return gain;
     }
 
-    /**
-     * 
-     * @param gain
-     */
     public void setGain(double gain) {
 	this.gain = gain;
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getTimeoutLimit() {
 	return timeoutLimit;
     }
 
-    /**
-     * 
-     * @param timeoutLimit
-     */
     public void setTimeoutLimit(int timeoutLimit) {
 	this.timeoutLimit = timeoutLimit;
     }

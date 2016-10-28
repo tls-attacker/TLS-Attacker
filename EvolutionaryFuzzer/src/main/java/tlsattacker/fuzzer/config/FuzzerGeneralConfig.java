@@ -22,97 +22,61 @@ import java.util.logging.Logger;
 public class FuzzerGeneralConfig extends ClientCommandConfig {
 
     /**
-     *
+     * The agent that should be used
      */
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN, BLIND")
     protected String agent = "AFL";
 
     /**
-     *
+     * The folder with the configuration files
      */
     @Parameter(names = "-config_folder", description = "The Folder in which the config Files are", converter = FileConverter.class)
     protected String configFolder = "config/";
 
     /**
-     *
+     * If a random port should be used on every server start
      */
     @Parameter(names = "-random_port", description = "Uses random ports for the Server")
     private boolean randomPort = false;
 
     /**
-     *
+     * If the server should be used with the kill command specified in the server config
      */
     @Parameter(names = "-use_kill", description = "Uses the kill command specified in the server configuration files.")
     private boolean useKill = false;
 
-    /**
-     * 
-     * @return
-     */
     public String getCertificateMutatorConfigFolder() {
 	return configFolder + "mutator/certificate/";
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isUseKill() {
 	return useKill;
     }
 
-    /**
-     * 
-     * @param useKill
-     */
     public void setUseKill(boolean useKill) {
 	this.useKill = useKill;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getConfigFolder() {
 	return configFolder;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getMutatorConfigFolder() {
 	return configFolder + "mutator/";
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isRandomPort() {
 	return randomPort;
     }
 
-    /**
-     * 
-     * @param randomPort
-     */
     public void setRandomPort(boolean randomPort) {
 	this.randomPort = randomPort;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getAnalyzerConfigFolder() {
 	return configFolder + "analyzer/";
     }
 
-    /**
-     * 
-     * @param configFolder
-     */
     public void setConfigFolder(String configFolder) {
 	this.configFolder = configFolder;
 	File f = new File(configFolder);
@@ -125,27 +89,14 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 	f.mkdirs();
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getAgent() {
 	return agent;
     }
 
-    /**
-     * 
-     * @param agent
-     */
     public void setAgent(String agent) {
 	this.agent = agent;
     }
 
-    /**
-     * Returns the path to the ServerConfig File
-     * 
-     * @return Path to the ServerConfig File
-     */
     public String getServerCommandFromFile() {
 	return configFolder + "server/";
     }

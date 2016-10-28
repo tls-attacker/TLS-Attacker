@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class ConfigManager {
 
     /**
-     * 
+     * Returns the ConfigManager instance
      * @return
      */
     public static ConfigManager getInstance() {
@@ -26,46 +26,32 @@ public class ConfigManager {
     }
 
     /**
-     *
+     * The Config the class manages
      */
     private EvolutionaryFuzzerConfig config;
 
-    /**
-     *
-     */
     private ConfigManager() {
 	config = new EvolutionaryFuzzerConfig();
     }
 
-    /**
-     * 
-     * @return
-     */
     public EvolutionaryFuzzerConfig getConfig() {
 	return config;
     }
 
-    /**
-     * 
-     * @param config
-     */
     public void setConfig(EvolutionaryFuzzerConfig config) {
 	this.config = config;
     }
 
     /**
-     *
+     * Singleton
      */
     private static class ConfigManagerHolder {
 
 	/**
-         *
+         * Singleton
          */
 	private static final ConfigManager INSTANCE = new ConfigManager();
 
-	/**
-         *
-         */
 	private ConfigManagerHolder() {
 	}
     }
