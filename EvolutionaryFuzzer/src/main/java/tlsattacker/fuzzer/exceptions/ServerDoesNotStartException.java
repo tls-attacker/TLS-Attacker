@@ -16,17 +16,9 @@ import java.util.logging.Logger;
  */
 public class ServerDoesNotStartException extends RuntimeException {
 
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(ServerDoesNotStartException.class.getName());
-
-    /**
-     * 
-     * @param message
-     */
     public ServerDoesNotStartException(String message) {
 	super(message);
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(ServerDoesNotStartException.class.getName());
 }

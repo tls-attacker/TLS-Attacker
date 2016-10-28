@@ -16,10 +16,6 @@ import java.util.logging.Logger;
  */
 public class IllegalControllerException extends Exception {
 
-    /**
-     * 
-     * @param string
-     */
     public IllegalControllerException(String string) {
 	super(string);
     }

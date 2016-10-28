@@ -17,25 +17,16 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Controller {
-
-    // The config used by the Fuzzer
-
     /**
-     *
+     * The config used by the Fuzzer
      */
     protected EvolutionaryFuzzerConfig config;
 
-    // Is the Fuzzing Process running?
-
     /**
-     *
+     * Is the Fuzzing Process running?
      */
     protected boolean isRunning;
 
-    /**
-     * 
-     * @param config
-     */
     public Controller(EvolutionaryFuzzerConfig config) {
 	this.config = config;
     }
@@ -60,7 +51,7 @@ public abstract class Controller {
     }
 
     /**
-     *
+     * Starts the interface
      */
     public abstract void startInterface();
 

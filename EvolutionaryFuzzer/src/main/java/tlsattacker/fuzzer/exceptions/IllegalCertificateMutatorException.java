@@ -16,10 +16,6 @@ import java.util.logging.Logger;
  */
 public class IllegalCertificateMutatorException extends Exception {
 
-    /**
-     * 
-     * @param string
-     */
     public IllegalCertificateMutatorException(String string) {
 	super(string);
     }

@@ -31,23 +31,20 @@ public class FixedCertificateMutatorConfig implements Serializable {
     // Fixes the configuration File after a selftest and serializes it
 
     /**
-     *
+     * If set, the Configuration file deletes all incompatible or not found certificates after calibration
      */
     private boolean autofix = true;
 
     /**
-     *
+     * The list of client certificates
      */
     private List<ClientCertificateStructure> clientCertificates;
 
     /**
-     *
+     * The list of server certificates
      */
     private List<ServerCertificateStructure> serverCertificates;
 
-    /**
-     *
-     */
     public FixedCertificateMutatorConfig() {
 	clientCertificates = new ArrayList<>();
 	// Initialize the Config File with some certificates if we can find them
@@ -66,54 +63,29 @@ public class FixedCertificateMutatorConfig implements Serializable {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isAutofix() {
 	return autofix;
     }
 
-    /**
-     * 
-     * @param autofix
-     */
     public void setAutofix(boolean autofix) {
 	this.autofix = autofix;
     }
 
-    /**
-     * 
-     * @return
-     */
     public List<ClientCertificateStructure> getClientCertificates() {
 	return Collections.unmodifiableList(clientCertificates);
     }
 
-    /**
-     * 
-     * @param clientCertificates
-     */
     public void setClientCertificates(List<ClientCertificateStructure> clientCertificates) {
 	this.clientCertificates = clientCertificates;
     }
 
-    /**
-     * 
-     * @return
-     */
     public List<ServerCertificateStructure> getServerCertificates() {
 	return Collections.unmodifiableList(serverCertificates);
     }
 
-    /**
-     * 
-     * @param serverCertificates
-     */
     public void setServerCertificates(List<ServerCertificateStructure> serverCertificates) {
 	this.serverCertificates = serverCertificates;
     }
 
     private static final Logger LOG = Logger.getLogger(FixedCertificateMutatorConfig.class.getName());
-
 }

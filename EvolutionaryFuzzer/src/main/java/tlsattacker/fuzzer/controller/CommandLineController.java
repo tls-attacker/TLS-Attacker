@@ -38,32 +38,23 @@ import java.util.Set;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CommandLineController extends Controller {
-
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
-
-    /**
-     *
+     * The name of the Controller when referred by command line
      */
     public static final String optionName = "commandline";
-    // Chosen Mutator
 
     /**
-     *
+     * Chosen Mutator
      */
     private final Mutator mutator;
-    // Chosen Certificate Mutator
-
+    
     /**
-     *
+     * Chosen CertificateMutator
      */
     private final CertificateMutator certMutator;
-    // ThreadPool to start or stop
-
+    
     /**
-     *
+     * The used ThreadPool for the fuzzer
      */
     private final ExecutorThreadPool pool;
 
@@ -112,7 +103,7 @@ public class CommandLineController extends Controller {
     }
 
     /**
-     *
+     * Starts the commandline interface
      */
     @Override
     public void startInterface() {
@@ -299,4 +290,5 @@ public class CommandLineController extends Controller {
 	}
     }
 
+    private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
 }
