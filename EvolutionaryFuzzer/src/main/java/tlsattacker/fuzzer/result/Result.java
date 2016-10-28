@@ -20,52 +20,39 @@ import tlsattacker.fuzzer.testvector.TestVector;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Result {
-
+    
     /**
-     *
+     * If the Implementation has Crashed
      */
-    private static final Logger LOG = Logger.getLogger(Result.class.getName());
-
-    // If the Implementation has Crashed
-
-    /**
-     *
-     */
-
     private final boolean hasCrashed;
-    // If the Implementation did Timeout
-
+    
     /**
-     *
+     * If the Implementation did Timeout
      */
     private boolean didTimeout;
-    // The Unixtime @ which the Vector started executing
-
+    
     /**
-     *
+     * The Unixtime @ which the Vector started executing
      */
     private final long startTime;
-    // The Unixtime @ which the Vector finished executing
-
+    
     /**
-     *
+     * The Unixtime @ which the Vector finished executing
      */
     private final long stopTime;
-    // File Containing all the ProbeIDs
-
+    
     /**
-     *
+     * The instrumentation result
      */
     private final BranchTrace branchTrace;
 
     /**
-     *
+     * The TestVector that was executed
      */
     private final TestVector vector;
-    // Each Result get an id for easier referencing, the id is also in
-
+ 
     /**
-     *
+     * Each Result get an id for easier referencing
      */
     private final String id;
 
@@ -95,80 +82,38 @@ public class Result {
 	this.id = id;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Boolean isGoodTrace() {
 	return goodTrace;
     }
 
-    /**
-     * 
-     * @param wasGoodTrace
-     */
     public void setGoodTrace(Boolean wasGoodTrace) {
 	this.goodTrace = wasGoodTrace;
     }
 
-    /**
-     * 
-     * @param didTimeout
-     */
     public void setDidTimeout(boolean didTimeout) {
 	this.didTimeout = didTimeout;
     }
 
-    /**
-     * Returns the ID of the Result
-     * 
-     * @return ID of the result
-     */
     public String getId() {
 	return id;
     }
 
-    /**
-     * Returns if the Implementation did Crash
-     * 
-     * @return if the Implementation did Crash
-     */
     public boolean hasCrashed() {
 	return hasCrashed;
     }
 
-    /**
-     * Returns if the Implementation did Timeout
-     * 
-     * @return if the Implementation did Timeout
-     */
     public boolean didTimeout() {
 	return didTimeout;
     }
 
-    /**
-     * Returns the Unixtime at which the Vector started executing
-     * 
-     * @return Unixtime at which the Vector started executing
-     */
     public long getStartTime() {
 	return startTime;
     }
 
-    /**
-     * Returns the Unixtime at which the Vector stopped executing
-     * 
-     * @return Unixtime at which the Vector stopped executing
-     */
     public long getStopTime() {
 	return stopTime;
     }
 
-    /**
-     * Returns a File containing a List of ProbeIDs
-     * 
-     * @return File containing a List of ProbeIDs
-     */
     public BranchTrace getBranchTrace() {
 	return branchTrace;
     }
@@ -179,12 +124,9 @@ public class Result {
 		+ ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
     }
 
-    /**
-     * 
-     * @return
-     */
     public TestVector getVector() {
 	return vector;
     }
 
+    private static final Logger LOG = Logger.getLogger(Result.class.getName());
 }

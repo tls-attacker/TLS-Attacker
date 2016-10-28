@@ -20,31 +20,20 @@ import java.util.logging.Logger;
 public class MergeResult {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(MergeResult.class.getName());
-
-    /**
-     *
+     * Number of newly discovered Code blocks
      */
     private int newVertices = 0;
 
     /**
-     *
+     * Number of newly discovered Code branches
      */
     private int newBranches = 0;
 
     /**
-     *
+     * Number of hit Vertices
      */
     private int hitVertices = 0;
 
-    /**
-     * 
-     * @param newVertices
-     * @param newBranches
-     * @param hitVertices
-     */
     public MergeResult(int newVertices, int newBranches, int hitVertices) {
 	this.hitVertices = hitVertices;
 	this.newBranches = newBranches;
@@ -52,36 +41,22 @@ public class MergeResult {
 
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getNewVertices() {
 	return newVertices;
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getNewBranches() {
 	return newBranches;
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getHitVertices() {
 	return hitVertices;
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public String toString() {
 	return "New Vertices:" + newVertices + "  New Branches:" + newBranches + "  Hit Verticies:" + hitVertices;
     }
+
+    private static final Logger LOG = Logger.getLogger(MergeResult.class.getName());
 }
