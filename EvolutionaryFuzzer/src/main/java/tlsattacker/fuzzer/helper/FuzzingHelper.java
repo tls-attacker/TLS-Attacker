@@ -186,8 +186,14 @@ public class FuzzingHelper {
 	    int randomPM = random.nextInt(protocolMessages.size());
 	    ProtocolMessage pm = protocolMessages.get(randomPM);
 	    Record r = new Record();
-	    r.setMaxRecordLengthConfig(random.nextInt(50));// TODO can we make
-	    // this more crazy?
+            if(random.nextInt(100)< 2)
+            {
+                r.setMaxRecordLengthConfig(random.nextInt(500000));
+            }
+            else
+            {
+                r.setMaxRecordLengthConfig(random.nextInt(50));
+            }
 	    pm.addRecord(r);
 	    return new AddRecordModification(pm);
 
