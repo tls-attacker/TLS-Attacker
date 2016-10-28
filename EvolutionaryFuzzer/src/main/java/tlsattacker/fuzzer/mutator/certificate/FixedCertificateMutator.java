@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.annotation.XmlTransient;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.ConfigManager;
@@ -38,45 +39,38 @@ import tlsattacker.fuzzer.server.TLSServer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FixedCertificateMutator extends CertificateMutator {
-
+    
     /**
-     *
+     * The name of the CertificateMutator when referred by command line
      */
     public static final String optionName = "fixed";
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
-
-    /**
-     *
+     * The config to use
      */
     private FixedCertificateMutatorConfig config;
 
     /**
-     *
+     * The list of clientCertificates that are used
      */
     private List<ClientCertificateStructure> clientCertList;
 
     /**
-     *
+     * The list of serverCertificates that are used
      */
     private List<ServerCertificateStructure> serverCertList;
 
     /**
-     *
+     * A Random object to help choose random ceriticates
      */
     private Random r;
 
     /**
-     *
+     * The name of the config file
+     * //TODO should perhaps not be here
      */
     private final String configFileName = "fixed_cert.config";
 
-    /**
-     *
-     */
     public FixedCertificateMutator() {
 	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
 	File f = new File(evoConfig.getCertificateMutatorConfigFolder() + configFileName);
@@ -87,7 +81,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 	}
 	if (config == null) {
 	    config = new FixedCertificateMutatorConfig();
-	    serialize(f);
+	    config.serialize(f);
 	}
 	this.clientCertList = config.getClientCertificates();
 	this.serverCertList = config.getServerCertificates();
@@ -104,7 +98,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     *
+     * Tests all configured Certificates and if autofix is enabled stores the fixed Config file.
      */
     public void selfTest() {
 	LOG.log(Level.INFO, "FixedCertificateMutator Configuration Self-test");
@@ -118,15 +112,14 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    if (f.exists()) {
 		f.delete();
 	    }
-	    serialize(f);
+	    config.serialize(f);
 	}
-
 	LOG.log(Level.INFO, "Finished SelfTest");
     }
 
     /**
-     * 
-     * @return
+     * Tests all ClientCertificates and returns a list of all working ClientCertificates
+     * @return A list of all working ClientCertificates
      */
     private List<ClientCertificateStructure> testClientCerts() {
 	List<ClientCertificateStructure> workingCerts = new LinkedList<>();
@@ -144,8 +137,8 @@ public class FixedCertificateMutator extends CertificateMutator {
     }
 
     /**
-     * 
-     * @return
+     * Tests all ServerCertificates and returns a list of all working ServerCertificates
+     * @return A list of all working ServerCertificates
      */
     private List<ServerCertificateStructure> testServerCerts() {
 	List<ServerCertificateStructure> workingCerts = new LinkedList<>();
@@ -166,7 +159,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 		server = ServerManager.getInstance().getFreeServer();
 		try {
 		    server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
-		    if (!server.serverIsRunning()) {
+		    if (!server.serverHasBooted()) {
 			LOG.log(Level.INFO, "Could not start Server with:{0}", serverStructure.getCertificateFile()
 				.getAbsolutePath());
 			continue;
@@ -203,63 +196,33 @@ public class FixedCertificateMutator extends CertificateMutator {
 	return workingCerts;
     }
 
-    /**
-     * 
-     * @return
-     */
     public List<ClientCertificateStructure> getClientCertList() {
 	return Collections.unmodifiableList(clientCertList);
     }
 
-    /**
-     * 
-     * @return
-     */
     public List<ServerCertificateStructure> getServerPairList() {
 	return Collections.unmodifiableList(serverCertList);
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public ClientCertificateStructure getClientCertificateStructure() {
 	return clientCertList.get(r.nextInt(clientCertList.size()));
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public ServerCertificateStructure getServerCertificateStructure() {
 	return serverCertList.get(r.nextInt(serverCertList.size()));
     }
 
     /**
-     * 
-     * @param file
-     */
-    public void serialize(File file) {
-	if (!file.exists()) {
-	    try {
-		file.createNewFile();
-	    } catch (IOException ex) {
-		Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
-	JAXB.marshal(config, file);
-    }
-
-    /**
-     * 
-     * @param structure
-     * @return
+     * Checks if the ServerCertificate is in the serverCertList. This method does not work as intended if the CertificateMutator is not properly configured
+     * @param structure Certificate to test
+     * @return True if it is supported
      */
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
 	return serverCertList.contains(structure);
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(FixedCertificateMutator.class.getName());
 }

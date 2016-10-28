@@ -25,69 +25,61 @@ import java.util.logging.Logger;
 public class TLSServer {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
-
-    /**
-     *
+     * Server process
      */
     private Process p = null;
 
     /**
-     *
+     * If the Server is currently used for fuzzing
      */
     private boolean free = true;
 
     /**
-     *
+     * The IP the Server can be reached on
      */
     private String ip;
 
     /**
-     *
+     * The port the Server can be reached on
      */
     private int port;
 
     /**
-     *
+     * A unique ID
      */
     private int id = -1;
 
     /**
-     *
+     * The command used to start the server
      */
     private String restartServerCommand;
 
     /**
-     *
+     * String to wait for to indicate a started server
      */
     private String accepted;
 
     /**
-     *
+     * Command that can be used to kill the server
      */
     private String killServerCommand = "";
 
     /**
-     *
+     * The ErrorStream reader
      */
     private StreamGobbler errorGobbler;
 
     /**
-     *
+     * The OutPutStream reader
      */
     private StreamGobbler outputGobbler;
     // our end
 
     /**
-     *
+     * The ProcessMonitor to monitor for the process end
      */
     private ProcMon procmon = null;
 
-    /**
-     *
-     */
     public TLSServer() {
 	ip = null;
 	port = 0;
@@ -117,34 +109,18 @@ public class TLSServer {
 	this.killServerCommand = killServerCommand;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getKillServerCommand() {
 	return killServerCommand;
     }
 
-    /**
-     * 
-     * @param killServerCommand
-     */
     public void setKillServerCommand(String killServerCommand) {
 	this.killServerCommand = killServerCommand;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getAccepted() {
 	return accepted;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getRestartServerCommand() {
 	return restartServerCommand;
     }
@@ -183,18 +159,10 @@ public class TLSServer {
 	this.port = port;
     }
 
-    /**
-     * 
-     * @param restartServerCommand
-     */
     public void setRestartServerCommand(String restartServerCommand) {
 	this.restartServerCommand = restartServerCommand;
     }
 
-    /**
-     * 
-     * @param accepted
-     */
     public void setAccepted(String accepted) {
 	this.accepted = accepted;
     }
@@ -308,10 +276,10 @@ public class TLSServer {
     }
 
     /**
-     * 
-     * @return
+     * Checks if the server has booted
+     * @return True if the server has booted
      */
-    public synchronized boolean serverIsRunning() {
+    public synchronized boolean serverHasBooted() {
 	return outputGobbler != null && outputGobbler.accepted() && p != null;
     }
 
@@ -366,4 +334,5 @@ public class TLSServer {
 	}
     }
 
+    private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 }

@@ -6,15 +6,6 @@
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.server;
-
-/**
- * An asymetric Streamreader, which reads a Stream, and marks when the output of
- * the Stream equals reaches a specific state. This Class is used to see if an
- * Implementation is already in a state, where it is able to see if the
- * implementation is ready to accept incoming connections
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,66 +16,55 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
- * @author ic0ns
+ * An asymetric Streamreader, which reads a Stream, and marks when the output of
+ * the Stream equals reaches a specific state. This Class is used to see if an
+ * Implementation is already in a state, where it is able to see if the
+ * implementation is ready to accept incoming connections
+ *
+ * @author Robert Merget - robert.merget@rub.de
  */
 class StreamGobbler extends Thread {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
-
-    /**
-     *
+     * Stream to read from
      */
     private InputStream is;
 
     /**
-     *
+     * The type of the Stream (currently not used)
      */
     private String type;
 
     /**
-     *
+     * Output stream
      */
     private OutputStream os;
 
     /**
-     *
+     * If the Stream already sent a String that indicates that the Server finished starting
      */
     private volatile boolean hasAccepted = false;
 
     /**
-     *
+     * The String to wait for that the server has started
      */
     private String accepted;
 
-    /**
-     * 
-     * @param is
-     * @param type
-     * @param accepted
-     */
     StreamGobbler(InputStream is, String type, String accepted) {
 	this(is, type, null, accepted);
 
     }
 
-    /**
-     * 
-     * @param is
-     * @param type
-     * @param redirect
-     * @param accepted
-     */
     StreamGobbler(InputStream is, String type, OutputStream redirect, String accepted) {
 	this.is = is;
 	this.type = type;
 	this.os = redirect;
 	this.accepted = accepted;
     }
-
+    
+    /**
+     * Starts reading from the Stream and if the accpeted String is read, the Server is considered to have started
+     */
     @Override
     public void run() {
 	try {
@@ -116,7 +96,7 @@ class StreamGobbler extends Thread {
     }
 
     /**
-     *
+     * Closes the Streams
      */
     public void close() {
 	try {
@@ -139,4 +119,6 @@ class StreamGobbler extends Thread {
     public boolean accepted() {
 	return hasAccepted;
     }
+    
+    private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
 }
