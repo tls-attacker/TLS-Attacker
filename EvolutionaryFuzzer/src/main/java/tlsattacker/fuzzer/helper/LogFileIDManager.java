@@ -23,11 +23,6 @@ import java.util.logging.Logger;
 public class LogFileIDManager {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
-
-    /**
      * Singleton: Return the Instance of the LogFileIDManager
      * 
      * @return Instance of the LogFileIDManager
@@ -37,12 +32,12 @@ public class LogFileIDManager {
     }
 
     /**
-     *
+     * A counter to generate Filenames
      */
     private int id = 0;
 
     /**
-     *
+     * A counter which assures unique names even threw application resets
      */
     private int run = 0;
 
@@ -86,8 +81,8 @@ public class LogFileIDManager {
     }
 
     /**
-     * 
-     * @return
+     * Returns a random Filename
+     * @return Random Filename
      */
     public synchronized String getFilename() {
 	id++;
@@ -100,15 +95,13 @@ public class LogFileIDManager {
     private static class LogFileIDManagerHolder {
 
 	/**
-         *
+         * Singleton
          */
 	private static final LogFileIDManager INSTANCE = new LogFileIDManager();
 
-	/**
-         *
-         */
 	private LogFileIDManagerHolder() {
 	}
     }
 
+    private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
 }

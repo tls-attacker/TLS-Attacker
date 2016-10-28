@@ -95,20 +95,9 @@ import java.util.logging.Level;
 public class FuzzingHelper {
 
     /**
-     *
-     */
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
-	    .getName());
-
-    /**
-     *
-     */
-    public static final int MAX_MODIFICATION_COUNT = 5;
-
-    /**
-     * 
-     * @param fields
-     * @return
+     * Chooses a random modifiableVariableField from a List of modifiableVariableFields
+     * @param fields A list of Fields to pick from
+     * @return A Random field
      */
     public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
 	Random r = new Random();
@@ -117,11 +106,11 @@ public class FuzzingHelper {
     }
 
     /**
-     * Returns a list of all Modifiable variable holders from the workflow trace
+     * Returns a list of all ModifiableVariableHolders from the WorkflowTrace
      * that we send
      * 
-     * @param trace
-     * @return
+     * @param trace Trace to search in
+     * @return A list of all ModifieableVariableHolders
      */
     public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
 	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
@@ -133,9 +122,9 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @param object
-     * @return
+     * Tries to find all ModifieableVariableFields in an Object
+     * @param object Object to search in
+     * @return List of all ModifieableVariableFields in an object
      */
     public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
 	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
@@ -156,9 +145,9 @@ public class FuzzingHelper {
      * http://stackoverflow.com/questions/1868333/how-can-i-determine-the
      * -type-of-a-generic-field-in-java
      * 
-     * @param object
-     * @param field
-     * @return
+     * @param object Holder of the Field
+     * @param field Field to modify
+     * @return The ModificationObject
      */
     public static ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
 	    Field field) {
@@ -187,9 +176,8 @@ public class FuzzingHelper {
     /**
      * Adds random records to the workflow trace
      * 
-     * @param trace
-     * @param messageIssuer
-     * @return
+     * @param trace WorkflowTrace to which the Record should be added
+     * @return The ModificationObject
      */
     public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
 	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
@@ -208,9 +196,9 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @param tempTrace
-     * @return
+     * Removes a random Message from a SendAction
+     * @param tempTrace The WorkflowTrace to modify
+     * @return The ModificationObject
      */
     public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
 	SendAction action = getRandomSendAction(tempTrace);
@@ -230,8 +218,8 @@ public class FuzzingHelper {
      * initially contains a random message, and the receive action only contains
      * an arbitary message
      * 
-     * @param tempTrace
-     * @return
+     * @param tempTrace The WorkflowTrace to modify
+     * @return The ModificationObject
      */
     public static AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
 	SendAction sendAction = new SendAction(generateRandomMessage());
@@ -244,8 +232,8 @@ public class FuzzingHelper {
     /**
      * Adds a random Message to a random SendAction
      * 
-     * @param tempTrace
-     * @return
+     * @param tempTrace The WorkflowTrace to modify
+     * @return The ModificationObject
      */
     public static AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
 	SendAction action = getRandomSendAction(tempTrace);
@@ -259,10 +247,11 @@ public class FuzzingHelper {
     }
 
     /**
+     * Chooses a random SendAction from the WorkflowTrace
      * 
-     * @param tempTrace
-     * @return
-     */
+     * @param tempTrace WorkflowTrace to choose from
+     * @return Random SendAction from the WorkflowTrace
+     */ 
     private static SendAction getRandomSendAction(WorkflowTrace tempTrace) {
 	Random r = new Random();
 	List<SendAction> sendActions = tempTrace.getSendActions();
@@ -270,10 +259,10 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @param tempTrace
-     * @param mutator
-     * @return
+     * Adds a random action which changes something in the TLSContext to the WorkflowTrace
+     * @param tempTrace WorkflowTrace to modify
+     * @param mutator CertificateMutator to use
+     * @return The ModificationObject
      */
     public static AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
 	Random r = new Random();
@@ -287,6 +276,7 @@ public class FuzzingHelper {
 		action = new ChangeCipherSuiteAction(CipherSuite.getRandom());
 		break;
 	    case 1:
+                //TODO
 		// type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
 		// ClientCertificateStructure clientCert =
 		// mutator.getClientCertificateStructure();
@@ -355,6 +345,7 @@ public class FuzzingHelper {
 		action = new ChangeProtocolVersionAction(verion);
 		break;
 	    case 7:
+                //TODO
 		// type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
 		// ClientCertificateStructure serverCert =
 		// mutator.getClientCertificateStructure();//TODO
@@ -410,8 +401,8 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @return
+     * Generates a new RandomMessage
+     * @return A newly generated ProtocolMessage
      */
     private static ProtocolMessage generateRandomMessage() {
 	ProtocolMessage message = null;
@@ -510,9 +501,9 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @param trace
-     * @return
+     * Adds and extension to a random ClientHello or DTLSClientHello message
+     * @param trace WorkflowTrace to modify
+     * @return The ModificationObject
      */
     public static AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
 	ExtensionMessage message = generateRandomExtensionMessage();
@@ -534,8 +525,8 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @return
+     * Generates a random ExtensionMessage
+     * @return Newly generated random ExtensionMessage
      */
     private static ExtensionMessage generateRandomExtensionMessage() {
 	ExtensionMessage message = null;
@@ -592,10 +583,9 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @param trace
-     * @param messageIssuer
-     * @return
+     * Duplicates a random ProtocolMessage and and adds it to a random position in the Action
+     * @param trace WorkflowTrace to modify
+     * @return The ModificationObject
      */
     public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
 	Random r = new Random();
@@ -618,8 +608,8 @@ public class FuzzingHelper {
      * Returns a list of all the modifiable variable holders in the object,
      * including this instance.
      * 
-     * @param object
-     * @return
+     * @param object Object to search in
+     * @return List of all ModifieableVariableListHolders
      */
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
 	List<ModifiableVariableListHolder> holders = new LinkedList<>();
@@ -658,9 +648,9 @@ public class FuzzingHelper {
     }
 
     /**
-     * 
-     * @param trace
-     * @return
+     * Adds a ToggleEncryptionAction to a WorkflowTrace
+     * @param trace WorkflowTrace to modify
+     * @return The ModificationObject
      */
     public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
 	TLSAction newAction = new ToggleEncryptionAction();
@@ -671,11 +661,9 @@ public class FuzzingHelper {
 	return new AddToggleEncrytionActionModification(positon);
     }
 
-    /**
-     *
-     */
     private FuzzingHelper() {
-
     }
 
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
+	    .getName());
 }
