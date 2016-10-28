@@ -11,6 +11,7 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -136,7 +137,7 @@ public class Main {
 		    try {
 			ServerSerializer.write(server, new File(serverConfig.getOutput()));
 			LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
-		    } catch (Exception ex) {
+		    } catch (FileNotFoundException ex) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Could not write Server to file!", ex);
 		    }
 		}
