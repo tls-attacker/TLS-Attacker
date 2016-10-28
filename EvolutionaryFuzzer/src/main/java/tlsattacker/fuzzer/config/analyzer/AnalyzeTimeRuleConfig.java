@@ -19,29 +19,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AnalyzeTimeRuleConfig extends RuleConfig {
 
     /**
-     *
+     * The file to which the execution times of Testvectors should be serialized to
      */
     private String outputFile = "timing.results";
 
-    /**
-     *
-     */
     public AnalyzeTimeRuleConfig() {
 	super(null);
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getOutputFile() {
 	return outputFile;
     }
 
-    /**
-     * 
-     * @param outputFile
-     */
     public void setOutputFile(String outputFile) {
 	this.outputFile = outputFile;
     }

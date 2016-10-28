@@ -18,9 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AnalyzeModificationRuleConfig extends RuleConfig {
 
-    /**
-     *
-     */
     public AnalyzeModificationRuleConfig() {
 	super(null);
     }

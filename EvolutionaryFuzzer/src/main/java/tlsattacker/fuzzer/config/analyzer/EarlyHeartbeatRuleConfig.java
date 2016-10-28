@@ -18,9 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class EarlyHeartbeatRuleConfig extends RuleConfig {
 
-    /**
-     *
-     */
     public EarlyHeartbeatRuleConfig() {
 	super("early_heartbeat/");
     }

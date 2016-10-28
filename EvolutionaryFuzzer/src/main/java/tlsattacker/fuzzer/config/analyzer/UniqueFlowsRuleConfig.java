@@ -18,9 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class UniqueFlowsRuleConfig extends RuleConfig {
 
-    /**
-     *
-     */
     public UniqueFlowsRuleConfig() {
 	super("uniqueFlows/");
     }

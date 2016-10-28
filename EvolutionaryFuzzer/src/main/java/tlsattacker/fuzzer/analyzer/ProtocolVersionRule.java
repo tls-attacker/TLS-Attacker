@@ -79,7 +79,6 @@ public class ProtocolVersionRule extends Rule {
      */
     @Override
     public boolean applies(Result result) {
-	ProtocolVersion clientVersion = null;
 	ProtocolVersion serverVersion = null;
 
 	WorkflowTrace trace = result.getVector().getTrace();
@@ -96,13 +95,6 @@ public class ProtocolVersionRule extends Rule {
 	byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
 	byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
 
-	if (clientProtocolVersions.length != 2 && config.isLogOnWrongFieldSizes()) {
-	    // Our protocol Version is too short/long but server responded
-	    // anyways
-	    return true;
-	} else {
-	    clientVersion = ProtocolVersion.getProtocolVersion(clientProtocolVersions);
-	}
 	if (serverProtocolVersions.length != 2) {
 	    // The Server returned an invalid protocolversion size field
 	    return true;

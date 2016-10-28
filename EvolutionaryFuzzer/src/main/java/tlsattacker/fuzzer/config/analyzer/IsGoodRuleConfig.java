@@ -19,29 +19,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class IsGoodRuleConfig extends RuleConfig {
 
     /**
-     *
+     * The name of the file to which the graph should be saved to
      */
     private String outputFileGraph = "good.graph";
 
-    /**
-     *
-     */
     public IsGoodRuleConfig() {
 	super("good/");
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getOutputFileGraph() {
 	return outputFileGraph;
     }
 
-    /**
-     * 
-     * @param outputFileGraph
-     */
     public void setOutputFileGraph(String outputFileGraph) {
 	this.outputFileGraph = outputFileGraph;
     }

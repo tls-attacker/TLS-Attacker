@@ -15,51 +15,31 @@ package tlsattacker.fuzzer.config.analyzer;
 public abstract class RuleConfig {
 
     /**
-     *
+     * If the rule is active
      */
     protected boolean active = true;
 
     /**
-     *
+     * The name of the folder to which data should be outputted
      */
     protected String outputFolderName;
 
-    /**
-     * 
-     * @param outputFolderName
-     */
     public RuleConfig(String outputFolderName) {
 	this.outputFolderName = outputFolderName;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isActive() {
 	return active;
     }
 
-    /**
-     * 
-     * @param active
-     */
     public void setActive(boolean active) {
 	this.active = active;
     }
 
-    /**
-     * 
-     * @return
-     */
     public String getOutputFolder() {
 	return outputFolderName;
     }
 
-    /**
-     * 
-     * @param outputFolder
-     */
     public void setOutputFolder(String outputFolder) {
 	this.outputFolderName = outputFolder;
     }

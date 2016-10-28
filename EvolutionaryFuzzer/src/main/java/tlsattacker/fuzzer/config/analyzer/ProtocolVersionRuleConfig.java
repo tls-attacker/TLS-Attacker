@@ -21,66 +21,45 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProtocolVersionRuleConfig extends RuleConfig {
 
     /**
-     *
+     * If the rule should blacklist ssl2
      */
     private boolean allowSSL2 = false;
 
     /**
-     *
+     * If the rule should blacklist ssl3
      */
     private boolean allowSSL3 = true;
 
     /**
-     *
+     * If the rule should blacklist tls 1.0
      */
     private boolean allowTLS10 = true;
 
     /**
-     *
+     * If the rule should blacklist tls 1.1
      */
     private boolean allowTLS11 = true;
 
     /**
-     *
+     * If the rule should blacklist tls 1.2
      */
     private boolean allowTLS12 = true;
 
     /**
-     *
+     * If the rule should blacklist dtls 1.0
      */
     private boolean allowDTLS10 = true;
 
     /**
-     *
+     * If the rule should blacklist dtls 1.2
      */
     private boolean allowDTLS12 = true;
 
     /**
      *
      */
-    private boolean logOnWrongFieldSizes = true;
-
-    /**
-     *
-     */
     public ProtocolVersionRuleConfig() {
 	super("faulty_version/");
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public boolean isLogOnWrongFieldSizes() {
-	return logOnWrongFieldSizes;
-    }
-
-    /**
-     * 
-     * @param logOnWrongFieldSizes
-     */
-    public void setLogOnWrongFieldSizes(boolean logOnWrongFieldSizes) {
-	this.logOnWrongFieldSizes = logOnWrongFieldSizes;
     }
 
     /**

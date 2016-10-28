@@ -21,31 +21,26 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class FindAlertsRuleConfig extends RuleConfig {
-    // List of Alert codes, if we see this alert we save the workflow trace
 
     /**
-     *
+     * List of Alert codes, if we see this alert we save the workflow trace
      */
     private Set<Byte> blacklist;
-    // Set of RFC Comform Alert Codes, every Code that is not in this list is
-    // saved
 
     /**
-     *
+     * Set of RFC Comform Alert Codes, every Code that is not in this list is
+     * saved
      */
     private Set<Byte> whitelist;
-    // The Pokemon method, the Rule is advised to save one example testvector
-    // for each alert message
-
+    
     /**
-     *
+     * The Pokemon method, the Rule is advised to save one example testvector
+     * for each alert message
      */
     private boolean saveOneOfEach = true;
-
-    // Output folder relative to the evolutionaryConfig output folder
-
+ 
     /**
-     *
+     * Output folder relative to the evolutionaryConfig output folder
      */
 
     public FindAlertsRuleConfig() {
@@ -63,50 +58,26 @@ public class FindAlertsRuleConfig extends RuleConfig {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     public Set<Byte> getBlacklist() {
 	return Collections.unmodifiableSet(blacklist);
     }
 
-    /**
-     * 
-     * @param blackList
-     */
     public void setBlacklist(Set<Byte> blackList) {
 	this.blacklist = blackList;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Set<Byte> getWhitelist() {
 	return Collections.unmodifiableSet(whitelist);
     }
 
-    /**
-     * 
-     * @param whitelist
-     */
     public void setWhitelist(Set<Byte> whitelist) {
 	this.whitelist = whitelist;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isSaveOneOfEach() {
 	return saveOneOfEach;
     }
 
-    /**
-     * 
-     * @param saveOneOfEach
-     */
     public void setSaveOneOfEach(boolean saveOneOfEach) {
 	this.saveOneOfEach = saveOneOfEach;
     }
