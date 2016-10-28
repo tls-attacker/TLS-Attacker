@@ -13,211 +13,136 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SimpleMutatorConfig implements Serializable {
 
     /**
-     *
+     * Percentage with which a random variable should be modified
      */
     private Integer modifyVariablePercentage = 50;
 
     /**
-     *
+     * Percentage with which a record should be added
      */
     private Integer addRecordPercentage = 50;
 
     /**
-     *
+     * Percentage with which a message should be added to a SendAction
      */
     private Integer addMessagePercentage = 20;
 
     /**
-     *
+     * Percentage with which a message should be removed from a SendAction
      */
     private Integer removeMessagePercentage = 1;
 
     /**
-     *
+     * Percentage with which the server certificate should be changed
      */
     private Integer changeServerCertPercentage = -1;
 
     /**
-     *
+     * Percentage with which the client certificate should be changed
      */
     private Integer changeClientCertPercentage = -1;
 
     /**
-     *
+     * Percentage with which a random message should be duplicated
      */
     private Integer duplicateMessagePercentage = 1;
 
     /**
-     *
+     * Percentage with which multiple modifications should be applied to TestVector
      */
     private Integer multipleModifications = 1;
 
     /**
-     *
+     * Percentage with which a new SendReceive Action pair should be added to a TestVector
      */
     private Integer addFlightPercentage = 50;
 
     /**
-     *
+     * Percentage with which a new ToggleEncryptionAction should be added to the TestVector
      */
     private Integer addToggleEncrytionPercentage = 2;
 
     /**
-     *
+     * Percentage with which a new context changing action should be added to the TestVector
      */
     private Integer addContextActionPercentage = 4;
 
     /**
-     *
+     * Percentage with which an extension is added to Hello message
      */
     private Integer addExtensionMessagePercentage = 20;
 
-    /**
-     *
-     */
     public SimpleMutatorConfig() {
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getAddExtensionPercentage() {
 	return addExtensionMessagePercentage;
     }
 
-    /**
-     * 
-     * @param addExtensionMessagePercentage
-     */
     public void setAddExtensionMessagePercentage(Integer addExtensionMessagePercentage) {
 	this.addExtensionMessagePercentage = addExtensionMessagePercentage;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getAddContextActionPercentage() {
 	return addContextActionPercentage;
     }
 
-    /**
-     * 
-     * @param addContextActionPercentage
-     */
     public void setAddContextActionPercentage(Integer addContextActionPercentage) {
 	this.addContextActionPercentage = addContextActionPercentage;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getAddToggleEncrytionPercentage() {
 	return addToggleEncrytionPercentage;
     }
 
-    /**
-     * 
-     * @param addToggleEncrytionPercentage
-     */
     public void setAddToggleEncrytionPercentage(Integer addToggleEncrytionPercentage) {
 	this.addToggleEncrytionPercentage = addToggleEncrytionPercentage;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getAddFlightPercentage() {
 	return addFlightPercentage;
     }
 
-    /**
-     * 
-     * @param addFlightPercentage
-     */
     public void setAddFlightPercentage(Integer addFlightPercentage) {
 	this.addFlightPercentage = addFlightPercentage;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getMultipleModifications() {
 	return multipleModifications;
     }
 
-    /**
-     * 
-     * @param multipleModifications
-     */
     public void setMultipleModifications(Integer multipleModifications) {
 	this.multipleModifications = multipleModifications;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getChangeServerCert() {
 	return changeServerCertPercentage;
     }
 
-    /**
-     * 
-     * @param changeServerCert
-     */
     public void setChangeServerCert(Integer changeServerCert) {
 	this.changeServerCertPercentage = changeServerCert;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getChangeClientCertPercentage() {
 	return changeClientCertPercentage;
     }
 
-    /**
-     * 
-     * @param changeClientCertPercentage
-     */
     public void setChangeClientCertPercentage(Integer changeClientCertPercentage) {
 	this.changeClientCertPercentage = changeClientCertPercentage;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getDuplicateMessagePercentage() {
 	return duplicateMessagePercentage;
     }
 
-    /**
-     * 
-     * @param duplicateMessagePercentage
-     */
     public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
 	this.duplicateMessagePercentage = duplicateMessagePercentage;
     }
 
-    /**
-     * 
-     * @return
-     */
     public Integer getRemoveMessagePercentage() {
 	return removeMessagePercentage;
     }
 
-    /**
-     * 
-     * @param removeMessagePercentage
-     */
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
 	this.removeMessagePercentage = removeMessagePercentage;
 	if (removeMessagePercentage > 100) {
@@ -225,22 +150,10 @@ public class SimpleMutatorConfig implements Serializable {
 	}
     }
 
-    /**
-     * Returns an Integer representing the chance that a Variable Modification
-     * occurs in a Workflow Trace, 0 representing 0% and 100 representing 100%
-     * 
-     * @return
-     */
     public Integer getModifyVariablePercentage() {
 	return modifyVariablePercentage;
     }
 
-    /**
-     * Sets an Integer representing the chance that a Variable Modification
-     * occurs in a Workflow Trace, 0 representing 0% and 100 representing 100%
-     * 
-     * @param modifyVariablePercentage
-     */
     public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
 	this.modifyVariablePercentage = modifyVariablePercentage;
 	if (modifyVariablePercentage > 100) {
@@ -248,24 +161,11 @@ public class SimpleMutatorConfig implements Serializable {
 	}
     }
 
-    /**
-     * Gets an Integer representing the Chance that a record is added to a
-     * Message, 0 representing 0% and 100 representing 100%
-     * 
-     * @return Integer representing the Chance that a record is added to a
-     *         Message
-     */
     public Integer getAddRecordPercentage() {
 	return addRecordPercentage;
 
     }
 
-    /**
-     * Sets an Integer representing the Chance that a record is added to a
-     * Message, 0 representing 0% and 100 representing 100%
-     * 
-     * @param addRecordPercentage
-     */
     public void setAddRecordPercentage(Integer addRecordPercentage) {
 	this.addRecordPercentage = addRecordPercentage;
 	if (addRecordPercentage > 100) {
@@ -273,23 +173,10 @@ public class SimpleMutatorConfig implements Serializable {
 	}
     }
 
-    /**
-     * Gets an Integer representing the Chance that a Message is added to
-     * WorkflowTrace, 0 representing 0% and 100 representing 100%
-     * 
-     * @return Integer representing the Chance that a Message is added to
-     *         WorkflowTrace
-     */
     public Integer getAddMessagePercentage() {
 	return addMessagePercentage;
     }
 
-    /**
-     * Sets an Integer representing the Chance that a Message is added to
-     * WorkflowTrace, 0 representing 0% and 100 representing 100%
-     * 
-     * @param addMessagePercentage
-     */
     public void setAddMessagePercentage(Integer addMessagePercentage) {
 	this.addMessagePercentage = addMessagePercentage;
 	if (addMessagePercentage > 100) {

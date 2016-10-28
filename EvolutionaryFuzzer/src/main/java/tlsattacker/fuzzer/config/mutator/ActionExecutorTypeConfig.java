@@ -21,56 +21,37 @@ import java.util.logging.Logger;
 public class ActionExecutorTypeConfig implements Serializable {
 
     /**
-     *
+     * If the fuzzer should consider TLS
      */
     private boolean allowTLS = true;
 
     /**
-     *
+     * If the fuzzer should consider DTLS
      */
     private boolean allowDTLS = false;
 
-    /**
-     *
-     */
     public ActionExecutorTypeConfig() {
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isAllowTLS() {
 	return allowTLS;
     }
 
-    /**
-     * 
-     * @param allowTLS
-     */
     public void setAllowTLS(boolean allowTLS) {
 	this.allowTLS = allowTLS;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isAllowDTLS() {
 	return allowDTLS;
     }
 
-    /**
-     * 
-     * @param allowDTLS
-     */
     public void setAllowDTLS(boolean allowDTLS) {
 	this.allowDTLS = allowDTLS;
     }
 
     /**
-     * 
-     * @return
+     * Returns a random allowed ActionExecutor
+     * @return Random allowed ActionExecutor
      */
     public ExecutorType getRandomExecutorType() {
 	if (!allowDTLS && !allowTLS) {
