@@ -61,7 +61,7 @@ public class ServerManagerTest {
      */
     @Test(expected = RuntimeException.class)
     public void TestOccupyAllServers() {
-	tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig().setTimeout(10);
+	tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig().setBootTimeout(10);
 	while (true) {
 	    manager.getFreeServer();
 	}
