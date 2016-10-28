@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * A Processmonitor which can tell you, when a command has finished in a non
- * blocking way. //TODO Rename
+ * blocking way. 
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -46,8 +46,7 @@ public class ProcessMonitor implements Runnable {
     private volatile boolean completed;
 
     /**
-     * Private Constructor, Objects should be created with the createProcMon
-     * Method
+     * Private Constructor, Objects should be created with the create Method
      * 
      * @param p Process to monitor
      */
