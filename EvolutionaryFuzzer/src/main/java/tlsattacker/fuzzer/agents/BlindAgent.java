@@ -63,7 +63,7 @@ public class BlindAgent extends Agent {
 	}
 	stopTime = System.currentTimeMillis();
 	running = false;
-	if (!server.serverIsRunning()) {
+	if (!server.serverHasBooted()) {
 	    crash = true;
 	}
 	server.stop();
