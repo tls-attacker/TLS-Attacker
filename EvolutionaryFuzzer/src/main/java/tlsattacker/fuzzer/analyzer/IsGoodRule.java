@@ -32,40 +32,30 @@ import javax.xml.bind.JAXBException;
 public class IsGoodRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
-
-    /**
-     *
+     * A Writer object which is used to store timing statistics
      */
     private PrintWriter outWriter;
-    // BranchTrace with which other Workflows are merged
 
     /**
-     *
+     * BranchTrace with which other Workflows are merged
      */
     private final BranchTrace branch;
 
     /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
     /**
-     *
+     * The configuration object for this rule
      */
     private IsGoodRuleConfig config;
 
     /**
-     *
+     * A timestamp of the last seen goodTestVector
      */
     private long lastGoodTimestamp = System.currentTimeMillis();
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_good.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -94,9 +84,9 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * The rule applies if the trace in the Result contains Edges or Codeblocks the rule has not seen before
+     * @param result Result to analyze
+     * @return True if the Rule contains new Codeblocks or Edges
      */
     @Override
     public boolean applies(Result result) {
@@ -113,8 +103,8 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Updates statistics and stores the TestVector. Also sets a flag in the TestVector such that other rules know that this TestVector is considered as good.
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -139,25 +129,21 @@ public class IsGoodRule extends Rule {
 	result.getVector().getTrace().makeGeneric();
     }
 
-    /**
-     * 
-     * @return
-     */
     public BranchTrace getBranchTrace() {
 	return branch;
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
 	result.setGoodTrace(Boolean.FALSE);
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -166,12 +152,10 @@ public class IsGoodRule extends Rule {
 		+ " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public IsGoodRuleConfig getConfig() {
 	return config;
     }
+    
+    private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
 }

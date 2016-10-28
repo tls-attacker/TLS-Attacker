@@ -25,89 +25,67 @@ import javax.xml.bind.JAXB;
 public abstract class Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(Rule.class.getName());
-
-    /**
-     *
+     * The Folder in which the rule should store its results
      */
     protected File ruleFolder;
 
     /**
-     *
+     * The name of the configuration file
      */
     protected final String configFileName;
 
     /**
-     *
+     * The EvolutionaryFuzzerConfig object for this rule
      */
     protected EvolutionaryFuzzerConfig evoConfig;
 
     /**
-     *
+     * If the rule should be used at all
      */
     private final boolean isActive = true;
 
-    /**
-     * 
-     * @param evoConfig
-     * @param configFileName
-     */
     protected Rule(EvolutionaryFuzzerConfig evoConfig, String configFileName) {
 	this.configFileName = configFileName;
 	this.evoConfig = evoConfig;
     }
 
-    /**
-     * 
-     * @return
-     */
     public File getRuleFolder() {
 	return ruleFolder;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean isActive() {
 	return isActive;
     }
 
-    /**
-     * 
-     * @return
-     */
     public abstract RuleConfig getConfig();
 
     /**
-     * 
-     * @param result
-     * @return
+     * A method that checks if the Rule should be applied to to a Result
+     * @param result Result to analyze
+     * @return True if the Rule should apply
      */
     public abstract boolean applies(Result result);
 
     /**
-     * 
-     * @param result
+     * This method is called when the applies method returned true
+     * @param result Result to analyze
      */
     public abstract void onApply(Result result);
 
     /**
-     * 
+     * This method is called when the applies method returned false
      * @param result
      */
     public abstract void onDecline(Result result);
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     public abstract String report();
 
     /**
-     * 
+     * Serializes a Configuration file to its configuration file
      * @param c
      */
     protected void writeConfig(RuleConfig c) {
@@ -120,7 +98,7 @@ public abstract class Rule {
     }
 
     /**
-     *
+     * Creates the folders for the rule folder and if clean start is selected, deltes all previously collected data
      */
     protected void prepareConfigOutputFolder() {
 	ruleFolder = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
@@ -134,4 +112,5 @@ public abstract class Rule {
 	ruleFolder.mkdirs();
     }
 
+    private static final Logger LOG = Logger.getLogger(Rule.class.getName());
 }

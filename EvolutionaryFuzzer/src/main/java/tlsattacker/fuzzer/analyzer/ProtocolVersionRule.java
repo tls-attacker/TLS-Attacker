@@ -37,34 +37,25 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 public class ProtocolVersionRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(ProtocolVersionRule.class.getName());
-
-    /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
     /**
-     *
+     * The highest supported TLS Protocolversion of the tested implementation
      */
     private final ProtocolVersion highestTLSSupported;
 
     /**
-     *
+     * The highest supported DTLS Protocolverison of the tested implementation
      */
     private final ProtocolVersion highestDTLSSupported;
 
     /**
-     *
+     * The configuration object for this rule
      */
     private ProtocolVersionRuleConfig config;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public ProtocolVersionRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "highest_version.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -82,9 +73,9 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * The rule applies if the Server did not choose the highest offered version it supports
+     * @param result Result to analyze
+     * @return True if the Server did not choos the highest offered version it supports
      */
     @Override
     public boolean applies(Result result) {
@@ -145,8 +136,8 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Stores the Testvector and adds a description to the TestVector that described the violation 
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -180,15 +171,15 @@ public class ProtocolVersionRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -201,13 +192,10 @@ public class ProtocolVersionRule extends Rule {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public ProtocolVersionRuleConfig getConfig() {
 	return config;
     }
 
+    private static final Logger LOG = Logger.getLogger(ProtocolVersionRule.class.getName());
 }

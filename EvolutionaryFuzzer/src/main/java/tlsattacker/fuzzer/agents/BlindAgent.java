@@ -31,49 +31,14 @@ public class BlindAgent extends Agent {
     private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
     /**
-     *
+     * The name of the Agent when referred by command line
      */
     public static final String optionName = "BLIND";
-    // Is a fuzzing Progress Running?
-
-    /**
-     *
-     */
-    protected boolean running = false;
-    // StartTime of the last Fuzzing Vektor
-
-    /**
-     *
-     */
-    protected long startTime;
-    // StopTime of the last Fuzzing Vektor
-
-    /**
-     *
-     */
-    protected long stopTime;
-    // If the Application did Timeout
-
-    /**
-     *
-     */
-    protected boolean timeout;
-    // If the Application did Crash
-
-    /**
-     *
-     */
-    protected boolean crash;
-
-    /**
-     *
-     */
-    private final String prefix = "";
 
     /**
      * Default Constructor
      * 
-     * @param keypair
+     * @param keypair Server certificate key pair the agent should start the server with.
      */
     public BlindAgent(ServerCertificateStructure keypair) {
 	super(keypair);
@@ -88,7 +53,7 @@ public class BlindAgent extends Agent {
 	}
 	startTime = System.currentTimeMillis();
 	running = true;
-	server.start(prefix, keypair.getCertificateFile(), keypair.getKeyFile());
+	server.start("", keypair.getCertificateFile(), keypair.getKeyFile());
     }
 
     @Override

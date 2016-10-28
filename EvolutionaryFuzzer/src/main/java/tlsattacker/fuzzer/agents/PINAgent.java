@@ -33,28 +33,23 @@ import java.util.Set;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
-
+    
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
-
-    /**
-     *
+     * The name of the Agent when referred by command line
      */
     public static final String optionName = "PIN";
 
     /**
-     * 
-     * @param br
-     * @return
+     * Parses the readers contents into a BranchTrace object
+     * @param bufferedReader
+     * @return A newly generated BranchTrace object
      */
-    private static BranchTrace getBranchTrace(BufferedReader br) {
+    private static BranchTrace getBranchTrace(BufferedReader bufferedReader) {
 	try {
 	    Set<Long> verticesSet = new HashSet<>();
 	    Map<Edge, Edge> edgeMap = new HashMap<>();
 	    String line;
-	    while ((line = br.readLine()) != null) {
+	    while ((line = bufferedReader.readLine()) != null) {
 		try {
 		    if (line.isEmpty()) {
 			continue;
@@ -91,39 +86,8 @@ public class PINAgent extends Agent {
 	return new BranchTrace();
     }
 
-    // Is a fuzzing Progress Running?
-
     /**
-     *
-     */
-    protected boolean running = false;
-    // StartTime of the last Fuzzing Vektor
-
-    /**
-     *
-     */
-    protected long startTime;
-    // StopTime of the last Fuzzing Vektor
-
-    /**
-     *
-     */
-    protected long stopTime;
-    // If the Application did Timeout
-
-    /**
-     *
-     */
-    protected boolean timeout;
-    // If the Application did Crash
-
-    /**
-     *
-     */
-    protected boolean crash;
-
-    /**
-     *
+     * The prefix that has to be set in front of the actual server command
      */
     private final String prefix;
 
@@ -136,6 +100,7 @@ public class PINAgent extends Agent {
 	super(keypair);
 	timeout = false;
 	crash = false;
+        //TODO put into config File
 	if (ConfigManager.getInstance().getConfig().getInjectPinChild()) {
 	    prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
 	} else {
@@ -198,5 +163,5 @@ public class PINAgent extends Agent {
 
 	return result;
     }
-
+    private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 }

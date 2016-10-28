@@ -22,24 +22,20 @@ import tlsattacker.fuzzer.result.Result;
 public class RuleAnalyzer extends Analyzer {
 
     /**
-     *
+     * The name of the Analayzer when referred by command line
      */
     public static final String optionName = "rule";
 
     /**
-     *
+     * The list of Rules the analyzer uses
      */
     private final List<Rule> ruleList;
 
     /**
-     *
+     * The EvolutionaryFuzzerConfig object for this the Analyzer uses
      */
     private final EvolutionaryFuzzerConfig config;
 
-    /**
-     * 
-     * @param config
-     */
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
 	this.config = config;
 	ruleList = new LinkedList<Rule>();
@@ -57,9 +53,9 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     /**
-     * 
-     * @param tempClass
-     * @return
+     * Returns a rule from the Rule list
+     * @param tempClass Class of the rule to return
+     * @return First Rule from the rule list of matching class
      */
     public Rule getRule(Class tempClass) {
 	for (Rule r : ruleList) {
@@ -71,7 +67,7 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     /**
-     * 
+     * Analyzes a Result by trying to apply all rules to it
      * @param result
      */
     public void analyze(Result result) {
@@ -84,8 +80,8 @@ public class RuleAnalyzer extends Analyzer {
 	}
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     public String getReport() {

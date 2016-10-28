@@ -26,24 +26,15 @@ import javax.xml.bind.JAXBException;
 public class IsCrashRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(IsCrashRule.class.getName());
-
-    /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
     /**
-     *
+     * The configuration object for this rule
      */
     private IsCrashRuleConfig config;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public IsCrashRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_crash.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -58,8 +49,8 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * The rule applies if the TestVector caused the Server to crash
+     * @param result Result to analyze
      * @return
      */
     @Override
@@ -68,8 +59,8 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Stores the TestVector
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -87,15 +78,15 @@ public class IsCrashRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -107,13 +98,10 @@ public class IsCrashRule extends Rule {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public IsCrashRuleConfig getConfig() {
 	return config;
     }
 
+    private static final Logger LOG = Logger.getLogger(IsCrashRule.class.getName());
 }

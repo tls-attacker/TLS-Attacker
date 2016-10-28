@@ -20,10 +20,10 @@ import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 public class AgentFactory {
 
     /**
-     * 
-     * @param config
-     * @param keypair
-     * @return
+     * Generates the correct Agent depending on the agent field set in the configuration
+     * @param config The configuration object
+     * @param keypair The server certificate key pair the agent should be created with
+     * @return A newly generated Agent
      */
     public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
 	switch (config.getAgent()) {
@@ -39,7 +39,7 @@ public class AgentFactory {
     }
 
     /**
-     *
+     * Private constructor
      */
     private AgentFactory() {
     }

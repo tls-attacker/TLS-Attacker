@@ -28,49 +28,40 @@ import javax.xml.bind.JAXB;
 public class AnalyzeTimeRule extends Rule {
 
     /**
-     *
+     *  The Decimal format in the reports()
      */
     private static final DecimalFormat decimalFormat = new DecimalFormat("0.##");
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());
-
-    /**
-     *
+     * A writer to which statistics are written too
      */
     private PrintWriter outWriter;
 
     /**
-     *
+     * Time for which the fuzzer is already running totally (all Threads combined)
      */
     private double executedTimeTotal;
 
     /**
-     *
+     * The number of TestVectors this rule saw
      */
     private int numberExecutedTraces = 0;
 
     /**
-     *
+     * Slowest execution time in ms
      */
     private double slowestTime = Double.MIN_VALUE;
 
     /**
-     *
+     * Fastest execution time in ms
      */
     private double fastestTime = Double.MAX_VALUE;
 
     /**
-     *
+     * Configuration for this ruĺe
      */
     private AnalyzeTimeRuleConfig config;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public AnalyzeTimeRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "analyze_time.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -97,9 +88,9 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * The rule always applies
+     * @param result Result to analyze
+     * @return True
      */
     @Override
     public boolean applies(Result result) {
@@ -107,8 +98,8 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Updates timing statistics
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -125,15 +116,15 @@ public class AnalyzeTimeRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -148,45 +139,26 @@ public class AnalyzeTimeRule extends Rule {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public AnalyzeTimeRuleConfig getConfig() {
 	return config;
     }
 
-    /**
-     * 
-     * @return
-     */
     public double getExecutedTimeTotal() {
 	return executedTimeTotal;
     }
 
-    /**
-     * 
-     * @return
-     */
     public int getNumberExecutedTraces() {
 	return numberExecutedTraces;
     }
 
-    /**
-     * 
-     * @return
-     */
     public double getSlowestTime() {
 	return slowestTime;
     }
 
-    /**
-     * 
-     * @return
-     */
     public double getFastestTime() {
 	return fastestTime;
     }
 
+    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());
 }

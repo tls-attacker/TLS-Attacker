@@ -17,14 +17,14 @@ import tlsattacker.fuzzer.result.Result;
 public abstract class Analyzer {
 
     /**
-     * 
-     * @param result
+     * Analyzes a result
+     * @param result Result to analyze
      */
     public abstract void analyze(Result result);
 
-    /**
-     * 
-     * @return
+     /**
+     * Generates a status report
+     * @return Status report as a String
      */
     public abstract String getReport();
 }

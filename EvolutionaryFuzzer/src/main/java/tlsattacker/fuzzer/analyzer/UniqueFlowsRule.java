@@ -33,29 +33,20 @@ import tlsattacker.fuzzer.testvector.TestVector;
 public class UniqueFlowsRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(UniqueFlowsRule.class.getName());
-
-    /**
-     *
+     * The configuration object for this rule
      */
     private UniqueFlowsRuleConfig config;
 
     /**
-     *
+     * A set of already discovered unique WorkflowTraceTypes
      */
     private final Set<WorkflowTraceType> typeSet;
 
     /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public UniqueFlowsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "unique_flows.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -76,9 +67,9 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * The rule applies if the WorkflowTracetype of the Result has not yet been seen by this rule
+     * @param result Result to analyze
+     * @return True if the WorkflowTracetype has not yet been seen by this rule
      */
     @Override
     public boolean applies(Result result) {
@@ -90,8 +81,8 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Stores the TestVector and adds the WorkflowTraceType to the set
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -118,15 +109,15 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -134,13 +125,10 @@ public class UniqueFlowsRule extends Rule {
 	return "WorkflowTraceTypes observed:" + typeSet.size() + " WorkFlowTraceTypes found:" + found + "\n";
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public UniqueFlowsRuleConfig getConfig() {
 	return config;
     }
 
+    private static final Logger LOG = Logger.getLogger(UniqueFlowsRule.class.getName());
 }

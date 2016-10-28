@@ -36,26 +36,26 @@ import java.util.Set;
 public class AFLAgent extends Agent {
 
     /**
-     *
+     * Logger
      */
     private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
 
     /**
-     *
+     * The name of the Agent when referred by command line
      */
     public static final String optionName = "AFL";
 
     /**
-     * 
-     * @param f
-     * @return
+     * Parses a file into a BranchTrace object
+     * @param file File to parse
+     * @return Newly generated BranchTrace object
      */
-    private static BranchTrace getBranchTrace(File f) {
+    private static BranchTrace getBranchTrace(File file) {
 	BufferedReader br = null;
 	Set<Long> verticesSet = new HashSet<>();
 	Map<Edge, Edge> edgeMap = new HashMap<>();
 	try {
-	    br = new BufferedReader(new FileReader(f));
+	    br = new BufferedReader(new FileReader(file));
 	    long previousNumber = Long.MIN_VALUE;
 	    String line = null;
 	    while ((line = br.readLine()) != null) {
@@ -97,46 +97,17 @@ public class AFLAgent extends Agent {
 	return new BranchTrace();
     }
 
-    // Is a fuzzing Progress Running?
+    
 
     /**
-     *
-     */
-    protected boolean running = false;
-    // StartTime of the last Fuzzing Vektor
-
-    /**
-     *
-     */
-    protected long startTime;
-    // StopTime of the last Fuzzing Vektor
-
-    /**
-     *
-     */
-    protected long stopTime;
-    // If the Application did Timeout
-
-    /**
-     *
-     */
-    protected boolean timeout;
-    // If the Application did Crash
-
-    /**
-     *
-     */
-    protected boolean crash;
-
-    /**
-     *
+     * The prefix that has to be set in front of the actual server command
      */
     private final String prefix = "AFL/afl-showmap -m none -o [output]/[id] ";
 
     /**
      * Default Constructor
      * 
-     * @param keypair
+     * @param keypair The key certificate pair the server should be started with
      */
     public AFLAgent(ServerCertificateStructure keypair) {
 	super(keypair);
@@ -195,9 +166,9 @@ public class AFLAgent extends Agent {
     }
 
     /**
-     * 
-     * @param file
-     * @return
+     * Returns the last line in a File
+     * @param file File to search in
+     * @return Last line in the File
      */
     private String tail(File file) {
 	RandomAccessFile fileHandler = null;

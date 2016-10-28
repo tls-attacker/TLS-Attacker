@@ -32,31 +32,22 @@ import javax.xml.bind.JAXBException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FindAlertsRule extends Rule {
-
+    
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(FindAlertsRule.class.getName());
-
-    /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
     /**
-     *
+     * An boolean array which contains a flag for every received alert code
      */
     private final boolean[] alertMap = new boolean[Byte.MAX_VALUE];
 
     /**
-     *
+     * The configuration object for this rule
      */
     private FindAlertsRuleConfig config;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public FindAlertsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "find_alerts.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -85,8 +76,10 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * The rule applies if it contains either an alert description which is on the Blacklist or Whitelist.
+     * The rule also applies if the saveOneOfEach option is set, if the rule has never seen the alert
+     * description before
+     * @param result Result to analyze
      * @return
      */
     @Override
@@ -115,8 +108,8 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Stores the TestVector
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -148,15 +141,15 @@ public class FindAlertsRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -183,13 +176,11 @@ public class FindAlertsRule extends Rule {
 
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public FindAlertsRuleConfig getConfig() {
 	return config;
     }
+    
+    private static final Logger LOG = Logger.getLogger(FindAlertsRule.class.getName());
 
 }

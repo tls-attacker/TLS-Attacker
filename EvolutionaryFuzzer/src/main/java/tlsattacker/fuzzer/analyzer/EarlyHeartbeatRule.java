@@ -33,24 +33,15 @@ import javax.xml.bind.JAXBException;
 public class EarlyHeartbeatRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
-
-    /**
-     *
+     * The configuration object for this rule
      */
     private EarlyHeartbeatRuleConfig config;
 
     /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "early_heartbeat.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -65,9 +56,9 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * The rule applies if the Server sent a Heartbeat message before it sent a Finished message
+     * @param result Result to analyze the Workflowtrace from
+     * @return True if the the Server sent a Heartbeat message before it sent a Finished message
      */
     @Override
     public boolean applies(Result result) {
@@ -80,8 +71,8 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Stores the TestVector
+     * @param result Result to store
      */
     @Override
     public void onApply(Result result) {
@@ -102,15 +93,15 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -122,21 +113,17 @@ public class EarlyHeartbeatRule extends Rule {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public EarlyHeartbeatRuleConfig getConfig() {
 	return config;
     }
 
     /**
-     * 
-     * @param trace
-     * @return
+     * Checks if the Server sent a Heartbeat message without sending a finished message
+     * @param trace WorkflowTrace to analyze
+     * @return True if the Server sent a Heartbeat message without sending a finished message
      */
-    public boolean hasHeartbeatWithoutFinished(WorkflowTrace trace) {
+    private boolean hasHeartbeatWithoutFinished(WorkflowTrace trace) {
 	List<HandshakeMessage> finishedMessages = trace
 		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED);
 	List<ProtocolMessage> heartBeatMessages = trace
@@ -145,12 +132,13 @@ public class EarlyHeartbeatRule extends Rule {
     }
 
     /**
-     * 
-     * @param trace
-     * @return
+     * Checks if the Server sent a Heartbeat message before sending a finished message
+     * @param trace WorkflowTrace to analyze
+     * @return True if the Server sent a Heartbeat message before sending a finished message
      */
-    public boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
+    private boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
 	return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
     }
-
+    
+    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
 }

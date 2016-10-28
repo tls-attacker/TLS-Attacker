@@ -26,24 +26,15 @@ import javax.xml.bind.JAXBException;
 public class IsTimeoutRule extends Rule {
 
     /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());
-
-    /**
-     *
+     * The number of TestVectors that this rule applied to
      */
     private int found = 0;
 
     /**
-     *
+     * The configuration object for this rule
      */
     private IsTimeoutRuleConfig config;
 
-    /**
-     * 
-     * @param evoConfig
-     */
     public IsTimeoutRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "is_timeout.rule");
 	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
@@ -58,9 +49,9 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
-     * @return
+     * The rule apples if the TestVector is considered as timedout
+     * @param result Result to analyze
+     * @return True if the TestVector did timeout
      */
     @Override
     public boolean applies(Result result) {
@@ -68,8 +59,8 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Stores the Testvector
+     * @param result Result to analyze
      */
     @Override
     public void onApply(Result result) {
@@ -87,15 +78,15 @@ public class IsTimeoutRule extends Rule {
     }
 
     /**
-     * 
-     * @param result
+     * Do nothing
+     * @param result Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-    /**
-     * 
+     /**
+     * Generates a status report
      * @return
      */
     @Override
@@ -107,13 +98,10 @@ public class IsTimeoutRule extends Rule {
 	}
     }
 
-    /**
-     * 
-     * @return
-     */
     @Override
     public IsTimeoutRuleConfig getConfig() {
 	return config;
     }
 
+    private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());
 }
