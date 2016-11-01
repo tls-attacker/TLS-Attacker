@@ -12,6 +12,10 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -44,12 +48,17 @@ public class ChangeCipherSuiteAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
-	if (executed) {
-	    throw new WorkflowExecutionException("Action already executed!");
-	}
-	oldValue = tlsContext.getSelectedCipherSuite();
-	tlsContext.setSelectedCipherSuite(newValue);
+    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException{
+        try {
+            if (executed) {
+                throw new WorkflowExecutionException("Action already executed!");
+            }
+            oldValue = tlsContext.getSelectedCipherSuite();
+            tlsContext.setSelectedCipherSuite(newValue);
+            tlsContext.getRecordHandler().getRecordCipher().init();
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            throw new UnsupportedOperationException(ex);
+        }
     }
 
     @Override
