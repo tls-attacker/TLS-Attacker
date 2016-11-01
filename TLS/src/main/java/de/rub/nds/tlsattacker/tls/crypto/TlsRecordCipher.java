@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.NoSuchPaddingException;
+
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -18,7 +23,7 @@ public abstract class TlsRecordCipher {
      */
     int minimalEncryptedRecordLength;
 
-    public abstract void init();
+    public abstract void init() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException ;
 
     public int getMinimalEncryptedRecordLength() {
 	return minimalEncryptedRecordLength;
