@@ -48,11 +48,13 @@ public class ChangeMasterSecretAction extends TLSAction {
 	}
 	oldValue = tlsContext.getMasterSecret();
 	tlsContext.setMasterSecret(newValue);
+        executed = true;
     }
 
     @Override
     public void reset() {
 	oldValue = null;
+        executed = false;
     }
 
 }

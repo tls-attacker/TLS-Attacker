@@ -47,11 +47,13 @@ public class ChangeClientRandomAction extends TLSAction {
 	}
 	oldValue = tlsContext.getClientRandom();
 	tlsContext.setClientRandom(newValue);
+        executed = true;
     }
 
     @Override
     public void reset() {
 	oldValue = null;
+        executed = false;
     }
 
 }

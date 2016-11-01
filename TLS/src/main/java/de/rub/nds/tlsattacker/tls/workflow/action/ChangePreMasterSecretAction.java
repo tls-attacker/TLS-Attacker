@@ -48,11 +48,13 @@ public class ChangePreMasterSecretAction extends TLSAction {
 	}
 	oldValue = tlsContext.getPreMasterSecret();
 	tlsContext.setPreMasterSecret(newValue);
+        executed = true;
     }
 
     @Override
     public void reset() {
 	oldValue = null;
+        executed = false;
     }
 
 }

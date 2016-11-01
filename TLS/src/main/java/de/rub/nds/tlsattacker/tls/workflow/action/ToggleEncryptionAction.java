@@ -24,6 +24,7 @@ public class ToggleEncryptionAction extends TLSAction {
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
 	tlsContext.getRecordHandler().setEncryptSending(!tlsContext.getRecordHandler().isEncryptSending());
+        executed = true;
     }
 
     @Override

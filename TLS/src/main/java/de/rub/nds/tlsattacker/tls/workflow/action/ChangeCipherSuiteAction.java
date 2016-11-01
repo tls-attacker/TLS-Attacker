@@ -59,11 +59,13 @@ public class ChangeCipherSuiteAction extends TLSAction {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new UnsupportedOperationException(ex);
         }
+        executed = true;
     }
 
     @Override
     public void reset() {
 	oldValue = null;
+        executed = false;
     }
 
 }

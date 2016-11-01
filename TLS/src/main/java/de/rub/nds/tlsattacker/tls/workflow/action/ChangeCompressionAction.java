@@ -50,11 +50,13 @@ public class ChangeCompressionAction extends TLSAction {
 	}
 	oldValue = tlsContext.getCompressionMethod();
 	tlsContext.setCompressionMethod(newValue);
+        executed = true;
     }
 
     @Override
     public void reset() {
 	oldValue = null;
+        executed = false;
     }
 
 }

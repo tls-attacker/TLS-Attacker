@@ -67,11 +67,13 @@ public class ChangeServerCertificateAction extends TLSAction {
 	tlsContext.setServerCertificate(newValue);
 	x509oldValue = tlsContext.getX509ServerCertificateObject();
 	tlsContext.setX509ServerCertificateObject(x509newValue);
+        executed = true;
     }
 
     @Override
     public void reset() {
 	oldValue = null;
+        executed = false;
     }
 
 }

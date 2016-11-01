@@ -50,10 +50,12 @@ public class ChangeProtocolVersionAction extends TLSAction {
 	}
 	oldValue = tlsContext.getProtocolVersion();
 	tlsContext.setProtocolVersion(newValue);
+        executed = true;
     }
 
     @Override
     public void reset() {
+        oldValue = null;
 	executed = false;
     }
 
