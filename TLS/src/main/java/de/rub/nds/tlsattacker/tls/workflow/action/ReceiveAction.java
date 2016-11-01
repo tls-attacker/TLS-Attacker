@@ -50,7 +50,7 @@ public class ReceiveAction extends MessageAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws IOException {
+    public void execute(TlsContext tlsContext, ActionExecutor executor) {
 	if (executed) {
 	    throw new WorkflowExecutionException("Action already executed!");
 	}

@@ -42,7 +42,7 @@ public class ChangePreMasterSecretAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
 	if (executed) {
 	    throw new WorkflowExecutionException("Action already executed!");
 	}

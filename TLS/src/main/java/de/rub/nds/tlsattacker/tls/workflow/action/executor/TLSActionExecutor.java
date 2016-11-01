@@ -44,21 +44,29 @@ public class TLSActionExecutor extends ActionExecutor {
     private int pointer = 0;
 
     @Override
-    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) throws IOException {
+    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
 	MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
 	for (ProtocolMessage message : messages) {
 	    prepareMyProtocolMessageBytes(message, tlsContext, messageBytesCollector);
 	    prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
 	}
-	sendData(tlsContext, messageBytesCollector);
+        try {
+            sendData(tlsContext, messageBytesCollector);
+        } catch (IOException ex) {
+            //TODO
+        }
 	return messages;
     }
 
     @Override
-    public List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages)
-	    throws IOException {
+    public List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
 	pointer = 0;
-	List<ProtocolMessage> receivedList = handleProtocolMessagesFromPeer(messages, tlsContext);
+	List<ProtocolMessage> receivedList = new LinkedList<>();
+        try {
+            receivedList = handleProtocolMessagesFromPeer(messages, tlsContext);
+        } catch (IOException ex) {
+            //TODO
+        }
 	return receivedList;
 
     }
@@ -74,7 +82,7 @@ public class TLSActionExecutor extends ActionExecutor {
 	if (messageBytesCollector.getRecordBytes().length != 0) {
 	    LOG.log(Level.FINER, "Records going to be sent: {}",
 		    ArrayConverter.bytesToHexString(messageBytesCollector.getRecordBytes()));
-	    context.getTransportHandler().sendData(messageBytesCollector.getRecordBytes());
+            context.getTransportHandler().sendData(messageBytesCollector.getRecordBytes());
 	    messageBytesCollector.flushRecordBytes();
 	}
     }
