@@ -150,14 +150,8 @@ public class RecordHandler {
 	    if (recordCipher == null && tlsContext.isFuzzingMode()) {
 		try {
 		    recordCipher = new TlsRecordBlockCipher(tlsContext);
-		} catch (NoSuchAlgorithmException ex) {
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
 		    throw new UnsupportedOperationException(ex);
-		} catch (NoSuchPaddingException ex) {
-		    throw new UnsupportedOperationException(ex);
-		} catch (InvalidKeyException ex) {
-		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (InvalidAlgorithmParameterException ex) {
-		    java.util.logging.Logger.getLogger(RecordHandler.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	    } else if (recordCipher == null) {
 		throw new WorkflowExecutionException("Cannot encrypt Record, RecordCipher is not yet initialized");
