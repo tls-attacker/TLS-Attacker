@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -79,39 +80,41 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.startsWith("TLS_RSA_")) {
-	    return KeyExchangeAlgorithm.RSA;
-	} else if (cipher.startsWith("TLS_DH_DSS_")) {
-	    return KeyExchangeAlgorithm.DH_DSS;
-	} else if (cipher.startsWith("TLS_DH_RSA_")) {
-	    return KeyExchangeAlgorithm.DH_RSA;
-	} else if (cipher.startsWith("TLS_DHE_DSS_")) {
-	    return KeyExchangeAlgorithm.DHE_DSS;
-	} else if (cipher.startsWith("TLS_DHE_RSA_")) {
-	    return KeyExchangeAlgorithm.DHE_RSA;
-	} else if (cipher.startsWith("TLS_DH_ANON_")) {
-	    return KeyExchangeAlgorithm.DH_ANON;
-	} else if (cipher.startsWith("TLS_ECDH_")) {
-	    return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
-	} else if (cipher.startsWith("TLS_ECDHE_")) {
-	    return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
-	} else if (cipher.startsWith("TLS_NULL_")) {
-	    return KeyExchangeAlgorithm.NULL;
-	} else if (cipher.startsWith("TLS_KRB5_")) {
-	    return KeyExchangeAlgorithm.KRB5;
-	} else if (cipher.startsWith("TLS_PSK_")) {
-	    return KeyExchangeAlgorithm.PSK;
-	} else if (cipher.startsWith("TLS_SRP_")) {
-	    return KeyExchangeAlgorithm.SRP;
-	} else if (cipher.startsWith("TLS_GOSTR341001_")) {
-	    return KeyExchangeAlgorithm.GOSTR341001;
-	} else if (cipher.startsWith("TLS_GOSTR341094_")) {
-	    return KeyExchangeAlgorithm.GOSTR341094;
-	} else if (cipher.startsWith("TLS_CECPQ1_")) {
-	    return KeyExchangeAlgorithm.CECPQ1;
-	}
-	throw new UnsupportedOperationException("The key exchange algorithm is not supported yet.");
+        String cipher = cipherSuite.toString().toUpperCase();
+        if (cipher.startsWith("TLS_RSA_")) {
+            return KeyExchangeAlgorithm.RSA;
+        } else if (cipher.startsWith("TLS_DH_DSS_")) {
+            return KeyExchangeAlgorithm.DH_DSS;
+        } else if (cipher.startsWith("TLS_DH_RSA_")) {
+            return KeyExchangeAlgorithm.DH_RSA;
+        } else if (cipher.startsWith("TLS_DHE_DSS_")) {
+            return KeyExchangeAlgorithm.DHE_DSS;
+        } else if (cipher.startsWith("TLS_DHE_RSA_")) {
+            return KeyExchangeAlgorithm.DHE_RSA;
+        } else if (cipher.startsWith("TLS_DHE_PSK")) {
+            return KeyExchangeAlgorithm.DHE_PSK;
+        } else if (cipher.startsWith("TLS_DH_ANON_")) {
+            return KeyExchangeAlgorithm.DH_ANON;
+        } else if (cipher.startsWith("TLS_ECDH_")) {
+            return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
+        } else if (cipher.startsWith("TLS_ECDHE_")) {
+            return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
+        } else if (cipher.startsWith("TLS_NULL_")) {
+            return KeyExchangeAlgorithm.NULL;
+        } else if (cipher.startsWith("TLS_KRB5_")) {
+            return KeyExchangeAlgorithm.KRB5;
+        } else if (cipher.startsWith("TLS_PSK_")) {
+            return KeyExchangeAlgorithm.PSK;
+        } else if (cipher.startsWith("TLS_SRP_")) {
+            return KeyExchangeAlgorithm.SRP;
+        } else if (cipher.startsWith("TLS_GOSTR341001_")) {
+            return KeyExchangeAlgorithm.GOSTR341001;
+        } else if (cipher.startsWith("TLS_GOSTR341094_")) {
+            return KeyExchangeAlgorithm.GOSTR341094;
+        } else if (cipher.startsWith("TLS_CECPQ1_")) {
+            return KeyExchangeAlgorithm.CECPQ1;
+        }
+        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
     }
 
     /**
@@ -144,31 +147,33 @@ public class AlgorithmResolver {
     }
 
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.contains("NULL")) {
-	    return CipherAlgorithm.NULL;
-	} else if (cipher.contains("IDEA")) {
-	    return CipherAlgorithm.IDEA_128;
-	} else if (cipher.contains("RC2")) {
-	    return CipherAlgorithm.RC2_128;
-	} else if (cipher.contains("RC4")) {
-	    return CipherAlgorithm.RC4_128;
-	} else if (cipher.contains("DES_EDE_CBC")) {
-	    return CipherAlgorithm.DES_EDE_CBC;
-	} else if (cipher.contains("AES_128_CBC")) {
-	    return CipherAlgorithm.AES_128_CBC;
-	} else if (cipher.contains("AES_256_CBC")) {
-	    return CipherAlgorithm.AES_256_CBC;
-	} else if (cipher.contains("AES_128_GCM")) {
-	    return CipherAlgorithm.AES_128_GCM;
-	} else if (cipher.contains("AES_256_GCM")) {
-	    return CipherAlgorithm.AES_256_GCM;
-	} else if (cipher.contains("CAMELLIA_128_CBC")) {
-	    return CipherAlgorithm.CAMELLIA_128_CBC;
-	} else if (cipher.contains("CAMELLIA_256_CBC")) {
-	    return CipherAlgorithm.CAMELLIA_256_CBC;
-	}
-	throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
+        String cipher = cipherSuite.toString().toUpperCase();
+        if (cipher.contains("NULL")) {
+            return CipherAlgorithm.NULL;
+        } else if (cipher.contains("IDEA")) {
+            return CipherAlgorithm.IDEA_128;
+        } else if (cipher.contains("RC2")) {
+            return CipherAlgorithm.RC2_128;
+        } else if (cipher.contains("RC4")) {
+            return CipherAlgorithm.RC4_128;
+        } else if (cipher.contains("DES_EDE_CBC")) {
+            return CipherAlgorithm.DES_EDE_CBC;
+        } else if (cipher.contains("AES_128_CBC")) {
+            return CipherAlgorithm.AES_128_CBC;
+        } else if (cipher.contains("AES_256_CBC")) {
+            return CipherAlgorithm.AES_256_CBC;
+        } else if (cipher.contains("AES_128_GCM")) {
+            return CipherAlgorithm.AES_128_GCM;
+        } else if (cipher.contains("AES_256_GCM")) {
+            return CipherAlgorithm.AES_256_GCM;
+        } else if (cipher.contains("CAMELLIA_128_CBC")) {
+            return CipherAlgorithm.CAMELLIA_128_CBC;
+        } else if (cipher.contains("CAMELLIA_256_CBC")) {
+            return CipherAlgorithm.CAMELLIA_256_CBC;
+        } else if (cipher.contains("SEED_CBC")) {
+            return CipherAlgorithm.SEED_CBC;
+        }
+        throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }
 
     /**
@@ -178,13 +183,13 @@ public class AlgorithmResolver {
      * @return
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.contains("AES") || cipher.contains("DES")) {
-	    return CipherType.BLOCK;
-	} else if (cipher.contains("RC4")) {
-	    return CipherType.STREAM;
-	}
-	throw new UnsupportedOperationException("The cipher algorithm is not supported yet.");
+        String cipher = cipherSuite.toString().toUpperCase();
+        if (cipher.contains("AES") || cipher.contains("DES")) {
+            return CipherType.BLOCK;
+        } else if (cipher.contains("RC4")) {
+            return CipherType.STREAM;
+        }
+        throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
 
     public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {

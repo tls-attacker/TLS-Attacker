@@ -8,11 +8,18 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -28,11 +35,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
@@ -66,7 +68,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
 	LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
 
-	LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet();
+	LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
 	for (int i = 0; i < lastMessages.size(); i++) {
 	    ProtocolMessage pm = lastMessages.get(i);
 	    pmSet.add(pm);
@@ -111,14 +113,14 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
 	}
 
-	lastMessages.add(trace.getLastConfiguredProtocolMesssage());
+	lastMessages.add(trace.getLastConfiguredSendMesssage());
 	tlsContexts.add(tlsContext);
 
 	transportHandler.closeConnection();
     }
 
     private List<Record> createRecordsWithPlainData() {
-	List<Record> records = new LinkedList();
+	List<Record> records = new LinkedList<>();
 	for (int i = 0; i < 64; i++) {
 	    byte[] padding = createPaddingBytes(i);
 	    int messageSize = config.getBlockSize() - (padding.length % config.getBlockSize());
@@ -152,7 +154,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     }
 
     private List<Record> createRecordsWithModifiedPadding() {
-	List<Record> records = new LinkedList();
+	List<Record> records = new LinkedList<>();
 
 	Record r = new Record();
 	ModifiableByteArray padding = new ModifiableByteArray();
@@ -165,7 +167,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     }
 
     private List<Record> createRecordsWithModifiedMac() {
-	List<Record> records = new LinkedList();
+	List<Record> records = new LinkedList<>();
 
 	Record r = new Record();
 	ModifiableByteArray mac = new ModifiableByteArray();

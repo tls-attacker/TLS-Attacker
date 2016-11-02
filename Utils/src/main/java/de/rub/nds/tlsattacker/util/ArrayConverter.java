@@ -169,6 +169,7 @@ public class ArrayConverter {
 	return result.toString();
     }
 
+    @SafeVarargs
     public static <T> T[] concatenate(final T[]... arrays) {
 	if (arrays == null || arrays.length == 0) {
 	    throw new IllegalArgumentException("The minimal number of parameters for this function is one");
@@ -177,7 +178,8 @@ public class ArrayConverter {
 	for (final T[] a : arrays) {
 	    length += a.length;
 	}
-	T[] result = (T[]) Array.newInstance(arrays[0].getClass().getComponentType(), length);
+	@SuppressWarnings("unchecked")
+    T[] result = (T[]) Array.newInstance(arrays[0].getClass().getComponentType(), length);
 	int currentOffset = 0;
 	for (final T[] a : arrays) {
 	    System.arraycopy(a, 0, result, currentOffset, a.length);

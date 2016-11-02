@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls;
 
@@ -52,8 +53,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.OperatorCreationException;
 import java.util.Set;
+import org.bouncycastle.operator.OperatorCreationException;
 import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -80,7 +81,7 @@ public class TlsClientTest {
     }
 
     @Test
-    public void testRSAWorkflows() {
+    public void testRSAWorkflows() throws OperatorCreationException {
 	try {
 
 	    KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
@@ -93,14 +94,13 @@ public class TlsClientTest {
 	    testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
 	    tlsServer.shutdown();
 	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-		| KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException
-		| UnrecoverableKeyException | KeyManagementException e) {
+		| KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException e) {
 	    LOGGER.error("Unable to initialize the TLS server with an RSA key, but the build runs further.", e);
 	}
     }
 
     @Test
-    public void testECWorkflows() {
+    public void testECWorkflows() throws OperatorCreationException {
 	try {
 	    KeyPair k = KeyStoreGenerator.createECKeyPair(256);
 	    KeyStore ks = KeyStoreGenerator.createKeyStore(k);
@@ -112,8 +112,7 @@ public class TlsClientTest {
 	    testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
 	    tlsServer.shutdown();
 	} catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-		| KeyStoreException | NoSuchProviderException | SignatureException | OperatorCreationException
-		| UnrecoverableKeyException | KeyManagementException e) {
+		| KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException e) {
 	    LOGGER.error("Unable to initialize the TLS server with an EC key, but the build runs further.", e);
 	}
     }

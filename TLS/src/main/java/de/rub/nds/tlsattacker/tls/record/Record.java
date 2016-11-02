@@ -86,128 +86,138 @@ public class Record extends ModifiableVariableHolder {
      */
     private int sleepAfterMessageSent;
 
+    private boolean measuringTiming;
+
     public ModifiableInteger getLength() {
-	return length;
+        return length;
     }
 
     public ModifiableByte getContentType() {
-	return contentType;
+        return contentType;
     }
 
     public ModifiableByteArray getProtocolVersion() {
-	return protocolVersion;
+        return protocolVersion;
     }
 
     public ModifiableByteArray getMac() {
-	return mac;
+        return mac;
     }
 
     public ModifiableByteArray getPadding() {
-	return padding;
+        return padding;
     }
 
     public ModifiableByteArray getProtocolMessageBytes() {
-	return protocolMessageBytes;
+        return protocolMessageBytes;
     }
 
     public void setProtocolMessageBytes(ModifiableByteArray protocolMessageBytes) {
-	this.protocolMessageBytes = protocolMessageBytes;
+        this.protocolMessageBytes = protocolMessageBytes;
     }
 
     public void setLength(ModifiableInteger length) {
-	this.length = length;
+        this.length = length;
     }
 
     public void setContentType(ModifiableByte contentType) {
-	this.contentType = contentType;
+        this.contentType = contentType;
     }
 
     public void setProtocolVersion(ModifiableByteArray protocolVersion) {
-	this.protocolVersion = protocolVersion;
+        this.protocolVersion = protocolVersion;
     }
 
     public void setLength(int length) {
-	this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+        this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
     public void setContentType(byte contentType) {
-	this.contentType = ModifiableVariableFactory.safelySetValue(this.contentType, contentType);
+        this.contentType = ModifiableVariableFactory.safelySetValue(this.contentType, contentType);
     }
 
     public void setProtocolVersion(byte[] array) {
-	this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
     public void setMac(byte[] mac) {
-	this.mac = ModifiableVariableFactory.safelySetValue(this.mac, mac);
+        this.mac = ModifiableVariableFactory.safelySetValue(this.mac, mac);
     }
 
     public void setPadding(byte[] padding) {
-	this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
     public void setPadding(ModifiableByteArray padding) {
-	this.padding = padding;
+        this.padding = padding;
     }
 
     public void setMac(ModifiableByteArray mac) {
-	this.mac = mac;
+        this.mac = mac;
     }
 
     public void setProtocolMessageBytes(byte[] bytes) {
-	this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
+        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
     }
 
     public ModifiableInteger getPaddingLength() {
-	return paddingLength;
+        return paddingLength;
     }
 
     public void setPaddingLength(ModifiableInteger paddingLength) {
-	this.paddingLength = paddingLength;
+        this.paddingLength = paddingLength;
     }
 
     public void setPaddingLength(int paddingLength) {
-	this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+        this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
     }
 
     public ModifiableByteArray getPlainRecordBytes() {
-	return plainRecordBytes;
+        return plainRecordBytes;
     }
 
     public void setPlainRecordBytes(ModifiableByteArray plainRecordBytes) {
-	this.plainRecordBytes = plainRecordBytes;
+        this.plainRecordBytes = plainRecordBytes;
     }
 
     public void setPlainRecordBytes(byte[] value) {
-	this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, value);
+        this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, value);
     }
 
     public ModifiableByteArray getEncryptedProtocolMessageBytes() {
-	return encryptedProtocolMessageBytes;
+        return encryptedProtocolMessageBytes;
     }
 
     public void setEncryptedProtocolMessageBytes(ModifiableByteArray encryptedProtocolMessageBytes) {
-	this.encryptedProtocolMessageBytes = encryptedProtocolMessageBytes;
+        this.encryptedProtocolMessageBytes = encryptedProtocolMessageBytes;
     }
 
     public void setEncryptedProtocolMessageBytes(byte[] value) {
-	this.encryptedProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(
-		this.encryptedProtocolMessageBytes, value);
+        this.encryptedProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(
+                this.encryptedProtocolMessageBytes, value);
     }
 
     public Integer getMaxRecordLengthConfig() {
-	return maxRecordLengthConfig;
+        return maxRecordLengthConfig;
     }
 
     public void setMaxRecordLengthConfig(Integer maxRecordLengthConfig) {
-	this.maxRecordLengthConfig = maxRecordLengthConfig;
+        this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
     public void setSleepAfterMessageSent(int sleepAfterMessageSent) {
-	this.sleepAfterMessageSent = sleepAfterMessageSent;
+        this.sleepAfterMessageSent = sleepAfterMessageSent;
     }
 
     public int getSleepAfterMessageSent() {
-	return sleepAfterMessageSent;
+        return sleepAfterMessageSent;
+    }
+
+    public boolean isMeasuringTiming() {
+        return measuringTiming;
+    }
+
+    public void setMeasuringTiming(boolean measuringTiming) {
+        this.measuringTiming = measuringTiming;
     }
 }

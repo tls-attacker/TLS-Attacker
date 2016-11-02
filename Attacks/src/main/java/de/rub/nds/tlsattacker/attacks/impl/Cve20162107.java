@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
@@ -104,7 +105,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
 	FinishedMessage finishedMessage = (FinishedMessage) trace
-		.getFirstConfiguredHandshakeMessage(HandshakeMessageType.FINISHED);
+		.getFirstConfiguredSendMessageOfType(HandshakeMessageType.FINISHED);
 	Record record = createRecordWithBadPadding();
 	finishedMessage.addRecord(record);
 
@@ -122,7 +123,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
 	}
 
-	ProtocolMessage lm = trace.getLastConfiguredProtocolMesssage();
+	ProtocolMessage lm = trace.getLastConfiguredReceiveMesssage();
 	lastMessages.add(lm);
 	tlsContexts.add(tlsContext);
 

@@ -34,6 +34,8 @@ import java.util.List;
  * Creates an RSA example-workflowtrace to for Man-in-the-Middle Attack This
  * workflow automatically synchronizes the master secret
  * 
+ * 
+ * 
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class RSAExampleMitMWorkflowConfiguration {
@@ -73,7 +75,7 @@ public class RSAExampleMitMWorkflowConfiguration {
     }
 
     private WorkflowTrace createHandshakeWorkflow() {
-
+        /*
 	WorkflowTrace workflowTrace = new WorkflowTrace();
 
 	List<ProtocolMessage> protocolMessages = new LinkedList<>();
@@ -118,11 +120,12 @@ public class RSAExampleMitMWorkflowConfiguration {
 	workflowTrace.setProtocolMessages(protocolMessages);
 
 	return workflowTrace;
-
+        */
+        return null;
     }
 
     private WorkflowTrace createFullWorkflow() {
-
+        /*
 	WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
 
 	List<ProtocolMessage> protocolMessages = workflowTrace.getProtocolMessages();
@@ -134,10 +137,12 @@ public class RSAExampleMitMWorkflowConfiguration {
 	workflowTrace.setProtocolMessages(protocolMessages);
 
 	return workflowTrace;
+        */
+        return null;
     }
 
     private WorkflowTrace createFullSRWorkflow() {
-
+        /*
 	WorkflowTrace workflowTrace = this.createFullWorkflow();
 
 	List<ProtocolMessage> protocolMessages = workflowTrace.getProtocolMessages();
@@ -149,6 +154,8 @@ public class RSAExampleMitMWorkflowConfiguration {
 	workflowTrace.setProtocolMessages(protocolMessages);
 
 	return workflowTrace;
+        */
+        return null;
     }
 
 }

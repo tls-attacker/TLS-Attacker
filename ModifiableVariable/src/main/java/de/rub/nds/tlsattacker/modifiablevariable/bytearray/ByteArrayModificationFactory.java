@@ -7,10 +7,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +14,11 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 
 final public class ByteArrayModificationFactory {
 
@@ -45,7 +46,7 @@ final public class ByteArrayModificationFactory {
 
     private static List<VariableModification<byte[]>> modificationsFromFile;
 
-    public static final String FILE_NAME = "/de/rub/nds/tlsattacker/explicit/array.vec";
+    public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/array.vec";
 
     private ByteArrayModificationFactory() {
     }
@@ -120,24 +121,24 @@ final public class ByteArrayModificationFactory {
 	return new ByteArrayShuffleModification(shuffle);
     }
 
-    public static List<VariableModification<byte[]>> modificationsFromFile() {
-	try {
-	    if (modificationsFromFile == null) {
-		modificationsFromFile = new LinkedList<>();
-
-		InputStream is = ByteArrayModificationFactory.class.getResourceAsStream(FILE_NAME);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		String line;
-		while ((line = br.readLine()) != null) {
-		    line = line.replaceAll("\\s+", "");
-		    byte[] value = ArrayConverter.hexStringToByteArray(line);
-		    modificationsFromFile.add(explicitValue(value));
-		}
-	    }
-	    return modificationsFromFile;
-	} catch (IOException ex) {
-	    throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
-	}
+    public static synchronized List<VariableModification<byte[]>> modificationsFromFile() {
+        try {
+            if (modificationsFromFile == null) {
+                modificationsFromFile = new LinkedList<>();
+                ClassLoader classLoader = ByteArrayModificationFactory.class.getClassLoader();
+                InputStream is = classLoader.getResourceAsStream(FILE_NAME);
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    line = line.replaceAll("\\s+","");
+                    byte[] value = ArrayConverter.hexStringToByteArray(line);
+                    modificationsFromFile.add(explicitValue(value));
+                }
+            }
+            return modificationsFromFile;
+        } catch (IOException ex) {
+            throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
+        }
     }
 
     public static VariableModification<byte[]> createRandomModification(byte[] originalValue) {

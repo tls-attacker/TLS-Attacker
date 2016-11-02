@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,8 @@ import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
+
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * Networkhandler to open Interface, send/receive Frames on Data Link Layer,
@@ -82,20 +83,21 @@ public class NetworkHandler {
 	/*****************************************
 	 * Select network interfaces
 	 *****************************************/
-	Scanner scanner = new Scanner(System.in);
-	while (true) {
-	    try {
-		System.out.print("Which [number] of Network-Adapter to use: ");
-		index = Integer.parseInt(scanner.next());
-		if (index >= 0 && index < i) {
-		    break;
-		} else {
-		    System.out.println("Incorrect, retry...");
-		    continue;
-		}
-	    } catch (NumberFormatException e) {
-		System.out.println("Incorrect, retry...");
-		continue;
+	try(Scanner scanner = new Scanner(System.in)) {
+        while (true) {
+	        try {
+	            System.out.print("Which [number] of Network-Adapter to use: ");
+	            index = Integer.parseInt(scanner.next());
+	            if (index >= 0 && index < i) {
+	                break;
+	            } else {
+	                System.out.println("Incorrect, retry...");
+	                continue;
+	            }
+	        } catch (NumberFormatException e) {
+	            System.out.println("Incorrect, retry...");
+	            continue;
+	        }
 	    }
 	}
 
@@ -106,16 +108,15 @@ public class NetworkHandler {
 
 	// Username Request
 
-	Scanner sc = new Scanner(System.in);
-	while (true) {
+	try(Scanner sc = new Scanner(System.in)) {
+	    while (true) {
+	        System.out.print("Please insert username: ");
+	        username = sc.nextLine();
 
-	    System.out.print("Please insert username: ");
-	    username = sc.nextLine();
-
-	    if (username.length() != 0) {
-		break;
+	        if (username.length() != 0) {
+	        break;
+	        }
 	    }
-
 	}
 
 	// Initialize Network-Interface

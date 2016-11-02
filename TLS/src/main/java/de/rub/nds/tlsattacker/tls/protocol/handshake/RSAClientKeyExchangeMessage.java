@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;

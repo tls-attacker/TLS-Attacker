@@ -9,14 +9,15 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.mitm.MitMWorkflowExecutor;
 import de.rub.nds.tlsattacker.attacks.mitm.RSAExampleMitMWorkflowConfiguration;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
+import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,11 +67,10 @@ public class ManInTheMiddleAttack extends Attacker<ManInTheMiddleAttackCommandCo
 	// should the whole workflow trace be modified
 	boolean mod = config.isModify();
 
-	MitMWorkflowExecutor mitmWorkflowExecutor = new MitMWorkflowExecutor(clientTransportHandler,
-		serverTransportHandler, clientTlsContext, serverTlsContext, mod);
-
-	mitmWorkflowExecutor.executeWorkflow();
-
+        //This should be executable by a normal executor with Forward or MitM actions which are
+        //currently not implemented
+	GenericWorkflowExecutor executor = new GenericWorkflowExecutor(clientTransportHandler, clientTlsContext, ExecutorType.TLS);
+        executor.executeWorkflow();
 	clientTransportHandler.closeConnection();
 	serverTransportHandler.closeConnection();
     }

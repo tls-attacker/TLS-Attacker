@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.modifiablevariable.singlebyte;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import org.junit.Before;

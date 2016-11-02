@@ -57,7 +57,7 @@ public class UDPTransportHandlerTest {
 
 	udpTH.initialize(localhost.getHostName(), testSocket.getLocalPort());
 	testSocket.connect(localhost, udpTH.getLocalPort());
-	udpTH.setTimeout(1);
+	udpTH.setTlsTimeout(1);
 
 	byte[] allSentData = new byte[0];
 	byte[] allReceivedData = new byte[0];

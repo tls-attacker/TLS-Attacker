@@ -18,23 +18,23 @@ public class TransportHandlerFactory {
     }
 
     public static TransportHandler createTransportHandler() {
-	return new SimpleTransportHandler();
+        return new SimpleTransportHandler();
     }
 
     public static TransportHandler createTransportHandler(TransportHandlerType type, int tlsTimeout) {
-	switch (type) {
-	    case TCP:
-		SimpleTransportHandler th = new SimpleTransportHandler();
-		th.setTimeout(tlsTimeout);
-		return th;
-	    case EAP_TLS:
-		return new EAPTLSTransportHandler();
-	    case UDP:
-		UDPTransportHandler udpth = new UDPTransportHandler();
-		udpth.setTimeout(tlsTimeout);
-		return udpth;
-	    default:
-		throw new UnsupportedOperationException("This transport handler " + "type is not supported");
-	}
+        switch (type) {
+            case TCP:
+                SimpleTransportHandler th = new SimpleTransportHandler();
+                th.setTlsTimeout(tlsTimeout);
+                return th;
+            case EAP_TLS:
+                return new EAPTLSTransportHandler();
+            case UDP:
+                UDPTransportHandler udpth = new UDPTransportHandler();
+                udpth.setTlsTimeout(tlsTimeout);
+                return udpth;
+            default:
+                throw new UnsupportedOperationException("This transport handler " + "type is not supported");
+        }
     }
 }

@@ -1,6 +1,6 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v1.1-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v1.2-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
@@ -8,7 +8,7 @@ TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able t
 
 **Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights. It is the first version and can contain some bugs.*
 
-## Compilation
+## Compiling and Running
 In order to compile and use TLS-Attacker, you need to have Java installed. Run the maven command from the TLS-Attacker directory:
 ```bash
 $ cd TLS-Attacker
@@ -18,6 +18,12 @@ Alternatively, if you are in hurry, you can skip the tests by using:
 ```bash
 $ ./mvnw clean package -DskipTests=true
 ```
+
+You can then run the client from the `Runnable/target` directory:
+```bash
+$ java -jar TLS-Attacker-1.2.jar client -connect [host:port]
+```
+
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
 - Transport: Transport utilities for TCP and UDP.
@@ -26,7 +32,7 @@ TLS-Attacker consists of several (maven) projects:
 - Attacks: Implementation of some well-known attacks and tests for these attacks.
 - Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
 
-![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/design.png)
+![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
 You can find more information about these modules in the Wiki.
 
@@ -42,54 +48,27 @@ Currently, the following features are supported:
 ## Usage
 In the following, we present some very simple examples on using TLS-Attacker.
 
-First, you need to start a TLS server. You can use the provided Java server:
+First, you need to start a TLS server (*please do not use public servers*). For example, you can use an OpenSSL test server::
 ```
-$ cd TLS-Server
-$ java -jar target/TLS-Server-1.0.jar ../resources/rsa1024.jks password TLS 4433
-```
-...or you can use a different server, e.g. OpenSSL:
-```
-$ cd resources
+$ cd TLS-Attacker/resources
 $ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem
 ```
-Both commands start a TLS server on a port 4433.
+This command starts a TLS server on a port 4433.
 
 If you want to connect to a server, you can use this command:
 ```bash
-$ cd Runnable
-$ java -jar target/TLS-Attacker-1.0.jar client
+$ cd TLS-Attacker/Runnable/target
+$ java -jar target/TLS-Attacker-1.2.jar client -connect localhost:4433
 ```
 
 You can use a different cipher suite, TLS version, or connect to a different port with the following parameters:
 ```bash
-$ java -jar target/TLS-Attacker-1.0.jar client -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
+$ java -jar TLS-Attacker-1.2.jar client -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
 ```
-
-Client-based authentication is also supported, just use it as follows. First, start the openssl s_server:
-```bash
-$ cd resources
-$ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem -verify ec256cert.pem
-```
-
-Then start the client with:
-```bash
-$ java -jar target/TLS-Attacker-1.0.jar client -connect localhost:4433 -cipher TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA -keystore ../resources/ec256.jks -password password -alias alias -client_authentication
-```
-For more parameters, run:
-```bash
-$ java -jar target/TLS-Attacker-1.0.jar client -help
-```
-
-You can now also use the TLS server:
-```bash
-$ java -jar target/TLS-Attacker-1.1.jar server -port 4444 -keystore ../resources/rsa1024.jks -password password -alias alias
-```
-Currently, only one TLS handshake will be produced, afterwards you need to restart the server again.
 
 The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
-$ cd Runnable
-$ java -jar target/TLS-Attacker-1.0.jar padding_oracle 
+$ java -jar TLS-Attacker-1.2.jar padding_oracle 
 ```
 
 In case you are a more experienced developer, you can create your own TLS message flow. For example:
@@ -132,38 +111,10 @@ I know many of you hate Java. Therefore, you can also use an XML structure and r
                 <EllipticCurves>
                     <supportedCurvesConfig>SECP192R1</supportedCurvesConfig>
                     <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP384R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP521R1</supportedCurvesConfig>
                 </EllipticCurves>
                 <ECPointFormat>
                     <pointFormatsConfig>UNCOMPRESSED</pointFormatsConfig>
                 </ECPointFormat>
-                <SignatureAndHashAlgorithmsExtension>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA512</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA512</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA256</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA256</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA1</hashAlgorithm>
-                        <signatureAlgorithm>RSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                    <signatureAndHashAlgorithmsConfig>
-                        <hashAlgorithm>SHA1</hashAlgorithm>
-                        <signatureAlgorithm>ECDSA</signatureAlgorithm>
-                    </signatureAndHashAlgorithmsConfig>
-                </SignatureAndHashAlgorithmsExtension>
             </extensions>
             <supportedCompressionMethods>
                 <CompressionMethod>NULL</CompressionMethod>
@@ -206,12 +157,12 @@ I know many of you hate Java. Therefore, you can also use an XML structure and r
 ```
 Given this XML structure is located in config.xml, you would just need to execute:
 ```bash
-$ java -jar target/TLS-Attacker-1.0.jar client -workflow_input config.xml
+$ java -jar TLS-Attacker-1.2.jar client -workflow_input config.xml
 ```
 
 
 ## Modifiable Variables
-TLS-Attacker relies on a concept of modifiable variables. Modifiable variables allow one to set modifications to basic types, e.g. Integers, and modify their values by executing the getter methods.
+TLS-Attacker relies on a concept of modifiable variables. Modifiable variables allow you to set modifications to basic types, e.g. Integers, and modify their values by executing the getter methods.
 
 The best way to present the functionality of this concept is by means of a simple example:
 
@@ -301,12 +252,13 @@ The following people have contributed code to the TLS-Attacker Project:
 Further contributions pull requests are welcome.
 
 ## TLS-Attacker Projects
-TLS-Attacker has been used in the following scientific papers and projects:
-- Tibor Jager, Jörg Schwenk, Juraj Somorovsky. On the Security of TLS 1.3 and QUIC Against Weaknesses in PKCS#1 v1.5 Encryption. CCS'15. https://www.nds.rub.de/research/publications/ccs15/
+The basic concepts behind TLS-Attacker and several attacks are described in the following paper:
+- Juraj Somorovsky. Systematic Fuzzing and Testing of TLS Libraries. ACM CCS'16. https://www.nds.rub.de/research/publications/systematic-fuzzing-and-testing-tls-libraries
+
+TLS-Attacker was furthermore used in the following scientific papers and projects:
+- Tibor Jager, Jörg Schwenk, Juraj Somorovsky. On the Security of TLS 1.3 and QUIC Against Weaknesses in PKCS#1 v1.5 Encryption. ACM CCS'15. https://www.nds.rub.de/research/publications/ccs15/
 - Tibor Jager, Jörg Schwenk, Juraj Somorovsky. Practical Invalid Curve Attacks on TLS-ECDH. ESORICS'15. https://www.nds.rub.de/research/publications/ESORICS15/
 - Quellcode-basierte Untersuchung von kryptographisch relevanten Aspekten der OpenSSL-Bibliothek. https://www.bsi.bund.de/DE/Publikationen/Studien/OpenSSL-Bibliothek/opensslbibliothek.html
-
-It was furthermore used to discover bugs in various TLS implementations, see the Wiki.
 
 If you have any research ideas or need support by using TLS-Attacker (e.g. you want to include it in your test suite), feel free to contact http://www.hackmanit.de/.
 

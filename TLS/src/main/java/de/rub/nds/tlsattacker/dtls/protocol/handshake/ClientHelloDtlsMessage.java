@@ -22,10 +22,10 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public class ClientHelloDtlsMessage extends ClientHelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    ModifiableByteArray cookie;
+    ModifiableByteArray cookie = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableByte cookieLength;
+    ModifiableByte cookieLength = null;
 
     public ClientHelloDtlsMessage() {
 	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);

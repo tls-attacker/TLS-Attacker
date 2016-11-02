@@ -14,7 +14,14 @@ import java.io.IOException;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public abstract class TransportHandler {
-    protected long timeout = 4000;
+
+    protected int tlsTimeout;
+    
+    protected long lastSystemNano;
+
+    protected long lastMeasurement;
+
+    protected boolean measuringTiming;
 
     public abstract void closeConnection();
 
@@ -24,12 +31,16 @@ public abstract class TransportHandler {
 
     public abstract void sendData(byte[] data) throws IOException;
 
-    public void setTimeout(long timeoutInMs) {
-	this.timeout = timeoutInMs;
+    public void measureTiming(boolean b) {
+        measuringTiming = b;
     }
 
-    public long getTimeout() {
-	return this.timeout;
+    public long getLastMeasurement() {
+        return lastMeasurement;
+    }
+
+    public boolean isMeasuringTiming() {
+        return measuringTiming;
     }
 
 }

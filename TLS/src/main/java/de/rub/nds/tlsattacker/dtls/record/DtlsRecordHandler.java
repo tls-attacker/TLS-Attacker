@@ -139,7 +139,7 @@ public class DtlsRecordHandler extends RecordHandler {
 
 	if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC && epochCounter > 0) {
 	    byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getProtocolVersion(), contentType, record
-		    .getProtocolMessageBytes().getValue(), sequenceCounter, epochCounter);
+		    .getProtocolMessageBytes().getValue(), record.getSequenceNumber().getValue().longValue(), record.getEpoch().getValue());
 	    record.setMac(mac);
 	    byte[] macedData = ArrayConverter.concatenate(record.getProtocolMessageBytes().getValue(), record.getMac()
 		    .getValue());
@@ -147,9 +147,10 @@ public class DtlsRecordHandler extends RecordHandler {
 	    record.setPaddingLength(paddingLength);
 	    byte[] padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
 	    record.setPadding(padding);
-	    byte[] paddedData = ArrayConverter.concatenate(macedData, record.getPadding().getValue());
-	    LOGGER.debug("Padded data before encryption:  {}", ArrayConverter.bytesToHexString(paddedData));
-	    byte[] encData = recordCipher.encrypt(paddedData);
+	    byte[] paddedMacedData = ArrayConverter.concatenate(macedData, record.getPadding().getValue());
+            record.setPlainRecordBytes(paddedMacedData);
+	    LOGGER.debug("Padded data before encryption:  {}", ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
+	    byte[] encData = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
 	    record.setEncryptedProtocolMessageBytes(encData);
 	    record.setLength(encData.length);
 	    LOGGER.debug("Padded data after encryption:  {}", ArrayConverter.bytesToHexString(encData));
@@ -193,7 +194,7 @@ public class DtlsRecordHandler extends RecordHandler {
 
 	    int lastByte = dataPointer + 13 + length;
 	    byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 13, lastByte);
-	    LOGGER.debug("Raw protocol bytes from the current record:  {}",
+	    LOGGER.debug("Raw protocol bytes from the current parsed record:  {}",
 		    ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
 	    if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.math.BigInteger;
 import static org.junit.Assert.*;

@@ -52,7 +52,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
 	extension.setExtensionType(ExtensionType.ELLIPTIC_CURVES.getValue());
 	extension.setSupportedCurves(curves);
-	extension.setSupportedCurvesLength(curves.length);
+	extension.setSupportedCurvesLength(curves != null ? curves.length : 0);
 	extension.setExtensionLength(extension.getSupportedCurvesLength().getValue() + ExtensionByteLength.EXTENSIONS);
 
 	byte[] ecExtensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
@@ -65,6 +65,6 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+	throw new UnsupportedOperationException("Elliptic curve extension handler not supported yet.");
     }
 }

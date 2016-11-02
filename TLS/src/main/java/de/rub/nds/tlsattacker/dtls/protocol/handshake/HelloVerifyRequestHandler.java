@@ -8,26 +8,28 @@
  */
 package de.rub.nds.tlsattacker.dtls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
+import java.util.Arrays;
+
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  * @param <HandshakeMessage>
  */
-public class HelloVerifyRequestHandler<HandshakeMessage extends HelloVerifyRequestMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class HelloVerifyRequestHandler<Message extends HelloVerifyRequestMessage> extends
+	HandshakeMessageHandler<Message> {
 
+    @SuppressWarnings("unchecked")
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = HelloVerifyRequestMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) HelloVerifyRequestMessage.class;
     }
 
     @Override

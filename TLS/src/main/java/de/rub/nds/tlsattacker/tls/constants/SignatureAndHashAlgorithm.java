@@ -78,4 +78,22 @@ public class SignatureAndHashAlgorithm implements Serializable {
 	String signatureAlgorithmName = signatureAlgorithm.getJavaName();
 	return hashAlgorithmName + "with" + signatureAlgorithmName;
     }
+    
+    public static SignatureAndHashAlgorithm[] values() {
+        int size = SignatureAlgorithm.values().length * HashAlgorithm.values().length;
+        SignatureAndHashAlgorithm[] result = new SignatureAndHashAlgorithm[size];
+        int pos = 0;
+        for(SignatureAlgorithm sa : SignatureAlgorithm.values()) {
+            for (HashAlgorithm ha : HashAlgorithm.values()) {
+                result[pos] = new SignatureAndHashAlgorithm(sa, ha);
+                pos++;
+            }
+        }
+        return result;
+    }
+    
+    @Override
+    public String toString() {
+        return signatureAlgorithm + "-" + hashAlgorithm;
+    }
 }

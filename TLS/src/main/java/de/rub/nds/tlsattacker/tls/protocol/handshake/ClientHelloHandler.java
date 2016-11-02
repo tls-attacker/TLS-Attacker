@@ -9,35 +9,37 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import java.util.Arrays;
+
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.Time;
-import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  * @param <HandshakeMessage>
  */
-public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> extends
-	HandshakeMessageHandler<HandshakeMessage> {
+public class ClientHelloHandler<Message extends ClientHelloMessage> extends
+	HandshakeMessageHandler<Message> {
 
+    @SuppressWarnings("unchecked")
     public ClientHelloHandler(TlsContext tlsContext) {
 	super(tlsContext);
-	this.correctProtocolMessageClass = ClientHelloMessage.class;
+	this.correctProtocolMessageClass = (Class<? extends Message>) ClientHelloMessage.class;
     }
 
     @Override
@@ -226,7 +228,7 @@ public class ClientHelloHandler<HandshakeMessage extends ClientHelloMessage> ext
 		// Not implemented/unknown extensions will generate an Exception
 		// ...
 		try {
-		    ExtensionHandler eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
+		    ExtensionHandler<? extends ExtensionMessage> eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
 		    currentPointer = eh.parseExtension(message, currentPointer);
 		    protocolMessage.addExtension(eh.getExtensionMessage());
 		}

@@ -3,13 +3,11 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +15,10 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 
 /**
  * @author
@@ -31,7 +33,7 @@ final public class IntegerModificationFactory {
 
     private static List<VariableModification<Integer>> modificationsFromFile;
 
-    public static final String FILE_NAME = "/de/rub/nds/tlsattacker/explicit/integer.vec";
+    public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/integer.vec";
 
     private IntegerModificationFactory() {
     }
@@ -90,22 +92,24 @@ final public class IntegerModificationFactory {
 	return modifications.get(pos);
     }
 
-    public static List<VariableModification<Integer>> modificationsFromFile() {
-	try {
-	    if (modificationsFromFile == null) {
-		modificationsFromFile = new LinkedList<>();
-		InputStream is = IntegerModificationFactory.class.getResourceAsStream(FILE_NAME);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		String line;
-		while ((line = br.readLine()) != null) {
-		    String value = line.trim().split(" ")[0];
-		    modificationsFromFile.add(explicitValue(value));
-		}
-	    }
-	    return modificationsFromFile;
-	} catch (IOException ex) {
-	    throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
-	}
+
+    public static synchronized List<VariableModification<Integer>> modificationsFromFile() {
+        try {
+            if (modificationsFromFile == null) {
+                modificationsFromFile = new LinkedList<>();
+                ClassLoader classLoader = IntegerModificationFactory.class.getClassLoader();
+                InputStream is = classLoader.getResourceAsStream(FILE_NAME);
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String value = line.trim().split(" ")[0];
+                    modificationsFromFile.add(explicitValue(value));
+                }
+            }
+            return modificationsFromFile;
+        } catch (IOException ex) {
+            throw new FileConfigurationException("Modifiable variable file name could not have been found.", ex);
+        }
     }
 
     public static VariableModification<Integer> createRandomModification() {

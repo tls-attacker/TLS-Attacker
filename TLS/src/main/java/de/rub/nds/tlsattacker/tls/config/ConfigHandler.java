@@ -68,7 +68,9 @@ public abstract class ConfigHandler {
 	try {
 	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
 	    field.setAccessible(true);
-	    field.set(null, java.lang.Boolean.FALSE);
+	    if (field.getBoolean(null)) {
+	        field.set(null, java.lang.Boolean.FALSE);
+	    }
 	} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException
 		| SecurityException ex) {
 	    throw new ConfigurationException("Not possible to use unrestricted policy in Oracle JDK", ex);

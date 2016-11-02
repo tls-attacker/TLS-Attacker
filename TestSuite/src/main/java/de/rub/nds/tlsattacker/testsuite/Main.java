@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.testsuite;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.testsuite.config.ServerTestConfig;
+import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -29,8 +29,8 @@ public class Main {
 	GeneralConfig generalConfig = new GeneralConfig();
 	JCommander jc = new JCommander(generalConfig);
 
-	ServerTestConfig stconfig = new ServerTestConfig();
-	jc.addCommand(ServerTestConfig.COMMAND, stconfig);
+	ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
+	jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
 
 	jc.parse(args);
 
@@ -40,7 +40,7 @@ public class Main {
 	}
 
 	switch (jc.getParsedCommand()) {
-	    case ServerTestConfig.COMMAND:
+	    case ServerTestSuiteConfig.COMMAND:
 		ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
 		st.startTests();
 		return;

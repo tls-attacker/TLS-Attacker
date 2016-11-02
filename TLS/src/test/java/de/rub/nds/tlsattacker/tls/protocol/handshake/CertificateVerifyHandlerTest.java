@@ -8,20 +8,20 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+
+import org.junit.Test;
+
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -31,13 +31,13 @@ import static org.junit.Assert.*;
  */
 public class CertificateVerifyHandlerTest {
 
-    CertificateVerifyHandler handler;
+    CertificateVerifyHandler<CertificateVerifyMessage> handler;
 
     TlsContext tlsContext;
 
     public CertificateVerifyHandlerTest() {
 	tlsContext = new TlsContext();
-	handler = new CertificateVerifyHandler(tlsContext);
+	handler = new CertificateVerifyHandler<>(tlsContext);
     }
 
     /**

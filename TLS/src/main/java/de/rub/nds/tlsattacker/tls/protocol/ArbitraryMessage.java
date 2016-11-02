@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
@@ -21,8 +22,8 @@ public class ArbitraryMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	throw new UnsupportedOperationException("Not supported yet.");
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
+        throw new UnsupportedOperationException("Arbitrary message protocol handler not supported yet."); 
     }
 
     @Override

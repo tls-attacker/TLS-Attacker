@@ -11,20 +11,8 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
-import java.util.List;
 
 /**
  * Creates configuration of implemented RSA functionality in the protocol.

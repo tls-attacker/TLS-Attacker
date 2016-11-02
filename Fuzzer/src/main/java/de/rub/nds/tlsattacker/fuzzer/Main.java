@@ -9,25 +9,27 @@
 package de.rub.nds.tlsattacker.fuzzer;
 
 import com.beust.jcommander.JCommander;
+
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
 import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
-import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
 import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
 import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
 import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
@@ -75,7 +77,7 @@ public class Main {
 	    return;
 	}
 
-	Attacker attacker;
+	Attacker<? extends CommandConfig> attacker;
 	switch (jc.getParsedCommand()) {
 	    case MultiFuzzerConfig.COMMAND:
 		startMultiFuzzer(cmconfig, generalConfig, jc);

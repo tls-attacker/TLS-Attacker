@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.util;
 
 import java.math.BigInteger;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -86,7 +85,7 @@ public class MathHelper {
 
 	BigInteger b = extendedEuclid(a, p).b;
 	while (b.compareTo(BigInteger.ZERO) < 0) {
-	    b.add(p);
+	    b = b.add(p);
 	}
 	return b;
     }

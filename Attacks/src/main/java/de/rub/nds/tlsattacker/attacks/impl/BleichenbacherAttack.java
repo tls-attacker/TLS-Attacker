@@ -109,7 +109,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 
 	WorkflowTrace trace = tlsContext.getWorkflowTrace();
 	RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
-		.getFirstConfiguredHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+		.getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
 	ModifiableByteArray epms = new ModifiableByteArray();
 	epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
 	cke.setEncryptedPremasterSecret(epms);

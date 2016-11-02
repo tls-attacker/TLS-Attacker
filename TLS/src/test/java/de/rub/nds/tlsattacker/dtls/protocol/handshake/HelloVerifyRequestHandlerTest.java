@@ -8,23 +8,26 @@
  */
 package de.rub.nds.tlsattacker.dtls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
+
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
 public class HelloVerifyRequestHandlerTest {
 
-    ProtocolMessageHandler handler;
+    ProtocolMessageHandler<? extends ProtocolMessage> handler;
 
     TlsContext tlsContext = new TlsContext();
 
@@ -67,7 +70,7 @@ public class HelloVerifyRequestHandlerTest {
 
     @Test
     public void testParseMessageAction() {
-	handler = new HelloVerifyRequestHandler(tlsContext);
+	handler = new HelloVerifyRequestHandler<>(tlsContext);
 
 	handler.setProtocolMessage(new HelloVerifyRequestMessage());
 

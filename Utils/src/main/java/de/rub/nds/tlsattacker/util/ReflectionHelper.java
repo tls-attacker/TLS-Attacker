@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +62,7 @@ public class ReflectionHelper {
      * @return
      */
     private static List<Field> filterFieldList(List<Field> fields, Class<?> filterClass) {
-	List<Field> filteredFields = new LinkedList();
+	List<Field> filteredFields = new LinkedList<>();
 
 	for (Field f : fields) {
 	    if ((filterClass == null) || filterClass.isAssignableFrom(f.getType())) {
@@ -75,7 +74,7 @@ public class ReflectionHelper {
     }
 
     public static List<Object> getValuesFromFieldList(Object object, List<Field> fields) throws IllegalAccessException {
-	List list = new LinkedList();
+	List<Object> list = new LinkedList<>();
 
 	for (Field f : fields) {
 	    f.setAccessible(true);

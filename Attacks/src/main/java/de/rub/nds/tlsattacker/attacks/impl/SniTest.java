@@ -57,7 +57,7 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
 	sni.setServerNameConfig(config.getServerName2());
 	sni.setNameTypeConfig(NameType.HOST_NAME);
 	ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
-		.getFirstProtocolMessage(ProtocolMessageType.HANDSHAKE));
+		.getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
 	ch2.addExtension(sni);
 	actions.add(new SendAction(ch2));
 	List<ProtocolMessage> messageList = new LinkedList<>();

