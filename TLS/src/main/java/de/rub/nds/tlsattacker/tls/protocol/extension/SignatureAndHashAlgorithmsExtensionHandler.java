@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -60,6 +61,14 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+        
+        if (extensionMessage == null) {
+	    extensionMessage = new SignatureAndHashAlgorithmsExtensionMessage();
+	}
+        SignatureAndHashAlgorithm sigAndHashAlg = new SignatureAndHashAlgorithm(
+                Arrays.copyOfRange(message, pointer, pointer + ExtensionByteLength.EXTENSIONS));
+        extensionMessage.setExtensionBytes(sigAndHashAlg.getByteValue());
+        
+	return (pointer + ExtensionByteLength.EXTENSIONS);
     }
 }
