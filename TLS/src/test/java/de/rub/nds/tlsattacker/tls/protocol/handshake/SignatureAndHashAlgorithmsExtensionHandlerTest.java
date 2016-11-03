@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import java.util.ArrayList;
+import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -25,23 +26,28 @@ import org.junit.Test;
  */
 public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
-    private final SignatureAndHashAlgorithmsExtensionHandler msgHandler;
+    private SignatureAndHashAlgorithmsExtensionHandler msgHandler;
     private SignatureAndHashAlgorithmsExtensionMessage message;
-    private final int gotPointer;
+    private int gotPointer;
     private final byte[] createdExtension = {(byte) 0, (byte) 13, // Extension type is signature_algorithms
         (byte) 0, (byte) 4, //Count of supported_signature_algorithms bytes
         (byte) 2, (byte) 2, //SHA-1 and DSA
         (byte) 1, (byte) 1};  // MD5 and RSA
 
-    public SignatureAndHashAlgorithmsExtensionHandlerTest() {
-        msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
-        gotPointer = msgHandler.parseExtension(createdExtension, 0);
-
-    }
 
     @Before
     public void prepareSAHAEMessage() {
+                msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+        gotPointer = msgHandler.parseExtension(createdExtension, 0);
         message = (SignatureAndHashAlgorithmsExtensionMessage) msgHandler.getExtensionMessage();
+    }
+    
+    @After
+    public void cleanupSAHAEMessage()
+    {
+        msgHandler = null;
+        message = null;
+        System.out.println("for Breakpoint");
     }
 
     @Test
@@ -73,7 +79,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
     @Test
     public void testSignatureAndHashAlgorithmLength() {
-        assertEquals("The length should be 6", new Integer(6), message.getExtensionLength().getValue());
+        assertEquals("The length should be 4, hence there are 2 combinations", new Integer(4), message.getSignatureAndHashAlgorithmsLength().getValue());
     }
 
     @Test
