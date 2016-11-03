@@ -47,7 +47,6 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     {
         msgHandler = null;
         message = null;
-        System.out.println("for Breakpoint");
     }
 
     @Test
