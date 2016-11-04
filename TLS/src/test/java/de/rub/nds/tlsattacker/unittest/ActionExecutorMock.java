@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.unittest;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,12 +22,12 @@ public class ActionExecutorMock extends ActionExecutor {
     }
 
     @Override
-    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
+    public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
         return messages;
     }
 
     @Override
-    public List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
+    public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
         return messages;
     }
 }
