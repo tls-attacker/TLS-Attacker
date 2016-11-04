@@ -48,7 +48,11 @@ public class TLSActionExecutor extends ActionExecutor {
     public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
-            prepareMyProtocolMessageBytes(message, tlsContext, messageBytesCollector);
+            byte[] protocolMessageBytes = prepareMyProtocolMessageBytes(message, tlsContext);
+            if (message.isGoingToBeSent()) {
+                messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+            }
+
             prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
         }
         try {
@@ -73,7 +77,8 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
+     * Sends all messageBytes in the MessageByteCollector with the specified
+     * TransportHandler
      *
      * @param handler TransportHandler to send the Data with
      * @param messageBytesCollector MessageBytes to send
@@ -89,22 +94,17 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * Uses protocol message handler to prepare raw protocol message bytes
+     * Chooses the correct handler for the ProtocolMessage and returns the preparedMessage bytes
      *
-     * @param message
-     * @param context
+     * @param message Message to prepare
+     * @param context Context to use
+     * @return Prepared message bytes for the ProtocolMessage
      */
-    protected void prepareMyProtocolMessageBytes(ProtocolMessage message, TlsContext context,
-            MessageBytesCollector messageBytesCollector) {
+    protected byte[] prepareMyProtocolMessageBytes(ProtocolMessage message, TlsContext context) {
         LOG.log(Level.FINER, "Preparing the following protocol message to send: {}", message.getClass());
         ProtocolMessageHandler handler = message.getProtocolMessageHandler(context);
-        byte[] pmBytes = handler.prepareMessage();
-        // LOG.log(Level.FINEST, message.toString());
-
-        // append the prepared protocol message bytes
-        if (message.isGoingToBeSent()) {
-            messageBytesCollector.appendProtocolMessageBytes(pmBytes);
-        }
+        byte[] protocolMessageBytes = handler.prepareMessage();
+        return protocolMessageBytes;
     }
 
     /**
@@ -290,7 +290,9 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * Converts a List of Records into a byte array containing their protocolmessage bytes
+     * Converts a List of Records into a byte array containing their
+     * protocolmessage bytes
+     *
      * @param records Records to convert
      * @return A byte array containing the raw protocol message bytes
      */
@@ -341,9 +343,10 @@ public class TLSActionExecutor extends ActionExecutor {
      * Fetches a Data from the TransportHandler and parses it into Records
      *
      * @return A List of parsed Records
-     * @throws IOException Thrown if something goes wrong while fetching the Data from the Transporthandler
+     * @throws IOException Thrown if something goes wrong while fetching the
+     * Data from the Transporthandler
      */
-    protected List<Record> readRecords(TlsContext context) throws IOException{
+    protected List<Record> readRecords(TlsContext context) throws IOException {
         List<Record> records = null;
         byte[] rawResponse = context.getTransportHandler().fetchData();
         while ((records = context.getRecordHandler().parseRecords(rawResponse)) == null) {
