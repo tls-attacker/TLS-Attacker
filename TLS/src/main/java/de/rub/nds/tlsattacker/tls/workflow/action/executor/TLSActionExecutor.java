@@ -142,7 +142,7 @@ public class TLSActionExecutor extends ActionExecutor {
             TlsContext context) throws IOException {
 
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
-        List<Record> records = fetchRecords(context);
+        List<Record> records = readRecords(context);
         while (records != null && records.size() > 0) {
             List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
             for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
@@ -166,7 +166,7 @@ public class TLSActionExecutor extends ActionExecutor {
             if (records == null) {
                 // Do we expect more data?
                 if (receivedMessages.size() != protocolMessages.size() || containsArbitaryMessage(protocolMessages)) {
-                    records = fetchRecords(context);
+                    records = readRecords(context);
                 }
             }
         }
@@ -350,18 +350,16 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * Fetches a list of records from the server
+     * Fetches a Data from the TransportHandler and parses it into Records
      *
-     * @return
-     * @throws IOException
+     * @return A List of parsed Records
+     * @throws IOException Thrown if something goes wrong while fetching the Data from the Transporthandler
      */
-    protected List<Record> fetchRecords(TlsContext context) throws IOException {
+    protected List<Record> readRecords(TlsContext context) throws IOException{
         List<Record> records = null;
-        if (records == null) {
-            byte[] rawResponse = context.getTransportHandler().fetchData();
-            while ((records = context.getRecordHandler().parseRecords(rawResponse)) == null) {
-                rawResponse = ArrayConverter.concatenate(rawResponse, context.getTransportHandler().fetchData());
-            }
+        byte[] rawResponse = context.getTransportHandler().fetchData();
+        while ((records = context.getRecordHandler().parseRecords(rawResponse)) == null) {
+            rawResponse = ArrayConverter.concatenate(rawResponse, context.getTransportHandler().fetchData());
         }
         return records;
     }
