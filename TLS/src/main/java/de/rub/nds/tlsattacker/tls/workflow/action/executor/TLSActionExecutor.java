@@ -53,7 +53,9 @@ public class TLSActionExecutor extends ActionExecutor {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
             }
             if (message.getRecords() != null && !message.getRecords().isEmpty()) {
-                prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
+                byte[] recordBytes = prepareRecords(message, messageBytesCollector, tlsContext);
+                messageBytesCollector.appendRecordBytes(recordBytes);
+                messageBytesCollector.flushProtocolMessageBytes();
             }
         }
         try {
@@ -95,7 +97,8 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * Chooses the correct handler for the ProtocolMessage and returns the preparedMessage bytes
+     * Chooses the correct handler for the ProtocolMessage and returns the
+     * preparedMessage bytes
      *
      * @param message Message to prepare
      * @param context Context to use
@@ -109,20 +112,16 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * Prepares records for a given protocol message if this protocol message
-     * contains a list of records
+     * Prepares records for a given protocol message
      *
-     * @param message
+     * @param message Message which contains the records
      * @param context
      */
-    protected void prepareMyRecordsIfNeeded(ProtocolMessage message, TlsContext context,
-            MessageBytesCollector messageBytesCollector) {
-        if (message.getRecords() != null && !message.getRecords().isEmpty()) {
-            byte[] records = context.getRecordHandler().wrapData(messageBytesCollector.getProtocolMessageBytes(),
-                    message.getProtocolMessageType(), message.getRecords());
-            messageBytesCollector.appendRecordBytes(records);
-            messageBytesCollector.flushProtocolMessageBytes();
-        }
+    protected byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector, TlsContext context) {
+        byte[] records = context.getRecordHandler().wrapData(messageBytesCollector.getProtocolMessageBytes(),
+                message.getProtocolMessageType(), message.getRecords());
+        return records;
+
     }
 
     private boolean containsArbitaryMessage(List<ProtocolMessage> protocolMessages) {
