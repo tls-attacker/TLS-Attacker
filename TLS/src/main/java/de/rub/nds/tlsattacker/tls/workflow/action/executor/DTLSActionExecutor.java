@@ -72,7 +72,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     @Override
-    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages){
+    public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages){
         try {
             if (retransmitCounter < maxRetransmits) {
                 throw new WorkflowExecutionException("Retransmit Counter reached Max Retransmits!");
@@ -94,7 +94,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     @Override
-    public List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages){
+    public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages){
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         for (ProtocolMessage message : messages) {
             ProtocolMessage receivedMessage = receiveAndParseNextProtocolMessage(message);

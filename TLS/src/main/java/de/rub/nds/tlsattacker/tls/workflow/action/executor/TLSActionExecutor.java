@@ -29,49 +29,57 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This ActionExecutor tries to perform Actions in a way that imitates a TLS Client/Server.
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSActionExecutor extends ActionExecutor {
 
-    private TlsContext context;
-    private WorkflowContext workflowContext;
-
-    private int pointer = 0;
+    private final TlsContext context;
+    private final WorkflowContext workflowContext;
 
     public TLSActionExecutor(TlsContext context, WorkflowContext workflowContext) {
         this.context = context;
         this.workflowContext = workflowContext;
     }
 
+    /**
+     * Sends a list of ProtocolMessage
+     * @param messages Protocolmessages to send
+     * @return List of actually send Messages
+     */
     @Override
-    public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
+    public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
-            byte[] protocolMessageBytes = prepareMyProtocolMessageBytes(message, tlsContext);
+            byte[] protocolMessageBytes = prepareProtocolMessageBytes(message);
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
             }
             if (message.getRecords() != null && !message.getRecords().isEmpty()) {
-                byte[] recordBytes = prepareRecords(message, messageBytesCollector, tlsContext);
+                byte[] recordBytes = prepareRecords(message, messageBytesCollector);
                 messageBytesCollector.appendRecordBytes(recordBytes);
                 messageBytesCollector.flushProtocolMessageBytes();
             }
         }
         try {
-            sendData(tlsContext.getTransportHandler(), messageBytesCollector);
+            sendData(context.getTransportHandler(), messageBytesCollector);
         } catch (IOException ex) {
             //TODO
         }
         return messages;
     }
 
+    /**
+     * Receives messages, and tries to receive the messages specified in messages
+     * @param messages Messages which should be received
+     * @return Actually received Messages
+     */
     @Override
-    public List<ProtocolMessage> receiveMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
-        pointer = 0;
+    public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
         List<ProtocolMessage> receivedList = new LinkedList<>();
         try {
-            receivedList = handleProtocolMessagesFromPeer(messages, tlsContext);
+            receivedList = handleProtocolMessagesFromPeer(messages);
         } catch (IOException ex) {
             //TODO
         }
@@ -101,10 +109,9 @@ public class TLSActionExecutor extends ActionExecutor {
      * preparedMessage bytes
      *
      * @param message Message to prepare
-     * @param context Context to use
      * @return Prepared message bytes for the ProtocolMessage
      */
-    protected byte[] prepareMyProtocolMessageBytes(ProtocolMessage message, TlsContext context) {
+    protected byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
         LOG.log(Level.FINER, "Preparing the following protocol message to send: {}", message.getClass());
         ProtocolMessageHandler handler = message.getProtocolMessageHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage();
@@ -115,9 +122,10 @@ public class TLSActionExecutor extends ActionExecutor {
      * Prepares records for a given protocol message
      *
      * @param message Message which contains the records
-     * @param context
+     * @param messageBytesCollector Messagebyte collector to use
+     * @return Byte array containing the prepared Records
      */
-    protected byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector, TlsContext context) {
+    protected byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector) {
         byte[] records = context.getRecordHandler().wrapData(messageBytesCollector.getProtocolMessageBytes(),
                 message.getProtocolMessageType(), message.getRecords());
         return records;
@@ -126,6 +134,7 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Returns true if the List contains an ArbitraryMessage
+     *
      * @param protocolMessages Protocol messages to search in
      * @return True if it contains atleast one ArbitraryMessage
      */
@@ -139,41 +148,49 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     *
-     * @param protocolMessages
-     * @param context
-     * @throws IOException
+     * Reads records in and parses them into protocol messages
+     * @param protocolMessages Protocol messages we are expecting to receive
+     * @return ReceivedProtocolMessages
+     * @throws IOException Thrown if something goes wrong while reading in records
      */
-    protected List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages,
-            TlsContext context) throws IOException {
+    protected List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages) throws IOException {
 
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
-        List<Record> records = readRecords(context);
+        List<Record> records = readRecords();
         while (records != null && records.size() > 0) {
-            List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
-            for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
-                byte[] rawProtocolMessageBytes = convertRecordsToProtocolMessageBytes(recordsOfSameContent);
-                ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent
-                        .get(0).getContentType().getValue());
-                receivedMessages.addAll(parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages,
-                        protocolMessageType, context));
-                if (!context.isRenegotiation()) {
-                    for (ProtocolMessage pm : receivedMessages) {
-                        pm.setRecords(recordsOfSameContent);
-                        // If we received more than one message in the records
-                        // we set the records of all messages
-                    }
-                } else {
-                    handleRenegotiation(context);
-                }
-            }
-
+            parseRecords(records);
             records = context.getRecordHandler().parseFinishedBytes();
             if (records == null) {
                 // Do we expect more data?
                 if (receivedMessages.size() != protocolMessages.size() || containsArbitaryMessage(protocolMessages)) {
-                    records = readRecords(context);
+                    records = readRecords();
                 }
+            }
+        }
+        return receivedMessages;
+    }
+    /**
+     * Parses a list of Records into a List of ProtocolMessage objects
+     * @param records Records to be parsed
+     * @return List of ProtocolMessage objects
+     */
+    public List<ProtocolMessage> parseRecords(List<Record> records) {
+        List<ProtocolMessage> receivedMessages = new LinkedList<>();
+        List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
+        for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
+            byte[] rawProtocolMessageBytes = convertRecordsToProtocolMessageBytes(recordsOfSameContent);
+            ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent
+                    .get(0).getContentType().getValue());
+            receivedMessages.addAll(parseRawProtocolMessageBytes(rawProtocolMessageBytes,
+                    protocolMessageType, context));
+            if (!context.isRenegotiation()) {
+                for (ProtocolMessage pm : receivedMessages) {
+                    pm.setRecords(recordsOfSameContent);
+                    // If we received more than one message in the records
+                    // we set the records of all messages
+                }
+            } else {
+                handleRenegotiation();
             }
         }
         return receivedMessages;
@@ -182,7 +199,7 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Handles a renegotiation request.
      */
-    protected void handleRenegotiation(TlsContext context) {
+    protected void handleRenegotiation() {
         // workflowContext.setProtocolMessagePointer(0);
         context.getDigest().reset();
 
@@ -209,89 +226,48 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     *
-     * @param rawProtocolMessageBytes
-     * @param protocolMessages
-     * @param protocolMessageType
+     * Tries to parse the raw protocol message bytes into
+     * @param rawProtocolMessageBytes raw protocol message bytes to parse
+     * @param protocolMessageType The type of the protocol message that should be parsed
+     * @param context The TLSContext to use
+     * @return  List of parsed ProtocolMessage
      */
-    protected List<ProtocolMessage> parseRawBytesIntoProtocolMessages(byte[] rawProtocolMessageBytes,
-            List<ProtocolMessage> protocolMessages, ProtocolMessageType protocolMessageType, TlsContext context) {
+    protected List<ProtocolMessage> parseRawProtocolMessageBytes(byte[] rawProtocolMessageBytes,
+            ProtocolMessageType protocolMessageType, TlsContext context) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < rawProtocolMessageBytes.length) {
-            ProtocolMessageHandler pmh = null;
-            pmh = protocolMessageType.getProtocolMessageHandler(rawProtocolMessageBytes[dataPointer], context);
+            ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(rawProtocolMessageBytes[dataPointer], context);
             if (Arrays.equals(rawProtocolMessageBytes,
                     new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00})) {
                 context.setRenegotiation(true);
             } else {
-                identifyCorrectProtocolMessage(protocolMessages, pmh, context);
-
                 dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
                 LOG.log(Level.FINE, "The following message was parsed: {}", pmh.getProtocolMessage().toString());
                 receivedMessages.add(pmh.getProtocolMessage());
-                if (receivedFatalAlert(pmh, context)) {
+                if (receivedFatalAlert(pmh)) {
                     if (!context.isFuzzingMode()) {
                         workflowContext.setProceedWorkflow(false);
                     }
                 }
-                pointer++;
             }
         }
         return receivedMessages;
     }
 
     /**
-     *
-     * @param pmh
+     * Returns true if the protocolMessage in the protocolMessageHandler is a fatal alert
+     * @param protocolMessageHandler ProtocolmessageHandler to analyze
      */
-    private boolean receivedFatalAlert(ProtocolMessageHandler pmh, TlsContext context) {
-        if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
-            AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
+    private boolean receivedFatalAlert(ProtocolMessageHandler protocolMessageHandler) {
+        if (protocolMessageHandler.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
+            AlertMessage am = (AlertMessage) protocolMessageHandler.getProtocolMessage();
             if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
                 LOG.log(Level.FINE, "The workflow received a FATAL error");
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     *
-     * @param protocolMessages
-     * @param protocolMessageHandler
-     */
-    private List<ProtocolMessage> identifyCorrectProtocolMessage(List<ProtocolMessage> protocolMessages,
-            ProtocolMessageHandler protocolMessageHandler, TlsContext context) {
-        List<ProtocolMessage> identifiedMessages = new LinkedList<>();
-
-        ProtocolMessage protocolMessage = null;
-        if (pointer < protocolMessages.size()) {
-            protocolMessage = protocolMessages.get(pointer);
-        }
-        if (protocolMessage != null && protocolMessage.getClass() == ArbitraryMessage.class) {
-            protocolMessageHandler.initializeProtocolMessage();
-            protocolMessage = protocolMessageHandler.getProtocolMessage();
-            identifiedMessages.add(protocolMessage);
-        } else if (protocolMessage != null && protocolMessageHandler.isCorrectProtocolMessage(protocolMessage)) {
-            protocolMessageHandler.setProtocolMessage(protocolMessage);
-        } else {
-            if (protocolMessage != null && protocolMessage.isRequired()) {
-                LOG.log(Level.FINE, "The configured protocol message is not equal to "
-                        + "the message being parsed or the message was not found.");
-                if (!context.isFuzzingMode()) {
-                    workflowContext.setProceedWorkflow(false);
-                }
-            }
-            protocolMessageHandler.initializeProtocolMessage();
-            protocolMessage = protocolMessageHandler.getProtocolMessage();
-            identifiedMessages.add(protocolMessage);
-
-            //pointer++;
-            //identifiedMessages.addAll(identifyCorrectProtocolMessage(protocolMessages, protocolMessageHandler,
-            //	context));
-        }
-        return identifiedMessages;
     }
 
     /**
@@ -351,7 +327,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @throws IOException Thrown if something goes wrong while fetching the
      * Data from the Transporthandler
      */
-    protected List<Record> readRecords(TlsContext context) throws IOException {
+    protected List<Record> readRecords() throws IOException {
         List<Record> records = null;
         byte[] rawResponse = context.getTransportHandler().fetchData();
         while ((records = context.getRecordHandler().parseRecords(rawResponse)) == null) {

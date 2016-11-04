@@ -8,18 +8,12 @@
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -60,7 +54,7 @@ public class SendAction extends MessageAction {
 								     // simply
 								     // execute
 								     // it
-	actualMessages = executor.sendMessages(tlsContext, configuredMessages);
+	actualMessages = executor.sendMessages(configuredMessages);
 	executed = true;
 
     }
