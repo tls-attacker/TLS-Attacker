@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class TLSActionExecutor extends ActionExecutor {
             prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
         }
         try {
-            sendData(tlsContext, messageBytesCollector);
+            sendData(tlsContext.getTransportHandler(), messageBytesCollector);
         } catch (IOException ex) {
             //TODO
         }
@@ -72,17 +73,17 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * This function buffers all the collected records and sends them when the
-     * last protocol message should be sent.
+     * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
-     * @param protocolMessages
-     * @throws IOException
+     * @param handler TransportHandler to send the Data with
+     * @param messageBytesCollector MessageBytes to send
+     * @throws IOException Thrown if something goes wrong while sending
      */
-    protected void sendData(TlsContext context, MessageBytesCollector messageBytesCollector) throws IOException {
+    protected void sendData(TransportHandler handler, MessageBytesCollector messageBytesCollector) throws IOException {
         if (messageBytesCollector.getRecordBytes().length != 0) {
             LOG.log(Level.FINER, "Records going to be sent: {}",
                     ArrayConverter.bytesToHexString(messageBytesCollector.getRecordBytes()));
-            context.getTransportHandler().sendData(messageBytesCollector.getRecordBytes());
+            handler.sendData(messageBytesCollector.getRecordBytes());
             messageBytesCollector.flushRecordBytes();
         }
     }
