@@ -124,6 +124,11 @@ public class TLSActionExecutor extends ActionExecutor {
 
     }
 
+    /**
+     * Returns true if the List contains an ArbitraryMessage
+     * @param protocolMessages Protocol messages to search in
+     * @return True if it contains atleast one ArbitraryMessage
+     */
     private boolean containsArbitaryMessage(List<ProtocolMessage> protocolMessages) {
         for (ProtocolMessage message : protocolMessages) {
             if (message instanceof ArbitraryMessage) {
