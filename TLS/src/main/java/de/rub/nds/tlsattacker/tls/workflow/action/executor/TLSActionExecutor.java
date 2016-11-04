@@ -289,19 +289,6 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * In a case the protocol message received was not equal to the messages in
-     * our protocol message list, we have to clear our protocol message list.
-     *
-     * @param protocolMessages
-     * @param fromIndex
-     */
-    protected void removeNextProtocolMessages(List<ProtocolMessage> protocolMessages, int fromIndex) {
-        for (int i = protocolMessages.size() - 1; i >= fromIndex; i--) {
-            protocolMessages.remove(i);
-        }
-    }
-
-    /**
      * Converts a List of Records back into a byte array
      * @param records Records to convert
      * @return A byte array containing the raw protocol message bytes
