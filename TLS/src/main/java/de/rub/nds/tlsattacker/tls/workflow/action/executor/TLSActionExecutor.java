@@ -243,7 +243,7 @@ public class TLSActionExecutor extends ActionExecutor {
         if (pmh.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
             if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-                LOG.log(Level.FINE, "The workflow execution is stopped because of a FATAL error");
+                LOG.log(Level.FINE, "The workflow received a FATAL error");
                 return true;
             }
         }
