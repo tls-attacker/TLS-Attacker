@@ -95,7 +95,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param messageBytesCollector MessageBytes to send
      * @throws IOException Thrown if something goes wrong while sending
      */
-    protected void sendData(TransportHandler handler, MessageBytesCollector messageBytesCollector) throws IOException {
+    private void sendData(TransportHandler handler, MessageBytesCollector messageBytesCollector) throws IOException {
         if (messageBytesCollector.getRecordBytes().length != 0) {
             LOG.log(Level.FINER, "Records going to be sent: {}",
                     ArrayConverter.bytesToHexString(messageBytesCollector.getRecordBytes()));
@@ -111,7 +111,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param message Message to prepare
      * @return Prepared message bytes for the ProtocolMessage
      */
-    protected byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
+    private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
         LOG.log(Level.FINER, "Preparing the following protocol message to send: {}", message.getClass());
         ProtocolMessageHandler handler = message.getProtocolMessageHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage();
@@ -125,7 +125,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param messageBytesCollector Messagebyte collector to use
      * @return Byte array containing the prepared Records
      */
-    protected byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector) {
+    private byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector) {
         byte[] records = context.getRecordHandler().wrapData(messageBytesCollector.getProtocolMessageBytes(),
                 message.getProtocolMessageType(), message.getRecords());
         return records;
@@ -153,7 +153,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @return ReceivedProtocolMessages
      * @throws IOException Thrown if something goes wrong while reading in records
      */
-    protected List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages) throws IOException {
+    private List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages) throws IOException {
 
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         List<Record> records = readRecords();
@@ -174,7 +174,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param records Records to be parsed
      * @return List of ProtocolMessage objects
      */
-    public List<ProtocolMessage> parseRecords(List<Record> records) {
+    private List<ProtocolMessage> parseRecords(List<Record> records) {
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
         for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
@@ -199,7 +199,7 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Handles a renegotiation request.
      */
-    protected void handleRenegotiation() {
+    private void handleRenegotiation() {
         // workflowContext.setProtocolMessagePointer(0);
         context.getDigest().reset();
 
@@ -232,7 +232,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param context The TLSContext to use
      * @return  List of parsed ProtocolMessage
      */
-    protected List<ProtocolMessage> parseRawProtocolMessageBytes(byte[] rawProtocolMessageBytes,
+    private List<ProtocolMessage> parseRawProtocolMessageBytes(byte[] rawProtocolMessageBytes,
             ProtocolMessageType protocolMessageType, TlsContext context) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
@@ -277,7 +277,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param records Records to convert
      * @return A byte array containing the raw protocol message bytes
      */
-    protected byte[] convertRecordsToProtocolMessageBytes(List<Record> records) {
+    private byte[] convertRecordsToProtocolMessageBytes(List<Record> records) {
         byte[] result = new byte[0];
         for (Record r : records) {
             result = ArrayConverter.concatenate(result, r.getProtocolMessageBytes().getValue());
@@ -291,7 +291,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param records
      * @return
      */
-    protected List<List<Record>> createListsOfRecordsOfTheSameContentType(List<Record> records) {
+    private List<List<Record>> createListsOfRecordsOfTheSameContentType(List<Record> records) {
         List<List<Record>> result = new LinkedList();
         if (records == null || records.isEmpty()) {
             return result;
@@ -327,7 +327,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @throws IOException Thrown if something goes wrong while fetching the
      * Data from the Transporthandler
      */
-    protected List<Record> readRecords() throws IOException {
+    private List<Record> readRecords() throws IOException {
         List<Record> records = null;
         byte[] rawResponse = context.getTransportHandler().fetchData();
         while ((records = context.getRecordHandler().parseRecords(rawResponse)) == null) {
