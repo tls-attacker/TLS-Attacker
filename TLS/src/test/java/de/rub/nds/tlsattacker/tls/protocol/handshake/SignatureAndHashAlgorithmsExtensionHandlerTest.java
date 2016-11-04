@@ -13,7 +13,8 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -33,18 +34,17 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         (byte) 0, (byte) 4, //Count of supported_signature_algorithms bytes
         (byte) 2, (byte) 2, //SHA-1 and DSA
         (byte) 1, (byte) 1};  // MD5 and RSA
-
+    private final byte[] originalAlgorithms = {(byte) 2, (byte) 2, (byte) 1, (byte) 1};
 
     @Before
     public void prepareSAHAEMessage() {
-                msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+        msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
         gotPointer = msgHandler.parseExtension(createdExtension, 0);
         message = (SignatureAndHashAlgorithmsExtensionMessage) msgHandler.getExtensionMessage();
     }
-    
+
     @After
-    public void cleanupSAHAEMessage()
-    {
+    public void cleanupSAHAEMessage() {
         msgHandler = null;
         message = null;
     }
@@ -82,16 +82,20 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     }
 
     @Test
-    public void testSignatureAndHashAlgorithmConfig() {
-        ArrayList<SignatureAndHashAlgorithm> algorithms = new ArrayList<>();
-        algorithms.add(new SignatureAndHashAlgorithm(new byte[]{createdExtension[4], createdExtension[5]}));
-        algorithms.add(new SignatureAndHashAlgorithm(new byte[]{createdExtension[6], createdExtension[7]}));
-        assertEquals("Checks the array list", algorithms, message.getSignatureAndHashAlgorithmsConfig());
+    public void testSignatureAndHashAlgorithmConfig() throws IOException {
+        ByteArrayOutputStream parsedAlgorithms = new ByteArrayOutputStream();
+        for (SignatureAndHashAlgorithm alg : message.getSignatureAndHashAlgorithmsConfig()) {
+            parsedAlgorithms.write(alg.getByteValue());
+        }
+        /* The ArrayList can't be compared directly due to the hashmap in the datatype SignatureAndHashAlgorithm
+        assertEquals detects different ArrayLists, even if the values are identical. */
+        assertArrayEquals(originalAlgorithms, parsedAlgorithms.toByteArray());
+
     }
 
     @Test
     public void testSignatureAndHashAlgorithms() {
-        assertArrayEquals(new byte[]{(byte) 2, (byte) 2, (byte) 1, (byte) 1}, message.getSignatureAndHashAlgorithms().getValue());
+        assertArrayEquals(originalAlgorithms, message.getSignatureAndHashAlgorithms().getValue());
     }
 
     @Test
