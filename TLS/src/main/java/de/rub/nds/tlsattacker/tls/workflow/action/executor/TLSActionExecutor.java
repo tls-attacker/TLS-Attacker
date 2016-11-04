@@ -146,7 +146,7 @@ public class TLSActionExecutor extends ActionExecutor {
         while (records != null && records.size() > 0) {
             List<List<Record>> recordsOfSameContentList = createListsOfRecordsOfTheSameContentType(records);
             for (List<Record> recordsOfSameContent : recordsOfSameContentList) {
-                byte[] rawProtocolMessageBytes = getRawProtocolBytesFromRecords(recordsOfSameContent);
+                byte[] rawProtocolMessageBytes = convertRecordsToBytes(recordsOfSameContent);
                 ProtocolMessageType protocolMessageType = ProtocolMessageType.getContentType(recordsOfSameContent
                         .get(0).getContentType().getValue());
                 receivedMessages.addAll(parseRawBytesIntoProtocolMessages(rawProtocolMessageBytes, protocolMessages,
@@ -302,11 +302,11 @@ public class TLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     *
-     * @param records
-     * @return
+     * Converts a List of Records back into a byte array
+     * @param records Records to convert
+     * @return A byte array containing the raw protocol message bytes
      */
-    protected byte[] getRawProtocolBytesFromRecords(List<Record> records) {
+    protected byte[] convertRecordsToBytes(List<Record> records) {
         byte[] result = new byte[0];
         for (Record r : records) {
             result = ArrayConverter.concatenate(result, r.getProtocolMessageBytes().getValue());
