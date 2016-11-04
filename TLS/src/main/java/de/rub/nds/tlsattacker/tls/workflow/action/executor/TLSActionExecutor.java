@@ -37,12 +37,12 @@ public class TLSActionExecutor extends ActionExecutor {
     private TlsContext context;
     private WorkflowContext workflowContext;
 
+    private int pointer = 0;
+
     public TLSActionExecutor(TlsContext context, WorkflowContext workflowContext) {
         this.context = context;
         this.workflowContext = workflowContext;
     }
-
-    private int pointer = 0;
 
     @Override
     public List<ProtocolMessage> sendMessages(TlsContext tlsContext, List<ProtocolMessage> messages) {
@@ -52,8 +52,9 @@ public class TLSActionExecutor extends ActionExecutor {
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
             }
-
-            prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
+            if (message.getRecords() != null && !message.getRecords().isEmpty()) {
+                prepareMyRecordsIfNeeded(message, tlsContext, messageBytesCollector);
+            }
         }
         try {
             sendData(tlsContext.getTransportHandler(), messageBytesCollector);
