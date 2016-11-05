@@ -31,6 +31,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     private SignatureAndHashAlgorithmsExtensionMessage message;
     private int gotPointer;
     private final byte[] createdExtension = {(byte) 0, (byte) 13, // Extension type is signature_algorithms
+        (byte) 0, (byte) 6, // Extension length
         (byte) 0, (byte) 4, //Count of supported_signature_algorithms bytes
         (byte) 2, (byte) 2, //SHA-1 and DSA
         (byte) 1, (byte) 1};  // MD5 and RSA
@@ -51,12 +52,12 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
     @Test
     public void testPointer() {
-        assertEquals("The new pointer must be 8", 8, gotPointer);
+        assertEquals("The new pointer must be 10", (int) 10, gotPointer);
     }
 
     @Test
     public void testExtensionBytes() {
-        assertArrayEquals("Extension Message should be 00 13 00 04 02 02 01 01", createdExtension,
+        assertArrayEquals("Extension Message should be 00 13 00 06 00 04 02 02 01 01", createdExtension,
                 message.getExtensionBytes().getValue());
     }
 
@@ -70,6 +71,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     public void testWrongExtension() {
         SignatureAndHashAlgorithmsExtensionHandler newMsgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
         byte[] newCreatedExtension = {(byte) 1, (byte) 12, // wrong Extension
+            (byte) 0, (byte) 6,
             (byte) 0, (byte) 4,
             (byte) 2, (byte) 2,
             (byte) 1, (byte) 1};
@@ -100,8 +102,8 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
     @Test
     public void testExtensionLength() {
-        assertEquals((int) ExtensionByteLength.EXTENSIONS,
-                (int) message.getExtensionLength().getOriginalValue());
+        assertEquals((int) 6,
+                (int) message.getExtensionLength().getValue());
     }
 
 }
