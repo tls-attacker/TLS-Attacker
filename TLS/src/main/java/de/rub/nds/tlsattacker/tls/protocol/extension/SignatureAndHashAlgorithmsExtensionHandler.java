@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
