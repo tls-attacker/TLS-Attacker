@@ -36,6 +36,9 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         (byte) 1, (byte) 1};  // MD5 and RSA
     private final byte[] originalAlgorithms = {(byte) 2, (byte) 2, (byte) 1, (byte) 1};
 
+    /**
+     * Creates all new handlers and messages before each test.
+     */
     @Before
     public void prepareSAHAEMessage() {
         msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
@@ -43,29 +46,44 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         message = (SignatureAndHashAlgorithmsExtensionMessage) msgHandler.getExtensionMessage();
     }
 
+    /**
+     * Overwrites the handler and the message after each test.
+     */
     @After
     public void cleanupSAHAEMessage() {
         msgHandler = null;
         message = null;
     }
 
+    /**
+     * Tests the returned pointer, it should point onto the next byte after the extension.
+     */
     @Test
     public void testPointer() {
         assertEquals("The new pointer must be 10", (int) 10, gotPointer);
     }
 
+    /**
+     * Tests if the extension bytes are copied correctly.
+     */
     @Test
     public void testExtensionBytes() {
         assertArrayEquals("Extension Message should be 00 13 00 06 00 04 02 02 01 01", createdExtension,
                 message.getExtensionBytes().getValue());
     }
 
+    /**
+     * Tests if the ExtensionType Value is set correctly.
+     */
     @Test
     public void testExtensionType() {
         assertArrayEquals("Extension Type should be 00 13", ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue(),
                 message.getExtensionType().getValue());
     }
 
+    /**
+     * If the parser gets a wrong extension, the parsing method should throw an exception.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testWrongExtension() {
         SignatureAndHashAlgorithmsExtensionHandler newMsgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
@@ -77,11 +95,19 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         newMsgHandler.parseExtension(newCreatedExtension, 0);
     }
 
+    /**
+     * Tests if the SignatureAndHashAlgorithmsLength value is set correctly.
+     */
     @Test
     public void testSignatureAndHashAlgorithmLength() {
         assertEquals("The length should be 4, hence there are 2 combinations", new Integer(4), message.getSignatureAndHashAlgorithmsLength().getValue());
     }
 
+    /**
+     * Tests if the extension config is set correctly.
+     * Checks the array list, not the byte value.
+     * @throws IOException 
+     */
     @Test
     public void testSignatureAndHashAlgorithmConfig() throws IOException {
         ByteArrayOutputStream parsedAlgorithms = new ByteArrayOutputStream();
@@ -94,11 +120,18 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
     }
 
+    /**
+     * Tests if the extension byte values are set correctly.
+     * Doesn't check the array list.
+     */
     @Test
     public void testSignatureAndHashAlgorithms() {
         assertArrayEquals(originalAlgorithms, message.getSignatureAndHashAlgorithms().getValue());
     }
 
+    /**
+     * Tests if the extension length value is set correctly.
+     */
     @Test
     public void testExtensionLength() {
         assertEquals((int) 6,
