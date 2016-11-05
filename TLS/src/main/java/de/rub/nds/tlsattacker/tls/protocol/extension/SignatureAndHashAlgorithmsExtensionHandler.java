@@ -12,9 +12,12 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SignatureAndHashAlgorithmsExtensionHandler extends
         ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
@@ -59,11 +62,14 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     }
 
     /**
-     * TODO
+     * This method parses the signature and hash algorithms extension out of a
+     * byte message.
      *
-     * @param message
-     * @param pointer
-     * @return
+     * @param message is the message as byte array, which contains the extension
+     * @param pointer points to the first byte of the signature and hash
+     *                algorithms extension
+     * @return points to the first byte after the SignatureAndHashAlgorithms
+     *         extension
      */
     @Override
     public int parseExtension(byte[] message, int pointer) {
@@ -71,24 +77,38 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
         if (extensionMessage == null) {
             extensionMessage = new SignatureAndHashAlgorithmsExtensionMessage();
         }
+        // check if correct extension is passed
         if (message[pointer] != (byte) 0 && message[pointer + 1] != (byte) 13) {
             throw new IllegalArgumentException("Extension isn't a SignatureAndHashAlgorithms Extension. First Bytes should be '0' and '13'");
         }
-        extensionMessage.setExtensionType(new byte[]{message[pointer], message[pointer + 1]});
+        // set extension type
+        extensionMessage.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
+        int newPointer = pointer + ExtensionByteLength.TYPE;
 
-        int newPointer = pointer + ExtensionByteLength.EXTENSIONS;
-        extensionMessage.setSignatureAndHashAlgorithmsLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
+        // set extension and signature and hash algorithm extension length
+        extensionMessage.setExtensionLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
         newPointer += ExtensionByteLength.EXTENSIONS;
-        int pairingsCount = extensionMessage.getSignatureAndHashAlgorithmsLength().getValue() / 2;
-        for (int i = newPointer; i <= newPointer + pairingsCount; i += 2) {
-            // TODO get pairings
-        }
 
-        // Build Signature and Hash Algorithms
-        // Build Signature and Hash Algorithms Config
-        // Build ExtensionLength
-        // Build Extension Bytes
-        return newPointer; // Build final Pointer
+        extensionMessage.setSignatureAndHashAlgorithmsLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
+        newPointer += 2;
+
+        // create the SignatureAndHashAlgorithmsConfig (List) and the byte values of them
+        int pairingsCount = extensionMessage.getSignatureAndHashAlgorithmsLength().getValue() / 2;
+        ArrayList<SignatureAndHashAlgorithm> signatureAndHashConfig = new ArrayList<>();
+        ByteArrayOutputStream signatureAndHashBytes = new ByteArrayOutputStream();
+
+        for (int i = newPointer; i <= newPointer + pairingsCount; i += 2) {
+            signatureAndHashConfig.add(new SignatureAndHashAlgorithm(new byte[]{message[i], message[i + 1]}));
+            signatureAndHashBytes.write(message, i, 2);
+        }
+        extensionMessage.setSignatureAndHashAlgorithms(signatureAndHashBytes.toByteArray());
+        extensionMessage.setSignatureAndHashAlgorithmsConfig(signatureAndHashConfig);
+
+        // the extension bytes are exactly the same, than in the message. Thus we copy them.
+        newPointer += extensionMessage.getSignatureAndHashAlgorithmsLength().getValue();
+        extensionMessage.setExtensionBytes(Arrays.copyOfRange(message, pointer, newPointer));
+
+        return newPointer;
     }
-   
+
 }
