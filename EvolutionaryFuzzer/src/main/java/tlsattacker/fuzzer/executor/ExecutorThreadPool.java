@@ -223,11 +223,12 @@ public class ExecutorThreadPool implements Runnable {
 		TLSServer server = null;
 		try {
 		    if (!stopped) {
-			server = ServerManager.getInstance().getFreeServer();
 			TestVector vector = mutator.getNewMutation();
 			if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
 			    continue;
 			}
+                        server = ServerManager.getInstance().getFreeServer();
+			
 			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
 			Runnable worker = new TLSExecutor(vector, server, agent);
 			executor.submit(worker);
