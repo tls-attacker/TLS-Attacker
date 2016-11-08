@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * A wrapper which logically binds a server private key file and a server
@@ -18,6 +20,7 @@ import java.util.logging.Logger;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ServerCertificateStructure implements Serializable {
 
     /**
@@ -35,31 +38,24 @@ public class ServerCertificateStructure implements Serializable {
 	this.certificateFile = certificateFile;
     }
 
-    public ServerCertificateStructure() {
-	this.keyFile = null;
-	this.certificateFile = null;
+    private ServerCertificateStructure() {
+        //JAXB magic
     }
-
+    
     public File getKeyFile() {
 	return keyFile;
-    }
-
-    public void setKeyFile(File keyFile) {
-	this.keyFile = keyFile;
     }
 
     public File getCertificateFile() {
 	return certificateFile;
     }
 
-    public void setCertificateFile(File certificateFile) {
-	this.certificateFile = certificateFile;
-    }
-
     @Override
     public int hashCode() {
-	int hash = 7;
-	return hash;
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.keyFile);
+        hash = 97 * hash + Objects.hashCode(this.certificateFile);
+        return hash;
     }
 
     @Override

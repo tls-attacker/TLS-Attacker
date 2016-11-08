@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * A wrapper class which logically binds the JKSFile with the assosiated
@@ -18,8 +20,9 @@ import java.util.logging.Logger;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ClientCertificateStructure implements Serializable {
-
+    
     /**
      * Password for the JKS file
      */
@@ -34,41 +37,28 @@ public class ClientCertificateStructure implements Serializable {
      * The JKS file
      */
     private File JKSfile;
-
+    
     public ClientCertificateStructure(String password, String alias, File JKSfile) {
 	this.password = password;
 	this.alias = alias;
 	this.JKSfile = JKSfile;
     }
 
-    public ClientCertificateStructure() {
-	password = null;
-	alias = null;
-	JKSfile = null;
+    private ClientCertificateStructure() {
+        //for JAXB Magic
     }
+    
 
     public String getPassword() {
 	return password;
-    }
-
-    public void setPassword(String password) {
-	this.password = password;
     }
 
     public String getAlias() {
 	return alias;
     }
 
-    public void setAlias(String alias) {
-	this.alias = alias;
-    }
-
     public File getJKSfile() {
 	return JKSfile;
-    }
-
-    public void setJKSfile(File JKSfile) {
-	this.JKSfile = JKSfile;
     }
 
     @Override
