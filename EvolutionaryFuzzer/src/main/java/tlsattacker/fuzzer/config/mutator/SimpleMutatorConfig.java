@@ -35,12 +35,12 @@ public class SimpleMutatorConfig implements Serializable {
     /**
      * Percentage with which the server certificate should be changed
      */
-    private Integer changeServerCertPercentage = -1;
+    private Integer changeServerCertPercentage = 2;
 
     /**
      * Percentage with which the client certificate should be changed
      */
-    private Integer changeClientCertPercentage = -1;
+    private Integer changeClientCertPercentage = 2;
 
     /**
      * Percentage with which a random message should be duplicated
