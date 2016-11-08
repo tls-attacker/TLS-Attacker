@@ -32,4 +32,16 @@ public class ToggleEncryptionAction extends TLSAction {
 	executed = false;
     }
     
+    @Override
+    public boolean equals(Object o)
+    {
+        return o instanceof ToggleEncryptionAction;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+    
 }
