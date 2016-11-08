@@ -18,10 +18,13 @@ import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.unittest.ActionExecutorMock;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.JAXB;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,16 +35,16 @@ import static org.junit.Assert.*;
  * @author ic0ns
  */
 public class ChangeProtocolVersionActionTest {
-    
+
     private TlsContext tlsContext;
     private TlsContext dtlsContext;
-    
+
     private ActionExecutorMock executor;
     private ChangeProtocolVersionAction action;
-    
+
     public ChangeProtocolVersionActionTest() {
     }
-    
+
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         executor = new ActionExecutorMock();
@@ -56,7 +59,7 @@ public class ChangeProtocolVersionActionTest {
         action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -66,9 +69,9 @@ public class ChangeProtocolVersionActionTest {
      */
     @Test
     public void testSetNewValue() {
-        assertEquals(action.getNewValue(),ProtocolVersion.SSL2);
+        assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
         action.setNewValue(ProtocolVersion.TLS11);
-        assertEquals(action.getNewValue(),ProtocolVersion.TLS11);
+        assertEquals(action.getNewValue(), ProtocolVersion.TLS11);
     }
 
     /**
@@ -76,7 +79,7 @@ public class ChangeProtocolVersionActionTest {
      */
     @Test
     public void testGetNewValue() {
-        assertEquals(action.getNewValue(),ProtocolVersion.SSL2);
+        assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
     }
 
     /**
@@ -86,7 +89,7 @@ public class ChangeProtocolVersionActionTest {
     public void testGetOldValue() {
         tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
         action.execute(tlsContext, executor);
-        assertEquals(action.getOldValue(),ProtocolVersion.TLS12);
+        assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
     }
 
     /**
@@ -96,9 +99,9 @@ public class ChangeProtocolVersionActionTest {
     public void testExecute() {
         tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
         action.execute(tlsContext, executor);
-        assertEquals(action.getOldValue(),ProtocolVersion.TLS12);
-        assertEquals(action.getNewValue(),ProtocolVersion.SSL2);
-        assertEquals(tlsContext.getProtocolVersion(),ProtocolVersion.SSL2);
+        assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
+        assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
+        assertEquals(tlsContext.getProtocolVersion(), ProtocolVersion.SSL2);
         assertTrue(action.isExecuted());
     }
 
@@ -115,6 +118,13 @@ public class ChangeProtocolVersionActionTest {
         action.execute(tlsContext, executor);
         assertTrue(action.isExecuted());
     }
-    
-    
+
+    @Test
+    public void testJAXB() {
+        StringWriter writer = new StringWriter();
+        JAXB.marshal(action, writer);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeProtocolVersionAction.class);
+        assertEquals(action, action2);
+    }
+
 }

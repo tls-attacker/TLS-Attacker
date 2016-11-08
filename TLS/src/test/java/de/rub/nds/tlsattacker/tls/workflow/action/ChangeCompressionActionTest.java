@@ -18,10 +18,13 @@ import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.unittest.ActionExecutorMock;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.JAXB;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,16 +35,16 @@ import static org.junit.Assert.*;
  * @author ic0ns
  */
 public class ChangeCompressionActionTest {
-    
+
     private TlsContext tlsContext;
     private TlsContext dtlsContext;
-    
+
     private ActionExecutorMock executor;
     private ChangeCompressionAction action;
-    
+
     public ChangeCompressionActionTest() {
     }
-    
+
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         executor = new ActionExecutorMock();
@@ -56,7 +59,7 @@ public class ChangeCompressionActionTest {
         action = new ChangeCompressionAction(CompressionMethod.LZS);
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -66,9 +69,9 @@ public class ChangeCompressionActionTest {
      */
     @Test
     public void testSetNewValue() {
-        assertEquals(action.getNewValue(),CompressionMethod.LZS);
+        assertEquals(action.getNewValue(), CompressionMethod.LZS);
         action.setNewValue(CompressionMethod.DEFLATE);
-        assertEquals(action.getNewValue(),CompressionMethod.DEFLATE);
+        assertEquals(action.getNewValue(), CompressionMethod.DEFLATE);
     }
 
     /**
@@ -76,7 +79,7 @@ public class ChangeCompressionActionTest {
      */
     @Test
     public void testGetNewValue() {
-        assertEquals(action.getNewValue(),CompressionMethod.LZS);
+        assertEquals(action.getNewValue(), CompressionMethod.LZS);
     }
 
     /**
@@ -86,7 +89,7 @@ public class ChangeCompressionActionTest {
     public void testGetOldValue() {
         tlsContext.setCompressionMethod(CompressionMethod.NULL);
         action.execute(tlsContext, executor);
-        assertEquals(action.getOldValue(),CompressionMethod.NULL);
+        assertEquals(action.getOldValue(), CompressionMethod.NULL);
     }
 
     /**
@@ -96,9 +99,9 @@ public class ChangeCompressionActionTest {
     public void testExecute() {
         tlsContext.setCompressionMethod(CompressionMethod.NULL);
         action.execute(tlsContext, executor);
-        assertEquals(action.getOldValue(),CompressionMethod.NULL);
-        assertEquals(action.getNewValue(),CompressionMethod.LZS);
-        assertEquals(tlsContext.getCompressionMethod(),CompressionMethod.LZS);
+        assertEquals(action.getOldValue(), CompressionMethod.NULL);
+        assertEquals(action.getNewValue(), CompressionMethod.LZS);
+        assertEquals(tlsContext.getCompressionMethod(), CompressionMethod.LZS);
         assertTrue(action.isExecuted());
     }
 
@@ -115,6 +118,13 @@ public class ChangeCompressionActionTest {
         action.execute(tlsContext, executor);
         assertTrue(action.isExecuted());
     }
-    
-    
+
+    @Test
+    public void testJAXB() {
+        StringWriter writer = new StringWriter();
+        JAXB.marshal(action, writer);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeCompressionAction.class);
+        assertEquals(action, action2);
+    }
+
 }

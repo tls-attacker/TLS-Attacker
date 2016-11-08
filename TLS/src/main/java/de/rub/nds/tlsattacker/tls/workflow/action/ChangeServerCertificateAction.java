@@ -7,11 +7,16 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
+import de.rub.nds.tlsattacker.certificate.CertificateAdapter;
+import de.rub.nds.tlsattacker.certificate.X509CertificateObjectAdapter;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
@@ -19,15 +24,16 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ChangeServerCertificateAction extends TLSAction {
 
-    @XmlTransient
+    @XmlJavaTypeAdapter(CertificateAdapter.class)
     private Certificate newValue = null;
-    @XmlTransient
+    @XmlJavaTypeAdapter(X509CertificateObjectAdapter.class)
     private X509CertificateObject x509newValue = null;
-    @XmlTransient
+    @XmlJavaTypeAdapter(CertificateAdapter.class)
     private Certificate oldValue = null;
-    @XmlTransient
+    @XmlJavaTypeAdapter(X509CertificateObjectAdapter.class)
     private X509CertificateObject x509oldValue = null;
 
     // TODO I really like to add a ServerCertificateStructure constructor, but
@@ -38,6 +44,10 @@ public class ChangeServerCertificateAction extends TLSAction {
         super();
         this.newValue = newValue;
         this.x509newValue = x509newValue;
+    }
+
+    private ChangeServerCertificateAction() {
+        //Private Constructor for JAXB Magic
     }
 
     public Certificate getNewValue() {

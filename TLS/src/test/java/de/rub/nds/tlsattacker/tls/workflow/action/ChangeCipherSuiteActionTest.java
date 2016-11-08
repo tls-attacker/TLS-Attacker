@@ -15,10 +15,13 @@ import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.unittest.ActionExecutorMock;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.JAXB;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -113,6 +116,14 @@ public class ChangeCipherSuiteActionTest {
         assertFalse(action.isExecuted());
         action.execute(tlsContext, executor);
         assertTrue(action.isExecuted());
+    }
+    
+    @Test
+    public void testJAXB() {
+        StringWriter writer = new StringWriter();
+        JAXB.marshal(action, writer);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeCipherSuiteAction.class);
+        assertEquals(action, action2);
     }
     
 }

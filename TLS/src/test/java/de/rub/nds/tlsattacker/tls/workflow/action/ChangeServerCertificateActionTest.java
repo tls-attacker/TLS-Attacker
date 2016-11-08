@@ -17,10 +17,13 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.unittest.ActionExecutorMock;
 import de.rub.nds.tlsattacker.unittest.TestCertificates;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.JAXB;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.junit.After;
@@ -33,16 +36,16 @@ import static org.junit.Assert.*;
  * @author ic0ns
  */
 public class ChangeServerCertificateActionTest {
-    
+
     private TlsContext tlsContext;
     private TlsContext dtlsContext;
-    
+
     private ActionExecutorMock executor;
     private ChangeServerCertificateAction action;
-    
+
     public ChangeServerCertificateActionTest() {
     }
-    
+
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
         executor = new ActionExecutorMock();
@@ -54,10 +57,10 @@ public class ChangeServerCertificateActionTest {
         dtlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
-        action = new ChangeServerCertificateAction(TestCertificates.getTestCertificate(),TestCertificates.getTestCertificateObject());
+        action = new ChangeServerCertificateAction(TestCertificates.getTestCertificate(), TestCertificates.getTestCertificateObject());
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -67,8 +70,8 @@ public class ChangeServerCertificateActionTest {
      */
     @Test
     public void testGetNewValue() {
-        assertEquals(action.getNewValue(),TestCertificates.getTestCertificate());
-        
+        assertEquals(action.getNewValue(), TestCertificates.getTestCertificate());
+
     }
 
     /**
@@ -87,7 +90,7 @@ public class ChangeServerCertificateActionTest {
      */
     @Test
     public void testGetX509newValue() {
-        assertEquals(action.getX509newValue(),TestCertificates.getTestCertificateObject());
+        assertEquals(action.getX509newValue(), TestCertificates.getTestCertificateObject());
     }
 
     /**
@@ -124,6 +127,13 @@ public class ChangeServerCertificateActionTest {
         action.execute(tlsContext, executor);
         assertTrue(action.isExecuted());
     }
-    
-    
+
+    @Test
+    public void testJAXB() {
+        StringWriter writer = new StringWriter();
+        JAXB.marshal(action, writer);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeServerCertificateAction.class);
+        assertEquals(action, action2);
+    }
+
 }
