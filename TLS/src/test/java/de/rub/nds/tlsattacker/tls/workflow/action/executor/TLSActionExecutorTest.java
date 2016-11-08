@@ -48,6 +48,9 @@ public class TLSActionExecutorTest {
         executor = new TLSActionExecutor(context, new WorkflowContext());
         message = new AlertMessage();
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
+        message.setDescription(AlertDescription.DECODE_ERROR.getValue());
+        message.setLevel(AlertLevel.FATAL.getValue());
+        
         message.addRecord(new Record());
         
     }
