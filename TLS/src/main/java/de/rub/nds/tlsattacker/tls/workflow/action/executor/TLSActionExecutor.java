@@ -158,7 +158,8 @@ public class TLSActionExecutor extends ActionExecutor {
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         List<Record> records = readRecords();
         while (records != null && records.size() > 0) {
-            parseRecords(records);
+            receivedMessages.addAll(parseRecords(records));
+            records = null;
             records = context.getRecordHandler().parseFinishedBytes();
             if (records == null) {
                 // Do we expect more data?
@@ -242,6 +243,7 @@ public class TLSActionExecutor extends ActionExecutor {
                     new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00})) {
                 context.setRenegotiation(true);
             } else {
+                pmh.initializeProtocolMessage();
                 dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
                 LOG.log(Level.FINE, "The following message was parsed: {}", pmh.getProtocolMessage().toString());
                 receivedMessages.add(pmh.getProtocolMessage());
