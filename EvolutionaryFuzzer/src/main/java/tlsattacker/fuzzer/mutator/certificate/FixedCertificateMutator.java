@@ -180,6 +180,7 @@ public class FixedCertificateMutator extends CertificateMutator {
 	    }
 	    CertificateFactory certFactory;
 	    try {
+                //TODO Wrong certificate class
 		certFactory = CertificateFactory.getInstance("X.509");
 		Collection<? extends Certificate> certs = certFactory.generateCertificates(new FileInputStream(
 			serverStructure.getCertificateFile()));
