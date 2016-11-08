@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -115,4 +116,33 @@ public abstract class MessageAction extends TLSAction {
 	actualMessages = new LinkedList<>();
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.configuredMessages);
+        hash = 97 * hash + Objects.hashCode(this.actualMessages);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MessageAction other = (MessageAction) obj;
+        if (!Objects.equals(this.configuredMessages, other.configuredMessages)) {
+            return false;
+        }
+        if (!Objects.equals(this.actualMessages, other.actualMessages)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

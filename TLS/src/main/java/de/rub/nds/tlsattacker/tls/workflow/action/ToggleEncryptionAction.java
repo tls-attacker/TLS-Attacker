@@ -31,5 +31,5 @@ public class ToggleEncryptionAction extends TLSAction {
     public void reset() {
 	executed = false;
     }
-
+    
 }

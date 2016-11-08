@@ -43,7 +43,7 @@ public class ReceiveAction extends MessageAction {
 	actualMessages = executor.receiveMessages(configuredMessages);
 	executed = true;
     }
-
+    
     private static final Logger LOG = Logger.getLogger(ReceiveAction.class.getName());
 
 }

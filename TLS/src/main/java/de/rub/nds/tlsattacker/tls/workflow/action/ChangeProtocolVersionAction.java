@@ -13,9 +13,10 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeProtocolVersionAction extends TLSAction {
@@ -24,39 +25,68 @@ public class ChangeProtocolVersionAction extends TLSAction {
     private ProtocolVersion oldValue = null;
 
     public ChangeProtocolVersionAction(ProtocolVersion newValue) {
-	super();
-	this.newValue = newValue;
+        super();
+        this.newValue = newValue;
     }
 
     public ChangeProtocolVersionAction() {
     }
 
     public void setNewValue(ProtocolVersion newValue) {
-	this.newValue = newValue;
+        this.newValue = newValue;
     }
 
     public ProtocolVersion getNewValue() {
-	return newValue;
+        return newValue;
     }
 
     public ProtocolVersion getOldValue() {
-	return oldValue;
+        return oldValue;
     }
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-	if (executed) {
-	    throw new WorkflowExecutionException("Action already executed!");
-	}
-	oldValue = tlsContext.getProtocolVersion();
-	tlsContext.setProtocolVersion(newValue);
+        if (executed) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+        oldValue = tlsContext.getProtocolVersion();
+        tlsContext.setProtocolVersion(newValue);
         executed = true;
     }
 
     @Override
     public void reset() {
         oldValue = null;
-	executed = false;
+        executed = false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + Objects.hashCode(this.newValue);
+        hash = 83 * hash + Objects.hashCode(this.oldValue);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChangeProtocolVersionAction other = (ChangeProtocolVersionAction) obj;
+        if (this.newValue != other.newValue) {
+            return false;
+        }
+        if (this.oldValue != other.oldValue) {
+            return false;
+        }
+        return true;
     }
 
 }

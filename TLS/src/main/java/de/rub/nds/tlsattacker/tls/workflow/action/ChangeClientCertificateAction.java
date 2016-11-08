@@ -10,15 +10,17 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeClientCertificateAction extends TLSAction {
+
     @XmlTransient
     private Certificate newValue = null;
     @XmlTransient
@@ -33,46 +35,83 @@ public class ChangeClientCertificateAction extends TLSAction {
     // Struct is not in the TLS package, perhaps i should mitigate it here for
     // now we dont serialize the certs
     public ChangeClientCertificateAction(Certificate newValue, X509CertificateObject x509newValue) {
-	super();
-	this.newValue = newValue;
-	this.x509newValue = x509newValue;
+        super();
+        this.newValue = newValue;
+        this.x509newValue = x509newValue;
     }
 
     public ChangeClientCertificateAction() {
     }
 
     public Certificate getNewValue() {
-	return newValue;
+        return newValue;
     }
 
     public Certificate getOldValue() {
-	return oldValue;
+        return oldValue;
     }
 
     public X509CertificateObject getX509newValue() {
-	return x509newValue;
+        return x509newValue;
     }
 
     public X509CertificateObject getX509oldValue() {
-	return x509oldValue;
+        return x509oldValue;
     }
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-	if (executed) {
-	    throw new WorkflowExecutionException("Action already executed!");
-	}
-	oldValue = tlsContext.getClientCertificate();
-	x509oldValue = tlsContext.getX509ClientCertificateObject();
-	tlsContext.setClientCertificate(newValue);
-	tlsContext.setX509ClientCertificateObject(x509newValue);
+        if (executed) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+        oldValue = tlsContext.getClientCertificate();
+        x509oldValue = tlsContext.getX509ClientCertificateObject();
+        tlsContext.setClientCertificate(newValue);
+        tlsContext.setX509ClientCertificateObject(x509newValue);
         executed = true;
     }
 
     @Override
     public void reset() {
-	oldValue = null;
+        oldValue = null;
         executed = false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this.newValue);
+        hash = 13 * hash + Objects.hashCode(this.x509newValue);
+        hash = 13 * hash + Objects.hashCode(this.oldValue);
+        hash = 13 * hash + Objects.hashCode(this.x509oldValue);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChangeClientCertificateAction other = (ChangeClientCertificateAction) obj;
+        if (!Objects.equals(this.newValue, other.newValue)) {
+            return false;
+        }
+        if (!Objects.equals(this.x509newValue, other.x509newValue)) {
+            return false;
+        }
+        if (!Objects.equals(this.oldValue, other.oldValue)) {
+            return false;
+        }
+        if (!Objects.equals(this.x509oldValue, other.x509oldValue)) {
+            return false;
+        }
+        return true;
     }
 
 }
