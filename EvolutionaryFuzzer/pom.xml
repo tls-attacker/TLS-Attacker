@@ -44,6 +44,11 @@
             <version>1.2</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.openpojo</groupId>
+            <artifactId>openpojo</artifactId>
+            <version>0.7.3</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

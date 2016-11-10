@@ -7,6 +7,11 @@
  */
 package tlsattacker.fuzzer.config;
 
+import com.openpojo.reflection.PojoClass;
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.PojoValidator;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import org.junit.AfterClass;
@@ -75,6 +80,6 @@ public class SimpleMutatorConfigTest {
 	}
 	assertNotNull("Failure: setRemoveMessagePercentage can be risen above 100%", E);
     }
-
+    
     private static final Logger LOG = Logger.getLogger(SimpleMutatorConfigTest.class.getName());
 }

@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.config;
 import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,6 +32,10 @@ public class ConfigManagerTest {
      */
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    @Before
+    public void setUp() throws Exception {
     }
 
     /**
@@ -56,5 +61,19 @@ public class ConfigManagerTest {
     }
 
     private static final Logger LOG = Logger.getLogger(ConfigManagerTest.class.getName());
+
+    /**
+     * Test of getInstance method, of class ConfigManager.
+     */
+    @Test
+    public void testGetInstance() {
+    }
+
+    /**
+     * Test of setConfig method, of class ConfigManager.
+     */
+    @Test
+    public void testSetConfig() {
+    }
 
 }
