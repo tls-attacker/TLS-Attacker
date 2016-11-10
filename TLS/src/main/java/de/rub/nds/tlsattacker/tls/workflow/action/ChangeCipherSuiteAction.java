@@ -57,7 +57,10 @@ public class ChangeCipherSuiteAction extends TLSAction {
             }
             oldValue = tlsContext.getSelectedCipherSuite();
             tlsContext.setSelectedCipherSuite(newValue);
-            tlsContext.getRecordHandler().getRecordCipher().init();
+            if(tlsContext.getRecordHandler().getRecordCipher() != null)
+            {
+                tlsContext.getRecordHandler().getRecordCipher().init();
+            }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new UnsupportedOperationException(ex);
         }
