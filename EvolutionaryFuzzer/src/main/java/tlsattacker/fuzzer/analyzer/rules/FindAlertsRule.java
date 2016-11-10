@@ -50,21 +50,21 @@ public class FindAlertsRule extends Rule {
 
     public FindAlertsRule(EvolutionaryFuzzerConfig evoConfig) {
 	super(evoConfig, "find_alerts.rule");
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
 	if (f.exists()) {
-	    config = JAXB.unmarshal(f, FindAlertsRuleConfig.class);
-	}
+                config = JAXB.unmarshal(f, FindAlertsRuleConfig.class);
+        }
 	if (config == null) {
 	    config = new FindAlertsRuleConfig();
 	    writeConfig(config);
 	}
 	prepareConfigOutputFolder();
-	if (config.isSaveOneOfEach()) {
+        if (config.isSaveOneOfEach()) {
 	    // Load previously seen Testvectors and scan them for seen alert
 	    // messages
-	    f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
-	    List<TestVector> vectorList = TestVectorSerializer.readFolder(f);
-	    for (TestVector vector : vectorList) {
+            f = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
+            List<TestVector> vectorList = TestVectorSerializer.readFolder(f);
+	    for (TestVector vector : vectorList) {  
 		List<ProtocolMessage> messages = vector.getTrace().getActuallyRecievedProtocolMessagesOfType(
 			ProtocolMessageType.ALERT);
 		for (ProtocolMessage message : messages) {
