@@ -39,11 +39,6 @@
             <version>0.9.2</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TLS-Attacker</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
             <groupId>de.rub.nds.tlsattacker</groupId>
             <artifactId>TLS</artifactId>
             <version>1.2</version>
@@ -87,7 +82,7 @@
                 <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
                 <artifactId>maven-java-formatter-plugin</artifactId>
                 <configuration>
-                    <configFile>../maven-eclipse-codestyle.xml</configFile>
+                    <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
                     <lineEnding>LF</lineEnding>
                 </configuration>
             </plugin>
