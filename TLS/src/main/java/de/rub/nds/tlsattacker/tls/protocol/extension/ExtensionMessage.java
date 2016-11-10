@@ -82,9 +82,15 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (extensionType != null);
-        sb.append("\n    Extension type: ").append(ArrayConverter.bytesToHexString(extensionType.getValue()));
-        if (extensionLength != null) {
+        if (extensionType == null || extensionType.getValue() == null) {
+            sb.append("\n    Extension type: null");
+        } else {
+            sb.append("\n    Extension type: ").append(ArrayConverter.bytesToHexString(extensionType.getValue()));
+        }
+        if (extensionLength == null || extensionLength.getValue() == null) {
+            sb.append("\n    Extension length: null");
+
+        } else {
             sb.append("\n    Extension length: ").append(extensionLength.getValue());
         }
         return sb.toString();
