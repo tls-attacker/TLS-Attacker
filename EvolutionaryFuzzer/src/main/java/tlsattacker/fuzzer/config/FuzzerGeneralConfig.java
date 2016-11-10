@@ -50,7 +50,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     public boolean isUseKill() {
-	return useKill;
+        return useKill;
     }
 
     public void setUseKill(boolean useKill) {
