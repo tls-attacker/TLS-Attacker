@@ -43,6 +43,7 @@
         <module>TestSuite</module>
         <module>Runnable</module>
         <module>TestTLS</module>
+        <module>EvolutionaryFuzzer</module>
     </modules>
 
     <dependencies>
