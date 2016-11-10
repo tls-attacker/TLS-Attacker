@@ -29,18 +29,6 @@
             <version>2.1.1</version> 
         </dependency>
         <dependency>
-            <groupId>de.rub.nds.tlsattacker</groupId>
-            <artifactId>TLS</artifactId>
-            <version>1.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>de.rub.nds.tlsattacker</groupId>
-            <artifactId>ModifiableVariable</artifactId>
-            <version>1.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>jgraph</groupId>
             <artifactId>jgraph</artifactId>
             <version>5.13.0.0</version>
@@ -49,6 +37,17 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-ext</artifactId>
             <version>0.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TLS-Attacker</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>de.rub.nds.tlsattacker</groupId>
+            <artifactId>TLS</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

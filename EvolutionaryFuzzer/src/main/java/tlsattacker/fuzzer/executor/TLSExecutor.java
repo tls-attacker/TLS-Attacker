@@ -136,7 +136,6 @@ public class TLSExecutor extends Executor {
 			}
 		    }
 		}
-		transportHandler.setTimeout(ConfigManager.getInstance().getConfig().getTlsTimeout());
 		KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
 		TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
 		tlsContext.setFuzzingMode(true);
@@ -230,7 +229,6 @@ public class TLSExecutor extends Executor {
 		config.getTlsTimeout());
 	try {
 	    th.initialize(server.getIp(), server.getPort());
-	    th.setTimeout(config.getTlsTimeout());
 	    return th;
 	} catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
 	    throw new ConfigurationException("Server not properly configured!");
