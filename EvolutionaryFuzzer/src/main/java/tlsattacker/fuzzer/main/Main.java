@@ -28,6 +28,7 @@ import tlsattacker.fuzzer.config.TestCrashesConfig;
 import tlsattacker.fuzzer.config.TraceTypesConfig;
 import tlsattacker.fuzzer.controller.CommandLineController;
 import tlsattacker.fuzzer.controller.Controller;
+import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.executor.TLSExecutor;
@@ -54,7 +55,7 @@ public class Main {
      * Main function which Starts the fuzzer
      * @param args Arguments which are parsed
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IllegalAgentException {
 	LOG.log(Level.FINE, Utils.arrayToString(args));
 	GeneralConfig generalConfig = new GeneralConfig();
 

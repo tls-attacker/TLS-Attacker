@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.agents;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 
 /**
  * A Factory class that generates the right Agent depending on the agent set in
@@ -25,7 +26,7 @@ public class AgentFactory {
      * @param keypair The server certificate key pair the agent should be created with
      * @return A newly generated Agent
      */
-    public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
+    public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) throws IllegalAgentException {
 	switch (config.getAgent()) {
 	    case AFLAgent.optionName:
 		return new AFLAgent(keypair);
@@ -34,7 +35,7 @@ public class AgentFactory {
 	    case BlindAgent.optionName:
 		return new BlindAgent(keypair);
 	    default:
-		throw new RuntimeException("Could not find Agent!");
+		throw new IllegalAgentException("Could not find Agent!");
 	}
     }
 
