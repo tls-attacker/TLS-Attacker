@@ -22,11 +22,14 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * 
@@ -39,6 +42,11 @@ public class UniqueFlowsRuleTest {
      */
     private UniqueFlowsRule rule;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+    
+    private EvolutionaryFuzzerConfig config;
+    
     /**
      *
      */
@@ -49,21 +57,12 @@ public class UniqueFlowsRuleTest {
      *
      */
     @Before
-    public void setUp() {
-        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        config.setOutputFolder("unit_test_output/");
-        config.setConfigFolder("unit_test_config/");
+    public void setUp() throws IOException {
+        config = new EvolutionaryFuzzerConfig();
+        config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
+        config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
         rule = new UniqueFlowsRule(config);
-    }
-
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-        FileHelper.deleteFolder(new File("unit_test_output"));
-        FileHelper.deleteFolder(new File("unit_test_config"));
     }
 
     /**
@@ -97,7 +96,7 @@ public class UniqueFlowsRuleTest {
                 ExecutorType.TLS, null), "tes2t.unit");
         rule.onApply(result);
         WorkFlowTraceFakeExecuter.execute(trace);
-        assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
     }
 

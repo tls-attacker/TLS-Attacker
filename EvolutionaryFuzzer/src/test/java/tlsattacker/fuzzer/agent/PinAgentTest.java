@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -28,6 +29,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * 
@@ -45,15 +48,9 @@ public class PinAgentTest {
      */
     private static TLSServer server;
 
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-        File f = new File("JUNIT/");
-        FileHelper.deleteFolder(f);
-    }
-
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+    
     /**
      *
      */
@@ -70,26 +67,16 @@ public class PinAgentTest {
     public PinAgentTest() {
     }
 
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-        FileHelper.deleteFolder(new File("unit_test_output"));
-        FileHelper.deleteFolder(new File("unit_test_config"));
-        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
-        server.stop();
-        server = null;
-    }
+    
 
     /**
      *
      */
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        config.setOutputFolder("unit_test_output/");
-        config.setConfigFolder("unit_test_config/");
+        config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
+        config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
         ConfigManager.getInstance().setConfig(config);
         mut = new UnitTestCertificateMutator();

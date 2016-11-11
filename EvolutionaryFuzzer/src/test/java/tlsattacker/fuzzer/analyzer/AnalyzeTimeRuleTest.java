@@ -14,11 +14,14 @@ import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * 
@@ -31,6 +34,9 @@ public class AnalyzeTimeRuleTest {
      */
     private AnalyzeTimeRule rule;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+    
     /**
      *
      */
@@ -41,22 +47,12 @@ public class AnalyzeTimeRuleTest {
      *
      */
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        config.setOutputFolder("unit_test_output/");
-        config.setConfigFolder("unit_test_config/");
+        config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
+        config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
         rule = new AnalyzeTimeRule(config);
-
-    }
-
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-        FileHelper.deleteFolder(new File("unit_test_output"));
-        FileHelper.deleteFolder(new File("unit_test_config"));
 
     }
 

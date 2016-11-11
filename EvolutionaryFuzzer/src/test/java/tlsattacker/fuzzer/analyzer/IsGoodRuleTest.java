@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,6 +27,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * 
@@ -38,6 +41,11 @@ public class IsGoodRuleTest {
      */
     private IsGoodRule rule;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+    
+    private EvolutionaryFuzzerConfig config;
+    
     /**
      *
      */
@@ -48,24 +56,16 @@ public class IsGoodRuleTest {
      *
      */
     @Before
-    public void setUp() {
-        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+    public void setUp() throws IOException {
+        config = new EvolutionaryFuzzerConfig();
         config.setSerialize(true);
-        config.setOutputFolder("unit_test_output/");
-        config.setConfigFolder("unit_test_config/");
+        config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
+        config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
         rule = new IsGoodRule(config);
     }
 
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-        FileHelper.deleteFolder(new File("unit_test_output"));
-        FileHelper.deleteFolder(new File("unit_test_config"));
-    }
-
+   
     /**
      * Test of applies method, of class IsGoodRule.
      */
@@ -118,7 +118,7 @@ public class IsGoodRuleTest {
                 ExecutorType.TLS, null), "unit1.test");
         rule.onApply(result);
         assertTrue(result.isGoodTrace());
-        assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
     }
 

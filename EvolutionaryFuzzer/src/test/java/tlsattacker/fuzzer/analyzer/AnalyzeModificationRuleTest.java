@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -34,6 +35,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * 
@@ -51,6 +54,9 @@ public class AnalyzeModificationRuleTest {
      */
     private TestVector vector;
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+    
     /**
      *
      */
@@ -61,10 +67,10 @@ public class AnalyzeModificationRuleTest {
      *
      */
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        config.setOutputFolder("unit_test_output/");
-        config.setConfigFolder("unit_test_config/");
+        config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
+        config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
         rule = new AnalyzeModificationRule(config);
         vector = new TestVector(null, null, null, ExecutorType.TLS, null);
@@ -73,16 +79,6 @@ public class AnalyzeModificationRuleTest {
         vector.addModification(new ChangeServerCertificateModification(null));
         vector.addModification(new DuplicateMessageModification(new ClientHelloMessage(), new SendAction(), 0));
         vector.addModification(new ModifyFieldModification("test", new AlertMessage()));
-
-    }
-
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-        FileHelper.deleteFolder(new File("unit_test_output"));
-        FileHelper.deleteFolder(new File("unit_test_config"));
 
     }
 
