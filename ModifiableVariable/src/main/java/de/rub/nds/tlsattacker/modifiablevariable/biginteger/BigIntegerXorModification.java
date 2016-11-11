@@ -27,22 +27,22 @@ public class BigIntegerXorModification extends VariableModification<BigInteger> 
     }
 
     public BigIntegerXorModification(BigInteger bi) {
-	this.xor = bi;
+        this.xor = bi;
     }
 
     @Override
     protected BigInteger modifyImplementationHook(BigInteger input) {
-	if (input == null) {
-	    input = BigInteger.ZERO;
-	}
-	return input.xor(xor);
+        if (input == null) {
+            input = BigInteger.ZERO;
+        }
+        return input.xor(xor);
     }
 
     public BigInteger getXor() {
-	return xor;
+        return xor;
     }
 
     public void setXor(BigInteger xor) {
-	this.xor = xor;
+        this.xor = xor;
     }
 }

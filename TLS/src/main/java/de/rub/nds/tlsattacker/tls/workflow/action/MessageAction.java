@@ -47,73 +47,73 @@ public abstract class MessageAction extends TLSAction {
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-	    @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
-	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-	    @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
-	    @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-	    @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-	    @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-	    @XmlElement(type = FinishedMessage.class, name = "Finished"),
-	    @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-	    @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-	    @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-	    @XmlElement(type = AlertMessage.class, name = "Alert"),
-	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
-	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
+            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
+            @XmlElement(type = CertificateMessage.class, name = "Certificate"),
+            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+            @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+            @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
+            @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
+            @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
+            @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
+            @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
+            @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = FinishedMessage.class, name = "Finished"),
+            @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
+            @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
+            @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
+            @XmlElement(type = AlertMessage.class, name = "Alert"),
+            @XmlElement(type = ApplicationMessage.class, name = "Application"),
+            @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+            @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
+            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     @HoldsModifiableVariable
     protected List<ProtocolMessage> configuredMessages;
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-	    @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
-	    @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-	    @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-	    @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-	    @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-	    @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
-	    @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-	    @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-	    @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-	    @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-	    @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-	    @XmlElement(type = FinishedMessage.class, name = "Finished"),
-	    @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-	    @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-	    @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-	    @XmlElement(type = AlertMessage.class, name = "Alert"),
-	    @XmlElement(type = ApplicationMessage.class, name = "Application"),
-	    @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-	    @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-	    @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
+            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
+            @XmlElement(type = CertificateMessage.class, name = "Certificate"),
+            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
+            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
+            @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
+            @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
+            @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
+            @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
+            @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
+            @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
+            @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = FinishedMessage.class, name = "Finished"),
+            @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
+            @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
+            @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
+            @XmlElement(type = AlertMessage.class, name = "Alert"),
+            @XmlElement(type = ApplicationMessage.class, name = "Application"),
+            @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+            @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
+            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     protected List<ProtocolMessage> actualMessages;
 
     public MessageAction(List<ProtocolMessage> messages) {
-	this.configuredMessages = messages;
-	actualMessages = new LinkedList<>();
+        this.configuredMessages = messages;
+        actualMessages = new LinkedList<>();
     }
 
     public List<ProtocolMessage> getActualMessages() {
-	return actualMessages;
+        return actualMessages;
     }
 
     public List<ProtocolMessage> getConfiguredMessages() {
-	return configuredMessages;
+        return configuredMessages;
     }
 
     public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
-	this.configuredMessages = configuredMessages;
+        this.configuredMessages = configuredMessages;
     }
 
     @Override
     public void reset() {
-	executed = false;
-	actualMessages = new LinkedList<>();
+        executed = false;
+        actualMessages = new LinkedList<>();
     }
 
     @Override
@@ -144,5 +144,5 @@ public abstract class MessageAction extends TLSAction {
         }
         return true;
     }
-    
+
 }

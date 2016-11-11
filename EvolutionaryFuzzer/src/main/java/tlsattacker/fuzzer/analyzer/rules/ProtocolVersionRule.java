@@ -57,136 +57,146 @@ public class ProtocolVersionRule extends Rule {
     private ProtocolVersionRuleConfig config;
 
     public ProtocolVersionRule(EvolutionaryFuzzerConfig evoConfig) {
-	super(evoConfig, "highest_version.rule");
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    config = JAXB.unmarshal(f, ProtocolVersionRuleConfig.class);
-	}
-	if (config == null) {
-	    config = new ProtocolVersionRuleConfig();
-	    writeConfig(config);
-	}
-	prepareConfigOutputFolder();
-	// TODO Dynamic Discover Highest supported
-	highestTLSSupported = ProtocolVersion.TLS12;
-	highestDTLSSupported = ProtocolVersion.DTLS12;
+        super(evoConfig, "highest_version.rule");
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        if (f.exists()) {
+            config = JAXB.unmarshal(f, ProtocolVersionRuleConfig.class);
+        }
+        if (config == null) {
+            config = new ProtocolVersionRuleConfig();
+            writeConfig(config);
+        }
+        prepareConfigOutputFolder();
+        // TODO Dynamic Discover Highest supported
+        highestTLSSupported = ProtocolVersion.TLS12;
+        highestDTLSSupported = ProtocolVersion.DTLS12;
     }
 
     /**
-     * The rule applies if the Server did not choose the highest offered version it supports
-     * @param result Result to analyze
-     * @return True if the Server did not choos the highest offered version it supports
+     * The rule applies if the Server did not choose the highest offered version
+     * it supports
+     * 
+     * @param result
+     *            Result to analyze
+     * @return True if the Server did not choos the highest offered version it
+     *         supports
      */
     @Override
     public boolean applies(Result result) {
-	ProtocolVersion serverVersion = null;
+        ProtocolVersion serverVersion = null;
 
-	WorkflowTrace trace = result.getVector().getTrace();
-	List<HandshakeMessage> sentClientHellos = trace
-		.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
-	List<HandshakeMessage> receivedServerHellos = trace
-		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
-	if (sentClientHellos.isEmpty() || receivedServerHellos.isEmpty()) {
-	    return false;
-	}
-	ClientHelloMessage clientMessage = (ClientHelloMessage) sentClientHellos.get(0);
-	ServerHelloMessage serverMessage = (ServerHelloMessage) receivedServerHellos.get(0);
+        WorkflowTrace trace = result.getVector().getTrace();
+        List<HandshakeMessage> sentClientHellos = trace
+                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
+        List<HandshakeMessage> receivedServerHellos = trace
+                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
+        if (sentClientHellos.isEmpty() || receivedServerHellos.isEmpty()) {
+            return false;
+        }
+        ClientHelloMessage clientMessage = (ClientHelloMessage) sentClientHellos.get(0);
+        ServerHelloMessage serverMessage = (ServerHelloMessage) receivedServerHellos.get(0);
 
-	byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
-	byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
+        byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
+        byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
 
-	if (serverProtocolVersions.length != 2) {
-	    // The Server returned an invalid protocolversion size field
-	    return true;
-	} else {
-	    serverVersion = ProtocolVersion.getProtocolVersion(serverProtocolVersions);
-	    if (serverVersion == null) {
-		// ServerVersion is nonstandart, always report
-		return true;
-	    } else if (!config.isAllowedVersion(serverVersion)) {
-		// ServerVersion is on Blacklist
-		return true;
-	    }
-	}
+        if (serverProtocolVersions.length != 2) {
+            // The Server returned an invalid protocolversion size field
+            return true;
+        } else {
+            serverVersion = ProtocolVersion.getProtocolVersion(serverProtocolVersions);
+            if (serverVersion == null) {
+                // ServerVersion is nonstandart, always report
+                return true;
+            } else if (!config.isAllowedVersion(serverVersion)) {
+                // ServerVersion is on Blacklist
+                return true;
+            }
+        }
 
-	int intRepresentationClientVersion = clientProtocolVersions[0] * 0x100 + clientProtocolVersions[1];
-	int intRepresentationServerVersion = serverProtocolVersions[0] * 0x100 + serverProtocolVersions[1];
-	if (clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE) {
-	    // We are some DTLS Protocolversion
-	    // We chose dtls and the server agreed on some DTLS Version
-	    return intRepresentationClientVersion < intRepresentationServerVersion
-		    && serverVersion != highestDTLSSupported;
+        int intRepresentationClientVersion = clientProtocolVersions[0] * 0x100 + clientProtocolVersions[1];
+        int intRepresentationServerVersion = serverProtocolVersions[0] * 0x100 + serverProtocolVersions[1];
+        if (clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE) {
+            // We are some DTLS Protocolversion
+            // We chose dtls and the server agreed on some DTLS Version
+            return intRepresentationClientVersion < intRepresentationServerVersion
+                    && serverVersion != highestDTLSSupported;
 
-	} else if ((clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] != (byte) 0xFE)
-		|| (clientProtocolVersions[0] != (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE)) {
-	    // DTLS TLS mismatch
-	    return true;
-	} else {
-	    return intRepresentationClientVersion > intRepresentationServerVersion
-		    && serverVersion != highestTLSSupported;
-	}
+        } else if ((clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] != (byte) 0xFE)
+                || (clientProtocolVersions[0] != (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE)) {
+            // DTLS TLS mismatch
+            return true;
+        } else {
+            return intRepresentationClientVersion > intRepresentationServerVersion
+                    && serverVersion != highestTLSSupported;
+        }
     }
 
     /**
-     * Stores the Testvector and adds a description to the TestVector that described the violation 
-     * @param result Result to analyze
+     * Stores the Testvector and adds a description to the TestVector that
+     * described the violation
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onApply(Result result) {
-	WorkflowTrace trace = result.getVector().getTrace();
-	List<HandshakeMessage> sentClientHellos = trace
-		.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
-	List<HandshakeMessage> receivedServerHellos = trace
-		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
-	ClientHelloMessage clientMessage = (ClientHelloMessage) sentClientHellos.get(0);
-	ServerHelloMessage serverMessage = (ServerHelloMessage) receivedServerHellos.get(0);
+        WorkflowTrace trace = result.getVector().getTrace();
+        List<HandshakeMessage> sentClientHellos = trace
+                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
+        List<HandshakeMessage> receivedServerHellos = trace
+                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
+        ClientHelloMessage clientMessage = (ClientHelloMessage) sentClientHellos.get(0);
+        ServerHelloMessage serverMessage = (ServerHelloMessage) receivedServerHellos.get(0);
 
-	byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
-	byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
+        byte[] clientProtocolVersions = clientMessage.getProtocolVersion().getValue();
+        byte[] serverProtocolVersions = serverMessage.getProtocolVersion().getValue();
 
-	found++;
-	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
-	try {
-	    result.getVector()
-		    .getTrace()
-		    .setDescription(
-			    "WorkflowTrace contains unusual Protocolversions: Client("
-				    + ArrayConverter.bytesToHexString(clientProtocolVersions) + ") Server("
-				    + ArrayConverter.bytesToHexString(serverProtocolVersions) + ")");
-	    TestVectorSerializer.write(f, result.getVector());
-	} catch (JAXBException | IOException E) {
-	    LOG.log(Level.SEVERE,
-		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-			    + f.getAbsolutePath(), E);
-	}
+        found++;
+        File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
+        try {
+            result.getVector()
+                    .getTrace()
+                    .setDescription(
+                            "WorkflowTrace contains unusual Protocolversions: Client("
+                                    + ArrayConverter.bytesToHexString(clientProtocolVersions) + ") Server("
+                                    + ArrayConverter.bytesToHexString(serverProtocolVersions) + ")");
+            TestVectorSerializer.write(f, result.getVector());
+        } catch (JAXBException | IOException E) {
+            LOG.log(Level.SEVERE,
+                    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+                            + f.getAbsolutePath(), E);
+        }
 
     }
 
     /**
      * Do nothing
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-     /**
+    /**
      * Generates a status report
+     * 
      * @return
      */
     @Override
     public String report() {
 
-	if (found > 0) {
-	    return "Found " + found + " Traces which had unusual Protocolversions\n";
-	} else {
-	    return null;
-	}
+        if (found > 0) {
+            return "Found " + found + " Traces which had unusual Protocolversions\n";
+        } else {
+            return null;
+        }
     }
 
     @Override
     public ProtocolVersionRuleConfig getConfig() {
-	return config;
+        return config;
     }
 
     private static final Logger LOG = Logger.getLogger(ProtocolVersionRule.class.getName());

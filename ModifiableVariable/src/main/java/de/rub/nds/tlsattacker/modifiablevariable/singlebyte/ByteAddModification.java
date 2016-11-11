@@ -26,22 +26,22 @@ public class ByteAddModification extends VariableModification<Byte> {
     }
 
     public ByteAddModification(Byte bi) {
-	this.summand = bi;
+        this.summand = bi;
     }
 
     @Override
     protected Byte modifyImplementationHook(Byte input) {
-	if (input == null) {
-	    input = 0;
-	}
-	return (byte) (input + summand);
+        if (input == null) {
+            input = 0;
+        }
+        return (byte) (input + summand);
     }
 
     public Byte getSummand() {
-	return summand;
+        return summand;
     }
 
     public void setSummand(Byte summand) {
-	this.summand = summand;
+        this.summand = summand;
     }
 }

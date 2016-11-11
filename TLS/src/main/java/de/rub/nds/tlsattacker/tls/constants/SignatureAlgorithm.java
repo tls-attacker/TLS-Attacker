@@ -27,41 +27,41 @@ public enum SignatureAlgorithm {
     private static final Map<Byte, SignatureAlgorithm> MAP;
 
     private SignatureAlgorithm(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (SignatureAlgorithm cm : SignatureAlgorithm.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (SignatureAlgorithm cm : SignatureAlgorithm.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static SignatureAlgorithm getSignatureAlgorithm(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     public static SignatureAlgorithm getRandom() {
-	SignatureAlgorithm c = null;
-	while (c == null) {
-	    Object[] o = MAP.values().toArray();
-	    c = (SignatureAlgorithm) o[RandomHelper.getRandom().nextInt(o.length)];
-	}
-	return c;
+        SignatureAlgorithm c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (SignatureAlgorithm) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
     }
 
     public String getJavaName() {
-	if (value == 0) {
-	    return "";
-	}
-	return toString();
+        if (value == 0) {
+            return "";
+        }
+        return toString();
     }
 }

@@ -29,11 +29,11 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
      * Increments the counter
      */
     public void increment() {
-	count++;
+        count++;
     }
 
     public void add(int count) {
-	this.count += count;
+        this.count += count;
     }
 
     /**
@@ -42,13 +42,13 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
      * @return Count value of the Edge
      */
     public int getCount() {
-	return count;
+        return count;
     }
 
     @Override
     public Object clone() {
-	return super.clone(); // To change body of generated methods, choose
-			      // Tools | Templates.
+        return super.clone(); // To change body of generated methods, choose
+        // Tools | Templates.
     }
 
     private static final Logger LOG = Logger.getLogger(CountEdge.class.getName());

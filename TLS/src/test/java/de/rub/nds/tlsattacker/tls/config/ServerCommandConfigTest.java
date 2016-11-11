@@ -26,27 +26,27 @@ public class ServerCommandConfigTest {
      */
     @Test
     public void testCommandLineParsing() {
-	JCommander jc = new JCommander();
+        JCommander jc = new JCommander();
 
-	ServerCommandConfig server = new ServerCommandConfig();
-	jc.addCommand(ServerCommandConfig.COMMAND, server);
-	ClientCommandConfig client = new ClientCommandConfig();
-	jc.addCommand(ClientCommandConfig.COMMAND, client);
+        ServerCommandConfig server = new ServerCommandConfig();
+        jc.addCommand(ServerCommandConfig.COMMAND, server);
+        ClientCommandConfig client = new ClientCommandConfig();
+        jc.addCommand(ClientCommandConfig.COMMAND, client);
 
-	jc.parse("server", "-servername_fatal", "-keystore", "test.pem", "-password", "password");
+        jc.parse("server", "-servername_fatal", "-keystore", "test.pem", "-password", "password");
 
-	assertEquals("server", jc.getParsedCommand());
-	assertTrue(server.isServerNameFatal());
-	assertEquals("test.pem", server.getKeystore());
-	assertEquals("password", server.getPassword());
+        assertEquals("server", jc.getParsedCommand());
+        assertTrue(server.isServerNameFatal());
+        assertEquals("test.pem", server.getKeystore());
+        assertEquals("password", server.getPassword());
 
-	jc.parse("server", "-cipher", "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", "-version",
-		"TLSv1.2");
+        jc.parse("server", "-cipher", "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", "-version",
+                "TLSv1.2");
 
-	assertEquals("server", jc.getParsedCommand());
-	assertEquals(2, server.getCipherSuites().size());
-	assertEquals(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, server.getCipherSuites().get(0));
-	assertEquals(ProtocolVersion.TLS12, server.getProtocolVersion());
+        assertEquals("server", jc.getParsedCommand());
+        assertEquals(2, server.getCipherSuites().size());
+        assertEquals(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, server.getCipherSuites().get(0));
+        assertEquals(ProtocolVersion.TLS12, server.getProtocolVersion());
     }
 
     /**
@@ -54,12 +54,12 @@ public class ServerCommandConfigTest {
      */
     @Test(expected = ParameterException.class)
     public void testInvalidCommandLineParsing() {
-	JCommander jc = new JCommander();
+        JCommander jc = new JCommander();
 
-	ServerCommandConfig server = new ServerCommandConfig();
-	jc.addCommand(ServerCommandConfig.COMMAND, server);
+        ServerCommandConfig server = new ServerCommandConfig();
+        jc.addCommand(ServerCommandConfig.COMMAND, server);
 
-	jc.parse("server", "-cipher", "invalid,TLS_RSA_WITH_AES_256_CBC_SHA", "-version", "TLSv1.2");
+        jc.parse("server", "-cipher", "invalid,TLS_RSA_WITH_AES_256_CBC_SHA", "-version", "TLSv1.2");
     }
 
 }

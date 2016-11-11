@@ -44,10 +44,10 @@ public class IsTimeoutRuleTest {
      */
     @Before
     public void setUp() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	config.setOutputFolder("unit_test_output/");
-	config.setConfigFolder("unit_test_config/");
-	rule = new IsTimeoutRule(config);
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        config.setOutputFolder("unit_test_output/");
+        config.setConfigFolder("unit_test_config/");
+        rule = new IsTimeoutRule(config);
     }
 
     /**
@@ -55,8 +55,8 @@ public class IsTimeoutRuleTest {
      */
     @After
     public void tearDown() {
-	FileHelper.deleteFolder(new File("unit_test_output"));
-	FileHelper.deleteFolder(new File("unit_test_config"));
+        FileHelper.deleteFolder(new File("unit_test_output"));
+        FileHelper.deleteFolder(new File("unit_test_config"));
     }
 
     /**
@@ -64,12 +64,12 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testApplys() {
-	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, ExecutorType.TLS, null), "unit3.test");
-	assertTrue(rule.applies(result));
-	result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-		ExecutorType.TLS, null), "unit3.test");
-	assertFalse(rule.applies(result));
+        Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit3.test");
+        assertTrue(rule.applies(result));
+        result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit3.test");
+        assertFalse(rule.applies(result));
 
     }
 
@@ -78,10 +78,10 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testOnApply() {
-	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, ExecutorType.TLS, null), "unit3.test");
-	rule.onApply(result);
-	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit3.test");
+        rule.onApply(result);
+        assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
     }
 
@@ -90,7 +90,7 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testOnDecline() {
-	rule.onDecline(null);
+        rule.onDecline(null);
     }
 
     /**
@@ -98,11 +98,11 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testReport() {
-	assertNull(rule.report());
-	Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-		null, ExecutorType.TLS, null), "unit3.test");
-	rule.onApply(result);
-	assertNotNull(rule.report());
+        assertNull(rule.report());
+        Result result = new Result(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit3.test");
+        rule.onApply(result);
+        assertNotNull(rule.report());
     }
 
     /**
@@ -110,7 +110,7 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testGetConfig() {
-	assertNotNull(rule.getConfig());
+        assertNotNull(rule.getConfig());
     }
 
     private static final Logger LOG = Logger.getLogger(IsTimeoutRuleTest.class.getName());

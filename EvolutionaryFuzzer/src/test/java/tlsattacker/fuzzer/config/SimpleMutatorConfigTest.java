@@ -50,36 +50,36 @@ public class SimpleMutatorConfigTest {
      */
     @Test
     public void testEvolutionaryFuzzerPercentage() {
-	SimpleMutatorConfig config = new SimpleMutatorConfig();
-	Exception E = null;
-	try {
-	    config.setAddMessagePercentage(101);
-	} catch (Exception ex) {
-	    E = ex;
-	}
-	assertNotNull("Failure: AddMessagePercentage can be risen above 100%", E);
-	E = null;
-	try {
-	    config.setAddRecordPercentage(101);
-	} catch (Exception ex) {
-	    E = ex;
-	}
-	assertNotNull("Failure: setAddRecordPercentage can be risen above 100%", E);
-	E = null;
-	try {
-	    config.setModifyVariablePercentage(101);
-	} catch (Exception ex) {
-	    E = ex;
-	}
-	assertNotNull("Failure: setModifyVariablePercentage can be risen above 100%", E);
-	E = null;
-	try {
-	    config.setRemoveMessagePercentage(101);
-	} catch (Exception ex) {
-	    E = ex;
-	}
-	assertNotNull("Failure: setRemoveMessagePercentage can be risen above 100%", E);
+        SimpleMutatorConfig config = new SimpleMutatorConfig();
+        Exception E = null;
+        try {
+            config.setAddMessagePercentage(101);
+        } catch (Exception ex) {
+            E = ex;
+        }
+        assertNotNull("Failure: AddMessagePercentage can be risen above 100%", E);
+        E = null;
+        try {
+            config.setAddRecordPercentage(101);
+        } catch (Exception ex) {
+            E = ex;
+        }
+        assertNotNull("Failure: setAddRecordPercentage can be risen above 100%", E);
+        E = null;
+        try {
+            config.setModifyVariablePercentage(101);
+        } catch (Exception ex) {
+            E = ex;
+        }
+        assertNotNull("Failure: setModifyVariablePercentage can be risen above 100%", E);
+        E = null;
+        try {
+            config.setRemoveMessagePercentage(101);
+        } catch (Exception ex) {
+            E = ex;
+        }
+        assertNotNull("Failure: setRemoveMessagePercentage can be risen above 100%", E);
     }
-    
+
     private static final Logger LOG = Logger.getLogger(SimpleMutatorConfigTest.class.getName());
 }

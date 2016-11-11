@@ -18,18 +18,18 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 public class WorkflowExecutorFactory {
 
     public static WorkflowExecutor createWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-	WorkflowExecutor we = null;
-	switch (tlsContext.getProtocolVersion()) {
-	    case TLS10:
-	    case TLS11:
-	    case TLS12:
-		we = new GenericWorkflowExecutor(transportHandler, tlsContext, ExecutorType.TLS);
-		return we;
-	    case DTLS12:
-		we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
-		return we;
-	    default:
-		throw new UnsupportedOperationException(tlsContext.getProtocolVersion().name() + " not yet implemented");
-	}
+        WorkflowExecutor we = null;
+        switch (tlsContext.getProtocolVersion()) {
+            case TLS10:
+            case TLS11:
+            case TLS12:
+                we = new GenericWorkflowExecutor(transportHandler, tlsContext, ExecutorType.TLS);
+                return we;
+            case DTLS12:
+                we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
+                return we;
+            default:
+                throw new UnsupportedOperationException(tlsContext.getProtocolVersion().name() + " not yet implemented");
+        }
     }
 }

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class TestTLSServer {
@@ -56,8 +56,7 @@ public class TestTLSServer {
         CryptoTest cryptoTest = new CryptoTest(configHandler, testConfig);
         cryptoTest.startTests();
         tests.add(cryptoTest);
-        NamedCurvesTest ncTest = new NamedCurvesTest(configHandler, testConfig,
-                cryptoTest.getSupportedCipherSuites());
+        NamedCurvesTest ncTest = new NamedCurvesTest(configHandler, testConfig, cryptoTest.getSupportedCipherSuites());
         tests.add(ncTest);
         ncTest.startTests();
         SignatureAndHashAlgorithmsTest shTest = new SignatureAndHashAlgorithmsTest(configHandler, testConfig,
@@ -68,12 +67,12 @@ public class TestTLSServer {
         CipherSuiteOrderTest csOrderTest = new CipherSuiteOrderTest(configHandler, testConfig);
         csOrderTest.startTests();
         tests.add(csOrderTest);
-// removing for now
-//        AttacksTest attacks = new AttacksTest(configHandler, testConfig);
-//        tests.add(attacks);
-//        for (TestTLS test : tests) {
-//            test.startTests();
-//        }
+        // removing for now
+        // AttacksTest attacks = new AttacksTest(configHandler, testConfig);
+        // tests.add(attacks);
+        // for (TestTLS test : tests) {
+        // test.startTests();
+        // }
         StringBuilder sb = new StringBuilder();
         for (TestTLS test : tests) {
             test.fillTlsPeerProperties(properties);

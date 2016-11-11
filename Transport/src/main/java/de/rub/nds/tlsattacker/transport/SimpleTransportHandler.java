@@ -44,8 +44,6 @@ public class SimpleTransportHandler extends TransportHandler {
 
     private BufferedInputStream bis;
 
-    
-
     private byte[] readTimingData;
 
     public SimpleTransportHandler() {

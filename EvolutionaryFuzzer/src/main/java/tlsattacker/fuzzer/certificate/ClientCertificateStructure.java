@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ClientCertificateStructure implements Serializable {
-    
+
     /**
      * Password for the JKS file
      */
@@ -37,55 +37,54 @@ public class ClientCertificateStructure implements Serializable {
      * The JKS file
      */
     private File JKSfile;
-    
+
     public ClientCertificateStructure(String password, String alias, File JKSfile) {
-	this.password = password;
-	this.alias = alias;
-	this.JKSfile = JKSfile;
+        this.password = password;
+        this.alias = alias;
+        this.JKSfile = JKSfile;
     }
 
     private ClientCertificateStructure() {
-        //for JAXB Magic
+        // for JAXB Magic
     }
-    
 
     public String getPassword() {
-	return password;
+        return password;
     }
 
     public String getAlias() {
-	return alias;
+        return alias;
     }
 
     public File getJKSfile() {
-	return JKSfile;
+        return JKSfile;
     }
 
     @Override
     public int hashCode() {
-	int hash = 7;
-	hash = 61 * hash + Objects.hashCode(this.password);
-	hash = 61 * hash + Objects.hashCode(this.alias);
-	hash = 61 * hash + Objects.hashCode(this.JKSfile);
-	return hash;
+        int hash = 7;
+        hash = 61 * hash + Objects.hashCode(this.password);
+        hash = 61 * hash + Objects.hashCode(this.alias);
+        hash = 61 * hash + Objects.hashCode(this.JKSfile);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final ClientCertificateStructure other = (ClientCertificateStructure) obj;
-	if (!Objects.equals(this.password, other.password)) {
-	    return false;
-	}
-	if (!Objects.equals(this.alias, other.alias)) {
-	    return false;
-	}
-	return Objects.equals(this.JKSfile, other.JKSfile);
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientCertificateStructure other = (ClientCertificateStructure) obj;
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (!Objects.equals(this.alias, other.alias)) {
+            return false;
+        }
+        return Objects.equals(this.JKSfile, other.JKSfile);
     }
 
     private static final Logger LOG = Logger.getLogger(ClientCertificateStructure.class.getName());

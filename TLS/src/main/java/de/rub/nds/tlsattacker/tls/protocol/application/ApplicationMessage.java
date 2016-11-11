@@ -25,40 +25,40 @@ public class ApplicationMessage extends ProtocolMessage {
     ModifiableByteArray data;
 
     public ApplicationMessage() {
-	this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
+        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
 
     public ModifiableByteArray getData() {
-	return data;
+        return data;
     }
 
     public void setData(ModifiableByteArray data) {
-	this.data = data;
+        this.data = data;
     }
 
     public void setData(byte[] data) {
-	if (this.data == null) {
-	    this.data = new ModifiableByteArray();
-	}
-	this.data.setOriginalValue(data);
+        if (this.data == null) {
+            this.data = new ModifiableByteArray();
+        }
+        this.data.setOriginalValue(data);
     }
 
     @Override
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-	ApplicationHandler ah = new ApplicationHandler(tlsContext);
-	ah.setProtocolMessage(this);
-	return ah;
+        ApplicationHandler ah = new ApplicationHandler(tlsContext);
+        ah.setProtocolMessage(this);
+        return ah;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nApplication Data:");
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nApplication Data:");
+        return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-	return "Application";
+        return "Application";
     }
 }

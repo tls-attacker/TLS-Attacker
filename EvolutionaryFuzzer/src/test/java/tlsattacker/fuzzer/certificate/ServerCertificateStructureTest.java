@@ -18,20 +18,21 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ServerCertificateStructureTest {
-    
+
     private ServerCertificateStructure struct;
+
     public ServerCertificateStructureTest() {
     }
-    
+
     @Before
     public void setUp() {
         struct = new ServerCertificateStructure(new File("key"), new File("cert"));
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -51,6 +52,7 @@ public class ServerCertificateStructureTest {
     public void testGetCertificateFile() {
         assertEquals(struct.getCertificateFile(), new File("cert"));
     }
+
     /**
      * Test of hashCode method, of class ClientCertificateStructure.
      */
@@ -73,23 +75,22 @@ public class ServerCertificateStructureTest {
         ServerCertificateStructure struct3 = new ServerCertificateStructure(new File("key"), new File("cert"));
         assertEquals(struct, struct3);
     }
-    
+
     @Test
-    public void testSerialisation()
-    {
+    public void testSerialisation() {
         ServerCertificateStructure struct2 = deserialize(serialize(struct));
         assertEquals(struct, struct2);
     }
-    
+
     public String serialize(ServerCertificateStructure struct) {
         StringWriter writer = new StringWriter();
         JAXB.marshal(struct, writer);
         return writer.getBuffer().toString();
     }
-    
+
     public ServerCertificateStructure deserialize(String input) {
         StringReader reader = new StringReader(input);
         return JAXB.unmarshal(reader, ServerCertificateStructure.class);
     }
-    
+
 }

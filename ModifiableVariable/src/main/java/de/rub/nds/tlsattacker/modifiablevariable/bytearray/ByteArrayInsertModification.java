@@ -32,50 +32,50 @@ public class ByteArrayInsertModification extends VariableModification<byte[]> {
     }
 
     public ByteArrayInsertModification(byte[] bytesToInsert, int startPosition) {
-	this.bytesToInsert = bytesToInsert;
-	this.startPosition = startPosition;
+        this.bytesToInsert = bytesToInsert;
+        this.startPosition = startPosition;
     }
 
     @Override
     protected byte[] modifyImplementationHook(byte[] input) {
-	if (input == null) {
-	    input = new byte[0];
-	}
-	byte[] result = input.clone();
-	int start = startPosition;
-	if (start < 0) {
-	    start += input.length;
-	    if (start < 0) {
-		throw new IllegalArgumentException("Trying to insert from too negative Startposition. start = "
-			+ startPosition);
-	    }
-	}
-	if (startPosition > input.length) {
-	    throw new ArrayIndexOutOfBoundsException("Trying to insert behind the Array. ArraySize:" + input.length
-		    + " Insert Position:" + startPosition);
-	}
-	byte[] ret1 = Arrays.copyOf(input, start);
-	byte[] ret3 = null;
-	if ((start) < input.length) {
-	    ret3 = Arrays.copyOfRange(input, start, input.length);
-	}
-	return ArrayConverter.concatenate(ret1, bytesToInsert, ret3);
+        if (input == null) {
+            input = new byte[0];
+        }
+        byte[] result = input.clone();
+        int start = startPosition;
+        if (start < 0) {
+            start += input.length;
+            if (start < 0) {
+                throw new IllegalArgumentException("Trying to insert from too negative Startposition. start = "
+                        + startPosition);
+            }
+        }
+        if (startPosition > input.length) {
+            throw new ArrayIndexOutOfBoundsException("Trying to insert behind the Array. ArraySize:" + input.length
+                    + " Insert Position:" + startPosition);
+        }
+        byte[] ret1 = Arrays.copyOf(input, start);
+        byte[] ret3 = null;
+        if ((start) < input.length) {
+            ret3 = Arrays.copyOfRange(input, start, input.length);
+        }
+        return ArrayConverter.concatenate(ret1, bytesToInsert, ret3);
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getBytesToInsert() {
-	return bytesToInsert;
+        return bytesToInsert;
     }
 
     public void setBytesToInsert(byte[] bytesToInsert) {
-	this.bytesToInsert = bytesToInsert;
+        this.bytesToInsert = bytesToInsert;
     }
 
     public int getStartPosition() {
-	return startPosition;
+        return startPosition;
     }
 
     public void setStartPosition(int startPosition) {
-	this.startPosition = startPosition;
+        this.startPosition = startPosition;
     }
 }

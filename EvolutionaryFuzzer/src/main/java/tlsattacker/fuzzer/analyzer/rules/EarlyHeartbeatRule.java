@@ -43,102 +43,119 @@ public class EarlyHeartbeatRule extends Rule {
     private int found = 0;
 
     public EarlyHeartbeatRule(EvolutionaryFuzzerConfig evoConfig) {
-	super(evoConfig, "early_heartbeat.rule");
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    config = JAXB.unmarshal(f, EarlyHeartbeatRuleConfig.class);
-	}
-	if (config == null) {
-	    config = new EarlyHeartbeatRuleConfig();
-	    writeConfig(config);
-	}
-	prepareConfigOutputFolder();
+        super(evoConfig, "early_heartbeat.rule");
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        if (f.exists()) {
+            config = JAXB.unmarshal(f, EarlyHeartbeatRuleConfig.class);
+        }
+        if (config == null) {
+            config = new EarlyHeartbeatRuleConfig();
+            writeConfig(config);
+        }
+        prepareConfigOutputFolder();
     }
 
     /**
-     * The rule applies if the Server sent a Heartbeat message before it sent a Finished message
-     * @param result Result to analyze the Workflowtrace from
-     * @return True if the the Server sent a Heartbeat message before it sent a Finished message
+     * The rule applies if the Server sent a Heartbeat message before it sent a
+     * Finished message
+     * 
+     * @param result
+     *            Result to analyze the Workflowtrace from
+     * @return True if the the Server sent a Heartbeat message before it sent a
+     *         Finished message
      */
     @Override
     public boolean applies(Result result) {
-	WorkflowTrace trace = result.getVector().getTrace();
-	if (!trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT).isEmpty()) {
-	    return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);
-	} else {
-	    return false;
-	}
+        WorkflowTrace trace = result.getVector().getTrace();
+        if (!trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT).isEmpty()) {
+            return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);
+        } else {
+            return false;
+        }
     }
 
     /**
      * Stores the TestVector
-     * @param result Result to store
+     * 
+     * @param result
+     *            Result to store
      */
     @Override
     public void onApply(Result result) {
-	found++;
-	File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
-	try {
-	    result.getVector()
-		    .getTrace()
-		    .setDescription(
-			    "WorkflowTrace has a Heartbeat from the Server before the Server send his finished message!");
-	    f.createNewFile();
-	    TestVectorSerializer.write(f, result.getVector());
-	} catch (JAXBException | IOException E) {
-	    LOG.log(Level.SEVERE,
-		    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-			    + f.getAbsolutePath(), E);
-	}
+        found++;
+        File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
+        try {
+            result.getVector()
+                    .getTrace()
+                    .setDescription(
+                            "WorkflowTrace has a Heartbeat from the Server before the Server send his finished message!");
+            f.createNewFile();
+            TestVectorSerializer.write(f, result.getVector());
+        } catch (JAXBException | IOException E) {
+            LOG.log(Level.SEVERE,
+                    "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+                            + f.getAbsolutePath(), E);
+        }
     }
 
     /**
      * Do nothing
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-     /**
+    /**
      * Generates a status report
+     * 
      * @return
      */
     @Override
     public String report() {
-	if (found > 0) {
-	    return "Found " + found + " Traces with EarlyHeartBeat messages from the Server\n";
-	} else {
-	    return null;
-	}
+        if (found > 0) {
+            return "Found " + found + " Traces with EarlyHeartBeat messages from the Server\n";
+        } else {
+            return null;
+        }
     }
 
     @Override
     public EarlyHeartbeatRuleConfig getConfig() {
-	return config;
+        return config;
     }
 
     /**
-     * Checks if the Server sent a Heartbeat message without sending a finished message
-     * @param trace WorkflowTrace to analyze
-     * @return True if the Server sent a Heartbeat message without sending a finished message
+     * Checks if the Server sent a Heartbeat message without sending a finished
+     * message
+     * 
+     * @param trace
+     *            WorkflowTrace to analyze
+     * @return True if the Server sent a Heartbeat message without sending a
+     *         finished message
      */
     private boolean hasHeartbeatWithoutFinished(WorkflowTrace trace) {
-	List<HandshakeMessage> finishedMessages = trace
-		.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED);
-	List<ProtocolMessage> heartBeatMessages = trace
-		.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT);
-	return (finishedMessages.isEmpty() && !heartBeatMessages.isEmpty());
+        List<HandshakeMessage> finishedMessages = trace
+                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED);
+        List<ProtocolMessage> heartBeatMessages = trace
+                .getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT);
+        return (finishedMessages.isEmpty() && !heartBeatMessages.isEmpty());
     }
 
     /**
-     * Checks if the Server sent a Heartbeat message before sending a finished message
-     * @param trace WorkflowTrace to analyze
-     * @return True if the Server sent a Heartbeat message before sending a finished message
+     * Checks if the Server sent a Heartbeat message before sending a finished
+     * message
+     * 
+     * @param trace
+     *            WorkflowTrace to analyze
+     * @return True if the Server sent a Heartbeat message before sending a
+     *         finished message
      */
     private boolean hasHeartbeatBeforeFinished(WorkflowTrace trace) {
-	return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
+        return trace.actuallyReceivedTypeBeforeType(ProtocolMessageType.HEARTBEAT, HandshakeMessageType.FINISHED);
     }
-    
+
     private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRule.class.getName());
 }

@@ -17,9 +17,9 @@ public abstract class EapFactory {
 
     public EAPFrame getFrame(String typ, int id) {
 
-	EAPFrame frame = createFrame(typ, id);
+        EAPFrame frame = createFrame(typ, id);
 
-	return frame;
+        return frame;
     }
 
     protected abstract EAPFrame createFrame(String element, int id);

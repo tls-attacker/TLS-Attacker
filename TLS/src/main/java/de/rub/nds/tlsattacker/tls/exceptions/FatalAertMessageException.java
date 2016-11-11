@@ -16,14 +16,14 @@ package de.rub.nds.tlsattacker.tls.exceptions;
 public class FatalAertMessageException extends RuntimeException {
 
     public FatalAertMessageException() {
-	super();
+        super();
     }
 
     public FatalAertMessageException(String message) {
-	super(message);
+        super(message);
     }
 
     public FatalAertMessageException(String message, Throwable cause) {
-	super(message, cause);
+        super(message, cause);
     }
 }

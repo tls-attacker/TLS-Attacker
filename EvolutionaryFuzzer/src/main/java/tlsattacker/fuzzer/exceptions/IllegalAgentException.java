@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class IllegalAgentException extends Exception {
 
     public IllegalAgentException(String string) {
-	super(string);
+        super(string);
     }
 
     private static final Logger LOG = Logger.getLogger(IllegalAgentException.class.getName());

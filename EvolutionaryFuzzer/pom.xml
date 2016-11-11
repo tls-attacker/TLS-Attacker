@@ -120,7 +120,7 @@
                 <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
                 <artifactId>maven-java-formatter-plugin</artifactId>
                 <configuration>
-                    <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
+                    <configFile>/home/ic0ns/NetBeansProjects/TLS-Attacker-Development/maven-eclipse-codestyle.xml</configFile>
                     <lineEnding>LF</lineEnding>
                 </configuration>
             </plugin>

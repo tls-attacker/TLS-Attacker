@@ -30,17 +30,17 @@ public class AddMessageFlightModification extends Modification {
     private final ReceiveAction receiveAction;
 
     public AddMessageFlightModification(SendAction sendAction, ReceiveAction receiveAction) {
-	super(ModificationType.ADD_MESSAGE_FLIGHT);
-	this.sendAction = sendAction;
-	this.receiveAction = receiveAction;
+        super(ModificationType.ADD_MESSAGE_FLIGHT);
+        this.sendAction = sendAction;
+        this.receiveAction = receiveAction;
     }
 
     public SendAction getSendAction() {
-	return sendAction;
+        return sendAction;
     }
 
     public ReceiveAction getReceiveAction() {
-	return receiveAction;
+        return receiveAction;
     }
 
     private static final Logger LOG = Logger.getLogger(AddMessageFlightModification.class.getName());

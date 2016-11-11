@@ -41,12 +41,12 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testPickRandomField() {
-	List<ModifiableVariableField> fields = new ArrayList<>();
-	fields.add(new ModifiableVariableField());
-	fields.add(new ModifiableVariableField());
-	fields.add(new ModifiableVariableField());
-	ModifiableVariableField result = FuzzingHelper.pickRandomField(fields);
-	assertNotNull("Failure: Should return a Field", result);
+        List<ModifiableVariableField> fields = new ArrayList<>();
+        fields.add(new ModifiableVariableField());
+        fields.add(new ModifiableVariableField());
+        fields.add(new ModifiableVariableField());
+        ModifiableVariableField result = FuzzingHelper.pickRandomField(fields);
+        assertNotNull("Failure: Should return a Field", result);
     }
 
     /**
@@ -54,10 +54,10 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testGetModifiableVariableHolders() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	List<ModifiableVariableHolder> result = FuzzingHelper.getModifiableVariableHolders(trace);
-	assertTrue("Failure: WorkflowTrace should contain atleast one Holder", result.size() > 0);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        List<ModifiableVariableHolder> result = FuzzingHelper.getModifiableVariableHolders(trace);
+        assertTrue("Failure: WorkflowTrace should contain atleast one Holder", result.size() > 0);
     }
 
     /**
@@ -65,9 +65,9 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testAddRecordsAtRandom() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	FuzzingHelper.addRecordAtRandom(trace);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        FuzzingHelper.addRecordAtRandom(trace);
     }
 
     /**
@@ -75,23 +75,23 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testRemoveRandomMessage() {
-	WorkflowTrace tempTrace = new WorkflowTrace();
-	tempTrace.add(new SendAction(new ClientHelloMessage()));
-	tempTrace.add(new ReceiveAction(new ServerHelloMessage()));
+        WorkflowTrace tempTrace = new WorkflowTrace();
+        tempTrace.add(new SendAction(new ClientHelloMessage()));
+        tempTrace.add(new ReceiveAction(new ServerHelloMessage()));
 
-	FuzzingHelper.removeRandomMessage(tempTrace);
-	assertTrue(
-		"Failure: Workflow should contain only two Messages after. Since both Actions only contain one message",
-		tempTrace.getAllConfiguredMessages().size() == 2);
-	tempTrace = new WorkflowTrace();
-	List<ProtocolMessage> messages = new LinkedList<>();
-	messages.add(new AlertMessage());
-	messages.add(new AlertMessage());
-	tempTrace.add(new SendAction(messages));
-	assertTrue("Failure: Workflow should contain two Messages", tempTrace.getAllConfiguredMessages().size() == 2);
-	FuzzingHelper.removeRandomMessage(tempTrace);
-	assertTrue("Failure: Workflow should contain only one Message after.", tempTrace.getAllConfiguredMessages()
-		.size() == 1);
+        FuzzingHelper.removeRandomMessage(tempTrace);
+        assertTrue(
+                "Failure: Workflow should contain only two Messages after. Since both Actions only contain one message",
+                tempTrace.getAllConfiguredMessages().size() == 2);
+        tempTrace = new WorkflowTrace();
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(new AlertMessage());
+        messages.add(new AlertMessage());
+        tempTrace.add(new SendAction(messages));
+        assertTrue("Failure: Workflow should contain two Messages", tempTrace.getAllConfiguredMessages().size() == 2);
+        FuzzingHelper.removeRandomMessage(tempTrace);
+        assertTrue("Failure: Workflow should contain only one Message after.", tempTrace.getAllConfiguredMessages()
+                .size() == 1);
 
     }
 
@@ -100,12 +100,12 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testAddRandomMessage() {
-	WorkflowTrace tempTrace = new WorkflowTrace();
-	FuzzingHelper.addMessageFlight(tempTrace);
-	FuzzingHelper.addRandomMessage(tempTrace);
-	assertTrue(
-		"A Workflowtrace should contain 3 Messages after we added one at Random. (The arbitary Message for the Server is always added + random message from flight)",
-		tempTrace.getAllConfiguredMessages().size() == 3);
+        WorkflowTrace tempTrace = new WorkflowTrace();
+        FuzzingHelper.addMessageFlight(tempTrace);
+        FuzzingHelper.addRandomMessage(tempTrace);
+        assertTrue(
+                "A Workflowtrace should contain 3 Messages after we added one at Random. (The arbitary Message for the Server is always added + random message from flight)",
+                tempTrace.getAllConfiguredMessages().size() == 3);
     }
 
     /**
@@ -113,12 +113,12 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testDuplicateRandomProtocolMessage() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
 
-	FuzzingHelper.duplicateRandomProtocolMessage(trace);
-	assertTrue("Failure: After Duplicating the Trace should contain 2 Messages", trace.getAllConfiguredMessages()
-		.size() == 2);
+        FuzzingHelper.duplicateRandomProtocolMessage(trace);
+        assertTrue("Failure: After Duplicating the Trace should contain 2 Messages", trace.getAllConfiguredMessages()
+                .size() == 2);
     }
 
     /**
@@ -127,11 +127,11 @@ public class FuzzingHelperTest {
      */
     @Test
     public void testGetAllModifiableVariableHoldersRecursively() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
 
-	int size = FuzzingHelper.getAllModifiableVariableFieldsRecursively(trace).size();
-	assertTrue("Failure: Trace should contain more than zero Holders", size > 0);
+        int size = FuzzingHelper.getAllModifiableVariableFieldsRecursively(trace).size();
+        assertTrue("Failure: Trace should contain more than zero Holders", size > 0);
     }
 
     private static final Logger LOG = Logger.getLogger(FuzzingHelperTest.class.getName());

@@ -33,19 +33,19 @@ public class WorkFlowTraceTypeTest {
     @Test
     public void testEquals() {
 
-	WorkflowTraceType instance = new WorkflowTraceType();
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	WorkflowTraceType instance2 = new WorkflowTraceType();
-	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
-	assertNotSame("Failure: Messageflows have Different Connection Ends, the WorkFlowType should not be equal",
-		instance, instance2);
-	instance2 = new WorkflowTraceType();
-	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	assertEquals("Failure: MessageFlows are should be equal", instance, instance2);
-	instance2 = new WorkflowTraceType();
-	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	assertNotSame("Failure: WorkFlowTraceTypes have different number of MessageFlows", instance, instance2);
+        WorkflowTraceType instance = new WorkflowTraceType();
+        instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        WorkflowTraceType instance2 = new WorkflowTraceType();
+        instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
+        assertNotSame("Failure: Messageflows have Different Connection Ends, the WorkFlowType should not be equal",
+                instance, instance2);
+        instance2 = new WorkflowTraceType();
+        instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        assertEquals("Failure: MessageFlows are should be equal", instance, instance2);
+        instance2 = new WorkflowTraceType();
+        instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        assertNotSame("Failure: WorkFlowTraceTypes have different number of MessageFlows", instance, instance2);
 
     }
 
@@ -54,16 +54,16 @@ public class WorkFlowTraceTypeTest {
      */
     @Test
     public void testClean() {
-	WorkflowTraceType instance = new WorkflowTraceType();
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	WorkflowTraceType instance2 = new WorkflowTraceType();
-	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
-	instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
-	instance.clean();
-	assertEquals(instance, instance2);
+        WorkflowTraceType instance = new WorkflowTraceType();
+        instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
+        instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        instance.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        WorkflowTraceType instance2 = new WorkflowTraceType();
+        instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.CLIENT));
+        instance2.addMessageFlow(new MessageFlow(ClientHelloMessage.class, ConnectionEnd.SERVER));
+        instance.clean();
+        assertEquals(instance, instance2);
     }
 
     private static final Logger LOG = Logger.getLogger(WorkFlowTraceTypeTest.class.getName());

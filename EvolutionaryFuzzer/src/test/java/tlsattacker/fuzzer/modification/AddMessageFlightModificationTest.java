@@ -19,14 +19,14 @@ import static org.junit.Assert.*;
 import tlsattacker.fuzzer.config.CalibrationConfig;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class AddMessageFlightModificationTest {
-    
+
     public AddMessageFlightModificationTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -44,5 +44,5 @@ public class AddMessageFlightModificationTest {
         // Start the Test
         pojoValidator.runValidation(pojoClass);
     }
-    
+
 }

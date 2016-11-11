@@ -18,14 +18,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ServerConfigTest {
-    
+
     public ServerConfigTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -43,5 +43,5 @@ public class ServerConfigTest {
         // Start the Test
         pojoValidator.runValidation(pojoClass);
     }
-    
+
 }

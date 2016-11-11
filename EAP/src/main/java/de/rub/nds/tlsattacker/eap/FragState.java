@@ -37,68 +37,68 @@ public class FragState implements EapState {
 
     public FragState(EapolMachine eapolMachine, int id) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
 
     }
 
     public FragState(EapolMachine eapolMachine, int id, int count) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
-	this.count = count;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
+        this.count = count;
 
     }
 
     @Override
     public void send() {
-	// TODO Auto-generated method stub
+        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void sendTLS(byte[] tlspacket) {
 
-	if (count == 0) {
-	    eapstart = eaptlsfactory.createFrame("EAPTLSFRAGSTART", id, tlspacket);
-	} else {
-	    eapstart = eaptlsfactory.createFrame("EAPTLSFRAG", id, tlspacket);
-	}
+        if (count == 0) {
+            eapstart = eaptlsfactory.createFrame("EAPTLSFRAGSTART", id, tlspacket);
+        } else {
+            eapstart = eaptlsfactory.createFrame("EAPTLSFRAG", id, tlspacket);
+        }
 
-	LOGGER.debug("sendTLS(): {}", eapolMachine.getState());
+        LOGGER.debug("sendTLS(): {}", eapolMachine.getState());
 
-	nic.sendFrame(eapstart.getFrame());
+        nic.sendFrame(eapstart.getFrame());
 
     }
 
     @Override
     public byte[] receive() {
-	data = nic.receiveFrame();
-	id = (int) data[19]; // Get ID
+        data = nic.receiveFrame();
+        id = (int) data[19]; // Get ID
 
-	LOGGER.debug("receive() TLS-FLAG: {}", Byte.toString(data[23]));
+        LOGGER.debug("receive() TLS-FLAG: {}", Byte.toString(data[23]));
 
-	if (data[23] == (byte) 0x00 && count < (fragment.getCountPacket() - 2)) {
-	    count++;
-	    eapolMachine.setState(new FragState(eapolMachine, id, count));
-	} else {
-	    eapolMachine.setState(new FragEndState(eapolMachine, id));
-	}
+        if (data[23] == (byte) 0x00 && count < (fragment.getCountPacket() - 2)) {
+            count++;
+            eapolMachine.setState(new FragState(eapolMachine, id, count));
+        } else {
+            eapolMachine.setState(new FragEndState(eapolMachine, id));
+        }
 
-	LOGGER.debug("change State to: {}", eapolMachine.getState());
+        LOGGER.debug("change State to: {}", eapolMachine.getState());
 
-	return data;
+        return data;
     }
 
     @Override
     public String getState() {
-	return "FragState";
+        return "FragState";
     }
 
     @Override
     public int getID() {
 
-	return id;
+        return id;
 
     }
 

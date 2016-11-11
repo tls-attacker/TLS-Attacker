@@ -29,10 +29,10 @@ public class ByteModificationTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableByte();
-	start.setOriginalValue(new Byte("10"));
-	expectedResult = null;
-	result = null;
+        start = new ModifiableByte();
+        start.setOriginalValue(new Byte("10"));
+        expectedResult = null;
+        result = null;
     }
 
     /**
@@ -40,13 +40,13 @@ public class ByteModificationTest {
      */
     @Test
     public void testAdd() {
-	VariableModification<Byte> modifier = ByteModificationFactory.add(new Byte("1"));
-	start.setModification(modifier);
-	expectedResult = new Byte("11");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(new Byte("10"), start.getOriginalValue());
+        VariableModification<Byte> modifier = ByteModificationFactory.add(new Byte("1"));
+        start.setModification(modifier);
+        expectedResult = new Byte("11");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(new Byte("10"), start.getOriginalValue());
     }
 
     /**
@@ -54,13 +54,13 @@ public class ByteModificationTest {
      */
     @Test
     public void testSub() {
-	VariableModification<Byte> modifier = ByteModificationFactory.sub(new Byte("1"));
-	start.setModification(modifier);
-	expectedResult = new Byte("9");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(new Byte("10"), start.getOriginalValue());
+        VariableModification<Byte> modifier = ByteModificationFactory.sub(new Byte("1"));
+        start.setModification(modifier);
+        expectedResult = new Byte("9");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(new Byte("10"), start.getOriginalValue());
     }
 
     /**
@@ -68,13 +68,13 @@ public class ByteModificationTest {
      */
     @Test
     public void testXor() {
-	VariableModification<Byte> modifier = ByteModificationFactory.xor(new Byte("2"));
-	start.setModification(modifier);
-	expectedResult = new Byte("8");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(new Byte("10"), start.getOriginalValue());
+        VariableModification<Byte> modifier = ByteModificationFactory.xor(new Byte("2"));
+        start.setModification(modifier);
+        expectedResult = new Byte("8");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(new Byte("10"), start.getOriginalValue());
     }
 
     /**
@@ -82,13 +82,13 @@ public class ByteModificationTest {
      */
     @Test
     public void testExplicitValue() {
-	VariableModification<Byte> modifier = ByteModificationFactory.explicitValue(new Byte("7"));
-	start.setModification(modifier);
-	expectedResult = new Byte("7");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(new Byte("10"), start.getOriginalValue());
+        VariableModification<Byte> modifier = ByteModificationFactory.explicitValue(new Byte("7"));
+        start.setModification(modifier);
+        expectedResult = new Byte("7");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(new Byte("10"), start.getOriginalValue());
     }
 
     /**
@@ -96,17 +96,17 @@ public class ByteModificationTest {
      */
     @Test
     public void testExplicitValueFromFile() {
-	VariableModification<Byte> modifier = ByteModificationFactory.explicitValueFromFile(0);
-	start.setModification(modifier);
-	expectedResult = -128;
-	result = start.getValue();
-	assertEquals(expectedResult, result);
+        VariableModification<Byte> modifier = ByteModificationFactory.explicitValueFromFile(0);
+        start.setModification(modifier);
+        expectedResult = -128;
+        result = start.getValue();
+        assertEquals(expectedResult, result);
 
-	modifier = ByteModificationFactory.explicitValueFromFile(1);
-	start.setModification(modifier);
-	expectedResult = -1;
-	result = start.getValue();
-	assertEquals(expectedResult, result);
+        modifier = ByteModificationFactory.explicitValueFromFile(1);
+        start.setModification(modifier);
+        expectedResult = -1;
+        result = start.getValue();
+        assertEquals(expectedResult, result);
     }
 
 }

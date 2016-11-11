@@ -16,18 +16,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ActionExecutorFactoryTest {
-    
+
     public ActionExecutorFactoryTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -37,10 +37,12 @@ public class ActionExecutorFactoryTest {
      */
     @Test
     public void testCreateActionExecutor() {
-        ActionExecutor executor = ActionExecutorFactory.createActionExecutor(new TlsContext(), new WorkflowContext(), ExecutorType.DTLS);
+        ActionExecutor executor = ActionExecutorFactory.createActionExecutor(new TlsContext(), new WorkflowContext(),
+                ExecutorType.DTLS);
         assertTrue(executor.getClass().equals(DTLSActionExecutor.class));
-        executor = ActionExecutorFactory.createActionExecutor(new TlsContext(), new WorkflowContext(), ExecutorType.TLS);
+        executor = ActionExecutorFactory
+                .createActionExecutor(new TlsContext(), new WorkflowContext(), ExecutorType.TLS);
         assertTrue(executor.getClass().equals(TLSActionExecutor.class));
     }
-    
+
 }

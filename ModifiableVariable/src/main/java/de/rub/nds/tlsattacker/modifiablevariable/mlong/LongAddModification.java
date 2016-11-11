@@ -26,19 +26,19 @@ public class LongAddModification extends VariableModification<Long> {
     }
 
     public LongAddModification(Long bi) {
-	this.summand = bi;
+        this.summand = bi;
     }
 
     @Override
     protected Long modifyImplementationHook(final Long input) {
-	return (input == null) ? summand : input + summand;
+        return (input == null) ? summand : input + summand;
     }
 
     public Long getSummand() {
-	return summand;
+        return summand;
     }
 
     public void setSummand(Long summand) {
-	this.summand = summand;
+        this.summand = summand;
     }
 }

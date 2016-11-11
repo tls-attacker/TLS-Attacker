@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class CalibrationConfigTest {

@@ -34,58 +34,58 @@ public class ServerHelloMessage extends HelloMessage {
     ModifiableByte selectedCompressionMethod;
 
     public ServerHelloMessage() {
-	super(HandshakeMessageType.SERVER_HELLO);
+        super(HandshakeMessageType.SERVER_HELLO);
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {
-	return selectedCipherSuite;
+        return selectedCipherSuite;
     }
 
     public void setSelectedCipherSuite(ModifiableByteArray selectedCipherSuite) {
-	this.selectedCipherSuite = selectedCipherSuite;
+        this.selectedCipherSuite = selectedCipherSuite;
     }
 
     public void setSelectedCipherSuite(byte[] value) {
-	this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
+        this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
     }
 
     public ModifiableByte getSelectedCompressionMethod() {
-	return selectedCompressionMethod;
+        return selectedCompressionMethod;
     }
 
     public void setSelectedCompressionMethod(ModifiableByte selectedCompressionMethod) {
-	this.selectedCompressionMethod = selectedCompressionMethod;
+        this.selectedCompressionMethod = selectedCompressionMethod;
     }
 
     public void setSelectedCompressionMethod(byte value) {
-	this.selectedCompressionMethod = ModifiableVariableFactory
-		.safelySetValue(this.selectedCompressionMethod, value);
+        this.selectedCompressionMethod = ModifiableVariableFactory
+                .safelySetValue(this.selectedCompressionMethod, value);
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append(super.toString()).append("\n  Protocol Version: ")
-		.append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
-		.append("\n  Server Unix Time: ")
-		.append(new Date(ArrayConverter.bytesToLong(this.unixTime.getValue()) * 1000))
-		.append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(random.getValue()))
-		.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(sessionId.getValue()))
-		.append("\n  Selected Cipher Suite: ")
-		.append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()))
-		.append("\n  Selected Compression Method: ")
-		.append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()))
-		.append("\n  Extensions: ");
-	for (ExtensionMessage e : extensions) {
-	    sb.append(e.toString());
-	}
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString()).append("\n  Protocol Version: ")
+                .append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
+                .append("\n  Server Unix Time: ")
+                .append(new Date(ArrayConverter.bytesToLong(this.unixTime.getValue()) * 1000))
+                .append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(random.getValue()))
+                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(sessionId.getValue()))
+                .append("\n  Selected Cipher Suite: ")
+                .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()))
+                .append("\n  Selected Compression Method: ")
+                .append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()))
+                .append("\n  Extensions: ");
+        for (ExtensionMessage e : extensions) {
+            sb.append(e.toString());
+        }
+        return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new ServerHelloHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new ServerHelloHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

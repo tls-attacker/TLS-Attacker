@@ -42,60 +42,65 @@ public class BranchTrace implements Serializable {
     private Map<Edge, Edge> edgeMap = null;
 
     public BranchTrace(Set<Long> verticesSet, Map<Edge, Edge> edgeMap) {
-	this.verticesSet = verticesSet;
-	this.edgeMap = edgeMap;
+        this.verticesSet = verticesSet;
+        this.edgeMap = edgeMap;
     }
 
     /**
      * Default Constructor
      */
     public BranchTrace() {
-	verticesSet = new HashSet<>();
-	edgeMap = new HashMap<>();
+        verticesSet = new HashSet<>();
+        edgeMap = new HashMap<>();
 
     }
-    
+
     public Set<Long> getVerticesSet() {
-	return Collections.unmodifiableSet(verticesSet);
+        return Collections.unmodifiableSet(verticesSet);
     }
 
     public Map<Edge, Edge> getEdgeMap() {
-	return Collections.unmodifiableMap(edgeMap);
+        return Collections.unmodifiableMap(edgeMap);
     }
 
     /**
-     * Merges another BranchTrace into this one and returns a result object which shows how many new codeblocks or branches were detected. This BranchTrace contains all branches and codeblocks of both BranchTraces after execution.
-     * @param trace The BranchTrace to merge with
+     * Merges another BranchTrace into this one and returns a result object
+     * which shows how many new codeblocks or branches were detected. This
+     * BranchTrace contains all branches and codeblocks of both BranchTraces
+     * after execution.
+     * 
+     * @param trace
+     *            The BranchTrace to merge with
      * @return A MergeResult which keeps track of merge statistics
      */
     public MergeResult merge(BranchTrace trace) {
-	int newVertices = 0;
-	int hitVertices = trace.verticesSet.size();
-	int newEdges = 0;
-	for (Long v : trace.verticesSet) {
-	    if (verticesSet.add(v)) {
-		newVertices++;
-	    }
+        int newVertices = 0;
+        int hitVertices = trace.verticesSet.size();
+        int newEdges = 0;
+        for (Long v : trace.verticesSet) {
+            if (verticesSet.add(v)) {
+                newVertices++;
+            }
 
-	}
-	for (Edge edge : trace.edgeMap.values()) {
-	    if (edgeMap.containsValue(edge)) {
-		Edge e = edgeMap.get(edge);
-		e.addCounter(edge.getCounter());
-	    } else {
-		edgeMap.put(edge, edge);
-		newEdges++;
-	    }
-	}
-	return new MergeResult(newVertices, newEdges, hitVertices);
+        }
+        for (Edge edge : trace.edgeMap.values()) {
+            if (edgeMap.containsValue(edge)) {
+                Edge e = edgeMap.get(edge);
+                e.addCounter(edge.getCounter());
+            } else {
+                edgeMap.put(edge, edge);
+                newEdges++;
+            }
+        }
+        return new MergeResult(newVertices, newEdges, hitVertices);
     }
 
     public int getVerticesCount() {
-	return verticesSet.size();
+        return verticesSet.size();
     }
 
     public int getBranchCount() {
-	return edgeMap.size();
+        return edgeMap.size();
     }
 
     private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());

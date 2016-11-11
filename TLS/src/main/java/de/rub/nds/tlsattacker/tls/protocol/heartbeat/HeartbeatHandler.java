@@ -40,57 +40,57 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
     static final int MAX_PADDING_LENGTH = 256;
 
     public HeartbeatHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	correctProtocolMessageClass = HeartbeatMessage.class;
+        super(tlsContext);
+        correctProtocolMessageClass = HeartbeatMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
-	protocolMessage.setHeartbeatMessageType(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue());
+        protocolMessage.setHeartbeatMessageType(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue());
 
-	int payloadLength = RandomHelper.getRandom().nextInt(MAX_PAYLOAD_LENGTH);
+        int payloadLength = RandomHelper.getRandom().nextInt(MAX_PAYLOAD_LENGTH);
 
-	byte[] payload = new byte[payloadLength];
-	RandomHelper.getRandom().nextBytes(payload);
-	protocolMessage.setPayload(payload);
+        byte[] payload = new byte[payloadLength];
+        RandomHelper.getRandom().nextBytes(payload);
+        protocolMessage.setPayload(payload);
 
-	protocolMessage.setPayloadLength(protocolMessage.getPayload().getValue().length);
+        protocolMessage.setPayloadLength(protocolMessage.getPayload().getValue().length);
 
-	// we create only 16 bytes of 0x00 padding (for convenience)
-	// int paddingLength = randomGenerator.nextInt(MAX_PADDING_LENGTH) +
-	// MIN_PADDING_LENGTH;
-	int paddingLength = MIN_PADDING_LENGTH;
-	byte[] padding = new byte[paddingLength];
-	// randomGenerator.nextBytes(padding);
-	protocolMessage.setPadding(padding);
+        // we create only 16 bytes of 0x00 padding (for convenience)
+        // int paddingLength = randomGenerator.nextInt(MAX_PADDING_LENGTH) +
+        // MIN_PADDING_LENGTH;
+        int paddingLength = MIN_PADDING_LENGTH;
+        byte[] padding = new byte[paddingLength];
+        // randomGenerator.nextBytes(padding);
+        protocolMessage.setPadding(padding);
 
-	byte[] type = { protocolMessage.getHeartbeatMessageType().getValue() };
-	byte[] result = ArrayConverter.concatenate(type, ArrayConverter.intToBytes(protocolMessage.getPayloadLength()
-		.getValue(), HeartbeatByteLength.PAYLOAD_LENGTH), protocolMessage.getPayload().getValue(),
-		protocolMessage.getPadding().getValue());
+        byte[] type = { protocolMessage.getHeartbeatMessageType().getValue() };
+        byte[] result = ArrayConverter.concatenate(type, ArrayConverter.intToBytes(protocolMessage.getPayloadLength()
+                .getValue(), HeartbeatByteLength.PAYLOAD_LENGTH), protocolMessage.getPayload().getValue(),
+                protocolMessage.getPadding().getValue());
 
-	protocolMessage.setCompleteResultingMessage(result);
+        protocolMessage.setCompleteResultingMessage(result);
 
-	return result;
+        return result;
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	protocolMessage.setHeartbeatMessageType(message[pointer]);
-	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-	int nextPointer = currentPointer + HeartbeatByteLength.PAYLOAD_LENGTH;
-	int payloadLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setPayloadLength(payloadLength);
+        protocolMessage.setHeartbeatMessageType(message[pointer]);
+        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+        int nextPointer = currentPointer + HeartbeatByteLength.PAYLOAD_LENGTH;
+        int payloadLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setPayloadLength(payloadLength);
 
-	currentPointer = nextPointer;
-	nextPointer = nextPointer + payloadLength;
-	protocolMessage.setPayload(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        currentPointer = nextPointer;
+        nextPointer = nextPointer + payloadLength;
+        protocolMessage.setPayload(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
-	currentPointer = nextPointer;
-	nextPointer = message.length;
-	protocolMessage.setPadding(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        currentPointer = nextPointer;
+        nextPointer = message.length;
+        protocolMessage.setPadding(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
-	return nextPointer;
+        return nextPointer;
     }
 
 }

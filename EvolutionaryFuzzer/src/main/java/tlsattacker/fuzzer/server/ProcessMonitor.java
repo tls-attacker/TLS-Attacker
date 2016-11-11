@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * A Processmonitor which can tell you, when a command has finished in a non
- * blocking way. 
+ * blocking way.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -26,12 +26,12 @@ public class ProcessMonitor implements Runnable {
      * @return new ProcessMonitor Object
      */
     public static ProcessMonitor create(Process proc) {
-	ProcessMonitor procMon = new ProcessMonitor(proc);
-	Thread t = new Thread(procMon);
-	t.setName("Process Monitor Thread");
-	t.start();
+        ProcessMonitor procMon = new ProcessMonitor(proc);
+        Thread t = new Thread(procMon);
+        t.setName("Process Monitor Thread");
+        t.start();
 
-	return procMon;
+        return procMon;
     }
 
     /**
@@ -48,10 +48,11 @@ public class ProcessMonitor implements Runnable {
     /**
      * Private Constructor, Objects should be created with the create Method
      * 
-     * @param p Process to monitor
+     * @param p
+     *            Process to monitor
      */
     private ProcessMonitor(Process p) {
-	process = p;
+        process = p;
     }
 
     /**
@@ -60,7 +61,7 @@ public class ProcessMonitor implements Runnable {
      * @return If the process is Completed
      */
     public boolean isComplete() {
-	return completed;
+        return completed;
     }
 
     /**
@@ -68,13 +69,13 @@ public class ProcessMonitor implements Runnable {
      */
     @Override
     public void run() {
-	try {
-	    process.waitFor();
-	    completed = true;
-	} catch (InterruptedException ex) {
-	    LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
-	}
+        try {
+            process.waitFor();
+            completed = true;
+        } catch (InterruptedException ex) {
+            LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
+        }
     }
-    
+
     private static final Logger LOG = Logger.getLogger(ProcessMonitor.class.getName());
 }

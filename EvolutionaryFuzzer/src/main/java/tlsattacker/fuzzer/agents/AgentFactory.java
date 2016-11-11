@@ -21,22 +21,28 @@ import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 public class AgentFactory {
 
     /**
-     * Generates the correct Agent depending on the agent field set in the configuration
-     * @param config The configuration object
-     * @param keypair The server certificate key pair the agent should be created with
+     * Generates the correct Agent depending on the agent field set in the
+     * configuration
+     * 
+     * @param config
+     *            The configuration object
+     * @param keypair
+     *            The server certificate key pair the agent should be created
+     *            with
      * @return A newly generated Agent
      */
-    public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) throws IllegalAgentException {
-	switch (config.getAgent()) {
-	    case AFLAgent.optionName:
-		return new AFLAgent(keypair);
-	    case PINAgent.optionName:
-		return new PINAgent(keypair);
-	    case BlindAgent.optionName:
-		return new BlindAgent(keypair);
-	    default:
-		throw new IllegalAgentException("Could not find Agent!");
-	}
+    public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair)
+            throws IllegalAgentException {
+        switch (config.getAgent()) {
+            case AFLAgent.optionName:
+                return new AFLAgent(keypair);
+            case PINAgent.optionName:
+                return new PINAgent(keypair);
+            case BlindAgent.optionName:
+                return new BlindAgent(keypair);
+            default:
+                throw new IllegalAgentException("Could not find Agent!");
+        }
     }
 
     /**

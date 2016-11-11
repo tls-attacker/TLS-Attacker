@@ -26,18 +26,16 @@ import org.bouncycastle.math.ec.WNafUtil;
 import org.bouncycastle.util.BigIntegers;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class RandomKeyGeneratorHelper
-{
+public class RandomKeyGeneratorHelper {
 
     private static final BigInteger ONE = BigInteger.valueOf(1);
     private static final BigInteger TWO = BigInteger.valueOf(2);
     private static AsymmetricCipherKeyPair dhPair = null;
 
-    public static AsymmetricCipherKeyPair generateECPublicKey()
-    {
+    public static AsymmetricCipherKeyPair generateECPublicKey() {
 
         // Should we also generate random curves?
         X9ECParameters ecp = SECNamedCurves.getByName(getRandomCurveName());
@@ -48,11 +46,10 @@ public class RandomKeyGeneratorHelper
         return keygen.generateKeyPair();
     }
 
-    public static AsymmetricCipherKeyPair generateDHPublicKey()
-    {
-        //DH generation takes a lot of the time of the fuzzer, we cache one and reuse it for now
-        if (dhPair == null)
-        {
+    public static AsymmetricCipherKeyPair generateDHPublicKey() {
+        // DH generation takes a lot of the time of the fuzzer, we cache one and
+        // reuse it for now
+        if (dhPair == null) {
             // TODO generate better keys
             Random r = new Random();
 
@@ -61,29 +58,25 @@ public class RandomKeyGeneratorHelper
             DHParameters dhp = null;
             BigInteger x = null;
             BigInteger y = null;
-            try
-            {
+            try {
                 dhp = new DHParameters(valP, valG);
                 x = calculatePrivate(dhp);
                 y = calculatePublic(dhp, x);
-            }
-            catch (java.lang.IllegalArgumentException E)
-            {
-                // java.lang.IllegalArgumentException: 'min' may not be greater than
+            } catch (java.lang.IllegalArgumentException E) {
+                // java.lang.IllegalArgumentException: 'min' may not be greater
+                // than
                 // 'max'
-                // at org.bouncycastle.util.BigIntegers.createRandomInRange(Unknown
+                // at
+                // org.bouncycastle.util.BigIntegers.createRandomInRange(Unknown
                 // Source)
-                try
-                {
+                try {
                     BigInteger swap = valP;
                     valP = valG;
                     valG = swap;
                     dhp = new DHParameters(valP, valG);
                     x = calculatePrivate(dhp);
                     y = calculatePublic(dhp, x);
-                }
-                catch (java.lang.IllegalArgumentException Ex)
-                {
+                } catch (java.lang.IllegalArgumentException Ex) {
                     // Okay we gave our best these parameters are not viable try
                     // complete new ones
                     dhPair = generateDHPublicKey();
@@ -94,18 +87,14 @@ public class RandomKeyGeneratorHelper
         return dhPair;
     }
 
-    private static BigInteger calculatePrivate(DHParameters dhParams)
-    {
+    private static BigInteger calculatePrivate(DHParameters dhParams) {
         int limit = dhParams.getL();
 
-        if (limit != 0)
-        {
+        if (limit != 0) {
             int minWeight = limit >>> 2;
-            for (;;)
-            {
+            for (;;) {
                 BigInteger x = new BigInteger(limit, new BadRandom()).setBit(limit - 1);
-                if (WNafUtil.getNafWeight(x) >= minWeight)
-                {
+                if (WNafUtil.getNafWeight(x) >= minWeight) {
                     return x;
                 }
             }
@@ -113,42 +102,34 @@ public class RandomKeyGeneratorHelper
 
         BigInteger min = TWO;
         int m = dhParams.getM();
-        if (m != 0)
-        {
+        if (m != 0) {
             min = ONE.shiftLeft(m - 1);
         }
 
         BigInteger q = dhParams.getQ();
-        if (q == null)
-        {
+        if (q == null) {
             q = dhParams.getP();
         }
         BigInteger max = q.subtract(TWO);
 
         int minWeight = max.bitLength() >>> 2;
-        for (;;)
-        {
+        for (;;) {
             BigInteger x = BigIntegers.createRandomInRange(min, max, new BadRandom());
-            if (WNafUtil.getNafWeight(x) >= minWeight)
-            {
+            if (WNafUtil.getNafWeight(x) >= minWeight) {
                 return x;
             }
         }
     }
 
-    private static BigInteger calculatePublic(DHParameters dhParams, BigInteger x)
-    {
+    private static BigInteger calculatePublic(DHParameters dhParams, BigInteger x) {
         return dhParams.getG().modPow(x, dhParams.getP());
     }
 
-    private static String getRandomCurveName()
-    {
+    private static String getRandomCurveName() {
         String curveName = null;
         Random r = new Random();
-        do
-        {
-            switch (r.nextInt(33))
-            {
+        do {
+            switch (r.nextInt(33)) {
                 case 0:
                     curveName = "secp112r1";
                     break;
@@ -250,8 +231,7 @@ public class RandomKeyGeneratorHelper
                     break;
 
             }
-        }
-        while (curveName == null);
+        } while (curveName == null);
         return curveName;
     }
 

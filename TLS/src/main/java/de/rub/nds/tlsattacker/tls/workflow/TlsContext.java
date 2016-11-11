@@ -170,308 +170,308 @@ public class TlsContext {
     private byte[] dtlsHandshakeCookie = new byte[0];
 
     public TlsContext() {
-	digest = new TlsMessageDigest();
-	ecContext = new TlsECContext();
-	supportedSignatureAndHashAlgorithms = new LinkedList<>();
+        digest = new TlsMessageDigest();
+        ecContext = new TlsECContext();
+        supportedSignatureAndHashAlgorithms = new LinkedList<>();
     }
 
     public TlsContext(ProtocolVersion pv) {
-	this();
-	protocolVersion = pv;
+        this();
+        protocolVersion = pv;
     }
 
     public ConnectionEnd getTalkingConnectionEnd() {
-	return talkingConnectionEnd;
+        return talkingConnectionEnd;
     }
 
     public void setTalkingConnectionEnd(ConnectionEnd talkingConnectionEnd) {
-	this.talkingConnectionEnd = talkingConnectionEnd;
+        this.talkingConnectionEnd = talkingConnectionEnd;
     }
 
     public void initiliazeTlsMessageDigest() {
-	try {
-	    DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(protocolVersion, selectedCipherSuite);
-	    digest.initializeDigestAlgorithm(algorithm);
-	} catch (NoSuchAlgorithmException ex) {
-	    throw new CryptoException(ex);
-	}
+        try {
+            DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(protocolVersion, selectedCipherSuite);
+            digest.initializeDigestAlgorithm(algorithm);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new CryptoException(ex);
+        }
     }
 
     public byte[] getMasterSecret() {
-	return masterSecret;
+        return masterSecret;
     }
 
     public byte[] getServerClientRandom() {
-	return ArrayConverter.concatenate(serverRandom, clientRandom);
+        return ArrayConverter.concatenate(serverRandom, clientRandom);
     }
 
     public CipherSuite getSelectedCipherSuite() {
-	return selectedCipherSuite;
+        return selectedCipherSuite;
     }
 
     public void setMasterSecret(byte[] masterSecret) {
-	this.masterSecret = masterSecret;
+        this.masterSecret = masterSecret;
     }
 
     public void setSelectedCipherSuite(CipherSuite selectedCipherSuite) {
-	this.selectedCipherSuite = selectedCipherSuite;
+        this.selectedCipherSuite = selectedCipherSuite;
     }
 
     public byte[] getClientServerRandom() {
-	return ArrayConverter.concatenate(clientRandom, serverRandom);
+        return ArrayConverter.concatenate(clientRandom, serverRandom);
     }
 
     public byte[] getPreMasterSecret() {
-	return preMasterSecret;
+        return preMasterSecret;
     }
 
     public void setPreMasterSecret(byte[] preMasterSecret) {
-	this.preMasterSecret = preMasterSecret;
+        this.preMasterSecret = preMasterSecret;
     }
 
     public ProtocolVersion getProtocolVersion() {
-	return protocolVersion;
+        return protocolVersion;
     }
 
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
-	this.protocolVersion = protocolVersion;
+        this.protocolVersion = protocolVersion;
     }
 
     public boolean isFuzzingMode() {
-	return fuzzingMode;
+        return fuzzingMode;
     }
 
     public void setFuzzingMode(boolean fuzzingMode) {
-	this.fuzzingMode = fuzzingMode;
+        this.fuzzingMode = fuzzingMode;
     }
 
     public ConnectionEnd getMyConnectionEnd() {
-	return myConnectionEnd;
+        return myConnectionEnd;
     }
 
     public ConnectionEnd getMyConnectionPeer() {
-	return myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
+        return myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
     }
 
     public void setMyConnectionEnd(ConnectionEnd myConnectionEnd) {
-	this.myConnectionEnd = myConnectionEnd;
+        this.myConnectionEnd = myConnectionEnd;
     }
 
     public byte[] getClientRandom() {
-	return clientRandom;
+        return clientRandom;
     }
 
     public void setClientRandom(byte[] clientRandom) {
-	this.clientRandom = clientRandom;
+        this.clientRandom = clientRandom;
     }
 
     public byte[] getServerRandom() {
-	return serverRandom;
+        return serverRandom;
     }
 
     public void setServerRandom(byte[] serverRandom) {
-	this.serverRandom = serverRandom;
+        this.serverRandom = serverRandom;
     }
 
     public CompressionMethod getCompressionMethod() {
-	return compressionMethod;
+        return compressionMethod;
     }
 
     public void setCompressionMethod(CompressionMethod compressionMethod) {
-	this.compressionMethod = compressionMethod;
+        this.compressionMethod = compressionMethod;
     }
 
     public byte[] getSessionID() {
-	return sessionID;
+        return sessionID;
     }
 
     public void setSessionID(byte[] sessionID) {
-	this.sessionID = sessionID;
+        this.sessionID = sessionID;
     }
 
     public WorkflowTrace getWorkflowTrace() {
-	return workflowTrace;
+        return workflowTrace;
     }
 
     public void setWorkflowTrace(WorkflowTrace workflowTrace) {
-	this.workflowTrace = workflowTrace;
+        this.workflowTrace = workflowTrace;
     }
 
     public TlsECContext getEcContext() {
-	return ecContext;
+        return ecContext;
     }
 
     public void setEcContext(TlsECContext ecContext) {
-	this.ecContext = ecContext;
+        this.ecContext = ecContext;
     }
 
     public Certificate getServerCertificate() {
-	return serverCertificate;
+        return serverCertificate;
     }
 
     public void setServerCertificate(Certificate serverCertificate) {
-	this.serverCertificate = serverCertificate;
+        this.serverCertificate = serverCertificate;
     }
 
     public Certificate getClientCertificate() {
-	return clientCertificate;
+        return clientCertificate;
     }
 
     public void setClientCertificate(Certificate clientCertificate) {
-	this.clientCertificate = clientCertificate;
+        this.clientCertificate = clientCertificate;
     }
 
     public X509CertificateObject getX509ServerCertificateObject() {
-	return x509ServerCertificateObject;
+        return x509ServerCertificateObject;
     }
 
     public void setX509ServerCertificateObject(X509CertificateObject x509ServerCertificateObject) {
-	this.x509ServerCertificateObject = x509ServerCertificateObject;
+        this.x509ServerCertificateObject = x509ServerCertificateObject;
     }
 
     public X509CertificateObject getX509ClientCertificateObject() {
-	return x509ClientCertificateObject;
+        return x509ClientCertificateObject;
     }
 
     public void setX509ClientCertificateObject(X509CertificateObject x509ClientCertificateObject) {
-	this.x509ClientCertificateObject = x509ClientCertificateObject;
+        this.x509ClientCertificateObject = x509ClientCertificateObject;
     }
 
     public ServerDHParams getServerDHParameters() {
-	return serverDHParameters;
+        return serverDHParameters;
     }
 
     public void setServerDHParameters(ServerDHParams serverDHParameters) {
-	this.serverDHParameters = serverDHParameters;
+        this.serverDHParameters = serverDHParameters;
     }
 
     public DHPrivateKeyParameters getServerDHPrivateKeyParameters() {
-	return serverDHPrivateKeyParameters;
+        return serverDHPrivateKeyParameters;
     }
 
     public void setServerDHPrivateKeyParameters(DHPrivateKeyParameters serverDHPrivateKeyParameters) {
-	this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
+        this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
     }
 
     public KeyStore getKeyStore() {
-	return keyStore;
+        return keyStore;
     }
 
     public void setKeyStore(KeyStore keyStore) {
-	this.keyStore = keyStore;
+        this.keyStore = keyStore;
     }
 
     public String getAlias() {
-	return alias;
+        return alias;
     }
 
     public void setAlias(String alias) {
-	this.alias = alias;
+        this.alias = alias;
     }
 
     public String getPassword() {
-	return password;
+        return password;
     }
 
     public void setPassword(String password) {
-	this.password = password;
+        this.password = password;
     }
 
     public String getHost() {
-	return host;
+        return host;
     }
 
     public void setHost(String host) {
-	this.host = host;
+        this.host = host;
     }
 
     public TlsMessageDigest getDigest() {
-	return digest;
+        return digest;
     }
 
     public LinkedList<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
-	return supportedSignatureAndHashAlgorithms;
+        return supportedSignatureAndHashAlgorithms;
     }
 
     public LinkedList<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithmsForRSA() {
-	LinkedList<SignatureAndHashAlgorithm> rsaAlgorithms = new LinkedList<>();
-	for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
-	    if (alg.getSignatureAlgorithm() == SignatureAlgorithm.RSA) {
-		rsaAlgorithms.add(alg);
-	    }
-	}
-	return rsaAlgorithms;
+        LinkedList<SignatureAndHashAlgorithm> rsaAlgorithms = new LinkedList<>();
+        for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
+            if (alg.getSignatureAlgorithm() == SignatureAlgorithm.RSA) {
+                rsaAlgorithms.add(alg);
+            }
+        }
+        return rsaAlgorithms;
     }
 
     public LinkedList<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithmsForEC() {
-	LinkedList<SignatureAndHashAlgorithm> ecAlgorithms = new LinkedList<>();
-	for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
-	    if (alg.getSignatureAlgorithm() == SignatureAlgorithm.ECDSA) {
-		ecAlgorithms.add(alg);
-	    }
-	}
-	return ecAlgorithms;
+        LinkedList<SignatureAndHashAlgorithm> ecAlgorithms = new LinkedList<>();
+        for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
+            if (alg.getSignatureAlgorithm() == SignatureAlgorithm.ECDSA) {
+                ecAlgorithms.add(alg);
+            }
+        }
+        return ecAlgorithms;
     }
 
     // TODO Sollte mit addSupported.. ergÃ¤nzt werden
     public void setSupportedSignatureAndHashAlgorithms(
-	    LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
-	this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
+            LinkedList<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
+        this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
     }
 
     public void setDtlsHandshakeCookie(byte[] cookie) {
-	this.dtlsHandshakeCookie = cookie;
+        this.dtlsHandshakeCookie = cookie;
     }
 
     public byte[] getDtlsHandshakeCookie() {
-	return dtlsHandshakeCookie;
+        return dtlsHandshakeCookie;
     }
 
     public TransportHandler getTransportHandler() {
-	return transportHandler;
+        return transportHandler;
     }
 
     public void setTransportHandler(TransportHandler transportHandler) {
-	this.transportHandler = transportHandler;
+        this.transportHandler = transportHandler;
     }
 
     public RecordHandler getRecordHandler() {
-	return recordHandler;
+        return recordHandler;
     }
 
     public void setRecordHandler(RecordHandler recordHandler) {
-	this.recordHandler = recordHandler;
+        this.recordHandler = recordHandler;
     }
 
     public boolean isClientAuthentication() {
-	return clientAuthentication;
+        return clientAuthentication;
     }
 
     public void setClientAuthentication(boolean status) {
-	this.clientAuthentication = status;
+        this.clientAuthentication = status;
     }
 
     public boolean isSessionResumption() {
-	return sessionResumption;
+        return sessionResumption;
     }
 
     public void setSessionResumption(boolean sessionResumption) {
-	this.sessionResumption = sessionResumption;
+        this.sessionResumption = sessionResumption;
     }
 
     public boolean isRenegotiation() {
-	return renegotiation;
+        return renegotiation;
     }
 
     public void setRenegotiation(boolean renegotiation) {
-	this.renegotiation = renegotiation;
+        this.renegotiation = renegotiation;
     }
 
     public boolean isMitMAttack() {
-	return mitm;
+        return mitm;
     }
 
     public void setMitMAttack(boolean mitm) {
-	this.mitm = mitm;
+        this.mitm = mitm;
     }
 }

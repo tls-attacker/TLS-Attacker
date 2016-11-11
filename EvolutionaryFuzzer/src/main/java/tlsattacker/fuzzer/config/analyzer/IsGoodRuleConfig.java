@@ -24,15 +24,15 @@ public class IsGoodRuleConfig extends RuleConfig {
     private String outputFileGraph = "good.graph";
 
     public IsGoodRuleConfig() {
-	super("good/");
+        super("good/");
     }
 
     public String getOutputFileGraph() {
-	return outputFileGraph;
+        return outputFileGraph;
     }
 
     public void setOutputFileGraph(String outputFileGraph) {
-	this.outputFileGraph = outputFileGraph;
+        this.outputFileGraph = outputFileGraph;
     }
 
     private static final Logger LOG = Logger.getLogger(IsGoodRuleConfig.class.getName());

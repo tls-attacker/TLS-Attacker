@@ -53,132 +53,134 @@ public class Main {
 
     /**
      * Main function which Starts the fuzzer
-     * @param args Arguments which are parsed
+     * 
+     * @param args
+     *            Arguments which are parsed
      */
     public static void main(String args[]) throws IllegalAgentException {
-	LOG.log(Level.FINE, Utils.arrayToString(args));
-	GeneralConfig generalConfig = new GeneralConfig();
+        LOG.log(Level.FINE, Utils.arrayToString(args));
+        GeneralConfig generalConfig = new GeneralConfig();
 
-	EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
-	ServerConfig serverConfig = new ServerConfig();
-	TraceTypesConfig traceTypesConfig = new TraceTypesConfig();
-	ExecuteFaultyConfig faultyConfig = new ExecuteFaultyConfig();
-	CalibrationConfig calibrationConfig = new CalibrationConfig();
-	TestCrashesConfig testCrashedConfig = new TestCrashesConfig();
-	JCommander jc = new JCommander(generalConfig);
-	jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
-	jc.addCommand("tracetypes", traceTypesConfig);
-	jc.addCommand("execute-faulty", faultyConfig);
-	jc.addCommand("new-server", serverConfig);
-	jc.addCommand("calibrate", calibrationConfig);
-	jc.addCommand("test-certificates", evoConfig);
-	jc.addCommand("test-crashes", testCrashedConfig);
-	try {
-	    jc.parse(args);
-	    if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
-		jc.usage();
-		return;
-	    }
-	} catch (Exception E) {
-	    LOG.log(Level.FINE, E.getLocalizedMessage(), E);
-	    jc.usage();
-	    return;
-	}
+        EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
+        ServerConfig serverConfig = new ServerConfig();
+        TraceTypesConfig traceTypesConfig = new TraceTypesConfig();
+        ExecuteFaultyConfig faultyConfig = new ExecuteFaultyConfig();
+        CalibrationConfig calibrationConfig = new CalibrationConfig();
+        TestCrashesConfig testCrashedConfig = new TestCrashesConfig();
+        JCommander jc = new JCommander(generalConfig);
+        jc.addCommand(EvolutionaryFuzzerConfig.ATTACK_COMMAND, evoConfig);
+        jc.addCommand("tracetypes", traceTypesConfig);
+        jc.addCommand("execute-faulty", faultyConfig);
+        jc.addCommand("new-server", serverConfig);
+        jc.addCommand("calibrate", calibrationConfig);
+        jc.addCommand("test-certificates", evoConfig);
+        jc.addCommand("test-crashes", testCrashedConfig);
+        try {
+            jc.parse(args);
+            if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+                jc.usage();
+                return;
+            }
+        } catch (Exception E) {
+            LOG.log(Level.FINE, E.getLocalizedMessage(), E);
+            jc.usage();
+            return;
+        }
 
-	switch (jc.getParsedCommand()) {
-	    case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
-		try {
-		    Controller controller = new CommandLineController(evoConfig);
-		    controller.startFuzzer();
-		    controller.startInterface();
-		} catch (IllegalCertificateMutatorException ex) {
-		    LOG.info("Unknown Certificate Mutator. Aborting...");
-		} catch (IllegalMutatorException ex) {
-		    LOG.info("Unknown Mutator. Aborting...");
-		}
-		break;
-	    case "tracetypes":
-		File f = new File(traceTypesConfig.getTraceTypesFolder());
-		if (f.exists() && f.isDirectory()) {
-		    List<TestVector> vectors = TestVectorSerializer.readFolder(f);
+        switch (jc.getParsedCommand()) {
+            case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
+                try {
+                    Controller controller = new CommandLineController(evoConfig);
+                    controller.startFuzzer();
+                    controller.startInterface();
+                } catch (IllegalCertificateMutatorException ex) {
+                    LOG.info("Unknown Certificate Mutator. Aborting...");
+                } catch (IllegalMutatorException ex) {
+                    LOG.info("Unknown Mutator. Aborting...");
+                }
+                break;
+            case "tracetypes":
+                File f = new File(traceTypesConfig.getTraceTypesFolder());
+                if (f.exists() && f.isDirectory()) {
+                    List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 
-		    LOG.log(Level.INFO, "Fininshed reading.");
-		    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
-			    ConnectionEnd.CLIENT);
-		    LOG.log(Level.INFO, "Found {0} different TraceTypes", set.size());
-		    DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
-		    LOG.log(Level.INFO, "Printing out graph in .DOT format.");
-		    String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
-		    LOG.log(Level.INFO, dotFormat);
-		} else {
-		    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:{0}",
-			    f.getAbsolutePath());
-		}
-		break;
-	    case "execute-faulty":
-		ConfigManager.getInstance().setConfig(faultyConfig);
-		ServerManager manager = ServerManager.getInstance();
-		manager.init(faultyConfig);
-		f = new File(faultyConfig.getOutputFaultyFolder());
-		List<TestVector> vectors = TestVectorSerializer.readFolder(f);
-		for (TestVector vector : vectors) {
-		    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
-		    vector.getTrace().reset();
-		    vector.getTrace().makeGeneric();
-		    TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
-			    AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
-		    Thread t = new Thread(executor);
-		    t.start();
-		}
-		break;
-	    case "new-server":
-		TLSServer server = new TLSServer(serverConfig.getIp(), serverConfig.getPort(),
-			serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand());
-		{
-		    try {
-			ServerSerializer.write(server, new File(serverConfig.getOutput()));
-			LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
-		    } catch (FileNotFoundException ex) {
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Could not write Server to file!", ex);
-		    }
-		}
-		break;
-	    case "calibrate":
-		TimeoutCalibrator calibrator = new TimeoutCalibrator(calibrationConfig);
-		calibrator.setGainFactor(calibrationConfig.getGain());
-		calibrator.setLimit(calibrationConfig.getTimeoutLimit());
-		ServerManager.getInstance().init(calibrationConfig);
-		int timeout = calibrator.calibrateTimeout();
-		LOG.log(Level.INFO, "Recommended Timeout for this Server is:{0}", timeout);
-		break;
-	    case "test-certificates":
-		ServerManager.getInstance().init(calibrationConfig);
-		FixedCertificateMutator mutator = new FixedCertificateMutator();
-		mutator.selfTest();
-		break;
-	    case "test-crashes":
-		ConfigManager.getInstance().setConfig(testCrashedConfig);
-		manager = ServerManager.getInstance();
-		manager.init(testCrashedConfig);
-		f = new File(testCrashedConfig.getCrashFolder());
-		vectors = TestVectorSerializer.readFolder(f);
-		for (TestVector vector : vectors) {
-		    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
-		    for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
-			vector.getTrace().reset();
-			vector.getTrace().makeGeneric();
-			TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
-				AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
-			Thread t = new Thread(executor);
-			t.start();
-		    }
-		}
-		break;
-	    default:
-		jc.usage();
-	}
+                    LOG.log(Level.INFO, "Fininshed reading.");
+                    Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
+                            ConnectionEnd.CLIENT);
+                    LOG.log(Level.INFO, "Found {0} different TraceTypes", set.size());
+                    DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
+                    LOG.log(Level.INFO, "Printing out graph in .DOT format.");
+                    String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
+                    LOG.log(Level.INFO, dotFormat);
+                } else {
+                    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:{0}",
+                            f.getAbsolutePath());
+                }
+                break;
+            case "execute-faulty":
+                ConfigManager.getInstance().setConfig(faultyConfig);
+                ServerManager manager = ServerManager.getInstance();
+                manager.init(faultyConfig);
+                f = new File(faultyConfig.getOutputFaultyFolder());
+                List<TestVector> vectors = TestVectorSerializer.readFolder(f);
+                for (TestVector vector : vectors) {
+                    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
+                    vector.getTrace().reset();
+                    vector.getTrace().makeGeneric();
+                    TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
+                            AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
+                    Thread t = new Thread(executor);
+                    t.start();
+                }
+                break;
+            case "new-server":
+                TLSServer server = new TLSServer(serverConfig.getIp(), serverConfig.getPort(),
+                        serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand());
+                {
+                    try {
+                        ServerSerializer.write(server, new File(serverConfig.getOutput()));
+                        LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Could not write Server to file!", ex);
+                    }
+                }
+                break;
+            case "calibrate":
+                TimeoutCalibrator calibrator = new TimeoutCalibrator(calibrationConfig);
+                calibrator.setGainFactor(calibrationConfig.getGain());
+                calibrator.setLimit(calibrationConfig.getTimeoutLimit());
+                ServerManager.getInstance().init(calibrationConfig);
+                int timeout = calibrator.calibrateTimeout();
+                LOG.log(Level.INFO, "Recommended Timeout for this Server is:{0}", timeout);
+                break;
+            case "test-certificates":
+                ServerManager.getInstance().init(calibrationConfig);
+                FixedCertificateMutator mutator = new FixedCertificateMutator();
+                mutator.selfTest();
+                break;
+            case "test-crashes":
+                ConfigManager.getInstance().setConfig(testCrashedConfig);
+                manager = ServerManager.getInstance();
+                manager.init(testCrashedConfig);
+                f = new File(testCrashedConfig.getCrashFolder());
+                vectors = TestVectorSerializer.readFolder(f);
+                for (TestVector vector : vectors) {
+                    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
+                    for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
+                        vector.getTrace().reset();
+                        vector.getTrace().makeGeneric();
+                        TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
+                                AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
+                        Thread t = new Thread(executor);
+                        t.start();
+                    }
+                }
+                break;
+            default:
+                jc.usage();
+        }
 
     }
-    
+
     private static final Logger LOG = Logger.getLogger(Main.class.getName());
 }

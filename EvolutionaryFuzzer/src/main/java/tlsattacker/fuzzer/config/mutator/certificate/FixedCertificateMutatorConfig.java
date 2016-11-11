@@ -35,7 +35,8 @@ public class FixedCertificateMutatorConfig implements Serializable {
     // Fixes the configuration File after a selftest and serializes it
 
     /**
-     * If set, the Configuration file deletes all incompatible or not found certificates after calibration
+     * If set, the Configuration file deletes all incompatible or not found
+     * certificates after calibration
      */
     private boolean autofix = true;
 
@@ -50,59 +51,63 @@ public class FixedCertificateMutatorConfig implements Serializable {
     private List<ServerCertificateStructure> serverCertificates;
 
     public FixedCertificateMutatorConfig() {
-	clientCertificates = new ArrayList<>();
-	// Initialize the Config File with some certificates if we can find them
-	new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();
-	File jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder() + "rsa1024.jks");
-	if (jksFile.exists()) {
-	    clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
-	}
-	serverCertificates = new ArrayList<>();
-	File keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-		+ "dsakey.pem");
-	File certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-		+ "dsacert.pem");
-	if (keyFile.exists() && certFile.exists()) {
-	    serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
-	}
+        clientCertificates = new ArrayList<>();
+        // Initialize the Config File with some certificates if we can find them
+        new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();
+        File jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()
+                + "rsa1024.jks");
+        if (jksFile.exists()) {
+            clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
+        }
+        serverCertificates = new ArrayList<>();
+        File keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
+                + "dsakey.pem");
+        File certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
+                + "dsacert.pem");
+        if (keyFile.exists() && certFile.exists()) {
+            serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
+        }
     }
-    
+
     /**
      * Serializes this config to a File
-     * @param file File to serialize to
+     * 
+     * @param file
+     *            File to serialize to
      */
     public void serialize(File file) {
-	if (!file.exists()) {
-	    try {
-		file.createNewFile();
-	    } catch (IOException ex) {
-		Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
-	JAXB.marshal(this, file);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        JAXB.marshal(this, file);
     }
+
     public boolean isAutofix() {
-	return autofix;
+        return autofix;
     }
 
     public void setAutofix(boolean autofix) {
-	this.autofix = autofix;
+        this.autofix = autofix;
     }
 
     public List<ClientCertificateStructure> getClientCertificates() {
-	return Collections.unmodifiableList(clientCertificates);
+        return Collections.unmodifiableList(clientCertificates);
     }
 
     public void setClientCertificates(List<ClientCertificateStructure> clientCertificates) {
-	this.clientCertificates = clientCertificates;
+        this.clientCertificates = clientCertificates;
     }
 
     public List<ServerCertificateStructure> getServerCertificates() {
-	return Collections.unmodifiableList(serverCertificates);
+        return Collections.unmodifiableList(serverCertificates);
     }
 
     public void setServerCertificates(List<ServerCertificateStructure> serverCertificates) {
-	this.serverCertificates = serverCertificates;
+        this.serverCertificates = serverCertificates;
     }
 
     private static final Logger LOG = Logger.getLogger(FixedCertificateMutatorConfig.class.getName());

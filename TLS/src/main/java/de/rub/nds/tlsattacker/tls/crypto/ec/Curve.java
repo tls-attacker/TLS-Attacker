@@ -28,76 +28,76 @@ public class Curve {
     }
 
     public Curve(String name, BigInteger p, BigInteger a, BigInteger b, int keyBits) {
-	this.name = name;
-	this.p = p;
-	this.a = a;
-	this.b = b;
-	this.keyBits = keyBits;
+        this.name = name;
+        this.p = p;
+        this.a = a;
+        this.b = b;
+        this.keyBits = keyBits;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String value) {
-	name = value;
+        name = value;
     }
 
     public BigInteger getP() {
-	return p;
+        return p;
     }
 
     public void setP(BigInteger p) {
-	this.p = p;
+        this.p = p;
     }
 
     public BigInteger getA() {
-	return a;
+        return a;
     }
 
     public void setA(BigInteger a) {
-	this.a = a;
+        this.a = a;
     }
 
     public BigInteger getB() {
-	return b;
+        return b;
     }
 
     public void setB(BigInteger b) {
-	this.b = b;
+        this.b = b;
     }
 
     public int getKeyBits() {
-	return keyBits;
+        return keyBits;
     }
 
     public void setKeyBits(int keyBits) {
-	this.keyBits = keyBits;
+        this.keyBits = keyBits;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final Curve other = (Curve) obj;
-	if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-	    return false;
-	}
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Curve other = (Curve) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
 
-	return true;
+        return true;
     }
 
     @Override
     public int hashCode() {
-	int hash = 7;
-	hash = 67 * hash + Objects.hashCode(this.name);
-	hash = 67 * hash + Objects.hashCode(this.p);
-	hash = 67 * hash + Objects.hashCode(this.a);
-	hash = 67 * hash + Objects.hashCode(this.b);
-	return hash;
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.name);
+        hash = 67 * hash + Objects.hashCode(this.p);
+        hash = 67 * hash + Objects.hashCode(this.a);
+        hash = 67 * hash + Objects.hashCode(this.b);
+        return hash;
     }
 }

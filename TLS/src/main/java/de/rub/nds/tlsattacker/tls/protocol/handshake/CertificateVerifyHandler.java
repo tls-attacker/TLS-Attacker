@@ -52,198 +52,195 @@ import java.util.Random;
  * @param <HandshakeMessage>
  */
 public class CertificateVerifyHandler<Message extends CertificateVerifyMessage> extends
-	HandshakeMessageHandler<Message> {
+        HandshakeMessageHandler<Message> {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateVerifyHandler.class);
 
     @SuppressWarnings("unchecked")
     public CertificateVerifyHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = (Class<? extends Message>) CertificateVerifyMessage.class;
+        super(tlsContext);
+        this.correctProtocolMessageClass = (Class<? extends Message>) CertificateVerifyMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
 
-	byte[] rawHandshakeBytes = tlsContext.getDigest().getRawBytes();
-	// LOGGER.debug("All handshake messages: {}",
-	// ArrayConverter.bytesToHexString(rawHandshakeBytes));
+        byte[] rawHandshakeBytes = tlsContext.getDigest().getRawBytes();
+        // LOGGER.debug("All handshake messages: {}",
+        // ArrayConverter.bytesToHexString(rawHandshakeBytes));
 
-	KeyStore ks = tlsContext.getKeyStore();
+        KeyStore ks = tlsContext.getKeyStore();
 
-	try {
-	    String alias = tlsContext.getAlias();
-	    String password = tlsContext.getPassword();
-	    Key key = ks.getKey(alias, password.toCharArray());
-	    Signature instance = null;
-	    SignatureAndHashAlgorithm selectedSignatureHashAlgo = null;
-	    int counter = 0;
-	    switch (key.getAlgorithm()) {
-		case "RSA":
-		    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
-		    // TODO was ist wenn kein algorithm supported wird?
-		    // TLS Context has no supportedSignatureHashAlgorithms
-		    if (tlsContext.getSupportedSignatureAndHashAlgorithmsForRSA().size() == 0) {
-			do {
-			    try {
-				// Choose one random
-				selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-					generateRandomHashAlgorithm());
-				instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
-			    } catch (NoSuchAlgorithmException E) {
-				counter++;
-				if (counter > 100) {
-				    // Even after 100 trys we were unable to get
-				    // a signature algorithm
-				    throw E;
-				}
-			    }
-			} while (instance == null);
-			instance.initSign(rsaKey);
-		    } else {
-			selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForRSA().get(0);
-			instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
-			instance.initSign(rsaKey);
-		    }
+        try {
+            String alias = tlsContext.getAlias();
+            String password = tlsContext.getPassword();
+            Key key = ks.getKey(alias, password.toCharArray());
+            Signature instance = null;
+            SignatureAndHashAlgorithm selectedSignatureHashAlgo = null;
+            int counter = 0;
+            switch (key.getAlgorithm()) {
+                case "RSA":
+                    RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
+                    // TODO was ist wenn kein algorithm supported wird?
+                    // TLS Context has no supportedSignatureHashAlgorithms
+                    if (tlsContext.getSupportedSignatureAndHashAlgorithmsForRSA().size() == 0) {
+                        do {
+                            try {
+                                // Choose one random
+                                selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                                        generateRandomHashAlgorithm());
+                                instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+                            } catch (NoSuchAlgorithmException E) {
+                                counter++;
+                                if (counter > 100) {
+                                    // Even after 100 trys we were unable to get
+                                    // a signature algorithm
+                                    throw E;
+                                }
+                            }
+                        } while (instance == null);
+                        instance.initSign(rsaKey);
+                    } else {
+                        selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForRSA().get(0);
+                        instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+                        instance.initSign(rsaKey);
+                    }
 
-		    break;
-		case "EC":
-		    ECPrivateKey ecKey = (ECPrivateKey) key;
-		    // TODO was ist wenn kein algorithm supported wird?
-		    if (tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size() == 0) {
-			// Choose one random
-			do {
-			    try {
-				selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-					generateRandomHashAlgorithm());
-				instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
-			    } catch (NoSuchAlgorithmException E) {
-				counter++;
-				if (counter > 100) {
-				    // Even after 100 trys we were unable to get
-				    // a signature algorithm
-				    throw E;
-				}
-			    }
-			} while (instance == null);
-			instance.initSign(ecKey);
-		    } else {
-			// Dont always choose the first supported
-			// SignatureAlgorithm, choose one at random, this is
-			// important for fuzzing
-			Random r = new Random();
-			selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(
-				r.nextInt(tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size()));
-			instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
-			instance.initSign(ecKey);
-		    }
+                    break;
+                case "EC":
+                    ECPrivateKey ecKey = (ECPrivateKey) key;
+                    // TODO was ist wenn kein algorithm supported wird?
+                    if (tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size() == 0) {
+                        // Choose one random
+                        do {
+                            try {
+                                selectedSignatureHashAlgo = new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                                        generateRandomHashAlgorithm());
+                                instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+                            } catch (NoSuchAlgorithmException E) {
+                                counter++;
+                                if (counter > 100) {
+                                    // Even after 100 trys we were unable to get
+                                    // a signature algorithm
+                                    throw E;
+                                }
+                            }
+                        } while (instance == null);
+                        instance.initSign(ecKey);
+                    } else {
+                        // Dont always choose the first supported
+                        // SignatureAlgorithm, choose one at random, this is
+                        // important for fuzzing
+                        Random r = new Random();
+                        selectedSignatureHashAlgo = tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().get(
+                                r.nextInt(tlsContext.getSupportedSignatureAndHashAlgorithmsForEC().size()));
+                        instance = Signature.getInstance(selectedSignatureHashAlgo.getJavaName());
+                        instance.initSign(ecKey);
+                    }
 
-		    break;
-		default:
-		    throw new ConfigurationException("Algorithm " + key.getAlgorithm() + " not supported yet.");
-	    }
-
-	    LOGGER.debug("Selected SignatureAndHashAlgorithm for CertificateVerify message: {}",
-		    selectedSignatureHashAlgo.getJavaName());
-	    instance.update(rawHandshakeBytes);
-            byte[] signature = null;
-            try
-            {
-                signature = instance.sign();
+                    break;
+                default:
+                    throw new ConfigurationException("Algorithm " + key.getAlgorithm() + " not supported yet.");
             }
-            catch(Exception E)
-            {
+
+            LOGGER.debug("Selected SignatureAndHashAlgorithm for CertificateVerify message: {}",
+                    selectedSignatureHashAlgo.getJavaName());
+            instance.update(rawHandshakeBytes);
+            byte[] signature = null;
+            try {
+                signature = instance.sign();
+            } catch (Exception E) {
                 throw new UnsupportedOperationException(E);
             }
-	    protocolMessage.setSignature(signature);
-	    protocolMessage.setSignatureLength(protocolMessage.getSignature().getValue().length);
+            protocolMessage.setSignature(signature);
+            protocolMessage.setSignatureLength(protocolMessage.getSignature().getValue().length);
 
-	    byte[] result = ArrayConverter.concatenate(selectedSignatureHashAlgo.getByteValue(), ArrayConverter
-		    .intToBytes(protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
-		    protocolMessage.getSignature().getValue());
+            byte[] result = ArrayConverter.concatenate(selectedSignatureHashAlgo.getByteValue(), ArrayConverter
+                    .intToBytes(protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
+                    protocolMessage.getSignature().getValue());
 
-	    protocolMessage.setLength(result.length);
+            protocolMessage.setLength(result.length);
 
-	    long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		    + protocolMessage.getLength().getValue();
-	    protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-		    ArrayConverter.longToUint32Bytes(header), result));
+            long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
+                    + protocolMessage.getLength().getValue();
+            protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+                    ArrayConverter.longToUint32Bytes(header), result));
 
-	    return protocolMessage.getCompleteResultingMessage().getValue();
-	} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
-		| SignatureException ex) {
-	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
-	}
+            return protocolMessage.getCompleteResultingMessage().getValue();
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
+                | SignatureException ex) {
+            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+        }
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	if (message[pointer] != HandshakeMessageType.CERTIFICATE_VERIFY.getValue()) {
-	    throw new InvalidMessageTypeException("This is not a Certificate Verify message");
-	}
-	protocolMessage.setType(message[pointer]);
-	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+        if (message[pointer] != HandshakeMessageType.CERTIFICATE_VERIFY.getValue()) {
+            throw new InvalidMessageTypeException("This is not a Certificate Verify message");
+        }
+        protocolMessage.setType(message[pointer]);
+        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
 
-	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
-	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
-	currentPointer = nextPointer;
+        int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setLength(length);
+        currentPointer = nextPointer;
 
-	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
-	SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(Arrays
-		.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setSignatureHashAlgorithm(sigAndHash.getByteValue());
-	currentPointer = nextPointer;
+        nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH;
+        SignatureAndHashAlgorithm sigAndHash = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(Arrays
+                .copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setSignatureHashAlgorithm(sigAndHash.getByteValue());
+        currentPointer = nextPointer;
 
-	nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
-	int sigLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setSignatureLength(sigLength);
-	currentPointer = nextPointer;
+        nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
+        int sigLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setSignatureLength(sigLength);
+        currentPointer = nextPointer;
 
-	nextPointer = currentPointer + sigLength;
-	protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	currentPointer = nextPointer;
-	// TODO maybe verify signature and set a boolean in TLS-Context
+        nextPointer = currentPointer + sigLength;
+        protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        currentPointer = nextPointer;
+        // TODO maybe verify signature and set a boolean in TLS-Context
 
-	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
+        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
 
-	return currentPointer;
+        return currentPointer;
     }
 
     private HashAlgorithm generateRandomHashAlgorithm() {
-	Random r = new Random();
-	switch (r.nextInt(6)) {
-	    case 0:
-		return HashAlgorithm.MD5;
-	    case 1:
-		return HashAlgorithm.SHA1;
-	    case 2:
-		return HashAlgorithm.SHA224;
-	    case 3:
-		return HashAlgorithm.SHA256;
-	    case 4:
-		return HashAlgorithm.SHA384;
-	    case 5:
-		return HashAlgorithm.SHA512;
+        Random r = new Random();
+        switch (r.nextInt(6)) {
+            case 0:
+                return HashAlgorithm.MD5;
+            case 1:
+                return HashAlgorithm.SHA1;
+            case 2:
+                return HashAlgorithm.SHA224;
+            case 3:
+                return HashAlgorithm.SHA256;
+            case 4:
+                return HashAlgorithm.SHA384;
+            case 5:
+                return HashAlgorithm.SHA512;
 
-	}
-	throw new RuntimeException("Could not generate HASH Algorithm");
+        }
+        throw new RuntimeException("Could not generate HASH Algorithm");
     }
 
     private SignatureAlgorithm generateRandomSignatureAlgorithm() {
-	Random r = new Random();
-	switch (r.nextInt(4)) {
-	    case 0:
-		return SignatureAlgorithm.ANONYMOUS;
+        Random r = new Random();
+        switch (r.nextInt(4)) {
+            case 0:
+                return SignatureAlgorithm.ANONYMOUS;
 
-	    case 1:
-		return SignatureAlgorithm.DSA;
-	    case 2:
-		return SignatureAlgorithm.ECDSA;
-	    case 3:
-		return SignatureAlgorithm.RSA;
+            case 1:
+                return SignatureAlgorithm.DSA;
+            case 2:
+                return SignatureAlgorithm.ECDSA;
+            case 3:
+                return SignatureAlgorithm.RSA;
 
-	}
-	throw new RuntimeException("Could not generate Signature Algorithm");
+        }
+        throw new RuntimeException("Could not generate Signature Algorithm");
     }
 }

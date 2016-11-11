@@ -35,54 +35,54 @@ public class FindAlertsRuleConfig extends RuleConfig {
      * saved
      */
     private Set<Byte> whitelist;
-    
+
     /**
      * The Pokemon method, the Rule is advised to save one example testvector
      * for each alert message
      */
     private boolean saveOneOfEach = true;
- 
+
     /**
      * Output folder relative to the evolutionaryConfig output folder
      */
 
     public FindAlertsRuleConfig() {
-	super("alerts/");
-	this.blacklist = new HashSet<>();
-	blacklist.add((byte) 80);
-	blacklist.add((byte) 21);
-	blacklist.add((byte) 41);
-	blacklist.add((byte) 60);
+        super("alerts/");
+        this.blacklist = new HashSet<>();
+        blacklist.add((byte) 80);
+        blacklist.add((byte) 21);
+        blacklist.add((byte) 41);
+        blacklist.add((byte) 60);
 
-	this.whitelist = new HashSet<>();
-	// we add all AlertDescriptions TLS Attacker knows to the whitelist
-	for (AlertDescription description : AlertDescription.values()) {
-	    whitelist.add(description.getValue());
-	}
+        this.whitelist = new HashSet<>();
+        // we add all AlertDescriptions TLS Attacker knows to the whitelist
+        for (AlertDescription description : AlertDescription.values()) {
+            whitelist.add(description.getValue());
+        }
     }
 
     public Set<Byte> getBlacklist() {
-	return Collections.unmodifiableSet(blacklist);
+        return Collections.unmodifiableSet(blacklist);
     }
 
     public void setBlacklist(Set<Byte> blackList) {
-	this.blacklist = blackList;
+        this.blacklist = blackList;
     }
 
     public Set<Byte> getWhitelist() {
-	return Collections.unmodifiableSet(whitelist);
+        return Collections.unmodifiableSet(whitelist);
     }
 
     public void setWhitelist(Set<Byte> whitelist) {
-	this.whitelist = whitelist;
+        this.whitelist = whitelist;
     }
 
     public boolean isSaveOneOfEach() {
-	return saveOneOfEach;
+        return saveOneOfEach;
     }
 
     public void setSaveOneOfEach(boolean saveOneOfEach) {
-	this.saveOneOfEach = saveOneOfEach;
+        this.saveOneOfEach = saveOneOfEach;
     }
 
     private static final Logger LOG = Logger.getLogger(FindAlertsRuleConfig.class.getName());

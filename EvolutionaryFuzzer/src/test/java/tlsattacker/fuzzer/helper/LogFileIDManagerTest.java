@@ -67,7 +67,7 @@ public class LogFileIDManagerTest {
     @Test
     public void testIncrementingIDs() {
 
-	assertTrue("Failure: Incrementing the LogFileIDs failed",
-		LogFileIDManager.getInstance().getID() == LogFileIDManager.getInstance().getID() - 1);
+        assertTrue("Failure: Incrementing the LogFileIDs failed",
+                LogFileIDManager.getInstance().getID() == LogFileIDManager.getInstance().getID() - 1);
     }
 }

@@ -81,9 +81,9 @@ public class TLSServer {
     private ProcessMonitor procmon = null;
 
     public TLSServer() {
-	ip = null;
-	port = 0;
-	restartServerCommand = null;
+        ip = null;
+        port = 0;
+        restartServerCommand = null;
     }
 
     /**
@@ -102,27 +102,27 @@ public class TLSServer {
      * @param killServerCommand
      */
     public TLSServer(String ip, int port, String restartServerCommand, String accepted, String killServerCommand) {
-	this.ip = ip;
-	this.port = port;
-	this.restartServerCommand = restartServerCommand;
-	this.accepted = accepted;
-	this.killServerCommand = killServerCommand;
+        this.ip = ip;
+        this.port = port;
+        this.restartServerCommand = restartServerCommand;
+        this.accepted = accepted;
+        this.killServerCommand = killServerCommand;
     }
 
     public String getKillServerCommand() {
-	return killServerCommand;
+        return killServerCommand;
     }
 
     public void setKillServerCommand(String killServerCommand) {
-	this.killServerCommand = killServerCommand;
+        this.killServerCommand = killServerCommand;
     }
 
     public String getAccepted() {
-	return accepted;
+        return accepted;
     }
 
     public String getRestartServerCommand() {
-	return restartServerCommand;
+        return restartServerCommand;
     }
 
     /**
@@ -131,7 +131,7 @@ public class TLSServer {
      * @return IP of the Server
      */
     public String getIp() {
-	return ip;
+        return ip;
     }
 
     /**
@@ -140,7 +140,7 @@ public class TLSServer {
      * @return Port of the Server
      */
     public int getPort() {
-	return port;
+        return port;
     }
 
     /**
@@ -148,7 +148,7 @@ public class TLSServer {
      * @param ip
      */
     public void setIp(String ip) {
-	this.ip = ip;
+        this.ip = ip;
     }
 
     /**
@@ -156,15 +156,15 @@ public class TLSServer {
      * @param port
      */
     public void setPort(int port) {
-	this.port = port;
+        this.port = port;
     }
 
     public void setRestartServerCommand(String restartServerCommand) {
-	this.restartServerCommand = restartServerCommand;
+        this.restartServerCommand = restartServerCommand;
     }
 
     public void setAccepted(String accepted) {
-	this.accepted = accepted;
+        this.accepted = accepted;
     }
 
     /**
@@ -172,10 +172,10 @@ public class TLSServer {
      * Server should not be marked twice.
      */
     public synchronized void occupie() {
-	if (this.free == false) {
-	    throw new IllegalStateException("Trying to occupie an already occupied Server");
-	}
-	this.free = false;
+        if (this.free == false) {
+            throw new IllegalStateException("Trying to occupie an already occupied Server");
+        }
+        this.free = false;
     }
 
     /**
@@ -184,7 +184,7 @@ public class TLSServer {
      * @return True if the Server is currently free to use
      */
     public synchronized boolean isFree() {
-	return free;
+        return free;
     }
 
     /**
@@ -192,10 +192,10 @@ public class TLSServer {
      * Testvectors
      */
     public synchronized void release() {
-	if (this.free == true) {
-	    throw new IllegalStateException("Trying to release an already released Server");
-	}
-	this.free = true;
+        if (this.free == true) {
+            throw new IllegalStateException("Trying to release an already released Server");
+        }
+        this.free = true;
     }
 
     /**
@@ -205,15 +205,15 @@ public class TLSServer {
      */
     public synchronized void start(String prefix, File certificateFile, File keyFile) {
 
-	// You have to ooccupie a Server to start it
-	if (!this.isFree()) {
-	    if (p != null) {
-		stop();
-	    }
-	    restart(prefix, certificateFile, keyFile);
-	} else {
-	    throw new IllegalStateException("Cant start a not marked Server. Occupie it first!");
-	}
+        // You have to ooccupie a Server to start it
+        if (!this.isFree()) {
+            if (p != null) {
+                stop();
+            }
+            restart(prefix, certificateFile, keyFile);
+        } else {
+            throw new IllegalStateException("Cant start a not marked Server. Occupie it first!");
+        }
     }
 
     /**
@@ -222,65 +222,66 @@ public class TLSServer {
      * @param keyFile
      */
     public synchronized void restart(String prefix, File certificateFile, File keyFile) {
-	if (!this.isFree()) {
-	    if (p != null) {
-		stop();
-	    }
-	    try {
-		if (ConfigManager.getInstance().getConfig().isRandomPort()) {
-		    Random r = new Random();
-		    port = 1024 + r.nextInt(4096);
+        if (!this.isFree()) {
+            if (p != null) {
+                stop();
+            }
+            try {
+                if (ConfigManager.getInstance().getConfig().isRandomPort()) {
+                    Random r = new Random();
+                    port = 1024 + r.nextInt(4096);
 
-		}
-		id = LogFileIDManager.getInstance().getID();
-		String command = (prefix + restartServerCommand).replace("[id]", "" + id);
-		command = command.replace("[output]", ConfigManager.getInstance().getConfig().getTracesFolder()
-			.getAbsolutePath());
-		command = command.replace("[port]", "" + port);
-		command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
-		command = command.replace("[key]", "" + keyFile.getAbsolutePath());
-		LOG.log(Level.FINE, "Starting Server:{0}", command);
-		long time = System.currentTimeMillis();
-		Runtime rt = Runtime.getRuntime();
-		p = rt.exec(command);
+                }
+                id = LogFileIDManager.getInstance().getID();
+                String command = (prefix + restartServerCommand).replace("[id]", "" + id);
+                command = command.replace("[output]", ConfigManager.getInstance().getConfig().getTracesFolder()
+                        .getAbsolutePath());
+                command = command.replace("[port]", "" + port);
+                command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
+                command = command.replace("[key]", "" + keyFile.getAbsolutePath());
+                LOG.log(Level.FINE, "Starting Server:{0}", command);
+                long time = System.currentTimeMillis();
+                Runtime rt = Runtime.getRuntime();
+                p = rt.exec(command);
 
-		// any error message?
-		errorGobbler = new StreamGobbler(p.getErrorStream(), "ERR", accepted);
+                // any error message?
+                errorGobbler = new StreamGobbler(p.getErrorStream(), "ERR", accepted);
 
-		// any output?
-		outputGobbler = new StreamGobbler(p.getInputStream(), "OUT", accepted);
+                // any output?
+                outputGobbler = new StreamGobbler(p.getInputStream(), "OUT", accepted);
 
-		// kick them off
-		errorGobbler.start();
-		outputGobbler.start();
-		procmon = ProcessMonitor.create(p);
-		while (!outputGobbler.accepted()) {
+                // kick them off
+                errorGobbler.start();
+                outputGobbler.start();
+                procmon = ProcessMonitor.create(p);
+                while (!outputGobbler.accepted()) {
 
-		    try {
-			Thread.sleep(50);
-		    } catch (InterruptedException ex) {
-			Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
-		    }
-		    if (System.currentTimeMillis() - time >= ConfigManager.getInstance().getConfig().getBootTimeout()) {
-			throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
-		    }
-		}
-	    } catch (IOException t) {
-		t.printStackTrace();
-	    }
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (System.currentTimeMillis() - time >= ConfigManager.getInstance().getConfig().getBootTimeout()) {
+                        throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
+                    }
+                }
+            } catch (IOException t) {
+                t.printStackTrace();
+            }
 
-	} else {
-	    throw new IllegalStateException("Cant restart a not marked Server. Occupie it first!");
-	}
+        } else {
+            throw new IllegalStateException("Cant restart a not marked Server. Occupie it first!");
+        }
 
     }
 
     /**
      * Checks if the server has booted
+     * 
      * @return True if the server has booted
      */
     public synchronized boolean serverHasBooted() {
-	return outputGobbler != null && outputGobbler.accepted() && p != null;
+        return outputGobbler != null && outputGobbler.accepted() && p != null;
     }
 
     /**
@@ -289,11 +290,11 @@ public class TLSServer {
      * @return True if the Process the Server started has exited
      */
     public synchronized boolean exited() {
-	if (procmon == null) {
-	    throw new IllegalStateException("Server not yet Started!");
-	} else {
-	    return procmon.isComplete();
-	}
+        if (procmon == null) {
+            throw new IllegalStateException("Server not yet Started!");
+        } else {
+            return procmon.isComplete();
+        }
 
     }
 
@@ -305,33 +306,33 @@ public class TLSServer {
      * @returnID assigned to the currently started Server
      */
     public synchronized int getID() {
-	return id;
+        return id;
     }
 
     @Override
     public String toString() {
-	return "TLSServer{free=" + free + ", ip=" + ip + ", port=" + port + ", id=" + id + ", restartServerCommand="
-		+ restartServerCommand + ", accepted=" + accepted + '}';
+        return "TLSServer{free=" + free + ", ip=" + ip + ", port=" + port + ", id=" + id + ", restartServerCommand="
+                + restartServerCommand + ", accepted=" + accepted + '}';
     }
 
     /**
      * Stops the Server process
      */
     public void stop() {
-	try {
-	    LOG.log(Level.FINE, "Stopping Server");
-	    if (p != null) {
-		p.destroy();
-		p.waitFor();
-		if (ConfigManager.getInstance().getConfig().isUseKill()) {
-		    Runtime rt = Runtime.getRuntime();
-		    p = rt.exec(killServerCommand);
-		    p.waitFor();
-		}
-	    }
-	} catch (Exception E) {
-	    E.printStackTrace();
-	}
+        try {
+            LOG.log(Level.FINE, "Stopping Server");
+            if (p != null) {
+                p.destroy();
+                p.waitFor();
+                if (ConfigManager.getInstance().getConfig().isUseKill()) {
+                    Runtime rt = Runtime.getRuntime();
+                    p = rt.exec(killServerCommand);
+                    p.waitFor();
+                }
+            }
+        } catch (Exception E) {
+            E.printStackTrace();
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());

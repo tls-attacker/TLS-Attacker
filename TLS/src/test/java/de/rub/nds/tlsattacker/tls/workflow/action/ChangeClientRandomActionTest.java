@@ -29,7 +29,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ChangeClientRandomActionTest {
@@ -44,7 +44,8 @@ public class ChangeClientRandomActionTest {
     }
 
     @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            InvalidAlgorithmParameterException {
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
@@ -54,7 +55,7 @@ public class ChangeClientRandomActionTest {
         dtlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
-        action = new ChangeClientRandomAction(new byte[]{0, 1});
+        action = new ChangeClientRandomAction(new byte[] { 0, 1 });
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
 
@@ -67,9 +68,9 @@ public class ChangeClientRandomActionTest {
      */
     @Test
     public void testSetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[]{0, 1});
-        action.setNewValue(new byte[]{0});
-        assertArrayEquals(action.getNewValue(), new byte[]{0});
+        assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
+        action.setNewValue(new byte[] { 0 });
+        assertArrayEquals(action.getNewValue(), new byte[] { 0 });
     }
 
     /**
@@ -77,7 +78,7 @@ public class ChangeClientRandomActionTest {
      */
     @Test
     public void testGetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[]{0, 1});
+        assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
     }
 
     /**
@@ -85,9 +86,9 @@ public class ChangeClientRandomActionTest {
      */
     @Test
     public void testGetOldValue() {
-        tlsContext.setClientRandom(new byte[]{3});
+        tlsContext.setClientRandom(new byte[] { 3 });
         action.execute(tlsContext, executor);
-        assertArrayEquals(action.getOldValue(), new byte[]{3});
+        assertArrayEquals(action.getOldValue(), new byte[] { 3 });
     }
 
     /**
@@ -95,11 +96,11 @@ public class ChangeClientRandomActionTest {
      */
     @Test
     public void testExecute() {
-        tlsContext.setClientRandom(new byte[]{3});
+        tlsContext.setClientRandom(new byte[] { 3 });
         action.execute(tlsContext, executor);
-        assertArrayEquals(action.getOldValue(), new byte[]{3});
-        assertArrayEquals(action.getNewValue(), new byte[]{0, 1});
-        assertArrayEquals(tlsContext.getClientRandom(), new byte[]{0, 1});
+        assertArrayEquals(action.getOldValue(), new byte[] { 3 });
+        assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
+        assertArrayEquals(tlsContext.getClientRandom(), new byte[] { 0, 1 });
         assertTrue(action.isExecuted());
 
     }
@@ -122,7 +123,8 @@ public class ChangeClientRandomActionTest {
     public void testJAXB() {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeClientRandomAction.class);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
+                ChangeClientRandomAction.class);
         assertEquals(action, action2);
     }
 

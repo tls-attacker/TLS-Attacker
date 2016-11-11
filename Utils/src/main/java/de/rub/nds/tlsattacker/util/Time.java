@@ -22,9 +22,9 @@ public class Time {
      */
     public static final long getUnixTime() {
 
-	// long millis = new Date().getTime();
-	long sec = System.currentTimeMillis() / 1000;
+        // long millis = new Date().getTime();
+        long sec = System.currentTimeMillis() / 1000;
 
-	return sec;
+        return sec;
     }
 }

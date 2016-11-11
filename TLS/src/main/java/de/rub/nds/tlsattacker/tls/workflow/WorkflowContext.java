@@ -19,31 +19,31 @@ public class WorkflowContext {
     private boolean proceedWorkflow;
 
     public WorkflowContext() {
-	actionPointer = 0;
-	proceedWorkflow = true;
+        actionPointer = 0;
+        proceedWorkflow = true;
     }
 
     public int getActionPointer() {
-	return actionPointer;
+        return actionPointer;
     }
 
     public void setActionPointer(int actionPointer) {
-	this.actionPointer = actionPointer;
+        this.actionPointer = actionPointer;
     }
 
     public boolean isProceedWorkflow() {
-	return proceedWorkflow;
+        return proceedWorkflow;
     }
 
     public void setProceedWorkflow(boolean proceedWorkflow) {
-	this.proceedWorkflow = proceedWorkflow;
+        this.proceedWorkflow = proceedWorkflow;
     }
 
     public void incrementActionPointer() {
-	actionPointer++;
+        actionPointer++;
     }
 
     public void decrementActionPointer() {
-	actionPointer--;
+        actionPointer--;
     }
 }

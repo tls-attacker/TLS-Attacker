@@ -48,22 +48,26 @@ public class SimpleMutatorConfig implements Serializable {
     private Integer duplicateMessagePercentage = 1;
 
     /**
-     * Percentage with which multiple modifications should be applied to TestVector
+     * Percentage with which multiple modifications should be applied to
+     * TestVector
      */
     private Integer multipleModifications = 1;
 
     /**
-     * Percentage with which a new SendReceive Action pair should be added to a TestVector
+     * Percentage with which a new SendReceive Action pair should be added to a
+     * TestVector
      */
     private Integer addFlightPercentage = 50;
 
     /**
-     * Percentage with which a new ToggleEncryptionAction should be added to the TestVector
+     * Percentage with which a new ToggleEncryptionAction should be added to the
+     * TestVector
      */
     private Integer addToggleEncrytionPercentage = 2;
 
     /**
-     * Percentage with which a new context changing action should be added to the TestVector
+     * Percentage with which a new context changing action should be added to
+     * the TestVector
      */
     private Integer addContextActionPercentage = 4;
 
@@ -76,112 +80,112 @@ public class SimpleMutatorConfig implements Serializable {
     }
 
     public Integer getAddExtensionPercentage() {
-	return addExtensionMessagePercentage;
+        return addExtensionMessagePercentage;
     }
 
     public void setAddExtensionMessagePercentage(Integer addExtensionMessagePercentage) {
-	this.addExtensionMessagePercentage = addExtensionMessagePercentage;
+        this.addExtensionMessagePercentage = addExtensionMessagePercentage;
     }
 
     public Integer getAddContextActionPercentage() {
-	return addContextActionPercentage;
+        return addContextActionPercentage;
     }
 
     public void setAddContextActionPercentage(Integer addContextActionPercentage) {
-	this.addContextActionPercentage = addContextActionPercentage;
+        this.addContextActionPercentage = addContextActionPercentage;
     }
 
     public Integer getAddToggleEncrytionPercentage() {
-	return addToggleEncrytionPercentage;
+        return addToggleEncrytionPercentage;
     }
 
     public void setAddToggleEncrytionPercentage(Integer addToggleEncrytionPercentage) {
-	this.addToggleEncrytionPercentage = addToggleEncrytionPercentage;
+        this.addToggleEncrytionPercentage = addToggleEncrytionPercentage;
     }
 
     public Integer getAddFlightPercentage() {
-	return addFlightPercentage;
+        return addFlightPercentage;
     }
 
     public void setAddFlightPercentage(Integer addFlightPercentage) {
-	this.addFlightPercentage = addFlightPercentage;
+        this.addFlightPercentage = addFlightPercentage;
     }
 
     public Integer getMultipleModifications() {
-	return multipleModifications;
+        return multipleModifications;
     }
 
     public void setMultipleModifications(Integer multipleModifications) {
-	this.multipleModifications = multipleModifications;
+        this.multipleModifications = multipleModifications;
     }
 
     public Integer getChangeServerCert() {
-	return changeServerCertPercentage;
+        return changeServerCertPercentage;
     }
 
     public void setChangeServerCert(Integer changeServerCert) {
-	this.changeServerCertPercentage = changeServerCert;
+        this.changeServerCertPercentage = changeServerCert;
     }
 
     public Integer getChangeClientCertPercentage() {
-	return changeClientCertPercentage;
+        return changeClientCertPercentage;
     }
 
     public void setChangeClientCertPercentage(Integer changeClientCertPercentage) {
-	this.changeClientCertPercentage = changeClientCertPercentage;
+        this.changeClientCertPercentage = changeClientCertPercentage;
     }
 
     public Integer getDuplicateMessagePercentage() {
-	return duplicateMessagePercentage;
+        return duplicateMessagePercentage;
     }
 
     public void setDuplicateMessagePercentage(Integer duplicateMessagePercentage) {
-	this.duplicateMessagePercentage = duplicateMessagePercentage;
+        this.duplicateMessagePercentage = duplicateMessagePercentage;
     }
 
     public Integer getRemoveMessagePercentage() {
-	return removeMessagePercentage;
+        return removeMessagePercentage;
     }
 
     public void setRemoveMessagePercentage(Integer removeMessagePercentage) {
-	this.removeMessagePercentage = removeMessagePercentage;
-	if (removeMessagePercentage > 100) {
-	    throw new IllegalArgumentException("RemoveMessagePercentage cannot be >100:" + removeMessagePercentage);
-	}
+        this.removeMessagePercentage = removeMessagePercentage;
+        if (removeMessagePercentage > 100) {
+            throw new IllegalArgumentException("RemoveMessagePercentage cannot be >100:" + removeMessagePercentage);
+        }
     }
 
     public Integer getModifyVariablePercentage() {
-	return modifyVariablePercentage;
+        return modifyVariablePercentage;
     }
 
     public void setModifyVariablePercentage(Integer modifyVariablePercentage) {
-	this.modifyVariablePercentage = modifyVariablePercentage;
-	if (modifyVariablePercentage > 100) {
-	    throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + modifyVariablePercentage);
-	}
+        this.modifyVariablePercentage = modifyVariablePercentage;
+        if (modifyVariablePercentage > 100) {
+            throw new IllegalArgumentException("ModifyVariablePercentage cannot be >100:" + modifyVariablePercentage);
+        }
     }
 
     public Integer getAddRecordPercentage() {
-	return addRecordPercentage;
+        return addRecordPercentage;
 
     }
 
     public void setAddRecordPercentage(Integer addRecordPercentage) {
-	this.addRecordPercentage = addRecordPercentage;
-	if (addRecordPercentage > 100) {
-	    throw new IllegalArgumentException("AddRecordPercentage cannot be >100:" + addRecordPercentage);
-	}
+        this.addRecordPercentage = addRecordPercentage;
+        if (addRecordPercentage > 100) {
+            throw new IllegalArgumentException("AddRecordPercentage cannot be >100:" + addRecordPercentage);
+        }
     }
 
     public Integer getAddMessagePercentage() {
-	return addMessagePercentage;
+        return addMessagePercentage;
     }
 
     public void setAddMessagePercentage(Integer addMessagePercentage) {
-	this.addMessagePercentage = addMessagePercentage;
-	if (addMessagePercentage > 100) {
-	    throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + addMessagePercentage);
-	}
+        this.addMessagePercentage = addMessagePercentage;
+        if (addMessagePercentage > 100) {
+            throw new IllegalArgumentException("AddMessagePercentage cannot be >100:" + addMessagePercentage);
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(SimpleMutatorConfig.class.getName());

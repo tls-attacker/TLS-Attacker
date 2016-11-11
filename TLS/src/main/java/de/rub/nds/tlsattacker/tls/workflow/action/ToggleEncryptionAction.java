@@ -23,18 +23,17 @@ public class ToggleEncryptionAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-	tlsContext.getRecordHandler().setEncryptSending(!tlsContext.getRecordHandler().isEncryptSending());
+        tlsContext.getRecordHandler().setEncryptSending(!tlsContext.getRecordHandler().isEncryptSending());
         executed = true;
     }
 
     @Override
     public void reset() {
-	executed = false;
+        executed = false;
     }
-    
+
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         return o instanceof ToggleEncryptionAction;
     }
 
@@ -43,5 +42,5 @@ public class ToggleEncryptionAction extends TLSAction {
         int hash = 3;
         return hash;
     }
-    
+
 }

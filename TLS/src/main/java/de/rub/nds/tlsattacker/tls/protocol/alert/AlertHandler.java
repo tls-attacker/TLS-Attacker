@@ -19,32 +19,32 @@ import java.util.Random;
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     public AlertHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = AlertMessage.class;
+        super(tlsContext);
+        this.correctProtocolMessageClass = AlertMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
-	if (protocolMessage.getConfig() != null && protocolMessage.getConfig().length > 0) {
-	    protocolMessage.setLevel(protocolMessage.getConfig()[0]);
-	} else {
-	    if (protocolMessage.isFuzzingMode()) {
-		Random r = new Random();
-		protocolMessage.setConfig(AlertLevel.values()[r.nextInt(AlertLevel.values().length)],
-			AlertDescription.values()[r.nextInt(AlertDescription.values().length)]);
-		protocolMessage.setLevel(protocolMessage.getConfig()[0]);
-	    }
-	}
-	protocolMessage.setDescription(protocolMessage.getConfig()[1]);
-	byte[] result = { protocolMessage.getLevel().getValue(), protocolMessage.getDescription().getValue() };
-	protocolMessage.setCompleteResultingMessage(result);
-	return result;
+        if (protocolMessage.getConfig() != null && protocolMessage.getConfig().length > 0) {
+            protocolMessage.setLevel(protocolMessage.getConfig()[0]);
+        } else {
+            if (protocolMessage.isFuzzingMode()) {
+                Random r = new Random();
+                protocolMessage.setConfig(AlertLevel.values()[r.nextInt(AlertLevel.values().length)],
+                        AlertDescription.values()[r.nextInt(AlertDescription.values().length)]);
+                protocolMessage.setLevel(protocolMessage.getConfig()[0]);
+            }
+        }
+        protocolMessage.setDescription(protocolMessage.getConfig()[1]);
+        byte[] result = { protocolMessage.getLevel().getValue(), protocolMessage.getDescription().getValue() };
+        protocolMessage.setCompleteResultingMessage(result);
+        return result;
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	protocolMessage.setLevel(message[pointer]);
-	protocolMessage.setDescription(message[pointer + 1]);
-	return (pointer + 2);
+        protocolMessage.setLevel(message[pointer]);
+        protocolMessage.setDescription(message[pointer + 1]);
+        return (pointer + 2);
     }
 }

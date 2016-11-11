@@ -73,10 +73,8 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-	GeneralConfig generalConfig = new GeneralConfig();
-	JCommander jc = new JCommander(generalConfig);
-
-
+        GeneralConfig generalConfig = new GeneralConfig();
+        JCommander jc = new JCommander(generalConfig);
 
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig();
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
@@ -109,12 +107,12 @@ public class Main {
         TestServerConfig testServerConfig = new TestServerConfig();
         jc.addCommand(TestServerConfig.COMMAND, testServerConfig);
 
-	jc.parse(args);
+        jc.parse(args);
 
-	if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
-	    jc.usage();
-	    return;
-	}
+        if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+            jc.usage();
+            return;
+        }
 
         Attacker<? extends CommandConfig> attacker;
         switch (jc.getParsedCommand()) {
@@ -179,56 +177,54 @@ public class Main {
         ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
         configHandler.initialize(generalConfig);
 
-	if (configHandler.printHelpForCommand(jc, attacker.getConfig())) {
-	    return;
-	}
+        if (configHandler.printHelpForCommand(jc, attacker.getConfig())) {
+            return;
+        }
 
-	attacker.executeAttack(configHandler);
+        attacker.executeAttack(configHandler);
 
-	CommandConfig config = attacker.getConfig();
-	if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-	    logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowOutput());
-	}
+        CommandConfig config = attacker.getConfig();
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowOutput());
+        }
     }
 
-   
-
     private static void startSimpleTls(GeneralConfig generalConfig, CommandConfig config, JCommander jc)
-	    throws JAXBException, IOException {
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
-	configHandler.initialize(generalConfig);
+            throws JAXBException, IOException {
+        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
+        configHandler.initialize(generalConfig);
 
-	if (configHandler.printHelpForCommand(jc, config)) {
-	    return;
-	}
+        if (configHandler.printHelpForCommand(jc, config)) {
+            return;
+        }
 
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	try {
-	    workflowExecutor.executeWorkflow();
-	} catch (WorkflowExecutionException ex) {
-	    LOGGER.info(ex.getLocalizedMessage(), ex);
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-		    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
-	}
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.info(ex.getLocalizedMessage(), ex);
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+        }
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
 
-	if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-	    FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
-	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
-	}
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
+            WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
+        }
     }
 
     private static void logWorkflowTraces(List<TlsContext> tlsContexts, String fileName) throws JAXBException,
-	    FileNotFoundException, IOException {
-	int i = 0;
-	for (TlsContext context : tlsContexts) {
-	    i++;
-	    FileOutputStream fos = new FileOutputStream(fileName + i);
-	    WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
-	}
+            FileNotFoundException, IOException {
+        int i = 0;
+        for (TlsContext context : tlsContexts) {
+            i++;
+            FileOutputStream fos = new FileOutputStream(fileName + i);
+            WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
+        }
     }
 }

@@ -44,23 +44,23 @@ public class IntegerSerializationTest {
 
     @Before
     public void setUp() throws JAXBException {
-	// todo
+        // todo
     }
 
     @Test
     public void testSerializeDeserializeSimple() throws Exception {
-	// TODO
+        // TODO
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModification() throws Exception {
-	// TODO
+        // TODO
 
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModificationFilter() throws Exception {
-	// TODO
+        // TODO
 
     }
 }

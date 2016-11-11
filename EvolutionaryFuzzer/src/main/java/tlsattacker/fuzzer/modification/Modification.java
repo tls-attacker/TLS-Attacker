@@ -22,10 +22,10 @@ public abstract class Modification implements Serializable {
     private final ModificationType type;
 
     public Modification(ModificationType type) {
-	this.type = type;
+        this.type = type;
     }
 
     public ModificationType getType() {
-	return type;
+        return type;
     }
 }

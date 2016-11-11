@@ -18,14 +18,14 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage() {
-	super(HandshakeMessageType.HELLO_REQUEST);
-	setIncludeInDigest(false);
+        super(HandshakeMessageType.HELLO_REQUEST);
+        setIncludeInDigest(false);
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new HelloRequestHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new HelloRequestHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

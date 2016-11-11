@@ -24,12 +24,12 @@ public class AddRecordModification extends Modification {
     private final ProtocolMessage message;
 
     public AddRecordModification(ProtocolMessage message) {
-	super(ModificationType.ADD_RECORD);
-	this.message = message;
+        super(ModificationType.ADD_RECORD);
+        this.message = message;
     }
 
     public ProtocolMessage getMessage() {
-	return message;
+        return message;
     }
 
     private static final Logger LOG = Logger.getLogger(AddRecordModification.class.getName());

@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ClientCertificateStructureTest {
@@ -70,7 +70,8 @@ public class ClientCertificateStructureTest {
      */
     @Test
     public void testHashCode() {
-        ClientCertificateStructure struct2 = new ClientCertificateStructure("password", "alias", new File("not_the_same_file"));
+        ClientCertificateStructure struct2 = new ClientCertificateStructure("password", "alias", new File(
+                "not_the_same_file"));
         assertFalse(struct.hashCode() == struct2.hashCode());
         ClientCertificateStructure struct3 = new ClientCertificateStructure("password", "alias", new File("."));
         assertEquals(struct.hashCode(), struct3.hashCode());
@@ -81,26 +82,26 @@ public class ClientCertificateStructureTest {
      */
     @Test
     public void testEquals() {
-        ClientCertificateStructure struct2 = new ClientCertificateStructure("password", "alias", new File("not_the_same_file"));
+        ClientCertificateStructure struct2 = new ClientCertificateStructure("password", "alias", new File(
+                "not_the_same_file"));
         assertFalse(struct.equals(struct2));
         assertFalse(struct2.equals(struct));
         ClientCertificateStructure struct3 = new ClientCertificateStructure("password", "alias", new File("."));
         assertEquals(struct, struct3);
     }
-    
+
     @Test
-    public void testSerialisation()
-    {
+    public void testSerialisation() {
         ClientCertificateStructure struct2 = deserialize(serialize(struct));
         assertEquals(struct, struct2);
     }
-    
+
     public String serialize(ClientCertificateStructure struct) {
         StringWriter writer = new StringWriter();
         JAXB.marshal(struct, writer);
         return writer.getBuffer().toString();
     }
-    
+
     public ClientCertificateStructure deserialize(String input) {
         StringReader reader = new StringReader(input);
         return JAXB.unmarshal(reader, ClientCertificateStructure.class);

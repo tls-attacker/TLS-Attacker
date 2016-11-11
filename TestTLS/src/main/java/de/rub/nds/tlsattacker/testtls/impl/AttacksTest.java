@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class AttacksTest extends TestTLS {
@@ -99,7 +99,16 @@ public class AttacksTest extends TestTLS {
 
     @Override
     public void fillTlsPeerProperties(TlsPeerProperties properties) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }

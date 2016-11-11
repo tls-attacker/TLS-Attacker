@@ -33,45 +33,47 @@ public class ManInTheMiddleAttack extends Attacker<ManInTheMiddleAttackCommandCo
     public static Logger LOGGER = LogManager.getLogger(ManInTheMiddleAttack.class);
 
     public ManInTheMiddleAttack(ManInTheMiddleAttackCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler clientConfigHandler) {
-	// create server objects
-	ServerCommandConfig serverCommandConfig = new ServerCommandConfig();
-	serverCommandConfig.setPort(config.getPort());
-	serverCommandConfig.setCipherSuites(config.getCipherSuites());
-	serverCommandConfig.setKeystore(config.getKeystore());
-	serverCommandConfig.setPassword(config.getPassword());
-	serverCommandConfig.setAlias(config.getAlias());
-	serverCommandConfig.setWorkflowTraceType(config.getWorkflowTraceType());
+        // create server objects
+        ServerCommandConfig serverCommandConfig = new ServerCommandConfig();
+        serverCommandConfig.setPort(config.getPort());
+        serverCommandConfig.setCipherSuites(config.getCipherSuites());
+        serverCommandConfig.setKeystore(config.getKeystore());
+        serverCommandConfig.setPassword(config.getPassword());
+        serverCommandConfig.setAlias(config.getAlias());
+        serverCommandConfig.setWorkflowTraceType(config.getWorkflowTraceType());
 
-	GeneralConfig generalConfig = new GeneralConfig();
-	ConfigHandler serverConfigHandler = ConfigHandlerFactory.createConfigHandler("server");
-	serverConfigHandler.initialize(generalConfig);
-	TransportHandler serverTransportHandler = serverConfigHandler.initializeTransportHandler(serverCommandConfig);
-	TlsContext serverTlsContext = serverConfigHandler.initializeTlsContext(serverCommandConfig);
+        GeneralConfig generalConfig = new GeneralConfig();
+        ConfigHandler serverConfigHandler = ConfigHandlerFactory.createConfigHandler("server");
+        serverConfigHandler.initialize(generalConfig);
+        TransportHandler serverTransportHandler = serverConfigHandler.initializeTransportHandler(serverCommandConfig);
+        TlsContext serverTlsContext = serverConfigHandler.initializeTlsContext(serverCommandConfig);
 
-	// create client objects
-	TransportHandler clientTransportHandler = clientConfigHandler.initializeTransportHandler(config);
-	TlsContext clientTlsContext = clientConfigHandler.initializeTlsContext(config);
+        // create client objects
+        TransportHandler clientTransportHandler = clientConfigHandler.initializeTransportHandler(config);
+        TlsContext clientTlsContext = clientConfigHandler.initializeTlsContext(config);
 
-	// load workflow into the tlsContext objects
-	RSAExampleMitMWorkflowConfiguration clientwf = new RSAExampleMitMWorkflowConfiguration(clientTlsContext, config);
-	clientwf.createWorkflow();
+        // load workflow into the tlsContext objects
+        RSAExampleMitMWorkflowConfiguration clientwf = new RSAExampleMitMWorkflowConfiguration(clientTlsContext, config);
+        clientwf.createWorkflow();
 
-	RSAExampleMitMWorkflowConfiguration serverwf = new RSAExampleMitMWorkflowConfiguration(serverTlsContext, config);
-	serverwf.createWorkflow();
+        RSAExampleMitMWorkflowConfiguration serverwf = new RSAExampleMitMWorkflowConfiguration(serverTlsContext, config);
+        serverwf.createWorkflow();
 
-	// should the whole workflow trace be modified
-	boolean mod = config.isModify();
+        // should the whole workflow trace be modified
+        boolean mod = config.isModify();
 
-        //This should be executable by a normal executor with Forward or MitM actions which are
-        //currently not implemented
-	GenericWorkflowExecutor executor = new GenericWorkflowExecutor(clientTransportHandler, clientTlsContext, ExecutorType.TLS);
+        // This should be executable by a normal executor with Forward or MitM
+        // actions which are
+        // currently not implemented
+        GenericWorkflowExecutor executor = new GenericWorkflowExecutor(clientTransportHandler, clientTlsContext,
+                ExecutorType.TLS);
         executor.executeWorkflow();
-	clientTransportHandler.closeConnection();
-	serverTransportHandler.closeConnection();
+        clientTransportHandler.closeConnection();
+        serverTransportHandler.closeConnection();
     }
 }

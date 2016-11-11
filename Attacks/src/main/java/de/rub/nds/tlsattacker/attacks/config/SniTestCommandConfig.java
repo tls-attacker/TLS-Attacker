@@ -25,15 +25,15 @@ public class SniTestCommandConfig extends ClientCommandConfig {
     protected String serverName2;
 
     public SniTestCommandConfig() {
-	cipherSuites = new LinkedList<>();
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        cipherSuites = new LinkedList<>();
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
     }
 
     public String getServerName2() {
-	return serverName2;
+        return serverName2;
     }
 
     public void setServerName2(String serverName2) {
-	this.serverName2 = serverName2;
+        this.serverName2 = serverName2;
     }
 }

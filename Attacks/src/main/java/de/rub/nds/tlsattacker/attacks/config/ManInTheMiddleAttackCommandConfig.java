@@ -26,18 +26,18 @@ public class ManInTheMiddleAttackCommandConfig extends ClientCommandConfig {
     protected boolean modify = false;
 
     public String getPort() {
-	return port;
+        return port;
     }
 
     public void setPort(String port) {
-	this.port = port;
+        this.port = port;
     }
 
     public boolean isModify() {
-	return modify;
+        return modify;
     }
 
     public void setModify(boolean modify) {
-	this.modify = modify;
+        this.modify = modify;
     }
 }

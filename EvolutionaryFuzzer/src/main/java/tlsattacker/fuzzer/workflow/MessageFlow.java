@@ -40,8 +40,8 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
      * @param issuer
      */
     public MessageFlow(Class<? extends Object> message, ConnectionEnd issuer) {
-	this.message = message;
-	this.issuer = issuer;
+        this.message = message;
+        this.issuer = issuer;
     }
 
     /**
@@ -49,7 +49,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
      * @return
      */
     public int getUniquer() {
-	return uniquer;
+        return uniquer;
     }
 
     /**
@@ -57,7 +57,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
      * @param uniquer
      */
     public void setUniquer(int uniquer) {
-	this.uniquer = uniquer;
+        this.uniquer = uniquer;
     }
 
     /**
@@ -65,7 +65,7 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
      * @return
      */
     public Class<?> getMessage() {
-	return message;
+        return message;
     }
 
     /**
@@ -73,47 +73,47 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
      * @return
      */
     public ConnectionEnd getIssuer() {
-	return issuer;
+        return issuer;
     }
 
     @Override
     public int hashCode() {
-	int hash = 7;
-	hash = 47 * hash + Objects.hashCode(this.message);
-	hash = 47 * hash + Objects.hashCode(this.issuer);
-	hash *= (1 + uniquer);
-	return hash;
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.message);
+        hash = 47 * hash + Objects.hashCode(this.issuer);
+        hash *= (1 + uniquer);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final MessageFlow other = (MessageFlow) obj;
-	if (!Objects.equals(this.message, other.message)) {
-	    return false;
-	}
-	if (this.issuer != other.issuer) {
-	    return false;
-	}
-	return uniquer == other.getUniquer();
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MessageFlow other = (MessageFlow) obj;
+        if (!Objects.equals(this.message, other.message)) {
+            return false;
+        }
+        if (this.issuer != other.issuer) {
+            return false;
+        }
+        return uniquer == other.getUniquer();
     }
 
     @Override
     public String toString() {
-	return "" + message.getSimpleName() + ":" + issuer;
+        return "" + message.getSimpleName() + ":" + issuer;
     }
 
     private static final Logger LOG = Logger.getLogger(MessageFlow.class.getName());
 
     @Override
     public Object clone() {
-	return super.clone(); // To change body of generated methods, choose
-			      // Tools | Templates.
+        return super.clone(); // To change body of generated methods, choose
+        // Tools | Templates.
     }
 
 }

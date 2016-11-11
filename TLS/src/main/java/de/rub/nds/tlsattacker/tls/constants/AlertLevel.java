@@ -26,36 +26,36 @@ public enum AlertLevel {
     private static final Map<Byte, AlertLevel> MAP;
 
     private AlertLevel(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (AlertLevel cm : AlertLevel.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (AlertLevel cm : AlertLevel.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static AlertLevel getAlertLevel(byte value) {
-	// TODO kann probleme machen wenn byte value not defined ist
-	AlertLevel level = MAP.get(value);
-	if (level == null) {
-	    level = UNDEFINED;
-	}
-	return level;
+        // TODO kann probleme machen wenn byte value not defined ist
+        AlertLevel level = MAP.get(value);
+        if (level == null) {
+            level = UNDEFINED;
+        }
+        return level;
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     @Override
     public String toString() {
-	return "AlertLevel{" + "value=" + this.name() + '}';
+        return "AlertLevel{" + "value=" + this.name() + '}';
     }
 
 }

@@ -16,15 +16,15 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
  */
 public class ActionExecutorFactory {
     public static ActionExecutor createActionExecutor(TlsContext context, WorkflowContext workflowContext,
-	    ExecutorType type) {
-	switch (type) {
-	    case DTLS:
-		return new DTLSActionExecutor(context); // todo
-	    case TLS:
-		return new TLSActionExecutor(context, workflowContext);
-	    default:
-		throw new UnsupportedOperationException("Unknown ExecutorType");
+            ExecutorType type) {
+        switch (type) {
+            case DTLS:
+                return new DTLSActionExecutor(context); // todo
+            case TLS:
+                return new TLSActionExecutor(context, workflowContext);
+            default:
+                throw new UnsupportedOperationException("Unknown ExecutorType");
 
-	}
+        }
     }
 }

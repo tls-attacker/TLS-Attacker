@@ -22,7 +22,7 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlAccessorType(XmlAccessType.FIELD)

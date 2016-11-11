@@ -40,51 +40,51 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     ModifiableByteArray signature;
 
     public CertificateVerifyMessage() {
-	super(HandshakeMessageType.CERTIFICATE_VERIFY);
+        super(HandshakeMessageType.CERTIFICATE_VERIFY);
     }
 
     public ModifiableByteArray getSignatureHashAlgorithm() {
-	return signatureHashAlgorithm;
+        return signatureHashAlgorithm;
     }
 
     public void setSignatureHashAlgorithm(ModifiableByteArray signatureHashAlgorithm) {
-	this.signatureHashAlgorithm = signatureHashAlgorithm;
+        this.signatureHashAlgorithm = signatureHashAlgorithm;
     }
 
     public void setSignatureHashAlgorithm(byte[] signatureHashAlgorithm) {
-	this.signatureHashAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithm,
-		signatureHashAlgorithm);
+        this.signatureHashAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithm,
+                signatureHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {
-	return signatureLength;
+        return signatureLength;
     }
 
     public void setSignatureLength(ModifiableInteger signatureLength) {
-	this.signatureLength = signatureLength;
+        this.signatureLength = signatureLength;
     }
 
     public void setSignatureLength(int length) {
-	this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
+        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
     }
 
     public ModifiableByteArray getSignature() {
-	return signature;
+        return signature;
     }
 
     public void setSignature(ModifiableByteArray signature) {
-	this.signature = signature;
+        this.signature = signature;
     }
 
     public void setSignature(byte[] signature) {
-	this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new CertificateVerifyHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new CertificateVerifyHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 
 }

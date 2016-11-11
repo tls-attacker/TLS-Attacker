@@ -58,12 +58,12 @@ public final class WorkflowTraceSerializer {
      * @throws IOException
      */
     private static JAXBContext getJAXBContext() throws JAXBException, IOException {
-	if (context == null) {
-	    context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
-		    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
-		    SendAction.class, ReceiveAction.class);
-	}
-	return context;
+        if (context == null) {
+            context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
+                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
+                    SendAction.class, ReceiveAction.class);
+        }
+        return context;
     }
 
     /**
@@ -82,9 +82,9 @@ public final class WorkflowTraceSerializer {
      *             the File
      */
     public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
-	FileOutputStream fos = new FileOutputStream(file);
+        FileOutputStream fos = new FileOutputStream(file);
 
-	WorkflowTraceSerializer.write(fos, trace);
+        WorkflowTraceSerializer.write(fos, trace);
 
     }
 
@@ -96,12 +96,12 @@ public final class WorkflowTraceSerializer {
      * @throws IOException
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
-	context = getJAXBContext();
-	Marshaller m = context.createMarshaller();
-	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        context = getJAXBContext();
+        Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-	m.marshal(workflowTrace, outputStream);
-	outputStream.close();
+        m.marshal(workflowTrace, outputStream);
+        outputStream.close();
     }
 
     /**
@@ -113,47 +113,47 @@ public final class WorkflowTraceSerializer {
      * @throws XMLStreamException
      */
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
-	context = getJAXBContext();
-	Unmarshaller m = context.createUnmarshaller();
+        context = getJAXBContext();
+        Unmarshaller m = context.createUnmarshaller();
 
-	XMLInputFactory xif = XMLInputFactory.newFactory();
-	xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-	xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-	XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+        XMLInputFactory xif = XMLInputFactory.newFactory();
+        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
 
-	WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
-	inputStream.close();
-	return wt;
+        WorkflowTrace wt = (WorkflowTrace) m.unmarshal(xsr);
+        inputStream.close();
+        return wt;
     }
 
     public static List<WorkflowTrace> readFolder(File f) {
-	if (f.isDirectory()) {
-	    ArrayList<WorkflowTrace> list = new ArrayList<>();
-	    for (File file : f.listFiles()) {
-		if (file.getName().startsWith(".")) {
-		    // We ignore the .gitignore File
-		    continue;
-		}
-		WorkflowTrace trace;
-		try {
-		    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
-		    trace.setName(file.getAbsolutePath());
-		    list.add(trace);
-		} catch (JAXBException ex) {
+        if (f.isDirectory()) {
+            ArrayList<WorkflowTrace> list = new ArrayList<>();
+            for (File file : f.listFiles()) {
+                if (file.getName().startsWith(".")) {
+                    // We ignore the .gitignore File
+                    continue;
+                }
+                WorkflowTrace trace;
+                try {
+                    trace = WorkflowTraceSerializer.read(new FileInputStream(file));
+                    trace.setName(file.getAbsolutePath());
+                    list.add(trace);
+                } catch (JAXBException ex) {
 
-		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-		} catch (IOException ex) {
-		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-		} catch (XMLStreamException ex) {
-		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-		} catch (Throwable ex) {
-		    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-		}
-	    }
-	    return list;
-	} else {
-	    throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
-	}
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+                } catch (XMLStreamException ex) {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+                } catch (Throwable ex) {
+                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+                }
+            }
+            return list;
+        } else {
+            throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
+        }
 
     }
 

@@ -22,33 +22,33 @@ public class EapolMachine {
 
     public EapolMachine() {
 
-	eapStartState = new EapStartState(this);
-	state = eapStartState;
+        eapStartState = new EapStartState(this);
+        state = eapStartState;
 
     }
 
     public void send() {
-	state.send();
+        state.send();
     }
 
     public void sendTLS(byte[] tlspacket) {
-	state.sendTLS(tlspacket);
+        state.sendTLS(tlspacket);
     }
 
     public byte[] receive() {
-	return state.receive();
+        return state.receive();
     }
 
     public void setState(EapState state) {
-	this.state = state;
+        this.state = state;
     }
 
     public String getState() {
-	return state.getState();
+        return state.getState();
     }
 
     public int getID() {
-	return state.getID();
+        return state.getID();
     }
 
 }

@@ -23,14 +23,15 @@ public abstract class TlsRecordCipher {
      */
     int minimalEncryptedRecordLength;
 
-    public abstract void init() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException ;
+    public abstract void init() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            InvalidAlgorithmParameterException;
 
     public int getMinimalEncryptedRecordLength() {
-	return minimalEncryptedRecordLength;
+        return minimalEncryptedRecordLength;
     }
 
     public void setMinimalEncryptedRecordLength(int minimalEncryptedRecordLength) {
-	this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
+        this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
     }
 
 }

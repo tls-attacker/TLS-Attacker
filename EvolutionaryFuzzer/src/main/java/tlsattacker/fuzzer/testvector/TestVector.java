@@ -47,14 +47,15 @@ public class TestVector implements Serializable {
     private ClientCertificateStructure clientKeyCert = null;
 
     /**
-     * The TestVector that this TestVector was mutated from, can be null if not needed
+     * The TestVector that this TestVector was mutated from, can be null if not
+     * needed
      */
     @XmlTransient
     private TestVector parent = null;
 
     /**
-     * The List of modifications that were used to generate this TestVector.
-     * Can be null if not needed.
+     * The List of modifications that were used to generate this TestVector. Can
+     * be null if not needed.
      */
     @XmlTransient
     private List<Modification> modificationList = null;
@@ -65,68 +66,69 @@ public class TestVector implements Serializable {
     private ExecutorType executorType;
 
     public TestVector(WorkflowTrace trace, ServerCertificateStructure keyCertPair,
-	    ClientCertificateStructure clientKeyCert, ExecutorType executorType, TestVector parent) {
-	this.trace = trace;
-	this.serverKeyCert = keyCertPair;
-	this.clientKeyCert = clientKeyCert;
-	this.parent = parent;
-	this.modificationList = new LinkedList<Modification>();
-	this.executorType = executorType;
+            ClientCertificateStructure clientKeyCert, ExecutorType executorType, TestVector parent) {
+        this.trace = trace;
+        this.serverKeyCert = keyCertPair;
+        this.clientKeyCert = clientKeyCert;
+        this.parent = parent;
+        this.modificationList = new LinkedList<Modification>();
+        this.executorType = executorType;
     }
 
     public TestVector() {
-	modificationList = new LinkedList<>();
+        modificationList = new LinkedList<>();
     }
-    
-    public void clearModifications()
-    {
+
+    public void clearModifications() {
         modificationList = new LinkedList<>();
     }
 
     public ExecutorType getExecutorType() {
-	return executorType;
+        return executorType;
     }
 
     public void setExecutorType(ExecutorType executorType) {
-	this.executorType = executorType;
+        this.executorType = executorType;
     }
 
     public WorkflowTrace getTrace() {
-	return trace;
+        return trace;
     }
 
     public void setServerKeyCert(ServerCertificateStructure serverKeyCert) {
-	this.serverKeyCert = serverKeyCert;
+        this.serverKeyCert = serverKeyCert;
     }
 
     public void setClientKeyCert(ClientCertificateStructure clientKeyCert) {
-	this.clientKeyCert = clientKeyCert;
+        this.clientKeyCert = clientKeyCert;
     }
 
     public ClientCertificateStructure getClientKeyCert() {
-	return clientKeyCert;
+        return clientKeyCert;
     }
 
     public ServerCertificateStructure getServerKeyCert() {
-	return serverKeyCert;
+        return serverKeyCert;
     }
 
     /**
      * Adds a modification to the modification List
-     * @param modification Modification to add
+     * 
+     * @param modification
+     *            Modification to add
      */
     public void addModification(Modification modification) {
-	if (modification != null) {
-	    modificationList.add(modification);
-	}
+        if (modification != null) {
+            modificationList.add(modification);
+        }
     }
 
     public List<Modification> getModificationList() {
-	return Collections.unmodifiableList(modificationList);
+        return Collections.unmodifiableList(modificationList);
     }
 
     public TestVector getParent() {
-	return parent;
+        return parent;
     }
 
     private static final Logger LOG = Logger.getLogger(TestVector.class.getName());

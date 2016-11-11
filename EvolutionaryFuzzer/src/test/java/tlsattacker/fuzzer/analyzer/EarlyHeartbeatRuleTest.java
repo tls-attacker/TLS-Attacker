@@ -52,10 +52,10 @@ public class EarlyHeartbeatRuleTest {
      */
     @Before
     public void setUp() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	config.setOutputFolder("unit_test_output/");
-	config.setConfigFolder("unit_test_config/");
-	rule = new EarlyHeartbeatRule(config);
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        config.setOutputFolder("unit_test_output/");
+        config.setConfigFolder("unit_test_config/");
+        rule = new EarlyHeartbeatRule(config);
     }
 
     /**
@@ -63,8 +63,8 @@ public class EarlyHeartbeatRuleTest {
      */
     @After
     public void tearDown() {
-	FileHelper.deleteFolder(new File("unit_test_output"));
-	FileHelper.deleteFolder(new File("unit_test_config"));
+        FileHelper.deleteFolder(new File("unit_test_output"));
+        FileHelper.deleteFolder(new File("unit_test_config"));
 
     }
 
@@ -73,39 +73,39 @@ public class EarlyHeartbeatRuleTest {
      */
     @Test
     public void testApplys() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	trace.add(new SendAction(new HeartbeatMessage()));
-	trace.add(new ReceiveAction(new HeartbeatMessage()));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "unittest.id");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applies(result));
-	trace.add(new ReceiveAction(new FinishedMessage()));
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applies(result));
-	trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	trace.add(new ReceiveAction(new FinishedMessage()));
-	trace.add(new ReceiveAction(new HeartbeatMessage()));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "unittest.id");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applies(result));
-	trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	trace.add(new ReceiveAction(new FinishedMessage()));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "unittest.id");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applies(result));
-	result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "unittest.id");
-	trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	trace.add(new ReceiveAction(new ServerHelloMessage()));
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applies(result));
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.add(new SendAction(new HeartbeatMessage()));
+        trace.add(new ReceiveAction(new HeartbeatMessage()));
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertTrue(rule.applies(result));
+        trace.add(new ReceiveAction(new FinishedMessage()));
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertTrue(rule.applies(result));
+        trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.add(new ReceiveAction(new FinishedMessage()));
+        trace.add(new ReceiveAction(new HeartbeatMessage()));
+        result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertFalse(rule.applies(result));
+        trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.add(new ReceiveAction(new FinishedMessage()));
+        result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertFalse(rule.applies(result));
+        result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id");
+        trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.add(new ReceiveAction(new ServerHelloMessage()));
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertFalse(rule.applies(result));
     }
 
     /**
@@ -113,15 +113,15 @@ public class EarlyHeartbeatRuleTest {
      */
     @Test
     public void testOnApply() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	trace.add(new ReceiveAction(new HeartbeatMessage()));
-	trace.add(new ReceiveAction(new HeartbeatMessage()));
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "unittest.id");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	rule.onApply(result);
-	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.add(new ReceiveAction(new HeartbeatMessage()));
+        trace.add(new ReceiveAction(new HeartbeatMessage()));
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        rule.onApply(result);
+        assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
     }
 
@@ -130,7 +130,7 @@ public class EarlyHeartbeatRuleTest {
      */
     @Test
     public void testOnDecline() {
-	rule.onDecline(null);
+        rule.onDecline(null);
     }
 
     /**
@@ -138,16 +138,16 @@ public class EarlyHeartbeatRuleTest {
      */
     @Test
     public void testReport() {
-	assertNull(rule.report());
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new ClientHelloMessage()));
-	trace.add(new SendAction(new HeartbeatMessage()));
-	trace.add(new ReceiveAction(new HeartbeatMessage()));
-	WorkFlowTraceFakeExecuter.execute(trace);
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "unittest.id");
-	rule.onApply(result);
-	assertNotNull(rule.report());
+        assertNull(rule.report());
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.add(new SendAction(new HeartbeatMessage()));
+        trace.add(new ReceiveAction(new HeartbeatMessage()));
+        WorkFlowTraceFakeExecuter.execute(trace);
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id");
+        rule.onApply(result);
+        assertNotNull(rule.report());
     }
 
     /**
@@ -155,7 +155,7 @@ public class EarlyHeartbeatRuleTest {
      */
     @Test
     public void testGetConfig() {
-	assertNotNull(rule.getConfig());
+        assertNotNull(rule.getConfig());
     }
 
     private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRuleTest.class.getName());

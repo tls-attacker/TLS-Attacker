@@ -58,7 +58,7 @@ public class BranchTest {
      *
      */
     public BranchTest() {
-	tree = new BranchTrace();
+        tree = new BranchTrace();
     }
 
     /**
@@ -66,7 +66,7 @@ public class BranchTest {
      */
     @Before
     public void setUp() {
-	tree = new BranchTrace();
+        tree = new BranchTrace();
     }
 
     /**
@@ -74,7 +74,7 @@ public class BranchTest {
      */
     @After
     public void tearDown() {
-	tree = null;
+        tree = null;
     }
 
     /**
@@ -83,7 +83,7 @@ public class BranchTest {
     @Test
     public void testConstructor() {
 
-	tree = new BranchTrace();
+        tree = new BranchTrace();
     }
 
     /**
@@ -93,7 +93,7 @@ public class BranchTest {
      */
     @Test(expected = NullPointerException.class)
     public void testMergeNull() throws FileNotFoundException, IOException {
-	tree.merge(null);
+        tree.merge(null);
     }
 
     /**
@@ -101,49 +101,49 @@ public class BranchTest {
      */
     @Test
     public void testMerge() {
-	Set<Long> verticesSet = new HashSet<>();
-	verticesSet.add(1l);
-	verticesSet.add(2l);
-	verticesSet.add(3l);
-	Map<Edge, Edge> edgeMap = new HashMap<>();
-	Edge tempEdge = new Edge(1, 2);
-	edgeMap.put(tempEdge, tempEdge);
-	tempEdge = new Edge(2, 3);
-	edgeMap.put(tempEdge, tempEdge);
-	BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
-	MergeResult mergeResult = tree.merge(trace);
-	assertTrue(mergeResult.getHitVertices() == 3);
-	assertTrue(mergeResult.getNewBranches() == 2);
-	assertTrue(mergeResult.getNewVertices() == 3);
-	verticesSet = new HashSet<>();
-	verticesSet.add(1l);
-	verticesSet.add(2l);
-	verticesSet.add(3l);
-	verticesSet.add(4l);
+        Set<Long> verticesSet = new HashSet<>();
+        verticesSet.add(1l);
+        verticesSet.add(2l);
+        verticesSet.add(3l);
+        Map<Edge, Edge> edgeMap = new HashMap<>();
+        Edge tempEdge = new Edge(1, 2);
+        edgeMap.put(tempEdge, tempEdge);
+        tempEdge = new Edge(2, 3);
+        edgeMap.put(tempEdge, tempEdge);
+        BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
+        MergeResult mergeResult = tree.merge(trace);
+        assertTrue(mergeResult.getHitVertices() == 3);
+        assertTrue(mergeResult.getNewBranches() == 2);
+        assertTrue(mergeResult.getNewVertices() == 3);
+        verticesSet = new HashSet<>();
+        verticesSet.add(1l);
+        verticesSet.add(2l);
+        verticesSet.add(3l);
+        verticesSet.add(4l);
 
-	edgeMap = new HashMap<>();
-	tempEdge = new Edge(1, 2);
-	edgeMap.put(tempEdge, tempEdge);
-	tempEdge = new Edge(2, 3);
-	edgeMap.put(tempEdge, tempEdge);
-	trace = new BranchTrace(verticesSet, edgeMap);
-	mergeResult = tree.merge(trace);
-	assertTrue(mergeResult.getHitVertices() == 4);
-	assertTrue(mergeResult.getNewBranches() == 0);
-	assertTrue(mergeResult.getNewVertices() == 1);
-	verticesSet = new HashSet<>();
-	edgeMap = new HashMap<>();
-	tempEdge = new Edge(1, 2);
-	edgeMap.put(tempEdge, tempEdge);
-	tempEdge = new Edge(2, 3);
-	tempEdge = new Edge(1, 3);
+        edgeMap = new HashMap<>();
+        tempEdge = new Edge(1, 2);
+        edgeMap.put(tempEdge, tempEdge);
+        tempEdge = new Edge(2, 3);
+        edgeMap.put(tempEdge, tempEdge);
+        trace = new BranchTrace(verticesSet, edgeMap);
+        mergeResult = tree.merge(trace);
+        assertTrue(mergeResult.getHitVertices() == 4);
+        assertTrue(mergeResult.getNewBranches() == 0);
+        assertTrue(mergeResult.getNewVertices() == 1);
+        verticesSet = new HashSet<>();
+        edgeMap = new HashMap<>();
+        tempEdge = new Edge(1, 2);
+        edgeMap.put(tempEdge, tempEdge);
+        tempEdge = new Edge(2, 3);
+        tempEdge = new Edge(1, 3);
 
-	edgeMap.put(tempEdge, tempEdge);
-	trace = new BranchTrace(verticesSet, edgeMap);
-	mergeResult = tree.merge(trace);
-	assertTrue(mergeResult.getHitVertices() == 0);
-	assertTrue(mergeResult.getNewBranches() == 1);
-	assertTrue(mergeResult.getNewVertices() == 0);
+        edgeMap.put(tempEdge, tempEdge);
+        trace = new BranchTrace(verticesSet, edgeMap);
+        mergeResult = tree.merge(trace);
+        assertTrue(mergeResult.getHitVertices() == 0);
+        assertTrue(mergeResult.getNewBranches() == 1);
+        assertTrue(mergeResult.getNewVertices() == 0);
 
     }
 }

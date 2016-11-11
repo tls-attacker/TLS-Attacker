@@ -24,12 +24,12 @@ public class AddExtensionModification extends Modification {
     private final ExtensionMessage message;
 
     public AddExtensionModification(ExtensionMessage message) {
-	super(ModificationType.ADD_EXTENSION);
-	this.message = message;
+        super(ModificationType.ADD_EXTENSION);
+        this.message = message;
     }
 
     public ExtensionMessage getMessage() {
-	return message;
+        return message;
     }
 
     private static final Logger LOG = Logger.getLogger(AddExtensionModification.class.getName());

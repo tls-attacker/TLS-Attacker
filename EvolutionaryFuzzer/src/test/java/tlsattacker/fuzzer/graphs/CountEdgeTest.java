@@ -66,9 +66,9 @@ public class CountEdgeTest {
      */
     @Test
     public void testCountEdge() {
-	CountEdge edge = new CountEdge();
-	assertTrue("Failure: New generated Edges should have an EdgeCount of 1", edge.getCount() == 1);
-	edge.increment();
-	assertTrue("Failure: After Incrementing the Edgecount, the Edgecount should be 2", edge.getCount() == 2);
+        CountEdge edge = new CountEdge();
+        assertTrue("Failure: New generated Edges should have an EdgeCount of 1", edge.getCount() == 1);
+        edge.increment();
+        assertTrue("Failure: After Incrementing the Edgecount, the Edgecount should be 2", edge.getCount() == 2);
     }
 }

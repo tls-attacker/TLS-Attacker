@@ -19,13 +19,13 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class ServerHelloDoneMessage extends HandshakeMessage {
 
     public ServerHelloDoneMessage() {
-	super(HandshakeMessageType.SERVER_HELLO_DONE);
+        super(HandshakeMessageType.SERVER_HELLO_DONE);
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new ServerHelloDoneHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new ServerHelloDoneHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

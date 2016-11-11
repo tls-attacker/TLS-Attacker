@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class IsCrashRuleConfig extends RuleConfig {
 
     public IsCrashRuleConfig() {
-	super("crash/");
+        super("crash/");
     }
 
     private static final Logger LOG = Logger.getLogger(IsCrashRuleConfig.class.getName());

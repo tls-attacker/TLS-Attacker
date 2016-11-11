@@ -24,22 +24,22 @@ public class ICEPoint extends Point {
     }
 
     public ICEPoint(int order, BigInteger x, BigInteger y) {
-	super(x, y);
-	this.order = order;
+        super(x, y);
+        this.order = order;
     }
 
     public int getOrder() {
-	return order;
+        return order;
     }
 
     public void setOrder(int order) {
-	this.order = order;
+        this.order = order;
     }
 
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("Point order: ").append(order).append("\nX: ").append(x).append("\nY: ").append(y);
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Point order: ").append(order).append("\nX: ").append(x).append("\nY: ").append(y);
+        return sb.toString();
     }
 
 }

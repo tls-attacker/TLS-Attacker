@@ -18,7 +18,7 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class CertificateAdapter extends XmlAdapter<String, Certificate> {
@@ -26,12 +26,13 @@ public class CertificateAdapter extends XmlAdapter<String, Certificate> {
     @Override
     public Certificate unmarshal(String v) throws Exception {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        Collection<? extends java.security.cert.Certificate> certs = certFactory.generateCertificates(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll("\\s+",""))));
+        Collection<? extends java.security.cert.Certificate> certs = certFactory
+                .generateCertificates(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll("\\s+",
+                        ""))));
         java.security.cert.Certificate sunCert = (java.security.cert.Certificate) certs.toArray()[0];
         byte[] certBytes = sunCert.getEncoded();
         ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-        org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
-                .getInstance(asn1Cert);
+        org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
         return cert;
     }
 

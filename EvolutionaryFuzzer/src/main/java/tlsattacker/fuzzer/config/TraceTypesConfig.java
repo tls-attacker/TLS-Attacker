@@ -26,11 +26,11 @@ public class TraceTypesConfig {
     String traceTypesFolder = "data/uniqueFlows";
 
     public String getTraceTypesFolder() {
-	return traceTypesFolder;
+        return traceTypesFolder;
     }
 
     public void setTraceTypesFolder(String traceTypesFolder) {
-	this.traceTypesFolder = traceTypesFolder;
+        this.traceTypesFolder = traceTypesFolder;
     }
 
     private static final Logger LOG = Logger.getLogger(TraceTypesConfig.class.getName());

@@ -20,18 +20,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class MessageActionFactoryTest {
-    
+
     public MessageActionFactoryTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -41,7 +41,8 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, new AlertMessage());
+        MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
+                new AlertMessage());
         assertEquals(action.getClass(), SendAction.class);
         action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new AlertMessage());
         assertEquals(action.getClass(), ReceiveAction.class);
@@ -70,5 +71,5 @@ public class MessageActionFactoryTest {
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.getConfiguredMessages().size() == 2);
     }
-    
+
 }

@@ -27,7 +27,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * @return
      */
     public List<Field> getAllModifiableVariableFields() {
-	return ReflectionHelper.getFieldsUpTo(this.getClass(), null, ModifiableVariable.class);
+        return ReflectionHelper.getFieldsUpTo(this.getClass(), null, ModifiableVariable.class);
     }
 
     /**
@@ -36,9 +36,9 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * @return
      */
     public Field getRandomModifiableVariableField() {
-	List<Field> fields = getAllModifiableVariableFields();
-	int randomField = RandomHelper.getRandom().nextInt(fields.size());
-	return fields.get(randomField);
+        List<Field> fields = getAllModifiableVariableFields();
+        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        return fields.get(randomField);
     }
 
     /**
@@ -48,9 +48,9 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * @return
      */
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-	List<ModifiableVariableHolder> holders = new LinkedList<>();
-	holders.add(this);
-	return holders;
+        List<ModifiableVariableHolder> holders = new LinkedList<>();
+        holders.add(this);
+        return holders;
     }
 
     /**
@@ -59,8 +59,8 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * @return
      */
     public ModifiableVariableHolder getRandomModifiableVariableHolder() {
-	List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
-	int randomHolder = RandomHelper.getRandom().nextInt(holders.size());
-	return holders.get(randomHolder);
+        List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
+        int randomHolder = RandomHelper.getRandom().nextInt(holders.size());
+        return holders.get(randomHolder);
     }
 }

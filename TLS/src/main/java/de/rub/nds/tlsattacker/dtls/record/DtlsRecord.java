@@ -27,26 +27,26 @@ public class DtlsRecord extends Record {
     private ModifiableBigInteger sequenceNumber;
 
     public ModifiableInteger getEpoch() {
-	return epoch;
+        return epoch;
     }
 
     public ModifiableBigInteger getSequenceNumber() {
-	return sequenceNumber;
+        return sequenceNumber;
     }
 
     public void setEpoch(int epoch) {
-	this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
+        this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
     }
 
     public void setEpoch(ModifiableInteger epoch) {
-	this.epoch = epoch;
+        this.epoch = epoch;
     }
 
     public void setSequenceNumber(BigInteger sequenceNumber) {
-	this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+        this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
     public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
-	this.sequenceNumber = sequenceNumber;
+        this.sequenceNumber = sequenceNumber;
     }
 }

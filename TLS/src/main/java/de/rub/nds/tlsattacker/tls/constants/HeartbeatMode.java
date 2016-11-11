@@ -25,34 +25,34 @@ public enum HeartbeatMode {
     private static final Map<Byte, HeartbeatMode> MAP;
 
     private HeartbeatMode(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (HeartbeatMode cm : HeartbeatMode.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (HeartbeatMode cm : HeartbeatMode.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static HeartbeatMode getHeartbeatMessageType(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     public static HeartbeatMode getRandom() {
-	HeartbeatMode c = null;
-	while (c == null) {
-	    Object[] o = MAP.values().toArray();
-	    c = (HeartbeatMode) o[RandomHelper.getRandom().nextInt(o.length)];
-	}
-	return c;
+        HeartbeatMode c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (HeartbeatMode) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
     }
 }

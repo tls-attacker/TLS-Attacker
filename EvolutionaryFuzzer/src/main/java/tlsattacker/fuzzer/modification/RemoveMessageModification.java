@@ -34,22 +34,22 @@ public class RemoveMessageModification extends Modification {
     private final SendAction action;
 
     public RemoveMessageModification(ProtocolMessage message, SendAction action, int position) {
-	super(ModificationType.REMOVE_MESSAGE);
-	this.message = message;
-	this.position = position;
-	this.action = action;
+        super(ModificationType.REMOVE_MESSAGE);
+        this.message = message;
+        this.position = position;
+        this.action = action;
     }
 
     public int getPosition() {
-	return position;
+        return position;
     }
 
     public SendAction getAction() {
-	return action;
+        return action;
     }
 
     public ProtocolMessage getMessage() {
-	return message;
+        return message;
     }
 
     private static final Logger LOG = Logger.getLogger(RemoveMessageModification.class.getName());

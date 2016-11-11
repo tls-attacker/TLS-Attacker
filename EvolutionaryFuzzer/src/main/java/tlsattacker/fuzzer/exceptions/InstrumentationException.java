@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class InstrumentationException extends RuntimeException {
 
     public InstrumentationException(String message) {
-	super(message);
+        super(message);
     }
 
     private static final Logger LOG = Logger.getLogger(InstrumentationException.class.getName());

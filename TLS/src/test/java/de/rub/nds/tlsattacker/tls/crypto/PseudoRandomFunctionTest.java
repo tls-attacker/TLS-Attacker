@@ -35,46 +35,46 @@ public class PseudoRandomFunctionTest {
      */
     @Test
     public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
-	    @Mocked final SecurityParameters mockedParameters) {
-	// Record expectations if/as needed:
-	new NonStrictExpectations() {
-	    {
-		mockedTlsContext.getServerVersion();
-		result = ProtocolVersion.TLSv12;
-	    }
-	    {
-		mockedTlsContext.getSecurityParameters();
-		result = mockedParameters;
-	    }
-	    {
-		mockedParameters.getPrfAlgorithm();
-		result = 1;
-	    }
-	};
+            @Mocked final SecurityParameters mockedParameters) {
+        // Record expectations if/as needed:
+        new NonStrictExpectations() {
+            {
+                mockedTlsContext.getServerVersion();
+                result = ProtocolVersion.TLSv12;
+            }
+            {
+                mockedTlsContext.getSecurityParameters();
+                result = mockedParameters;
+            }
+            {
+                mockedParameters.getPrfAlgorithm();
+                result = 1;
+            }
+        };
 
-	byte[] secret = new byte[48];
-	String label = "master secret";
-	byte[] seed = new byte[60];
-	Random r = new Random();
-	r.nextBytes(seed);
-	int size = 48;
+        byte[] secret = new byte[48];
+        String label = "master secret";
+        byte[] seed = new byte[60];
+        Random r = new Random();
+        r.nextBytes(seed);
+        int size = 48;
 
-	byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
-	byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
+        byte[] result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA256, secret, label, seed, size);
 
-	assertArrayEquals(result1, result2);
+        assertArrayEquals(result1, result2);
 
-	new NonStrictExpectations() {
-	    {
-		mockedParameters.getPrfAlgorithm();
-		result = 2;
-	    }
-	};
+        new NonStrictExpectations() {
+            {
+                mockedParameters.getPrfAlgorithm();
+                result = 2;
+            }
+        };
 
-	result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
-	result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
+        result1 = TlsUtils.PRF(mockedTlsContext, secret, label, seed, size);
+        result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
 
-	assertArrayEquals(result1, result2);
+        assertArrayEquals(result1, result2);
     }
 
     /**
@@ -82,17 +82,17 @@ public class PseudoRandomFunctionTest {
      */
     @Test
     public void testComputeForTls11() {
-	byte[] secret = new byte[48];
-	String label = "master secret";
-	byte[] seed = new byte[60];
-	Random r = new Random();
-	r.nextBytes(seed);
-	int size = 48;
+        byte[] secret = new byte[48];
+        String label = "master secret";
+        byte[] seed = new byte[60];
+        Random r = new Random();
+        r.nextBytes(seed);
+        int size = 48;
 
-	byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
+        byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
 
-	byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
+        byte[] result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
 
-	assertArrayEquals(result1, result2);
+        assertArrayEquals(result1, result2);
     }
 }

@@ -26,18 +26,18 @@ public class ClientCommandConfig extends CommandConfig {
     protected WorkflowTraceType workflowTraceType = WorkflowTraceType.FULL;
 
     public String getConnect() {
-	return connect;
+        return connect;
     }
 
     public void setConnect(String connect) {
-	this.connect = connect;
+        this.connect = connect;
     }
 
     public WorkflowTraceType getWorkflowTraceType() {
-	return workflowTraceType;
+        return workflowTraceType;
     }
 
     public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
-	this.workflowTraceType = workflowTraceType;
+        this.workflowTraceType = workflowTraceType;
     }
 }

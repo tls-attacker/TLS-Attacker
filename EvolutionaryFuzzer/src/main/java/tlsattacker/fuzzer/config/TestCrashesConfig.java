@@ -32,19 +32,19 @@ public class TestCrashesConfig extends EvolutionaryFuzzerConfig {
     private int executeNumber = 100;
 
     public String getCrashFolder() {
-	return crashFolder;
+        return crashFolder;
     }
 
     public void setCrashFolder(String crashFolder) {
-	this.crashFolder = crashFolder;
+        this.crashFolder = crashFolder;
     }
 
     public int getExecuteNumber() {
-	return executeNumber;
+        return executeNumber;
     }
 
     public void setExecuteNumber(int executeNumber) {
-	this.executeNumber = executeNumber;
+        this.executeNumber = executeNumber;
     }
 
     private static final Logger LOG = Logger.getLogger(TestCrashesConfig.class.getName());

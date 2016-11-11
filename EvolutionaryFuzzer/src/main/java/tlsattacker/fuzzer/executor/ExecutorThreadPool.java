@@ -60,28 +60,28 @@ public class ExecutorThreadPool implements Runnable {
      * Number of Threads which execute FuzzingVectors
      */
     private final int poolSize;
-    
+
     /**
      * The ThreadPoolExecutor that is used by the pool
      */
     private final ThreadPoolExecutor executor;
-    
+
     /**
      * The Mutator used by the ExecutorPool to fetch new Tasks
      */
     private final Mutator mutator;
-   
+
     /**
      * The Executor thread pool will continuasly fetch and execute new Tasks
      * while this is false
      */
     private boolean stopped = true;
-    
+
     /**
      * Counts the number of executed Tasks for statisticall purposes.
      */
     private long runs = 0;
-    
+
     /**
      * The Config the ExecutorThreadPool uses
      */
@@ -98,69 +98,70 @@ public class ExecutorThreadPool implements Runnable {
      * @param config
      */
     public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config) {
-	this.config = config;
-	this.poolSize = poolSize;
-	this.mutator = mutator;
-	BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize * 5);
+        this.config = config;
+        this.poolSize = poolSize;
+        this.mutator = mutator;
+        BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize * 5);
 
-	ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
 
-	executor = new BlockingThreadPoolExecutor(poolSize, poolSize, config.getTimeout(), TimeUnit.MICROSECONDS,
-		workQueue, threadFactory);
+        executor = new BlockingThreadPoolExecutor(poolSize, poolSize, config.getTimeout(), TimeUnit.MICROSECONDS,
+                workQueue, threadFactory);
 
-	File f = new File(config.getArchiveFolder());
-	if (f.listFiles().length == 0) {
-	    LOG.log(Level.INFO, "Creating Fuzzer Seed:");
-	    List<TestVector> list = generateSeed();
-	    for (TestVector vector : list) {
-		try {
-		    TestVectorSerializer.write(new File(config.getArchiveFolder()
-			    + LogFileIDManager.getInstance().getFilename()), vector);
-		} catch (JAXBException | IOException ex) {
-		    LOG.log(Level.SEVERE, "Could not write TestVector to archive Folder!", ex);
-		}
-	    }
-	}
+        File f = new File(config.getArchiveFolder());
+        if (f.listFiles().length == 0) {
+            LOG.log(Level.INFO, "Creating Fuzzer Seed:");
+            List<TestVector> list = generateSeed();
+            for (TestVector vector : list) {
+                try {
+                    TestVectorSerializer.write(new File(config.getArchiveFolder()
+                            + LogFileIDManager.getInstance().getFilename()), vector);
+                } catch (JAXBException | IOException ex) {
+                    LOG.log(Level.SEVERE, "Could not write TestVector to archive Folder!", ex);
+                }
+            }
+        }
 
     }
 
     /**
-     * Generates a seed for the Fuzzer with normal TLS/DTLS Handshakes 
+     * Generates a seed for the Fuzzer with normal TLS/DTLS Handshakes
+     * 
      * @return A list of generated TestVectors
      */
     private List<TestVector> generateSeed() {
-	List<TestVector> newList = new LinkedList<TestVector>();
-	List<WorkflowConfigurationFactory> factoryList = new LinkedList<>();
-	factoryList.add(new DHWorkflowConfigurationFactory(new ClientCommandConfig()));
-	factoryList.add(new DtlsDhWorkflowConfigurationFactory(new ClientCommandConfig()));
-	factoryList.add(new DtlsEcdhWorkflowConfigurationFactory(new ClientCommandConfig()));
-	factoryList.add(new DtlsRsaWorkflowConfigurationFactory(new ClientCommandConfig()));
-	factoryList.add(new ECDHWorkflowConfigurationFactory(new ClientCommandConfig()));
-	factoryList.add(new RsaWorkflowConfigurationFactory(new ClientCommandConfig()));
-	factoryList.add(new UnsupportedWorkflowConfigurationFactory(new ClientCommandConfig()));
-	for (WorkflowConfigurationFactory factory : factoryList) {
-	    WorkflowTrace trace = factory.createClientHelloTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
-	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
-		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
-	    trace = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
-	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
-		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
-	    trace = factory.createFullTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
-	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
-		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
-	    trace = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
-	    newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
-		    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
-	}
-	for (TestVector vector : newList) {
-	    for (ProtocolMessage pm : vector.getTrace().getActuallySentHandshakeMessagesOfType(
-		    HandshakeMessageType.CLIENT_HELLO)) {
-		List<CipherSuite> suiteList = new LinkedList<>();
-		suiteList.add(CipherSuite.getRandom());
-		((ClientHelloMessage) pm).setSupportedCipherSuites(suiteList);
-	    }
-	}
-	return newList;
+        List<TestVector> newList = new LinkedList<TestVector>();
+        List<WorkflowConfigurationFactory> factoryList = new LinkedList<>();
+        factoryList.add(new DHWorkflowConfigurationFactory(new ClientCommandConfig()));
+        factoryList.add(new DtlsDhWorkflowConfigurationFactory(new ClientCommandConfig()));
+        factoryList.add(new DtlsEcdhWorkflowConfigurationFactory(new ClientCommandConfig()));
+        factoryList.add(new DtlsRsaWorkflowConfigurationFactory(new ClientCommandConfig()));
+        factoryList.add(new ECDHWorkflowConfigurationFactory(new ClientCommandConfig()));
+        factoryList.add(new RsaWorkflowConfigurationFactory(new ClientCommandConfig()));
+        factoryList.add(new UnsupportedWorkflowConfigurationFactory(new ClientCommandConfig()));
+        for (WorkflowConfigurationFactory factory : factoryList) {
+            WorkflowTrace trace = factory.createClientHelloTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+            newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+                    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+            trace = factory.createFullServerResponseTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+            newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+                    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+            trace = factory.createFullTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+            newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+                    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+            trace = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT).getWorkflowTrace();
+            newList.add(new TestVector(trace, mutator.getCertMutator().getServerCertificateStructure(), mutator
+                    .getCertMutator().getClientCertificateStructure(), ExecutorType.TLS, null));
+        }
+        for (TestVector vector : newList) {
+            for (ProtocolMessage pm : vector.getTrace().getActuallySentHandshakeMessagesOfType(
+                    HandshakeMessageType.CLIENT_HELLO)) {
+                List<CipherSuite> suiteList = new LinkedList<>();
+                suiteList.add(CipherSuite.getRandom());
+                ((ClientHelloMessage) pm).setSupportedCipherSuites(suiteList);
+            }
+        }
+        return newList;
     }
 
     /**
@@ -169,7 +170,7 @@ public class ExecutorThreadPool implements Runnable {
      * @return Number of executed FuzzingVectors
      */
     public long getRuns() {
-	return runs;
+        return runs;
     }
 
     /**
@@ -177,80 +178,80 @@ public class ExecutorThreadPool implements Runnable {
      */
     @Override
     public void run() {
-	stopped = false;
-	// Dont save old results
-	config.setSerialize(false);
-	if (!config.isNoOld()) {
-	    File f = new File(config.getArchiveFolder());
-	    for (int i = 0; i < f.listFiles(new GitIgnoreFileFilter()).length; i++) {
+        stopped = false;
+        // Dont save old results
+        config.setSerialize(false);
+        if (!config.isNoOld()) {
+            File f = new File(config.getArchiveFolder());
+            for (int i = 0; i < f.listFiles(new GitIgnoreFileFilter()).length; i++) {
 
-		TLSServer server = null;
-		try {
-		    if (!stopped) {
-			TestVector vector = TestVectorSerializer.read(new FileInputStream(f
-				.listFiles(new GitIgnoreFileFilter())[i]));
-			if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
-			    continue;
-			}
-			server = ServerManager.getInstance().getFreeServer();
-			vector.getTrace().reset();
-			vector.getTrace().makeGeneric();
-
-			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
-			Runnable worker = new TLSExecutor(vector, server, agent);
-			executor.submit(worker);
-			runs++;
-
-		    } else {
-			try {
-			    Thread.sleep(1000);
-			} catch (InterruptedException ex) {
-			    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-				    "Thread interruiped while the ThreadPool is paused.", ex);
-			}
-		    }
-		} catch (Throwable ex) {
-		    LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
-		    if (server != null) {
-			server.release();
-		    }
-		}
-	    }
-
-	    // Save new results
-	    config.setSerialize(true);
-	    while (true) {
-		TLSServer server = null;
-		try {
-		    if (!stopped) {
-			TestVector vector = mutator.getNewMutation();
-			if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
-			    continue;
-			}
+                TLSServer server = null;
+                try {
+                    if (!stopped) {
+                        TestVector vector = TestVectorSerializer.read(new FileInputStream(f
+                                .listFiles(new GitIgnoreFileFilter())[i]));
+                        if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
+                            continue;
+                        }
                         server = ServerManager.getInstance().getFreeServer();
-			
-			Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
-			Runnable worker = new TLSExecutor(vector, server, agent);
-			executor.submit(worker);
-			runs++;
+                        vector.getTrace().reset();
+                        vector.getTrace().makeGeneric();
 
-		    } else {
-			try {
-			    Thread.sleep(1000);
-			} catch (InterruptedException ex) {
-			    Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-				    "Thread interruiped while the ThreadPool is paused.", ex);
-			}
-		    }
-		} catch (Throwable ex) {
-		    LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
-		    if (server != null) {
-			server.release();
-		    }
-		}
+                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
+                        Runnable worker = new TLSExecutor(vector, server, agent);
+                        executor.submit(worker);
+                        runs++;
 
-	    }
-	}
+                    } else {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+                                    "Thread interruiped while the ThreadPool is paused.", ex);
+                        }
+                    }
+                } catch (Throwable ex) {
+                    LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
+                    if (server != null) {
+                        server.release();
+                    }
+                }
+            }
+
+            // Save new results
+            config.setSerialize(true);
+            while (true) {
+                TLSServer server = null;
+                try {
+                    if (!stopped) {
+                        TestVector vector = mutator.getNewMutation();
+                        if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
+                            continue;
+                        }
+                        server = ServerManager.getInstance().getFreeServer();
+
+                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
+                        Runnable worker = new TLSExecutor(vector, server, agent);
+                        executor.submit(worker);
+                        runs++;
+
+                    } else {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
+                                    "Thread interruiped while the ThreadPool is paused.", ex);
+                        }
+                    }
+                } catch (Throwable ex) {
+                    LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
+                    if (server != null) {
+                        server.release();
+                    }
+                }
+
+            }
+        }
     }
 
     /**
@@ -259,7 +260,7 @@ public class ExecutorThreadPool implements Runnable {
      * @return if the ThreadPool is currently stopped
      */
     public synchronized boolean isStopped() {
-	return stopped;
+        return stopped;
     }
 
     /**
@@ -268,16 +269,17 @@ public class ExecutorThreadPool implements Runnable {
      * @param stopped
      */
     public synchronized void setStopped(boolean stopped) {
-	this.stopped = stopped;
+        this.stopped = stopped;
     }
 
     /**
      * Returns true if atleast one thread is still running
+     * 
      * @return True if atleast one thread is still running
      */
     public synchronized boolean hasRunningThreads() {
-	return executor.getActiveCount() == 0;
+        return executor.getActiveCount() == 0;
     }
-    
+
     private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 }

@@ -24,19 +24,23 @@ public abstract class CertificateMutator {
 
     /**
      * Returns a newly generated client certificate
+     * 
      * @return Newly generated client certificate
      */
     public abstract ClientCertificateStructure getClientCertificateStructure();
 
     /**
      * Returns a newly generated server ceriticate
+     * 
      * @return Newly generated server certificate
      */
     public abstract ServerCertificateStructure getServerCertificateStructure();
 
     /**
      * Checks if the ServerCertificate is supported by the implementation
-     * @param structure ServerCertificate to check
+     * 
+     * @param structure
+     *            ServerCertificate to check
      * @return True if the ServerCertificate is supported
      */
     public abstract boolean isSupported(ServerCertificateStructure structure);

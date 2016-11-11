@@ -40,13 +40,14 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     private boolean randomPort = false;
 
     /**
-     * If the server should be used with the kill command specified in the server config
+     * If the server should be used with the kill command specified in the
+     * server config
      */
     @Parameter(names = "-use_kill", description = "Uses the kill command specified in the server configuration files.")
     private boolean useKill = false;
 
     public String getCertificateMutatorConfigFolder() {
-	return configFolder + "mutator/certificate/";
+        return configFolder + "mutator/certificate/";
     }
 
     public boolean isUseKill() {
@@ -54,51 +55,51 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     }
 
     public void setUseKill(boolean useKill) {
-	this.useKill = useKill;
+        this.useKill = useKill;
     }
 
     public String getConfigFolder() {
-	return configFolder;
+        return configFolder;
     }
 
     public String getMutatorConfigFolder() {
-	return configFolder + "mutator/";
+        return configFolder + "mutator/";
     }
 
     public boolean isRandomPort() {
-	return randomPort;
+        return randomPort;
     }
 
     public void setRandomPort(boolean randomPort) {
-	this.randomPort = randomPort;
+        this.randomPort = randomPort;
     }
 
     public String getAnalyzerConfigFolder() {
-	return configFolder + "analyzer/";
+        return configFolder + "analyzer/";
     }
 
     public void setConfigFolder(String configFolder) {
-	this.configFolder = configFolder;
-	File f = new File(configFolder);
-	f.mkdirs();
-	f = new File(getMutatorConfigFolder());
-	f.mkdirs();
-	f = new File(getAnalyzerConfigFolder());
-	f.mkdirs();
-	f = new File(getServerCommandFromFile());
-	f.mkdirs();
+        this.configFolder = configFolder;
+        File f = new File(configFolder);
+        f.mkdirs();
+        f = new File(getMutatorConfigFolder());
+        f.mkdirs();
+        f = new File(getAnalyzerConfigFolder());
+        f.mkdirs();
+        f = new File(getServerCommandFromFile());
+        f.mkdirs();
     }
 
     public String getAgent() {
-	return agent;
+        return agent;
     }
 
     public void setAgent(String agent) {
-	this.agent = agent;
+        this.agent = agent;
     }
 
     public String getServerCommandFromFile() {
-	return configFolder + "server/";
+        return configFolder + "server/";
     }
 
     private static final Logger LOG = Logger.getLogger(FuzzerGeneralConfig.class.getName());

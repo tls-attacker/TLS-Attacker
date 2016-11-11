@@ -35,20 +35,20 @@ public class UnlimitedStrengthTest {
 
     @Test
     public void testAES256() throws Exception {
-	try {
-	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-	    field.setAccessible(true);
-	    if (field.getBoolean(null)) {
-	        field.set(null, java.lang.Boolean.FALSE);
-	    }
+        try {
+            Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+            field.setAccessible(true);
+            if (field.getBoolean(null)) {
+                field.set(null, java.lang.Boolean.FALSE);
+            }
 
-	    Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
-	    IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
-	    SecretKey encryptKey = new SecretKeySpec(new byte[32], "AES");
-	    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
-	} catch (InvalidKeyException ex) {
-	    logger.warn("AES256 is probably not supported, you have to install Java Cryptography "
-		    + "Extension (JCE) Unlimited Strength Jurisdiction Policy Files.");
-	}
+            Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
+            IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
+            SecretKey encryptKey = new SecretKeySpec(new byte[32], "AES");
+            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
+        } catch (InvalidKeyException ex) {
+            logger.warn("AES256 is probably not supported, you have to install Java Cryptography "
+                    + "Extension (JCE) Unlimited Strength Jurisdiction Policy Files.");
+        }
     }
 }

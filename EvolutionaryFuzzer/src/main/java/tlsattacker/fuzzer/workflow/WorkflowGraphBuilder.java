@@ -25,21 +25,21 @@ public class WorkflowGraphBuilder {
      * @return
      */
     public static String generateDOTGraph(Set<WorkflowTraceType> typeList) {
-	String result = "digraph output{\n";
-	int vertexIndex = 0;
-	int uniquer = 0;
+        String result = "digraph output{\n";
+        int vertexIndex = 0;
+        int uniquer = 0;
 
-	DirectedMultigraph<Integer, MessageFlow> graph = generateWorkflowGraph(typeList);
-	for (Integer i : graph.vertexSet()) {
-	    result += "" + i + " [label=\"" + i + "\"];\n";
-	}
-	for (MessageFlow flow : graph.edgeSet()) {
-	    result += "" + graph.getEdgeSource(flow) + " -> " + graph.getEdgeTarget(flow) + " [label=\""
-		    + flow.toString() + "\"];\n";
-	}
-	result += "}";
+        DirectedMultigraph<Integer, MessageFlow> graph = generateWorkflowGraph(typeList);
+        for (Integer i : graph.vertexSet()) {
+            result += "" + i + " [label=\"" + i + "\"];\n";
+        }
+        for (MessageFlow flow : graph.edgeSet()) {
+            result += "" + graph.getEdgeSource(flow) + " -> " + graph.getEdgeTarget(flow) + " [label=\""
+                    + flow.toString() + "\"];\n";
+        }
+        result += "}";
 
-	return result;
+        return result;
     }
 
     /**
@@ -48,31 +48,31 @@ public class WorkflowGraphBuilder {
      * @return
      */
     public static DirectedMultigraph<Integer, MessageFlow> generateWorkflowGraph(Set<WorkflowTraceType> typeList) {
-	DirectedMultigraph<Integer, MessageFlow> graph = new DirectedMultigraph<>(MessageFlow.class);
-	int vertexIndex = 0;
-	int uniquer = 0;
-	graph.addVertex(0);
+        DirectedMultigraph<Integer, MessageFlow> graph = new DirectedMultigraph<>(MessageFlow.class);
+        int vertexIndex = 0;
+        int uniquer = 0;
+        graph.addVertex(0);
 
-	for (WorkflowTraceType type : typeList) {
-	    int current = 0;
-	    List<MessageFlow> flows = type.getFlows();
-	    for (MessageFlow flow : flows) {
+        for (WorkflowTraceType type : typeList) {
+            int current = 0;
+            List<MessageFlow> flows = type.getFlows();
+            for (MessageFlow flow : flows) {
 
-		MessageFlow temp = returnOutGoingFlow(graph, flow, current);
-		if (temp == null) {
-		    vertexIndex++;
-		    uniquer++;
-		    flow.setUniquer(uniquer);
-		    graph.addVertex(vertexIndex);
-		    boolean b = graph.addEdge(current, vertexIndex, flow);
-		    current = vertexIndex;
-		} else {
-		    current = graph.getEdgeTarget(temp);
-		}
-	    }
-	}
+                MessageFlow temp = returnOutGoingFlow(graph, flow, current);
+                if (temp == null) {
+                    vertexIndex++;
+                    uniquer++;
+                    flow.setUniquer(uniquer);
+                    graph.addVertex(vertexIndex);
+                    boolean b = graph.addEdge(current, vertexIndex, flow);
+                    current = vertexIndex;
+                } else {
+                    current = graph.getEdgeTarget(temp);
+                }
+            }
+        }
 
-	return graph;
+        return graph;
     }
 
     /**
@@ -83,13 +83,13 @@ public class WorkflowGraphBuilder {
      * @return
      */
     public static MessageFlow returnOutGoingFlow(DirectedMultigraph<Integer, MessageFlow> graph, MessageFlow flow,
-	    Integer current) {
-	for (MessageFlow f : graph.outgoingEdgesOf(current)) {
-	    if (f.getIssuer() == flow.getIssuer() && f.getMessage() == flow.getMessage()) {
-		return f;
-	    }
-	}
-	return null;
+            Integer current) {
+        for (MessageFlow f : graph.outgoingEdgesOf(current)) {
+            if (f.getIssuer() == flow.getIssuer() && f.getMessage() == flow.getMessage()) {
+                return f;
+            }
+        }
+        return null;
     }
 
     /**

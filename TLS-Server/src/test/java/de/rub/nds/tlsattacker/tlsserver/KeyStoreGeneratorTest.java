@@ -29,9 +29,9 @@ public class KeyStoreGeneratorTest {
      */
     @Test
     public void testCreateRSAKeyPair() throws Exception {
-	KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
-	assertNotNull(k);
-	assertEquals("RSA", k.getPublic().getAlgorithm());
+        KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
+        assertNotNull(k);
+        assertEquals("RSA", k.getPublic().getAlgorithm());
     }
 
     /**
@@ -41,9 +41,9 @@ public class KeyStoreGeneratorTest {
      */
     @Test
     public void testCreateECKeyPair() throws Exception {
-	KeyPair k = KeyStoreGenerator.createECKeyPair(256);
-	assertNotNull(k);
-	assertEquals("EC", k.getPublic().getAlgorithm());
+        KeyPair k = KeyStoreGenerator.createECKeyPair(256);
+        assertNotNull(k);
+        assertEquals("EC", k.getPublic().getAlgorithm());
     }
 
     /**
@@ -53,13 +53,13 @@ public class KeyStoreGeneratorTest {
      */
     @Test
     public void testCreateKeyStore() throws Exception {
-	KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
-	KeyStore ks = KeyStoreGenerator.createKeyStore(k);
-	assertNotNull(ks);
+        KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
+        KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+        assertNotNull(ks);
 
-	k = KeyStoreGenerator.createECKeyPair(256);
-	ks = KeyStoreGenerator.createKeyStore(k);
-	assertNotNull(ks);
+        k = KeyStoreGenerator.createECKeyPair(256);
+        ks = KeyStoreGenerator.createKeyStore(k);
+        assertNotNull(ks);
     }
 
 }

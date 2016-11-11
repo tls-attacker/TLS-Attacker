@@ -24,9 +24,9 @@ public abstract class TestSuite {
     List<String> failedTests = new LinkedList<>();
 
     public TestSuite(GeneralConfig config) {
-	this.generalConfig = config;
-	successfulTests = new LinkedList<>();
-	failedTests = new LinkedList<>();
+        this.generalConfig = config;
+        successfulTests = new LinkedList<>();
+        failedTests = new LinkedList<>();
     }
 
     public abstract boolean startTests();

@@ -43,14 +43,14 @@ public class UnitTestCertificateMutator extends CertificateMutator {
      *
      */
     public UnitTestCertificateMutator() {
-	this.clientPairList = new ArrayList<>();
-	this.serverPairList = new ArrayList<>();
-	clientPairList.add(new ClientCertificateStructure("password", "alias", new File("../resources/rsa1024.jks")));
-	r = new Random();
+        this.clientPairList = new ArrayList<>();
+        this.serverPairList = new ArrayList<>();
+        clientPairList.add(new ClientCertificateStructure("password", "alias", new File("../resources/rsa1024.jks")));
+        r = new Random();
 
-	serverPairList.add(new ServerCertificateStructure(new File(
-		"../resources/EvolutionaryFuzzer/TestCerts/rsa1024key.pem"), new File(
-		"../resources/EvolutionaryFuzzer/TestCerts/rsa1024.pem")));
+        serverPairList.add(new ServerCertificateStructure(new File(
+                "../resources/EvolutionaryFuzzer/TestCerts/rsa1024key.pem"), new File(
+                "../resources/EvolutionaryFuzzer/TestCerts/rsa1024.pem")));
 
     }
 
@@ -60,7 +60,7 @@ public class UnitTestCertificateMutator extends CertificateMutator {
      */
     @Override
     public ClientCertificateStructure getClientCertificateStructure() {
-	return clientPairList.get(r.nextInt(clientPairList.size()));
+        return clientPairList.get(r.nextInt(clientPairList.size()));
     }
 
     /**
@@ -69,7 +69,7 @@ public class UnitTestCertificateMutator extends CertificateMutator {
      */
     @Override
     public ServerCertificateStructure getServerCertificateStructure() {
-	return serverPairList.get(r.nextInt(serverPairList.size()));
+        return serverPairList.get(r.nextInt(serverPairList.size()));
     }
 
     /**
@@ -79,7 +79,7 @@ public class UnitTestCertificateMutator extends CertificateMutator {
      */
     @Override
     public boolean isSupported(ServerCertificateStructure structure) {
-	return serverPairList.contains(structure);
+        return serverPairList.contains(structure);
     }
 
     private static final Logger LOG = Logger.getLogger(UnitTestCertificateMutator.class.getName());

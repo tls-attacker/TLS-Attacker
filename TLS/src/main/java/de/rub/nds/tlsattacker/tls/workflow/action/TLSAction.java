@@ -24,18 +24,18 @@ public abstract class TLSAction implements Serializable {
     protected boolean executed = false;
 
     public boolean isExecuted() {
-	return executed;
+        return executed;
     }
 
     public void setExecuted(boolean executed) {
-	this.executed = executed;
+        this.executed = executed;
     }
 
     public abstract void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException,
-	    IOException;
+            IOException;
 
     public boolean isMessageAction() {
-	return this instanceof MessageAction;
+        return this instanceof MessageAction;
     }
 
     public abstract void reset();

@@ -57,105 +57,115 @@ public class IsGoodRule extends Rule {
     private long lastGoodTimestamp = System.currentTimeMillis();
 
     public IsGoodRule(EvolutionaryFuzzerConfig evoConfig) {
-	super(evoConfig, "is_good.rule");
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    config = JAXB.unmarshal(f, IsGoodRuleConfig.class);
-	}
-	if (config == null) {
-	    config = new IsGoodRuleConfig();
-	    writeConfig(config);
-	}
-	this.branch = new BranchTrace();
-	prepareConfigOutputFolder();
-	try {
-	    f = new File(evoConfig.getOutputFolder() + config.getOutputFileGraph());
-	    if (evoConfig.isCleanStart()) {
-		f.delete();
-		f.createNewFile();
-	    }
-	    outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
-	} catch (IOException ex) {
-	    Logger.getLogger(AnalyzeTimeRule.class.getName())
-		    .log(Level.SEVERE,
-			    "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
-			    ex);
-	}
+        super(evoConfig, "is_good.rule");
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        if (f.exists()) {
+            config = JAXB.unmarshal(f, IsGoodRuleConfig.class);
+        }
+        if (config == null) {
+            config = new IsGoodRuleConfig();
+            writeConfig(config);
+        }
+        this.branch = new BranchTrace();
+        prepareConfigOutputFolder();
+        try {
+            f = new File(evoConfig.getOutputFolder() + config.getOutputFileGraph());
+            if (evoConfig.isCleanStart()) {
+                f.delete();
+                f.createNewFile();
+            }
+            outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
+        } catch (IOException ex) {
+            Logger.getLogger(AnalyzeTimeRule.class.getName())
+                    .log(Level.SEVERE,
+                            "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
+                            ex);
+        }
     }
 
     /**
-     * The rule applies if the trace in the Result contains Edges or Codeblocks the rule has not seen before
-     * @param result Result to analyze
+     * The rule applies if the trace in the Result contains Edges or Codeblocks
+     * the rule has not seen before
+     * 
+     * @param result
+     *            Result to analyze
      * @return True if the Rule contains new Codeblocks or Edges
      */
     @Override
     public boolean applies(Result result) {
-	MergeResult r = null;
-	r = branch.merge(result.getBranchTrace());
+        MergeResult r = null;
+        r = branch.merge(result.getBranchTrace());
 
-	if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
-	    LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
-	    return true;
-	} else {
-	    return false;
-	}
+        if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
+            LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
     /**
-     * Updates statistics and stores the TestVector. Also sets a flag in the TestVector such that other rules know that this TestVector is considered as good.
-     * @param result Result to analyze
+     * Updates statistics and stores the TestVector. Also sets a flag in the
+     * TestVector such that other rules know that this TestVector is considered
+     * as good.
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onApply(Result result) {
-	// Write statistics
-	outWriter.println(System.currentTimeMillis() - lastGoodTimestamp);
-	outWriter.flush();
-	lastGoodTimestamp = System.currentTimeMillis();
-	found++;
-	result.setGoodTrace(true);
-	// It may be that we dont want to safe good Traces, for example if
-	// we execute already saved Traces
-	if (evoConfig.isSerialize()) {
-	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
-	    try {
-		f.createNewFile();
-		TestVectorSerializer.write(f, result.getVector());
-	    } catch (JAXBException | IOException E) {
-		LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-			+ f.getAbsolutePath(), E);
-	    }
-	}
-	result.getVector().getTrace().makeGeneric();
+        // Write statistics
+        outWriter.println(System.currentTimeMillis() - lastGoodTimestamp);
+        outWriter.flush();
+        lastGoodTimestamp = System.currentTimeMillis();
+        found++;
+        result.setGoodTrace(true);
+        // It may be that we dont want to safe good Traces, for example if
+        // we execute already saved Traces
+        if (evoConfig.isSerialize()) {
+            File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
+            try {
+                f.createNewFile();
+                TestVectorSerializer.write(f, result.getVector());
+            } catch (JAXBException | IOException E) {
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+                        + f.getAbsolutePath(), E);
+            }
+        }
+        result.getVector().getTrace().makeGeneric();
     }
 
     public BranchTrace getBranchTrace() {
-	return branch;
+        return branch;
     }
 
     /**
      * Do nothing
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onDecline(Result result) {
-	result.setGoodTrace(Boolean.FALSE);
+        result.setGoodTrace(Boolean.FALSE);
     }
 
-     /**
+    /**
      * Generates a status report
+     * 
      * @return
      */
     @Override
     public String report() {
-	return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
-		+ " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
+        return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
+                + " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
     }
 
     @Override
     public IsGoodRuleConfig getConfig() {
-	return config;
+        return config;
     }
-    
+
     private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
 }

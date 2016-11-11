@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class CipherSuiteOrderTest extends HandshakeTest {
@@ -60,7 +60,7 @@ public class CipherSuiteOrderTest extends HandshakeTest {
                 Collections.reverse(list);
                 serverConfig.setCipherSuites(list);
                 CipherSuite cs2 = getSelectedCipherSuite();
-                if(cs2 == cs1) {
+                if (cs2 == cs1) {
                     serverSupportsCipherSuitePreference = true;
                 }
             } catch (Exception ex) {
@@ -99,7 +99,7 @@ public class CipherSuiteOrderTest extends HandshakeTest {
             }
         }
     }
-    
+
     CipherSuite getSelectedCipherSuite() {
         TransportHandler transportHandler = configHandler.initializeTransportHandler(serverConfig);
         TlsContext tlsContext = configHandler.initializeTlsContext(serverConfig);
@@ -108,7 +108,8 @@ public class CipherSuiteOrderTest extends HandshakeTest {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         ClientHelloMessage ch = new ClientHelloMessage();
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
-        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new ArbitraryMessage()));
+        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
+                new ArbitraryMessage()));
         ch.setSupportedCipherSuites(serverConfig.getCipherSuites());
         ch.setSupportedCompressionMethods(serverConfig.getCompressionMethods());
         WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig, ch);
@@ -117,8 +118,9 @@ public class CipherSuiteOrderTest extends HandshakeTest {
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         workflowExecutor.executeWorkflow();
         transportHandler.closeConnection();
-        if(workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO) != null) {
-            ServerHelloMessage shm = (ServerHelloMessage) workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
+        if (workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO) != null) {
+            ServerHelloMessage shm = (ServerHelloMessage) workflowTrace
+                    .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
             return CipherSuite.getCipherSuite(shm.getSelectedCipherSuite().getValue());
         }
         throw new ConfigurationException("No ServerHello message found");

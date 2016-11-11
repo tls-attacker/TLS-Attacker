@@ -7,7 +7,6 @@
  */
 package de.rub.nds.tlsattacker.dtls.workflow;
 
-
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -21,6 +20,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
@@ -33,42 +33,42 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     private List<TLSAction> actionList;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-	super(transportHandler, tlsContext, ExecutorType.DTLS);
-	tlsContext.setTransportHandler(transportHandler);
-	tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
+        super(transportHandler, tlsContext, ExecutorType.DTLS);
+        tlsContext.setTransportHandler(transportHandler);
+        tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
 
-	workflowTrace = this.tlsContext.getWorkflowTrace();
+        workflowTrace = this.tlsContext.getWorkflowTrace();
 
-	if (tlsContext.getTransportHandler() == null || tlsContext.getRecordHandler() == null) {
-	    throw new ConfigurationException("The WorkflowExecutor was not configured properly");
-	}
+        if (tlsContext.getTransportHandler() == null || tlsContext.getRecordHandler() == null) {
+            throw new ConfigurationException("The WorkflowExecutor was not configured properly");
+        }
     }
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-	if (executed) {
-	    throw new IllegalStateException("The workflow has already been executed. Create a new Workflow.");
-	}
-	executed = true;
+        if (executed) {
+            throw new IllegalStateException("The workflow has already been executed. Create a new Workflow.");
+        }
+        executed = true;
 
-	List<TLSAction> actions = workflowTrace.getTLSActions();
-	try {
-	    ProtocolMessage pm = null;
+        List<TLSAction> actions = workflowTrace.getTLSActions();
+        try {
+            ProtocolMessage pm = null;
 
-	    while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
-		TLSAction action = actions.get(workflowContext.getActionPointer());
-		action.execute(tlsContext, null);
+            while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
+                TLSAction action = actions.get(workflowContext.getActionPointer());
+                action.execute(tlsContext, null);
 
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
-	} finally {
-	    // remove all unused protocol messages
-	    // We dont need to remove unused messages anymore, since they are
-	    // just not marked as executed
-	    // this.removeNextProtocolMessages(protocolMessages,
-	    // workflowContext.getActionPointer());
-	}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+        } finally {
+            // remove all unused protocol messages
+            // We dont need to remove unused messages anymore, since they are
+            // just not marked as executed
+            // this.removeNextProtocolMessages(protocolMessages,
+            // workflowContext.getActionPointer());
+        }
     }
 }

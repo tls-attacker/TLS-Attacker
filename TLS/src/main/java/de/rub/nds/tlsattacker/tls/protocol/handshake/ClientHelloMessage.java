@@ -77,105 +77,105 @@ public class ClientHelloMessage extends HelloMessage {
     byte[] extensionBytes;
 
     public ClientHelloMessage() {
-	super(HandshakeMessageType.CLIENT_HELLO);
+        super(HandshakeMessageType.CLIENT_HELLO);
     }
 
     public ModifiableInteger getCompressionLength() {
-	return compressionLength;
+        return compressionLength;
     }
 
     public ModifiableInteger getCipherSuiteLength() {
-	return cipherSuiteLength;
+        return cipherSuiteLength;
     }
 
     public ModifiableByteArray getCipherSuites() {
-	return cipherSuites;
+        return cipherSuites;
     }
 
     public ModifiableByteArray getCompressions() {
-	return compressions;
+        return compressions;
     }
 
     public void setCompressionLength(ModifiableInteger compressionLength) {
-	this.compressionLength = compressionLength;
+        this.compressionLength = compressionLength;
     }
 
     public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
-	this.cipherSuiteLength = cipherSuiteLength;
+        this.cipherSuiteLength = cipherSuiteLength;
     }
 
     public void setCipherSuites(ModifiableByteArray cipherSuites) {
-	this.cipherSuites = cipherSuites;
+        this.cipherSuites = cipherSuites;
     }
 
     public void setCompressions(ModifiableByteArray compressions) {
-	this.compressions = compressions;
+        this.compressions = compressions;
     }
 
     public void setCompressionLength(int compressionLength) {
-	this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
+        this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-	this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
+        this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public void setCipherSuites(byte[] array) {
-	this.cipherSuites = ModifiableVariableFactory.safelySetValue(cipherSuites, array);
+        this.cipherSuites = ModifiableVariableFactory.safelySetValue(cipherSuites, array);
     }
 
     public void setCompressions(byte[] array) {
-	this.compressions = ModifiableVariableFactory.safelySetValue(compressions, array);
+        this.compressions = ModifiableVariableFactory.safelySetValue(compressions, array);
     }
 
     public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {
-	this.supportedCompressionMethods = supportedCompressionMethods;
+        this.supportedCompressionMethods = supportedCompressionMethods;
     }
 
     public void setSupportedCipherSuites(List<CipherSuite> supportedCipherSuites) {
-	this.supportedCipherSuites = supportedCipherSuites;
+        this.supportedCipherSuites = supportedCipherSuites;
     }
 
     public List<CompressionMethod> getSupportedCompressionMethods() {
-	return supportedCompressionMethods;
+        return supportedCompressionMethods;
     }
 
     public byte[] getExtensionBytes() {
-	return extensionBytes;
+        return extensionBytes;
     }
 
     public void setExtensionBytes(byte[] extensionBytes) {
-	this.extensionBytes = extensionBytes;
+        this.extensionBytes = extensionBytes;
     }
 
     public List<CipherSuite> getSupportedCipherSuites() {
-	return supportedCipherSuites;
+        return supportedCipherSuites;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append(super.toString()).append("\n  Protocol Version: ")
-		.append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
-		.append("\n  Client Unix Time: ")
-		.append(new Date(ArrayConverter.bytesToLong(unixTime.getValue()) * 1000)).append("\n  Client Random: ")
-		.append(ArrayConverter.bytesToHexString(random.getValue())).append("\n  Session ID: ")
-		.append(ArrayConverter.bytesToHexString(sessionId.getValue())).append("\n  Supported Cipher Suites: ")
-		.append(ArrayConverter.bytesToHexString(cipherSuites.getValue()))
-		.append("\n  Supported Compression Methods: ")
-		.append(ArrayConverter.bytesToHexString(compressions.getValue())).append("\n  Extensions: ");
-	// Some ExtensionsTypes are not supported yet, so avoiding the
-	// NULLPointerException needs to be done
-	/**
-	 * for (ExtensionMessage e : extensions) { sb.append(e.toString()); }
-	 */
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString()).append("\n  Protocol Version: ")
+                .append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
+                .append("\n  Client Unix Time: ")
+                .append(new Date(ArrayConverter.bytesToLong(unixTime.getValue()) * 1000)).append("\n  Client Random: ")
+                .append(ArrayConverter.bytesToHexString(random.getValue())).append("\n  Session ID: ")
+                .append(ArrayConverter.bytesToHexString(sessionId.getValue())).append("\n  Supported Cipher Suites: ")
+                .append(ArrayConverter.bytesToHexString(cipherSuites.getValue()))
+                .append("\n  Supported Compression Methods: ")
+                .append(ArrayConverter.bytesToHexString(compressions.getValue())).append("\n  Extensions: ");
+        // Some ExtensionsTypes are not supported yet, so avoiding the
+        // NULLPointerException needs to be done
+        /**
+         * for (ExtensionMessage e : extensions) { sb.append(e.toString()); }
+         */
+        return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new ClientHelloHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new ClientHelloHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

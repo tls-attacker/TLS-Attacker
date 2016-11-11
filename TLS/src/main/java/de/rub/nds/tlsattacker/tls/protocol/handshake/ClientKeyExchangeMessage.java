@@ -27,31 +27,31 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     ModifiableByteArray premasterSecret;
 
     public ClientKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
-	super(handshakeMessageType);
+        super(handshakeMessageType);
     }
 
     public ModifiableByteArray getMasterSecret() {
-	return masterSecret;
+        return masterSecret;
     }
 
     public void setMasterSecret(ModifiableByteArray masterSecret) {
-	this.masterSecret = masterSecret;
+        this.masterSecret = masterSecret;
     }
 
     public void setMasterSecret(byte[] value) {
-	this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, value);
+        this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, value);
     }
 
     public ModifiableByteArray getPremasterSecret() {
-	return premasterSecret;
+        return premasterSecret;
     }
 
     public void setPremasterSecret(ModifiableByteArray premasterSecret) {
-	this.premasterSecret = premasterSecret;
+        this.premasterSecret = premasterSecret;
     }
 
     public void setPremasterSecret(byte[] premasterSecret) {
-	this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, premasterSecret);
+        this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, premasterSecret);
     }
 
 }

@@ -28,10 +28,10 @@ public class BigIntegerModificationTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableBigInteger();
-	start.setOriginalValue(BigInteger.TEN);
-	expectedResult = null;
-	result = null;
+        start = new ModifiableBigInteger();
+        start.setOriginalValue(BigInteger.TEN);
+        expectedResult = null;
+        result = null;
     }
 
     /**
@@ -39,13 +39,13 @@ public class BigIntegerModificationTest {
      */
     @Test
     public void testAdd() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
-	start.setModification(modifier);
-	expectedResult = new BigInteger("11");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(BigInteger.TEN, start.getOriginalValue());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
+        start.setModification(modifier);
+        expectedResult = new BigInteger("11");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
 
     /**
@@ -53,13 +53,13 @@ public class BigIntegerModificationTest {
      */
     @Test
     public void testSub() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.sub(BigInteger.ONE);
-	start.setModification(modifier);
-	expectedResult = new BigInteger("9");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(BigInteger.TEN, start.getOriginalValue());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.sub(BigInteger.ONE);
+        start.setModification(modifier);
+        expectedResult = new BigInteger("9");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
 
     /**
@@ -67,13 +67,13 @@ public class BigIntegerModificationTest {
      */
     @Test
     public void testXor() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.xor(new BigInteger("2"));
-	start.setModification(modifier);
-	expectedResult = new BigInteger("8");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(BigInteger.TEN, start.getOriginalValue());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.xor(new BigInteger("2"));
+        start.setModification(modifier);
+        expectedResult = new BigInteger("8");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
 
     /**
@@ -81,13 +81,13 @@ public class BigIntegerModificationTest {
      */
     @Test
     public void testExplicitValue() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.explicitValue(new BigInteger("7"));
-	start.setModification(modifier);
-	expectedResult = new BigInteger("7");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(BigInteger.TEN, start.getOriginalValue());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.explicitValue(new BigInteger("7"));
+        start.setModification(modifier);
+        expectedResult = new BigInteger("7");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
 
     /**
@@ -95,35 +95,35 @@ public class BigIntegerModificationTest {
      */
     @Test
     public void testIsOriginalValueModified() {
-	assertFalse(start.isOriginalValueModified());
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ZERO);
-	start.setModification(modifier);
-	assertFalse(start.isOriginalValueModified());
-	modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
-	start.setModification(modifier);
-	assertTrue(start.isOriginalValueModified());
+        assertFalse(start.isOriginalValueModified());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ZERO);
+        start.setModification(modifier);
+        assertFalse(start.isOriginalValueModified());
+        modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
+        start.setModification(modifier);
+        assertTrue(start.isOriginalValueModified());
     }
 
     @Test
     public void testShiftLeft() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.shiftLeft(2);
-	start.setModification(modifier);
-	expectedResult = new BigInteger("40");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(BigInteger.TEN, start.getOriginalValue());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.shiftLeft(2);
+        start.setModification(modifier);
+        expectedResult = new BigInteger("40");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
 
     @Test
     public void testShiftRight() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.shiftRight(1);
-	start.setModification(modifier);
-	expectedResult = new BigInteger("5");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
-	assertEquals(BigInteger.TEN, start.getOriginalValue());
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.shiftRight(1);
+        start.setModification(modifier);
+        expectedResult = new BigInteger("5");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
+        assertEquals(BigInteger.TEN, start.getOriginalValue());
     }
 
     /**
@@ -131,22 +131,22 @@ public class BigIntegerModificationTest {
      */
     @Test
     public void testExplicitValueFromFile() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.explicitValueFromFile(0);
-	start.setModification(modifier);
-	expectedResult = BigInteger.valueOf(-128);
-	result = start.getValue();
-	assertEquals(expectedResult, result);
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.explicitValueFromFile(0);
+        start.setModification(modifier);
+        expectedResult = BigInteger.valueOf(-128);
+        result = start.getValue();
+        assertEquals(expectedResult, result);
 
-	modifier = BigIntegerModificationFactory.explicitValueFromFile(1);
-	start.setModification(modifier);
-	expectedResult = BigInteger.valueOf(-1);
-	result = start.getValue();
-	assertEquals(expectedResult, result);
+        modifier = BigIntegerModificationFactory.explicitValueFromFile(1);
+        start.setModification(modifier);
+        expectedResult = BigInteger.valueOf(-1);
+        result = start.getValue();
+        assertEquals(expectedResult, result);
 
-	modifier = BigIntegerModificationFactory.explicitValueFromFile(26);
-	start.setModification(modifier);
-	expectedResult = BigInteger.valueOf(2147483647);
-	result = start.getValue();
-	assertEquals(expectedResult, result);
+        modifier = BigIntegerModificationFactory.explicitValueFromFile(26);
+        start.setModification(modifier);
+        expectedResult = BigInteger.valueOf(2147483647);
+        result = start.getValue();
+        assertEquals(expectedResult, result);
     }
 }

@@ -25,18 +25,18 @@ public class WorkflowTraceTest {
     WorkflowTrace trace;
 
     public WorkflowTraceTest() {
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initialize(new GeneralConfig());
-	ClientCommandConfig ccc = new ClientCommandConfig();
-	TlsContext tlsContext = configHandler.initializeTlsContext(ccc);
-	trace = tlsContext.getWorkflowTrace();
+        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+        configHandler.initialize(new GeneralConfig());
+        ClientCommandConfig ccc = new ClientCommandConfig();
+        TlsContext tlsContext = configHandler.initializeTlsContext(ccc);
+        trace = tlsContext.getWorkflowTrace();
     }
 
     @Test
     public void testDeepCopy() {
-	WorkflowTrace copy = (WorkflowTrace) UnoptimizedDeepCopy.copy(trace);
-	assertEquals("The number of messages in both traces has to be equal", trace.getAllConfiguredMessages().size(),
-		copy.getAllConfiguredMessages().size());
+        WorkflowTrace copy = (WorkflowTrace) UnoptimizedDeepCopy.copy(trace);
+        assertEquals("The number of messages in both traces has to be equal", trace.getAllConfiguredMessages().size(),
+                copy.getAllConfiguredMessages().size());
     }
 
 }

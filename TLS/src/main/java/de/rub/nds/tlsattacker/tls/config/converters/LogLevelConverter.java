@@ -23,12 +23,12 @@ public class LogLevelConverter implements IStringConverter<Level> {
 
     @Override
     public Level convert(String value) {
-	Level l = Level.toLevel(value);
-	if (l == null) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a log4j level. "
-		    + "Available values are: " + Arrays.toString(Level.values()));
-	}
+        Level l = Level.toLevel(value);
+        if (l == null) {
+            throw new ParameterException("Value " + value + " cannot be converted to a log4j level. "
+                    + "Available values are: " + Arrays.toString(Level.values()));
+        }
 
-	return l;
+        return l;
     }
 }

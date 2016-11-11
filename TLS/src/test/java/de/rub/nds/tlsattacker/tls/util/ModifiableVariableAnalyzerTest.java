@@ -31,15 +31,15 @@ public class ModifiableVariableAnalyzerTest {
      */
     @Test
     public void testGetAllModifiableVariableFields() {
-	ClientHelloMessage chm = new ClientHelloMessage();
-	String[] fieldNames = { "compressionLength", "cipherSuiteLength", "cipherSuites", "compressions",
-		"protocolVersion", "unixTime", "random", "sessionIdLength", "sessionId", "type",
-		"completeResultingMessage" };
-	List<Field> fields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(chm);
-	for (String fn : fieldNames) {
-	    assertTrue(containsFieldName(fn, fields));
-	}
-	assertFalse(containsFieldName("somename", fields));
+        ClientHelloMessage chm = new ClientHelloMessage();
+        String[] fieldNames = { "compressionLength", "cipherSuiteLength", "cipherSuites", "compressions",
+                "protocolVersion", "unixTime", "random", "sessionIdLength", "sessionId", "type",
+                "completeResultingMessage" };
+        List<Field> fields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(chm);
+        for (String fn : fieldNames) {
+            assertTrue(containsFieldName(fn, fields));
+        }
+        assertFalse(containsFieldName("somename", fields));
     }
 
     /**
@@ -51,12 +51,12 @@ public class ModifiableVariableAnalyzerTest {
     }
 
     private boolean containsFieldName(String name, List<Field> list) {
-	for (Field f : list) {
-	    if (f.getName().equals(name)) {
-		return true;
-	    }
-	}
-	return false;
+        for (Field f : list) {
+            if (f.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

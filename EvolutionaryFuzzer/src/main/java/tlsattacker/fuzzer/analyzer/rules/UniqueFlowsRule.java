@@ -48,86 +48,94 @@ public class UniqueFlowsRule extends Rule {
     private int found = 0;
 
     public UniqueFlowsRule(EvolutionaryFuzzerConfig evoConfig) {
-	super(evoConfig, "unique_flows.rule");
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    config = JAXB.unmarshal(f, UniqueFlowsRuleConfig.class);
-	}
-	if (config == null) {
-	    config = new UniqueFlowsRuleConfig();
-	    writeConfig(config);
-	}
-	typeSet = new HashSet<>();
-	prepareConfigOutputFolder();
-	List<TestVector> oldTestVectors = TestVectorSerializer.readFolder(getRuleFolder());
-	for (TestVector vector : oldTestVectors) {
-	    typeSet.add(WorkflowTraceTypeManager.generateWorkflowTraceType(vector.getTrace(), ConnectionEnd.CLIENT));
-	}
+        super(evoConfig, "unique_flows.rule");
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        if (f.exists()) {
+            config = JAXB.unmarshal(f, UniqueFlowsRuleConfig.class);
+        }
+        if (config == null) {
+            config = new UniqueFlowsRuleConfig();
+            writeConfig(config);
+        }
+        typeSet = new HashSet<>();
+        prepareConfigOutputFolder();
+        List<TestVector> oldTestVectors = TestVectorSerializer.readFolder(getRuleFolder());
+        for (TestVector vector : oldTestVectors) {
+            typeSet.add(WorkflowTraceTypeManager.generateWorkflowTraceType(vector.getTrace(), ConnectionEnd.CLIENT));
+        }
 
     }
 
     /**
-     * The rule applies if the WorkflowTracetype of the Result has not yet been seen by this rule
-     * @param result Result to analyze
+     * The rule applies if the WorkflowTracetype of the Result has not yet been
+     * seen by this rule
+     * 
+     * @param result
+     *            Result to analyze
      * @return True if the WorkflowTracetype has not yet been seen by this rule
      */
     @Override
     public boolean applies(Result result) {
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
-		ConnectionEnd.CLIENT);
-	type.clean();
-	return !typeSet.contains(type);
+        WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
+                ConnectionEnd.CLIENT);
+        type.clean();
+        return !typeSet.contains(type);
 
     }
 
     /**
      * Stores the TestVector and adds the WorkflowTraceType to the set
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onApply(Result result) {
 
-	WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
-		ConnectionEnd.CLIENT);
-	type.clean();
-	if (typeSet.add(type)) {
-	    found++;
-	    // It may be that we dont want to safe good Traces, for example if
-	    // we execute already saved Traces
-	    LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
-	    LOG.log(Level.FINER, type.toString());
-	    File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
-	    try {
-		f.createNewFile();
-		TestVectorSerializer.write(f, result.getVector());
-	    } catch (JAXBException | IOException E) {
-		LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-			+ f.getAbsolutePath(), E);
-	    }
-	}
+        WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
+                ConnectionEnd.CLIENT);
+        type.clean();
+        if (typeSet.add(type)) {
+            found++;
+            // It may be that we dont want to safe good Traces, for example if
+            // we execute already saved Traces
+            LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
+            LOG.log(Level.FINER, type.toString());
+            File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
+            try {
+                f.createNewFile();
+                TestVectorSerializer.write(f, result.getVector());
+            } catch (JAXBException | IOException E) {
+                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+                        + f.getAbsolutePath(), E);
+            }
+        }
 
     }
 
     /**
      * Do nothing
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onDecline(Result result) {
     }
 
-     /**
+    /**
      * Generates a status report
+     * 
      * @return
      */
     @Override
     public String report() {
-	return "WorkflowTraceTypes observed:" + typeSet.size() + " WorkFlowTraceTypes found:" + found + "\n";
+        return "WorkflowTraceTypes observed:" + typeSet.size() + " WorkFlowTraceTypes found:" + found + "\n";
     }
 
     @Override
     public UniqueFlowsRuleConfig getConfig() {
-	return config;
+        return config;
     }
 
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRule.class.getName());

@@ -24,7 +24,7 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class NoneMutator extends Mutator {
-    
+
     /**
      * The name of the Mutator when referred by command line
      */
@@ -36,52 +36,51 @@ public class NoneMutator extends Mutator {
     private final SimpleMutatorConfig simpleConfig;
 
     public NoneMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator) {
-	super(evoConfig, certMutator);
-	File f = new File(evoConfig.getMutatorConfigFolder() + "simple.conf");
-	if (f.exists()) {
-	    simpleConfig = JAXB.unmarshal(f, SimpleMutatorConfig.class);
-	} else {
-	    simpleConfig = new SimpleMutatorConfig();
-	    JAXB.marshal(simpleConfig, f);
-	}
+        super(evoConfig, certMutator);
+        File f = new File(evoConfig.getMutatorConfigFolder() + "simple.conf");
+        if (f.exists()) {
+            simpleConfig = JAXB.unmarshal(f, SimpleMutatorConfig.class);
+        } else {
+            simpleConfig = new SimpleMutatorConfig();
+            JAXB.marshal(simpleConfig, f);
+        }
     }
-
-   
 
     /**
      * Returns a random TestVector and does not modify it
+     * 
      * @return A random TestVecot
      */
     @Override
     public TestVector getNewMutation() {
-	Random r = new Random();
-	// chose a random trace from the list
-	TestVector tempVector = null;
-	WorkflowTrace trace = null;
+        Random r = new Random();
+        // chose a random trace from the list
+        TestVector tempVector = null;
+        WorkflowTrace trace = null;
 
-	if (goodVectorsExist()) {
-	    try {
-		tempVector = chooseRandomTestVectorFromFolder(new File("data/good/"));
-	    } catch (IOException | JAXBException | XMLStreamException ex) {
-		LOG.log(Level.SEVERE, "Could not read good TestVector", ex);
-	    }
-	} else if (archiveVectorsExist()) {
-	    try {
-		tempVector = chooseRandomTestVectorFromFolder(new File("archive/"));
-	    } catch (IOException | JAXBException | XMLStreamException ex) {
-		LOG.log(Level.SEVERE, "Could not read archive TestVector", ex);
-	    }
-	}
-	if (tempVector == null) {
-	    tempVector = new TestVector(new WorkflowTrace(), certMutator.getServerCertificateStructure(),
-		    certMutator.getClientCertificateStructure(), config.getActionExecutorConfig()
-			    .getRandomExecutorType(), null);
-	}
-	tempVector.getTrace().reset();
-	tempVector.getTrace().makeGeneric();
-	return tempVector;
+        if (goodVectorsExist()) {
+            try {
+                tempVector = chooseRandomTestVectorFromFolder(new File("data/good/"));
+            } catch (IOException | JAXBException | XMLStreamException ex) {
+                LOG.log(Level.SEVERE, "Could not read good TestVector", ex);
+            }
+        } else if (archiveVectorsExist()) {
+            try {
+                tempVector = chooseRandomTestVectorFromFolder(new File("archive/"));
+            } catch (IOException | JAXBException | XMLStreamException ex) {
+                LOG.log(Level.SEVERE, "Could not read archive TestVector", ex);
+            }
+        }
+        if (tempVector == null) {
+            tempVector = new TestVector(new WorkflowTrace(), certMutator.getServerCertificateStructure(),
+                    certMutator.getClientCertificateStructure(), config.getActionExecutorConfig()
+                            .getRandomExecutorType(), null);
+        }
+        tempVector.getTrace().reset();
+        tempVector.getTrace().makeGeneric();
+        return tempVector;
 
     }
-    
+
     private static final Logger LOG = Logger.getLogger(NoneMutator.class.getName());
 }

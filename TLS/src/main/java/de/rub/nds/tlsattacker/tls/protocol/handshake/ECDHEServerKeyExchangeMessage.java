@@ -40,99 +40,99 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     ModifiableByteArray publicKey;
 
     public ECDHEServerKeyExchangeMessage() {
-	super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+        super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByte getCurveType() {
-	return curveType;
+        return curveType;
     }
 
     public void setCurveType(ModifiableByte curveType) {
-	this.curveType = curveType;
+        this.curveType = curveType;
     }
 
     public void setCurveType(byte curveType) {
-	this.curveType = ModifiableVariableFactory.safelySetValue(this.curveType, curveType);
+        this.curveType = ModifiableVariableFactory.safelySetValue(this.curveType, curveType);
     }
 
     public ModifiableByteArray getNamedCurve() {
-	return namedCurve;
+        return namedCurve;
     }
 
     public void setNamedCurve(ModifiableByteArray namedCurve) {
-	this.namedCurve = namedCurve;
+        this.namedCurve = namedCurve;
     }
 
     public void setNamedCurve(byte[] namedCurve) {
-	this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
+        this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
     }
 
     public ModifiableInteger getPublicKeyLength() {
-	return publicKeyLength;
+        return publicKeyLength;
     }
 
     public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-	this.publicKeyLength = publicKeyLength;
+        this.publicKeyLength = publicKeyLength;
     }
 
     public void setPublicKeyLength(int length) {
-	this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
+        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
     }
 
     public ModifiableByteArray getPublicKey() {
-	return publicKey;
+        return publicKey;
     }
 
     public void setPublicKey(ModifiableByteArray publicKey) {
-	this.publicKey = publicKey;
+        this.publicKey = publicKey;
     }
 
     public void setPublicKey(byte[] pubKey) {
-	this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, pubKey);
+        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, pubKey);
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append(super.toString());
-	sb.append("\n  Curve Type: ");
-	sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
-	sb.append("\n  Named Curve: ");
-	if (namedCurve != null) {
-	    sb.append(NamedCurve.getNamedCurve(this.namedCurve.getValue()));
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Public Key: ");
-	if (this.publicKey != null) {
-	    sb.append(ArrayConverter.bytesToHexString(this.publicKey.getValue()));
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Signature Algorithm: ");
-	// signature and hash algorithms are provided only while working with
-	// (D)TLS 1.2
-	if (this.getHashAlgorithm() != null) {
-	    sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue()));
-	    sb.append(" ");
-	}
-	if (this.getSignatureAlgorithm() != null) {
-	    sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
-	}
-	sb.append("\n  Signature: ");
-	if (signature != null) {
-	    sb.append(ArrayConverter.bytesToHexString(this.signature.getValue()));
-	} else {
-	    sb.append("null");
-	}
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append("\n  Curve Type: ");
+        sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        sb.append("\n  Named Curve: ");
+        if (namedCurve != null) {
+            sb.append(NamedCurve.getNamedCurve(this.namedCurve.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Public Key: ");
+        if (this.publicKey != null) {
+            sb.append(ArrayConverter.bytesToHexString(this.publicKey.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Signature Algorithm: ");
+        // signature and hash algorithms are provided only while working with
+        // (D)TLS 1.2
+        if (this.getHashAlgorithm() != null) {
+            sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue()));
+            sb.append(" ");
+        }
+        if (this.getSignatureAlgorithm() != null) {
+            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
+        }
+        sb.append("\n  Signature: ");
+        if (signature != null) {
+            sb.append(ArrayConverter.bytesToHexString(this.signature.getValue()));
+        } else {
+            sb.append("null");
+        }
 
-	return sb.toString();
+        return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new ECDHEServerKeyExchangeHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new ECDHEServerKeyExchangeHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

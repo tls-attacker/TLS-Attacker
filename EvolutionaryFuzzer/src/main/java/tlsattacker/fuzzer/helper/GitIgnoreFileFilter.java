@@ -20,13 +20,16 @@ public class GitIgnoreFileFilter implements FilenameFilter {
 
     /**
      * Accepts all files which don't equal ".gitignore"
-     * @param dir Directory the File is in
-     * @param name Name of the File
+     * 
+     * @param dir
+     *            Directory the File is in
+     * @param name
+     *            Name of the File
      * @return True if the file does not equal ".gitignore"
      */
     @Override
     public boolean accept(File dir, String name) {
-	return !name.equals(".gitignore");
+        return !name.equals(".gitignore");
     }
 
     private static final Logger LOG = Logger.getLogger(GitIgnoreFileFilter.class.getName());

@@ -54,18 +54,18 @@ public abstract class ECOracle {
     public abstract boolean isFinalSolutionCorrect(BigInteger guessedSecret);
 
     public long getNumberOfQueries() {
-	return numberOfQueries;
+        return numberOfQueries;
     }
 
     public void setNumberOfQueries(long numberOfQueries) {
-	this.numberOfQueries = numberOfQueries;
+        this.numberOfQueries = numberOfQueries;
     }
 
     public Curve getCurve() {
-	return curve;
+        return curve;
     }
 
     public void setCurve(Curve curve) {
-	this.curve = curve;
+        this.curve = curve;
     }
 }

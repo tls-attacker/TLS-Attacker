@@ -40,30 +40,30 @@ public abstract class ModifiableVariable<E> {
     }
 
     public void setModification(VariableModification<E> modification) {
-	this.modification = modification;
+        this.modification = modification;
     }
 
     @XmlAnyElement(lax = true)
     public VariableModification<E> getModification() {
-	return modification;
+        return modification;
     }
 
     public E getValue() {
-	if (createRandomModification) {
-	    createRandomModification();
-	    createRandomModification = false;
-	}
+        if (createRandomModification) {
+            createRandomModification();
+            createRandomModification = false;
+        }
 
-	if (modification != null) {
-	    return modification.modify(originalValue);
-	}
-	return originalValue;
+        if (modification != null) {
+            return modification.modify(originalValue);
+        }
+        return originalValue;
     }
 
     protected abstract void createRandomModification();
 
     public void createRandomModificationAtRuntime() {
-	createRandomModification = true;
+        createRandomModification = true;
     }
 
     public abstract boolean isOriginalValueModified();
@@ -71,6 +71,6 @@ public abstract class ModifiableVariable<E> {
     public abstract boolean validateAssertions();
 
     public boolean containsAssertion() {
-	return (assertEquals != null);
+        return (assertEquals != null);
     }
 }

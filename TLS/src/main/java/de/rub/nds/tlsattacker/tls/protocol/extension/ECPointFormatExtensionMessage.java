@@ -34,44 +34,44 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
     ModifiableByteArray pointFormats;
 
     public ECPointFormatExtensionMessage() {
-	this.extensionTypeConstant = ExtensionType.EC_POINT_FORMATS;
+        this.extensionTypeConstant = ExtensionType.EC_POINT_FORMATS;
     }
 
     public ModifiableByteArray getPointFormats() {
-	return pointFormats;
+        return pointFormats;
     }
 
     public void setPointFormats(byte[] array) {
-	this.pointFormats = ModifiableVariableFactory.safelySetValue(pointFormats, array);
+        this.pointFormats = ModifiableVariableFactory.safelySetValue(pointFormats, array);
     }
 
     public ModifiableInteger getPointFormatsLength() {
-	return pointFormatsLength;
+        return pointFormatsLength;
     }
 
     public void setPointFormatsLength(int length) {
-	this.pointFormatsLength = ModifiableVariableFactory.safelySetValue(pointFormatsLength, length);
+        this.pointFormatsLength = ModifiableVariableFactory.safelySetValue(pointFormatsLength, length);
     }
 
     public void setPointFormatsLength(ModifiableInteger pointFormatsLength) {
-	this.pointFormatsLength = pointFormatsLength;
+        this.pointFormatsLength = pointFormatsLength;
     }
 
     public void setPointFormats(ModifiableByteArray pointFormats) {
-	this.pointFormats = pointFormats;
+        this.pointFormats = pointFormats;
     }
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	return ECPointFormatExtensionHandler.getInstance();
+        return ECPointFormatExtensionHandler.getInstance();
     }
 
     public List<ECPointFormat> getPointFormatsConfig() {
-	return pointFormatsConfig;
+        return pointFormatsConfig;
     }
 
     public void setPointFormatsConfig(List<ECPointFormat> pointFormatsConfig) {
-	this.pointFormatsConfig = pointFormatsConfig;
+        this.pointFormatsConfig = pointFormatsConfig;
     }
 
 }

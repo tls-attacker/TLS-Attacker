@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeProtocolVersionAction extends TLSAction {

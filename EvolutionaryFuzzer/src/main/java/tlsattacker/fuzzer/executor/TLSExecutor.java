@@ -86,9 +86,9 @@ public class TLSExecutor extends Executor {
      * @param agent
      */
     public TLSExecutor(TestVector testVector, TLSServer server, Agent agent) {
-	this.testVector = testVector;
-	this.server = server;
-	this.agent = agent;
+        this.testVector = testVector;
+        this.server = server;
+        this.agent = agent;
 
     }
 
@@ -98,145 +98,148 @@ public class TLSExecutor extends Executor {
     @Override
     public void run() {
 
-	try {
-	    boolean timeout = false;
-	    ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	    TransportHandler transportHandler = null;
+        try {
+            boolean timeout = false;
+            ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
+            TransportHandler transportHandler = null;
 
-	    try {
-		// Load clientCertificate
-		EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
-		// TODO This can be a problem when running with mutliple threads
-		fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
-		fc.setPassword(testVector.getClientKeyCert().getPassword());
-		fc.setAlias(testVector.getClientKeyCert().getAlias());
-		agent.applicationStart(server);
-		GeneralConfig gc = new GeneralConfig();
-		gc.setLogLevel(Level.OFF);
-		configHandler.initialize(gc);
+            try {
+                // Load clientCertificate
+                EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
+                // TODO This can be a problem when running with mutliple threads
+                fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
+                fc.setPassword(testVector.getClientKeyCert().getPassword());
+                fc.setAlias(testVector.getClientKeyCert().getAlias());
+                agent.applicationStart(server);
+                GeneralConfig gc = new GeneralConfig();
+                gc.setLogLevel(Level.OFF);
+                configHandler.initialize(gc);
 
-		long time = System.currentTimeMillis();
-		int counter = 0;
-		while (transportHandler == null) {
-		    try {
-			transportHandler = generateTransportHandler(server, fc);
-		    } catch (ConfigurationException E) {
-			// It may happen that the implementation is not ready
-			// yet
-			if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
-			    LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
-			    agent.applicationStop(server);
-			    agent.applicationStart(server);
-			    time = System.currentTimeMillis();
-			    counter++;
-			}
-			if (counter >= 5) {
-			    throw new ConfigurationException(
-				    "Could not start TLS Server, check your configuration Files!");
-			}
-		    }
-		}
-		KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
-		TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
-		tlsContext.setFuzzingMode(true);
-		tlsContext.setKeyStore(ks);
-		tlsContext.setAlias(fc.getAlias());
-		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		Collection<? extends Certificate> certs = certFactory.generateCertificates(new FileInputStream(
-			testVector.getServerKeyCert().getCertificateFile()));
+                long time = System.currentTimeMillis();
+                int counter = 0;
+                while (transportHandler == null) {
+                    try {
+                        transportHandler = generateTransportHandler(server, fc);
+                    } catch (ConfigurationException E) {
+                        // It may happen that the implementation is not ready
+                        // yet
+                        if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
+                            LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
+                            agent.applicationStop(server);
+                            agent.applicationStart(server);
+                            time = System.currentTimeMillis();
+                            counter++;
+                        }
+                        if (counter >= 5) {
+                            throw new ConfigurationException(
+                                    "Could not start TLS Server, check your configuration Files!");
+                        }
+                    }
+                }
+                KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
+                TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
+                tlsContext.setFuzzingMode(true);
+                tlsContext.setKeyStore(ks);
+                tlsContext.setAlias(fc.getAlias());
+                CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+                Collection<? extends Certificate> certs = certFactory.generateCertificates(new FileInputStream(
+                        testVector.getServerKeyCert().getCertificateFile()));
 
-		Certificate sunCert = (Certificate) certs.toArray()[0];
-		byte[] certBytes = sunCert.getEncoded();
+                Certificate sunCert = (Certificate) certs.toArray()[0];
+                byte[] certBytes = sunCert.getEncoded();
 
-		ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-		org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
-			.getInstance(asn1Cert);
+                ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+                org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
+                        .getInstance(asn1Cert);
 
-		org.bouncycastle.asn1.x509.Certificate[] certs2 = new org.bouncycastle.asn1.x509.Certificate[1];
-		certs2[0] = cert;
-		org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs2);
+                org.bouncycastle.asn1.x509.Certificate[] certs2 = new org.bouncycastle.asn1.x509.Certificate[1];
+                certs2[0] = cert;
+                org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs2);
 
-		X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
+                X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
 
-		tlsContext.setX509ServerCertificateObject(x509CertObject);
-		tlsContext.setServerCertificate(cert);
-		tlsContext.setWorkflowTrace(testVector.getTrace());
-		WorkflowExecutor workflowExecutor = null;
-		if (testVector.getExecutorType() == ExecutorType.TLS) {
-		    workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext,
-			    testVector.getExecutorType());
-		} else {
-		    workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
+                tlsContext.setX509ServerCertificateObject(x509CertObject);
+                tlsContext.setServerCertificate(cert);
+                tlsContext.setWorkflowTrace(testVector.getTrace());
+                WorkflowExecutor workflowExecutor = null;
+                if (testVector.getExecutorType() == ExecutorType.TLS) {
+                    workflowExecutor = new GenericWorkflowExecutor(transportHandler, tlsContext,
+                            testVector.getExecutorType());
+                } else {
+                    workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
 
-		}
-		// tlsContext.setServerCertificate(certificate);
-		workflowExecutor.executeWorkflow();
-	    } catch (UnsupportedOperationException E) {
-		// Skip Workflows we dont support yet
-	    } catch (ServerDoesNotStartException E) {
-		timeout = true; // TODO
-	    } catch (Throwable E) {
-		File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
-			+ LogFileIDManager.getInstance().getFilename());
+                }
+                // tlsContext.setServerCertificate(certificate);
+                workflowExecutor.executeWorkflow();
+            } catch (UnsupportedOperationException E) {
+                // Skip Workflows we dont support yet
+            } catch (ServerDoesNotStartException E) {
+                timeout = true; // TODO
+            } catch (Throwable E) {
+                File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
+                        + LogFileIDManager.getInstance().getFilename());
 
-		try {
-		    TestVectorSerializer.write(f, testVector);
-		} catch (JAXBException | IOException Ex) {
-		    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
-		    Ex.printStackTrace();
-		}
-		LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
-		E.printStackTrace();
-	    } finally {
-		if (transportHandler != null) {
-		    transportHandler.closeConnection();
-		}
+                try {
+                    TestVectorSerializer.write(f, testVector);
+                } catch (JAXBException | IOException Ex) {
+                    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
+                    Ex.printStackTrace();
+                }
+                LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
+                E.printStackTrace();
+            } finally {
+                if (transportHandler != null) {
+                    transportHandler.closeConnection();
+                }
 
-		agent.applicationStop(server);
-		File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
-			+ "/" + server.getID());
-		try {
-		    Result r = agent.collectResults(branchTrace, testVector);
-		    r.setDidTimeout(timeout);
-		    branchTrace.delete();
-		    ResultContainer.getInstance().commit(r);
-		} catch (Exception E) {
-		    E.printStackTrace();
-		}
-		int id = server.getID();
+                agent.applicationStop(server);
+                File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
+                        + "/" + server.getID());
+                try {
+                    Result r = agent.collectResults(branchTrace, testVector);
+                    r.setDidTimeout(timeout);
+                    branchTrace.delete();
+                    ResultContainer.getInstance().commit(r);
+                } catch (Exception E) {
+                    E.printStackTrace();
+                }
+                int id = server.getID();
 
-		// Cleanup
-		File file = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath() + "/"
-			+ id);
-		if (file.exists()) {
-		    file.delete();
-		}
-	    }
-	} finally {
-	    server.release();
-	}
+                // Cleanup
+                File file = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath() + "/"
+                        + id);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        } finally {
+            server.release();
+        }
 
     }
 
     /**
      * Generates a TransportHandler according to the TLSServer and the config
-     * @param server TLSServer to use
-     * @param config Config to use
+     * 
+     * @param server
+     *            TLSServer to use
+     * @param config
+     *            Config to use
      * @return A newly generated Transporthandler
      */
     private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
-	TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-		config.getTlsTimeout());
-	try {
-	    th.initialize(server.getIp(), server.getPort());
-	    return th;
-	} catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
-	    throw new ConfigurationException("Server not properly configured!");
-	} catch (IOException ex) {
-	    throw new ConfigurationException("Unable to initialize the transport handler with: " + server.getIp() + ":"
-		    + server.getPort(), ex);
-	}
+        TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
+                config.getTlsTimeout());
+        try {
+            th.initialize(server.getIp(), server.getPort());
+            return th;
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
+            throw new ConfigurationException("Server not properly configured!");
+        } catch (IOException ex) {
+            throw new ConfigurationException("Unable to initialize the transport handler with: " + server.getIp() + ":"
+                    + server.getPort(), ex);
+        }
     }
-    
+
     private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 }

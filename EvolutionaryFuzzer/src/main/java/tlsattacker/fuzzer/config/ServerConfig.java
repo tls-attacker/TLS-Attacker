@@ -34,13 +34,15 @@ public class ServerConfig {
     private int port = 4433;
 
     /**
-     * The String the fuzzer should wait for in the server output that should be put in the server config file
+     * The String the fuzzer should wait for in the server output that should be
+     * put in the server config file
      */
     @Parameter(names = "-accept", required = true, description = "The String the Server outputs when it finished booting")
     private String accept;
 
     /**
-     * The command the fuzzer should use to start the server that should be put in the server config file
+     * The command the fuzzer should use to start the server that should be put
+     * in the server config file
      */
     @Parameter(names = "-start", required = true, description = "The command with which the Server is started. Can use placeholders:\n\t\t[cert] certificate used by the Server\n\t\t[key] private key used by the Server\n\t\t[port] port used by the Server")
     private String startcommand;
@@ -52,53 +54,54 @@ public class ServerConfig {
     private String output;
 
     /**
-     * The command that should be used to kill the server that should be put in the server config file
+     * The command that should be used to kill the server that should be put in
+     * the server config file
      */
     @Parameter(names = "-killCommand", required = false, description = "The Command needed to kill the Server after each execution, probably makes only sense in a single Threaded enviroment")
     private String killCommand;
 
     public String getIp() {
-	return ip;
+        return ip;
     }
 
     public void setIp(String ip) {
-	this.ip = ip;
+        this.ip = ip;
     }
 
     public String getKillCommand() {
-	return killCommand;
+        return killCommand;
     }
 
     public int getPort() {
-	return port;
+        return port;
     }
 
     public void setPort(int port) {
-	this.port = port;
+        this.port = port;
     }
 
     public String getAccept() {
-	return accept;
+        return accept;
     }
 
     public void setAccept(String accept) {
-	this.accept = accept;
+        this.accept = accept;
     }
 
     public String getStartcommand() {
-	return startcommand;
+        return startcommand;
     }
 
     public void setStartcommand(String startcommand) {
-	this.startcommand = startcommand;
+        this.startcommand = startcommand;
     }
 
     public String getOutput() {
-	return output;
+        return output;
     }
 
     public void setOutput(String output) {
-	this.output = output;
+        this.output = output;
     }
 
     private static final Logger LOG = Logger.getLogger(ServerConfig.class.getName());

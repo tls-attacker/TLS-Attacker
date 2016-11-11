@@ -48,17 +48,21 @@ public abstract class Agent {
      * If the application did timeout
      */
     protected boolean timeout;
-    
+
     /**
      * If the application did crash
      */
     protected boolean crash;
+
     /**
      * Default Constructor
-     * @param keypair The server certificate key pair the agent should start the server with
+     * 
+     * @param keypair
+     *            The server certificate key pair the agent should start the
+     *            server with
      */
     public Agent(ServerCertificateStructure keypair) {
-	this.keypair = keypair;
+        this.keypair = keypair;
     }
 
     /**
@@ -82,7 +86,8 @@ public abstract class Agent {
      * 
      * @param branchTrace
      *            File containing the Branch Information
-     * @param vector The TestVector that was executed.
+     * @param vector
+     *            The TestVector that was executed.
      * @return Result Object which contains all Information of the executed
      *         TestVector.
      */

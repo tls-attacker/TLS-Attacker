@@ -20,27 +20,27 @@ import tlsattacker.fuzzer.testvector.TestVector;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Result {
-    
+
     /**
      * If the Implementation has Crashed
      */
     private final boolean hasCrashed;
-    
+
     /**
      * If the Implementation did Timeout
      */
     private boolean didTimeout;
-    
+
     /**
      * The Unixtime @ which the Vector started executing
      */
     private final long startTime;
-    
+
     /**
      * The Unixtime @ which the Vector finished executing
      */
     private final long stopTime;
-    
+
     /**
      * The instrumentation result
      */
@@ -50,7 +50,7 @@ public class Result {
      * The TestVector that was executed
      */
     private final TestVector vector;
- 
+
     /**
      * Each Result get an id for easier referencing
      */
@@ -72,60 +72,60 @@ public class Result {
      * @param id
      */
     public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
-	    TestVector vector, String id) {
-	this.hasCrashed = hasCrashed;
-	this.didTimeout = didTimeout;
-	this.startTime = startTime;
-	this.stopTime = stopTime;
-	this.branchTrace = branchTrace;
-	this.vector = vector;
-	this.id = id;
+            TestVector vector, String id) {
+        this.hasCrashed = hasCrashed;
+        this.didTimeout = didTimeout;
+        this.startTime = startTime;
+        this.stopTime = stopTime;
+        this.branchTrace = branchTrace;
+        this.vector = vector;
+        this.id = id;
     }
 
     public Boolean isGoodTrace() {
-	return goodTrace;
+        return goodTrace;
     }
 
     public void setGoodTrace(Boolean wasGoodTrace) {
-	this.goodTrace = wasGoodTrace;
+        this.goodTrace = wasGoodTrace;
     }
 
     public void setDidTimeout(boolean didTimeout) {
-	this.didTimeout = didTimeout;
+        this.didTimeout = didTimeout;
     }
 
     public String getId() {
-	return id;
+        return id;
     }
 
     public boolean hasCrashed() {
-	return hasCrashed;
+        return hasCrashed;
     }
 
     public boolean didTimeout() {
-	return didTimeout;
+        return didTimeout;
     }
 
     public long getStartTime() {
-	return startTime;
+        return startTime;
     }
 
     public long getStopTime() {
-	return stopTime;
+        return stopTime;
     }
 
     public BranchTrace getBranchTrace() {
-	return branchTrace;
+        return branchTrace;
     }
 
     @Override
     public String toString() {
-	return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime
-		+ ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
+        return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime
+                + ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
     }
 
     public TestVector getVector() {
-	return vector;
+        return vector;
     }
 
     private static final Logger LOG = Logger.getLogger(Result.class.getName());

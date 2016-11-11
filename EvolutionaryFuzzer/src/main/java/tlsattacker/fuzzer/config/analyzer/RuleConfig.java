@@ -25,23 +25,23 @@ public abstract class RuleConfig {
     protected String outputFolderName;
 
     public RuleConfig(String outputFolderName) {
-	this.outputFolderName = outputFolderName;
+        this.outputFolderName = outputFolderName;
     }
 
     public boolean isActive() {
-	return active;
+        return active;
     }
 
     public void setActive(boolean active) {
-	this.active = active;
+        this.active = active;
     }
 
     public String getOutputFolder() {
-	return outputFolderName;
+        return outputFolderName;
     }
 
     public void setOutputFolder(String outputFolder) {
-	this.outputFolderName = outputFolder;
+        this.outputFolderName = outputFolder;
     }
 
 }

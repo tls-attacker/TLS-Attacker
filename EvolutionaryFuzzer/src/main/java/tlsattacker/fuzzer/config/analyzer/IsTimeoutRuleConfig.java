@@ -21,7 +21,7 @@ public class IsTimeoutRuleConfig extends RuleConfig {
     // sees the WorkflowTrace first after it already Timedout
 
     public IsTimeoutRuleConfig() {
-	super("timeout/");
+        super("timeout/");
     }
 
     private static final Logger LOG = Logger.getLogger(IsTimeoutRuleConfig.class.getName());

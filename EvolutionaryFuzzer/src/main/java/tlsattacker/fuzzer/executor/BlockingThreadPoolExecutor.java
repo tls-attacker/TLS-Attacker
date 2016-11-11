@@ -27,38 +27,38 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     private final Semaphore semaphore;
 
     public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-	    BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
-	super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
-	this.semaphore = new Semaphore(maximumPoolSize);
+            BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+        this.semaphore = new Semaphore(maximumPoolSize);
     }
 
     @Override
     public void execute(Runnable task) {
-	boolean acquired = false;
-	do {
-	    try {
-		semaphore.acquire();
-		acquired = true;
-	    } catch (InterruptedException e) { // wait forever!
-	    }
-	} while (!acquired);
-	try {
-	    super.execute(task);
-	} catch (RuntimeException e) {
-	    // specifically, handle RejectedExecutionException
-	    e.printStackTrace();
-	    semaphore.release();
-	    throw e;
-	} catch (Error e) {
-	    e.printStackTrace();
-	    semaphore.release();
-	    throw e;
-	}
+        boolean acquired = false;
+        do {
+            try {
+                semaphore.acquire();
+                acquired = true;
+            } catch (InterruptedException e) { // wait forever!
+            }
+        } while (!acquired);
+        try {
+            super.execute(task);
+        } catch (RuntimeException e) {
+            // specifically, handle RejectedExecutionException
+            e.printStackTrace();
+            semaphore.release();
+            throw e;
+        } catch (Error e) {
+            e.printStackTrace();
+            semaphore.release();
+            throw e;
+        }
     }
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
-	semaphore.release();
+        semaphore.release();
     }
 
     private static final Logger LOG = Logger.getLogger(BlockingThreadPoolExecutor.class.getName());

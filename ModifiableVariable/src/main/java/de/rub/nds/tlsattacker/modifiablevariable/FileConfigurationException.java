@@ -19,10 +19,10 @@ public class FileConfigurationException extends RuntimeException {
     }
 
     public FileConfigurationException(Exception ex) {
-	super(ex);
+        super(ex);
     }
 
     public FileConfigurationException(String message, Exception ex) {
-	super(message, ex);
+        super(message, ex);
     }
 }

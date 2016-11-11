@@ -28,7 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public abstract class HandshakeTest extends TestTLS {
@@ -52,15 +52,23 @@ public abstract class HandshakeTest extends TestTLS {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         ClientHelloMessage ch = new ClientHelloMessage();
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
-        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new ArbitraryMessage()));
-        // we have to send this alert to make clear the connection will be closed
-        // and the server does not wait for further messages (there are test servers, 
+        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
+                new ArbitraryMessage()));
+        // we have to send this alert to make clear the connection will be
+        // closed
+        // and the server does not wait for further messages (there are test
+        // servers,
         // for example Botan, for which closing connection is not enough)
         AlertMessage alert = new AlertMessage();
         alert.setLevel(AlertLevel.FATAL.getValue());
-        alert.setDescription(AlertDescription.HANDSHAKE_FAILURE.getValue());//TODO why not send close notify?
+        alert.setDescription(AlertDescription.HANDSHAKE_FAILURE.getValue());// TODO
+                                                                            // why
+                                                                            // not
+                                                                            // send
+                                                                            // close
+                                                                            // notify?
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, alert));
-        
+
         ch.setSupportedCipherSuites(serverConfig.getCipherSuites());
         ch.setSupportedCompressionMethods(serverConfig.getCompressionMethods());
         WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig, ch);

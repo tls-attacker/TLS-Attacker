@@ -22,49 +22,49 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement
 @XmlSeeAlso({ LongAddModification.class, LongExplicitValueModification.class, LongSubtractModification.class,
-	LongXorModification.class })
+        LongXorModification.class })
 @XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableLong extends ModifiableVariable<Long> implements Serializable {
 
     @Override
     protected void createRandomModification() {
-	VariableModification<Long> vm = LongModificationFactory.createRandomModification();
-	setModification(vm);
+        VariableModification<Long> vm = LongModificationFactory.createRandomModification();
+        setModification(vm);
     }
 
     public Long getOriginalValue() {
-	return originalValue;
+        return originalValue;
     }
 
     public void setOriginalValue(Long originalValue) {
-	this.originalValue = originalValue;
+        this.originalValue = originalValue;
     }
 
     public Long getAssertEquals() {
-	return assertEquals;
+        return assertEquals;
     }
 
     public void setAssertEquals(Long assertEquals) {
-	this.assertEquals = assertEquals;
+        this.assertEquals = assertEquals;
     }
 
     @Override
     public boolean isOriginalValueModified() {
-	return originalValue != null && originalValue.compareTo(getValue()) != 0;
+        return originalValue != null && originalValue.compareTo(getValue()) != 0;
     }
 
     public byte[] getByteArray(int size) {
-	return ArrayConverter.longToBytes(getValue(), size);
+        return ArrayConverter.longToBytes(getValue(), size);
     }
 
     @Override
     public boolean validateAssertions() {
-	boolean valid = true;
-	if (assertEquals != null) {
-	    if (assertEquals.compareTo(getValue()) != 0) {
-		valid = false;
-	    }
-	}
-	return valid;
+        boolean valid = true;
+        if (assertEquals != null) {
+            if (assertEquals.compareTo(getValue()) != 0) {
+                valid = false;
+            }
+        }
+        return valid;
     }
 }

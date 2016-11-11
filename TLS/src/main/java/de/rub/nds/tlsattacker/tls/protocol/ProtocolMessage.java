@@ -37,7 +37,7 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
  */
 @XmlRootElement
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements ProtocolMessageHandlerBearer,
-	Serializable {
+        Serializable {
 
     /**
      * content type
@@ -81,103 +81,103 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected static boolean fuzzingMode = false;
 
     public boolean isFuzzingMode() {
-	return ProtocolMessage.fuzzingMode;
+        return ProtocolMessage.fuzzingMode;
     }
 
     public static void setFuzzingMode(boolean fuzzingMode) {
-	ProtocolMessage.fuzzingMode = fuzzingMode;
+        ProtocolMessage.fuzzingMode = fuzzingMode;
     }
 
     @Override
     public abstract ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext);
 
     public ProtocolMessageType getProtocolMessageType() {
-	return protocolMessageType;
+        return protocolMessageType;
     }
 
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-	    @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
+            @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
     public List<Record> getRecords() {
-	return records;
+        return records;
     }
 
     public void setRecords(List<Record> records) {
-	this.records = records;
+        this.records = records;
     }
 
     public void addRecord(Record record) {
-	if (this.records == null) {
-	    this.records = new LinkedList<>();
-	}
-	this.records.add(record);
+        if (this.records == null) {
+            this.records = new LinkedList<>();
+        }
+        this.records.add(record);
     }
 
     public boolean isRequired() {
-	return required;
+        return required;
     }
 
     public void setRequired(boolean required) {
-	this.required = required;
+        this.required = required;
     }
 
     public boolean isGoingToBeSent() {
-	return goingToBeSent;
+        return goingToBeSent;
     }
 
     public void setGoingToBeSent(boolean goingToBeSent) {
-	this.goingToBeSent = goingToBeSent;
+        this.goingToBeSent = goingToBeSent;
     }
 
     public boolean isGoingToBeParsed() {
-	return goingToBeParsed;
+        return goingToBeParsed;
     }
 
     public void setGoingToBeParsed(boolean goingToBeParsed) {
-	this.goingToBeParsed = goingToBeParsed;
+        this.goingToBeParsed = goingToBeParsed;
     }
 
     public boolean isGoingToBeModified() {
-	return goingToBeModified;
+        return goingToBeModified;
     }
 
     public void setGoingToBeModified(boolean goingToBeModified) {
-	this.goingToBeModified = goingToBeModified;
+        this.goingToBeModified = goingToBeModified;
     }
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-	List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-	if (records != null) {
-	    for (Record r : records) {
-		holders.add(r);
-	    }
-	}
-	return holders;
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (records != null) {
+            for (Record r : records) {
+                holders.add(r);
+            }
+        }
+        return holders;
     }
 
     @Override
     public Field getRandomModifiableVariableField() {
-	List<Field> fields = getAllModifiableVariableFields();
-	int randomField = RandomHelper.getRandom().nextInt(fields.size());
-	return fields.get(randomField);
+        List<Field> fields = getAllModifiableVariableFields();
+        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        return fields.get(randomField);
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {
-	return completeResultingMessage;
+        return completeResultingMessage;
     }
 
     public void setCompleteResultingMessage(ModifiableByteArray completeResultingMessage) {
-	this.completeResultingMessage = completeResultingMessage;
+        this.completeResultingMessage = completeResultingMessage;
     }
 
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-	this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-		completeResultingMessage);
+        this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
+                completeResultingMessage);
     }
 
     public boolean isHandshakeMessage() {
-	return this instanceof HandshakeMessage;
+        return this instanceof HandshakeMessage;
     }
 
     public abstract String toCompactString();

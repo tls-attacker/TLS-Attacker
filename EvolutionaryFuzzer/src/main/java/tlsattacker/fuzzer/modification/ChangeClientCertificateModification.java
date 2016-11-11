@@ -24,12 +24,12 @@ public class ChangeClientCertificateModification extends Modification {
     private final ClientCertificateStructure keyCertPair;
 
     public ChangeClientCertificateModification(ClientCertificateStructure keyCertPair) {
-	super(ModificationType.CHANGE_CLIENT_CERT);
-	this.keyCertPair = keyCertPair;
+        super(ModificationType.CHANGE_CLIENT_CERT);
+        this.keyCertPair = keyCertPair;
     }
 
     public ClientCertificateStructure getKeyCertPair() {
-	return keyCertPair;
+        return keyCertPair;
     }
 
     private static final Logger LOG = Logger.getLogger(ChangeClientCertificateModification.class.getName());

@@ -66,84 +66,84 @@ public class CertificateRequestMessage extends HandshakeMessage {
     ModifiableByteArray distinguishedNames;
 
     public CertificateRequestMessage() {
-	super(HandshakeMessageType.CERTIFICATE_REQUEST);
+        super(HandshakeMessageType.CERTIFICATE_REQUEST);
     }
 
     public ModifiableInteger getClientCertificateTypesCount() {
-	return clientCertificateTypesCount;
+        return clientCertificateTypesCount;
     }
 
     public void setClientCertificateTypesCount(ModifiableInteger clientCertificateTypesCount) {
-	this.clientCertificateTypesCount = clientCertificateTypesCount;
+        this.clientCertificateTypesCount = clientCertificateTypesCount;
     }
 
     public void setClientCertificateTypesCount(int clientCertificateTypesCount) {
-	this.clientCertificateTypesCount = ModifiableVariableFactory.safelySetValue(this.clientCertificateTypesCount,
-		clientCertificateTypesCount);
+        this.clientCertificateTypesCount = ModifiableVariableFactory.safelySetValue(this.clientCertificateTypesCount,
+                clientCertificateTypesCount);
     }
 
     public ModifiableByteArray getClientCertificateTypes() {
-	return clientCertificateTypes;
+        return clientCertificateTypes;
     }
 
     public void setClientCertificateTypes(ModifiableByteArray clientCertificateTypes) {
-	this.clientCertificateTypes = clientCertificateTypes;
+        this.clientCertificateTypes = clientCertificateTypes;
     }
 
     public void setClientCertificateTypes(byte[] clientCertificateTypes) {
-	this.clientCertificateTypes = ModifiableVariableFactory.safelySetValue(this.clientCertificateTypes,
-		clientCertificateTypes);
+        this.clientCertificateTypes = ModifiableVariableFactory.safelySetValue(this.clientCertificateTypes,
+                clientCertificateTypes);
     }
 
     public ModifiableInteger getSignatureHashAlgorithmsLength() {
-	return signatureHashAlgorithmsLength;
+        return signatureHashAlgorithmsLength;
     }
 
     public void setSignatureHashAlgorithmsLength(ModifiableInteger signatureHashAlgorithmsLength) {
-	this.signatureHashAlgorithmsLength = signatureHashAlgorithmsLength;
+        this.signatureHashAlgorithmsLength = signatureHashAlgorithmsLength;
     }
 
     public void setSignatureHashAlgorithmsLength(int signatureHashAlgorithmsLength) {
-	this.signatureHashAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
-		this.signatureHashAlgorithmsLength, signatureHashAlgorithmsLength);
+        this.signatureHashAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
+                this.signatureHashAlgorithmsLength, signatureHashAlgorithmsLength);
     }
 
     public ModifiableByteArray getSignatureHashAlgorithms() {
-	return signatureHashAlgorithms;
+        return signatureHashAlgorithms;
     }
 
     public void setSignatureHashAlgorithms(ModifiableByteArray signatureHashAlgorithms) {
-	this.signatureHashAlgorithms = signatureHashAlgorithms;
+        this.signatureHashAlgorithms = signatureHashAlgorithms;
     }
 
     public void setSignatureHashAlgorithms(byte[] signatureHashAlgorithms) {
-	this.signatureHashAlgorithms = ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithms,
-		signatureHashAlgorithms);
+        this.signatureHashAlgorithms = ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithms,
+                signatureHashAlgorithms);
     }
 
     public ModifiableInteger getDistinguishedNamesLength() {
-	return distinguishedNamesLength;
+        return distinguishedNamesLength;
     }
 
     public void setDistinguishedNamesLength(ModifiableInteger distinguishedNamesLength) {
-	this.distinguishedNamesLength = distinguishedNamesLength;
+        this.distinguishedNamesLength = distinguishedNamesLength;
     }
 
     public void setDistinguishedNamesLength(int distinguishedNamesLength) {
-	this.distinguishedNamesLength = ModifiableVariableFactory.safelySetValue(this.distinguishedNamesLength,
-		distinguishedNamesLength);
+        this.distinguishedNamesLength = ModifiableVariableFactory.safelySetValue(this.distinguishedNamesLength,
+                distinguishedNamesLength);
     }
 
     public ModifiableByteArray getDistinguishedNames() {
-	return distinguishedNames;
+        return distinguishedNames;
     }
 
     public void setDistinguishedNames(ModifiableByteArray distinguishedNames) {
-	this.distinguishedNames = distinguishedNames;
+        this.distinguishedNames = distinguishedNames;
     }
 
     public void setDistinguishedNames(byte[] distinguishedNames) {
-	this.distinguishedNames = ModifiableVariableFactory.safelySetValue(this.distinguishedNames, distinguishedNames);
+        this.distinguishedNames = ModifiableVariableFactory.safelySetValue(this.distinguishedNames, distinguishedNames);
     }
 
     /**
@@ -158,51 +158,51 @@ public class CertificateRequestMessage extends HandshakeMessage {
      */
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder(super.toString());
-	if (clientCertificateTypesCount != null) {
-	    sb.append("\n  Certificate Types Count: ").append(clientCertificateTypesCount.getValue());
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Certificate Types: ");
-	if (clientCertificateTypes != null) {
-	    for (int i = 0; i < clientCertificateTypes.getValue().length; i++) {
-		sb.append(ClientCertificateType.getClientCertificateType(clientCertificateTypes.getValue()[i])).append(
-			", ");
-	    }
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Signature Hash Algorithms Length: ");
-	if (signatureHashAlgorithmsLength != null) {
-	    sb.append(signatureHashAlgorithmsLength.getValue());
-	} else {
-	    sb.append("null");
-	}
-	// TODO Das hier kann fÃ¼r kaputte nachrichten nicht funktionieren
-	sb.append("\n  Signature Hash Algorithms: ");
-	if (signatureHashAlgorithms != null) {
-	    for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i = i + 2) {
-		sb.append(HashAlgorithm.getHashAlgorithm(signatureHashAlgorithms.getValue()[i])).append("-");
-		sb.append(SignatureAlgorithm.getSignatureAlgorithm(signatureHashAlgorithms.getValue()[i + 1])).append(
-			", ");
-	    }
-	} else {
-	    sb.append("null");
-	}
-	if (distinguishedNamesLength != null) {
-	    sb.append("\n  Distinguished Names Length: ");
-	    sb.append(distinguishedNamesLength.getValue());
-	}
-	// sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
-	return sb.toString();
+        StringBuilder sb = new StringBuilder(super.toString());
+        if (clientCertificateTypesCount != null) {
+            sb.append("\n  Certificate Types Count: ").append(clientCertificateTypesCount.getValue());
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Certificate Types: ");
+        if (clientCertificateTypes != null) {
+            for (int i = 0; i < clientCertificateTypes.getValue().length; i++) {
+                sb.append(ClientCertificateType.getClientCertificateType(clientCertificateTypes.getValue()[i])).append(
+                        ", ");
+            }
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Signature Hash Algorithms Length: ");
+        if (signatureHashAlgorithmsLength != null) {
+            sb.append(signatureHashAlgorithmsLength.getValue());
+        } else {
+            sb.append("null");
+        }
+        // TODO Das hier kann fÃ¼r kaputte nachrichten nicht funktionieren
+        sb.append("\n  Signature Hash Algorithms: ");
+        if (signatureHashAlgorithms != null) {
+            for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i = i + 2) {
+                sb.append(HashAlgorithm.getHashAlgorithm(signatureHashAlgorithms.getValue()[i])).append("-");
+                sb.append(SignatureAlgorithm.getSignatureAlgorithm(signatureHashAlgorithms.getValue()[i + 1])).append(
+                        ", ");
+            }
+        } else {
+            sb.append("null");
+        }
+        if (distinguishedNamesLength != null) {
+            sb.append("\n  Distinguished Names Length: ");
+            sb.append(distinguishedNamesLength.getValue());
+        }
+        // sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
+        return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new CertificateRequestHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new CertificateRequestHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 
 }

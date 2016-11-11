@@ -45,71 +45,79 @@ public abstract class Rule {
     private final boolean isActive = true;
 
     protected Rule(EvolutionaryFuzzerConfig evoConfig, String configFileName) {
-	this.configFileName = configFileName;
-	this.evoConfig = evoConfig;
+        this.configFileName = configFileName;
+        this.evoConfig = evoConfig;
     }
 
     public File getRuleFolder() {
-	return ruleFolder;
+        return ruleFolder;
     }
 
     public boolean isActive() {
-	return isActive;
+        return isActive;
     }
 
     public abstract RuleConfig getConfig();
 
     /**
      * A method that checks if the Rule should be applied to to a Result
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      * @return True if the Rule should apply
      */
     public abstract boolean applies(Result result);
 
     /**
      * This method is called when the applies method returned true
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     public abstract void onApply(Result result);
 
     /**
      * This method is called when the applies method returned false
+     * 
      * @param result
      */
     public abstract void onDecline(Result result);
 
-     /**
+    /**
      * Generates a status report
+     * 
      * @return
      */
     public abstract String report();
 
     /**
      * Serializes a Configuration file to its configuration file
+     * 
      * @param c
      */
     protected void writeConfig(RuleConfig c) {
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:{0}", configFileName);
-	} else {
-	    JAXB.marshal(c, f);
-	}
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        if (f.exists()) {
+            LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:{0}", configFileName);
+        } else {
+            JAXB.marshal(c, f);
+        }
     }
 
     /**
-     * Creates the folders for the rule folder and if clean start is selected, deltes all previously collected data
+     * Creates the folders for the rule folder and if clean start is selected,
+     * deltes all previously collected data
      */
     protected void prepareConfigOutputFolder() {
-	ruleFolder = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
-	if (evoConfig.isCleanStart()) {
-	    if (ruleFolder.exists()) {
-		for (File tempFile : ruleFolder.listFiles()) {
-		    tempFile.delete();
-		}
-	    }
-	}
-	ruleFolder.mkdirs();
+        ruleFolder = new File(evoConfig.getOutputFolder() + this.getConfig().getOutputFolder());
+        if (evoConfig.isCleanStart()) {
+            if (ruleFolder.exists()) {
+                for (File tempFile : ruleFolder.listFiles()) {
+                    tempFile.delete();
+                }
+            }
+        }
+        ruleFolder.mkdirs();
     }
 
     private static final Logger LOG = Logger.getLogger(Rule.class.getName());

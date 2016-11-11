@@ -42,32 +42,32 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(SniTest.class);
 
     public SniTest(SniTestCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
-	List<TLSAction> actions = trace.getTLSActions();
-	ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
-	sni.setServerNameConfig(config.getServerName2());
-	sni.setNameTypeConfig(NameType.HOST_NAME);
-	ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
-		.getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
-	ch2.addExtension(sni);
-	actions.add(new SendAction(ch2));
-	List<ProtocolMessage> messageList = new LinkedList<>();
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        List<TLSAction> actions = trace.getTLSActions();
+        ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
+        sni.setServerNameConfig(config.getServerName2());
+        sni.setNameTypeConfig(NameType.HOST_NAME);
+        ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
+                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
+        ch2.addExtension(sni);
+        actions.add(new SendAction(ch2));
+        List<ProtocolMessage> messageList = new LinkedList<>();
 
-	messageList.add(new ServerHelloMessage());
-	messageList.add(new CertificateMessage());
-	actions.add(new ReceiveAction(messageList));
+        messageList.add(new ServerHelloMessage());
+        messageList.add(new CertificateMessage());
+        actions.add(new ReceiveAction(messageList));
 
-	workflowExecutor.executeWorkflow();
-	transportHandler.closeConnection();
+        workflowExecutor.executeWorkflow();
+        transportHandler.closeConnection();
 
     }
 

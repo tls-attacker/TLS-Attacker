@@ -126,10 +126,10 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        //Client
+        // Client
         ApplicationMessage applicationMessage = new ApplicationMessage();
         applicationMessage.addRecord(record);
-        //Server
+        // Server
         AlertMessage alertMessage = new AlertMessage();
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, applicationMessage));
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, alertMessage));

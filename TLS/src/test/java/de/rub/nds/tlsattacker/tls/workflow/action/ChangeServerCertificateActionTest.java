@@ -32,7 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ChangeServerCertificateActionTest {
@@ -47,7 +47,8 @@ public class ChangeServerCertificateActionTest {
     }
 
     @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            InvalidAlgorithmParameterException {
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
@@ -57,7 +58,8 @@ public class ChangeServerCertificateActionTest {
         dtlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
-        action = new ChangeServerCertificateAction(TestCertificates.getTestCertificate(), TestCertificates.getTestCertificateObject());
+        action = new ChangeServerCertificateAction(TestCertificates.getTestCertificate(),
+                TestCertificates.getTestCertificateObject());
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
 
@@ -132,7 +134,8 @@ public class ChangeServerCertificateActionTest {
     public void testJAXB() {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeServerCertificateAction.class);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
+                ChangeServerCertificateAction.class);
         assertEquals(action, action2);
     }
 

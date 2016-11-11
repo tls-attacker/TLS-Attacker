@@ -27,29 +27,29 @@ public class ModifiableVariableField {
     }
 
     public ModifiableVariableField(Object o, Field f) {
-	this.object = o;
-	this.field = f;
+        this.object = o;
+        this.field = f;
     }
 
     public Object getObject() {
-	return object;
+        return object;
     }
 
     public void setObject(Object object) {
-	this.object = object;
+        this.object = object;
     }
 
     public Field getField() {
-	return field;
+        return field;
     }
 
     public void setField(Field field) {
-	this.field = field;
+        this.field = field;
     }
 
     public ModifiableVariable getModifiableVariable() throws IllegalArgumentException, IllegalAccessException {
-	field.setAccessible(true);
-	return (ModifiableVariable) field.get(object);
+        field.setAccessible(true);
+        return (ModifiableVariable) field.get(object);
     }
 
 }

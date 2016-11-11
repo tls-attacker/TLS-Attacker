@@ -62,84 +62,84 @@ public class ServerTestSuite extends TestSuite {
 
     @Override
     public boolean startTests() {
-	configHandler = ConfigHandlerFactory.createConfigHandler("client");
-	configHandler.initialize(generalConfig);
+        configHandler = ConfigHandlerFactory.createConfigHandler("client");
+        configHandler.initialize(generalConfig);
 
-	this.startAttackTests();
-	this.startTestFromFiles();
-	return failedTests.isEmpty();
+        this.startAttackTests();
+        this.startTestFromFiles();
+        return failedTests.isEmpty();
     }
 
     private void startAttackTests() {
         Attacker<? extends CommandConfig> attacker;
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
-	bb.setConnect(testConfig.getConnect());
-	attacker = new BleichenbacherAttack(bb);
-	attacker.executeAttack(configHandler);
-	if (attacker.isVulnerable()) {
-	    failedTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
-	} else {
-	    successfulTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
-	}
+        bb.setConnect(testConfig.getConnect());
+        attacker = new BleichenbacherAttack(bb);
+        attacker.executeAttack(configHandler);
+        if (attacker.isVulnerable()) {
+            failedTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
+        } else {
+            successfulTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
+        }
 
-	InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
-	icea.setConnect(testConfig.getConnect());
-	attacker = new InvalidCurveAttack(icea);
-	attacker.executeAttack(configHandler);
-	if (attacker.isVulnerable()) {
-	    failedTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
-	} else {
-	    successfulTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
-	}
+        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
+        icea.setConnect(testConfig.getConnect());
+        attacker = new InvalidCurveAttack(icea);
+        attacker.executeAttack(configHandler);
+        if (attacker.isVulnerable()) {
+            failedTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
+        } else {
+            successfulTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
+        }
 
-	HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
-	heartbleed.setConnect(testConfig.getConnect());
-	attacker = new HeartbleedAttack(heartbleed);
-	attacker.executeAttack(configHandler);
-	if (attacker.isVulnerable()) {
-	    failedTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
-	} else {
-	    successfulTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
-	}
+        HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
+        heartbleed.setConnect(testConfig.getConnect());
+        attacker = new HeartbleedAttack(heartbleed);
+        attacker.executeAttack(configHandler);
+        if (attacker.isVulnerable()) {
+            failedTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
+        } else {
+            successfulTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
+        }
 
-	PoodleCommandConfig poodle = new PoodleCommandConfig();
-	poodle.setConnect(testConfig.getConnect());
-	attacker = new PoodleAttack(poodle);
-	attacker.executeAttack(configHandler);
-	if (attacker.isVulnerable()) {
-	    failedTests.add(PoodleCommandConfig.ATTACK_COMMAND);
-	} else {
-	    successfulTests.add(PoodleCommandConfig.ATTACK_COMMAND);
-	}
+        PoodleCommandConfig poodle = new PoodleCommandConfig();
+        poodle.setConnect(testConfig.getConnect());
+        attacker = new PoodleAttack(poodle);
+        attacker.executeAttack(configHandler);
+        if (attacker.isVulnerable()) {
+            failedTests.add(PoodleCommandConfig.ATTACK_COMMAND);
+        } else {
+            successfulTests.add(PoodleCommandConfig.ATTACK_COMMAND);
+        }
 
-	PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
-	po.setConnect(testConfig.getConnect());
-	attacker = new PaddingOracleAttack(po);
-	attacker.executeAttack(configHandler);
-	if (attacker.isVulnerable()) {
-	    failedTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
-	} else {
-	    successfulTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
-	}
+        PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
+        po.setConnect(testConfig.getConnect());
+        attacker = new PaddingOracleAttack(po);
+        attacker.executeAttack(configHandler);
+        if (attacker.isVulnerable()) {
+            failedTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
+        } else {
+            successfulTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
+        }
 
     }
 
     private void startTestFromFiles() {
         File folder = new File(testConfig.getFolder());
         File[] testsuites = folder.listFiles(new DirectoryFilter());
-        if(null == testsuites) {
+        if (null == testsuites) {
             testsuites = new File[0];
         }
         for (File testsuite : testsuites) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting {} Test Suite", testsuite.getName());
             File[] tests = testsuite.listFiles(new DirectoryFilter());
-            if(null == tests) {
+            if (null == tests) {
                 tests = new File[0];
             }
             for (File test : tests) {
                 LOGGER.info("Testing {} (one of these has to be succesful)", test.getName());
                 File[] testCases = test.listFiles(new DirectoryFilter());
-                if(null == testCases) {
+                if (null == testCases) {
                     testCases = new File[0];
                 }
                 boolean successfulTest = false;
@@ -172,16 +172,16 @@ public class ServerTestSuite extends TestSuite {
     }
 
     private boolean startTestCase(File testFolder) {
-	boolean succesful = true;
+        boolean succesful = true;
 
-	File[] xmlFiles = testFolder.listFiles(new FilenameFilter() {
-	    @Override
-	    public boolean accept(File dir, String name) {
-		return name.toLowerCase().endsWith(".xml");
-	    }
-	});
+        File[] xmlFiles = testFolder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".xml");
+            }
+        });
 
-        if(null == xmlFiles) {
+        if (null == xmlFiles) {
             xmlFiles = new File[0];
         }
 
@@ -215,22 +215,23 @@ public class ServerTestSuite extends TestSuite {
                     LOGGER.info("    {} failed", xmlFile.getName());
                     succesful = false;
                 }
-            } catch (WorkflowExecutionException | ConfigurationException | IllegalArgumentException | IllegalAccessException ex) {
+            } catch (WorkflowExecutionException | ConfigurationException | IllegalArgumentException
+                    | IllegalAccessException ex) {
                 LOGGER.info("    {} failed", xmlFile.getName());
                 LOGGER.info(ex);
                 succesful = false;
             }
         }
 
-	return succesful;
+        return succesful;
     }
 
     class DirectoryFilter implements FileFilter {
 
-	@Override
-	public boolean accept(File f) {
-	    return f.isDirectory();
-	}
+        @Override
+        public boolean accept(File f) {
+            return f.isDirectory();
+        }
 
     };
 

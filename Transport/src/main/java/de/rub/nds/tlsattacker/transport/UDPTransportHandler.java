@@ -35,7 +35,7 @@ public class UDPTransportHandler extends TransportHandler {
     private long responseNanos = -1;
 
     public UDPTransportHandler() {
-	tlsTimeout = DEFAULT_TLS_TIMEOUT;
+        tlsTimeout = DEFAULT_TLS_TIMEOUT;
     }
 
     @Override

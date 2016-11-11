@@ -39,55 +39,57 @@ public class Edge implements Serializable {
     private long counter = 0;
 
     public Edge(long source, long destination) {
-	this.source = source;
-	this.Destination = destination;
+        this.source = source;
+        this.Destination = destination;
     }
 
     public long getSource() {
-	return source;
+        return source;
     }
 
     public long getDestination() {
-	return Destination;
+        return Destination;
     }
 
     public long getCounter() {
-	return counter;
+        return counter;
     }
 
     public void setCounter(long counter) {
-	this.counter = counter;
+        this.counter = counter;
     }
 
     /**
      * Adds a value to counter
-     * @param counter Value to increase the counter by
+     * 
+     * @param counter
+     *            Value to increase the counter by
      */
     public void addCounter(long counter) {
-	this.counter += counter;
+        this.counter += counter;
     }
 
     @Override
     public int hashCode() {
-	int hash = 7;
-	hash = 41 * hash + (int) (this.source ^ (this.source >>> 32));
-	hash = 41 * hash + (int) (this.Destination ^ (this.Destination >>> 32));
-	return hash;
+        int hash = 7;
+        hash = 41 * hash + (int) (this.source ^ (this.source >>> 32));
+        hash = 41 * hash + (int) (this.Destination ^ (this.Destination >>> 32));
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final Edge other = (Edge) obj;
-	if (this.source != other.source) {
-	    return false;
-	}
-	return this.Destination == other.Destination;
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Edge other = (Edge) obj;
+        if (this.source != other.source) {
+            return false;
+        }
+        return this.Destination == other.Destination;
     }
 
     private static final Logger LOG = Logger.getLogger(Edge.class.getName());

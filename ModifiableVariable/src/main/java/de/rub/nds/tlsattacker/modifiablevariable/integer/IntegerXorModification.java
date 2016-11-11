@@ -26,19 +26,19 @@ public class IntegerXorModification extends VariableModification<Integer> {
     }
 
     public IntegerXorModification(Integer bi) {
-	this.xor = bi;
+        this.xor = bi;
     }
 
     @Override
     protected Integer modifyImplementationHook(final Integer input) {
-	return (input == null) ? xor : input ^ xor;
+        return (input == null) ? xor : input ^ xor;
     }
 
     public Integer getXor() {
-	return xor;
+        return xor;
     }
 
     public void setXor(Integer xor) {
-	this.xor = xor;
+        this.xor = xor;
     }
 }

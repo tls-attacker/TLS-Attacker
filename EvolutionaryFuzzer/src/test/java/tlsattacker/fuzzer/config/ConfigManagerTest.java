@@ -49,7 +49,7 @@ public class ConfigManagerTest {
      */
     @Test
     public void testSingleTon() {
-	ConfigManager.getInstance();
+        ConfigManager.getInstance();
     }
 
     /**
@@ -57,7 +57,7 @@ public class ConfigManagerTest {
      */
     @Test
     public void testGetConfig() {
-	assertNotNull("Failure: Could get a ConfigManager Instance", ConfigManager.getInstance().getConfig());
+        assertNotNull("Failure: Could get a ConfigManager Instance", ConfigManager.getInstance().getConfig());
     }
 
     private static final Logger LOG = Logger.getLogger(ConfigManagerTest.class.getName());

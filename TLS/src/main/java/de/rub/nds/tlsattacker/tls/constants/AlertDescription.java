@@ -54,30 +54,30 @@ public enum AlertDescription {
     private static final Map<Byte, AlertDescription> MAP;
 
     private AlertDescription(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (AlertDescription cm : AlertDescription.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (AlertDescription cm : AlertDescription.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static AlertDescription getAlertDescription(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     @Override
     public String toString() {
-	return "AlertDescription{" + "value=" + getAlertDescription(value).name() + '}';
+        return "AlertDescription{" + "value=" + getAlertDescription(value).name() + '}';
     }
 }

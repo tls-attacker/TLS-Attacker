@@ -34,75 +34,75 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     private static final Logger LOGGER = LogManager.getLogger(FinishedHandler.class);
 
     public FinishedHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = FinishedMessage.class;
+        super(tlsContext);
+        this.correctProtocolMessageClass = FinishedMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
-	// protocolMessage.setType(HandshakeMessageType.FINISHED.getValue());
+        // protocolMessage.setType(HandshakeMessageType.FINISHED.getValue());
 
-	byte[] masterSecret = tlsContext.getMasterSecret();
-	TlsMessageDigest digest = tlsContext.getDigest();
-	if (!digest.isInitialised()) {
-	    try {
-		// TODO in Config auslagern und exception handling Ã¼bernehmen
-		digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
-	    } catch (NoSuchAlgorithmException ex) {
-		java.util.logging.Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
-	byte[] handshakeMessagesHash = digest.digest();
+        byte[] masterSecret = tlsContext.getMasterSecret();
+        TlsMessageDigest digest = tlsContext.getDigest();
+        if (!digest.isInitialised()) {
+            try {
+                // TODO in Config auslagern und exception handling Ã¼bernehmen
+                digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
+            } catch (NoSuchAlgorithmException ex) {
+                java.util.logging.Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        byte[] handshakeMessagesHash = digest.digest();
 
-	PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
-		tlsContext.getSelectedCipherSuite());
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+                tlsContext.getSelectedCipherSuite());
 
-	byte[] verifyData;
+        byte[] verifyData;
 
-	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
-	    verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-		    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
-	} else {
-	    verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-		    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
-	}
-	protocolMessage.setVerifyData(verifyData);
-	LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
+        if (tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER) {
+            verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
+        } else {
+            verifyData = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessagesHash, HandshakeByteLength.VERIFY_DATA);
+        }
+        protocolMessage.setVerifyData(verifyData);
+        LOGGER.debug("Computed verify data: {}", ArrayConverter.bytesToHexString(verifyData));
 
-	byte[] result = protocolMessage.getVerifyData().getValue();
+        byte[] result = protocolMessage.getVerifyData().getValue();
 
-	protocolMessage.setLength(result.length);
+        protocolMessage.setLength(result.length);
 
-	long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-		+ protocolMessage.getLength().getValue();
+        long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
+                + protocolMessage.getLength().getValue();
 
-	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-		ArrayConverter.longToUint32Bytes(header), result));
+        protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+                ArrayConverter.longToUint32Bytes(header), result));
 
-	return protocolMessage.getCompleteResultingMessage().getValue();
+        return protocolMessage.getCompleteResultingMessage().getValue();
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	FinishedMessage finishedMessage = (FinishedMessage) protocolMessage;
-	if (message[pointer] != HandshakeMessageType.FINISHED.getValue()) {
-	    throw new InvalidMessageTypeException("This is not a server finished message");
-	}
-	finishedMessage.setType(message[pointer]);
+        FinishedMessage finishedMessage = (FinishedMessage) protocolMessage;
+        if (message[pointer] != HandshakeMessageType.FINISHED.getValue()) {
+            throw new InvalidMessageTypeException("This is not a server finished message");
+        }
+        finishedMessage.setType(message[pointer]);
 
-	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
-	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	finishedMessage.setLength(length);
+        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+        int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        finishedMessage.setLength(length);
 
-	currentPointer = nextPointer;
-	nextPointer = currentPointer + length;
-	byte[] verifyData = Arrays.copyOfRange(message, currentPointer, nextPointer);
-	finishedMessage.setVerifyData(verifyData);
+        currentPointer = nextPointer;
+        nextPointer = currentPointer + length;
+        byte[] verifyData = Arrays.copyOfRange(message, currentPointer, nextPointer);
+        finishedMessage.setVerifyData(verifyData);
 
-	protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
+        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
 
-	return nextPointer;
+        return nextPointer;
     }
 
 }

@@ -25,16 +25,16 @@ public class HeartbleedCommandConfig extends ClientCommandConfig {
     Integer payloadLength;
 
     public HeartbleedCommandConfig() {
-	workflowTraceType = WorkflowTraceType.FULL;
-	payloadLength = 20000;
-	heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
+        workflowTraceType = WorkflowTraceType.FULL;
+        payloadLength = 20000;
+        heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
     }
 
     public Integer getPayloadLength() {
-	return payloadLength;
+        return payloadLength;
     }
 
     public void setPayloadLength(Integer payloadLength) {
-	this.payloadLength = payloadLength;
+        this.payloadLength = payloadLength;
     }
 }

@@ -67,8 +67,8 @@ public class SimpleMutatorTest {
      */
     @Test
     public void testMutation() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	SimpleMutator mutator = new SimpleMutator(config, new FixedCertificateMutator());
-	mutator.getNewMutation();
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        SimpleMutator mutator = new SimpleMutator(config, new FixedCertificateMutator());
+        mutator.getNewMutation();
     }
 }

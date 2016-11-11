@@ -16,14 +16,14 @@ package de.rub.nds.tlsattacker.tls.exceptions;
 public class ModificationException extends RuntimeException {
 
     public ModificationException() {
-	super();
+        super();
     }
 
     public ModificationException(String message) {
-	super(message);
+        super(message);
     }
 
     public ModificationException(String message, Throwable cause) {
-	super(message, cause);
+        super(message, cause);
     }
 }

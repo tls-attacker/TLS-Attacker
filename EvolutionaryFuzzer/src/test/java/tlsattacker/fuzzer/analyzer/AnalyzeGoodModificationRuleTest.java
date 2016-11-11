@@ -62,16 +62,16 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Before
     public void setUp() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	config.setOutputFolder("unit_test_output/");
-	config.setConfigFolder("unit_test_config/");
-	rule = new AnalyzeGoodModificationRule(config);
-	vector = new TestVector(null, null, null, ExecutorType.TLS, null);
-	vector.addModification(new AddMessageModification(new ClientHelloMessage(), new SendAction()));
-	vector.addModification(new AddRecordModification(new ClientHelloMessage()));
-	vector.addModification(new ChangeServerCertificateModification(null));
-	vector.addModification(new DuplicateMessageModification(new ClientHelloMessage(), new SendAction(), 0));
-	vector.addModification(new ModifyFieldModification("test", new AlertMessage()));
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        config.setOutputFolder("unit_test_output/");
+        config.setConfigFolder("unit_test_config/");
+        rule = new AnalyzeGoodModificationRule(config);
+        vector = new TestVector(null, null, null, ExecutorType.TLS, null);
+        vector.addModification(new AddMessageModification(new ClientHelloMessage(), new SendAction()));
+        vector.addModification(new AddRecordModification(new ClientHelloMessage()));
+        vector.addModification(new ChangeServerCertificateModification(null));
+        vector.addModification(new DuplicateMessageModification(new ClientHelloMessage(), new SendAction(), 0));
+        vector.addModification(new ModifyFieldModification("test", new AlertMessage()));
 
     }
 
@@ -80,8 +80,8 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @After
     public void tearDown() {
-	FileHelper.deleteFolder(new File("unit_test_output"));
-	FileHelper.deleteFolder(new File("unit_test_config"));
+        FileHelper.deleteFolder(new File("unit_test_output"));
+        FileHelper.deleteFolder(new File("unit_test_config"));
 
     }
 
@@ -90,11 +90,11 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testApplys() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
 
-	assertFalse(rule.applies(result));
-	result.setGoodTrace(true);
-	assertTrue(rule.applies(result));
+        assertFalse(rule.applies(result));
+        result.setGoodTrace(true);
+        assertTrue(rule.applies(result));
 
     }
 
@@ -103,8 +103,8 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testOnApply() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
-	rule.onApply(result);
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
+        rule.onApply(result);
     }
 
     /**
@@ -112,7 +112,7 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testOnDecline() {
-	rule.onDecline(null);
+        rule.onDecline(null);
     }
 
     /**
@@ -120,10 +120,10 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testReport() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
-	assertNull(rule.report());
-	rule.onApply(result);
-	assertNotNull(rule.report());
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
+        assertNull(rule.report());
+        rule.onApply(result);
+        assertNotNull(rule.report());
     }
 
     /**
@@ -131,7 +131,7 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testGetConfig() {
-	assertNotNull(rule.getConfig());
+        assertNotNull(rule.getConfig());
     }
 
     /**
@@ -139,11 +139,11 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testGetExecutedTraces() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
-	rule.onApply(result);
-	assertTrue(rule.getExecutedTraces() == 1);
-	rule.onApply(result);
-	assertTrue(rule.getExecutedTraces() == 2);
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
+        rule.onApply(result);
+        assertTrue(rule.getExecutedTraces() == 1);
+        rule.onApply(result);
+        assertTrue(rule.getExecutedTraces() == 2);
 
     }
 
@@ -152,15 +152,15 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testGetTypeMap() {
-	Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
-	rule.onApply(result);
-	vector.addModification(new AddMessageModification(new ServerHelloDoneMessage(), new SendAction()));
-	rule.onApply(result);
-	List<ModificationCounter> counterList= rule.getCounterList();
-	ModificationCounter counter = counterList.get(1);
-	assertTrue(counter.getCounter() == 2);
-	counter = counterList.get(0);
-	assertTrue(counter.getCounter() == 3);
+        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id");
+        rule.onApply(result);
+        vector.addModification(new AddMessageModification(new ServerHelloDoneMessage(), new SendAction()));
+        rule.onApply(result);
+        List<ModificationCounter> counterList = rule.getCounterList();
+        ModificationCounter counter = counterList.get(1);
+        assertTrue(counter.getCounter() == 2);
+        counter = counterList.get(0);
+        assertTrue(counter.getCounter() == 3);
     }
 
     private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRuleTest.class.getName());

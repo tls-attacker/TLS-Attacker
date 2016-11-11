@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UniqueFlowsRuleConfig extends RuleConfig {
 
     public UniqueFlowsRuleConfig() {
-	super("uniqueFlows/");
+        super("uniqueFlows/");
     }
 
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRuleConfig.class.getName());

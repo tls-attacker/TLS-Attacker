@@ -34,20 +34,20 @@ public class ServerCertificateStructure implements Serializable {
     private File certificateFile;
 
     public ServerCertificateStructure(File keyFile, File certificateFile) {
-	this.keyFile = keyFile;
-	this.certificateFile = certificateFile;
+        this.keyFile = keyFile;
+        this.certificateFile = certificateFile;
     }
 
     private ServerCertificateStructure() {
-        //JAXB magic
+        // JAXB magic
     }
-    
+
     public File getKeyFile() {
-	return keyFile;
+        return keyFile;
     }
 
     public File getCertificateFile() {
-	return certificateFile;
+        return certificateFile;
     }
 
     @Override
@@ -60,17 +60,17 @@ public class ServerCertificateStructure implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final ServerCertificateStructure other = (ServerCertificateStructure) obj;
-	if (!Objects.equals(this.keyFile, other.keyFile)) {
-	    return false;
-	}
-	return Objects.equals(this.certificateFile, other.certificateFile);
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ServerCertificateStructure other = (ServerCertificateStructure) obj;
+        if (!Objects.equals(this.keyFile, other.keyFile)) {
+            return false;
+        }
+        return Objects.equals(this.certificateFile, other.certificateFile);
     }
 
     private static final Logger LOG = Logger.getLogger(ServerCertificateStructure.class.getName());

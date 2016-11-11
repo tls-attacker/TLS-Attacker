@@ -31,45 +31,45 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
-	this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
+        this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
     }
 
     public ModifiableInteger getSignatureAndHashAlgorithmsLength() {
-	return signatureAndHashAlgorithmsLength;
+        return signatureAndHashAlgorithmsLength;
     }
 
     public void setSignatureAndHashAlgorithmsLength(int length) {
-	this.signatureAndHashAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
-		this.signatureAndHashAlgorithmsLength, length);
+        this.signatureAndHashAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
+                this.signatureAndHashAlgorithmsLength, length);
     }
 
     public ModifiableByteArray getSignatureAndHashAlgorithms() {
-	return signatureAndHashAlgorithms;
+        return signatureAndHashAlgorithms;
     }
 
     public void setSignatureAndHashAlgorithms(byte[] array) {
-	this.signatureAndHashAlgorithms = ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithms,
-		array);
+        this.signatureAndHashAlgorithms = ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithms,
+                array);
     }
 
     public void setSignatureAndHashAlgorithmsLength(ModifiableInteger signatureAndHashAlgorithmsLength) {
-	this.signatureAndHashAlgorithmsLength = signatureAndHashAlgorithmsLength;
+        this.signatureAndHashAlgorithmsLength = signatureAndHashAlgorithmsLength;
     }
 
     public void setSignatureAndHashAlgorithms(ModifiableByteArray signatureAndHashAlgorithms) {
-	this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
+        this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
     }
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	return SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+        return SignatureAndHashAlgorithmsExtensionHandler.getInstance();
     }
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithmsConfig() {
-	return signatureAndHashAlgorithmsConfig;
+        return signatureAndHashAlgorithmsConfig;
     }
 
     public void setSignatureAndHashAlgorithmsConfig(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmsConfig) {
-	this.signatureAndHashAlgorithmsConfig = signatureAndHashAlgorithmsConfig;
+        this.signatureAndHashAlgorithmsConfig = signatureAndHashAlgorithmsConfig;
     }
 }

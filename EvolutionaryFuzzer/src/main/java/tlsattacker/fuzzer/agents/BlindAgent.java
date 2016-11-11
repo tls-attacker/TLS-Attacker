@@ -38,49 +38,51 @@ public class BlindAgent extends Agent {
     /**
      * Default Constructor
      * 
-     * @param keypair Server certificate key pair the agent should start the server with.
+     * @param keypair
+     *            Server certificate key pair the agent should start the server
+     *            with.
      */
     public BlindAgent(ServerCertificateStructure keypair) {
-	super(keypair);
-	timeout = false;
-	crash = false;
+        super(keypair);
+        timeout = false;
+        crash = false;
     }
 
     @Override
     public void applicationStart(TLSServer server) {
-	if (running) {
-	    throw new IllegalStateException("Cannot start a running Agent");
-	}
-	startTime = System.currentTimeMillis();
-	running = true;
-	server.start("", keypair.getCertificateFile(), keypair.getKeyFile());
+        if (running) {
+            throw new IllegalStateException("Cannot start a running Agent");
+        }
+        startTime = System.currentTimeMillis();
+        running = true;
+        server.start("", keypair.getCertificateFile(), keypair.getKeyFile());
     }
 
     @Override
     public void applicationStop(TLSServer server) {
-	if (!running) {
-	    throw new IllegalStateException("Cannot stop a stopped Agent");
-	}
-	stopTime = System.currentTimeMillis();
-	running = false;
-	if (!server.serverHasBooted()) {
-	    crash = true;
-	}
-	server.stop();
+        if (!running) {
+            throw new IllegalStateException("Cannot stop a stopped Agent");
+        }
+        stopTime = System.currentTimeMillis();
+        running = false;
+        if (!server.serverHasBooted()) {
+            crash = true;
+        }
+        server.stop();
     }
 
     @Override
     public Result collectResults(File branchTrace, TestVector vector) {
-	if (running) {
-	    throw new IllegalStateException("Can't collect Results, Agent still running!");
-	}
+        if (running) {
+            throw new IllegalStateException("Can't collect Results, Agent still running!");
+        }
 
-	BranchTrace t = new BranchTrace();
+        BranchTrace t = new BranchTrace();
 
-	Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-		.getFilename());
+        Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+                .getFilename());
 
-	return result;
+        return result;
     }
 
 }

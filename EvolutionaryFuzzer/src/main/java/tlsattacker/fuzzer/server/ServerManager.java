@@ -32,7 +32,7 @@ public class ServerManager {
      * @return Instance of the ServerManager
      */
     public static ServerManager getInstance() {
-	return ServerManagerHolder.INSTANCE;
+        return ServerManagerHolder.INSTANCE;
     }
 
     /**
@@ -41,56 +41,59 @@ public class ServerManager {
     private ArrayList<TLSServer> serverList;
 
     private ServerManager() {
-	serverList = new ArrayList<>();
+        serverList = new ArrayList<>();
     }
 
     /**
      * Adds a TLSServer to the List of TLSServers
      * 
-     * @param server Server to add
+     * @param server
+     *            Server to add
      */
     public void addServer(TLSServer server) {
-	serverList.add(server);
+        serverList.add(server);
     }
 
     /**
      * Reads the config files and adds Servers to the serverList accordingly
-     * @param config Config file used to find the correct config folder
+     * 
+     * @param config
+     *            Config file used to find the correct config folder
      */
     public void init(FuzzerGeneralConfig config) {
-	File file = new File(config.getServerCommandFromFile());
-	if (!file.exists()) {
-	    LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
-	    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-	    System.exit(-1);
+        File file = new File(config.getServerCommandFromFile());
+        if (!file.exists()) {
+            LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+            LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
+            System.exit(-1);
 
-	} else {
-	    if (file.isDirectory()) {
-		File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
-		if (filesInDic.length == 0) {
-		    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}",
-			    file.getAbsolutePath());
-		    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-		    System.exit(-1);
-		} else {
-		    // ServerConfig is a Folder
-		    for (File f : filesInDic) {
-			try {
-			    if (f.isFile()) {
-				TLSServer server = ServerSerializer.read(f);
-				addServer(server);
-			    }
-			} catch (Exception ex) {
-			    LOG.log(Level.SEVERE, "Could not read Server!", ex);
-			}
-		    }
-		}
-	    } else {
-		LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
-		LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-		System.exit(-1);
-	    }
-	}
+        } else {
+            if (file.isDirectory()) {
+                File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
+                if (filesInDic.length == 0) {
+                    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}",
+                            file.getAbsolutePath());
+                    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
+                    System.exit(-1);
+                } else {
+                    // ServerConfig is a Folder
+                    for (File f : filesInDic) {
+                        try {
+                            if (f.isFile()) {
+                                TLSServer server = ServerSerializer.read(f);
+                                addServer(server);
+                            }
+                        } catch (Exception ex) {
+                            LOG.log(Level.SEVERE, "Could not read Server!", ex);
+                        }
+                    }
+                }
+            } else {
+                LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+                LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
+                System.exit(-1);
+            }
+        }
 
     }
 
@@ -103,26 +106,27 @@ public class ServerManager {
      * @return A Free Server
      */
     public synchronized TLSServer getFreeServer() {
-	long startSearch = System.currentTimeMillis();
-	if (serverList.isEmpty()) {
-	    throw new ConfigurationException("No Servers configured!");
-	}
-	int i = 0;
-	while (true) {
-	    TLSServer server = serverList.get(i % serverList.size());
-	    if (server.isFree()) {
-		// Try to get a free Server
+        long startSearch = System.currentTimeMillis();
+        if (serverList.isEmpty()) {
+            throw new ConfigurationException("No Servers configured!");
+        }
+        int i = 0;
+        while (true) {
+            TLSServer server = serverList.get(i % serverList.size());
+            if (server.isFree()) {
+                // Try to get a free Server
 
-		server.occupie();
-		return server;
-	    }
-	    i++;
-	    if (startSearch < System.currentTimeMillis() - ConfigManager.getInstance().getConfig().getBootTimeout()+1000 ) {
-		// Searched longer than a minute and didnt find a free Server
-		throw new RuntimeException(
-			"Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");
-	    }
-	}
+                server.occupie();
+                return server;
+            }
+            i++;
+            if (startSearch < System.currentTimeMillis() - ConfigManager.getInstance().getConfig().getBootTimeout()
+                    + 1000) {
+                // Searched longer than a minute and didnt find a free Server
+                throw new RuntimeException(
+                        "Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");
+            }
+        }
     }
 
     /**
@@ -130,7 +134,7 @@ public class ServerManager {
      * for UnitTesting purposes.
      */
     public void clear() {
-	serverList = new ArrayList<>();
+        serverList = new ArrayList<>();
     }
 
     /**
@@ -139,37 +143,40 @@ public class ServerManager {
      * @return Number of Servers the Fuzzer controls
      */
     public int getNumberOfServers() {
-	return serverList.size();
+        return serverList.size();
     }
 
     /**
      * Returns the number of Servers in the serverList
+     * 
      * @return
      */
     public int getServerCount() {
-	return serverList.size();
+        return serverList.size();
     }
 
     /**
      * Returns the number of currently free servers
+     * 
      * @return
      */
     public int getFreeServerCount() {
-	int count = 0;
-	for (TLSServer server : serverList) {
-	    if (server.isFree()) {
-		count++;
-	    }
-	}
-	return serverList.size();
+        int count = 0;
+        for (TLSServer server : serverList) {
+            if (server.isFree()) {
+                count++;
+            }
+        }
+        return serverList.size();
     }
 
     /**
      * Returns all Servers
+     * 
      * @return
      */
     public List<TLSServer> getAllServers() {
-	return Collections.unmodifiableList(serverList);
+        return Collections.unmodifiableList(serverList);
     }
 
     /**
@@ -177,14 +184,14 @@ public class ServerManager {
      */
     private static class ServerManagerHolder {
 
-	/**
+        /**
          * Singleton
          */
-	private static final ServerManager INSTANCE = new ServerManager();
+        private static final ServerManager INSTANCE = new ServerManager();
 
-	private ServerManagerHolder() {
-	}
+        private ServerManagerHolder() {
+        }
     }
-    
+
     private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 }

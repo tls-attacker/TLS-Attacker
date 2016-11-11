@@ -24,20 +24,21 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
      * byte length of the supported elliptic curves length
      */
     public static final int SUPPORTED_ELLIPTIC_CURVES_LENGTH = 2;// TODO can
-								 // this be a
-								 // field of the
-								 // Message and
-								 // modifieable?
+
+    // this be a
+    // field of the
+    // Message and
+    // modifieable?
 
     private EllipticCurvesExtensionHandler() {
 
     }
 
     public static EllipticCurvesExtensionHandler getInstance() {
-	if (instance == null) {
-	    instance = new EllipticCurvesExtensionHandler();
-	}
-	return instance;
+        if (instance == null) {
+            instance = new EllipticCurvesExtensionHandler();
+        }
+        return instance;
     }
 
     /**
@@ -45,26 +46,26 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
      */
     @Override
     public void initializeClientHelloExtension(EllipticCurvesExtensionMessage extension) {
-	byte[] curves = new byte[0];
-	for (NamedCurve curve : extension.getSupportedCurvesConfig()) {
-	    curves = ArrayConverter.concatenate(curves, curve.getValue());
-	}
+        byte[] curves = new byte[0];
+        for (NamedCurve curve : extension.getSupportedCurvesConfig()) {
+            curves = ArrayConverter.concatenate(curves, curve.getValue());
+        }
 
-	extension.setExtensionType(ExtensionType.ELLIPTIC_CURVES.getValue());
-	extension.setSupportedCurves(curves);
-	extension.setSupportedCurvesLength(curves != null ? curves.length : 0);
-	extension.setExtensionLength(extension.getSupportedCurvesLength().getValue() + ExtensionByteLength.EXTENSIONS);
+        extension.setExtensionType(ExtensionType.ELLIPTIC_CURVES.getValue());
+        extension.setSupportedCurves(curves);
+        extension.setSupportedCurvesLength(curves != null ? curves.length : 0);
+        extension.setExtensionLength(extension.getSupportedCurvesLength().getValue() + ExtensionByteLength.EXTENSIONS);
 
-	byte[] ecExtensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
-		.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
-		.intToBytes(extension.getSupportedCurvesLength().getValue(), SUPPORTED_ELLIPTIC_CURVES_LENGTH),
-		extension.getSupportedCurves().getValue());
+        byte[] ecExtensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
+                .intToBytes(extension.getSupportedCurvesLength().getValue(), SUPPORTED_ELLIPTIC_CURVES_LENGTH),
+                extension.getSupportedCurves().getValue());
 
-	extension.setExtensionBytes(ecExtensionBytes);
+        extension.setExtensionBytes(ecExtensionBytes);
     }
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Elliptic curve extension handler not supported yet.");
+        throw new UnsupportedOperationException("Elliptic curve extension handler not supported yet.");
     }
 }

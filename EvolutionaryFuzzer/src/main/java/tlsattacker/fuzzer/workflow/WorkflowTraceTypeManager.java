@@ -37,12 +37,12 @@ public class WorkflowTraceTypeManager {
      * @return
      */
     public static Set<WorkflowTraceType> generateTypeList(List<TestVector> vectors, ConnectionEnd connectionEnd) {
-	Set<WorkflowTraceType> set = new HashSet<>();
-	for (TestVector vector : vectors) {
-	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace(), connectionEnd);
-	    set.add(type);
-	}
-	return set;
+        Set<WorkflowTraceType> set = new HashSet<>();
+        for (TestVector vector : vectors) {
+            WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace(), connectionEnd);
+            set.add(type);
+        }
+        return set;
     }
 
     /**
@@ -52,12 +52,12 @@ public class WorkflowTraceTypeManager {
      * @return
      */
     public static Set<WorkflowTraceType> generateResponseTypeList(List<TestVector> vectors, ConnectionEnd connectionEnd) {
-	Set<WorkflowTraceType> set = new HashSet<>();
-	for (TestVector vector : vectors) {
-	    WorkflowTraceType type = generateWorkflowTraceTypeResponse(vector.getTrace(), connectionEnd);
-	    set.add(type);
-	}
-	return set;
+        Set<WorkflowTraceType> set = new HashSet<>();
+        for (TestVector vector : vectors) {
+            WorkflowTraceType type = generateWorkflowTraceTypeResponse(vector.getTrace(), connectionEnd);
+            set.add(type);
+        }
+        return set;
     }
 
     /**
@@ -73,13 +73,13 @@ public class WorkflowTraceTypeManager {
      * @return
      */
     public static Set<WorkflowTraceType> generateCleanTypeList(List<TestVector> vectors, ConnectionEnd myConnectionEnd) {
-	Set<WorkflowTraceType> set = new HashSet<>();
-	for (TestVector vector : vectors) {
-	    WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace(), myConnectionEnd);
-	    type.clean();
-	    set.add(type);
-	}
-	return set;
+        Set<WorkflowTraceType> set = new HashSet<>();
+        for (TestVector vector : vectors) {
+            WorkflowTraceType type = generateWorkflowTraceType(vector.getTrace(), myConnectionEnd);
+            type.clean();
+            set.add(type);
+        }
+        return set;
     }
 
     /**
@@ -89,14 +89,14 @@ public class WorkflowTraceTypeManager {
      * @return
      */
     public static Set<WorkflowTraceType> generateCleanResponseTypeList(List<TestVector> vectors,
-	    ConnectionEnd myConnectionEnd) {
-	Set<WorkflowTraceType> set = new HashSet<>();
-	for (TestVector vector : vectors) {
-	    WorkflowTraceType type = generateWorkflowTraceTypeResponse(vector.getTrace(), myConnectionEnd);
-	    type.clean();
-	    set.add(type);
-	}
-	return set;
+            ConnectionEnd myConnectionEnd) {
+        Set<WorkflowTraceType> set = new HashSet<>();
+        for (TestVector vector : vectors) {
+            WorkflowTraceType type = generateWorkflowTraceTypeResponse(vector.getTrace(), myConnectionEnd);
+            type.clean();
+            set.add(type);
+        }
+        return set;
     }
 
     /**
@@ -108,19 +108,19 @@ public class WorkflowTraceTypeManager {
      * @return
      */
     public static WorkflowTraceType generateWorkflowTraceTypeResponse(WorkflowTrace trace, ConnectionEnd myConnectionEnd) {
-	WorkflowTraceType type = new WorkflowTraceType();
-	for (TLSAction action : trace.getTLSActions()) {
-	    if (action.isExecuted() && action instanceof MessageAction) {
-		MessageAction msgAction = (MessageAction) action;
-		if (msgAction instanceof ReceiveAction) {
-		    for (ProtocolMessage message : msgAction.getActualMessages()) {
-			MessageFlow flow = new MessageFlow(message.getClass(), myConnectionEnd);
-			type.addMessageFlow(flow);
-		    }
-		}
-	    }
-	}
-	return type;
+        WorkflowTraceType type = new WorkflowTraceType();
+        for (TLSAction action : trace.getTLSActions()) {
+            if (action.isExecuted() && action instanceof MessageAction) {
+                MessageAction msgAction = (MessageAction) action;
+                if (msgAction instanceof ReceiveAction) {
+                    for (ProtocolMessage message : msgAction.getActualMessages()) {
+                        MessageFlow flow = new MessageFlow(message.getClass(), myConnectionEnd);
+                        type.addMessageFlow(flow);
+                    }
+                }
+            }
+        }
+        return type;
     }
 
     /**
@@ -132,26 +132,26 @@ public class WorkflowTraceTypeManager {
      * @return
      */
     public static WorkflowTraceType generateWorkflowTraceType(WorkflowTrace trace, ConnectionEnd myConnectionEnd) {
-	WorkflowTraceType type = new WorkflowTraceType();
-	for (TLSAction action : trace.getTLSActions()) {
-	    if (action.isExecuted() && action instanceof MessageAction) {
-		MessageAction msgAction = (MessageAction) action;
-		if (msgAction instanceof SendAction) {
-		    for (ProtocolMessage message : msgAction.getActualMessages()) {
-			MessageFlow flow = new MessageFlow(message.getClass(), myConnectionEnd);
-			type.addMessageFlow(flow);
-		    }
-		} else {
-		    for (ProtocolMessage message : msgAction.getActualMessages()) {
-			MessageFlow flow = new MessageFlow(message.getClass(),
-				myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT);
-			type.addMessageFlow(flow);
-		    }
+        WorkflowTraceType type = new WorkflowTraceType();
+        for (TLSAction action : trace.getTLSActions()) {
+            if (action.isExecuted() && action instanceof MessageAction) {
+                MessageAction msgAction = (MessageAction) action;
+                if (msgAction instanceof SendAction) {
+                    for (ProtocolMessage message : msgAction.getActualMessages()) {
+                        MessageFlow flow = new MessageFlow(message.getClass(), myConnectionEnd);
+                        type.addMessageFlow(flow);
+                    }
+                } else {
+                    for (ProtocolMessage message : msgAction.getActualMessages()) {
+                        MessageFlow flow = new MessageFlow(message.getClass(),
+                                myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT);
+                        type.addMessageFlow(flow);
+                    }
 
-		}
-	    }
-	}
-	return type;
+                }
+            }
+        }
+        return type;
     }
 
     /**

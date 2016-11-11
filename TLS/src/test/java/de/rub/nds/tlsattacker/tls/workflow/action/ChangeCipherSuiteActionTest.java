@@ -27,23 +27,25 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ChangeCipherSuiteActionTest {
-    
+
     private TlsContext tlsContext;
     private TlsContext dtlsContext;
-    
+
     private ActionExecutorMock executor;
     private ChangeCipherSuiteAction action;
-    
+
     public ChangeCipherSuiteActionTest() {
-        
+
     }
-    
+
     @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeyException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException {
+    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            InvalidKeyException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException,
+            InvalidAlgorithmParameterException, InvalidAlgorithmParameterException {
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
@@ -56,14 +58,14 @@ public class ChangeCipherSuiteActionTest {
         action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
-    
+
     /**
      * Test of getNewValue method, of class ChangeCipherSuiteAction.
      */
     @Test
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
-        
+
     }
 
     /**
@@ -74,7 +76,7 @@ public class ChangeCipherSuiteActionTest {
         assertEquals(action.getNewValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
         action.setNewValue(CipherSuite.TLS_FALLBACK_SCSV);
         assertEquals(action.getNewValue(), CipherSuite.TLS_FALLBACK_SCSV);
-        
+
     }
 
     /**
@@ -87,7 +89,7 @@ public class ChangeCipherSuiteActionTest {
         action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
         action.execute(dtlsContext, executor);
         assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        
+
     }
 
     /**
@@ -97,7 +99,7 @@ public class ChangeCipherSuiteActionTest {
     public void testExecute() {
         action.execute(tlsContext, executor);
         assertEquals(tlsContext.getSelectedCipherSuite(), action.getNewValue());
-        //TODO does not check if recordcipher is reinitialised
+        // TODO does not check if recordcipher is reinitialised
         action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
         action.execute(dtlsContext, executor);
         assertEquals(dtlsContext.getSelectedCipherSuite(), action.getNewValue());
@@ -117,13 +119,14 @@ public class ChangeCipherSuiteActionTest {
         action.execute(tlsContext, executor);
         assertTrue(action.isExecuted());
     }
-    
+
     @Test
     public void testJAXB() {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ChangeCipherSuiteAction.class);
+        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
+                ChangeCipherSuiteAction.class);
         assertEquals(action, action2);
     }
-    
+
 }

@@ -22,22 +22,28 @@ import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 public class ControllerFactory {
 
     /**
-     * Chooses the correct Controller depending on the controller specified in the config
-     * @param config Config object to use
+     * Chooses the correct Controller depending on the controller specified in
+     * the config
+     * 
+     * @param config
+     *            Config object to use
      * @return Correct Controller instance
-     * @throws IllegalControllerException If an invalid controller is selected
-     * @throws IllegalMutatorException If an invalid Mutator is selected
-     * @throws IllegalCertificateMutatorException If an invalid CertificateMutator is selected
+     * @throws IllegalControllerException
+     *             If an invalid controller is selected
+     * @throws IllegalMutatorException
+     *             If an invalid Mutator is selected
+     * @throws IllegalCertificateMutatorException
+     *             If an invalid CertificateMutator is selected
      */
     public static Controller getController(EvolutionaryFuzzerConfig config) throws IllegalControllerException,
-	    IllegalMutatorException, IllegalCertificateMutatorException {
-	switch (config.getMutator()) {
-	    case CommandLineController.optionName:
-		return new CommandLineController(config);
-	    default:
-		throw new IllegalControllerException("Illegal Value for Controller:" + config.getController());
+            IllegalMutatorException, IllegalCertificateMutatorException {
+        switch (config.getMutator()) {
+            case CommandLineController.optionName:
+                return new CommandLineController(config);
+            default:
+                throw new IllegalControllerException("Illegal Value for Controller:" + config.getController());
 
-	}
+        }
     }
 
     /**

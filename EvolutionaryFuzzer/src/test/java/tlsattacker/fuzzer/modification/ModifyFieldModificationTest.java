@@ -18,14 +18,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ModifyFieldModificationTest {
-    
+
     public ModifyFieldModificationTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -43,5 +43,5 @@ public class ModifyFieldModificationTest {
         // Start the Test
         pojoValidator.runValidation(pojoClass);
     }
-    
+
 }

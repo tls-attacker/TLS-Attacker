@@ -18,12 +18,12 @@ public enum DigestAlgorithm {
     SHA384("SHA-384");
 
     private DigestAlgorithm(String digestAlgorithm) {
-	this.javaName = digestAlgorithm;
+        this.javaName = digestAlgorithm;
     }
 
     private final String javaName;
 
     public String getJavaName() {
-	return javaName;
+        return javaName;
     }
 }

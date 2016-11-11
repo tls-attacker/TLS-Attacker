@@ -39,17 +39,17 @@ public class AlgorithmResolver {
      * @return
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-	PRFAlgorithm result;
-	if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
-		|| protocolVersion == ProtocolVersion.DTLS10) {
-	    result = PRFAlgorithm.TLS_PRF_LEGACY;
-	} else if (cipherSuite.name().endsWith("SHA384")) {
-	    result = PRFAlgorithm.TLS_PRF_SHA384;
-	} else {
-	    result = PRFAlgorithm.TLS_PRF_SHA256;
-	}
-	LOGGER.debug("Using the following PRF Algorithm: {}", result);
-	return result;
+        PRFAlgorithm result;
+        if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+                || protocolVersion == ProtocolVersion.DTLS10) {
+            result = PRFAlgorithm.TLS_PRF_LEGACY;
+        } else if (cipherSuite.name().endsWith("SHA384")) {
+            result = PRFAlgorithm.TLS_PRF_SHA384;
+        } else {
+            result = PRFAlgorithm.TLS_PRF_SHA256;
+        }
+        LOGGER.debug("Using the following PRF Algorithm: {}", result);
+        return result;
     }
 
     /**
@@ -66,17 +66,17 @@ public class AlgorithmResolver {
      * @return
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
-	DigestAlgorithm result;
-	if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
-		|| protocolVersion == ProtocolVersion.DTLS10) {
-	    result = DigestAlgorithm.LEGACY;
-	} else if (cipherSuite.name().endsWith("SHA384")) {
-	    result = DigestAlgorithm.SHA384;
-	} else {
-	    result = DigestAlgorithm.SHA256;
-	}
-	LOGGER.debug("Using the following Digest Algorithm: {}", result);
-	return result;
+        DigestAlgorithm result;
+        if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+                || protocolVersion == ProtocolVersion.DTLS10) {
+            result = DigestAlgorithm.LEGACY;
+        } else if (cipherSuite.name().endsWith("SHA384")) {
+            result = DigestAlgorithm.SHA384;
+        } else {
+            result = DigestAlgorithm.SHA256;
+        }
+        LOGGER.debug("Using the following Digest Algorithm: {}", result);
+        return result;
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
@@ -114,7 +114,8 @@ public class AlgorithmResolver {
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
             return KeyExchangeAlgorithm.CECPQ1;
         }
-        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
+        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
+                + " is not supported yet.");
     }
 
     /**
@@ -129,21 +130,21 @@ public class AlgorithmResolver {
      * @return
      */
     public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	Set<PublicKeyAlgorithm> result = new HashSet<>();
-	if (cipher.contains("RSA")) {
-	    result.add(PublicKeyAlgorithm.RSA);
-	} else if (cipher.contains("ECDSA")) {
-	    result.add(PublicKeyAlgorithm.EC);
-	} else if (cipher.contains("DSS")) {
-	    result.add(PublicKeyAlgorithm.DH);
-	}
-	if (cipher.contains("_ECDH_")) {
-	    result.add(PublicKeyAlgorithm.EC);
-	} else if (cipher.contains("_DH_")) {
-	    result.add(PublicKeyAlgorithm.DH);
-	}
-	return result;
+        String cipher = cipherSuite.toString().toUpperCase();
+        Set<PublicKeyAlgorithm> result = new HashSet<>();
+        if (cipher.contains("RSA")) {
+            result.add(PublicKeyAlgorithm.RSA);
+        } else if (cipher.contains("ECDSA")) {
+            result.add(PublicKeyAlgorithm.EC);
+        } else if (cipher.contains("DSS")) {
+            result.add(PublicKeyAlgorithm.DH);
+        }
+        if (cipher.contains("_ECDH_")) {
+            result.add(PublicKeyAlgorithm.EC);
+        } else if (cipher.contains("_DH_")) {
+            result.add(PublicKeyAlgorithm.DH);
+        }
+        return result;
     }
 
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
@@ -193,31 +194,31 @@ public class AlgorithmResolver {
     }
 
     public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {
-	MacAlgorithm result = null;
-	if (cipherSuite.isAEAD()) {
-	    result = MacAlgorithm.AEAD;
-	} else {
-	    String cipher = cipherSuite.toString();
-	    if (cipher.endsWith("MD5")) {
-		result = MacAlgorithm.HMAC_MD5;
-	    } else if (cipher.endsWith("SHA")) {
-		result = MacAlgorithm.HMAC_SHA1;
-	    } else if (cipher.endsWith("SHA256")) {
-		result = MacAlgorithm.HMAC_SHA256;
-	    } else if (cipher.endsWith("SHA384")) {
-		result = MacAlgorithm.HMAC_SHA384;
-	    } else if (cipher.endsWith("SHA512")) {
-		result = MacAlgorithm.HMAC_SHA512;
-	    } else if (cipher.endsWith("NULL")) {
-		result = MacAlgorithm.NULL;
-	    }
-	}
-	if (result != null) {
-	    LOGGER.debug("Using the following Mac Algorithm: {}", result);
-	    return result;
-	} else {
-	    throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
-		    + " is not supported yet");
-	}
+        MacAlgorithm result = null;
+        if (cipherSuite.isAEAD()) {
+            result = MacAlgorithm.AEAD;
+        } else {
+            String cipher = cipherSuite.toString();
+            if (cipher.endsWith("MD5")) {
+                result = MacAlgorithm.HMAC_MD5;
+            } else if (cipher.endsWith("SHA")) {
+                result = MacAlgorithm.HMAC_SHA1;
+            } else if (cipher.endsWith("SHA256")) {
+                result = MacAlgorithm.HMAC_SHA256;
+            } else if (cipher.endsWith("SHA384")) {
+                result = MacAlgorithm.HMAC_SHA384;
+            } else if (cipher.endsWith("SHA512")) {
+                result = MacAlgorithm.HMAC_SHA512;
+            } else if (cipher.endsWith("NULL")) {
+                result = MacAlgorithm.NULL;
+            }
+        }
+        if (result != null) {
+            LOGGER.debug("Using the following Mac Algorithm: {}", result);
+            return result;
+        } else {
+            throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
+                    + " is not supported yet");
+        }
     }
 }

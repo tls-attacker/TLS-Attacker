@@ -57,15 +57,15 @@ public class TLSServerTest {
      */
     @Before
     public void setUp() {
-	File f = new File("../resources/EvolutionaryFuzzer/TestServer/server.config");
-	if (!f.exists()) {
-	    Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
-	}
-	try {
-	    server = ServerSerializer.read(f);
-	} catch (Exception ex) {
-	    Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
-	}
+        File f = new File("../resources/EvolutionaryFuzzer/TestServer/server.config");
+        if (!f.exists()) {
+            Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
+        }
+        try {
+            server = ServerSerializer.read(f);
+        } catch (Exception ex) {
+            Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -73,8 +73,8 @@ public class TLSServerTest {
      */
     @After
     public void tearDown() {
-	server.stop();
-	server = null;
+        server.stop();
+        server = null;
     }
 
     /**
@@ -82,11 +82,11 @@ public class TLSServerTest {
      */
     @Test
     public void testStart() {
-	server.occupie();
-	CertificateMutator mut = new UnitTestCertificateMutator();
-	ServerCertificateStructure cert = mut.getServerCertificateStructure();
-	server.start("", cert.getCertificateFile(), cert.getKeyFile());
-	server.serverHasBooted();
+        server.occupie();
+        CertificateMutator mut = new UnitTestCertificateMutator();
+        ServerCertificateStructure cert = mut.getServerCertificateStructure();
+        server.start("", cert.getCertificateFile(), cert.getKeyFile());
+        server.serverHasBooted();
     }
 
     /**
@@ -94,11 +94,11 @@ public class TLSServerTest {
      */
     @Test
     public void testRestart() {
-	server.occupie();
-	CertificateMutator mut = new UnitTestCertificateMutator();
-	ServerCertificateStructure cert = mut.getServerCertificateStructure();
-	server.start("", cert.getCertificateFile(), cert.getKeyFile());
-	server.serverHasBooted();
+        server.occupie();
+        CertificateMutator mut = new UnitTestCertificateMutator();
+        ServerCertificateStructure cert = mut.getServerCertificateStructure();
+        server.start("", cert.getCertificateFile(), cert.getKeyFile());
+        server.serverHasBooted();
     }
 
     /**
@@ -106,8 +106,8 @@ public class TLSServerTest {
      */
     @Test
     public void testOccupie() {
-	server.occupie();
-	assertFalse(server.isFree());
+        server.occupie();
+        assertFalse(server.isFree());
     }
 
     /**
@@ -116,9 +116,9 @@ public class TLSServerTest {
     @Test
     public void testRelease() {
 
-	server.occupie();
-	server.release();
-	assertTrue(server.isFree());
+        server.occupie();
+        server.release();
+        assertTrue(server.isFree());
     }
 
     /**
@@ -126,8 +126,8 @@ public class TLSServerTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testWrongOccupie() {
-	server.occupie();
-	server.occupie();
+        server.occupie();
+        server.occupie();
     }
 
     /**
@@ -135,7 +135,7 @@ public class TLSServerTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testWrongRelease() {
-	server.release();
+        server.release();
     }
 
     /**
@@ -143,7 +143,7 @@ public class TLSServerTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testExitedNotStarted() {
-	server.exited();
+        server.exited();
     }
 
     /**
@@ -151,11 +151,11 @@ public class TLSServerTest {
      */
     @Test
     public void testExitedStarted() {
-	server.occupie();
-	CertificateMutator mut = new UnitTestCertificateMutator();
-	ServerCertificateStructure cert = mut.getServerCertificateStructure();
-	server.start("", cert.getCertificateFile(), cert.getKeyFile());
-	assertFalse("Failure: Server started but should not have exited yet", server.exited());
+        server.occupie();
+        CertificateMutator mut = new UnitTestCertificateMutator();
+        ServerCertificateStructure cert = mut.getServerCertificateStructure();
+        server.start("", cert.getCertificateFile(), cert.getKeyFile());
+        assertFalse("Failure: Server started but should not have exited yet", server.exited());
     }
     // TODO Test if a started server accepts a tls connection
 }

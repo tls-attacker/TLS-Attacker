@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeClientRandomAction extends TLSAction {

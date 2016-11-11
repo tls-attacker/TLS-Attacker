@@ -50,10 +50,10 @@ public class UniqueFlowsRuleTest {
      */
     @Before
     public void setUp() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	config.setOutputFolder("unit_test_output/");
-	config.setConfigFolder("unit_test_config/");
-	rule = new UniqueFlowsRule(config);
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        config.setOutputFolder("unit_test_output/");
+        config.setConfigFolder("unit_test_config/");
+        rule = new UniqueFlowsRule(config);
     }
 
     /**
@@ -61,8 +61,8 @@ public class UniqueFlowsRuleTest {
      */
     @After
     public void tearDown() {
-	FileHelper.deleteFolder(new File("unit_test_output"));
-	FileHelper.deleteFolder(new File("unit_test_config"));
+        FileHelper.deleteFolder(new File("unit_test_output"));
+        FileHelper.deleteFolder(new File("unit_test_config"));
     }
 
     /**
@@ -70,18 +70,18 @@ public class UniqueFlowsRuleTest {
      */
     @Test
     public void testApplys() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new CertificateRequestMessage()));
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "tes2t.unit");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(rule.applies(result));// Should apply since its the first
-					 // time
-					 // the rule has seen this tracetype
-	assertTrue(rule.applies(result));// Should not apply since its the
-					 // second
-					 // time the rule has seen this
-					 // tracetype
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new CertificateRequestMessage()));
+        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "tes2t.unit");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertTrue(rule.applies(result));// Should apply since its the first
+        // time
+        // the rule has seen this tracetype
+        assertTrue(rule.applies(result));// Should not apply since its the
+        // second
+        // time the rule has seen this
+        // tracetype
 
     }
 
@@ -90,13 +90,13 @@ public class UniqueFlowsRuleTest {
      */
     @Test
     public void testOnApply() {
-	WorkflowTrace trace = new WorkflowTrace();
-	trace.add(new SendAction(new CertificateRequestMessage()));
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "tes2t.unit");
-	rule.onApply(result);
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new CertificateRequestMessage()));
+        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "tes2t.unit");
+        rule.onApply(result);
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
     }
 
@@ -105,7 +105,7 @@ public class UniqueFlowsRuleTest {
      */
     @Test
     public void testOnDecline() {
-	rule.onDecline(null);
+        rule.onDecline(null);
     }
 
     /**
@@ -113,16 +113,16 @@ public class UniqueFlowsRuleTest {
      */
     @Test
     public void testReport() {
-	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage();
-	trace.add(new SendAction(clientHello));
-	ServerHelloMessage serverHello = new ServerHelloMessage();
-	trace.add(new ReceiveAction(serverHello));
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "tes2t.unit");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	rule.onApply(result);
-	assertNotNull(rule.report());
+        WorkflowTrace trace = new WorkflowTrace();
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        trace.add(new SendAction(clientHello));
+        ServerHelloMessage serverHello = new ServerHelloMessage();
+        trace.add(new ReceiveAction(serverHello));
+        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "tes2t.unit");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        rule.onApply(result);
+        assertNotNull(rule.report());
     }
 
     /**
@@ -130,7 +130,7 @@ public class UniqueFlowsRuleTest {
      */
     @Test
     public void testGetConfig() {
-	assertNotNull(rule.getConfig());
+        assertNotNull(rule.getConfig());
     }
 
     private static final Logger LOG = Logger.getLogger(UniqueFlowsRuleTest.class.getName());

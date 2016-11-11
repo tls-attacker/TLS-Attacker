@@ -32,62 +32,62 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     ModifiableByteArray plainPaddedPremasterSecret;
 
     public RSAClientKeyExchangeMessage() {
-	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
     public ModifiableInteger getEncryptedPremasterSecretLength() {
-	return encryptedPremasterSecretLength;
+        return encryptedPremasterSecretLength;
     }
 
     public void setEncryptedPremasterSecretLength(ModifiableInteger encryptedPremasterSecretLength) {
-	this.encryptedPremasterSecretLength = encryptedPremasterSecretLength;
+        this.encryptedPremasterSecretLength = encryptedPremasterSecretLength;
     }
 
     public void setEncryptedPremasterSecretLength(int length) {
-	this.encryptedPremasterSecretLength = ModifiableVariableFactory.safelySetValue(
-		this.encryptedPremasterSecretLength, length);
+        this.encryptedPremasterSecretLength = ModifiableVariableFactory.safelySetValue(
+                this.encryptedPremasterSecretLength, length);
     }
 
     public ModifiableByteArray getEncryptedPremasterSecret() {
-	return encryptedPremasterSecret;
+        return encryptedPremasterSecret;
     }
 
     public void setEncryptedPremasterSecret(ModifiableByteArray encryptedPremasterSecret) {
-	this.encryptedPremasterSecret = encryptedPremasterSecret;
+        this.encryptedPremasterSecret = encryptedPremasterSecret;
     }
 
     public void setEncryptedPremasterSecret(byte[] value) {
-	this.encryptedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.encryptedPremasterSecret, value);
+        this.encryptedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.encryptedPremasterSecret, value);
     }
 
     public ModifiableByteArray getPlainPaddedPremasterSecret() {
-	return plainPaddedPremasterSecret;
+        return plainPaddedPremasterSecret;
     }
 
     public void setPlainPaddedPremasterSecret(ModifiableByteArray plainPaddedPremasterSecret) {
-	this.plainPaddedPremasterSecret = plainPaddedPremasterSecret;
+        this.plainPaddedPremasterSecret = plainPaddedPremasterSecret;
     }
 
     public void setPlainPaddedPremasterSecret(byte[] value) {
-	this.plainPaddedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret,
-		value);
+        this.plainPaddedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret,
+                value);
     }
 
     public void setMasterSecret(ModifiableByteArray masterSecret) {
-	this.masterSecret = masterSecret;
+        this.masterSecret = masterSecret;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nClient Key Exchange message:");
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nClient Key Exchange message:");
+        return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new RSAClientKeyExchangeHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new RSAClientKeyExchangeHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

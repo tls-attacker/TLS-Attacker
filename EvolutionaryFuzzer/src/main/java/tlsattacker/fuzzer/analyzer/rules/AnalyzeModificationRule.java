@@ -45,59 +45,62 @@ public class AnalyzeModificationRule extends Rule {
      * @param evoConfig
      */
     public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
-	super(evoConfig, "analyze_modification.rule");
-	File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
-	if (f.exists()) {
-	    config = JAXB.unmarshal(f, AnalyzeModificationRuleConfig.class);
-	}
-	if (config == null) {
-	    config = new AnalyzeModificationRuleConfig();
-	    writeConfig(config);
-	}
-	counterList = new LinkedList<>();
+        super(evoConfig, "analyze_modification.rule");
+        File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
+        if (f.exists()) {
+            config = JAXB.unmarshal(f, AnalyzeModificationRuleConfig.class);
+        }
+        if (config == null) {
+            config = new AnalyzeModificationRuleConfig();
+            writeConfig(config);
+        }
+        counterList = new LinkedList<>();
 
     }
 
     /**
      * This rule applies to all TestVectors
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      * @return True
      */
     @Override
     public boolean applies(Result result) {
-	return true;
+        return true;
     }
 
     /**
      * Counts the modifications on the Result
+     * 
      * @param result
      */
     @Override
     public void onApply(Result result) {
-	executedTraces++;
-	for (Modification mod : result.getVector().getModificationList()) {
-	    ModificationCounter counter = getCounter(mod);
-	    if (counter == null) {
-		counter = new ModificationCounter(mod.getType());
+        executedTraces++;
+        for (Modification mod : result.getVector().getModificationList()) {
+            ModificationCounter counter = getCounter(mod);
+            if (counter == null) {
+                counter = new ModificationCounter(mod.getType());
                 counter.incrementCounter();
                 counterList.add(counter);
-	    } else {
-		counter.incrementCounter();
-	    }
-	}
+            } else {
+                counter.incrementCounter();
+            }
+        }
     }
-    
+
     /**
-     * Tries to find a ModificationCounter in the counterList, if non is found null is returned
-     * @param type Type of counter to search for
+     * Tries to find a ModificationCounter in the counterList, if non is found
+     * null is returned
+     * 
+     * @param type
+     *            Type of counter to search for
      * @return Found counter or null
      */
-    public ModificationCounter getCounter(Modification type)
-    {
-        for(ModificationCounter counter : counterList)
-        {
-            if(type != null && counter.getType().equals(type.getType()))
-            {
+    public ModificationCounter getCounter(Modification type) {
+        for (ModificationCounter counter : counterList) {
+            if (type != null && counter.getType().equals(type.getType())) {
                 return counter;
             }
         }
@@ -106,7 +109,9 @@ public class AnalyzeModificationRule extends Rule {
 
     /**
      * Do nothing
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     @Override
     public void onDecline(Result result) {
@@ -114,33 +119,34 @@ public class AnalyzeModificationRule extends Rule {
 
     /**
      * Generates a status report
+     * 
      * @return
      */
     @Override
     public String report() {
-	if (executedTraces > 0) {
-	    StringBuilder b = new StringBuilder("Modifications applied:\n");
-	    for (ModificationCounter counter : counterList) {
-		b.append(counter.getType().name()).append(" Count:").append(counter.getCounter()).append("\n");
-	    }
-	    return b.toString();
-	} else {
-	    return null;
-	}
+        if (executedTraces > 0) {
+            StringBuilder b = new StringBuilder("Modifications applied:\n");
+            for (ModificationCounter counter : counterList) {
+                b.append(counter.getType().name()).append(" Count:").append(counter.getCounter()).append("\n");
+            }
+            return b.toString();
+        } else {
+            return null;
+        }
     }
 
     public long getExecutedTraces() {
-	return executedTraces;
+        return executedTraces;
     }
 
     public List<ModificationCounter> getCounterList() {
-	return counterList;
+        return counterList;
     }
 
     @Override
     public AnalyzeModificationRuleConfig getConfig() {
-	return config;
+        return config;
     }
-    
+
     private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 }

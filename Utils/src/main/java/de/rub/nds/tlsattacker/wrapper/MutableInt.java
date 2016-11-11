@@ -15,18 +15,18 @@ public class MutableInt {
     private int value;
 
     public MutableInt(int value) {
-	this.value = value;
+        this.value = value;
     }
 
     public int getValue() {
-	return value;
+        return value;
     }
 
     public void setValue(int value) {
-	this.value = value;
+        this.value = value;
     }
 
     public void addValue(int value) {
-	this.value += value;
+        this.value += value;
     }
 }

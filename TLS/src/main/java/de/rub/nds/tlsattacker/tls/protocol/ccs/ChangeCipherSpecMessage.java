@@ -26,38 +26,38 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
     ModifiableByte ccsProtocolType;
 
     public ChangeCipherSpecMessage() {
-	this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
+        this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
     }
 
     public ModifiableByte getCcsProtocolType() {
-	return ccsProtocolType;
+        return ccsProtocolType;
     }
 
     public void setCcsProtocolType(ModifiableByte ccsProtocolType) {
-	this.ccsProtocolType = ccsProtocolType;
+        this.ccsProtocolType = ccsProtocolType;
     }
 
     public void setCcsProtocolType(byte value) {
-	this.ccsProtocolType = ModifiableVariableFactory.safelySetValue(ccsProtocolType, value);
+        this.ccsProtocolType = ModifiableVariableFactory.safelySetValue(ccsProtocolType, value);
     }
 
     @Override
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-	ChangeCipherSpecHandler ccsh = new ChangeCipherSpecHandler(tlsContext);
-	ccsh.setProtocolMessage(this);
-	return ccsh;
+        ChangeCipherSpecHandler ccsh = new ChangeCipherSpecHandler(tlsContext);
+        ccsh.setProtocolMessage(this);
+        return ccsh;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nChangeCipherSpec message:").append("\n  CCS Protocol Message: ")
-		.append(String.format("%02X ", ccsProtocolType.getValue()));
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nChangeCipherSpec message:").append("\n  CCS Protocol Message: ")
+                .append(String.format("%02X ", ccsProtocolType.getValue()));
+        return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-	return "ChangeCipherSpec";
+        return "ChangeCipherSpec";
     }
 }

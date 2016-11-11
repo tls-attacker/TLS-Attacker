@@ -34,14 +34,14 @@ public class MitM_Dialog extends javax.swing.JDialog {
      * Creates new form MitM_Dialog
      */
     public MitM_Dialog(java.awt.Frame parent, boolean modal, ProtocolMessage pm, String connectionEnd) {
-	super(parent, modal);
-	this.pm = pm;
-	this.connectionEnd = connectionEnd;
-	title = pm.getClass().toString();
-	pmBytes = pm.getCompleteResultingMessage().getValue();
-	origMessage = ArrayConverter.bytesToHexString(pmBytes);
-	messageAsString = pm.toString();
-	initComponents();
+        super(parent, modal);
+        this.pm = pm;
+        this.connectionEnd = connectionEnd;
+        title = pm.getClass().toString();
+        pmBytes = pm.getCompleteResultingMessage().getValue();
+        origMessage = ArrayConverter.bytesToHexString(pmBytes);
+        messageAsString = pm.toString();
+        initComponents();
     }
 
     /**
@@ -53,112 +53,112 @@ public class MitM_Dialog extends javax.swing.JDialog {
     // desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-	omLabel = new javax.swing.JLabel();
-	origJScrollPane = new javax.swing.JScrollPane();
-	origJTextArea = new javax.swing.JTextArea();
-	mtbsLabel = new javax.swing.JLabel();
-	editJScrollPane = new javax.swing.JScrollPane();
-	editJTextArea = new javax.swing.JTextArea();
-	sendButton = new javax.swing.JButton();
-	omLabel1 = new javax.swing.JLabel();
+        omLabel = new javax.swing.JLabel();
+        origJScrollPane = new javax.swing.JScrollPane();
+        origJTextArea = new javax.swing.JTextArea();
+        mtbsLabel = new javax.swing.JLabel();
+        editJScrollPane = new javax.swing.JScrollPane();
+        editJTextArea = new javax.swing.JTextArea();
+        sendButton = new javax.swing.JButton();
+        omLabel1 = new javax.swing.JLabel();
 
-	setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-	omLabel.setText("Original Message:");
+        omLabel.setText("Original Message:");
 
-	origJTextArea.setEditable(false);
-	origJTextArea.setColumns(20);
-	origJTextArea.setFont(new java.awt.Font("DialogInput", 0, 12)); // NOI18N
-	origJTextArea.setRows(5);
-	origJTextArea.setText(origMessage + "\n\n" + messageAsString);
-	origJScrollPane.setViewportView(origJTextArea);
+        origJTextArea.setEditable(false);
+        origJTextArea.setColumns(20);
+        origJTextArea.setFont(new java.awt.Font("DialogInput", 0, 12)); // NOI18N
+        origJTextArea.setRows(5);
+        origJTextArea.setText(origMessage + "\n\n" + messageAsString);
+        origJScrollPane.setViewportView(origJTextArea);
 
-	mtbsLabel.setText("Message to be send");
+        mtbsLabel.setText("Message to be send");
 
-	editJTextArea.setColumns(20);
-	editJTextArea.setFont(new java.awt.Font("DialogInput", 0, 12)); // NOI18N
-	editJTextArea.setRows(5);
-	editJTextArea.setText(origMessage);
-	editJScrollPane.setViewportView(editJTextArea);
+        editJTextArea.setColumns(20);
+        editJTextArea.setFont(new java.awt.Font("DialogInput", 0, 12)); // NOI18N
+        editJTextArea.setRows(5);
+        editJTextArea.setText(origMessage);
+        editJScrollPane.setViewportView(editJTextArea);
 
-	sendButton.setText("Send Message");
-	sendButton.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		sendButtonActionPerformed(evt);
-	    }
-	});
+        sendButton.setText("Send Message");
+        sendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendButtonActionPerformed(evt);
+            }
+        });
 
-	omLabel1.setText(title + " forwarding as " + connectionEnd);
+        omLabel1.setText(title + " forwarding as " + connectionEnd);
 
-	javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-	getContentPane().setLayout(layout);
-	layout.setHorizontalGroup(layout
-		.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-		.addGroup(
-			layout.createSequentialGroup()
-				.addGroup(
-					layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-							layout.createSequentialGroup()
-								.addGap(44, 44, 44)
-								.addGroup(
-									layout.createParallelGroup(
-										javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(omLabel1)
-										.addGroup(
-											layout.createSequentialGroup()
-												.addGroup(
-													layout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-															omLabel)
-														.addComponent(
-															origJScrollPane,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															380,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addGap(44, 44, 44)
-												.addGroup(
-													layout.createParallelGroup(
-														javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(
-															editJScrollPane,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															380,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-															mtbsLabel)))))
-						.addGroup(
-							layout.createSequentialGroup().addGap(393, 393, 393)
-								.addComponent(sendButton)))
-				.addContainerGap(44, Short.MAX_VALUE)));
-	layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-		layout.createSequentialGroup()
-			.addGap(7, 7, 7)
-			.addComponent(omLabel1)
-			.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-			.addGroup(
-				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-					.addComponent(omLabel).addComponent(mtbsLabel))
-			.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-			.addGroup(
-				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-					.addComponent(editJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 477,
-						Short.MAX_VALUE)
-					.addComponent(origJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 477,
-						Short.MAX_VALUE)).addGap(18, 18, 18).addComponent(sendButton)
-			.addGap(30, 30, 30)));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(layout
+                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(
+                        layout.createSequentialGroup()
+                                .addGroup(
+                                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(
+                                                        layout.createSequentialGroup()
+                                                                .addGap(44, 44, 44)
+                                                                .addGroup(
+                                                                        layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addComponent(omLabel1)
+                                                                                .addGroup(
+                                                                                        layout.createSequentialGroup()
+                                                                                                .addGroup(
+                                                                                                        layout.createParallelGroup(
+                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                .addComponent(
+                                                                                                                        omLabel)
+                                                                                                                .addComponent(
+                                                                                                                        origJScrollPane,
+                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                        380,
+                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                .addGap(44, 44, 44)
+                                                                                                .addGroup(
+                                                                                                        layout.createParallelGroup(
+                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                .addComponent(
+                                                                                                                        editJScrollPane,
+                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                        380,
+                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addComponent(
+                                                                                                                        mtbsLabel)))))
+                                                .addGroup(
+                                                        layout.createSequentialGroup().addGap(393, 393, 393)
+                                                                .addComponent(sendButton)))
+                                .addContainerGap(44, Short.MAX_VALUE)));
+        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(omLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(
+                                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(omLabel).addComponent(mtbsLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(
+                                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(editJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 477,
+                                                Short.MAX_VALUE)
+                                        .addComponent(origJScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 477,
+                                                Short.MAX_VALUE)).addGap(18, 18, 18).addComponent(sendButton)
+                        .addGap(30, 30, 30)));
 
-	pack();
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_sendButtonActionPerformed
-	String text = editJTextArea.getText();
-	text = text.replaceAll(" ", "");
-	text = text.replaceAll("\n", "");
-	byte[] editedPmBytes = ArrayConverter.hexStringToByteArray(text);
-	pm.setCompleteResultingMessage(editedPmBytes);
-	dispose();
+        String text = editJTextArea.getText();
+        text = text.replaceAll(" ", "");
+        text = text.replaceAll("\n", "");
+        byte[] editedPmBytes = ArrayConverter.hexStringToByteArray(text);
+        pm.setCompleteResultingMessage(editedPmBytes);
+        dispose();
     }// GEN-LAST:event_sendButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

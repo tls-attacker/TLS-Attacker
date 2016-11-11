@@ -30,15 +30,15 @@ public class ICEAttackerTest {
     @Ignore("Takes too long")
     @Test()
     public void testAttack() {
-	TestECOracle oracle = new TestECOracle("secp256r1");
-	ICEAttacker attacker = new ICEAttacker(oracle);
-	attacker.attack();
-	BigInteger result = attacker.getResult();
+        TestECOracle oracle = new TestECOracle("secp256r1");
+        ICEAttacker attacker = new ICEAttacker(oracle);
+        attacker.attack();
+        BigInteger result = attacker.getResult();
 
-	System.out.println(result);
-	System.out.println(oracle.getComputer().getSecret());
+        System.out.println(result);
+        System.out.println(oracle.getComputer().getSecret());
 
-	assertEquals(oracle.getComputer().getSecret(), result);
+        assertEquals(oracle.getComputer().getSecret(), result);
     }
 
     /**
@@ -47,27 +47,27 @@ public class ICEAttackerTest {
     @Ignore("Takes too long")
     @Test
     public void testSunAttack() {
-	TestECSunOracle oracle = new TestECSunOracle("secp256r1");
-	ICEAttacker attacker = new ICEAttacker(oracle, ICEAttacker.ServerType.ORACLE, 4);
-	attacker.attack();
-	BigInteger result = attacker.getResult();
+        TestECSunOracle oracle = new TestECSunOracle("secp256r1");
+        ICEAttacker attacker = new ICEAttacker(oracle, ICEAttacker.ServerType.ORACLE, 4);
+        attacker.attack();
+        BigInteger result = attacker.getResult();
 
-	System.out.println(result);
-	System.out.println(oracle.getComputer().getSecret());
+        System.out.println(result);
+        System.out.println(oracle.getComputer().getSecret());
 
-	assertEquals(oracle.getComputer().getSecret(), result);
+        assertEquals(oracle.getComputer().getSecret(), result);
     }
 
     // @Ignore("Just a probability computation for our paper")
     @Test
     public void computeProbability() {
-	double probability = 0.98;
-	int results = 53;
-	double result = Math.pow(probability, results)
-		+ (results * (1 - probability) * Math.pow(probability, results - 1))
-		+ (190 * Math.pow(1 - probability, 2) * Math.pow(probability, results - 2))
-		+ (1140 * Math.pow(1 - probability, 3) * Math.pow(probability, results - 3));
-	System.out.println(result);
+        double probability = 0.98;
+        int results = 53;
+        double result = Math.pow(probability, results)
+                + (results * (1 - probability) * Math.pow(probability, results - 1))
+                + (190 * Math.pow(1 - probability, 2) * Math.pow(probability, results - 2))
+                + (1140 * Math.pow(1 - probability, 3) * Math.pow(probability, results - 3));
+        System.out.println(result);
     }
 
 }

@@ -28,7 +28,7 @@ public abstract class Controller {
     protected boolean isRunning;
 
     public Controller(EvolutionaryFuzzerConfig config) {
-	this.config = config;
+        this.config = config;
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class Controller {
      * @return if the Fuzzer is running
      */
     public boolean isRunning() {
-	return isRunning;
+        return isRunning;
     }
 
     /**

@@ -24,12 +24,12 @@ public class AddContextActionModification extends Modification {
     private final TLSAction action;
 
     public AddContextActionModification(ModificationType type, TLSAction action) {
-	super(type);
-	this.action = action;
+        super(type);
+        this.action = action;
     }
 
     public TLSAction getAction() {
-	return action;
+        return action;
     }
 
     private static final Logger LOG = Logger.getLogger(AddContextActionModification.class.getName());

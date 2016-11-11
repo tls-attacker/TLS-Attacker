@@ -18,26 +18,26 @@ import java.util.List;
  */
 public class MessageActionFactory {
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEnd sendingConnectionEnd,
-	    ProtocolMessage... protocolMessages) {
-	List<ProtocolMessage> messages = new LinkedList<>();
-	for (ProtocolMessage tempMessage : protocolMessages) {
-	    messages.add(tempMessage);
-	}
-	if (myConnectionEnd == sendingConnectionEnd) {
-	    return new SendAction(messages);
-	} else {
-	    return new ReceiveAction(messages);
-	}
+            ProtocolMessage... protocolMessages) {
+        List<ProtocolMessage> messages = new LinkedList<>();
+        for (ProtocolMessage tempMessage : protocolMessages) {
+            messages.add(tempMessage);
+        }
+        if (myConnectionEnd == sendingConnectionEnd) {
+            return new SendAction(messages);
+        } else {
+            return new ReceiveAction(messages);
+        }
 
     }
 
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEnd sendingConnectionEnd,
-	    List<ProtocolMessage> protocolMessages) {
-	if (myConnectionEnd == sendingConnectionEnd) {
-	    return new SendAction(protocolMessages);
-	} else {
-	    return new ReceiveAction(protocolMessages);
-	}
+            List<ProtocolMessage> protocolMessages) {
+        if (myConnectionEnd == sendingConnectionEnd) {
+            return new SendAction(protocolMessages);
+        } else {
+            return new ReceiveAction(protocolMessages);
+        }
 
     }
 }

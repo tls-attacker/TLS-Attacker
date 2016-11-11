@@ -22,22 +22,26 @@ public class MutatorFactory {
 
     /**
      * Generates the correct mutator as specified in the config
-     * @param certMutator CertificateMutator to use
-     * @param config Config to use
+     * 
+     * @param certMutator
+     *            CertificateMutator to use
+     * @param config
+     *            Config to use
      * @return A newly generated Mutator
-     * @throws IllegalMutatorException If the specified Mutator is invalid
+     * @throws IllegalMutatorException
+     *             If the specified Mutator is invalid
      */
     public static Mutator getMutator(CertificateMutator certMutator, EvolutionaryFuzzerConfig config)
-	    throws IllegalMutatorException {
-	switch (config.getMutator()) {
-	    case SimpleMutator.optionName:
-		return new SimpleMutator(config, certMutator);
-	    case NoneMutator.optionName:
-		return new NoneMutator(config, certMutator);
-	    default:
-		throw new IllegalMutatorException("Illegal Value for Mutator:" + config.getMutator());
+            throws IllegalMutatorException {
+        switch (config.getMutator()) {
+            case SimpleMutator.optionName:
+                return new SimpleMutator(config, certMutator);
+            case NoneMutator.optionName:
+                return new NoneMutator(config, certMutator);
+            default:
+                throw new IllegalMutatorException("Illegal Value for Mutator:" + config.getMutator());
 
-	}
+        }
     }
 
     private MutatorFactory() {

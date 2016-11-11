@@ -38,47 +38,47 @@ import java.util.List;
 public class RsaWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
     public RsaWorkflowConfigurationFactory(CommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
-	List<ProtocolMessage> messages = new LinkedList<>();
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
-	messages.add(new ServerHelloMessage());
-	messages.add(new CertificateMessage());
+        TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+        List<ProtocolMessage> messages = new LinkedList<>();
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
+        messages.add(new ServerHelloMessage());
+        messages.add(new CertificateMessage());
 
-	if (config.getCipherSuites().get(0).isEphemeral()) {
-	    messages.add(new ECDHEServerKeyExchangeMessage());
-	}
+        if (config.getCipherSuites().get(0).isEphemeral()) {
+            messages.add(new ECDHEServerKeyExchangeMessage());
+        }
 
-	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    messages.add(new CertificateRequestMessage());
-	    messages.add(new ServerHelloDoneMessage());
-	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	    messages = new LinkedList<>();
-	    messages.add(new CertificateMessage());
-	    messages.add(new RSAClientKeyExchangeMessage());
-	    messages.add(new CertificateVerifyMessage());
-	} else {
-	    messages.add(new ServerHelloDoneMessage());
-	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	    messages = new LinkedList<>();
-	    messages.add(new RSAClientKeyExchangeMessage());
-	}
+        if (config.getKeystore() != null && config.isClientAuthentication()) {
+            messages.add(new CertificateRequestMessage());
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
+            messages.add(new CertificateMessage());
+            messages.add(new RSAClientKeyExchangeMessage());
+            messages.add(new CertificateVerifyMessage());
+        } else {
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
+            messages.add(new RSAClientKeyExchangeMessage());
+        }
 
-	messages.add(new ChangeCipherSpecMessage());
-	messages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
-	messages = new LinkedList<>();
-	messages.add(new ChangeCipherSpecMessage());
-	messages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        messages = new LinkedList<>();
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
 
-	initializeProtocolMessageOrder(context);
+        initializeProtocolMessageOrder(context);
 
-	return context;
+        return context;
     }
 
 }

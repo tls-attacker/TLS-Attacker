@@ -42,7 +42,7 @@ public final class AlertMessage extends ProtocolMessage {
     ModifiableByte description;
 
     public AlertMessage() {
-	this.protocolMessageType = ProtocolMessageType.ALERT;
+        this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
     public ModifiableByte getLevel() {
@@ -85,40 +85,40 @@ public final class AlertMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nALERT message:\n  Level: ");
-	if (level != null) {
-	    sb.append(AlertLevel.getAlertLevel(level.getValue()));
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Description: ");
-	if (description != null) {
-	    sb.append(AlertDescription.getAlertDescription(description.getValue()));
-	} else {
-	    sb.append("null");
-	}
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nALERT message:\n  Level: ");
+        if (level != null) {
+            sb.append(AlertLevel.getAlertLevel(level.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Description: ");
+        if (description != null) {
+            sb.append(AlertDescription.getAlertDescription(description.getValue()));
+        } else {
+            sb.append("null");
+        }
+        return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-	StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-	sb.append("ALERT (");
-	if (level != null && level.getValue() != null) {
-	    sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
-	} else {
-	    sb.append("null");
-	}
-	sb.append(", ");
-	if (description != null && description.getValue() != null) {
-	    sb.append(AlertDescription.getAlertDescription(description.getValue()).toString());
-	} else {
-	    sb.append("null");
-	}
-	sb.append(")");
-	return sb.toString();
+        sb.append("ALERT (");
+        if (level != null && level.getValue() != null) {
+            sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
+        } else {
+            sb.append("null");
+        }
+        sb.append(", ");
+        if (description != null && description.getValue() != null) {
+            sb.append(AlertDescription.getAlertDescription(description.getValue()).toString());
+        } else {
+            sb.append("null");
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     @Override

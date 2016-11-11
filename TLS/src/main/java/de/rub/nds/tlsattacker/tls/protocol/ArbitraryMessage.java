@@ -18,17 +18,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class ArbitraryMessage extends ProtocolMessage {
 
     public ArbitraryMessage() {
-	this.setRequired(false);
+        this.setRequired(false);
     }
 
     @Override
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException("Arbitrary message protocol handler not supported yet."); 
+        throw new UnsupportedOperationException("Arbitrary message protocol handler not supported yet.");
     }
 
     @Override
     public String toCompactString() {
-	return "Arbitrary Protocol Message";
+        return "Arbitrary Protocol Message";
     }
 
 }

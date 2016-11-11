@@ -31,35 +31,35 @@ public class AccessModificationFilter extends ModificationFilter {
     private int[] accessNumbers;
 
     public AccessModificationFilter() {
-	accessCounter = 1;
+        accessCounter = 1;
     }
 
     public AccessModificationFilter(final int[] accessNumbers) {
-	accessCounter = 1;
-	this.accessNumbers = accessNumbers;
+        accessCounter = 1;
+        this.accessNumbers = accessNumbers;
     }
 
     @Override
     public boolean filterModification() {
-	boolean filter = contains(accessNumbers, accessCounter);
-	accessCounter++;
-	return filter;
+        boolean filter = contains(accessNumbers, accessCounter);
+        accessCounter++;
+        return filter;
     }
 
     private boolean contains(int[] numbers, int number) {
-	for (int i : numbers) {
-	    if (i == number) {
-		return true;
-	    }
-	}
-	return false;
+        for (int i : numbers) {
+            if (i == number) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int[] getAccessNumbers() {
-	return accessNumbers;
+        return accessNumbers;
     }
 
     public void setAccessNumbers(int[] accessNumbers) {
-	this.accessNumbers = accessNumbers;
+        this.accessNumbers = accessNumbers;
     }
 }

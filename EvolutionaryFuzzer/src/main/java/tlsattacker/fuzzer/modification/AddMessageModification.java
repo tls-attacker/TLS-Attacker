@@ -29,13 +29,13 @@ public class AddMessageModification extends Modification {
     private final SendAction action;
 
     public AddMessageModification(ProtocolMessage message, SendAction action) {
-	super(ModificationType.ADD_MESSAGE);
-	this.message = message;
-	this.action = action;
+        super(ModificationType.ADD_MESSAGE);
+        this.message = message;
+        this.action = action;
     }
 
     public ProtocolMessage getMessage() {
-	return message;
+        return message;
     }
 
     private static final Logger LOG = Logger.getLogger(AddMessageModification.class.getName());

@@ -23,12 +23,12 @@ public class AddToggleEncrytionActionModification extends Modification {
     private int actionPosition;
 
     public AddToggleEncrytionActionModification(int ActionPosition) {
-	super(ModificationType.TOGGLE_ENCRYPTION);
-	this.actionPosition = actionPosition;
+        super(ModificationType.TOGGLE_ENCRYPTION);
+        this.actionPosition = actionPosition;
     }
 
     public int getActionPosition() {
-	return actionPosition;
+        return actionPosition;
     }
 
     private static final Logger LOG = Logger.getLogger(AddToggleEncrytionActionModification.class.getName());

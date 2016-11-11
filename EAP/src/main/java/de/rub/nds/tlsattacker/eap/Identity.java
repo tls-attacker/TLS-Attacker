@@ -24,36 +24,36 @@ public class Identity extends EAPResponseDecorator {
     String username;
 
     public Identity(EAPFrame eapframe, String username, int id) {
-	this.eapframe = eapframe;
-	this.username = username;
-	this.id = id;
-	createFrame();
+        this.eapframe = eapframe;
+        this.username = username;
+        this.id = id;
+        createFrame();
     }
 
     @Override
     public byte[] getFrame() {
-	// TODO Auto-generated method stub
-	return ArrayConverter.concatenate(eapframe.getFrame(), frame, userbyte);
+        // TODO Auto-generated method stub
+        return ArrayConverter.concatenate(eapframe.getFrame(), frame, userbyte);
     }
 
     @Override
     public void createFrame() {
 
-	this.userbyte = username.getBytes();
-	super.eaplength = (short) (5 + userbyte.length); // ( 5 = Code + ID +
-							 // Length + Type )
+        this.userbyte = username.getBytes();
+        super.eaplength = (short) (5 + userbyte.length); // ( 5 = Code + ID +
+        // Length + Type )
 
-	frame = new byte[7];
+        frame = new byte[7];
 
-	frame[0] = (byte) (super.eaplength >>> 8); // Length
-	frame[1] = (byte) (super.eaplength); // Length
-	frame[2] = 0x02; // Code:Response
-	frame[3] = (byte) id; // ID muss aus dem ConnectionHandler kommen //ID
-	frame[4] = (byte) (super.eaplength >>> 8); // Length
-	frame[5] = (byte) (super.eaplength); // Length
-	frame[6] = 0x01; // Type:Identity
+        frame[0] = (byte) (super.eaplength >>> 8); // Length
+        frame[1] = (byte) (super.eaplength); // Length
+        frame[2] = 0x02; // Code:Response
+        frame[3] = (byte) id; // ID muss aus dem ConnectionHandler kommen //ID
+        frame[4] = (byte) (super.eaplength >>> 8); // Length
+        frame[5] = (byte) (super.eaplength); // Length
+        frame[6] = 0x01; // Type:Identity
 
-	// TODO Auto-generated method stub
+        // TODO Auto-generated method stub
 
     }
 

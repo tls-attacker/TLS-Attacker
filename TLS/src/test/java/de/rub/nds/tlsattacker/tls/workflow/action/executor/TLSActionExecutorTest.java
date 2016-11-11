@@ -30,16 +30,17 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class TLSActionExecutorTest {
     private TlsContext context;
     private TLSActionExecutor executor;
     private AlertMessage message;
+
     public TLSActionExecutorTest() {
     }
-    
+
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -50,11 +51,11 @@ public class TLSActionExecutorTest {
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         message.setDescription(AlertDescription.DECODE_ERROR.getValue());
         message.setLevel(AlertLevel.FATAL.getValue());
-        
+
         message.addRecord(new Record());
-        
+
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -67,9 +68,9 @@ public class TLSActionExecutorTest {
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(message);
         executor.sendMessages(protocolMessages);
-        byte[] sendByte = ((FakeTransportHandler)context.getTransportHandler()).getSendByte();
+        byte[] sendByte = ((FakeTransportHandler) context.getTransportHandler()).getSendByte();
         System.out.println(ArrayConverter.bytesToHexString(sendByte));
-        assertArrayEquals(sendByte, new byte[]{21,03,03,00,02,02,51});
+        assertArrayEquals(sendByte, new byte[] { 21, 03, 03, 00, 02, 02, 51 });
     }
 
     /**
@@ -77,12 +78,12 @@ public class TLSActionExecutorTest {
      */
     @Test
     public void testReceiveMessages() {
-        ((FakeTransportHandler)context.getTransportHandler()).setFetchableByte(new byte[]{21,03,03,00,02,02,51});
+        ((FakeTransportHandler) context.getTransportHandler())
+                .setFetchableByte(new byte[] { 21, 03, 03, 00, 02, 02, 51 });
         List<ProtocolMessage> shouldReceive = new LinkedList<>();
         shouldReceive.add(message);
         List<ProtocolMessage> messages = executor.receiveMessages(shouldReceive);
         assertEquals(messages.get(0), message);
     }
 
-    
 }

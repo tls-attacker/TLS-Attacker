@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import org.bouncycastle.util.Arrays;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DTLSActionExecutor extends ActionExecutor {
@@ -72,7 +72,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     @Override
-    public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages){
+    public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
         try {
             if (retransmitCounter < maxRetransmits) {
                 throw new WorkflowExecutionException("Retransmit Counter reached Max Retransmits!");
@@ -85,7 +85,7 @@ public class DTLSActionExecutor extends ActionExecutor {
             }
             sendBufferedData();
         } catch (IOException E) {
-            //TODO
+            // TODO
         }
         previousMessage = null;
         handshakeMessageSendRecordList = null;
@@ -94,7 +94,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     @Override
-    public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages){
+    public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         for (ProtocolMessage message : messages) {
             ProtocolMessage receivedMessage = receiveAndParseNextProtocolMessage(message);
@@ -122,7 +122,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     /**
      * We simply send the protocol Message, and add Records if the protocol
      * message has no records
-     *
+     * 
      * @param protocolMessage
      * @throws IOException
      */
@@ -141,7 +141,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     *
+     * 
      * @param protocolMessage
      * @throws IOException
      */

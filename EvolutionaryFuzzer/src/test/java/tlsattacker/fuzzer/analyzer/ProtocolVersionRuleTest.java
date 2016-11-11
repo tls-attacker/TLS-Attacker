@@ -51,10 +51,10 @@ public class ProtocolVersionRuleTest {
      */
     @Before
     public void setUp() {
-	EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-	config.setOutputFolder("unit_test_output/");
-	config.setConfigFolder("unit_test_config/");
-	rule = new ProtocolVersionRule(config);
+        EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
+        config.setOutputFolder("unit_test_output/");
+        config.setConfigFolder("unit_test_config/");
+        rule = new ProtocolVersionRule(config);
     }
 
     /**
@@ -62,8 +62,8 @@ public class ProtocolVersionRuleTest {
      */
     @After
     public void tearDown() {
-	FileHelper.deleteFolder(new File("unit_test_output/"));
-	FileHelper.deleteFolder(new File("unit_test_config/"));
+        FileHelper.deleteFolder(new File("unit_test_output/"));
+        FileHelper.deleteFolder(new File("unit_test_config/"));
     }
 
     /**
@@ -71,49 +71,49 @@ public class ProtocolVersionRuleTest {
      */
     @Test
     public void testApplys() {
-	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage();
-	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	trace.add(new SendAction(clientHello));
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "test.unit");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applies(result));
-	ServerHelloMessage serverHello = new ServerHelloMessage();
-	trace.add(new ReceiveAction(serverHello));
-	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	WorkFlowTraceFakeExecuter.execute(trace);
-	assertFalse(rule.applies(result));
-	serverHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-	assertTrue(rule.applies(result)); // This is not the highest support
-					  // version
-	clientHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
-	assertFalse(rule.applies(result)); // This should not apply, since the
-					   // client
-					   // also only support tls1.1
-	clientHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	assertTrue(rule.applies(result)); // This should appyl since SSL2 is on
-					  // the blacklist and should never be
-					  // negotiated
-	serverHello.setProtocolVersion(new byte[] { 31, 24 });
-	assertTrue(rule.applies(result)); // This should apply, since the
-					  // ServerVersion is not standart
-	clientHello.setProtocolVersion(new byte[] { 22, 34 });
-	assertTrue(rule.applies(result)); // This should apply, since the
-					  // ServerVersion is not standard
-	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	serverHello.setProtocolVersion(new byte[] { 4 });
-	assertTrue(rule.applies(result)); // This should apply, since the client
-					  // field size is too short
-	serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	clientHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
-	assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
-	assertTrue(rule.applies(result)); // This should apply, since the client
-					  // field size is too short
-	serverHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
-	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
+        WorkflowTrace trace = new WorkflowTrace();
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        trace.add(new SendAction(clientHello));
+        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "test.unit");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertFalse(rule.applies(result));
+        ServerHelloMessage serverHello = new ServerHelloMessage();
+        trace.add(new ReceiveAction(serverHello));
+        serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        WorkFlowTraceFakeExecuter.execute(trace);
+        assertFalse(rule.applies(result));
+        serverHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        assertTrue(rule.applies(result)); // This is not the highest support
+        // version
+        clientHello.setProtocolVersion(ProtocolVersion.TLS11.getValue());
+        assertFalse(rule.applies(result)); // This should not apply, since the
+        // client
+        // also only support tls1.1
+        clientHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
+        serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
+        assertTrue(rule.applies(result)); // This should appyl since SSL2 is on
+        // the blacklist and should never be
+        // negotiated
+        serverHello.setProtocolVersion(new byte[] { 31, 24 });
+        assertTrue(rule.applies(result)); // This should apply, since the
+        // ServerVersion is not standart
+        clientHello.setProtocolVersion(new byte[] { 22, 34 });
+        assertTrue(rule.applies(result)); // This should apply, since the
+        // ServerVersion is not standard
+        clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        serverHello.setProtocolVersion(new byte[] { 4 });
+        assertTrue(rule.applies(result)); // This should apply, since the client
+        // field size is too short
+        serverHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        clientHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
+        assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
+        assertTrue(rule.applies(result)); // This should apply, since the client
+        // field size is too short
+        serverHello.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
+        clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        assertTrue(rule.applies(result)); // TLS DTLS MISMATCH
 
     }
 
@@ -122,18 +122,18 @@ public class ProtocolVersionRuleTest {
      */
     @Test
     public void testOnApply() {
-	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage();
-	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	trace.add(new SendAction(clientHello));
-	ServerHelloMessage serverHello = new ServerHelloMessage();
-	trace.add(new ReceiveAction(serverHello));
-	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "test.unit");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	rule.onApply(result);
-	assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+        WorkflowTrace trace = new WorkflowTrace();
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        trace.add(new SendAction(clientHello));
+        ServerHelloMessage serverHello = new ServerHelloMessage();
+        trace.add(new ReceiveAction(serverHello));
+        serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
+        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "test.unit");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        rule.onApply(result);
+        assertTrue(new File("unit_test_output/" + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
     }
 
@@ -142,7 +142,7 @@ public class ProtocolVersionRuleTest {
      */
     @Test
     public void testOnDecline() {
-	rule.onDecline(null);
+        rule.onDecline(null);
     }
 
     /**
@@ -150,19 +150,19 @@ public class ProtocolVersionRuleTest {
      */
     @Test
     public void testReport() {
-	assertNull(rule.report());
-	WorkflowTrace trace = new WorkflowTrace();
-	ClientHelloMessage clientHello = new ClientHelloMessage();
-	clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
-	trace.add(new SendAction(clientHello));
-	ServerHelloMessage serverHello = new ServerHelloMessage();
-	trace.add(new ReceiveAction(serverHello));
-	serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-	Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-		ExecutorType.TLS, null), "test.unit");
-	WorkFlowTraceFakeExecuter.execute(trace);
-	rule.onApply(result);
-	assertNotNull(rule.report());
+        assertNull(rule.report());
+        WorkflowTrace trace = new WorkflowTrace();
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        trace.add(new SendAction(clientHello));
+        ServerHelloMessage serverHello = new ServerHelloMessage();
+        trace.add(new ReceiveAction(serverHello));
+        serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
+        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "test.unit");
+        WorkFlowTraceFakeExecuter.execute(trace);
+        rule.onApply(result);
+        assertNotNull(rule.report());
     }
 
     /**
@@ -170,7 +170,7 @@ public class ProtocolVersionRuleTest {
      */
     @Test
     public void testGetConfig() {
-	assertNotNull(rule.getConfig());
+        assertNotNull(rule.getConfig());
     }
 
     private static final Logger LOG = Logger.getLogger(ProtocolVersionRuleTest.class.getName());

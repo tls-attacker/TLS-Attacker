@@ -16,7 +16,7 @@ import java.io.IOException;
 public abstract class TransportHandler {
 
     protected int tlsTimeout;
-    
+
     protected long lastSystemNano;
 
     protected long lastMeasurement;

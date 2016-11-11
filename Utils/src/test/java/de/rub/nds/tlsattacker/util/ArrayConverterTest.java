@@ -44,9 +44,9 @@ public class ArrayConverterTest {
      */
     @Test
     public void testBytesToInt() {
-	byte[] toParse = { 0x16, 0x55 };
-	int result = ArrayConverter.bytesToInt(toParse);
-	assertEquals("The conversion result of {0x16, 0x55} should be 5717", 5717, result);
+        byte[] toParse = { 0x16, 0x55 };
+        int result = ArrayConverter.bytesToInt(toParse);
+        assertEquals("The conversion result of {0x16, 0x55} should be 5717", 5717, result);
     }
 
     /**
@@ -131,40 +131,40 @@ public class ArrayConverterTest {
      */
     @Test
     public void testHexStringToByteArray() {
-	String hex = "01";
-	assertArrayEquals("Testing simple one byte hex value", new byte[] { 0x01 },
-		ArrayConverter.hexStringToByteArray(hex));
-	hex = "FF";
-	assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff },
-		ArrayConverter.hexStringToByteArray(hex));
-	hex = "FFFFFF";
-	assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff },
-		ArrayConverter.hexStringToByteArray(hex));
+        String hex = "01";
+        assertArrayEquals("Testing simple one byte hex value", new byte[] { 0x01 },
+                ArrayConverter.hexStringToByteArray(hex));
+        hex = "FF";
+        assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff },
+                ArrayConverter.hexStringToByteArray(hex));
+        hex = "FFFFFF";
+        assertArrayEquals("Testing one byte hex value > 0x7f", new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff },
+                ArrayConverter.hexStringToByteArray(hex));
     }
 
     @Test
     public void testBigIntegerToNullPaddedByteArray() {
-	BigInteger test = new BigInteger("1D42C86F7923DFEC", 16);
+        BigInteger test = new BigInteger("1D42C86F7923DFEC", 16);
 
-	assertArrayEquals("Check zero output size", new byte[0],
-		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 0));
-	assertArrayEquals("Check check output size smaller than input", new byte[] { (byte) 0xEC },
-		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 1));
-	assertArrayEquals("Check output size bigger than input size",
-		ArrayConverter.hexStringToByteArray("0000000000000000000000001D42C86F7923DFEC"),
-		ArrayConverter.bigIntegerToNullPaddedByteArray(test, 20));
+        assertArrayEquals("Check zero output size", new byte[0],
+                ArrayConverter.bigIntegerToNullPaddedByteArray(test, 0));
+        assertArrayEquals("Check check output size smaller than input", new byte[] { (byte) 0xEC },
+                ArrayConverter.bigIntegerToNullPaddedByteArray(test, 1));
+        assertArrayEquals("Check output size bigger than input size",
+                ArrayConverter.hexStringToByteArray("0000000000000000000000001D42C86F7923DFEC"),
+                ArrayConverter.bigIntegerToNullPaddedByteArray(test, 20));
     }
 
     @Test
     public void testLongToUint48Bytes() {
-	long testValue = 0x0000123456789ABCL;
-	byte[] expectedResult = ArrayConverter.hexStringToByteArray("123456789ABC");
+        long testValue = 0x0000123456789ABCL;
+        byte[] expectedResult = ArrayConverter.hexStringToByteArray("123456789ABC");
 
-	assertArrayEquals("Assert correct output", expectedResult, ArrayConverter.longToUint48Bytes(testValue));
+        assertArrayEquals("Assert correct output", expectedResult, ArrayConverter.longToUint48Bytes(testValue));
 
-	testValue = 0x0000000000000001L;
-	expectedResult = ArrayConverter.hexStringToByteArray("000000000001");
+        testValue = 0x0000000000000001L;
+        expectedResult = ArrayConverter.hexStringToByteArray("000000000001");
 
-	assertArrayEquals("Assert correct output", expectedResult, ArrayConverter.longToUint48Bytes(testValue));
+        assertArrayEquals("Assert correct output", expectedResult, ArrayConverter.longToUint48Bytes(testValue));
     }
 }

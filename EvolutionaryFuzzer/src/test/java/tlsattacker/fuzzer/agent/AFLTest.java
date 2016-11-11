@@ -57,10 +57,10 @@ public class AFLTest {
      *
      */
     public void testAflexists() {
-	File f = new File("AFL/afl-as");
-	assertTrue("Failure: Tool afl-as was not found", f.exists());
-	f = new File("AFL/afl-showmap");
-	assertTrue("Failure: Tool afl-showmap was not found", f.exists());
+        File f = new File("AFL/afl-as");
+        assertTrue("Failure: Tool afl-as was not found", f.exists());
+        f = new File("AFL/afl-showmap");
+        assertTrue("Failure: Tool afl-showmap was not found", f.exists());
 
     }
 

@@ -75,17 +75,17 @@ public class MathHelperTest {
      */
     @Test
     public void testCRT() {
-	BigInteger[] congs = { new BigInteger("3"), new BigInteger("4"), new BigInteger("5") };
-	BigInteger[] moduli = { new BigInteger("2"), new BigInteger("3"), new BigInteger("2") };
-	assertEquals(4, MathHelper.CRT(congs, moduli).intValue());
+        BigInteger[] congs = { new BigInteger("3"), new BigInteger("4"), new BigInteger("5") };
+        BigInteger[] moduli = { new BigInteger("2"), new BigInteger("3"), new BigInteger("2") };
+        assertEquals(4, MathHelper.CRT(congs, moduli).intValue());
 
-	// computes:
-	// x == 2 mod 3
-	// x == 3 mod 4
-	// x == 1 mod 5
-	BigInteger[] congs2 = { new BigInteger("2"), new BigInteger("3"), new BigInteger("1") };
-	BigInteger[] moduli2 = { new BigInteger("3"), new BigInteger("4"), new BigInteger("5") };
-	assertEquals(11, MathHelper.CRT(congs2, moduli2).intValue());
+        // computes:
+        // x == 2 mod 3
+        // x == 3 mod 4
+        // x == 1 mod 5
+        BigInteger[] congs2 = { new BigInteger("2"), new BigInteger("3"), new BigInteger("1") };
+        BigInteger[] moduli2 = { new BigInteger("3"), new BigInteger("4"), new BigInteger("5") };
+        assertEquals(11, MathHelper.CRT(congs2, moduli2).intValue());
     }
 
 }

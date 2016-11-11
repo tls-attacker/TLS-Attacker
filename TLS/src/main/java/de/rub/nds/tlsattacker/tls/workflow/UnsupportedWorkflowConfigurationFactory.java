@@ -24,49 +24,49 @@ public class UnsupportedWorkflowConfigurationFactory extends WorkflowConfigurati
     private final CommandConfig config;
 
     public UnsupportedWorkflowConfigurationFactory(CommandConfig config) {
-	super(config);
-	this.config = config;
+        super(config);
+        this.config = config;
     }
 
     @Override
     public TlsContext createClientHelloTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = new TlsContext();
-	context.setProtocolVersion(config.getProtocolVersion());
-	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
-	WorkflowTrace workflowTrace = new WorkflowTrace();
+        TlsContext context = new TlsContext();
+        context.setProtocolVersion(config.getProtocolVersion());
+        context.setSelectedCipherSuite(config.getCipherSuites().get(0));
+        WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	ClientHelloMessage clientHello = new ClientHelloMessage();
-	workflowTrace.add(MessageActionFactory.createAction(context.getMyConnectionEnd(), ConnectionEnd.CLIENT,
-		clientHello));
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        workflowTrace.add(MessageActionFactory.createAction(context.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+                clientHello));
 
-	clientHello.setSupportedCipherSuites(config.getCipherSuites());
-	clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
+        clientHello.setSupportedCipherSuites(config.getCipherSuites());
+        clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
 
-	initializeClientHelloExtensions(config, clientHello);
+        initializeClientHelloExtensions(config, clientHello);
 
-	context.setWorkflowTrace(workflowTrace);
-	initializeProtocolMessageOrder(context);
+        context.setWorkflowTrace(workflowTrace);
+        initializeProtocolMessageOrder(context);
 
-	return context;
+        return context;
     }
 
     @Override
     public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
+        TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
 
-	workflowTrace.add(MessageActionFactory.createAction(context.getMyConnectionEnd(),
-		context.getMyConnectionPeer(), new ArbitraryMessage()));
+        workflowTrace.add(MessageActionFactory.createAction(context.getMyConnectionEnd(),
+                context.getMyConnectionPeer(), new ArbitraryMessage()));
 
-	initializeProtocolMessageOrder(context);
+        initializeProtocolMessageOrder(context);
 
-	return context;
+        return context;
     }
 
     @Override
     public TlsContext createFullTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = this.createHandshakeTlsContext(myConnectionEnd);
+        TlsContext context = this.createHandshakeTlsContext(myConnectionEnd);
 
-	return context;
+        return context;
     }
 }

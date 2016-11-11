@@ -30,12 +30,12 @@ public class FailureState implements EapState {
 
     public FailureState(EapolMachine eapolMachine, int id) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
 
-	nic.closeCon();
-	LOGGER.info("Failure, Connection refused");
-	// System.exit(0);
+        nic.closeCon();
+        LOGGER.info("Failure, Connection refused");
+        // System.exit(0);
 
     }
 
@@ -51,18 +51,18 @@ public class FailureState implements EapState {
 
     @Override
     public byte[] receive() {
-	return null;
+        return null;
     }
 
     @Override
     public String getState() {
-	return "FailureState";
+        return "FailureState";
     }
 
     @Override
     public int getID() {
 
-	return 0;
+        return 0;
 
     }
 

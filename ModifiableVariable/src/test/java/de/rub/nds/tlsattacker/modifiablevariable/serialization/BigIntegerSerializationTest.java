@@ -54,78 +54,78 @@ public class BigIntegerSerializationTest {
 
     @Before
     public void setUp() throws JAXBException {
-	start = new ModifiableBigInteger();
-	start.setOriginalValue(BigInteger.TEN);
-	expectedResult = null;
-	result = null;
+        start = new ModifiableBigInteger();
+        start.setOriginalValue(BigInteger.TEN);
+        expectedResult = null;
+        result = null;
 
-	writer = new StringWriter();
-	context = JAXBContext.newInstance(ModifiableBigInteger.class, BigIntegerAddModification.class,
-		ByteArrayModificationFactory.class);
-	m = context.createMarshaller();
-	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-	um = context.createUnmarshaller();
+        writer = new StringWriter();
+        context = JAXBContext.newInstance(ModifiableBigInteger.class, BigIntegerAddModification.class,
+                ByteArrayModificationFactory.class);
+        m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        um = context.createUnmarshaller();
     }
 
     @Test
     public void testSerializeDeserializeSimple() throws Exception {
-	start.setModification(null);
-	m.marshal(start, writer);
+        start.setModification(null);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	System.out.println(xmlString);
+        String xmlString = writer.toString();
+        System.out.println(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = new BigInteger("10");
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
+        expectedResult = new BigInteger("10");
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModification() throws Exception {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
-	VariableModification<BigInteger> modifier2 = BigIntegerModificationFactory.add(BigInteger.ONE);
-	modifier.setPostModification(modifier2);
-	start.setModification(modifier);
-	m.marshal(start, writer);
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
+        VariableModification<BigInteger> modifier2 = BigIntegerModificationFactory.add(BigInteger.ONE);
+        modifier.setPostModification(modifier2);
+        start.setModification(modifier);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	LOGGER.debug(xmlString);
+        String xmlString = writer.toString();
+        LOGGER.debug(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = new BigInteger("12");
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
+        expectedResult = new BigInteger("12");
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
 
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModificationFilter() throws Exception {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
-	int[] filtered = { 1, 3 };
-	AccessModificationFilter filter = ModificationFilterFactory.access(filtered);
-	modifier.setModificationFilter(filter);
-	VariableModification<BigInteger> modifier2 = BigIntegerModificationFactory.add(BigInteger.ONE);
-	modifier.setPostModification(modifier2);
-	start.setModification(modifier);
-	m.marshal(start, writer);
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
+        int[] filtered = { 1, 3 };
+        AccessModificationFilter filter = ModificationFilterFactory.access(filtered);
+        modifier.setModificationFilter(filter);
+        VariableModification<BigInteger> modifier2 = BigIntegerModificationFactory.add(BigInteger.ONE);
+        modifier.setPostModification(modifier2);
+        start.setModification(modifier);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	LOGGER.debug(xmlString);
+        String xmlString = writer.toString();
+        LOGGER.debug(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = new BigInteger("10");
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
+        expectedResult = new BigInteger("10");
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
 
     }
 

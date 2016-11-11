@@ -15,7 +15,7 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeMasterSecretAction extends TLSAction {

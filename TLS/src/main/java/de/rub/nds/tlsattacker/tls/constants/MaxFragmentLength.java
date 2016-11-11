@@ -27,34 +27,34 @@ public enum MaxFragmentLength {
     private static final Map<Byte, MaxFragmentLength> MAP;
 
     private MaxFragmentLength(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (MaxFragmentLength cm : MaxFragmentLength.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (MaxFragmentLength cm : MaxFragmentLength.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static MaxFragmentLength getMaxFragmentLength(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     public static MaxFragmentLength getRandom() {
-	MaxFragmentLength c = null;
-	while (c == null) {
-	    Object[] o = MAP.values().toArray();
-	    c = (MaxFragmentLength) o[RandomHelper.getRandom().nextInt(o.length)];
-	}
-	return c;
+        MaxFragmentLength c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (MaxFragmentLength) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
     }
 }

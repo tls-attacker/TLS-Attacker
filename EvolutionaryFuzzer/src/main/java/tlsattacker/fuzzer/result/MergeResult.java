@@ -35,27 +35,27 @@ public class MergeResult {
     private int hitVertices = 0;
 
     public MergeResult(int newVertices, int newBranches, int hitVertices) {
-	this.hitVertices = hitVertices;
-	this.newBranches = newBranches;
-	this.newVertices = newVertices;
+        this.hitVertices = hitVertices;
+        this.newBranches = newBranches;
+        this.newVertices = newVertices;
 
     }
 
     public int getNewVertices() {
-	return newVertices;
+        return newVertices;
     }
 
     public int getNewBranches() {
-	return newBranches;
+        return newBranches;
     }
 
     public int getHitVertices() {
-	return hitVertices;
+        return hitVertices;
     }
 
     @Override
     public String toString() {
-	return "New Vertices:" + newVertices + "  New Branches:" + newBranches + "  Hit Verticies:" + hitVertices;
+        return "New Vertices:" + newVertices + "  New Branches:" + newBranches + "  Hit Verticies:" + hitVertices;
     }
 
     private static final Logger LOG = Logger.getLogger(MergeResult.class.getName());

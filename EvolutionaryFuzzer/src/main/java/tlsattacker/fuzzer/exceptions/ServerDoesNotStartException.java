@@ -17,8 +17,8 @@ import java.util.logging.Logger;
 public class ServerDoesNotStartException extends RuntimeException {
 
     public ServerDoesNotStartException(String message) {
-	super(message);
+        super(message);
     }
-    
+
     private static final Logger LOG = Logger.getLogger(ServerDoesNotStartException.class.getName());
 }

@@ -32,7 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class SendActionTest {
@@ -47,7 +47,8 @@ public class SendActionTest {
     }
 
     @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
+    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            InvalidAlgorithmParameterException {
         AlertMessage alert = new AlertMessage();
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());

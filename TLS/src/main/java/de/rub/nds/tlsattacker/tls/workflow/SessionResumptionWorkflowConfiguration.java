@@ -36,89 +36,89 @@ public class SessionResumptionWorkflowConfiguration {
     private final CommandConfig config;
 
     public SessionResumptionWorkflowConfiguration(TlsContext tlsContext, CommandConfig config) {
-	this.tlsContext = tlsContext;
-	this.config = config;
+        this.tlsContext = tlsContext;
+        this.config = config;
     }
 
     public void createWorkflow() {
-	tlsContext.setSessionResumption(true);
-	tlsContext.getDigest().reset();
-	WorkflowTraceType workflowTraceType;
-	if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
-	    ClientCommandConfig ccConfig = (ClientCommandConfig) config;
-	    workflowTraceType = ccConfig.getWorkflowTraceType();
-	} else {
-	    ServerCommandConfig ccConfig = (ServerCommandConfig) config;
-	    workflowTraceType = ccConfig.getWorkflowTraceType();
-	}
+        tlsContext.setSessionResumption(true);
+        tlsContext.getDigest().reset();
+        WorkflowTraceType workflowTraceType;
+        if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+            ClientCommandConfig ccConfig = (ClientCommandConfig) config;
+            workflowTraceType = ccConfig.getWorkflowTraceType();
+        } else {
+            ServerCommandConfig ccConfig = (ServerCommandConfig) config;
+            workflowTraceType = ccConfig.getWorkflowTraceType();
+        }
 
-	WorkflowTrace workflowTrace;
+        WorkflowTrace workflowTrace;
 
-	switch (workflowTraceType) {
-	    case FULL_SERVER_RESPONSE:
-		workflowTrace = createFullSRWorkflow();
-		break;
-	    case FULL:
-		workflowTrace = createFullWorkflow();
-		break;
-	    case HANDSHAKE:
-		workflowTrace = createHandshakeWorkflow();
-		break;
-	    default:
-		throw new ConfigurationException("not supported workflow type: " + workflowTraceType);
-	}
+        switch (workflowTraceType) {
+            case FULL_SERVER_RESPONSE:
+                workflowTrace = createFullSRWorkflow();
+                break;
+            case FULL:
+                workflowTrace = createFullWorkflow();
+                break;
+            case HANDSHAKE:
+                workflowTrace = createHandshakeWorkflow();
+                break;
+            default:
+                throw new ConfigurationException("not supported workflow type: " + workflowTraceType);
+        }
 
-	tlsContext.setWorkflowTrace(workflowTrace);
+        tlsContext.setWorkflowTrace(workflowTrace);
 
-	initializeProtocolMessageOrder(tlsContext);
+        initializeProtocolMessageOrder(tlsContext);
     }
 
     private WorkflowTrace createHandshakeWorkflow() {
 
-	WorkflowTrace workflowTrace = new WorkflowTrace();
+        WorkflowTrace workflowTrace = new WorkflowTrace();
 
-	List<ProtocolMessage> protocolMessages = new LinkedList<>();
+        List<ProtocolMessage> protocolMessages = new LinkedList<>();
 
-	ClientHelloMessage clientHello = new ClientHelloMessage();
-	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
-		clientHello));
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
+                clientHello));
 
-	clientHello.setSupportedCipherSuites(config.getCipherSuites());
-	clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
+        clientHello.setSupportedCipherSuites(config.getCipherSuites());
+        clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
 
-	initializeClientHelloExtensions(config, clientHello);
+        initializeClientHelloExtensions(config, clientHello);
 
-	protocolMessages.add(new ServerHelloMessage());
+        protocolMessages.add(new ServerHelloMessage());
 
-	protocolMessages.add(new ChangeCipherSpecMessage());
-	protocolMessages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
-		protocolMessages));
-	protocolMessages = new LinkedList<>();
-	protocolMessages.add(new ChangeCipherSpecMessage());
-	protocolMessages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
-		protocolMessages));
+        protocolMessages.add(new ChangeCipherSpecMessage());
+        protocolMessages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+                protocolMessages));
+        protocolMessages = new LinkedList<>();
+        protocolMessages.add(new ChangeCipherSpecMessage());
+        protocolMessages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
+                protocolMessages));
 
-	return workflowTrace;
+        return workflowTrace;
 
     }
 
     private WorkflowTrace createFullWorkflow() {
 
-	WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
-	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
-		new ApplicationMessage()));
+        WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
+        workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+                new ApplicationMessage()));
 
-	return workflowTrace;
+        return workflowTrace;
     }
 
     private WorkflowTrace createFullSRWorkflow() {
 
-	WorkflowTrace workflowTrace = this.createFullWorkflow();
-	workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
-		new ApplicationMessage()));
-	return workflowTrace;
+        WorkflowTrace workflowTrace = this.createFullWorkflow();
+        workflowTrace.add(MessageActionFactory.createAction(tlsContext.getMyConnectionEnd(), ConnectionEnd.SERVER,
+                new ApplicationMessage()));
+        return workflowTrace;
     }
 
 }

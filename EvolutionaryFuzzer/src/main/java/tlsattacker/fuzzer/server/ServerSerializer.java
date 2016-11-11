@@ -25,31 +25,38 @@ public class ServerSerializer {
 
     /**
      * Writes a TLSServer to a File in XML format
-     * @param server Server to serialize
-     * @param file File to write to
-     * @throws FileNotFoundException Thrown if the File does not exist
+     * 
+     * @param server
+     *            Server to serialize
+     * @param file
+     *            File to write to
+     * @throws FileNotFoundException
+     *             Thrown if the File does not exist
      */
-    public static void write(TLSServer server, File file) throws FileNotFoundException { 
+    public static void write(TLSServer server, File file) throws FileNotFoundException {
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(file)));
-	encoder.writeObject(server);
-	encoder.close();
+        encoder.writeObject(server);
+        encoder.close();
     }
 
     /**
      * Read a TLSServer from an XML file
-     * @param file File to read from
+     * 
+     * @param file
+     *            File to read from
      * @return Read ServerObject
-     * @throws FileNotFoundException If the File does not exist
+     * @throws FileNotFoundException
+     *             If the File does not exist
      */
     public static TLSServer read(File file) throws FileNotFoundException {
-	XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
-	TLSServer o = (TLSServer) decoder.readObject();
-	decoder.close();
-	return o;
+        XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(file)));
+        TLSServer o = (TLSServer) decoder.readObject();
+        decoder.close();
+        return o;
     }
 
     private ServerSerializer() {
     }
-    
+
     private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
 }

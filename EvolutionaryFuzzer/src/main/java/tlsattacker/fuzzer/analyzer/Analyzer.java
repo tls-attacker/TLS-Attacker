@@ -18,12 +18,15 @@ public abstract class Analyzer {
 
     /**
      * Analyzes a result
-     * @param result Result to analyze
+     * 
+     * @param result
+     *            Result to analyze
      */
     public abstract void analyze(Result result);
 
-     /**
+    /**
      * Generates a status report
+     * 
      * @return Status report as a String
      */
     public abstract String getReport();

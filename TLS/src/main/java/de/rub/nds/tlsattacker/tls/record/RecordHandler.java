@@ -79,7 +79,7 @@ public class RecordHandler {
         // create resulting byte array
         byte[] result = new byte[0];
         for (Record record : records) {
-            byte[] ctArray = {record.getContentType().getValue()};
+            byte[] ctArray = { record.getContentType().getValue() };
             byte[] pv = record.getProtocolVersion().getValue();
             byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
@@ -119,11 +119,15 @@ public class RecordHandler {
      * returns the size of the data, which were currently wrapped in the records
      * (it is namely possible to divide Protocol message data into several
      * records).
-     *
-     * @param record record going to be filled in
-     * @param contentType content type
-     * @param data data array
-     * @param dataPointer current position in the read data
+     * 
+     * @param record
+     *            record going to be filled in
+     * @param contentType
+     *            content type
+     * @param data
+     *            data array
+     * @param dataPointer
+     *            current position in the read data
      * @return new position of the data going to be sent in the records
      */
     private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
@@ -146,7 +150,8 @@ public class RecordHandler {
             if (recordCipher == null && tlsContext.isFuzzingMode()) {
                 try {
                     recordCipher = new TlsRecordBlockCipher(tlsContext);
-                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException ex) {
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
+                        | InvalidAlgorithmParameterException ex) {
                     throw new UnsupportedOperationException(ex);
                 }
             } else if (recordCipher == null) {
@@ -180,7 +185,7 @@ public class RecordHandler {
     }
 
     /**
-     *
+     * 
      * @param rawRecordData
      * @return list of parsed records or null, if there was not enough data
      */
@@ -196,9 +201,9 @@ public class RecordHandler {
             }
             Record record = new Record();
             record.setContentType(contentType.getValue());
-            byte[] protocolVersion = {rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2]};
+            byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
             record.setProtocolVersion(protocolVersion);
-            byte[] byteLength = {rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4]};
+            byte[] byteLength = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
             int length = ArrayConverter.bytesToInt(byteLength);
             record.setLength(length);
             if (dataPointer + 5 + length > rawRecordData.length) {
@@ -248,7 +253,7 @@ public class RecordHandler {
     /**
      * Parses stored finish bytes into records and sets the stored finished
      * bytes to null. Returns null if no records were parsed
-     *
+     * 
      * @return List of parsed Records
      */
     public List<Record> parseFinishedBytes() {

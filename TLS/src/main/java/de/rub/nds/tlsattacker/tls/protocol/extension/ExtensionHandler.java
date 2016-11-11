@@ -21,10 +21,10 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
     public abstract int parseExtension(byte[] message, int pointer);
 
     public ExtensionMessage getExtensionMessage() {
-	return extensionMessage;
+        return extensionMessage;
     }
 
     public void setExtensionMessage(Message extensionMessage) {
-	this.extensionMessage = extensionMessage;
+        this.extensionMessage = extensionMessage;
     }
 }

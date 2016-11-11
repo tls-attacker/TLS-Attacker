@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AnalyzeModificationRuleConfig extends RuleConfig {
 
     public AnalyzeModificationRuleConfig() {
-	super(null);
+        super(null);
     }
 
     private static final Logger LOG = Logger.getLogger(AnalyzeModificationRuleConfig.class.getName());

@@ -41,30 +41,30 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
     private ExecutorType type;
 
     public GenericWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext, ExecutorType type) {
-	this.tlsContext = tlsContext;
-	tlsContext.setRecordHandler(new RecordHandler(tlsContext));
-	tlsContext.setTransportHandler(transportHandler);
-	this.workflowContext = new WorkflowContext();
-	this.type = type;
+        this.tlsContext = tlsContext;
+        tlsContext.setRecordHandler(new RecordHandler(tlsContext));
+        tlsContext.setTransportHandler(transportHandler);
+        this.workflowContext = new WorkflowContext();
+        this.type = type;
     }
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-	if (executed) {
-	    throw new IllegalStateException("The workflow has already been" + " executed. Create a new Workflow.");
-	}
-	executed = true;
-	ActionExecutor actionExecutor = ActionExecutorFactory.createActionExecutor(tlsContext, workflowContext, type);
-	List<TLSAction> tlsActions = tlsContext.getWorkflowTrace().getTLSActions();
-	try {
-	    while (workflowContext.getActionPointer() < tlsActions.size() && workflowContext.isProceedWorkflow()) {
-		TLSAction action = tlsActions.get(workflowContext.getActionPointer());
-		action.execute(tlsContext, actionExecutor);
-		workflowContext.incrementActionPointer();
-	    }
-	    tlsContext.getTransportHandler().closeConnection();
-	} catch (IOException e) {
-	    throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
-	}
+        if (executed) {
+            throw new IllegalStateException("The workflow has already been" + " executed. Create a new Workflow.");
+        }
+        executed = true;
+        ActionExecutor actionExecutor = ActionExecutorFactory.createActionExecutor(tlsContext, workflowContext, type);
+        List<TLSAction> tlsActions = tlsContext.getWorkflowTrace().getTLSActions();
+        try {
+            while (workflowContext.getActionPointer() < tlsActions.size() && workflowContext.isProceedWorkflow()) {
+                TLSAction action = tlsActions.get(workflowContext.getActionPointer());
+                action.execute(tlsContext, actionExecutor);
+                workflowContext.incrementActionPointer();
+            }
+            tlsContext.getTransportHandler().closeConnection();
+        } catch (IOException e) {
+            throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+        }
     }
 }

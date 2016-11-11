@@ -31,43 +31,43 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
     ModifiableByteArray supportedCurves;
 
     public EllipticCurvesExtensionMessage() {
-	this.extensionTypeConstant = ExtensionType.ELLIPTIC_CURVES;
+        this.extensionTypeConstant = ExtensionType.ELLIPTIC_CURVES;
     }
 
     public ModifiableInteger getSupportedCurvesLength() {
-	return supportedCurvesLength;
+        return supportedCurvesLength;
     }
 
     public void setSupportedCurvesLength(int length) {
-	this.supportedCurvesLength = ModifiableVariableFactory.safelySetValue(supportedCurvesLength, length);
+        this.supportedCurvesLength = ModifiableVariableFactory.safelySetValue(supportedCurvesLength, length);
     }
 
     public ModifiableByteArray getSupportedCurves() {
-	return supportedCurves;
+        return supportedCurves;
     }
 
     public void setSupportedCurves(byte[] array) {
-	supportedCurves = ModifiableVariableFactory.safelySetValue(supportedCurves, array);
+        supportedCurves = ModifiableVariableFactory.safelySetValue(supportedCurves, array);
     }
 
     public void setSupportedCurvesLength(ModifiableInteger supportedCurvesLength) {
-	this.supportedCurvesLength = supportedCurvesLength;
+        this.supportedCurvesLength = supportedCurvesLength;
     }
 
     public void setSupportedCurves(ModifiableByteArray supportedCurves) {
-	this.supportedCurves = supportedCurves;
+        this.supportedCurves = supportedCurves;
     }
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	return EllipticCurvesExtensionHandler.getInstance();
+        return EllipticCurvesExtensionHandler.getInstance();
     }
 
     public List<NamedCurve> getSupportedCurvesConfig() {
-	return supportedCurvesConfig;
+        return supportedCurvesConfig;
     }
 
     public void setSupportedCurvesConfig(List<NamedCurve> supportedCurvesConfig) {
-	this.supportedCurvesConfig = supportedCurvesConfig;
+        this.supportedCurvesConfig = supportedCurvesConfig;
     }
 }

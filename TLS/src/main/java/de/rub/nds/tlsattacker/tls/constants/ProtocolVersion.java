@@ -30,51 +30,51 @@ public enum ProtocolVersion {
     private static final Map<Integer, ProtocolVersion> MAP;
 
     private ProtocolVersion(byte[] value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (ProtocolVersion c : ProtocolVersion.values()) {
-	    MAP.put(valueToInt(c.value), c);
-	}
+        MAP = new HashMap<>();
+        for (ProtocolVersion c : ProtocolVersion.values()) {
+            MAP.put(valueToInt(c.value), c);
+        }
     }
 
     private static Integer valueToInt(byte[] value) {
-	if (value.length == 2) {
-	    return (value[0] & 0xff) << 8 | (value[1] & 0xff);
-	} else {
-	    return null;
-	}
+        if (value.length == 2) {
+            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        } else {
+            return null;
+        }
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
-	Integer i = valueToInt(value);
-	if (i == null) {
-	    return null;
-	}
-	return MAP.get(i);
+        Integer i = valueToInt(value);
+        if (i == null) {
+            return null;
+        }
+        return MAP.get(i);
     }
 
     public static ProtocolVersion getRandom() {
-	ProtocolVersion c = null;
-	while (c == null) {
-	    Object[] o = MAP.values().toArray();
-	    c = (ProtocolVersion) o[RandomHelper.getRandom().nextInt(o.length)];
-	}
-	return c;
+        ProtocolVersion c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (ProtocolVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
     }
 
     public byte[] getValue() {
-	return value;
+        return value;
     }
 
     public byte getMajor() {
-	return value[0];
+        return value[0];
     }
 
     public byte getMinor() {
-	return value[1];
+        return value[1];
     }
 
     /**
@@ -86,14 +86,14 @@ public enum ProtocolVersion {
      * @return
      */
     public static ProtocolVersion fromString(String protocolVersion) {
-	protocolVersion = protocolVersion.replaceFirst("v", "");
-	protocolVersion = protocolVersion.replaceFirst("\\.", "");
-	for (ProtocolVersion pv : ProtocolVersion.values()) {
-	    if (protocolVersion.equalsIgnoreCase(pv.toString())) {
-		return pv;
-	    }
-	}
-	throw new IllegalArgumentException("Value " + protocolVersion + " cannot be converted to a protocol version. "
-		+ "Available values are: " + Arrays.toString(ProtocolVersion.values()));
+        protocolVersion = protocolVersion.replaceFirst("v", "");
+        protocolVersion = protocolVersion.replaceFirst("\\.", "");
+        for (ProtocolVersion pv : ProtocolVersion.values()) {
+            if (protocolVersion.equalsIgnoreCase(pv.toString())) {
+                return pv;
+            }
+        }
+        throw new IllegalArgumentException("Value " + protocolVersion + " cannot be converted to a protocol version. "
+                + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
     }
 }

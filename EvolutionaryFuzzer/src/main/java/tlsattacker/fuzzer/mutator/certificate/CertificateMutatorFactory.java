@@ -26,14 +26,14 @@ public class CertificateMutatorFactory {
      * @throws IllegalCertificateMutatorException
      */
     public static CertificateMutator getCertificateMutator(EvolutionaryFuzzerConfig config)
-	    throws IllegalCertificateMutatorException {
-	switch (config.getCertMutator()) {
-	    case FixedCertificateMutator.optionName:
-		return new FixedCertificateMutator();
-	    default:
-		throw new IllegalCertificateMutatorException("Illegal Value for Certificate Mutator:"
-			+ config.getMutator());
-	}
+            throws IllegalCertificateMutatorException {
+        switch (config.getCertMutator()) {
+            case FixedCertificateMutator.optionName:
+                return new FixedCertificateMutator();
+            default:
+                throw new IllegalCertificateMutatorException("Illegal Value for Certificate Mutator:"
+                        + config.getMutator());
+        }
     }
 
     /**

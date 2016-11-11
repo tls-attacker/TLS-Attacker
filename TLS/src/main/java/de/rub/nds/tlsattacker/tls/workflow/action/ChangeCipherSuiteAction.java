@@ -20,7 +20,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeCipherSuiteAction extends TLSAction {
@@ -57,8 +57,7 @@ public class ChangeCipherSuiteAction extends TLSAction {
             }
             oldValue = tlsContext.getSelectedCipherSuite();
             tlsContext.setSelectedCipherSuite(newValue);
-            if(tlsContext.getRecordHandler().getRecordCipher() != null)
-            {
+            if (tlsContext.getRecordHandler().getRecordCipher() != null) {
                 tlsContext.getRecordHandler().getRecordCipher().init();
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

@@ -28,17 +28,17 @@ public class ModifyFieldModification extends Modification {
     private final ModifiableVariableHolder modificationHolder;
 
     public ModifyFieldModification(String fieldName, ModifiableVariableHolder modificationHolder) {
-	super(ModificationType.MODIFY_FIELD);
-	this.fieldName = fieldName;
-	this.modificationHolder = modificationHolder;
+        super(ModificationType.MODIFY_FIELD);
+        this.fieldName = fieldName;
+        this.modificationHolder = modificationHolder;
     }
 
     public String getFieldName() {
-	return fieldName;
+        return fieldName;
     }
 
     public ModifiableVariableHolder getModificationHolder() {
-	return modificationHolder;
+        return modificationHolder;
     }
 
     private static final Logger LOG = Logger.getLogger(ModifyFieldModification.class.getName());

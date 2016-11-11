@@ -15,14 +15,14 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class AgentFactoryTest {
-    
+
     public AgentFactoryTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -43,15 +43,12 @@ public class AgentFactoryTest {
         agent = AgentFactory.generateAgent(config, null);
         assertTrue(agent instanceof AFLAgent);
         config.setAgent("NOT A REAL AGENT");
-        try
-        {
+        try {
             agent = AgentFactory.generateAgent(config, null);
             fail("Undefined Agent did not throw an Exception");
-        }
-        catch(IllegalAgentException E)
-        {
+        } catch (IllegalAgentException E) {
             assertTrue(E != null);
         }
     }
-    
+
 }

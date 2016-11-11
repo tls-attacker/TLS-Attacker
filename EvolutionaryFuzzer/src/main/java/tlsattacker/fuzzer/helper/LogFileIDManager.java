@@ -28,7 +28,7 @@ public class LogFileIDManager {
      * @return Instance of the LogFileIDManager
      */
     public static LogFileIDManager getInstance() {
-	return LogFileIDManagerHolder.INSTANCE;
+        return LogFileIDManagerHolder.INSTANCE;
     }
 
     /**
@@ -45,28 +45,28 @@ public class LogFileIDManager {
      * Private Constructor since its a Singleton
      */
     private LogFileIDManager() {
-	FileWriter w = null;
-	try {
-	    File f = new File("file.id");
-	    if (f.exists()) {
-		BufferedReader r = new BufferedReader(new FileReader(f));
-		String s = r.readLine();
-		run = Integer.parseInt(s);
-		run++;
-		f.delete();
-	    }
-	    f.createNewFile();
-	    w = new FileWriter(f);
-	    w.write("" + run);
-	} catch (IOException ex) {
-	    Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
-	} finally {
-	    try {
-		w.close();
-	    } catch (IOException ex) {
-		Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	}
+        FileWriter w = null;
+        try {
+            File f = new File("file.id");
+            if (f.exists()) {
+                BufferedReader r = new BufferedReader(new FileReader(f));
+                String s = r.readLine();
+                run = Integer.parseInt(s);
+                run++;
+                f.delete();
+            }
+            f.createNewFile();
+            w = new FileWriter(f);
+            w.write("" + run);
+        } catch (IOException ex) {
+            Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                w.close();
+            } catch (IOException ex) {
+                Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     }
 
@@ -76,17 +76,18 @@ public class LogFileIDManager {
      * @return Unique ID
      */
     public synchronized int getID() {
-	id++;
-	return id;
+        id++;
+        return id;
     }
 
     /**
      * Returns a random Filename
+     * 
      * @return Random Filename
      */
     public synchronized String getFilename() {
-	id++;
-	return "" + run + "." + id;
+        id++;
+        return "" + run + "." + id;
     }
 
     /**
@@ -94,13 +95,13 @@ public class LogFileIDManager {
      */
     private static class LogFileIDManagerHolder {
 
-	/**
+        /**
          * Singleton
          */
-	private static final LogFileIDManager INSTANCE = new LogFileIDManager();
+        private static final LogFileIDManager INSTANCE = new LogFileIDManager();
 
-	private LogFileIDManagerHolder() {
-	}
+        private LogFileIDManagerHolder() {
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());

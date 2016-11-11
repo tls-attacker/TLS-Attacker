@@ -17,14 +17,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class ExecuteFaultyConfigTest {
-    
+
     public ExecuteFaultyConfigTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -42,5 +42,5 @@ public class ExecuteFaultyConfigTest {
         // Start the Test
         pojoValidator.runValidation(pojoClass);
     }
-    
+
 }

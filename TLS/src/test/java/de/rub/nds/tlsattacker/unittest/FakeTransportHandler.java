@@ -13,10 +13,10 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 
 /**
- *
+ * 
  * @author ic0ns
  */
-public class FakeTransportHandler extends TransportHandler{
+public class FakeTransportHandler extends TransportHandler {
     /**
      * Data that will be returned on a fetchData() call
      */
@@ -29,7 +29,7 @@ public class FakeTransportHandler extends TransportHandler{
     public byte[] getSendByte() {
         return sendByte;
     }
-    
+
     public byte[] getFetchableByte() {
         return fetchableByte;
     }
@@ -37,7 +37,7 @@ public class FakeTransportHandler extends TransportHandler{
     public void setFetchableByte(byte[] fetchableByte) {
         this.fetchableByte = fetchableByte;
     }
-    
+
     @Override
     public void closeConnection() {
     }
@@ -55,5 +55,5 @@ public class FakeTransportHandler extends TransportHandler{
     public void sendData(byte[] data) throws IOException {
         sendByte = data;
     }
-    
+
 }

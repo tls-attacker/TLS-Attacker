@@ -42,52 +42,39 @@ import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage>
-{
+public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger(RSAClientKeyExchangeHandler.class);
     private static RSAPublicKey bufferedKey = null;
 
-    public RSAClientKeyExchangeHandler(TlsContext tlsContext)
-    {
+    public RSAClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
         this.correctProtocolMessageClass = RSAClientKeyExchangeMessage.class;
         this.keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
     }
 
     @Override
-    byte[] prepareKeyExchangeMessage()
-    {
+    byte[] prepareKeyExchangeMessage() {
         RSAPublicKey publicKey = null;
-        if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA"))
-        {
+        if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
 
-            if (protocolMessage.isFuzzingMode())
-            {
-                if (bufferedKey == null)
-                {
+            if (protocolMessage.isFuzzingMode()) {
+                if (bufferedKey == null) {
                     KeyPairGenerator keyGen = null;
-                    try
-                    {
+                    try {
                         keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-                    }
-                    catch (NoSuchAlgorithmException ex)
-                    {
-                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
-                                null, ex);
-                    }
-                    catch (NoSuchProviderException ex)
-                    {
-                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(Level.SEVERE,
-                                null, ex);
+                    } catch (NoSuchAlgorithmException ex) {
+                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(
+                                Level.SEVERE, null, ex);
+                    } catch (NoSuchProviderException ex) {
+                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(
+                                Level.SEVERE, null, ex);
                     }
                     bufferedKey = (RSAPublicKey) keyGen.genKeyPair().getPublic();
                 }
-                publicKey = bufferedKey;//TODO not multithreadable
+                publicKey = bufferedKey;// TODO not multithreadable
             }
-        }
-        else
-        {
+        } else {
             publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
 
         }
@@ -100,12 +87,9 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
         byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         // forward the PMS with the key of the target server during MitM
-        if (tlsContext.isMitMAttack())
-        {
+        if (tlsContext.isMitMAttack()) {
             premasterSecret = protocolMessage.getPremasterSecret().getValue();
-        }
-        else
-        {
+        } else {
             RandomHelper.getRandom().nextBytes(premasterSecret);
             premasterSecret[0] = tlsContext.getProtocolVersion().getMajor();
             premasterSecret[1] = tlsContext.getProtocolVersion().getMinor();
@@ -116,14 +100,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
         LOGGER.debug("Computed PreMaster Secret: {}",
                 ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
-        protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[]
-        {
-            0x00, 0x02
-        }, padding,
-                new byte[]
-                {
-                    0x00
-                }, protocolMessage.getPremasterSecret().getValue()));
+        protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding,
+                new byte[] { 0x00 }, protocolMessage.getPremasterSecret().getValue()));
 
         byte[] paddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
 
@@ -138,38 +116,26 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
         tlsContext.setMasterSecret(protocolMessage.getMasterSecret().getValue());
 
-        try
-        {
+        try {
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             LOGGER.debug("Encrypting the following padded premaster secret: {}",
                     ArrayConverter.bytesToHexString(paddedPremasterSecret));
             // TODO can throw a tooMuchData for RSA Block exception
-            if (paddedPremasterSecret.length == 0)
-            {
-                paddedPremasterSecret = new byte[]
-                {
-                    0
-                };
+            if (paddedPremasterSecret.length == 0) {
+                paddedPremasterSecret = new byte[] { 0 };
             }
-            if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1)
-            {
-                if (protocolMessage.isFuzzingMode())
-                {
+            if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
+                if (protocolMessage.isFuzzingMode()) {
                     paddedPremasterSecret = masterSecret;
-                }
-                else
-                {
+                } else {
                     throw new IllegalStateException("Trying to encrypt more data then modulus size!");
                 }
             }
             byte[] encrypted = null;
-            try
-            {
+            try {
                 encrypted = cipher.doFinal(paddedPremasterSecret);
-            }
-            catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E)
-            {
+            } catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E) {
                 // too much data for RSA block
                 throw new UnsupportedOperationException(E);
             }
@@ -180,9 +146,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
                     .getEncryptedPremasterSecretLength().getValue(),
                     HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH), protocolMessage
                     .getEncryptedPremasterSecret().getValue());
-        }
-        catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex)
-        {
+        } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException
+                | NoSuchAlgorithmException | NoSuchPaddingException ex) {
             LOGGER.info(ex);
             throw new WorkflowExecutionException(ex.getLocalizedMessage());
         }
@@ -190,8 +155,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     }
 
     @Override
-    int parseKeyExchangeMessage(byte[] message, int currentPointer)
-    {
+    int parseKeyExchangeMessage(byte[] message, int currentPointer) {
         int nextPointer = currentPointer + HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH;
         int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
         protocolMessage.setEncryptedPremasterSecretLength(length);
@@ -204,8 +168,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
         KeyStore ks = tlsContext.getKeyStore();
 
-        try
-        {
+        try {
             Key key = ks.getKey(tlsContext.getAlias(), tlsContext.getPassword().toCharArray());
             RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) key;
 
@@ -217,9 +180,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
             protocolMessage.setPlainPaddedPremasterSecret(decrypted);
 
-        }
-        catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException | NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex)
-        {
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
+                | NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
             throw new ConfigurationException(
                     "Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
         }

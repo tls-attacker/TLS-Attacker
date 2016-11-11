@@ -26,38 +26,38 @@ public enum ECPointFormat {
     private static final Map<Byte, ECPointFormat> MAP;
 
     private ECPointFormat(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (ECPointFormat cm : ECPointFormat.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (ECPointFormat cm : ECPointFormat.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static ECPointFormat getECPointFormat(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public static ECPointFormat getRandom() {
-	ECPointFormat c = null;
-	while (c == null) {
-	    Object[] o = MAP.values().toArray();
-	    c = (ECPointFormat) o[RandomHelper.getRandom().nextInt(o.length)];
-	}
-	return c;
+        ECPointFormat c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (ECPointFormat) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     public short getShortValue() {
-	return (short) (value & 0xFF);
+        return (short) (value & 0xFF);
     }
 }

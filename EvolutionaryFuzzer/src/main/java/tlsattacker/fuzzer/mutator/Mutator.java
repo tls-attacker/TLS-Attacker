@@ -39,64 +39,73 @@ public abstract class Mutator {
     protected CertificateMutator certMutator;
 
     public Mutator(EvolutionaryFuzzerConfig config, CertificateMutator certMutator) {
-	this.config = config;
-	this.certMutator = certMutator;
+        this.config = config;
+        this.certMutator = certMutator;
     }
 
     public CertificateMutator getCertMutator() {
-	return certMutator;
+        return certMutator;
     }
-     /**
+
+    /**
      * Checks if good TestVectors already exist
+     * 
      * @return True if good TestVectors exist
      */
     protected boolean goodVectorsExist() {
-	File f = new File("data/good/"); //TODO fixed FILE
-	return f.listFiles().length > 0;
+        File f = new File("data/good/"); // TODO fixed FILE
+        return f.listFiles().length > 0;
 
     }
 
     /**
      * Checks if TestVectors exist in the archive Folder
+     * 
      * @return True if archive TestVectors exist
      */
     protected boolean archiveVectorsExist() {
-	File f = new File("archive/"); //TODO Fixed FILE
-	return f.listFiles().length > 0;
+        File f = new File("archive/"); // TODO Fixed FILE
+        return f.listFiles().length > 0;
     }
 
     /**
      * Chooses a random TestVector from a folder
-     * @param folder Folder to choose from
+     * 
+     * @param folder
+     *            Folder to choose from
      * @return A random TestVector in the folder
-     * @throws IOException If something goes wrong while reading
-     * @throws JAXBException If desirialisation goes wrong
-     * @throws XMLStreamException If desirialisation goes wrong
+     * @throws IOException
+     *             If something goes wrong while reading
+     * @throws JAXBException
+     *             If desirialisation goes wrong
+     * @throws XMLStreamException
+     *             If desirialisation goes wrong
      */
     protected TestVector chooseRandomTestVectorFromFolder(File folder) throws IOException, JAXBException,
-	    XMLStreamException {
-	TestVector chosenTestVector = null;
-	int tries = 0;
-	if (folder.exists() && folder.isDirectory()) {
-	    do {
-		File[] files = folder.listFiles(new GitIgnoreFileFilter());
-		Random r = new Random();
-		File chosenFile = files[r.nextInt(files.length)];
-		chosenTestVector = TestVectorSerializer.read(new FileInputStream(chosenFile));
-	    } while (chosenTestVector == null && tries < 1000);
-	    if (chosenTestVector == null) {
-		throw new IOException("Cannot choose random TestVector from " + folder.getAbsolutePath());
-	    }
-	} else {
-	    throw new IOException("Cannot choose random TestVector from " + folder.getAbsolutePath());
-	}
-	return chosenTestVector;
+            XMLStreamException {
+        TestVector chosenTestVector = null;
+        int tries = 0;
+        if (folder.exists() && folder.isDirectory()) {
+            do {
+                File[] files = folder.listFiles(new GitIgnoreFileFilter());
+                Random r = new Random();
+                File chosenFile = files[r.nextInt(files.length)];
+                chosenTestVector = TestVectorSerializer.read(new FileInputStream(chosenFile));
+            } while (chosenTestVector == null && tries < 1000);
+            if (chosenTestVector == null) {
+                throw new IOException("Cannot choose random TestVector from " + folder.getAbsolutePath());
+            }
+        } else {
+            throw new IOException("Cannot choose random TestVector from " + folder.getAbsolutePath());
+        }
+        return chosenTestVector;
 
     }
+
     /**
      * Generates a new TestVector to execute
      * 
-     * @return New TestVector 
+     * @return New TestVector
      */
     public abstract TestVector getNewMutation();
 }

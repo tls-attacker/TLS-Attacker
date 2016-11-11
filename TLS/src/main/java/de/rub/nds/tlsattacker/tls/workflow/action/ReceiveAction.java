@@ -22,28 +22,28 @@ import java.util.logging.Logger;
 public class ReceiveAction extends MessageAction {
 
     public ReceiveAction() {
-	super(new LinkedList<ProtocolMessage>());
+        super(new LinkedList<ProtocolMessage>());
     }
 
     public ReceiveAction(List<ProtocolMessage> messages) {
-	super(messages);
+        super(messages);
     }
 
     public ReceiveAction(ProtocolMessage message) {
-	super(new LinkedList<ProtocolMessage>());
-	configuredMessages.add(message);
+        super(new LinkedList<ProtocolMessage>());
+        configuredMessages.add(message);
     }
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) {
-	if (executed) {
-	    throw new WorkflowExecutionException("Action already executed!");
-	}
-	tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionPeer());
-	actualMessages = executor.receiveMessages(configuredMessages);
-	executed = true;
+        if (executed) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+        tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionPeer());
+        actualMessages = executor.receiveMessages(configuredMessages);
+        executed = true;
     }
-    
+
     private static final Logger LOG = Logger.getLogger(ReceiveAction.class.getName());
 
 }

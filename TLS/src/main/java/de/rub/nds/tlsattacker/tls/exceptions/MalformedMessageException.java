@@ -14,10 +14,10 @@ package de.rub.nds.tlsattacker.tls.exceptions;
 public class MalformedMessageException extends RuntimeException {
 
     public MalformedMessageException() {
-	super();
+        super();
     }
 
     public MalformedMessageException(String message) {
-	super(message);
+        super(message);
     }
 }

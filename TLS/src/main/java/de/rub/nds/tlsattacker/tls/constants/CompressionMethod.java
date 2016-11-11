@@ -26,34 +26,34 @@ public enum CompressionMethod {
     private static final Map<Byte, CompressionMethod> MAP;
 
     private CompressionMethod(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (CompressionMethod cm : CompressionMethod.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (CompressionMethod cm : CompressionMethod.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static CompressionMethod getCompressionMethod(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public static CompressionMethod getRandom() {
-	CompressionMethod c = null;
-	while (c == null) {
-	    Object[] o = MAP.values().toArray();
-	    c = (CompressionMethod) o[RandomHelper.getRandom().nextInt(o.length)];
-	}
-	return c;
+        CompressionMethod c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (CompressionMethod) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 }

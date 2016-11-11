@@ -23,11 +23,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * 
  * Allows one to explicitly verify their configuration, based on a Botan
  * tlsProperties file structure. See for example:
  * https://github.com/randombit/botan/tree/master/tls-tlsProperties
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class BotanPolicyParser {

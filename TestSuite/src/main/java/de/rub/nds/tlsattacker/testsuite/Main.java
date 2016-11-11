@@ -24,30 +24,30 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-	Security.addProvider(new BouncyCastleProvider());
+        Security.addProvider(new BouncyCastleProvider());
 
-	GeneralConfig generalConfig = new GeneralConfig();
-	JCommander jc = new JCommander(generalConfig);
+        GeneralConfig generalConfig = new GeneralConfig();
+        JCommander jc = new JCommander(generalConfig);
 
-	ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
-	jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
+        ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
+        jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
 
-	jc.parse(args);
+        jc.parse(args);
 
-	if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
-	    jc.usage();
-	    return;
-	}
+        if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+            jc.usage();
+            return;
+        }
 
-	switch (jc.getParsedCommand()) {
-	    case ServerTestSuiteConfig.COMMAND:
-		ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
-		st.startTests();
-		return;
+        switch (jc.getParsedCommand()) {
+            case ServerTestSuiteConfig.COMMAND:
+                ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
+                st.startTests();
+                return;
 
-	    default:
-		throw new ConfigurationException("No command found");
-	}
+            default:
+                throw new ConfigurationException("No command found");
+        }
 
     }
 }

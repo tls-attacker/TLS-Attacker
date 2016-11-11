@@ -31,8 +31,8 @@ public abstract class Attacker<Config extends CommandConfig> {
     protected List<TlsContext> tlsContexts;
 
     public Attacker(Config config) {
-	this.config = config;
-	tlsContexts = new LinkedList<>();
+        this.config = config;
+        tlsContexts = new LinkedList<>();
     }
 
     /**
@@ -43,26 +43,26 @@ public abstract class Attacker<Config extends CommandConfig> {
     public abstract void executeAttack(ConfigHandler configHandler);
 
     public Config getConfig() {
-	return config;
+        return config;
     }
 
     public void setConfig(Config config) {
-	this.config = config;
+        this.config = config;
     }
 
     public List<TlsContext> getTlsContexts() {
-	return tlsContexts;
+        return tlsContexts;
     }
 
     public void setTlsContexts(List<TlsContext> tlsContexts) {
-	this.tlsContexts = tlsContexts;
+        this.tlsContexts = tlsContexts;
     }
 
     public boolean isVulnerable() {
-	return vulnerable;
+        return vulnerable;
     }
 
     public void setVulnerable(boolean vulnerable) {
-	this.vulnerable = vulnerable;
+        this.vulnerable = vulnerable;
     }
 }

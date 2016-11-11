@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class CryptoTest extends HandshakeTest {
@@ -102,7 +102,8 @@ public class CryptoTest extends HandshakeTest {
         supportedMacAlgorithms.add(AlgorithmResolver.getMacAlgorithm(cs));
         supportedPRFAlgorithms.add(AlgorithmResolver.getPRFAlgorithm(pv, cs));
         if (lastTlsContext.getServerDHParameters() != null) {
-            LOGGER.info("DH parameter public key size: {}", lastTlsContext.getServerDHParameters().getPublicKey().getY().bitLength());
+            LOGGER.info("DH parameter public key size: {}", lastTlsContext.getServerDHParameters().getPublicKey()
+                    .getY().bitLength());
             int groupSize = lastTlsContext.getServerDHParameters().getPublicKey().getParameters().getP().bitLength();
             if (minimumDHGroupSize == 0 || groupSize < minimumDHGroupSize) {
                 minimumDHGroupSize = groupSize;
@@ -146,7 +147,8 @@ public class CryptoTest extends HandshakeTest {
         StringBuilder sb = new StringBuilder("\n Supported cipher suites: ");
         for (ProtocolVersion pv : supportedCipherSuites.keySet()) {
             if (supportedCipherSuites.containsKey(pv)) {
-                sb.append("\n  ").append(pv.toString()).append(": ").append(ciphersToString(supportedCipherSuites.get(pv)));
+                sb.append("\n  ").append(pv.toString()).append(": ")
+                        .append(ciphersToString(supportedCipherSuites.get(pv)));
             }
         }
         sb.append("\n Supported ciphers: ");

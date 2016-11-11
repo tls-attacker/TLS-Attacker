@@ -95,49 +95,55 @@ import java.util.logging.Level;
 public class FuzzingHelper {
 
     /**
-     * Chooses a random modifiableVariableField from a List of modifiableVariableFields
-     * @param fields A list of Fields to pick from
+     * Chooses a random modifiableVariableField from a List of
+     * modifiableVariableFields
+     * 
+     * @param fields
+     *            A list of Fields to pick from
      * @return A Random field
      */
     public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
-	Random r = new Random();
-	int fieldNumber = r.nextInt(fields.size());
-	return fields.get(fieldNumber);
+        Random r = new Random();
+        int fieldNumber = r.nextInt(fields.size());
+        return fields.get(fieldNumber);
     }
 
     /**
      * Returns a list of all ModifiableVariableHolders from the WorkflowTrace
      * that we send
      * 
-     * @param trace Trace to search in
+     * @param trace
+     *            Trace to search in
      * @return A list of all ModifieableVariableHolders
      */
     public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
-	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
-	List<ModifiableVariableHolder> result = new LinkedList<>();
-	for (ProtocolMessage pm : protocolMessages) {
-	    result.addAll(pm.getAllModifiableVariableHolders());
-	}
-	return result;
+        List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
+        List<ModifiableVariableHolder> result = new LinkedList<>();
+        for (ProtocolMessage pm : protocolMessages) {
+            result.addAll(pm.getAllModifiableVariableHolders());
+        }
+        return result;
     }
 
     /**
      * Tries to find all ModifieableVariableFields in an Object
-     * @param object Object to search in
+     * 
+     * @param object
+     *            Object to search in
      * @return List of all ModifieableVariableFields in an object
      */
     public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
-	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
-	List<ModifiableVariableField> fields = new LinkedList<>();
-	for (ModifiableVariableListHolder holder : holders) {
-	    // if (!(holder.getObject() instanceof ProtocolMessage))
-	    {
-		for (Field f : holder.getFields()) {
-		    fields.add(new ModifiableVariableField(holder.getObject(), f));
-		}
-	    }
-	}
-	return fields;
+        List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
+        List<ModifiableVariableField> fields = new LinkedList<>();
+        for (ModifiableVariableListHolder holder : holders) {
+            // if (!(holder.getObject() instanceof ProtocolMessage))
+            {
+                for (Field f : holder.getFields()) {
+                    fields.add(new ModifiableVariableField(holder.getObject(), f));
+                }
+            }
+        }
+        return fields;
     }
 
     /**
@@ -145,78 +151,80 @@ public class FuzzingHelper {
      * http://stackoverflow.com/questions/1868333/how-can-i-determine-the
      * -type-of-a-generic-field-in-java
      * 
-     * @param object Holder of the Field
-     * @param field Field to modify
+     * @param object
+     *            Holder of the Field
+     * @param field
+     *            Field to modify
      * @return The ModificationObject
      */
     public static ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
-	    Field field) {
-	try {
-	    // Type type = field.getGenericType();
-	    // ParameterizedType pType = (ParameterizedType) type;
-	    // String typeString = ((Class)
-	    // pType.getActualTypeArguments()[0]).getSimpleName();
-	    // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
-	    // field.getName(), typeString,
-	    // object.getClass().getSimpleName());
-	    field.setAccessible(true);
-	    ModifiableVariable mv = (ModifiableVariable) field.get(object);
-	    if (mv == null) {
-		mv = (ModifiableVariable) field.getType().getDeclaredConstructors()[0].newInstance();
-	    }
-	    mv.createRandomModificationAtRuntime();
+            Field field) {
+        try {
+            // Type type = field.getGenericType();
+            // ParameterizedType pType = (ParameterizedType) type;
+            // String typeString = ((Class)
+            // pType.getActualTypeArguments()[0]).getSimpleName();
+            // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
+            // field.getName(), typeString,
+            // object.getClass().getSimpleName());
+            field.setAccessible(true);
+            ModifiableVariable mv = (ModifiableVariable) field.get(object);
+            if (mv == null) {
+                mv = (ModifiableVariable) field.getType().getDeclaredConstructors()[0].newInstance();
+            }
+            mv.createRandomModificationAtRuntime();
 
-	    field.set(object, mv);
-	    return new ModifyFieldModification(field.getName(), object);
-	} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
-	    throw new ModificationException(ex.getLocalizedMessage(), ex);
-	}
+            field.set(object, mv);
+            return new ModifyFieldModification(field.getName(), object);
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
+            throw new ModificationException(ex.getLocalizedMessage(), ex);
+        }
     }
 
     /**
      * Adds random records to the workflow trace
      * 
-     * @param trace WorkflowTrace to which the Record should be added
+     * @param trace
+     *            WorkflowTrace to which the Record should be added
      * @return The ModificationObject
      */
     public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
-	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
-	Random random = RandomHelper.getRandom();
-	for (int i = 0; i < protocolMessages.size(); i++) {
-	    int randomPM = random.nextInt(protocolMessages.size());
-	    ProtocolMessage pm = protocolMessages.get(randomPM);
-	    Record r = new Record();
-            if(random.nextInt(100)< 2)
-            {
+        List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
+        Random random = RandomHelper.getRandom();
+        for (int i = 0; i < protocolMessages.size(); i++) {
+            int randomPM = random.nextInt(protocolMessages.size());
+            ProtocolMessage pm = protocolMessages.get(randomPM);
+            Record r = new Record();
+            if (random.nextInt(100) < 2) {
                 r.setMaxRecordLengthConfig(random.nextInt(500000));
-            }
-            else
-            {
+            } else {
                 r.setMaxRecordLengthConfig(random.nextInt(50));
             }
-	    pm.addRecord(r);
-	    return new AddRecordModification(pm);
+            pm.addRecord(r);
+            return new AddRecordModification(pm);
 
-	}
-	return null;
+        }
+        return null;
     }
 
     /**
      * Removes a random Message from a SendAction
-     * @param tempTrace The WorkflowTrace to modify
+     * 
+     * @param tempTrace
+     *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
     public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
-	SendAction action = getRandomSendAction(tempTrace);
-	if (action.getConfiguredMessages().size() <= 1) {
-	    // We dont remove the last message from a flight
-	    return null;
-	}
-	Random r = new Random();
-	int index = r.nextInt(action.getConfiguredMessages().size());
-	ProtocolMessage message = action.getConfiguredMessages().get(index);
-	action.getConfiguredMessages().remove(index);
-	return new RemoveMessageModification(message, action, index);
+        SendAction action = getRandomSendAction(tempTrace);
+        if (action.getConfiguredMessages().size() <= 1) {
+            // We dont remove the last message from a flight
+            return null;
+        }
+        Random r = new Random();
+        int index = r.nextInt(action.getConfiguredMessages().size());
+        ProtocolMessage message = action.getConfiguredMessages().get(index);
+        action.getConfiguredMessages().remove(index);
+        return new RemoveMessageModification(message, action, index);
     }
 
     /**
@@ -224,452 +232,469 @@ public class FuzzingHelper {
      * initially contains a random message, and the receive action only contains
      * an arbitary message
      * 
-     * @param tempTrace The WorkflowTrace to modify
+     * @param tempTrace
+     *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
     public static AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
-	SendAction sendAction = new SendAction(generateRandomMessage());
-	ReceiveAction receiveAction = new ReceiveAction(new ArbitraryMessage());
-	tempTrace.add(sendAction);
-	tempTrace.add(receiveAction);
-	return new AddMessageFlightModification(sendAction, receiveAction);
+        SendAction sendAction = new SendAction(generateRandomMessage());
+        ReceiveAction receiveAction = new ReceiveAction(new ArbitraryMessage());
+        tempTrace.add(sendAction);
+        tempTrace.add(receiveAction);
+        return new AddMessageFlightModification(sendAction, receiveAction);
     }
 
     /**
      * Adds a random Message to a random SendAction
      * 
-     * @param tempTrace The WorkflowTrace to modify
+     * @param tempTrace
+     *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
     public static AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
-	SendAction action = getRandomSendAction(tempTrace);
-	if (action == null) {
-	    return null;
-	} else {
-	    ProtocolMessage message = generateRandomMessage();
-	    action.getConfiguredMessages().add(message);
-	    return new AddMessageModification(message, action);
-	}
+        SendAction action = getRandomSendAction(tempTrace);
+        if (action == null) {
+            return null;
+        } else {
+            ProtocolMessage message = generateRandomMessage();
+            action.getConfiguredMessages().add(message);
+            return new AddMessageModification(message, action);
+        }
     }
 
     /**
      * Chooses a random SendAction from the WorkflowTrace
      * 
-     * @param tempTrace WorkflowTrace to choose from
+     * @param tempTrace
+     *            WorkflowTrace to choose from
      * @return Random SendAction from the WorkflowTrace
-     */ 
+     */
     private static SendAction getRandomSendAction(WorkflowTrace tempTrace) {
-	Random r = new Random();
-	List<SendAction> sendActions = tempTrace.getSendActions();
-	return sendActions.get(r.nextInt(sendActions.size()));
+        Random r = new Random();
+        List<SendAction> sendActions = tempTrace.getSendActions();
+        return sendActions.get(r.nextInt(sendActions.size()));
     }
 
     /**
-     * Adds a random action which changes something in the TLSContext to the WorkflowTrace
-     * @param tempTrace WorkflowTrace to modify
-     * @param mutator CertificateMutator to use
+     * Adds a random action which changes something in the TLSContext to the
+     * WorkflowTrace
+     * 
+     * @param tempTrace
+     *            WorkflowTrace to modify
+     * @param mutator
+     *            CertificateMutator to use
      * @return The ModificationObject
      */
     public static AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
-	Random r = new Random();
-	AddContextActionModification modification = null;
-	TLSAction action = null;
-	ModificationType type = null;
-	int position = r.nextInt(tempTrace.getTLSActions().size());
-	switch (r.nextInt(9)) {
-	    case 0:
-		type = ModificationType.ADD_CHANGE_CIPHERSUITE_ACTION;
-		action = new ChangeCipherSuiteAction(CipherSuite.getRandom());
-		break;
-	    case 1:
-                //TODO
-		// type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
-		// ClientCertificateStructure clientCert =
-		// mutator.getClientCertificateStructure();
-		// String alias = clientCert.getAlias();
-		// String password = clientCert.getPassword();
-		// java.security.cert.Certificate sunCert = null;
-		// KeyStore ks = null;
-		// try
-		// {
-		// ks =
-		// KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(),
-		// password);
-		// sunCert = ks.getCertificate(alias);
-		// if (alias == null || sunCert == null)
-		// {
-		// return null;
-		// }
-		// byte[] certBytes = sunCert.getEncoded();
-		// ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-		// org.bouncycastle.asn1.x509.Certificate cert =
-		// org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-		//
-		// org.bouncycastle.asn1.x509.Certificate[] certs = new
-		// org.bouncycastle.asn1.x509.Certificate[1];
-		// certs[0] = cert;
-		// Certificate tlsCerts = new Certificate(certs);
-		//
-		// X509CertificateObject x509CertObject = new
-		// X509CertificateObject(tlsCerts.getCertificateAt(0));
-		// action = new
-		// ChangeClientCertificateAction(cert,x509CertObject);
-		// return null;//TODO
-		// }
-		// catch (KeyStoreException | IOException |
-		// NoSuchAlgorithmException | CertificateException ex)
-		// {
-		// return null;
-		// }
-		return null;
-	    case 2:
-		type = ModificationType.ADD_CHANGE_CLIENT_RANDOM_ACTION;
-		byte[] newBytes = new byte[r.nextInt(1024)];
-		r.nextBytes(newBytes);
-		action = new ChangeClientRandomAction(newBytes);
-		break;
-	    case 3:
-		type = ModificationType.ADD_CHANGE_COMPRESSION_ACTION;
-		CompressionMethod method = CompressionMethod.getRandom();
-		action = new ChangeCompressionAction(method);
-		break;
-	    case 4:
-		type = ModificationType.ADD_CHANGE_MASTER_SECRET_ACTION;
-		newBytes = new byte[r.nextInt(1024)];
-		r.nextBytes(newBytes);
-		action = new ChangeMasterSecretAction(newBytes);
-		break;
-	    case 5:
-		type = ModificationType.ADD_CHANGE_PREMASTER_SECRET_ACTION;
-		newBytes = new byte[r.nextInt(1024)];
-		r.nextBytes(newBytes);
-		action = new ChangePreMasterSecretAction(newBytes);
-		break;
-	    case 6:
-		type = ModificationType.ADD_CHANGE_PROTOCOL_VERSION_ACTION;
-		ProtocolVersion verion = ProtocolVersion.getRandom();
-		action = new ChangeProtocolVersionAction(verion);
-		break;
-	    case 7:
-                //TODO
-		// type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
-		// ClientCertificateStructure serverCert =
-		// mutator.getClientCertificateStructure();//TODO
-		// alias = serverCert.getAlias();
-		// password = serverCert.getPassword();
-		// sunCert = null;
-		// ks = null;
-		// try
-		// {
-		// ks =
-		// KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(),
-		// password);
-		// sunCert = ks.getCertificate(alias);
-		// if (alias == null || sunCert == null)
-		// {
-		// return null;
-		// }
-		// byte[] certBytes = sunCert.getEncoded();
-		// ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-		// org.bouncycastle.asn1.x509.Certificate cert =
-		// org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-		//
-		// org.bouncycastle.asn1.x509.Certificate[] certs = new
-		// org.bouncycastle.asn1.x509.Certificate[1];
-		// certs[0] = cert;
-		// Certificate tlsCerts = new Certificate(certs);
-		//
-		// X509CertificateObject x509CertObject = new
-		// X509CertificateObject(tlsCerts.getCertificateAt(0));
-		// action = new
-		// ChangeServerCertificateAction(cert,x509CertObject);
-		//
-		// }
-		// catch (KeyStoreException | IOException |
-		// NoSuchAlgorithmException | CertificateException ex)
-		// {
-		// return null;
-		// }
-		// return null;//TODO
-		return null;
-	    case 8:
-		type = ModificationType.ADD_CHANGE_SERVER_RANDOM_ACTION;
-		newBytes = new byte[r.nextInt(1024)];
-		r.nextBytes(newBytes);
-		action = new ChangeServerRandomAction(newBytes);
-		break;
-	}
-	if (action != null) {
-	    tempTrace.add(position, action);
-	    modification = new AddContextActionModification(type, action);
-	}
-	return modification;
+        Random r = new Random();
+        AddContextActionModification modification = null;
+        TLSAction action = null;
+        ModificationType type = null;
+        int position = r.nextInt(tempTrace.getTLSActions().size());
+        switch (r.nextInt(9)) {
+            case 0:
+                type = ModificationType.ADD_CHANGE_CIPHERSUITE_ACTION;
+                action = new ChangeCipherSuiteAction(CipherSuite.getRandom());
+                break;
+            case 1:
+                // TODO
+                // type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
+                // ClientCertificateStructure clientCert =
+                // mutator.getClientCertificateStructure();
+                // String alias = clientCert.getAlias();
+                // String password = clientCert.getPassword();
+                // java.security.cert.Certificate sunCert = null;
+                // KeyStore ks = null;
+                // try
+                // {
+                // ks =
+                // KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(),
+                // password);
+                // sunCert = ks.getCertificate(alias);
+                // if (alias == null || sunCert == null)
+                // {
+                // return null;
+                // }
+                // byte[] certBytes = sunCert.getEncoded();
+                // ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+                // org.bouncycastle.asn1.x509.Certificate cert =
+                // org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+                //
+                // org.bouncycastle.asn1.x509.Certificate[] certs = new
+                // org.bouncycastle.asn1.x509.Certificate[1];
+                // certs[0] = cert;
+                // Certificate tlsCerts = new Certificate(certs);
+                //
+                // X509CertificateObject x509CertObject = new
+                // X509CertificateObject(tlsCerts.getCertificateAt(0));
+                // action = new
+                // ChangeClientCertificateAction(cert,x509CertObject);
+                // return null;//TODO
+                // }
+                // catch (KeyStoreException | IOException |
+                // NoSuchAlgorithmException | CertificateException ex)
+                // {
+                // return null;
+                // }
+                return null;
+            case 2:
+                type = ModificationType.ADD_CHANGE_CLIENT_RANDOM_ACTION;
+                byte[] newBytes = new byte[r.nextInt(1024)];
+                r.nextBytes(newBytes);
+                action = new ChangeClientRandomAction(newBytes);
+                break;
+            case 3:
+                type = ModificationType.ADD_CHANGE_COMPRESSION_ACTION;
+                CompressionMethod method = CompressionMethod.getRandom();
+                action = new ChangeCompressionAction(method);
+                break;
+            case 4:
+                type = ModificationType.ADD_CHANGE_MASTER_SECRET_ACTION;
+                newBytes = new byte[r.nextInt(1024)];
+                r.nextBytes(newBytes);
+                action = new ChangeMasterSecretAction(newBytes);
+                break;
+            case 5:
+                type = ModificationType.ADD_CHANGE_PREMASTER_SECRET_ACTION;
+                newBytes = new byte[r.nextInt(1024)];
+                r.nextBytes(newBytes);
+                action = new ChangePreMasterSecretAction(newBytes);
+                break;
+            case 6:
+                type = ModificationType.ADD_CHANGE_PROTOCOL_VERSION_ACTION;
+                ProtocolVersion verion = ProtocolVersion.getRandom();
+                action = new ChangeProtocolVersionAction(verion);
+                break;
+            case 7:
+                // TODO
+                // type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
+                // ClientCertificateStructure serverCert =
+                // mutator.getClientCertificateStructure();//TODO
+                // alias = serverCert.getAlias();
+                // password = serverCert.getPassword();
+                // sunCert = null;
+                // ks = null;
+                // try
+                // {
+                // ks =
+                // KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(),
+                // password);
+                // sunCert = ks.getCertificate(alias);
+                // if (alias == null || sunCert == null)
+                // {
+                // return null;
+                // }
+                // byte[] certBytes = sunCert.getEncoded();
+                // ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+                // org.bouncycastle.asn1.x509.Certificate cert =
+                // org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+                //
+                // org.bouncycastle.asn1.x509.Certificate[] certs = new
+                // org.bouncycastle.asn1.x509.Certificate[1];
+                // certs[0] = cert;
+                // Certificate tlsCerts = new Certificate(certs);
+                //
+                // X509CertificateObject x509CertObject = new
+                // X509CertificateObject(tlsCerts.getCertificateAt(0));
+                // action = new
+                // ChangeServerCertificateAction(cert,x509CertObject);
+                //
+                // }
+                // catch (KeyStoreException | IOException |
+                // NoSuchAlgorithmException | CertificateException ex)
+                // {
+                // return null;
+                // }
+                // return null;//TODO
+                return null;
+            case 8:
+                type = ModificationType.ADD_CHANGE_SERVER_RANDOM_ACTION;
+                newBytes = new byte[r.nextInt(1024)];
+                r.nextBytes(newBytes);
+                action = new ChangeServerRandomAction(newBytes);
+                break;
+        }
+        if (action != null) {
+            tempTrace.add(position, action);
+            modification = new AddContextActionModification(type, action);
+        }
+        return modification;
     }
 
     /**
      * Generates a new RandomMessage
+     * 
      * @return A newly generated ProtocolMessage
      */
     private static ProtocolMessage generateRandomMessage() {
-	ProtocolMessage message = null;
-	Random r = new Random();
-	do {
+        ProtocolMessage message = null;
+        Random r = new Random();
+        do {
 
-	    switch (r.nextInt(18)) {
-		case 0:
-		    message = new AlertMessage();
-		    break;
-		case 1:
-		    message = new ApplicationMessage();
-		    break;
-		case 2:
-		    message = new CertificateMessage();
-		    break;
-		case 3:
-		    message = new CertificateRequestMessage();
-		    break;
-		case 4:
-		    message = new CertificateVerifyMessage();
-		    break;
-		case 5:
-		    message = new ChangeCipherSpecMessage();
-		    break;
-		case 6:
-		    message = new ClientHelloDtlsMessage();
-		    LinkedList<CipherSuite> list = new LinkedList<>();
-		    int limit = new Random().nextInt(0xFF);
+            switch (r.nextInt(18)) {
+                case 0:
+                    message = new AlertMessage();
+                    break;
+                case 1:
+                    message = new ApplicationMessage();
+                    break;
+                case 2:
+                    message = new CertificateMessage();
+                    break;
+                case 3:
+                    message = new CertificateRequestMessage();
+                    break;
+                case 4:
+                    message = new CertificateVerifyMessage();
+                    break;
+                case 5:
+                    message = new ChangeCipherSpecMessage();
+                    break;
+                case 6:
+                    message = new ClientHelloDtlsMessage();
+                    LinkedList<CipherSuite> list = new LinkedList<>();
+                    int limit = new Random().nextInt(0xFF);
 
-		    for (int i = 0; i < limit; i++) {
-			CipherSuite suite = null;
+                    for (int i = 0; i < limit; i++) {
+                        CipherSuite suite = null;
 
-			do {
+                        do {
 
-			    suite = CipherSuite.getRandom();
+                            suite = CipherSuite.getRandom();
 
-			} while (suite == null);
-			list.add(suite);
-		    }
-		    ArrayList<CompressionMethod> compressionList = new ArrayList<>();
-		    compressionList.add(CompressionMethod.NULL);
-		    ((ClientHelloMessage) message).setSupportedCipherSuites(list);
-		    ((ClientHelloMessage) message).setSupportedCompressionMethods(compressionList);
-		    break;
-		case 7:
-		    message = new ClientHelloMessage();
-		    list = new LinkedList<>();
-		    limit = new Random().nextInt(0xFF);
-		    for (int i = 0; i < limit; i++) {
-			CipherSuite suite = null;
-			do {
-			    suite = CipherSuite.getRandom();
-			} while (suite == null);
-			list.add(suite);
-		    }
-		    compressionList = new ArrayList<>();
-		    compressionList.add(CompressionMethod.NULL);
-		    ((ClientHelloMessage) message).setSupportedCipherSuites(list);
-		    ((ClientHelloMessage) message).setSupportedCompressionMethods(compressionList);
-		    break;
-		case 8:
-		    message = new DHClientKeyExchangeMessage();
-		    break;
-		case 9:
-		    message = new HelloVerifyRequestMessage();
-		    break;
-		case 10:
-		    message = new DHEServerKeyExchangeMessage();
-		    break;
-		case 11:
-		    message = new ECDHClientKeyExchangeMessage();
-		    break;
-		case 12:
-		    message = new ECDHEServerKeyExchangeMessage();
-		    break;
-		case 13:
-		    message = new FinishedMessage();
-		    break;
-		case 14:
-		    message = new HeartbeatMessage();
-		    break;
-		case 15:
-		    message = new RSAClientKeyExchangeMessage();
-		    break;
-		case 16:
-		    message = new ServerHelloDoneMessage();
+                        } while (suite == null);
+                        list.add(suite);
+                    }
+                    ArrayList<CompressionMethod> compressionList = new ArrayList<>();
+                    compressionList.add(CompressionMethod.NULL);
+                    ((ClientHelloMessage) message).setSupportedCipherSuites(list);
+                    ((ClientHelloMessage) message).setSupportedCompressionMethods(compressionList);
+                    break;
+                case 7:
+                    message = new ClientHelloMessage();
+                    list = new LinkedList<>();
+                    limit = new Random().nextInt(0xFF);
+                    for (int i = 0; i < limit; i++) {
+                        CipherSuite suite = null;
+                        do {
+                            suite = CipherSuite.getRandom();
+                        } while (suite == null);
+                        list.add(suite);
+                    }
+                    compressionList = new ArrayList<>();
+                    compressionList.add(CompressionMethod.NULL);
+                    ((ClientHelloMessage) message).setSupportedCipherSuites(list);
+                    ((ClientHelloMessage) message).setSupportedCompressionMethods(compressionList);
+                    break;
+                case 8:
+                    message = new DHClientKeyExchangeMessage();
+                    break;
+                case 9:
+                    message = new HelloVerifyRequestMessage();
+                    break;
+                case 10:
+                    message = new DHEServerKeyExchangeMessage();
+                    break;
+                case 11:
+                    message = new ECDHClientKeyExchangeMessage();
+                    break;
+                case 12:
+                    message = new ECDHEServerKeyExchangeMessage();
+                    break;
+                case 13:
+                    message = new FinishedMessage();
+                    break;
+                case 14:
+                    message = new HeartbeatMessage();
+                    break;
+                case 15:
+                    message = new RSAClientKeyExchangeMessage();
+                    break;
+                case 16:
+                    message = new ServerHelloDoneMessage();
 
-		    break;
-		case 17:
-		    message = new HelloRequestMessage();
-		    break;
-	    }
-	} while (message == null);
-	return message;
+                    break;
+                case 17:
+                    message = new HelloRequestMessage();
+                    break;
+            }
+        } while (message == null);
+        return message;
     }
 
     /**
      * Adds and extension to a random ClientHello or DTLSClientHello message
-     * @param trace WorkflowTrace to modify
+     * 
+     * @param trace
+     *            WorkflowTrace to modify
      * @return The ModificationObject
      */
     public static AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
-	ExtensionMessage message = generateRandomExtensionMessage();
-	if (message != null) {
-	    List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
-	    Collections.shuffle(protocolMessages);
-	    for (ProtocolMessage pm : protocolMessages) {
-		if (pm instanceof ClientHelloMessage) {
-		    ((ClientHelloMessage) pm).addExtension(message);
-		    return new AddExtensionModification(message);
-		}
-		if (pm instanceof ClientHelloDtlsMessage) {
-		    ((ClientHelloDtlsMessage) pm).addExtension(message);
-		    return new AddExtensionModification(message);
-		}
-	    }
-	}
-	return null;
+        ExtensionMessage message = generateRandomExtensionMessage();
+        if (message != null) {
+            List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
+            Collections.shuffle(protocolMessages);
+            for (ProtocolMessage pm : protocolMessages) {
+                if (pm instanceof ClientHelloMessage) {
+                    ((ClientHelloMessage) pm).addExtension(message);
+                    return new AddExtensionModification(message);
+                }
+                if (pm instanceof ClientHelloDtlsMessage) {
+                    ((ClientHelloDtlsMessage) pm).addExtension(message);
+                    return new AddExtensionModification(message);
+                }
+            }
+        }
+        return null;
     }
 
     /**
      * Generates a random ExtensionMessage
+     * 
      * @return Newly generated random ExtensionMessage
      */
     private static ExtensionMessage generateRandomExtensionMessage() {
-	ExtensionMessage message = null;
-	Random r = new Random();
-	switch (r.nextInt(6)) {
-	    case 0:
-		EllipticCurvesExtensionMessage ecc = new EllipticCurvesExtensionMessage();
-		List<NamedCurve> namedCurveList = new LinkedList<>();
-		for (int i = 0; i < r.nextInt(100); i++)// TODO Config
-		{
-		    namedCurveList.add(NamedCurve.getRandom());
-		}
-		ecc.setSupportedCurvesConfig(namedCurveList);
-		message = ecc;
-		break;
-	    case 1:
-		ECPointFormatExtensionMessage pfc = new ECPointFormatExtensionMessage();
-		List<ECPointFormat> formatList = new LinkedList<>();
-		for (int i = 0; i < r.nextInt(100); i++)// TODO Config
-		{
-		    formatList.add(ECPointFormat.getRandom());
-		}
-		pfc.setPointFormatsConfig(formatList);
-		message = pfc;
-		break;
-	    case 2:
-		HeartbeatExtensionMessage hem = new HeartbeatExtensionMessage();
-		hem.setHeartbeatModeConfig(HeartbeatMode.getRandom());
-		message = hem;
-		break;
-	    case 3:
-		MaxFragmentLengthExtensionMessage mle = new MaxFragmentLengthExtensionMessage();
-		mle.setMaxFragmentLengthConfig(MaxFragmentLength.getRandom());
-		message = mle;
-		break;
-	    case 4:
-		ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
-		sni.setNameTypeConfig(NameType.HOST_NAME);
-		sni.setServerNameConfig("127.0.0.1");// TODO
-		message = sni;
-		break;
-	    case 5:
-		SignatureAndHashAlgorithmsExtensionMessage sae = new SignatureAndHashAlgorithmsExtensionMessage();
-		List<SignatureAndHashAlgorithm> signatureHashList = new LinkedList<>();
-		for (int i = 0; i < r.nextInt(100); i++)// TODO Config
-		{
-		    signatureHashList.add(SignatureAndHashAlgorithm.getRandom());
-		}
-		sae.setSignatureAndHashAlgorithmsConfig(signatureHashList);
-		message = sae;
-		break;
-	}
-	return message;
+        ExtensionMessage message = null;
+        Random r = new Random();
+        switch (r.nextInt(6)) {
+            case 0:
+                EllipticCurvesExtensionMessage ecc = new EllipticCurvesExtensionMessage();
+                List<NamedCurve> namedCurveList = new LinkedList<>();
+                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                {
+                    namedCurveList.add(NamedCurve.getRandom());
+                }
+                ecc.setSupportedCurvesConfig(namedCurveList);
+                message = ecc;
+                break;
+            case 1:
+                ECPointFormatExtensionMessage pfc = new ECPointFormatExtensionMessage();
+                List<ECPointFormat> formatList = new LinkedList<>();
+                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                {
+                    formatList.add(ECPointFormat.getRandom());
+                }
+                pfc.setPointFormatsConfig(formatList);
+                message = pfc;
+                break;
+            case 2:
+                HeartbeatExtensionMessage hem = new HeartbeatExtensionMessage();
+                hem.setHeartbeatModeConfig(HeartbeatMode.getRandom());
+                message = hem;
+                break;
+            case 3:
+                MaxFragmentLengthExtensionMessage mle = new MaxFragmentLengthExtensionMessage();
+                mle.setMaxFragmentLengthConfig(MaxFragmentLength.getRandom());
+                message = mle;
+                break;
+            case 4:
+                ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
+                sni.setNameTypeConfig(NameType.HOST_NAME);
+                sni.setServerNameConfig("127.0.0.1");// TODO
+                message = sni;
+                break;
+            case 5:
+                SignatureAndHashAlgorithmsExtensionMessage sae = new SignatureAndHashAlgorithmsExtensionMessage();
+                List<SignatureAndHashAlgorithm> signatureHashList = new LinkedList<>();
+                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                {
+                    signatureHashList.add(SignatureAndHashAlgorithm.getRandom());
+                }
+                sae.setSignatureAndHashAlgorithmsConfig(signatureHashList);
+                message = sae;
+                break;
+        }
+        return message;
     }
 
     /**
-     * Duplicates a random ProtocolMessage and and adds it to a random position in the Action
-     * @param trace WorkflowTrace to modify
+     * Duplicates a random ProtocolMessage and and adds it to a random position
+     * in the Action
+     * 
+     * @param trace
+     *            WorkflowTrace to modify
      * @return The ModificationObject
      */
     public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
-	Random r = new Random();
-	ProtocolMessage message = null;
-	List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
-	if (protocolMessages.size() > 0) {
-	    message = (ProtocolMessage) UnoptimizedDeepCopy
-		    .copy(protocolMessages.get(r.nextInt(protocolMessages.size())));
-	} else {
-	    return null;
-	}
-	SendAction action = getRandomSendAction(trace);
-	int insertPosition = r.nextInt(action.getConfiguredMessages().size());
+        Random r = new Random();
+        ProtocolMessage message = null;
+        List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
+        if (protocolMessages.size() > 0) {
+            message = (ProtocolMessage) UnoptimizedDeepCopy
+                    .copy(protocolMessages.get(r.nextInt(protocolMessages.size())));
+        } else {
+            return null;
+        }
+        SendAction action = getRandomSendAction(trace);
+        int insertPosition = r.nextInt(action.getConfiguredMessages().size());
 
-	action.getConfiguredMessages().add(insertPosition, message);
-	return new DuplicateMessageModification(message, action, insertPosition);
+        action.getConfiguredMessages().add(insertPosition, message);
+        return new DuplicateMessageModification(message, action, insertPosition);
     }
 
     /**
      * Returns a list of all the modifiable variable holders in the object,
      * including this instance.
      * 
-     * @param object Object to search in
+     * @param object
+     *            Object to search in
      * @return List of all ModifieableVariableListHolders
      */
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
-	List<ModifiableVariableListHolder> holders = new LinkedList<>();
-	List<Field> modFields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(object);
-	if (!modFields.isEmpty()) {
-	    holders.add(new ModifiableVariableListHolder(object, modFields));
-	}
-	List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
-	for (Field f : allFields) {
-	    try {
-		HoldsModifiableVariable holdsVariable = f.getAnnotation(HoldsModifiableVariable.class);
-		f.setAccessible(true);
-		Object possibleHolder = f.get(object);
-		if (possibleHolder != null && holdsVariable != null) {
-		    if (possibleHolder instanceof List) {
-			holders.addAll(ModifiableVariableAnalyzer
-				.getAllModifiableVariableHoldersFromList((List) possibleHolder));
-		    } else if (possibleHolder.getClass().isArray()) {
-			holders.addAll(ModifiableVariableAnalyzer
-				.getAllModifiableVariableHoldersFromArray((Object[]) possibleHolder));
-		    } else {
-			if (ProtocolMessage.class.isInstance(object)) {
-			    // LOGGER.info("Skipping {}",
-			    // possibleHolder.getClass());
-			} else {
-			    holders.addAll(ModifiableVariableAnalyzer
-				    .getAllModifiableVariableHoldersRecursively(possibleHolder));
-			}
-		    }
-		}
-	    } catch (IllegalAccessException | IllegalArgumentException ex) {
-		LOG.log(Level.SEVERE, "Could not access Field!", ex);
-	    }
-	}
-	return holders;
+        List<ModifiableVariableListHolder> holders = new LinkedList<>();
+        List<Field> modFields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(object);
+        if (!modFields.isEmpty()) {
+            holders.add(new ModifiableVariableListHolder(object, modFields));
+        }
+        List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
+        for (Field f : allFields) {
+            try {
+                HoldsModifiableVariable holdsVariable = f.getAnnotation(HoldsModifiableVariable.class);
+                f.setAccessible(true);
+                Object possibleHolder = f.get(object);
+                if (possibleHolder != null && holdsVariable != null) {
+                    if (possibleHolder instanceof List) {
+                        holders.addAll(ModifiableVariableAnalyzer
+                                .getAllModifiableVariableHoldersFromList((List) possibleHolder));
+                    } else if (possibleHolder.getClass().isArray()) {
+                        holders.addAll(ModifiableVariableAnalyzer
+                                .getAllModifiableVariableHoldersFromArray((Object[]) possibleHolder));
+                    } else {
+                        if (ProtocolMessage.class.isInstance(object)) {
+                            // LOGGER.info("Skipping {}",
+                            // possibleHolder.getClass());
+                        } else {
+                            holders.addAll(ModifiableVariableAnalyzer
+                                    .getAllModifiableVariableHoldersRecursively(possibleHolder));
+                        }
+                    }
+                }
+            } catch (IllegalAccessException | IllegalArgumentException ex) {
+                LOG.log(Level.SEVERE, "Could not access Field!", ex);
+            }
+        }
+        return holders;
     }
 
     /**
      * Adds a ToggleEncryptionAction to a WorkflowTrace
-     * @param trace WorkflowTrace to modify
+     * 
+     * @param trace
+     *            WorkflowTrace to modify
      * @return The ModificationObject
      */
     public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
-	TLSAction newAction = new ToggleEncryptionAction();
-	List<TLSAction> actionList = trace.getTLSActions();
-	Random r = new Random();
-	int positon = r.nextInt(actionList.size());
-	actionList.add(positon, newAction);
-	return new AddToggleEncrytionActionModification(positon);
+        TLSAction newAction = new ToggleEncryptionAction();
+        List<TLSAction> actionList = trace.getTLSActions();
+        Random r = new Random();
+        int positon = r.nextInt(actionList.size());
+        actionList.add(positon, newAction);
+        return new AddToggleEncrytionActionModification(positon);
     }
 
     private FuzzingHelper() {
     }
 
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
-	    .getName());
+            .getName());
 }

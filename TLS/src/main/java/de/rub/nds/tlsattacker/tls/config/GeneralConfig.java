@@ -30,34 +30,34 @@ public class GeneralConfig {
     private Level logLevel;
 
     public boolean isHelp() {
-	return help;
+        return help;
     }
 
     public void setHelp(boolean help) {
-	this.help = help;
+        this.help = help;
     }
 
     public boolean isDebug() {
-	return debug;
+        return debug;
     }
 
     public void setDebug(boolean debug) {
-	this.debug = debug;
+        this.debug = debug;
     }
 
     public boolean isQuiet() {
-	return quiet;
+        return quiet;
     }
 
     public void setQuiet(boolean quiet) {
-	this.quiet = quiet;
+        this.quiet = quiet;
     }
 
     public Level getLogLevel() {
-	return logLevel;
+        return logLevel;
     }
 
     public void setLogLevel(Level logLevel) {
-	this.logLevel = logLevel;
+        this.logLevel = logLevel;
     }
 }

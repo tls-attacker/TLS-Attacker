@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class DuplicateMessageModification extends Modification {
 
     /**
-     * The ProtocolMessage that was duplicated 
+     * The ProtocolMessage that was duplicated
      */
     private final ProtocolMessage message;
 
@@ -35,22 +35,22 @@ public class DuplicateMessageModification extends Modification {
     private final SendAction action;
 
     public DuplicateMessageModification(ProtocolMessage message, SendAction action, int position) {
-	super(ModificationType.DUPLICATE_MESSAGE);
-	this.message = message;
-	this.position = position;
-	this.action = action;
+        super(ModificationType.DUPLICATE_MESSAGE);
+        this.message = message;
+        this.position = position;
+        this.action = action;
     }
 
     public SendAction getAction() {
-	return action;
+        return action;
     }
 
     public int getPosition() {
-	return position;
+        return position;
     }
 
     public ProtocolMessage getMessage() {
-	return message;
+        return message;
     }
 
     private static final Logger LOG = Logger.getLogger(DuplicateMessageModification.class.getName());

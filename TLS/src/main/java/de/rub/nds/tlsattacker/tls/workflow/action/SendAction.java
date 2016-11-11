@@ -23,51 +23,51 @@ import java.util.logging.Logger;
 public class SendAction extends MessageAction {
 
     public SendAction() {
-	super(new LinkedList<ProtocolMessage>());
+        super(new LinkedList<ProtocolMessage>());
     }
 
     public SendAction(List<ProtocolMessage> messages) {
-	super(messages);
+        super(messages);
     }
 
     public SendAction(ProtocolMessage message) {
-	super(new LinkedList<ProtocolMessage>());
-	configuredMessages.add(message);
+        super(new LinkedList<ProtocolMessage>());
+        configuredMessages.add(message);
     }
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) {
-	if (executed) {
-	    throw new WorkflowExecutionException("Action already executed!");
-	}
-	tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionEnd());
-	ensureMyLastProtocolMessagesHaveRecords(configuredMessages); // I dont
-								     // think we
-								     // want the
-								     // workflowExecutor
-								     // to
-								     // modify
-								     // the
-								     // workflowtrace,
-								     // it
-								     // should
-								     // simply
-								     // execute
-								     // it
-	actualMessages = executor.sendMessages(configuredMessages);
-	executed = true;
+        if (executed) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+        tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionEnd());
+        ensureMyLastProtocolMessagesHaveRecords(configuredMessages); // I dont
+        // think we
+        // want the
+        // workflowExecutor
+        // to
+        // modify
+        // the
+        // workflowtrace,
+        // it
+        // should
+        // simply
+        // execute
+        // it
+        actualMessages = executor.sendMessages(configuredMessages);
+        executed = true;
 
     }
 
     private void ensureMyLastProtocolMessagesHaveRecords(List<ProtocolMessage> protocolMessages) {
-	for (int pmPointer = 0; pmPointer < protocolMessages.size(); pmPointer++) {
-	    ProtocolMessage pm = protocolMessages.get(pmPointer);
-	    if (handlingMyLastProtocolMessageWithContentType(protocolMessages, pmPointer)) {
-		if (pm.getRecords() == null || pm.getRecords().isEmpty()) {
-		    pm.addRecord(new Record());
-		}
-	    }
-	}
+        for (int pmPointer = 0; pmPointer < protocolMessages.size(); pmPointer++) {
+            ProtocolMessage pm = protocolMessages.get(pmPointer);
+            if (handlingMyLastProtocolMessageWithContentType(protocolMessages, pmPointer)) {
+                if (pm.getRecords() == null || pm.getRecords().isEmpty()) {
+                    pm.addRecord(new Record());
+                }
+            }
+        }
     }
 
     /**
@@ -82,9 +82,9 @@ public class SendAction extends MessageAction {
      * @return
      */
     private boolean handlingMyLastProtocolMessageWithContentType(List<ProtocolMessage> protocolMessages, int pointer) {
-	ProtocolMessage currentProtocolMessage = protocolMessages.get(pointer);
-	return ((protocolMessages.size() == (pointer + 1)) || currentProtocolMessage.getProtocolMessageType() != (protocolMessages
-		.get(pointer + 1).getProtocolMessageType()));
+        ProtocolMessage currentProtocolMessage = protocolMessages.get(pointer);
+        return ((protocolMessages.size() == (pointer + 1)) || currentProtocolMessage.getProtocolMessageType() != (protocolMessages
+                .get(pointer + 1).getProtocolMessageType()));
     }
 
     private static final Logger LOG = Logger.getLogger(SendAction.class.getName());

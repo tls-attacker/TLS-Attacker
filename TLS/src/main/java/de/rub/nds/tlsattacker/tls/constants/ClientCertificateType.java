@@ -37,25 +37,25 @@ public enum ClientCertificateType {
     private static final Map<Byte, ClientCertificateType> MAP;
 
     private ClientCertificateType(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (ClientCertificateType c : ClientCertificateType.values()) {
-	    MAP.put(c.value, c);
-	}
+        MAP = new HashMap<>();
+        for (ClientCertificateType c : ClientCertificateType.values()) {
+            MAP.put(c.value, c);
+        }
     }
 
     public static ClientCertificateType getClientCertificateType(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 }

@@ -39,90 +39,90 @@ import java.util.LinkedList;
 public class DtlsDhWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
     public DtlsDhWorkflowConfigurationFactory(CommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public TlsContext createClientHelloTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = new TlsContext();
-	context.setProtocolVersion(config.getProtocolVersion());
+        TlsContext context = new TlsContext();
+        context.setProtocolVersion(config.getProtocolVersion());
 
-	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
-	LinkedList<ProtocolMessage> messages = new LinkedList<>();
-	WorkflowTrace workflowTrace = new WorkflowTrace();
-	ClientHelloDtlsMessage clientHello = new ClientHelloDtlsMessage();
-	messages.add(clientHello);
+        context.setSelectedCipherSuite(config.getCipherSuites().get(0));
+        LinkedList<ProtocolMessage> messages = new LinkedList<>();
+        WorkflowTrace workflowTrace = new WorkflowTrace();
+        ClientHelloDtlsMessage clientHello = new ClientHelloDtlsMessage();
+        messages.add(clientHello);
 
-	clientHello.setSupportedCipherSuites(config.getCipherSuites());
-	clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
-	clientHello.setIncludeInDigest(false);
+        clientHello.setSupportedCipherSuites(config.getCipherSuites());
+        clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
+        clientHello.setIncludeInDigest(false);
 
-	initializeClientHelloExtensions(config, clientHello);
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
-	messages = new LinkedList<>();
-	HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage();
-	helloVerifyRequestMessage.setIncludeInDigest(false);
-	messages.add(helloVerifyRequestMessage);
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	messages = new LinkedList<>();
+        initializeClientHelloExtensions(config, clientHello);
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        messages = new LinkedList<>();
+        HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage();
+        helloVerifyRequestMessage.setIncludeInDigest(false);
+        messages.add(helloVerifyRequestMessage);
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        messages = new LinkedList<>();
 
-	clientHello = new ClientHelloDtlsMessage();
-	messages.add(clientHello);
+        clientHello = new ClientHelloDtlsMessage();
+        messages.add(clientHello);
 
-	clientHello.setSupportedCipherSuites(config.getCipherSuites());
-	clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
+        clientHello.setSupportedCipherSuites(config.getCipherSuites());
+        clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
 
-	initializeClientHelloExtensions(config, clientHello);
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        initializeClientHelloExtensions(config, clientHello);
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
 
-	context.setWorkflowTrace(workflowTrace);
-	initializeProtocolMessageOrder(context);
+        context.setWorkflowTrace(workflowTrace);
+        initializeProtocolMessageOrder(context);
 
-	return context;
+        return context;
     }
 
     @Override
     public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+        TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
 
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
-	LinkedList<ProtocolMessage> messages = new LinkedList<>();
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
+        LinkedList<ProtocolMessage> messages = new LinkedList<>();
 
-	messages.add(new ServerHelloMessage());
-	messages.add(new CertificateMessage());
+        messages.add(new ServerHelloMessage());
+        messages.add(new CertificateMessage());
 
-	if (config.getCipherSuites().get(0).isEphemeral()) {
-	    messages.add(new DHEServerKeyExchangeMessage());
-	}
-	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    messages.add(new CertificateRequestMessage());
-	    messages.add(new ServerHelloDoneMessage());
-	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	    messages = new LinkedList<>();
+        if (config.getCipherSuites().get(0).isEphemeral()) {
+            messages.add(new DHEServerKeyExchangeMessage());
+        }
+        if (config.getKeystore() != null && config.isClientAuthentication()) {
+            messages.add(new CertificateRequestMessage());
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
 
-	    messages.add(new CertificateMessage());
-	    messages.add(new DHClientKeyExchangeMessage());
-	    messages.add(new CertificateVerifyMessage());
-	} else {
-	    messages.add(new ServerHelloDoneMessage());
+            messages.add(new CertificateMessage());
+            messages.add(new DHClientKeyExchangeMessage());
+            messages.add(new CertificateVerifyMessage());
+        } else {
+            messages.add(new ServerHelloDoneMessage());
 
-	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	    messages = new LinkedList<>();
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
 
-	    messages.add(new DHClientKeyExchangeMessage());
-	}
-	messages.add(new ChangeCipherSpecMessage());
-	messages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
-	messages = new LinkedList<>();
+            messages.add(new DHClientKeyExchangeMessage());
+        }
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        messages = new LinkedList<>();
 
-	messages.add(new ChangeCipherSpecMessage());
-	messages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
 
-	initializeProtocolMessageOrder(context);
+        initializeProtocolMessageOrder(context);
 
-	return context;
+        return context;
     }
 
     // TODO removed close notify alert from createFullTlsContext

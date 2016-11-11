@@ -34,37 +34,38 @@ public class ActionExecutorTypeConfig implements Serializable {
     }
 
     public boolean isAllowTLS() {
-	return allowTLS;
+        return allowTLS;
     }
 
     public void setAllowTLS(boolean allowTLS) {
-	this.allowTLS = allowTLS;
+        this.allowTLS = allowTLS;
     }
 
     public boolean isAllowDTLS() {
-	return allowDTLS;
+        return allowDTLS;
     }
 
     public void setAllowDTLS(boolean allowDTLS) {
-	this.allowDTLS = allowDTLS;
+        this.allowDTLS = allowDTLS;
     }
 
     /**
      * Returns a random allowed ActionExecutor
+     * 
      * @return Random allowed ActionExecutor
      */
     public ExecutorType getRandomExecutorType() {
-	if (!allowDTLS && !allowTLS) {
-	    throw new ConfigurationException(
-		    "TLSActionExecutor and DTLSActionExecutor are disabled, allow atleast one!");
-	} else if (allowDTLS && !allowTLS) {
-	    return ExecutorType.DTLS;
-	} else if (!allowDTLS && allowTLS) {
-	    return ExecutorType.TLS;
-	} else {
-	    Random r = new Random();
-	    return r.nextBoolean() ? ExecutorType.DTLS : ExecutorType.TLS;
-	}
+        if (!allowDTLS && !allowTLS) {
+            throw new ConfigurationException(
+                    "TLSActionExecutor and DTLSActionExecutor are disabled, allow atleast one!");
+        } else if (allowDTLS && !allowTLS) {
+            return ExecutorType.DTLS;
+        } else if (!allowDTLS && allowTLS) {
+            return ExecutorType.TLS;
+        } else {
+            Random r = new Random();
+            return r.nextBoolean() ? ExecutorType.DTLS : ExecutorType.TLS;
+        }
 
     }
 

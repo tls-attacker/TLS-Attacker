@@ -20,7 +20,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class X509CertificateObjectAdapter extends XmlAdapter<String, X509CertificateObject> {
@@ -28,12 +28,13 @@ public class X509CertificateObjectAdapter extends XmlAdapter<String, X509Certifi
     @Override
     public X509CertificateObject unmarshal(String v) throws Exception {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        Collection<? extends java.security.cert.Certificate> certs = certFactory.generateCertificates(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll("\\s+",""))));
+        Collection<? extends java.security.cert.Certificate> certs = certFactory
+                .generateCertificates(new ByteArrayInputStream(ArrayConverter.hexStringToByteArray(v.replaceAll("\\s+",
+                        ""))));
         java.security.cert.Certificate sunCert = (java.security.cert.Certificate) certs.toArray()[0];
         byte[] certBytes = sunCert.getEncoded();
         ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-        org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
-                .getInstance(asn1Cert);
+        org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
         org.bouncycastle.asn1.x509.Certificate[] certs2 = new org.bouncycastle.asn1.x509.Certificate[1];
         certs2[0] = cert;
         org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs2);

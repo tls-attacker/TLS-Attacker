@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class IllegalMutatorException extends Exception {
 
     public IllegalMutatorException(String string) {
-	super(string);
+        super(string);
     }
 
     private static final Logger LOG = Logger.getLogger(IllegalMutatorException.class.getName());

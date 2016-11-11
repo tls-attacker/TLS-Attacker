@@ -35,52 +35,52 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
-	super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
-	protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
-	cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
-	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+        super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
+        protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
+        cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
+        cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
     }
 
     public ModifiableByteArray getProtocolVersion() {
-	return protocolVersion;
+        return protocolVersion;
     }
 
     public ModifiableByteArray getCookie() {
-	return cookie;
+        return cookie;
     }
 
     public ModifiableByte getCookieLength() {
-	return cookieLength;
+        return cookieLength;
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
-	this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
+        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
     public void setProtocolVersion(ModifiableByteArray protocolVersion) {
-	this.protocolVersion = protocolVersion;
+        this.protocolVersion = protocolVersion;
     }
 
     public void setCookie(byte[] cookie) {
-	this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
+        this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
     }
 
     public void setCookie(ModifiableByteArray cookie) {
-	this.cookie = cookie;
+        this.cookie = cookie;
     }
 
     public void setCookieLength(byte cookieLength) {
-	this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
     public void setCookieLength(ModifiableByte cookieLength) {
-	this.cookieLength = cookieLength;
+        this.cookieLength = cookieLength;
     }
 
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-	ProtocolMessageHandler handler = new HelloVerifyRequestHandler(tlsContext);
-	handler.setProtocolMessage(this);
-	return handler;
+        ProtocolMessageHandler handler = new HelloVerifyRequestHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

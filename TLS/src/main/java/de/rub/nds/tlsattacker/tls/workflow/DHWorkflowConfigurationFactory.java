@@ -37,7 +37,7 @@ import java.util.List;
 public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
     public DHWorkflowConfigurationFactory(CommandConfig config) {
-	super(config);
+        super(config);
     }
 
     /**
@@ -46,42 +46,42 @@ public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory
      * @return
      */
     public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
-	TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
-	List<ProtocolMessage> messages = new LinkedList<>();
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
+        TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+        List<ProtocolMessage> messages = new LinkedList<>();
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
 
-	messages.add(new ServerHelloMessage());
-	messages.add(new CertificateMessage());
-	CertificateRequestMessage certificateRequestMessage = new CertificateRequestMessage();
-	certificateRequestMessage.setRequired(false);
+        messages.add(new ServerHelloMessage());
+        messages.add(new CertificateMessage());
+        CertificateRequestMessage certificateRequestMessage = new CertificateRequestMessage();
+        certificateRequestMessage.setRequired(false);
 
-	if (config.getCipherSuites().get(0).isEphemeral()) {
-	    messages.add(new DHEServerKeyExchangeMessage());
-	    messages.add(certificateRequestMessage);
-	}
-	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    messages.add(new ServerHelloDoneMessage());
-	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	    messages = new LinkedList<>();
-	    messages.add(new CertificateMessage());
-	    messages.add(new DHClientKeyExchangeMessage());
-	    messages.add(new CertificateVerifyMessage());
+        if (config.getCipherSuites().get(0).isEphemeral()) {
+            messages.add(new DHEServerKeyExchangeMessage());
+            messages.add(certificateRequestMessage);
+        }
+        if (config.getKeystore() != null && config.isClientAuthentication()) {
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
+            messages.add(new CertificateMessage());
+            messages.add(new DHClientKeyExchangeMessage());
+            messages.add(new CertificateVerifyMessage());
 
-	} else {
-	    messages.add(new ServerHelloDoneMessage());
-	    workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	    messages = new LinkedList<>();
-	    messages.add(new DHClientKeyExchangeMessage());
-	}
-	messages.add(new ChangeCipherSpecMessage());
-	messages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
-	messages = new LinkedList<>();
-	messages.add(new ChangeCipherSpecMessage());
-	messages.add(new FinishedMessage());
-	workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
-	initializeProtocolMessageOrder(context);
+        } else {
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
+            messages.add(new DHClientKeyExchangeMessage());
+        }
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        messages = new LinkedList<>();
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        initializeProtocolMessageOrder(context);
 
-	return context;
+        return context;
     }
 }

@@ -44,117 +44,117 @@ public class RSAExampleMitMWorkflowConfiguration {
     private final CommandConfig config;
 
     public RSAExampleMitMWorkflowConfiguration(TlsContext tlsContext, CommandConfig config) {
-	this.tlsContext = tlsContext;
-	this.config = config;
+        this.tlsContext = tlsContext;
+        this.config = config;
     }
 
     public void createWorkflow() {
 
-	ClientCommandConfig ccConfig = (ClientCommandConfig) config;
-	WorkflowTraceType workflowTraceType = ccConfig.getWorkflowTraceType();
+        ClientCommandConfig ccConfig = (ClientCommandConfig) config;
+        WorkflowTraceType workflowTraceType = ccConfig.getWorkflowTraceType();
 
-	WorkflowTrace workflowTrace;
+        WorkflowTrace workflowTrace;
 
-	switch (workflowTraceType) {
-	    case FULL_SERVER_RESPONSE:
-		workflowTrace = createFullSRWorkflow();
-		break;
-	    case FULL:
-		workflowTrace = createFullWorkflow();
-		break;
-	    case HANDSHAKE:
-		workflowTrace = createHandshakeWorkflow();
-		break;
-	    default:
-		throw new ConfigurationException("not supported workflow type: " + workflowTraceType);
-	}
+        switch (workflowTraceType) {
+            case FULL_SERVER_RESPONSE:
+                workflowTrace = createFullSRWorkflow();
+                break;
+            case FULL:
+                workflowTrace = createFullWorkflow();
+                break;
+            case HANDSHAKE:
+                workflowTrace = createHandshakeWorkflow();
+                break;
+            default:
+                throw new ConfigurationException("not supported workflow type: " + workflowTraceType);
+        }
 
-	tlsContext.setWorkflowTrace(workflowTrace);
+        tlsContext.setWorkflowTrace(workflowTrace);
 
-	initializeProtocolMessageOrder(tlsContext);
+        initializeProtocolMessageOrder(tlsContext);
     }
 
     private WorkflowTrace createHandshakeWorkflow() {
         /*
-	WorkflowTrace workflowTrace = new WorkflowTrace();
-
-	List<ProtocolMessage> protocolMessages = new LinkedList<>();
-
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(ch);
-	ch.setGoingToBeSent(false);
-
-	ch.setSupportedCipherSuites(config.getCipherSuites());
-	ch.setSupportedCompressionMethods(config.getCompressionMethods());
-
-	ServerHelloMessage sh = new ServerHelloMessage(ConnectionEnd.SERVER);
-	protocolMessages.add(sh);
-	CertificateMessage cm = new CertificateMessage(ConnectionEnd.SERVER);
-	protocolMessages.add(cm);
-	cm.setGoingToBeSent(false);
-
-	if (tlsContext.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateRequestMessage(ConnectionEnd.SERVER));
-	}
-
-	protocolMessages.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-
-	if (tlsContext.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateMessage(ConnectionEnd.CLIENT));
-	}
-
-	RSAClientKeyExchangeMessage kem = new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(kem);
-	kem.setGoingToBeSent(false);
-
-	if (tlsContext.isClientAuthentication()) {
-	    protocolMessages.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
-	}
-
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
-
-	protocolMessages.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	protocolMessages.add(new FinishedMessage(ConnectionEnd.SERVER));
-
-	workflowTrace.setProtocolMessages(protocolMessages);
-
-	return workflowTrace;
-        */
+         * WorkflowTrace workflowTrace = new WorkflowTrace();
+         * 
+         * List<ProtocolMessage> protocolMessages = new LinkedList<>();
+         * 
+         * ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
+         * protocolMessages.add(ch); ch.setGoingToBeSent(false);
+         * 
+         * ch.setSupportedCipherSuites(config.getCipherSuites());
+         * ch.setSupportedCompressionMethods(config.getCompressionMethods());
+         * 
+         * ServerHelloMessage sh = new ServerHelloMessage(ConnectionEnd.SERVER);
+         * protocolMessages.add(sh); CertificateMessage cm = new
+         * CertificateMessage(ConnectionEnd.SERVER); protocolMessages.add(cm);
+         * cm.setGoingToBeSent(false);
+         * 
+         * if (tlsContext.isClientAuthentication()) { protocolMessages.add(new
+         * CertificateRequestMessage(ConnectionEnd.SERVER)); }
+         * 
+         * protocolMessages.add(new
+         * ServerHelloDoneMessage(ConnectionEnd.SERVER));
+         * 
+         * if (tlsContext.isClientAuthentication()) { protocolMessages.add(new
+         * CertificateMessage(ConnectionEnd.CLIENT)); }
+         * 
+         * RSAClientKeyExchangeMessage kem = new
+         * RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT);
+         * protocolMessages.add(kem); kem.setGoingToBeSent(false);
+         * 
+         * if (tlsContext.isClientAuthentication()) { protocolMessages.add(new
+         * CertificateVerifyMessage(ConnectionEnd.CLIENT)); }
+         * 
+         * protocolMessages.add(new
+         * ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
+         * protocolMessages.add(new FinishedMessage(ConnectionEnd.CLIENT));
+         * 
+         * protocolMessages.add(new
+         * ChangeCipherSpecMessage(ConnectionEnd.SERVER));
+         * protocolMessages.add(new FinishedMessage(ConnectionEnd.SERVER));
+         * 
+         * workflowTrace.setProtocolMessages(protocolMessages);
+         * 
+         * return workflowTrace;
+         */
         return null;
     }
 
     private WorkflowTrace createFullWorkflow() {
         /*
-	WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
-
-	List<ProtocolMessage> protocolMessages = workflowTrace.getProtocolMessages();
-
-	ApplicationMessage cam = new ApplicationMessage(ConnectionEnd.CLIENT);
-	protocolMessages.add(cam);
-	cam.setGoingToBeSent(false);
-
-	workflowTrace.setProtocolMessages(protocolMessages);
-
-	return workflowTrace;
-        */
+         * WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
+         * 
+         * List<ProtocolMessage> protocolMessages =
+         * workflowTrace.getProtocolMessages();
+         * 
+         * ApplicationMessage cam = new
+         * ApplicationMessage(ConnectionEnd.CLIENT); protocolMessages.add(cam);
+         * cam.setGoingToBeSent(false);
+         * 
+         * workflowTrace.setProtocolMessages(protocolMessages);
+         * 
+         * return workflowTrace;
+         */
         return null;
     }
 
     private WorkflowTrace createFullSRWorkflow() {
         /*
-	WorkflowTrace workflowTrace = this.createFullWorkflow();
-
-	List<ProtocolMessage> protocolMessages = workflowTrace.getProtocolMessages();
-
-	ApplicationMessage sam = new ApplicationMessage(ConnectionEnd.SERVER);
-	protocolMessages.add(sam);
-	sam.setGoingToBeModified(true);
-
-	workflowTrace.setProtocolMessages(protocolMessages);
-
-	return workflowTrace;
-        */
+         * WorkflowTrace workflowTrace = this.createFullWorkflow();
+         * 
+         * List<ProtocolMessage> protocolMessages =
+         * workflowTrace.getProtocolMessages();
+         * 
+         * ApplicationMessage sam = new
+         * ApplicationMessage(ConnectionEnd.SERVER); protocolMessages.add(sam);
+         * sam.setGoingToBeModified(true);
+         * 
+         * workflowTrace.setProtocolMessages(protocolMessages);
+         * 
+         * return workflowTrace;
+         */
         return null;
     }
 

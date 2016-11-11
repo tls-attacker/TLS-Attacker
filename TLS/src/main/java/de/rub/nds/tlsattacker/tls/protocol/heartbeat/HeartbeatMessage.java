@@ -38,94 +38,94 @@ public class HeartbeatMessage extends ProtocolMessage {
     ModifiableByteArray padding;
 
     public HeartbeatMessage() {
-	this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
+        this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
     }
 
     public ModifiableByte getHeartbeatMessageType() {
-	return heartbeatMessageType;
+        return heartbeatMessageType;
     }
 
     public void setHeartbeatMessageType(ModifiableByte heartbeatMessageType) {
-	this.heartbeatMessageType = heartbeatMessageType;
+        this.heartbeatMessageType = heartbeatMessageType;
     }
 
     public void setHeartbeatMessageType(byte heartbeatMessageType) {
-	this.heartbeatMessageType = ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType,
-		heartbeatMessageType);
+        this.heartbeatMessageType = ModifiableVariableFactory.safelySetValue(this.heartbeatMessageType,
+                heartbeatMessageType);
     }
 
     public ModifiableInteger getPayloadLength() {
-	return payloadLength;
+        return payloadLength;
     }
 
     public void setPayloadLength(ModifiableInteger payloadLength) {
-	this.payloadLength = payloadLength;
+        this.payloadLength = payloadLength;
     }
 
     public void setPayloadLength(int payloadLength) {
-	this.payloadLength = ModifiableVariableFactory.safelySetValue(this.payloadLength, payloadLength);
+        this.payloadLength = ModifiableVariableFactory.safelySetValue(this.payloadLength, payloadLength);
     }
 
     public ModifiableByteArray getPayload() {
-	return payload;
+        return payload;
     }
 
     public void setPayload(ModifiableByteArray payload) {
-	this.payload = payload;
+        this.payload = payload;
     }
 
     public void setPayload(byte[] payload) {
-	this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
     public ModifiableByteArray getPadding() {
-	return padding;
+        return padding;
     }
 
     public void setPadding(ModifiableByteArray padding) {
-	this.padding = padding;
+        this.padding = padding;
     }
 
     public void setPadding(byte[] padding) {
-	this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
     @Override
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-	HeartbeatHandler hmh = new HeartbeatHandler(tlsContext);
-	hmh.setProtocolMessage(this);
-	return hmh;
+        HeartbeatHandler hmh = new HeartbeatHandler(tlsContext);
+        hmh.setProtocolMessage(this);
+        return hmh;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\nHeartbeat message:\n  Type: ");
-	sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
-	sb.append("\n  Payload Length: ");
-	if (payloadLength != null) {
-	    sb.append(payloadLength.getValue());
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Payload: ");
-	if (payload != null) {
-	    sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
-	} else {
-	    sb.append("null");
-	}
-	sb.append("\n  Padding: ");
-	if (padding != null) {
-	    sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
-	} else {
-	    sb.append("null");
-	}
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nHeartbeat message:\n  Type: ");
+        sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
+        sb.append("\n  Payload Length: ");
+        if (payloadLength != null) {
+            sb.append(payloadLength.getValue());
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Payload: ");
+        if (payload != null) {
+            sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Padding: ");
+        if (padding != null) {
+            sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
+        } else {
+            sb.append("null");
+        }
+        return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-	return "Heartbeat";
+        return "Heartbeat";
     }
 
 }

@@ -21,27 +21,27 @@ public class BadRandom extends SecureRandom {
     private Random r;
 
     public BadRandom() {
-	r = new Random();
+        r = new Random();
     }
 
     public BadRandom(Random r, byte[] seed) {
-	this.r = new Random();
+        this.r = new Random();
     }
 
     public BadRandom(Random r, SecureRandomSpi secureRandomSpi, Provider provider) {
-	this.r = new Random();
+        this.r = new Random();
     }
 
     @Override
     public byte[] generateSeed(int numBytes) {
-	byte[] ray = new byte[numBytes];
-	r.nextBytes(ray);
-	return ray;
+        byte[] ray = new byte[numBytes];
+        r.nextBytes(ray);
+        return ray;
     }
 
     @Override
     public synchronized void nextBytes(byte[] bytes) {
-	r.nextBytes(bytes);
+        r.nextBytes(bytes);
 
     }
 
@@ -52,47 +52,47 @@ public class BadRandom extends SecureRandom {
 
     @Override
     public synchronized void setSeed(byte[] seed) {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getAlgorithm() {
-	return "WARNING: We use the default JAVA PRNG. THIS IS NOT A SECURE RANDOM OBJECT. USE FOR FUZZING ONLY";
+        return "WARNING: We use the default JAVA PRNG. THIS IS NOT A SECURE RANDOM OBJECT. USE FOR FUZZING ONLY";
     }
 
     @Override
     public int nextInt() {
-	return r.nextInt();
+        return r.nextInt();
     }
 
     @Override
     public int nextInt(int n) {
-	return r.nextInt(n);
+        return r.nextInt(n);
     }
 
     @Override
     public long nextLong() {
-	return r.nextLong();
+        return r.nextLong();
     }
 
     @Override
     public boolean nextBoolean() {
-	return r.nextBoolean();
+        return r.nextBoolean();
     }
 
     @Override
     public float nextFloat() {
-	return r.nextFloat();
+        return r.nextFloat();
     }
 
     @Override
     public double nextDouble() {
-	return r.nextDouble();
+        return r.nextDouble();
     }
 
     @Override
     public synchronized double nextGaussian() {
-	return r.nextGaussian();
+        return r.nextGaussian();
     }
 
 }

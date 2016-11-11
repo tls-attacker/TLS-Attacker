@@ -22,12 +22,12 @@ public enum MacAlgorithm {
     HMAC_SHA512("HmacSHA512");
 
     MacAlgorithm(String javaName) {
-	this.javaName = javaName;
+        this.javaName = javaName;
     }
 
     private final String javaName;
 
     public String getJavaName() {
-	return javaName;
+        return javaName;
     }
 }

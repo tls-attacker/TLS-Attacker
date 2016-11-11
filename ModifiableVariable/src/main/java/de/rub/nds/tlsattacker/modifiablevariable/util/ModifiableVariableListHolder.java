@@ -28,24 +28,24 @@ public class ModifiableVariableListHolder {
     }
 
     public ModifiableVariableListHolder(Object o, List<Field> f) {
-	this.object = o;
-	this.fields = f;
+        this.object = o;
+        this.fields = f;
     }
 
     public Object getObject() {
-	return object;
+        return object;
     }
 
     public void setObject(Object object) {
-	this.object = object;
+        this.object = object;
     }
 
     public List<Field> getFields() {
-	return fields;
+        return fields;
     }
 
     public void setFields(List<Field> fields) {
-	this.fields = fields;
+        this.fields = fields;
     }
 
 }

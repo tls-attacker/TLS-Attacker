@@ -18,16 +18,16 @@ import tlsattacker.fuzzer.modification.ModificationType;
 public class ModificationCounter {
 
     private ModificationType type;
-    
+
     private int counter = 0;
 
     public ModificationCounter(ModificationType type) {
         this.type = type;
     }
-    
+
     /**
      * Get the value of counter
-     *
+     * 
      * @return the value of counter
      */
     public int getCounter() {
@@ -36,18 +36,18 @@ public class ModificationCounter {
 
     /**
      * Set the value of counter
-     *
-     * @param counter new value of counter
+     * 
+     * @param counter
+     *            new value of counter
      */
     public void setCounter(int counter) {
         this.counter = counter;
     }
-    
+
     /**
      * Increments the counter
      */
-    public void incrementCounter()
-    {
+    public void incrementCounter() {
         this.counter++;
     }
 
@@ -59,5 +59,4 @@ public class ModificationCounter {
         this.type = type;
     }
 
-    
 }

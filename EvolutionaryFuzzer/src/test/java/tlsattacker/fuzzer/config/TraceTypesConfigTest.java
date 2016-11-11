@@ -18,14 +18,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class TraceTypesConfigTest {
-    
+
     public TraceTypesConfigTest() {
     }
-    
+
     @Before
     public void setUp() {
     }

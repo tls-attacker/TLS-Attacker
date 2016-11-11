@@ -47,41 +47,41 @@ public class ByteSerializationTest {
 
     @Before
     public void setUp() throws JAXBException {
-	start = new ModifiableByte();
-	start.setOriginalValue((byte) 10);
+        start = new ModifiableByte();
+        start.setOriginalValue((byte) 10);
 
-	writer = new StringWriter();
-	context = JAXBContext.newInstance(ModifiableByte.class, ByteAddModification.class);
-	m = context.createMarshaller();
-	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-	um = context.createUnmarshaller();
+        writer = new StringWriter();
+        context = JAXBContext.newInstance(ModifiableByte.class, ByteAddModification.class);
+        m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        um = context.createUnmarshaller();
     }
 
     @Test
     public void testSerializeDeserializeSimple() throws Exception {
-	start.setModification(null);
-	m.marshal(start, writer);
+        start.setModification(null);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	System.out.println(xmlString);
+        String xmlString = writer.toString();
+        System.out.println(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableByte mv = (ModifiableByte) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableByte mv = (ModifiableByte) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = 10;
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
+        expectedResult = 10;
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModification() throws Exception {
-	// TODO
+        // TODO
 
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModificationFilter() throws Exception {
-	// TODO
+        // TODO
 
     }
 }
