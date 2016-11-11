@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.agents;
+package tlsattacker.fuzzer.agent;
 
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;

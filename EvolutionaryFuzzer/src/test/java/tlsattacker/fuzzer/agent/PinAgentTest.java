@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.agent;
 
-import tlsattacker.fuzzer.agents.PINAgent;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;

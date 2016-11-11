@@ -6,8 +6,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.agents;
+package tlsattacker.fuzzer.agent;
 
+import tlsattacker.fuzzer.agent.BlindAgent;
+import tlsattacker.fuzzer.agent.Agent;
+import tlsattacker.fuzzer.agent.AFLAgent;
+import tlsattacker.fuzzer.agent.AgentFactory;
+import tlsattacker.fuzzer.agent.PINAgent;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

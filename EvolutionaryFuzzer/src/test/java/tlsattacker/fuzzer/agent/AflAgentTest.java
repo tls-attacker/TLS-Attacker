@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import tlsattacker.fuzzer.agents.AFLAgent;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.server.ServerSerializer;

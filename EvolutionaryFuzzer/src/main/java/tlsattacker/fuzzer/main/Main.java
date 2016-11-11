@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
-import tlsattacker.fuzzer.agents.AgentFactory;
+import tlsattacker.fuzzer.agent.AgentFactory;
 import tlsattacker.fuzzer.calibration.TimeoutCalibrator;
 import tlsattacker.fuzzer.config.CalibrationConfig;
 import tlsattacker.fuzzer.config.ConfigManager;

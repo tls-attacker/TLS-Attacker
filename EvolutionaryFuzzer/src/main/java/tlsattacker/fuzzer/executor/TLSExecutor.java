@@ -7,7 +7,7 @@
  */
 package tlsattacker.fuzzer.executor;
 
-import tlsattacker.fuzzer.agents.Agent;
+import tlsattacker.fuzzer.agent.Agent;
 import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.ServerDoesNotStartException;

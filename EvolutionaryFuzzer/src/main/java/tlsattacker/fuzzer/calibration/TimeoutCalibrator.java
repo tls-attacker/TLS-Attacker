@@ -7,8 +7,8 @@
  */
 package tlsattacker.fuzzer.calibration;
 
-import tlsattacker.fuzzer.agents.Agent;
-import tlsattacker.fuzzer.agents.AgentFactory;
+import tlsattacker.fuzzer.agent.Agent;
+import tlsattacker.fuzzer.agent.AgentFactory;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.CalibrationConfig;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;

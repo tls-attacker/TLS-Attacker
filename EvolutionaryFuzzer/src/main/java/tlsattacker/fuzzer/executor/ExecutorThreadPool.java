@@ -8,8 +8,8 @@
 package tlsattacker.fuzzer.executor;
 
 import tlsattacker.fuzzer.mutator.Mutator;
-import tlsattacker.fuzzer.agents.AgentFactory;
-import tlsattacker.fuzzer.agents.Agent;
+import tlsattacker.fuzzer.agent.AgentFactory;
+import tlsattacker.fuzzer.agent.Agent;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
