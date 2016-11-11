@@ -54,6 +54,7 @@ public class ProtocolVersionRuleTest {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
         config.setOutputFolder("unit_test_output/");
         config.setConfigFolder("unit_test_config/");
+        config.createFolders();
         rule = new ProtocolVersionRule(config);
     }
 

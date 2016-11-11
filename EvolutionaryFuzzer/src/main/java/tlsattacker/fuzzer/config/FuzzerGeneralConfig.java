@@ -80,6 +80,12 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 
     public void setConfigFolder(String configFolder) {
         this.configFolder = configFolder;
+    }
+    /**
+     * Creates the Folders as specified in in the different Path fields
+     */
+    public void createFolders()
+    {
         File f = new File(configFolder);
         f.mkdirs();
         f = new File(getMutatorConfigFolder());

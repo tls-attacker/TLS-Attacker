@@ -97,6 +97,7 @@ public class AflAgentTest {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
         config.setOutputFolder("unit_test_output/");
         config.setConfigFolder("unit_test_config/");
+        config.createFolders();
         ConfigManager.getInstance().setConfig(config);
         mut = new UnitTestCertificateMutator();
         pair = mut.getServerCertificateStructure();

@@ -37,6 +37,7 @@ public class ExecutorThreadPoolTest {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
         config.setOutputFolder("unit_test_output/");
         config.setConfigFolder("unit_test_config/");
+        config.createFolders();
         ExecutorThreadPool pool = new ExecutorThreadPool(5, new SimpleMutator(config, new FixedCertificateMutator()),
                 config);
         assertTrue("Failure: Pool is not stopped on creation", pool.isStopped());

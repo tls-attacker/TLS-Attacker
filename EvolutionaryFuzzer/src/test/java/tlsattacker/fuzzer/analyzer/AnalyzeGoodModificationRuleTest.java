@@ -65,6 +65,7 @@ public class AnalyzeGoodModificationRuleTest {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
         config.setOutputFolder("unit_test_output/");
         config.setConfigFolder("unit_test_config/");
+        config.createFolders();
         rule = new AnalyzeGoodModificationRule(config);
         vector = new TestVector(null, null, null, ExecutorType.TLS, null);
         vector.addModification(new AddMessageModification(new ClientHelloMessage(), new SendAction()));

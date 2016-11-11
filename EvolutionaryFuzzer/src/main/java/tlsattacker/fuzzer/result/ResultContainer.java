@@ -19,7 +19,7 @@ public class ResultContainer {
      * @return Instance of the ResultContainer
      */
     public static ResultContainer getInstance() {
-	return ResultContainerHolder.INSTANCE;
+        return ResultContainerHolder.INSTANCE;
     }
 
     /**
@@ -33,25 +33,27 @@ public class ResultContainer {
     private final Analyzer analyzer;
 
     private ResultContainer() {
-	evolutionaryFuzzerConfig = tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig();
-	analyzer = new RuleAnalyzer(evolutionaryFuzzerConfig);
+        evolutionaryFuzzerConfig = tlsattacker.fuzzer.config.ConfigManager.getInstance().getConfig();
+        analyzer = new RuleAnalyzer(evolutionaryFuzzerConfig);
 
     }
 
     public void setEvolutionaryFuzzerConfig(EvolutionaryFuzzerConfig evolutionaryFuzzerConfig) {
-	this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
+        this.evolutionaryFuzzerConfig = evolutionaryFuzzerConfig;
     }
 
     public Analyzer getAnalyzer() {
-	return analyzer;
+        return analyzer;
     }
 
     /**
      * Analyzes a Result
-     * @param r Result to analyze
+     * 
+     * @param r
+     *            Result to analyze
      */
     public void commit(Result r) {
-	analyzer.analyze(r);
+        analyzer.analyze(r);
     }
 
     /**
@@ -59,13 +61,13 @@ public class ResultContainer {
      */
     private static class ResultContainerHolder {
 
-	/**
+        /**
          * Singleton
          */
-	private static final ResultContainer INSTANCE = new ResultContainer();
+        private static final ResultContainer INSTANCE = new ResultContainer();
 
-	private ResultContainerHolder() {
-	}
+        private ResultContainerHolder() {
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(ResultContainer.class.getName());

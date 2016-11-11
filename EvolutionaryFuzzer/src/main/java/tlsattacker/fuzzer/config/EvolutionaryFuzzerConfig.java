@@ -15,7 +15,7 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * A Config class which controlls the behavior of the fuzzer
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -270,14 +270,22 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     public void setOutputFolder(String outputFolder) {
         this.outputFolder = outputFolder;
+        this.tracesFolder = new File(outputFolder + "traces/");
+    }
+
+    /**
+     * Creates the nessecary Folders as specified in the different Paths
+     */
+    public void createFolders() {
+        super.createFolders();
         File f = new File(outputFolder);
         f.mkdirs();
-        this.tracesFolder = new File(outputFolder + "traces/");
         tracesFolder.mkdirs();// TODO check
         new File(getOutputFaultyFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
+
     }
 
     public boolean getInjectPinChild() {

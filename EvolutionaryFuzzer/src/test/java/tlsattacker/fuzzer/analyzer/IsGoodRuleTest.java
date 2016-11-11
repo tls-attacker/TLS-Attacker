@@ -53,6 +53,7 @@ public class IsGoodRuleTest {
         config.setSerialize(true);
         config.setOutputFolder("unit_test_output/");
         config.setConfigFolder("unit_test_config/");
+        config.createFolders();
         rule = new IsGoodRule(config);
     }
 
