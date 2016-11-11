@@ -35,10 +35,11 @@ import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
 /**
  * Currently only Implementation of the Controller Interface which controls the
  * the fuzzer with a commandline interface.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CommandLineController extends Controller {
+
     /**
      * The name of the Controller when referred by command line
      */
@@ -62,9 +63,8 @@ public class CommandLineController extends Controller {
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
-     * 
-     * @param config
-     *            Configuration used by the Controller
+     *
+     * @param config Configuration used by the Controller
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      */
     public CommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
@@ -99,8 +99,187 @@ public class CommandLineController extends Controller {
      */
     @Override
     public void stopFuzzer() {
+        LOG.log(Level.INFO, "Stopping Fuzzer!");
         this.isRunning = false;
         pool.setStopped(true);
+        do {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } while (pool.hasRunningThreads());
+        LOG.log(Level.INFO, "Fuzzer stopped!");
+    }
+
+    public void printServerStatus() {
+        List<TLSServer> serverList = ServerManager.getInstance().getAllServers();
+        for (TLSServer server : serverList) {
+            System.out.println(server);
+        }
+    }
+
+    public void dumpEdges(String split[]) {
+        String file = "edges.dump";
+        if (split.length == 2) {
+            file = split[1];
+        }
+        LOG.log(Level.INFO, "Dumping Edge Information to {0}", file);
+        stopFuzzer();
+        do {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } while (pool.hasRunningThreads());
+
+        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
+                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
+        // fix
+        // rule
+        // analyzer
+
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter(file, "UTF-8");
+            Map<Edge, Edge> set = trace.getEdgeMap();
+            for (Edge edge : set.values()) {
+                writer.println(edge.getSource() + " " + edge.getDestination());
+            }
+            writer.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        LOG.log(Level.INFO, "Dump finished");
+        startFuzzer();
+    }
+
+    public void dumpVertices(String[] split) {
+        String file = "vertices.dump";
+        if (split.length == 2) {
+            file = split[1];
+        }
+        LOG.log(Level.INFO, "Dumping Vertex Information to {0}", file);
+        stopFuzzer();
+        do {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } while (pool.hasRunningThreads());
+
+        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
+                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
+        // fix
+        // rule
+        // analyzer
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(file, "UTF-8");
+            Set<Long> set = trace.getVerticesSet();
+            for (Long vertex : set) {
+                writer.println(vertex);
+            }
+            writer.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        LOG.log(Level.INFO, "Dump finished");
+        startFuzzer();
+    }
+
+    public void loadGraph(String[] split) {
+        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
+                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
+        // fix
+        // rule
+        // analyzer
+        if (split.length != 2) {
+            LOG.log(Level.INFO, "You need to specify a File to load");
+        } else {
+            String file = split[1];
+            LOG.log(Level.INFO, "Loading from:{0}", file);
+            ObjectInputStream objectinputstream = null;
+            try {
+                FileInputStream streamIn = new FileInputStream(file);
+                objectinputstream = new ObjectInputStream(streamIn);
+                BranchTrace tempTrace = (BranchTrace) objectinputstream.readObject();
+                trace.merge(tempTrace);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (objectinputstream != null) {
+                    try {
+                        objectinputstream.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
+                                ex);
+                    }
+                }
+            }
+        }
+    }
+
+    public void saveGraph(String split[]) {
+        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
+                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
+        // fix
+        // rule
+        // analyzer
+        if (split.length != 2) {
+            LOG.log(Level.INFO, "You need to specify a File to Save to");
+        } else {
+            String file = split[1];
+            LOG.log(Level.INFO, "Saving to:{0}", file);
+            FileOutputStream fout = null;
+            ObjectOutputStream oos = null;
+            try {
+                fout = new FileOutputStream(file);
+                oos = new ObjectOutputStream(fout);
+                oos.writeObject(trace);
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (fout != null) {
+                    try {
+                        fout.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
+                                ex);
+                    }
+                }
+                if (oos != null) {
+                    try {
+                        oos.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
+                                ex);
+                    }
+                }
+            }
+        }
+    }
+
+    public void printUsage() {
+        System.out
+                .println("Commands: start, stop, status, server, edges <file>, vertices <file>, loadGraph <file>, saveGraph <file>");
+
+    }
+
+    public void printStatus() {
+        ResultContainer con = ResultContainer.getInstance();
+        System.out.println(con.getAnalyzer().getReport());
     }
 
     /**
@@ -122,181 +301,30 @@ public class CommandLineController extends Controller {
                 switch (split[0]) {
                     case "start":
                         startFuzzer();
-
                         break;
                     case "stop":
-                        LOG.log(Level.INFO, "Stopping Fuzzer!");
                         stopFuzzer();
-                        do {
-                            try {
-                                Thread.sleep(50);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } while (pool.hasRunningThreads());
-                        LOG.log(Level.INFO, "Fuzzer stopped!");
                         break;
                     case "status":
-                        ResultContainer con = ResultContainer.getInstance();
-                        System.out.println(con.getAnalyzer().getReport());
+                        printStatus();
                         break;
                     case "server":
-                        List<TLSServer> serverList = ServerManager.getInstance().getAllServers();
-                        for (TLSServer server : serverList) {
-                            System.out.println(server);
-                        }
+                        printServerStatus();
                         break;
                     case "edges":
-                        String file = "edges.dump";
-                        if (split.length == 2) {
-                            file = split[1];
-                        }
-                        LOG.log(Level.INFO, "Dumping Edge Information to {0}", file);
-                        stopFuzzer();
-                        do {
-                            try {
-                                Thread.sleep(50);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } while (pool.hasRunningThreads());
-
-                        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-                                                                              // fix
-                                                                              // rule
-                                                                              // analyzer
-
-                        PrintWriter writer;
-                        try {
-                            writer = new PrintWriter(file, "UTF-8");
-                            Map<Edge, Edge> set = trace.getEdgeMap();
-                            for (Edge edge : set.values()) {
-                                writer.println(edge.getSource() + " " + edge.getDestination());
-                            }
-                            writer.close();
-                        } catch (FileNotFoundException ex) {
-                            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (UnsupportedEncodingException ex) {
-                            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        LOG.log(Level.INFO, "Dump finished");
-                        startFuzzer();
+                        dumpEdges(split);
                         break;
                     case "vertices":
-                        file = "vertices.dump";
-                        if (split.length == 2) {
-                            file = split[1];
-                        }
-                        LOG.log(Level.INFO, "Dumping Vertex Information to {0}", file);
-                        stopFuzzer();
-                        do {
-                            try {
-                                Thread.sleep(50);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } while (pool.hasRunningThreads());
-
-                        trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-                                                                              // fix
-                                                                              // rule
-                                                                              // analyzer
-                        writer = null;
-                        try {
-                            writer = new PrintWriter(file, "UTF-8");
-                            Set<Long> set = trace.getVerticesSet();
-                            for (Long vertex : set) {
-                                writer.println(vertex);
-                            }
-                            writer.close();
-                        } catch (FileNotFoundException ex) {
-                            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (UnsupportedEncodingException ex) {
-                            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        LOG.log(Level.INFO, "Dump finished");
-                        startFuzzer();
+                        dumpVertices(split);
                         break;
                     case "loadGraph":
-                        trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-                                                                              // fix
-                                                                              // rule
-                                                                              // analyzer
-                        if (split.length != 2) {
-                            LOG.log(Level.INFO, "You need to specify a File to load");
-                        } else {
-                            file = split[1];
-                            LOG.log(Level.INFO, "Loading from:{0}", file);
-                            ObjectInputStream objectinputstream = null;
-                            try {
-                                FileInputStream streamIn = new FileInputStream(file);
-                                objectinputstream = new ObjectInputStream(streamIn);
-                                BranchTrace tempTrace = (BranchTrace) objectinputstream.readObject();
-                                trace.merge(tempTrace);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (objectinputstream != null) {
-                                    try {
-                                        objectinputstream.close();
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
-                                                ex);
-                                    }
-                                }
-                            }
-                        }
+                        loadGraph(split);
                         break;
                     case "saveGraph":
-                        trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-                                                                              // fix
-                                                                              // rule
-                                                                              // analyzer
-                        if (split.length != 2) {
-                            LOG.log(Level.INFO, "You need to specify a File to Save to");
-                        } else {
-                            file = split[1];
-                            LOG.log(Level.INFO, "Saving to:{0}", file);
-                            FileOutputStream fout = null;
-                            ObjectOutputStream oos = null;
-                            try {
-                                fout = new FileOutputStream(file);
-                                oos = new ObjectOutputStream(fout);
-                                oos.writeObject(trace);
-
-                            } catch (FileNotFoundException ex) {
-                                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (UnsupportedEncodingException ex) {
-                                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-                            } finally {
-                                if (fout != null) {
-                                    try {
-                                        fout.close();
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
-                                                ex);
-                                    }
-                                }
-                                if (oos != null) {
-                                    try {
-                                        oos.close();
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
-                                                ex);
-                                    }
-                                }
-                            }
-                        }
+                        saveGraph(split);
                         break;
                     default:
-                        System.out
-                                .println("Commands: start, stop, status, server, edges <file>, vertices <file>, loadGraph <file>, saveGraph <file>");
+                        printUsage();
                         break;
                 }
             }
