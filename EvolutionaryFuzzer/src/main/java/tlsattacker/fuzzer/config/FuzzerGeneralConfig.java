@@ -46,6 +46,20 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     @Parameter(names = "-use_kill", description = "Uses the kill command specified in the server configuration files.")
     private boolean useKill = false;
 
+    /**
+     * Timeout for server starts
+     */
+    @Parameter(names = "-boot_timeout", description = "The maximum time the fuzzer waits till the implementation boots up.")
+    private Integer bootTimeout = 50000;
+
+     public Integer getBootTimeout() {
+        return bootTimeout;
+    }
+
+    public void setBootTimeout(Integer bootTimeout) {
+        this.bootTimeout = bootTimeout;
+    }
+    
     public String getCertificateMutatorConfigFolder() {
         return configFolder + "mutator/certificate/";
     }

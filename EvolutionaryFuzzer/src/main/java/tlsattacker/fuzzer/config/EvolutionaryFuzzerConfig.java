@@ -101,12 +101,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean certMutatorSelftest = false;
 
     /**
-     * Timeout for server starts
-     */
-    @Parameter(names = "-boot_timeout", description = "The maximum time the fuzzer waits till the implementation boots up.")
-    private Integer bootTimeout = 50000;
-
-    /**
      * Temporary Folder which contains currently executed traces
      */
     private File tracesFolder;
@@ -150,14 +144,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
             actionExecutorConfig = new ActionExecutorTypeConfig();
             JAXB.marshal(actionExecutorConfig, f);
         }
-    }
-
-    public Integer getBootTimeout() {
-        return bootTimeout;
-    }
-
-    public void setBootTimeout(Integer bootTimeout) {
-        this.bootTimeout = bootTimeout;
     }
 
     public String getController() {
