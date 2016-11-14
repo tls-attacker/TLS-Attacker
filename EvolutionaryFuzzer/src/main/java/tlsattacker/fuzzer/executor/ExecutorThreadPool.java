@@ -130,7 +130,7 @@ public class ExecutorThreadPool implements Runnable {
      * @return A list of generated TestVectors
      */
     private List<TestVector> generateSeed() {
-        List<TestVector> newList = new LinkedList<TestVector>();
+        List<TestVector> newList = new LinkedList<>();
         List<WorkflowConfigurationFactory> factoryList = new LinkedList<>();
         factoryList.add(new DHWorkflowConfigurationFactory(new ClientCommandConfig()));
         factoryList.add(new DtlsDhWorkflowConfigurationFactory(new ClientCommandConfig()));
