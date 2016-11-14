@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * A super class for configuration classes which allows for the configuration of
  * different commands.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzerGeneralConfig extends ClientCommandConfig {
@@ -52,14 +52,25 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     @Parameter(names = "-boot_timeout", description = "The maximum time the fuzzer waits till the implementation boots up.")
     private Integer bootTimeout = 50000;
 
-     public Integer getBootTimeout() {
+    /**
+     * If set the PinAgent should inject into the child process TODO put in
+     * agent config
+     */
+    @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
+    private final boolean injectPinChild = true;
+
+    public boolean getInjectPinChild() {
+        return injectPinChild;
+    }
+
+    public Integer getBootTimeout() {
         return bootTimeout;
     }
 
     public void setBootTimeout(Integer bootTimeout) {
         this.bootTimeout = bootTimeout;
     }
-    
+
     public String getCertificateMutatorConfigFolder() {
         return configFolder + "mutator/certificate/";
     }
@@ -95,11 +106,11 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public void setConfigFolder(String configFolder) {
         this.configFolder = configFolder;
     }
+
     /**
      * Creates the Folders as specified in in the different Path fields
      */
-    public void createFolders()
-    {
+    public void createFolders() {
         File f = new File(configFolder);
         f.mkdirs();
         f = new File(getMutatorConfigFolder());

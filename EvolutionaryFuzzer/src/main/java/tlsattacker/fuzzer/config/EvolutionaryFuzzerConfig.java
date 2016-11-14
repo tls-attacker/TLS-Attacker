@@ -87,13 +87,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean cleanStart = false;
 
     /**
-     * If set the PinAgent should inject into the child process TODO put in
-     * agent config
-     */
-    @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
-    private final boolean injectPinChild = true;
-
-    /**
      * If set the certificates should be tested for compatibility before
      * starting the fuzzer
      */
@@ -272,10 +265,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
 
-    }
-
-    public boolean getInjectPinChild() {
-        return injectPinChild;
     }
 
     public void setCertMutatorSelftest(boolean certMutatorSelftest) {
