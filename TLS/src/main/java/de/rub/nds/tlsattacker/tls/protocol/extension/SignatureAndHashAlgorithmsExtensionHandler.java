@@ -84,11 +84,11 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
         }
         // set extension type
         extensionMessage.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
-        int newPointer = pointer + SIGNATURE_AND_HASH_ALGORITHMS_LENGTH;
+        int newPointer = pointer + ExtensionByteLength.TYPE;
 
         // set extension and signature and hash algorithm extension length
         extensionMessage.setExtensionLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
-        newPointer += SIGNATURE_AND_HASH_ALGORITHMS_LENGTH;
+        newPointer += ExtensionByteLength.EXTENSIONS;
 
         extensionMessage.setSignatureAndHashAlgorithmsLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
         newPointer += SIGNATURE_AND_HASH_ALGORITHMS_LENGTH;
