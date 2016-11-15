@@ -58,6 +58,7 @@ public class AnalyzeTimeRule extends Rule {
      */
     private double fastestTime = Double.MAX_VALUE;
 
+    private double startTime;
     /**
      * Configuration for this ruĺe
      */
@@ -86,6 +87,7 @@ public class AnalyzeTimeRule extends Rule {
                             "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
                             ex);
         }
+        startTime = System.currentTimeMillis();
     }
 
     /**
@@ -141,7 +143,7 @@ public class AnalyzeTimeRule extends Rule {
             return "Executed: " + numberExecutedTraces + " Highest:" + decimalFormat.format(slowestTime / 1000)
                     + "s Lowest:" + decimalFormat.format(fastestTime / 1000) + "s Medium:"
                     + decimalFormat.format((executedTimeTotal / numberExecutedTraces) / 1000) + "s Traces/Second:"
-                    + decimalFormat.format(numberExecutedTraces / (executedTimeTotal / 1000)) + "\n";
+                    + decimalFormat.format(numberExecutedTraces / ((System.currentTimeMillis()-startTime) / 1000)) + "\n";
         } else {
             return null;
         }
