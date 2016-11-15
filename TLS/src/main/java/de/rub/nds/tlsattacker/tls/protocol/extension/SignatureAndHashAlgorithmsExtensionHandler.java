@@ -84,14 +84,14 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
         }
         // set extension type
         extensionMessage.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
-        int newPointer = pointer + ExtensionByteLength.TYPE;
+        int newPointer = pointer + SIGNATURE_AND_HASH_ALGORITHMS_LENGTH;
 
         // set extension and signature and hash algorithm extension length
         extensionMessage.setExtensionLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
-        newPointer += ExtensionByteLength.EXTENSIONS;
+        newPointer += SIGNATURE_AND_HASH_ALGORITHMS_LENGTH;
 
         extensionMessage.setSignatureAndHashAlgorithmsLength(ArrayConverter.bytesToInt(new byte[]{message[newPointer], message[newPointer + 1]}));
-        newPointer += 2;
+        newPointer += SIGNATURE_AND_HASH_ALGORITHMS_LENGTH;
 
         // create the SignatureAndHashAlgorithmsConfig (List) and the byte values of them
         int pairingsCount = extensionMessage.getSignatureAndHashAlgorithmsLength().getValue() / 2;
