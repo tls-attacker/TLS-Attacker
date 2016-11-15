@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -228,7 +229,7 @@ public class TimeoutCalibrator {
         try {
 
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             return false;
         } finally {
             transportHandler.closeConnection();
