@@ -13,10 +13,11 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ReceiveAction extends MessageAction {
@@ -42,6 +43,7 @@ public class ReceiveAction extends MessageAction {
         tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionPeer());
         actualMessages = executor.receiveMessages(configuredMessages);
         executed = true;
+
     }
 
     private static final Logger LOG = Logger.getLogger(ReceiveAction.class.getName());

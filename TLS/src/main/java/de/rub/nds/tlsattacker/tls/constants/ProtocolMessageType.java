@@ -68,9 +68,6 @@ public enum ProtocolMessageType {
         switch (this) {
             case HANDSHAKE:
                 HandshakeMessageType hmt = HandshakeMessageType.getMessageType(value);
-                if (hmt == null) {
-                    System.out.println("WHAT");
-                }
                 LOGGER.debug("Trying to get a protocol message handler for the following handshake message: {}", hmt);
                 pmh = hmt.getProtocolMessageHandler(tlsContext);
                 break;

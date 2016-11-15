@@ -89,6 +89,10 @@ public class TLSActionExecutor extends ActionExecutor {
         } catch (IOException ex) {
             // TODO
         }
+        catch(Exception ex)
+        {
+            LOG.log(Level.INFO, "Uncaught exception while parsing the received Messages", ex);
+        }
         return receivedList;
 
     }

@@ -79,7 +79,7 @@ public class RecordHandler {
         // create resulting byte array
         byte[] result = new byte[0];
         for (Record record : records) {
-            byte[] ctArray = { record.getContentType().getValue() };
+            byte[] ctArray = {record.getContentType().getValue()};
             byte[] pv = record.getProtocolVersion().getValue();
             byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
@@ -119,15 +119,11 @@ public class RecordHandler {
      * returns the size of the data, which were currently wrapped in the records
      * (it is namely possible to divide Protocol message data into several
      * records).
-     * 
-     * @param record
-     *            record going to be filled in
-     * @param contentType
-     *            content type
-     * @param data
-     *            data array
-     * @param dataPointer
-     *            current position in the read data
+     *
+     * @param record record going to be filled in
+     * @param contentType content type
+     * @param data data array
+     * @param dataPointer current position in the read data
      * @return new position of the data going to be sent in the records
      */
     private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
@@ -185,7 +181,7 @@ public class RecordHandler {
     }
 
     /**
-     * 
+     *
      * @param rawRecordData
      * @return list of parsed records or null, if there was not enough data
      */
@@ -201,9 +197,9 @@ public class RecordHandler {
             }
             Record record = new Record();
             record.setContentType(contentType.getValue());
-            byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
+            byte[] protocolVersion = {rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2]};
             record.setProtocolVersion(protocolVersion);
-            byte[] byteLength = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
+            byte[] byteLength = {rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4]};
             int length = ArrayConverter.bytesToInt(byteLength);
             record.setLength(length);
             if (dataPointer + 5 + length > rawRecordData.length) {
@@ -219,6 +215,25 @@ public class RecordHandler {
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC && lastByte < rawRecordData.length) {
                 finishedBytes = Arrays.copyOfRange(rawRecordData, lastByte, rawRecordData.length);
                 lastByte = rawRecordData.length;
+                decryptReceiving = true;
+            }
+            if (decryptReceiving && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
+                    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
+                record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
+                byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);
+                record.setPlainRecordBytes(paddedData);
+                LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(paddedData));
+                int paddingLength = paddedData[paddedData.length - 1];
+                record.setPaddingLength(paddingLength);
+                int paddingStart = paddedData.length - paddingLength - 1;
+                byte[] unpaddedData = Arrays.copyOf(paddedData, paddingStart);
+                record.setPadding(Arrays.copyOfRange(paddedData, paddingStart, paddedData.length));
+                LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpaddedData));
+                byte[] mac = Arrays.copyOfRange(unpaddedData, (unpaddedData.length - recordCipher.getMacLength()),
+                        unpaddedData.length);
+                record.setMac(mac);
+                rawBytesFromCurrentRecord = Arrays.copyOf(unpaddedData,
+                        (unpaddedData.length - recordCipher.getMacLength()));
             }
             record.setProtocolMessageBytes(rawBytesFromCurrentRecord);
             records.add(record);
@@ -253,7 +268,7 @@ public class RecordHandler {
     /**
      * Parses stored finish bytes into records and sets the stored finished
      * bytes to null. Returns null if no records were parsed
-     * 
+     *
      * @return List of parsed Records
      */
     public List<Record> parseFinishedBytes() {
