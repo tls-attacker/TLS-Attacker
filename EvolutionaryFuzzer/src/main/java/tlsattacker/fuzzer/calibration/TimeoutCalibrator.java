@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import tlsattacker.fuzzer.config.ConfigManager;
 
 /**
  * A class that tries to find the lowest tls_timeout possible to such that
@@ -98,7 +97,7 @@ public class TimeoutCalibrator {
      */
     private int getLowestTimoutGlobal() {
         int highestTimeout = 0;
-        FixedCertificateMutator mutator = new FixedCertificateMutator();
+        FixedCertificateMutator mutator = new FixedCertificateMutator(config);
 
         for (ServerCertificateStructure serverCert : mutator.getServerPairList()) {
             LOG.log(Level.INFO, "Grabbing supported Ciphersuites for {0}", serverCert.getCertificateFile()
@@ -208,7 +207,7 @@ public class TimeoutCalibrator {
             } catch (ConfigurationException E) {
                 // It may happen that the implementation is not ready
                 // yet
-                if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
+                if (time + this.config.getBootTimeout() < System.currentTimeMillis()) {
                     LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
                     agent.applicationStop(server);
                     agent.applicationStart(server);

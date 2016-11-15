@@ -37,7 +37,7 @@ public class AgentFactory {
             case AFLAgent.optionName:
                 return new AFLAgent(keypair);
             case PINAgent.optionName:
-                return new PINAgent(keypair);
+                return new PINAgent(config ,keypair);
             case BlindAgent.optionName:
                 return new BlindAgent(keypair);
             default:

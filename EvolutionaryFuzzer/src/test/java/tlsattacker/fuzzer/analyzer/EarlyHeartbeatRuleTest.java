@@ -21,21 +21,18 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
-import tlsattacker.fuzzer.config.ConfigManager;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class EarlyHeartbeatRuleTest {
 

@@ -28,12 +28,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public static final String ATTACK_COMMAND = "fuzzer";
 
     /**
-     * The general folder in which results should be saved
-     */
-    @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
-    private String outputFolder = "./data/";
-
-    /**
      * The folder which contains previously executed Testvectors which were
      * considered as good
      */
@@ -87,18 +81,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private boolean cleanStart = false;
 
     /**
-     * If set the certificates should be tested for compatibility before
-     * starting the fuzzer
-     */
-    @Parameter(names = "-certificate_mutator_selftest", description = "Test that the CertificateMutator is properly configured at start")
-    private boolean certMutatorSelftest = false;
-
-    /**
-     * Temporary Folder which contains currently executed traces
-     */
-    private File tracesFolder;
-
-    /**
      * The action executor config that should be used
      */
     private ActionExecutorTypeConfig actionExecutorConfig;
@@ -115,13 +97,11 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
      * and serverCommandFromFile to server/server.config
      */
     public EvolutionaryFuzzerConfig() {
-        outputFolder = "data/";
+        super();
         setFuzzingMode(true);
         setKeystore("../resources/rsa1024.jks");
         setPassword("password");
         setAlias("alias");
-        this.tracesFolder = new File(outputFolder + "traces/");
-        tracesFolder.mkdirs();
         new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputFolder()).mkdirs();
@@ -161,14 +141,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     public void setArchiveFolder(String archiveFolder) {
         this.archiveFolder = archiveFolder;
-    }
-
-    public File getTracesFolder() {
-        return tracesFolder;
-    }
-
-    public void setTracesFolder(File tracesFolder) {
-        this.tracesFolder = tracesFolder;
     }
 
     public String getCertMutator() {
@@ -227,14 +199,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         this.threads = threads;
     }
 
-    public String getOutputFolder() {
-        return outputFolder;
-    }
-
-    public String getOutputCertificateFolder() {
-        return outputFolder + "certificates/";
-    }
-
     public String getOutputClientCertificateFolder() {
         return configFolder + "certificates/client/";
     }
@@ -243,36 +207,16 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         return configFolder + "certificates/server/";
     }
 
-    public String getOutputFaultyFolder() {
-        return outputFolder + "faulty/";
-    }
-
-    public void setOutputFolder(String outputFolder) {
-        this.outputFolder = outputFolder;
-        this.tracesFolder = new File(outputFolder + "traces/");
-    }
-
     /**
      * Creates the nessecary Folders as specified in the different Paths
      */
     public void createFolders() {
         super.createFolders();
-        File f = new File(outputFolder);
-        f.mkdirs();
-        tracesFolder.mkdirs();// TODO check
         new File(getOutputFaultyFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
 
-    }
-
-    public void setCertMutatorSelftest(boolean certMutatorSelftest) {
-        this.certMutatorSelftest = certMutatorSelftest;
-    }
-
-    public boolean isCertMutatorSelfTest() {
-        return certMutatorSelftest;
     }
 
     private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());

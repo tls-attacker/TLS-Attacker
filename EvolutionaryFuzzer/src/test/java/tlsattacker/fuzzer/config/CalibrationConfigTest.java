@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class CalibrationConfigTest {
 

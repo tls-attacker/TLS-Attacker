@@ -21,7 +21,7 @@ import org.bouncycastle.util.encoders.Base64;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class TestCertificates {
     private static byte[] cert1 = Base64.decode("MIIDXjCCAsegAwIBAgIBBzANBgkqhkiG9w0BAQQFADCBtzELMAkGA1UEBhMCQVUx"

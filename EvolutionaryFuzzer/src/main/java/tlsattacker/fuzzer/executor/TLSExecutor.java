@@ -8,7 +8,6 @@
 package tlsattacker.fuzzer.executor;
 
 import tlsattacker.fuzzer.agent.Agent;
-import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.ServerDoesNotStartException;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -31,13 +30,13 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.Result;
-import tlsattacker.fuzzer.result.ResultContainer;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -48,10 +47,10 @@ import java.util.Collection;
  * for the TLS Protocol. The whole Program is not completely generic in this
  * Fashion designed, but with a little work the Fuzzer can be adapted for other
  * Programs, as long as a new Executor is designed.
- * 
+ *
  * It is also possible to Design a new Executor which executes the
  * Workflowtraces with another Library than TLS-Attacker.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSExecutor extends Executor {
@@ -77,35 +76,61 @@ public class TLSExecutor extends Executor {
     private final Agent agent;
 
     /**
+     * Config object used
+     */
+    private EvolutionaryFuzzerConfig config;
+
+    /**
      * Constructor for the TLSExecutor
-     * 
-     * @param trace
-     *            Trace that the Executor should execute
-     * @param server
-     *            Server on which the Executor should execute the Trace
+     *
+     * @param config Config that should be used
+     * @param testVector TestVector that should be executed
+     * @param server Server on which the Executor should execute the Trace
      * @param agent
      */
-    public TLSExecutor(TestVector testVector, TLSServer server, Agent agent) {
+    public TLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server, Agent agent) {
         this.testVector = testVector;
         this.server = server;
         this.agent = agent;
+        this.config = config;
 
     }
 
     /**
-     * Executes the Trace
+     * Generates a TransportHandler according to the TLSServer and the config
+     *
+     * @param server TLSServer to use
+     * @param config Config to use
+     * @return A newly generated Transporthandler
      */
-    @Override
-    public void run() {
+    private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
+        TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
+                config.getTlsTimeout());
+        try {
+            th.initialize(server.getIp(), server.getPort());
+            return th;
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
+            throw new ConfigurationException("Server not properly configured!");
+        } catch (IOException ex) {
+            throw new ConfigurationException("Unable to initialize the transport handler with: " + server.getIp() + ":"
+                    + server.getPort(), ex);
+        }
+    }
 
+    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
+
+    @Override
+    public Result call() throws Exception {
+        Result result = null;
         try {
             boolean timeout = false;
             ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
             TransportHandler transportHandler = null;
 
             try {
+                //Copy since we need to change values in the config at runtime
+                EvolutionaryFuzzerConfig fc = (EvolutionaryFuzzerConfig) UnoptimizedDeepCopy.copy(config);
                 // Load clientCertificate
-                EvolutionaryFuzzerConfig fc = ConfigManager.getInstance().getConfig();
                 // TODO This can be a problem when running with mutliple threads
                 fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
                 fc.setPassword(testVector.getClientKeyCert().getPassword());
@@ -123,7 +148,7 @@ public class TLSExecutor extends Executor {
                     } catch (ConfigurationException E) {
                         // It may happen that the implementation is not ready
                         // yet
-                        if (time + ConfigManager.getInstance().getConfig().getTimeout() < System.currentTimeMillis()) {
+                        if (time + fc.getBootTimeout() < System.currentTimeMillis()) {
                             LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
                             agent.applicationStop(server);
                             agent.applicationStart(server);
@@ -137,7 +162,7 @@ public class TLSExecutor extends Executor {
                     }
                 }
                 KeyStore ks = KeystoreHandler.loadKeyStore(fc.getKeystore(), fc.getPassword());
-                TlsContext tlsContext = configHandler.initializeTlsContext(ConfigManager.getInstance().getConfig());
+                TlsContext tlsContext = configHandler.initializeTlsContext(fc);
                 tlsContext.setFuzzingMode(true);
                 tlsContext.setKeyStore(ks);
                 tlsContext.setAlias(fc.getAlias());
@@ -167,7 +192,6 @@ public class TLSExecutor extends Executor {
                             testVector.getExecutorType());
                 } else {
                     workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
-
                 }
                 // tlsContext.setServerCertificate(certificate);
                 workflowExecutor.executeWorkflow();
@@ -176,7 +200,7 @@ public class TLSExecutor extends Executor {
             } catch (ServerDoesNotStartException E) {
                 timeout = true; // TODO
             } catch (Throwable E) {
-                File f = new File(ConfigManager.getInstance().getConfig().getOutputFaultyFolder()
+                File f = new File(config.getOutputFaultyFolder()
                         + LogFileIDManager.getInstance().getFilename());
 
                 try {
@@ -191,22 +215,20 @@ public class TLSExecutor extends Executor {
                 if (transportHandler != null) {
                     transportHandler.closeConnection();
                 }
-
                 agent.applicationStop(server);
-                File branchTrace = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath()
+                File branchTrace = new File(config.getTracesFolder().getAbsolutePath()
                         + "/" + server.getID());
                 try {
-                    Result r = agent.collectResults(branchTrace, testVector);
-                    r.setDidTimeout(timeout);
+                    result = agent.collectResults(branchTrace, testVector);
+                    result.setDidTimeout(timeout);
                     branchTrace.delete();
-                    ResultContainer.getInstance().commit(r);
                 } catch (Exception E) {
                     E.printStackTrace();
                 }
                 int id = server.getID();
 
                 // Cleanup
-                File file = new File(ConfigManager.getInstance().getConfig().getTracesFolder().getAbsolutePath() + "/"
+                File file = new File(config.getTracesFolder().getAbsolutePath() + "/"
                         + id);
                 if (file.exists()) {
                     file.delete();
@@ -215,31 +237,6 @@ public class TLSExecutor extends Executor {
         } finally {
             server.release();
         }
-
+        return result;
     }
-
-    /**
-     * Generates a TransportHandler according to the TLSServer and the config
-     * 
-     * @param server
-     *            TLSServer to use
-     * @param config
-     *            Config to use
-     * @return A newly generated Transporthandler
-     */
-    private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
-        TransportHandler th = TransportHandlerFactory.createTransportHandler(config.getTransportHandlerType(),
-                config.getTlsTimeout());
-        try {
-            th.initialize(server.getIp(), server.getPort());
-            return th;
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Server not properly configured!");
-        } catch (IOException ex) {
-            throw new ConfigurationException("Unable to initialize the transport handler with: " + server.getIp() + ":"
-                    + server.getPort(), ex);
-        }
-    }
-
-    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 }

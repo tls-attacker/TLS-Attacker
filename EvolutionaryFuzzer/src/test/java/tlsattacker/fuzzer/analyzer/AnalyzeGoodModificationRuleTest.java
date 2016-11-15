@@ -15,7 +15,6 @@ import tlsattacker.fuzzer.modification.AddMessageModification;
 import tlsattacker.fuzzer.modification.AddRecordModification;
 import tlsattacker.fuzzer.modification.ChangeServerCertificateModification;
 import tlsattacker.fuzzer.modification.DuplicateMessageModification;
-import tlsattacker.fuzzer.modification.ModificationType;
 import tlsattacker.fuzzer.modification.ModifyFieldModification;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -24,14 +23,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
-import de.rub.nds.tlsattacker.wrapper.MutableInt;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,7 +34,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzeGoodModificationRuleTest {
 

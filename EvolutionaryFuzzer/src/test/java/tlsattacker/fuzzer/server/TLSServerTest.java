@@ -13,12 +13,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tlsattacker.fuzzer.agent.AflAgentTest;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSServerTest {
 
@@ -63,6 +64,7 @@ public class TLSServerTest {
         }
         try {
             server = ServerSerializer.read(f);
+            server.setConfig(new EvolutionaryFuzzerConfig());
         } catch (Exception ex) {
             Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
         }

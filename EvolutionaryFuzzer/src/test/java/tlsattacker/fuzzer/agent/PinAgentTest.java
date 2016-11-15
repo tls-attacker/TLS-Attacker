@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.agent;
 
-import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.server.ServerSerializer;
@@ -17,13 +16,11 @@ import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -77,17 +74,17 @@ public class PinAgentTest {
         config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
         config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
-        ConfigManager.getInstance().setConfig(config);
         mut = new UnitTestCertificateMutator();
         pair = mut.getServerCertificateStructure();
-        agent = new PINAgent(pair);
+        agent = new PINAgent(config,pair);
         File f = new File("../resources/EvolutionaryFuzzer/TestServer/normal.config");
         if (!f.exists()) {
             Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
         }
         try {
             server = ServerSerializer.read(f);
-        } catch (Exception ex) {
+            server.setConfig(config);
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         server.occupie();

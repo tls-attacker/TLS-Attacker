@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSActionExecutorTest {
     private TlsContext context;

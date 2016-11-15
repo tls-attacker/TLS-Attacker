@@ -20,7 +20,7 @@ import tlsattacker.fuzzer.config.CalibrationConfig;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class DuplicateMessageModificationTest {
 

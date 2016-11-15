@@ -18,7 +18,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tlsattacker.fuzzer.result.ResultContainer;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 import java.io.FileInputStream;
@@ -30,7 +29,11 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Set;
+import tlsattacker.fuzzer.analyzer.Analyzer;
+import tlsattacker.fuzzer.analyzer.AnalyzerFactory;
+import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
+import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -59,30 +62,55 @@ public class CommandLineController extends Controller {
      * The used ThreadPool for the fuzzer
      */
     private final ExecutorThreadPool pool;
-
+    
+    /**
+     * Analyzer to use
+     */
+    private final Analyzer analyzer;
+    
+    /**
+     * Thread that manages the thread pool
+     */
+    private final Thread poolThread;
+    
+    /**
+     * Thread that analyzes the results
+     */
+    private AnalyzerThread analyzerThread;
+    
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
      *
      * @param config Configuration used by the Controller
+     * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
+     * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
      */
     public CommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
-            IllegalCertificateMutatorException {
+            IllegalCertificateMutatorException,
+            IllegalAnalyzerException {
         super(config);
         ServerManager serverManager = ServerManager.getInstance();
         serverManager.init(config);
-
+        analyzer = AnalyzerFactory.getAnalyzer(config);
         certMutator = CertificateMutatorFactory.getCertificateMutator(config);
         mutator = MutatorFactory.getMutator(certMutator, config);
         int threads = config.getThreads();
         if (threads == -1) {
             threads = serverManager.getNumberOfServers();
         }
-        pool = new ExecutorThreadPool(threads, mutator, config);
-        Thread t = new Thread(pool);
-        t.setName("Executor Thread Pool");
-        t.start();
+        analyzerThread = new AnalyzerThread(analyzer);
+        analyzerThread.setName("Analyzer Thread");
+        pool = new ExecutorThreadPool(threads, mutator, config, analyzerThread);
+        poolThread = new Thread(pool);
+        poolThread.setName("Executor Thread Pool");
+    }
+    
+    public void start()
+    {
+        analyzerThread.start();
+        poolThread.start();
     }
 
     /**
@@ -134,12 +162,7 @@ public class CommandLineController extends Controller {
             }
         } while (pool.hasRunningThreads());
 
-        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-        // fix
-        // rule
-        // analyzer
-
+        BranchTrace trace = analyzer.getBranchTrace();
         PrintWriter writer;
         try {
             writer = new PrintWriter(file, "UTF-8");
@@ -148,9 +171,7 @@ public class CommandLineController extends Controller {
                 writer.println(edge.getSource() + " " + edge.getDestination());
             }
             writer.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
         }
         LOG.log(Level.INFO, "Dump finished");
@@ -172,11 +193,7 @@ public class CommandLineController extends Controller {
             }
         } while (pool.hasRunningThreads());
 
-        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-        // fix
-        // rule
-        // analyzer
+        BranchTrace trace = analyzer.getBranchTrace();
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(file, "UTF-8");
@@ -195,11 +212,7 @@ public class CommandLineController extends Controller {
     }
 
     public void loadGraph(String[] split) {
-        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-        // fix
-        // rule
-        // analyzer
+        BranchTrace trace = analyzer.getBranchTrace();
         if (split.length != 2) {
             LOG.log(Level.INFO, "You need to specify a File to load");
         } else {
@@ -227,11 +240,7 @@ public class CommandLineController extends Controller {
     }
 
     public void saveGraph(String split[]) {
-        BranchTrace trace = (((IsGoodRule) ((RuleAnalyzer) (ResultContainer.getInstance().getAnalyzer()))
-                .getRule(IsGoodRule.class))).getBranchTrace();// TODO
-        // fix
-        // rule
-        // analyzer
+        BranchTrace trace = analyzer.getBranchTrace();
         if (split.length != 2) {
             LOG.log(Level.INFO, "You need to specify a File to Save to");
         } else {
@@ -278,8 +287,7 @@ public class CommandLineController extends Controller {
     }
 
     public void printStatus() {
-        ResultContainer con = ResultContainer.getInstance();
-        System.out.println(con.getAnalyzer().getReport());
+        System.out.println(analyzer.getReport());
     }
 
     /**

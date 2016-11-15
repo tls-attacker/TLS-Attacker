@@ -19,7 +19,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateAdapter extends XmlAdapter<String, Certificate> {
 

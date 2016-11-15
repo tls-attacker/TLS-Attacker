@@ -1,5 +1,9 @@
 package tlsattacker.fuzzer.executor;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.RunnableFuture;
+import tlsattacker.fuzzer.result.Result;
+
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
@@ -15,5 +19,5 @@ package tlsattacker.fuzzer.executor;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Executor implements Runnable {
+public abstract class Executor implements Callable<Result> {
 }

@@ -26,6 +26,12 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
      */
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN, BLIND")
     protected String agent = "AFL";
+    
+    /**
+     * The agent that should be used
+     */
+    @Parameter(names = "-analyzer", description = "The Analyzer that should be used to analyze the Results (Default: rule). Possible: rule")
+    protected String analyzer = "rule";
 
     /**
      * The folder with the configuration files
@@ -59,12 +65,58 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
     private final boolean injectPinChild = true;
 
+    /**
+     * The general folder in which results should be saved
+     */
+    @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
+    private String outputFolder = "./data/";
+    
+    /**
+     * Temporary Folder which contains currently executed traces
+     */
+    private File tracesFolder;
+
+    public FuzzerGeneralConfig() {
+        outputFolder = "data/";
+        this.tracesFolder = new File(outputFolder + "traces/");
+        tracesFolder.mkdirs();
+    }
+
+    public String getAnalyzer() {
+        return analyzer;
+    }
+    
     public boolean getInjectPinChild() {
         return injectPinChild;
     }
 
     public Integer getBootTimeout() {
         return bootTimeout;
+    }
+
+    public File getTracesFolder() {
+        return tracesFolder;
+    }
+
+    public void setTracesFolder(File tracesFolder) {
+        this.tracesFolder = tracesFolder;
+    }
+
+    public String getOutputFolder() {
+        return outputFolder;
+    }
+
+    public String getOutputCertificateFolder() {
+        return outputFolder + "certificates/";
+    }
+    
+    public String getOutputFaultyFolder() {
+        return outputFolder + "faulty/";
+    }
+
+    public void setOutputFolder(String outputFolder) {
+        this.outputFolder = outputFolder;
+        this.tracesFolder = new File(outputFolder + "traces/");
     }
 
     public void setBootTimeout(Integer bootTimeout) {
@@ -111,7 +163,10 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
      * Creates the Folders as specified in in the different Path fields
      */
     public void createFolders() {
-        File f = new File(configFolder);
+        File f = new File(outputFolder);
+        f.mkdirs();
+        tracesFolder.mkdirs();// TODO check
+        f = new File(configFolder);
         f.mkdirs();
         f = new File(getMutatorConfigFolder());
         f.mkdirs();

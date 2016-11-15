@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class TraceTypesConfigTest {
 

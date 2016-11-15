@@ -10,7 +10,7 @@ import org.junit.BeforeClass;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class AFLTest {
 

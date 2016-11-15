@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class BranchTest {
 

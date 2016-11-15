@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.server;
 
-import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -17,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tlsattacker.fuzzer.config.ConfigManager;
 
 /**
  * Manages the different Servers that the fuzzer is configured with.
@@ -39,9 +37,18 @@ public class ServerManager {
      * The List of servers that the Manager keeps track of
      */
     private ArrayList<TLSServer> serverList;
-
+    
+    /**
+     * General Config used
+     */
+    private FuzzerGeneralConfig config;
+    
     private ServerManager() {
         serverList = new ArrayList<>();
+    }
+
+    public FuzzerGeneralConfig getConfig() {
+        return config;
     }
 
     /**
@@ -61,6 +68,7 @@ public class ServerManager {
      *            Config file used to find the correct config folder
      */
     public void init(FuzzerGeneralConfig config) {
+        this.config = config;
         File file = new File(config.getServerCommandFromFile());
         if (!file.exists()) {
             LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
@@ -94,6 +102,10 @@ public class ServerManager {
                 System.exit(-1);
             }
         }
+        for(TLSServer server : serverList)
+        {
+            server.setConfig(config);
+        }
 
     }
 
@@ -120,7 +132,7 @@ public class ServerManager {
                 return server;
             }
             i++;
-            if (startSearch < System.currentTimeMillis() - ConfigManager.getInstance().getConfig().getBootTimeout()
+            if (startSearch < System.currentTimeMillis() - config.getBootTimeout()
                     + 1000) {
                 // Searched longer than a minute and didnt find a free Server
                 throw new RuntimeException(

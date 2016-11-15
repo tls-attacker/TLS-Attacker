@@ -22,12 +22,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.Result;
 
 /**
  * An analyzer implementation which uses a set of Rules to find interesting
  * TestVectors.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {
@@ -47,11 +49,17 @@ public class RuleAnalyzer extends Analyzer {
      */
     private final EvolutionaryFuzzerConfig config;
 
+    /**
+     * The IsGoodRule
+     */
+    private IsGoodRule goodRule;
+
     public RuleAnalyzer(EvolutionaryFuzzerConfig config) {
         this.config = config;
-        ruleList = new LinkedList<Rule>();
+        ruleList = new LinkedList<>();
         // THE IS GOOD RULE SHOULD ALWAYS BE EXECUTED ON THE START
-        ruleList.add(new IsGoodRule(config));
+        goodRule = new IsGoodRule(config);
+        ruleList.add(goodRule);
         ruleList.add(new FindAlertsRule(config));
         ruleList.add(new IsCrashRule(config));
         ruleList.add(new IsTimeoutRule(config));
@@ -70,9 +78,8 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Returns a rule from the Rule list
-     * 
-     * @param tempClass
-     *            Class of the rule to return
+     *
+     * @param tempClass Class of the rule to return
      * @return First Rule from the rule list of matching class
      */
     public Rule getRule(Class tempClass) {
@@ -86,7 +93,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Analyzes a Result by trying to apply all rules to it
-     * 
+     *
      * @param result
      */
     public void analyze(Result result) {
@@ -101,7 +108,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Generates a status report
-     * 
+     *
      * @return
      */
     public String getReport() {
@@ -115,6 +122,16 @@ public class RuleAnalyzer extends Analyzer {
         return builder.toString();
     }
 
-    private static final Logger LOG = Logger.getLogger(RuleAnalyzer.class.getName());
+    @Override
+    public BranchTrace getBranchTrace() {
+        if (goodRule.isActive()) {
+            return goodRule.getBranchTrace();
+        }
+        else
+        {
+            return new BranchTrace();
+        }
+    }
 
+    private static final Logger LOG = Logger.getLogger(RuleAnalyzer.class.getName());
 }

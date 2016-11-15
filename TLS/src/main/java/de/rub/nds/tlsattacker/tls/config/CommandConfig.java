@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ import java.util.List;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public abstract class CommandConfig {
+public abstract class CommandConfig implements Serializable{
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints help")
     protected boolean help;

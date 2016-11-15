@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
@@ -23,11 +22,11 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.ConfigManager;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.config.mutator.certificate.FixedCertificateMutatorConfig;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
@@ -38,6 +37,7 @@ import tlsattacker.fuzzer.server.TLSServer;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FixedCertificateMutator extends CertificateMutator {
 
     /**
@@ -66,20 +66,26 @@ public class FixedCertificateMutator extends CertificateMutator {
     private Random r;
 
     /**
+     * EvolutionaryFuzzerConfig used 
+     */
+    private final FuzzerGeneralConfig generalConfig;
+    
+    /**
      * The name of the config file //TODO should perhaps not be here
      */
     private final String configFileName = "fixed_cert.config";
 
-    public FixedCertificateMutator() {
-        EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
-        File f = new File(evoConfig.getCertificateMutatorConfigFolder() + configFileName);
+    public FixedCertificateMutator(FuzzerGeneralConfig generalConfig) {
+        this.generalConfig = generalConfig;
+        File f = new File(generalConfig.getCertificateMutatorConfigFolder() + configFileName);
         if (f.exists()) {
             config = JAXB.unmarshal(f, FixedCertificateMutatorConfig.class);
         } else {
             LOG.log(Level.FINE, "No ConfigFile found:" + configFileName);
         }
         if (config == null) {
-            config = new FixedCertificateMutatorConfig();
+            config = new FixedCertificateMutatorConfig(generalConfig);
+            f.mkdirs();
             config.serialize(f);
         }
         this.clientCertList = config.getClientCertificates();
@@ -90,10 +96,6 @@ public class FixedCertificateMutator extends CertificateMutator {
             throw new ConfigurationException("CertificateMutator has not enough Certificates");
         }
         r = new Random();
-        if (ConfigManager.getInstance().getConfig().isCertMutatorSelfTest()) {
-            selfTest();
-            ConfigManager.getInstance().getConfig().setCertMutatorSelftest(false);
-        }
     }
 
     /**
@@ -107,7 +109,7 @@ public class FixedCertificateMutator extends CertificateMutator {
         if (config.isAutofix()) {
             config.setClientCertificates(clientCertList);
             config.setServerCertificates(serverCertList);
-            File f = new File(ConfigManager.getInstance().getConfig().getCertificateMutatorConfigFolder()
+            File f = new File(generalConfig.getCertificateMutatorConfigFolder()
                     + configFileName);
             if (f.exists()) {
                 f.delete();

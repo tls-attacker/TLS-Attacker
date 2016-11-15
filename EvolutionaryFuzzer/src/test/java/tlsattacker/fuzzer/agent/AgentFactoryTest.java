@@ -21,7 +21,7 @@ import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class AgentFactoryTest {
 

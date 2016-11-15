@@ -23,7 +23,7 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientCertificateStructureTest {
 

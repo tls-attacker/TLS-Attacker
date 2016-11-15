@@ -19,9 +19,11 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.ConfigManager;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
@@ -50,25 +52,35 @@ public class FixedCertificateMutatorConfig implements Serializable {
      */
     private List<ServerCertificateStructure> serverCertificates;
 
-    public FixedCertificateMutatorConfig() {
+    /**
+     * Config object used
+     */
+    @XmlTransient
+    private FuzzerGeneralConfig config;
+    
+    public FixedCertificateMutatorConfig(FuzzerGeneralConfig config) {
+        this.config = config;
         clientCertificates = new ArrayList<>();
         // Initialize the Config File with some certificates if we can find them
-        new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()).mkdirs();
-        File jksFile = new File(ConfigManager.getInstance().getConfig().getOutputClientCertificateFolder()
-                + "rsa1024.jks");
+        new File("conifg/certificates/client/").mkdirs();
+        File jksFile = new File("conifg/certificates/client/rsa1024.jks");
         if (jksFile.exists()) {
             clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
         }
         serverCertificates = new ArrayList<>();
-        File keyFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-                + "dsakey.pem");
-        File certFile = new File(ConfigManager.getInstance().getConfig().getOutputServerCertificateFolder()
-                + "dsacert.pem");
+        File keyFile = new File("conifg/certificates/server/dsakey.pem");
+        File certFile = new File("conifg/certificates/server/dsacert.pem");
         if (keyFile.exists() && certFile.exists()) {
             serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
         }
     }
 
+    private FixedCertificateMutatorConfig() {
+        //Private Constructor for JAXB magic
+    }
+    
+    
+    
     /**
      * Serializes this config to a File
      * 

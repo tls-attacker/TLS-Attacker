@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.server.TLSServer;
@@ -22,7 +21,6 @@ import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.junit.After;
@@ -33,7 +31,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class AflAgentTest {
 
@@ -41,6 +39,7 @@ public class AflAgentTest {
      *
      */
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
+    
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -75,7 +74,6 @@ public class AflAgentTest {
      */
     @After
     public void tearDown() {
-        ConfigManager.getInstance().setConfig(new EvolutionaryFuzzerConfig());
         server.stop();
         server = null;
     }
@@ -89,7 +87,6 @@ public class AflAgentTest {
         config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
         config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
-        ConfigManager.getInstance().setConfig(config);
         mut = new UnitTestCertificateMutator();
         pair = mut.getServerCertificateStructure();
         agent = new AFLAgent(pair);
@@ -99,6 +96,7 @@ public class AflAgentTest {
         }
         try {
             server = ServerSerializer.read(f);
+            server.setConfig(config);
         } catch (Exception ex) {
             Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
         }

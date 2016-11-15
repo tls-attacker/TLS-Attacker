@@ -20,11 +20,12 @@ import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
 /**
  * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
@@ -93,16 +94,22 @@ public class PINAgent extends Agent {
     private final String prefix;
 
     /**
+     * Config object used
+     */
+    private FuzzerGeneralConfig config;
+    
+    /**
      * Default Constructor
      * 
      * @param keypair
      */
-    public PINAgent(ServerCertificateStructure keypair) {
+    public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
         super(keypair);
+        this.config = config;
         timeout = false;
         crash = false;
         // TODO put into config File
-        if (ConfigManager.getInstance().getConfig().getInjectPinChild()) {
+        if (config.getInjectPinChild()) {
             prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
         } else {
             prefix = "PIN/pin -log_inline -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";

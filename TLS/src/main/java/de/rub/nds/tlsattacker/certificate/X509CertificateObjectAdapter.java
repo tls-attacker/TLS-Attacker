@@ -21,7 +21,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class X509CertificateObjectAdapter extends XmlAdapter<String, X509CertificateObject> {
 

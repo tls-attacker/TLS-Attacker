@@ -41,17 +41,20 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBException;
+import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
  * responsible for the continious exectution of new TestVectors.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ExecutorThreadPool implements Runnable {
@@ -88,19 +91,24 @@ public class ExecutorThreadPool implements Runnable {
     private final EvolutionaryFuzzerConfig config;
 
     /**
-     * Constructor for the ExecutorThreadPool
-     * 
-     * @param poolSize
-     *            Number of Threads the pool Manages
-     * @param mutator
-     *            Mutator which is used for the Generation of new
-     *            FuzzingVectors.
-     * @param config
+     * The AnalyzerThread that is used to analyze the Results
      */
-    public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config) {
+    private final AnalyzerThread analyzerThread;
+    
+    /**
+     * Constructor for the ExecutorThreadPool
+     *
+     * @param poolSize Number of Threads the pool Manages
+     * @param mutator Mutator which is used for the Generation of new
+     * FuzzingVectors.
+     * @param config
+     * @param analyzerThread The analyzer Thread to commit results to
+     */
+    public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config, AnalyzerThread analyzerThread) {
         this.config = config;
         this.poolSize = poolSize;
         this.mutator = mutator;
+        this.analyzerThread = analyzerThread;
         BlockingQueue workQueue = new ArrayBlockingQueue<>(poolSize * 5);
 
         ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Executor-%d").setDaemon(false).build();
@@ -126,7 +134,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Generates a seed for the Fuzzer with normal TLS/DTLS Handshakes
-     * 
+     *
      * @return A list of generated TestVectors
      */
     private List<TestVector> generateSeed() {
@@ -166,7 +174,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Returns the Number of executed FuzzingVectors
-     * 
+     *
      * @return Number of executed FuzzingVectors
      */
     public long getRuns() {
@@ -198,8 +206,9 @@ public class ExecutorThreadPool implements Runnable {
                         vector.getTrace().makeGeneric();
 
                         Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
-                        Runnable worker = new TLSExecutor(vector, server, agent);
-                        executor.submit(worker);
+                        Callable worker = new TLSExecutor(config, vector, server, agent);
+                        Future future = executor.submit(worker);
+                        analyzerThread.addToAnalyzeQueque(future);
                         runs++;
 
                     } else {
@@ -231,8 +240,9 @@ public class ExecutorThreadPool implements Runnable {
                         server = ServerManager.getInstance().getFreeServer();
 
                         Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
-                        Runnable worker = new TLSExecutor(vector, server, agent);
-                        executor.submit(worker);
+                        Callable worker = new TLSExecutor(config ,vector, server, agent);
+                        Future future = executor.submit(worker);
+                        analyzerThread.addToAnalyzeQueque(future);
                         runs++;
 
                     } else {
@@ -256,7 +266,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Returns if the ThreadPool is currently stopped.
-     * 
+     *
      * @return if the ThreadPool is currently stopped
      */
     public synchronized boolean isStopped() {
@@ -265,7 +275,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Starts or stops the Threadpool
-     * 
+     *
      * @param stopped
      */
     public synchronized void setStopped(boolean stopped) {
@@ -274,7 +284,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Returns true if atleast one thread is still running
-     * 
+     *
      * @return True if atleast one thread is still running
      */
     public synchronized boolean hasRunningThreads() {

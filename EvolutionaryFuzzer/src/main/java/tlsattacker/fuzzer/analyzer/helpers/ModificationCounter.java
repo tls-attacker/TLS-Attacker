@@ -13,7 +13,7 @@ import tlsattacker.fuzzer.modification.ModificationType;
 /**
  * A helper helper class for the ModificationRules to help counting.
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class ModificationCounter {
 

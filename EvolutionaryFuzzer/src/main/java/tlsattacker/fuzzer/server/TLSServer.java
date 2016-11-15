@@ -7,7 +7,6 @@
  */
 package tlsattacker.fuzzer.server;
 
-import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.exceptions.ServerDoesNotStartException;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import java.io.File;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
 /**
  * This Class represents a single Instance of an Implementation. The
@@ -73,14 +73,20 @@ public class TLSServer {
      * The OutPutStream reader
      */
     private StreamGobbler outputGobbler;
-    // our end
 
     /**
      * The ProcessMonitor to monitor for the process end
      */
     private ProcessMonitor procmon = null;
+    
+    /**
+     * FuzzerConfig to use
+     */
+    private FuzzerGeneralConfig config = null;
 
+    //TODO akward constructor
     public TLSServer() {
+        config = null;
         ip = null;
         port = 0;
         restartServerCommand = null;
@@ -90,6 +96,7 @@ public class TLSServer {
      * Creates a new TLSServer. TLSServers should be used in the
      * TLSServerManager
      * 
+     * @param config The Config used
      * @param ip
      *            The IP of the Implementation
      * @param port
@@ -101,7 +108,8 @@ public class TLSServer {
      *            Server is fully started
      * @param killServerCommand
      */
-    public TLSServer(String ip, int port, String restartServerCommand, String accepted, String killServerCommand) {
+    public TLSServer(FuzzerGeneralConfig config, String ip, int port, String restartServerCommand, String accepted, String killServerCommand) {
+        this.config = config;
         this.ip = ip;
         this.port = port;
         this.restartServerCommand = restartServerCommand;
@@ -227,14 +235,14 @@ public class TLSServer {
                 stop();
             }
             try {
-                if (ConfigManager.getInstance().getConfig().isRandomPort()) {
+                if (config.isRandomPort()) {
                     Random r = new Random();
                     port = 1024 + r.nextInt(4096);
 
                 }
                 id = LogFileIDManager.getInstance().getID();
                 String command = (prefix + restartServerCommand).replace("[id]", "" + id);
-                command = command.replace("[output]", ConfigManager.getInstance().getConfig().getTracesFolder()
+                command = command.replace("[output]", config.getTracesFolder()
                         .getAbsolutePath());
                 command = command.replace("[port]", "" + port);
                 command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
@@ -261,7 +269,7 @@ public class TLSServer {
                     } catch (InterruptedException ex) {
                         Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (System.currentTimeMillis() - time >= ConfigManager.getInstance().getConfig().getBootTimeout()) {
+                    if (System.currentTimeMillis() - time >= config.getBootTimeout()) {
                         throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
                     }
                 }
@@ -324,16 +332,24 @@ public class TLSServer {
             if (p != null) {
                 p.destroy();
                 p.waitFor();
-                if (ConfigManager.getInstance().getConfig().isUseKill()) {
+                if (config.isUseKill()) {
                     Runtime rt = Runtime.getRuntime();
                     p = rt.exec(killServerCommand);
                     p.waitFor();
                 }
             }
-        } catch (Exception E) {
+        } catch (IOException | InterruptedException E) {
             E.printStackTrace();
         }
     }
 
+    public FuzzerGeneralConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(FuzzerGeneralConfig config) {
+        this.config = config;
+    }
+    
     private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 }

@@ -14,13 +14,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
+import static java.util.concurrent.Executors.callable;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
 import tlsattacker.fuzzer.agent.AgentFactory;
 import tlsattacker.fuzzer.calibration.TimeoutCalibrator;
 import tlsattacker.fuzzer.config.CalibrationConfig;
-import tlsattacker.fuzzer.config.ConfigManager;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.ExecuteFaultyConfig;
 import tlsattacker.fuzzer.config.ServerConfig;
@@ -28,11 +29,15 @@ import tlsattacker.fuzzer.config.TestCrashesConfig;
 import tlsattacker.fuzzer.config.TraceTypesConfig;
 import tlsattacker.fuzzer.controller.CommandLineController;
 import tlsattacker.fuzzer.controller.Controller;
+import tlsattacker.fuzzer.controller.ControllerFactory;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
+import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
+import tlsattacker.fuzzer.exceptions.IllegalControllerException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.executor.TLSExecutor;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
+import tlsattacker.fuzzer.result.Result;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.server.TLSServer;
@@ -46,22 +51,21 @@ import weka.core.Utils;
 
 /**
  * Tha main class which parses the commands passed to the fuzzer and starts it
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Main {
 
     /**
      * Main function which Starts the fuzzer
-     * 
-     * @param args
-     *            Arguments which are parsed
+     *
+     * @param args Arguments which are parsed
      */
     public static void main(String args[]) throws IllegalAgentException {
         LOG.log(Level.FINE, Utils.arrayToString(args));
         GeneralConfig generalConfig = new GeneralConfig();
 
-        EvolutionaryFuzzerConfig evoConfig = ConfigManager.getInstance().getConfig();
+        EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
         ServerConfig serverConfig = new ServerConfig();
         TraceTypesConfig traceTypesConfig = new TraceTypesConfig();
         ExecuteFaultyConfig faultyConfig = new ExecuteFaultyConfig();
@@ -90,13 +94,17 @@ public class Main {
         switch (jc.getParsedCommand()) {
             case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
                 try {
-                    Controller controller = new CommandLineController(evoConfig);
+                    Controller controller = ControllerFactory.getController(evoConfig);
                     controller.startFuzzer();
                     controller.startInterface();
                 } catch (IllegalCertificateMutatorException ex) {
                     LOG.info("Unknown Certificate Mutator. Aborting...");
                 } catch (IllegalMutatorException ex) {
                     LOG.info("Unknown Mutator. Aborting...");
+                } catch (IllegalAnalyzerException ex) {
+                    LOG.info("Unknown Analyzer. Aborting...");
+                } catch (IllegalControllerException ex) {
+                    LOG.info("Unknown Controller. Aborting...");
                 }
                 break;
             case "tracetypes":
@@ -118,7 +126,6 @@ public class Main {
                 }
                 break;
             case "execute-faulty":
-                ConfigManager.getInstance().setConfig(faultyConfig);
                 ServerManager manager = ServerManager.getInstance();
                 manager.init(faultyConfig);
                 f = new File(faultyConfig.getOutputFaultyFolder());
@@ -127,16 +134,17 @@ public class Main {
                     LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
                     vector.getTrace().reset();
                     vector.getTrace().makeGeneric();
-                    TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
-                            AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
-                    Thread t = new Thread(executor);
+                    TLSExecutor executor = new TLSExecutor(faultyConfig, vector, ServerManager.getInstance().getFreeServer(),
+                            AgentFactory.generateAgent(faultyConfig, vector.getServerKeyCert()));
+                    FutureTask<Result> futureTask = new FutureTask<>(executor);
+                    Thread t = new Thread(futureTask);
                     t.start();
                 }
                 break;
             case "new-server":
-                TLSServer server = new TLSServer(serverConfig.getIp(), serverConfig.getPort(),
+                TLSServer server = new TLSServer(null, serverConfig.getIp(), serverConfig.getPort(),
                         serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand());
-                {
+                 {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
                         LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
@@ -155,11 +163,10 @@ public class Main {
                 break;
             case "test-certificates":
                 ServerManager.getInstance().init(calibrationConfig);
-                FixedCertificateMutator mutator = new FixedCertificateMutator();
+                FixedCertificateMutator mutator = new FixedCertificateMutator(calibrationConfig);
                 mutator.selfTest();
                 break;
             case "test-crashes":
-                ConfigManager.getInstance().setConfig(testCrashedConfig);
                 manager = ServerManager.getInstance();
                 manager.init(testCrashedConfig);
                 f = new File(testCrashedConfig.getCrashFolder());
@@ -169,9 +176,10 @@ public class Main {
                     for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
                         vector.getTrace().reset();
                         vector.getTrace().makeGeneric();
-                        TLSExecutor executor = new TLSExecutor(vector, ServerManager.getInstance().getFreeServer(),
+                        TLSExecutor executor = new TLSExecutor(testCrashedConfig, vector, ServerManager.getInstance().getFreeServer(),
                                 AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert()));
-                        Thread t = new Thread(executor);
+                        FutureTask<Result> futureTask = new FutureTask<>(executor);
+                        Thread t = new Thread(futureTask);
                         t.start();
                     }
                 }

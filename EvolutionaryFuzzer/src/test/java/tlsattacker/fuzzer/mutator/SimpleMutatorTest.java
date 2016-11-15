@@ -19,7 +19,7 @@ import tlsattacker.fuzzer.mutator.SimpleMutator;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class SimpleMutatorTest {
 
@@ -68,7 +68,7 @@ public class SimpleMutatorTest {
     @Test
     public void testMutation() {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
-        SimpleMutator mutator = new SimpleMutator(config, new FixedCertificateMutator());
+        SimpleMutator mutator = new SimpleMutator(config, new FixedCertificateMutator(config));
         mutator.getNewMutation();
     }
 }
