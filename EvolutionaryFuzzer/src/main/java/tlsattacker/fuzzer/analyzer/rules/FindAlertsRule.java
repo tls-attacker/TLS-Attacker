@@ -85,7 +85,7 @@ public class FindAlertsRule extends Rule {
      * @return
      */
     @Override
-    public boolean applies(Result result) {
+    public synchronized boolean applies(Result result) {
         WorkflowTrace trace = result.getVector().getTrace();
         List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
         if (!messages.isEmpty()) {
@@ -116,7 +116,7 @@ public class FindAlertsRule extends Rule {
      *            Result to analyze
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         WorkflowTrace trace = result.getVector().getTrace();
         List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
         StringBuilder containsAlerts = new StringBuilder("");
@@ -160,7 +160,7 @@ public class FindAlertsRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
 
         StringBuilder builder = new StringBuilder("Alerts found:" + found + "\n");
         for (int i = 0; i < Byte.MAX_VALUE; i++) {

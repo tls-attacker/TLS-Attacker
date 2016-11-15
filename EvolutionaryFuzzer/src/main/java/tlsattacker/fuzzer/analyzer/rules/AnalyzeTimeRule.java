@@ -107,7 +107,7 @@ public class AnalyzeTimeRule extends Rule {
      *            Result to analyze
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         numberExecutedTraces++;
         executedTimeTotal += (result.getStopTime() - result.getStartTime());
         if ((result.getStopTime() - result.getStartTime()) > slowestTime) {
@@ -136,7 +136,7 @@ public class AnalyzeTimeRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
         if (numberExecutedTraces > 0) {
             return "Executed: " + numberExecutedTraces + " Highest:" + decimalFormat.format(slowestTime / 1000)
                     + "s Lowest:" + decimalFormat.format(fastestTime / 1000) + "s Medium:"
@@ -152,19 +152,19 @@ public class AnalyzeTimeRule extends Rule {
         return config;
     }
 
-    public double getExecutedTimeTotal() {
+    public synchronized double getExecutedTimeTotal() {
         return executedTimeTotal;
     }
 
-    public int getNumberExecutedTraces() {
+    public synchronized int getNumberExecutedTraces() {
         return numberExecutedTraces;
     }
 
-    public double getSlowestTime() {
+    public synchronized double getSlowestTime() {
         return slowestTime;
     }
 
-    public double getFastestTime() {
+    public synchronized double getFastestTime() {
         return fastestTime;
     }
 

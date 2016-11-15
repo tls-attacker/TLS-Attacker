@@ -81,7 +81,7 @@ public class EarlyHeartbeatRule extends Rule {
      *            Result to store
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         found++;
         File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
         try {
@@ -114,7 +114,7 @@ public class EarlyHeartbeatRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
         if (found > 0) {
             return "Found " + found + " Traces with EarlyHeartBeat messages from the Server\n";
         } else {

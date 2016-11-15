@@ -92,7 +92,7 @@ public class IsGoodRule extends Rule {
      * @return True if the Rule contains new Codeblocks or Edges
      */
     @Override
-    public boolean applies(Result result) {
+    public synchronized boolean applies(Result result) {
         MergeResult r = null;
         r = branch.merge(result.getBranchTrace());
 
@@ -114,7 +114,7 @@ public class IsGoodRule extends Rule {
      *            Result to analyze
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         // Write statistics
         outWriter.println(System.currentTimeMillis() - lastGoodTimestamp);
         outWriter.flush();
@@ -136,7 +136,7 @@ public class IsGoodRule extends Rule {
         result.getVector().getTrace().makeGeneric();
     }
 
-    public BranchTrace getBranchTrace() {
+    public synchronized BranchTrace getBranchTrace() {
         return branch;
     }
 
@@ -157,7 +157,7 @@ public class IsGoodRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
         return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
                 + " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
     }

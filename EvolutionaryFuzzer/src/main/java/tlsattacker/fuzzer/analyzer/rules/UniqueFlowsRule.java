@@ -75,7 +75,7 @@ public class UniqueFlowsRule extends Rule {
      * @return True if the WorkflowTracetype has not yet been seen by this rule
      */
     @Override
-    public boolean applies(Result result) {
+    public synchronized boolean applies(Result result) {
         WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
                 ConnectionEnd.CLIENT);
         type.clean();
@@ -90,7 +90,7 @@ public class UniqueFlowsRule extends Rule {
      *            Result to analyze
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
 
         WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
                 ConnectionEnd.CLIENT);
@@ -129,7 +129,7 @@ public class UniqueFlowsRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
         return "WorkflowTraceTypes observed:" + typeSet.size() + " WorkFlowTraceTypes found:" + found + "\n";
     }
 

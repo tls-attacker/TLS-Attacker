@@ -76,7 +76,7 @@ public class AnalyzeModificationRule extends Rule {
      * @param result
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         executedTraces++;
         for (Modification mod : result.getVector().getModificationList()) {
             ModificationCounter counter = getCounter(mod);
@@ -98,7 +98,7 @@ public class AnalyzeModificationRule extends Rule {
      *            Type of counter to search for
      * @return Found counter or null
      */
-    public ModificationCounter getCounter(Modification type) {
+    public synchronized ModificationCounter getCounter(Modification type) {
         for (ModificationCounter counter : counterList) {
             if (type != null && counter.getType().equals(type.getType())) {
                 return counter;
@@ -123,7 +123,7 @@ public class AnalyzeModificationRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
         if (executedTraces > 0) {
             StringBuilder b = new StringBuilder("Modifications applied:\n");
             for (ModificationCounter counter : counterList) {
@@ -135,11 +135,11 @@ public class AnalyzeModificationRule extends Rule {
         }
     }
 
-    public long getExecutedTraces() {
+    public synchronized long getExecutedTraces() {
         return executedTraces;
     }
 
-    public List<ModificationCounter> getCounterList() {
+    public synchronized List<ModificationCounter> getCounterList() {
         return counterList;
     }
 

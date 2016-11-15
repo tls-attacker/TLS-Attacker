@@ -139,7 +139,7 @@ public class ProtocolVersionRule extends Rule {
      *            Result to analyze
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         WorkflowTrace trace = result.getVector().getTrace();
         List<HandshakeMessage> sentClientHellos = trace
                 .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
@@ -185,7 +185,7 @@ public class ProtocolVersionRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
 
         if (found > 0) {
             return "Found " + found + " Traces which had unusual Protocolversions\n";

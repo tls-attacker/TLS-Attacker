@@ -67,7 +67,7 @@ public class IsCrashRule extends Rule {
      *            Result to analyze
      */
     @Override
-    public void onApply(Result result) {
+    public synchronized void onApply(Result result) {
         found++;
         File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
         try {
@@ -97,7 +97,7 @@ public class IsCrashRule extends Rule {
      * @return
      */
     @Override
-    public String report() {
+    public synchronized String report() {
         if (found > 0) {
             return "Found " + found + " Traces which crashed the Server\n";
         } else {

@@ -47,6 +47,7 @@ public class AnalyzerThread extends Thread {
      */
     public synchronized void addToAnalyzeQueque(Future result) {
         workList.add(result);
+        notifyAll();
     }
 
     @Override
@@ -72,7 +73,10 @@ public class AnalyzerThread extends Thread {
                 }
             } else {
                 try {
-                    sleep(5);
+                    synchronized(this)
+                    {
+                        wait();
+                    }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AnalyzerThread.class.getName()).log(Level.SEVERE, null, ex);
                 }
