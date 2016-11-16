@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -33,8 +34,9 @@ public class BlindAgent extends Agent {
     /**
      * Default Constructor
      *
-     * @param keypair Server certificate key pair the agent should start the
-     * server with.
+     * @param keypair
+     *            Server certificate key pair the agent should start the server
+     *            with.
      */
     public BlindAgent(ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
@@ -73,12 +75,12 @@ public class BlindAgent extends Agent {
 
         BranchTrace t = new BranchTrace();
 
-        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-                .getFilename(), server);
+        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
+                .getInstance().getFilename(), server);
 
         return result;
     }
-    
+
     /**
      *
      */

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -111,7 +112,7 @@ public class AFLAgent extends Agent {
      *            The key certificate pair the server should be started with
      */
     public AFLAgent(ServerCertificateStructure keypair, TLSServer server) {
-        super(keypair,server);
+        super(keypair, server);
         timeout = false;
         crash = false;
     }
@@ -155,8 +156,8 @@ public class AFLAgent extends Agent {
             }
             BranchTrace t = getBranchTrace(branchTrace);
 
-            AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-                    .getFilename(),server);
+            AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
+                    .getInstance().getFilename(), server);
 
             return result;
         } else {

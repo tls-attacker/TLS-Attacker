@@ -24,4 +24,3 @@ public class IllegalExecutorException extends Exception {
     private static final Logger LOG = Logger.getLogger(IllegalExecutorException.class.getName());
 
 }
-

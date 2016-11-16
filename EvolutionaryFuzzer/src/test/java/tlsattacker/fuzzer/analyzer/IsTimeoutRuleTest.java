@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer;
 
@@ -38,9 +39,9 @@ public class IsTimeoutRuleTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     private EvolutionaryFuzzerConfig config;
-    
+
     /**
      *
      */
@@ -64,11 +65,11 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testApplys() {
-        AgentResult result = new AgentResult(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit3.test", null);
+        AgentResult result = new AgentResult(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(),
+                null, null, ExecutorType.TLS, null), "unit3.test", null);
         assertTrue(rule.applies(result));
-        result = new AgentResult(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit3.test", null);
+        result = new AgentResult(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit3.test", null);
         assertFalse(rule.applies(result));
 
     }
@@ -78,8 +79,8 @@ public class IsTimeoutRuleTest {
      */
     @Test
     public void testOnApply() {
-        AgentResult result = new AgentResult(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit3.test", null);
+        AgentResult result = new AgentResult(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(),
+                null, null, ExecutorType.TLS, null), "unit3.test", null);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
 
@@ -99,8 +100,8 @@ public class IsTimeoutRuleTest {
     @Test
     public void testReport() {
         assertNull(rule.report());
-        AgentResult result = new AgentResult(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit3.test", null);
+        AgentResult result = new AgentResult(false, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(),
+                null, null, ExecutorType.TLS, null), "unit3.test", null);
         rule.onApply(result);
         assertNotNull(rule.report());
     }

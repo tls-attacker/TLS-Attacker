@@ -36,7 +36,7 @@ public class CommandLineControllerTest {
         config.setAgent(BlindAgent.optionName);
         config.setMutator(SimpleMutator.optionName);
         config.setCertMutator(FixedCertificateMutator.optionName);
-        //controller = new CommandLineController(config);
+        // controller = new CommandLineController(config);
     }
 
     /**

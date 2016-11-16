@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.server;
 
@@ -88,13 +89,13 @@ public class TLSServer {
      * The ProcessMonitor to monitor for the process end
      */
     private ProcessMonitor procmon = null;
-    
+
     /**
      * FuzzerConfig to use
      */
     private FuzzerGeneralConfig config = null;
 
-    //TODO akward constructor
+    // TODO akward constructor
     public TLSServer() {
         config = null;
         ip = null;
@@ -106,7 +107,8 @@ public class TLSServer {
      * Creates a new TLSServer. TLSServers should be used in the
      * TLSServerManager
      * 
-     * @param config The Config used
+     * @param config
+     *            The Config used
      * @param ip
      *            The IP of the Implementation
      * @param port
@@ -118,7 +120,8 @@ public class TLSServer {
      *            Server is fully started
      * @param killServerCommand
      */
-    public TLSServer(FuzzerGeneralConfig config, String ip, int port, String restartServerCommand, String accepted, String killServerCommand, String mayorVersion, String minorVersion) {
+    public TLSServer(FuzzerGeneralConfig config, String ip, int port, String restartServerCommand, String accepted,
+            String killServerCommand, String mayorVersion, String minorVersion) {
         this.config = config;
         this.ip = ip;
         this.port = port;
@@ -144,7 +147,7 @@ public class TLSServer {
     public void setMinorVersion(String minorVersion) {
         this.minorVersion = minorVersion;
     }
-    
+
     public String getKillServerCommand() {
         return killServerCommand;
     }
@@ -270,8 +273,7 @@ public class TLSServer {
                 }
                 id = LogFileIDManager.getInstance().getID();
                 String command = (prefix + restartServerCommand).replace("[id]", "" + id);
-                command = command.replace("[output]", config.getTracesFolder()
-                        .getAbsolutePath());
+                command = command.replace("[output]", config.getTracesFolder().getAbsolutePath());
                 command = command.replace("[port]", "" + port);
                 command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
                 command = command.replace("[key]", "" + keyFile.getAbsolutePath());
@@ -378,6 +380,6 @@ public class TLSServer {
     public void setConfig(FuzzerGeneralConfig config) {
         this.config = config;
     }
-    
+
     private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 }

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
@@ -88,9 +89,7 @@ public class TLSActionExecutor extends ActionExecutor {
             receivedList = handleProtocolMessagesFromPeer(messages);
         } catch (IOException ex) {
             // TODO
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             LOG.log(Level.INFO, "Uncaught exception while parsing the received Messages", ex);
         }
         return receivedList;

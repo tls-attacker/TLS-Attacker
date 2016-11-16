@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.executor;
 
@@ -90,8 +91,10 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config Config that should be used
-     * @param testVector TestVector that should be executed
+     * @param config
+     *            Config that should be used
+     * @param testVector
+     *            TestVector that should be executed
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException {
@@ -100,27 +103,33 @@ public class SingleTLSExecutor extends Executor {
         server = ServerManager.getInstance().getFreeServer();
         agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
-    
+
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config Config that should be used
-     * @param testVector TestVector that should be executed
-     * @param server Server on which the Executor should execute the Trace
+     * @param config
+     *            Config that should be used
+     * @param testVector
+     *            TestVector that should be executed
+     * @param server
+     *            Server on which the Executor should execute the Trace
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
-    public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server) throws IllegalAgentException {
+    public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server)
+            throws IllegalAgentException {
         this.testVector = testVector;
         this.config = config;
         this.server = server;
         agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
-    
+
     /**
      * Generates a TransportHandler according to the TLSServer and the config
      *
-     * @param server TLSServer to use
-     * @param config Config to use
+     * @param server
+     *            TLSServer to use
+     * @param config
+     *            Config to use
      * @return A newly generated Transporthandler
      */
     private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
@@ -148,7 +157,7 @@ public class SingleTLSExecutor extends Executor {
             TransportHandler transportHandler = null;
 
             try {
-                //Copy since we need to change values in the config at runtime
+                // Copy since we need to change values in the config at runtime
                 EvolutionaryFuzzerConfig fc = (EvolutionaryFuzzerConfig) UnoptimizedDeepCopy.copy(config);
                 // Load clientCertificate
                 // TODO This can be a problem when running with mutliple threads
@@ -220,8 +229,7 @@ public class SingleTLSExecutor extends Executor {
             } catch (ServerDoesNotStartException E) {
                 timeout = true; // TODO
             } catch (Throwable E) {
-                File f = new File(config.getOutputFaultyFolder()
-                        + LogFileIDManager.getInstance().getFilename());
+                File f = new File(config.getOutputFaultyFolder() + LogFileIDManager.getInstance().getFilename());
 
                 try {
                     TestVectorSerializer.write(f, testVector);
@@ -236,8 +244,7 @@ public class SingleTLSExecutor extends Executor {
                     transportHandler.closeConnection();
                 }
                 agent.applicationStop();
-                File branchTrace = new File(config.getTracesFolder().getAbsolutePath()
-                        + "/" + server.getID());
+                File branchTrace = new File(config.getTracesFolder().getAbsolutePath() + "/" + server.getID());
                 try {
                     result = agent.collectResults(branchTrace, testVector);
                     result.setDidTimeout(timeout);
@@ -248,8 +255,7 @@ public class SingleTLSExecutor extends Executor {
                 int id = server.getID();
 
                 // Cleanup
-                File file = new File(config.getTracesFolder().getAbsolutePath() + "/"
-                        + id);
+                File file = new File(config.getTracesFolder().getAbsolutePath() + "/" + id);
                 if (file.exists()) {
                     file.delete();
                 }

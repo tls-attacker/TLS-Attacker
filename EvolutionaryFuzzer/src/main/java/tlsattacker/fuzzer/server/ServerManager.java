@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.server;
 
@@ -54,7 +55,8 @@ public class ServerManager {
     /**
      * Adds a TLSServer to the List of TLSServers
      *
-     * @param server Server to add
+     * @param server
+     *            Server to add
      */
     public void addServer(TLSServer server) {
         serverList.add(server);
@@ -63,7 +65,8 @@ public class ServerManager {
     /**
      * Reads the config files and adds Servers to the serverList accordingly
      *
-     * @param config Config file used to find the correct config folder
+     * @param config
+     *            Config file used to find the correct config folder
      */
     public void init(FuzzerGeneralConfig config) {
         this.config = config;
@@ -129,8 +132,7 @@ public class ServerManager {
                 return server;
             }
             i++;
-            if (startSearch < System.currentTimeMillis() - config.getBootTimeout()
-                    + 1000) {
+            if (startSearch < System.currentTimeMillis() - config.getBootTimeout() + 1000) {
                 // Searched longer than a minute and didnt find a free Server
                 throw new RuntimeException(
                         "Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");
@@ -163,13 +165,11 @@ public class ServerManager {
                 }
                 return serverList;
             }
-            //Not all servers were free
+            // Not all servers were free
             i++;
-            if (startSearch < System.currentTimeMillis() - config.getBootTimeout()
-                    + 1000) {
+            if (startSearch < System.currentTimeMillis() - config.getBootTimeout() + 1000) {
                 // Searched longer than a minute and didnt find a free Server
-                throw new RuntimeException(
-                        "Could not get all Configured Servers as free");
+                throw new RuntimeException("Could not get all Configured Servers as free");
             }
         }
     }

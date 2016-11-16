@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.result;
 
@@ -58,10 +59,8 @@ public class AgentResult {
     private final String id;
 
     /**
-     * If the AgentResult is considered a good Trace, eg. if it found new Codepaths
-     * false means no
-     * true means yes
-     * and null means, we dont know yet
+     * If the AgentResult is considered a good Trace, eg. if it found new
+     * Codepaths false means no true means yes and null means, we dont know yet
      */
     private Boolean goodTrace = null;
 
@@ -69,6 +68,7 @@ public class AgentResult {
      * The Server on which the TestVector was executed on
      */
     private TLSServer server;
+
     /**
      * 
      * @param hasCrashed
@@ -131,7 +131,7 @@ public class AgentResult {
     public TLSServer getServer() {
         return server;
     }
-    
+
     @Override
     public String toString() {
         return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime

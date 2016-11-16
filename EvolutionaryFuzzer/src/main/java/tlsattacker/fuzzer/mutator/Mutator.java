@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.mutator;
 
@@ -71,11 +72,15 @@ public abstract class Mutator {
     /**
      * Chooses a random TestVector from a folder
      *
-     * @param folder Folder to choose from
+     * @param folder
+     *            Folder to choose from
      * @return A random TestVector in the folder
-     * @throws IOException If something goes wrong while reading
-     * @throws JAXBException If desirialisation goes wrong
-     * @throws XMLStreamException If desirialisation goes wrong
+     * @throws IOException
+     *             If something goes wrong while reading
+     * @throws JAXBException
+     *             If desirialisation goes wrong
+     * @throws XMLStreamException
+     *             If desirialisation goes wrong
      */
     protected TestVector chooseRandomTestVectorFromFolder(File folder) throws IOException, JAXBException,
             XMLStreamException {

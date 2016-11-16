@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -150,8 +151,8 @@ public class PINAgent extends Agent {
 
             if (line != null
                     && (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
-                    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
-                    .contains("SIGALRM"))) {
+                            || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
+                                .contains("SIGALRM"))) {
                 crash = true;
                 LOG.log(Level.INFO, "Found a crash:{0}", line);
                 // Skip 2 lines
@@ -167,8 +168,8 @@ public class PINAgent extends Agent {
             ex.printStackTrace();
         }
 
-        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-                .getFilename(), server);
+        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
+                .getInstance().getFilename(), server);
 
         return result;
     }
