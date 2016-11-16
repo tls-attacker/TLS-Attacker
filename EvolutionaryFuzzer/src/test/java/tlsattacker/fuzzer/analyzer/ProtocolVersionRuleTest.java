@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.analyzer.rules.ProtocolVersionRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -75,8 +75,8 @@ public class ProtocolVersionRuleTest {
         ClientHelloMessage clientHello = new ClientHelloMessage();
         clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         trace.add(new SendAction(clientHello));
-        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "test.unit");
+        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "test.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertFalse(rule.applies(result));
         ServerHelloMessage serverHello = new ServerHelloMessage();
@@ -129,8 +129,8 @@ public class ProtocolVersionRuleTest {
         ServerHelloMessage serverHello = new ServerHelloMessage();
         trace.add(new ReceiveAction(serverHello));
         serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "test.unit");
+        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "test.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -158,8 +158,8 @@ public class ProtocolVersionRuleTest {
         ServerHelloMessage serverHello = new ServerHelloMessage();
         trace.add(new ReceiveAction(serverHello));
         serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "test.unit");
+        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "test.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertNotNull(rule.report());

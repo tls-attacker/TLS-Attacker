@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.analyzer.rules.FindAlertsRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
@@ -76,8 +76,8 @@ public class FindAlertsRuleTest {
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new HeartbeatMessage()));
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertFalse(rule.applies(result)); // Should not apply cause it has no
         // alert message
@@ -113,8 +113,8 @@ public class FindAlertsRuleTest {
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new AlertMessage()));
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id", null);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -128,8 +128,8 @@ public class FindAlertsRuleTest {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "unittest.id", null);
         AlertMessage message = new AlertMessage();
         message.setDescription((byte) 20);
         trace.add(new ReceiveAction(message));
@@ -155,8 +155,8 @@ public class FindAlertsRuleTest {
      */
     @Test
     public void testReport() {
-        rule.onApply(new Result(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "2unit.test"));
+        rule.onApply(new AgentResult(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "2unit.test", null));
         assertNotNull(rule.report());
     }
 

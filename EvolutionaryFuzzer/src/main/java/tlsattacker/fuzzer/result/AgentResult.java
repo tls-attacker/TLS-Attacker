@@ -9,6 +9,7 @@ package tlsattacker.fuzzer.result;
 
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
+import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
@@ -19,7 +20,7 @@ import tlsattacker.fuzzer.testvector.TestVector;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class Result {
+public class AgentResult {
 
     /**
      * If the Implementation has Crashed
@@ -52,18 +53,22 @@ public class Result {
     private final TestVector vector;
 
     /**
-     * Each Result get an id for easier referencing
+     * Each AgentResult get an id for easier referencing
      */
     private final String id;
 
     /**
-     * If the Result is considered a good Trace, eg. if it found new Codepaths
+     * If the AgentResult is considered a good Trace, eg. if it found new Codepaths
      * false means no
      * true means yes
      * and null means, we dont know yet
      */
     private Boolean goodTrace = null;
 
+    /**
+     * The Server on which the TestVector was executed on
+     */
+    private TLSServer server;
     /**
      * 
      * @param hasCrashed
@@ -73,9 +78,10 @@ public class Result {
      * @param branchTrace
      * @param vector
      * @param id
+     * @param server
      */
-    public Result(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
-            TestVector vector, String id) {
+    public AgentResult(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
+            TestVector vector, String id, TLSServer server) {
         this.hasCrashed = hasCrashed;
         this.didTimeout = didTimeout;
         this.startTime = startTime;
@@ -83,6 +89,7 @@ public class Result {
         this.branchTrace = branchTrace;
         this.vector = vector;
         this.id = id;
+        this.server = server;
     }
 
     public Boolean isGoodTrace() {
@@ -121,6 +128,10 @@ public class Result {
         return branchTrace;
     }
 
+    public TLSServer getServer() {
+        return server;
+    }
+    
     @Override
     public String toString() {
         return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime
@@ -131,5 +142,5 @@ public class Result {
         return vector;
     }
 
-    private static final Logger LOG = Logger.getLogger(Result.class.getName());
+    private static final Logger LOG = Logger.getLogger(AgentResult.class.getName());
 }

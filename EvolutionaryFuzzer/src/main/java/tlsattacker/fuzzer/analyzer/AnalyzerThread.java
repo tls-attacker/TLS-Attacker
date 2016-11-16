@@ -16,7 +16,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
+import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
  * This class runs an infitie Loop and analyzes all Results passed to it
@@ -33,7 +34,7 @@ public class AnalyzerThread extends Thread {
     /**
      * The list of Results to analyze, used as a queque
      */
-    private final List<Future> workList;
+    private final List<Future<TestVectorResult>> workList;
 
     public AnalyzerThread(Analyzer analyzer) {
         this.analyzer = analyzer;
@@ -43,9 +44,9 @@ public class AnalyzerThread extends Thread {
     /**
      * Adds a result to the worklist
      *
-     * @param result Result to add to the worklist
+     * @param result AgentResult to add to the worklist
      */
-    public synchronized void addToAnalyzeQueque(Future result) {
+    public synchronized void addToAnalyzeQueque(Future<TestVectorResult> result) {
         workList.add(result);
         notifyAll();
     }
@@ -57,9 +58,9 @@ public class AnalyzerThread extends Thread {
                 for (Future future : workList) {
                     if (future.isDone()) {
                         workList.remove(future);
-                        Result result = null;
+                        TestVectorResult result = null;
                         try {
-                            result = (Result) future.get();
+                            result = (TestVectorResult) future.get();
                         } catch (InterruptedException ex) {
                             LOG.log(Level.SEVERE, "Could not retrieve Result from finished Future");
                         } catch (ExecutionException ex) {

@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.IsTimeoutRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import java.io.File;
 import java.io.IOException;
@@ -52,11 +52,11 @@ public class IsTimeoutRule extends Rule {
      * The rule apples if the TestVector is considered as timedout
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True if the TestVector did timeout
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         return result.didTimeout();
     }
 
@@ -64,10 +64,10 @@ public class IsTimeoutRule extends Rule {
      * Stores the Testvector
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         found++;
         File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
         try {
@@ -85,10 +85,10 @@ public class IsTimeoutRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.FindAlertsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
@@ -81,11 +81,11 @@ public class FindAlertsRule extends Rule {
      * option is set, if the rule has never seen the alert description before
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return
      */
     @Override
-    public synchronized boolean applies(Result result) {
+    public synchronized boolean applies(AgentResult result) {
         WorkflowTrace trace = result.getVector().getTrace();
         List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
         if (!messages.isEmpty()) {
@@ -113,10 +113,10 @@ public class FindAlertsRule extends Rule {
      * Stores the TestVector
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         WorkflowTrace trace = result.getVector().getTrace();
         List<ProtocolMessage> messages = trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT);
         StringBuilder containsAlerts = new StringBuilder("");
@@ -148,10 +148,10 @@ public class FindAlertsRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

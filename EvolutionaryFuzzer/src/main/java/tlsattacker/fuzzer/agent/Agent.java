@@ -8,7 +8,7 @@
 package tlsattacker.fuzzer.agent;
 
 import java.io.File;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -53,6 +53,11 @@ public abstract class Agent {
      * If the application did crash
      */
     protected boolean crash;
+    
+    /**
+     * The TLSServer the Agent should use
+     */
+    protected final TLSServer server;
 
     /**
      * Default Constructor
@@ -60,26 +65,24 @@ public abstract class Agent {
      * @param keypair
      *            The server certificate key pair the agent should start the
      *            server with
+     * @param server The TLSServer the Agent should use
      */
-    public Agent(ServerCertificateStructure keypair) {
+    public Agent(ServerCertificateStructure keypair, TLSServer server) {
         this.keypair = keypair;
+        this.server = server;
     }
 
     /**
      * This method should be called, before the TestVector is sent to the
      * application.
-     * 
-     * @param server
      */
-    public abstract void applicationStart(TLSServer server);
+    public abstract void applicationStart();
 
     /**
      * This method should be called, after the TestVector is sent to the
      * application.
-     * 
-     * @param server
      */
-    public abstract void applicationStop(TLSServer server);
+    public abstract void applicationStop();
 
     /**
      * This method is used to receive the Results of the current TestVector
@@ -88,8 +91,8 @@ public abstract class Agent {
      *            File containing the Branch Information
      * @param vector
      *            The TestVector that was executed.
-     * @return Result Object which contains all Information of the executed
-     *         TestVector.
+     * @return AgentResult Object which contains all Information of the executed
+         TestVector.
      */
-    public abstract Result collectResults(File branchTrace, TestVector vector);
+    public abstract AgentResult collectResults(File branchTrace, TestVector vector);
 }

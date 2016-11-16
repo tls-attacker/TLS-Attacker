@@ -11,7 +11,7 @@ import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.graphs.Edge;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
@@ -81,21 +81,21 @@ public class IsGoodRuleTest {
         tempEdge = new Edge(2, 3);
         edgeMap.put(tempEdge, tempEdge);
         BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
-        Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit1.test");
+        AgentResult result = new AgentResult(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit1.test", null);
         assertTrue(rule.applies(result));
         assertFalse(rule.applies(result)); // The same trace should not apply
         // twice
         tempEdge = new Edge(1, 3);
         edgeMap.put(tempEdge, tempEdge);
         trace = new BranchTrace(verticesSet, edgeMap);
-        result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit1.test");
+        result = new AgentResult(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit1.test", null);
         assertTrue(rule.applies(result));
         verticesSet.add(4l);
         trace = new BranchTrace(verticesSet, edgeMap);
-        result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit1.test");
+        result = new AgentResult(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit1.test", null);
         assertTrue(rule.applies(result));
     }
 
@@ -114,8 +114,8 @@ public class IsGoodRuleTest {
         tempEdge = new Edge(2, 3);
         edgeMap.put(tempEdge, tempEdge);
         BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
-        Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit1.test");
+        AgentResult result = new AgentResult(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit1.test", null);
         rule.onApply(result);
         assertTrue(result.isGoodTrace());
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -137,8 +137,8 @@ public class IsGoodRuleTest {
         tempEdge = new Edge(2, 3);
         edgeMap.put(tempEdge, tempEdge);
         BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
-        Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit1.test");
+        AgentResult result = new AgentResult(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit1.test", null);
         rule.applies(result);
         trace = rule.getBranchTrace();
         assertNotNull(result);
@@ -152,7 +152,7 @@ public class IsGoodRuleTest {
      */
     @Test
     public void testOnDecline() {
-        Result result = new Result(false, false, 0, 2, null, null, null);
+        AgentResult result = new AgentResult(false, false, 0, 2, null, null, null, null);
         assertNull(result.isGoodTrace());
         rule.onDecline(result);
         assertFalse(result.isGoodTrace());
@@ -173,8 +173,8 @@ public class IsGoodRuleTest {
         tempEdge = new Edge(2, 3);
         edgeMap.put(tempEdge, tempEdge);
         BranchTrace trace = new BranchTrace(verticesSet, edgeMap);
-        Result result = new Result(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit1.test");
+        AgentResult result = new AgentResult(false, false, 0, 5, trace, new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit1.test", null);
         rule.onApply(result);
         assertNotNull(rule.report());
     }

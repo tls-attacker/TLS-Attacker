@@ -205,7 +205,7 @@ public class ExecutorThreadPool implements Runnable {
                         vector.getTrace().reset();
                         vector.getTrace().makeGeneric();
 
-                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
+                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert(),server);
                         Callable worker = new TLSExecutor(config, vector, server, agent);
                         Future future = executor.submit(worker);
                         analyzerThread.addToAnalyzeQueque(future);
@@ -239,7 +239,7 @@ public class ExecutorThreadPool implements Runnable {
                         }
                         server = ServerManager.getInstance().getFreeServer();
 
-                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert());
+                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert(), server);
                         Callable worker = new TLSExecutor(config ,vector, server, agent);
                         Future future = executor.submit(worker);
                         analyzerThread.addToAnalyzeQueque(future);

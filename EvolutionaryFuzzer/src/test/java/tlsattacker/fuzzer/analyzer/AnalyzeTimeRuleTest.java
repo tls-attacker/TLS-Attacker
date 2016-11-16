@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.analyzer.rules.AnalyzeTimeRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
@@ -61,7 +61,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testApplys() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         assertTrue(rule.applies(result));
     }
 
@@ -70,7 +70,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testOnApply() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
     }
 
@@ -87,7 +87,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testReport() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         assertNull("Failure: Report should be null!", rule.report());
         rule.onApply(result);
         assertNotNull("Failure: Report should not be null!", rule.report());
@@ -106,7 +106,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetExecutedTimeTotal() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getExecutedTimeTotal() == 1000);
         rule.onApply(result);
@@ -118,7 +118,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetNumberExecutedTraces() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getNumberExecutedTraces() == 1);
         rule.onApply(result);
@@ -130,10 +130,10 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetSlowestTime() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getSlowestTime() == 1000);
-        result = new Result(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id");
+        result = new AgentResult(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getSlowestTime() == 3000);
     }
@@ -143,10 +143,10 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetFastestTime() {
-        Result result = new Result(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id");
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getFastestTime() == 1000);
-        result = new Result(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id");
+        result = new AgentResult(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getFastestTime() == 1000);
     }

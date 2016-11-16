@@ -9,7 +9,6 @@ package tlsattacker.fuzzer.agent;
 
 import java.io.File;
 import java.util.logging.Logger;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
@@ -17,7 +16,7 @@ import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
@@ -89,7 +88,6 @@ public class AflAgentTest {
         config.createFolders();
         mut = new UnitTestCertificateMutator();
         pair = mut.getServerCertificateStructure();
-        agent = new AFLAgent(pair);
         File f = new File("../resources/EvolutionaryFuzzer/TestServer/afl.config");
         if (!f.exists()) {
             Assert.fail("File does not exist:" + f.getAbsolutePath() + ", Configure the Fuzzer before building it!");
@@ -100,6 +98,7 @@ public class AflAgentTest {
         } catch (Exception ex) {
             Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        agent = new AFLAgent(pair,server);
         server.occupie();
 
     }
@@ -109,8 +108,8 @@ public class AflAgentTest {
      */
     @Test
     public void testStartStop() {
-        agent.applicationStart(server);
-        agent.applicationStop(server);
+        agent.applicationStart();
+        agent.applicationStop();
     }
 
     /**
@@ -118,8 +117,8 @@ public class AflAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testDoubleStart() {
-        agent.applicationStart(server);
-        agent.applicationStart(server);
+        agent.applicationStart();
+        agent.applicationStart();
     }
 
     /**
@@ -127,7 +126,7 @@ public class AflAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testNotStarted() {
-        agent.applicationStop(server);
+        agent.applicationStop();
     }
 
     /**
@@ -135,9 +134,9 @@ public class AflAgentTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testDoubleStop() {
-        agent.applicationStart(server);
-        agent.applicationStop(server);
-        agent.applicationStop(server);
+        agent.applicationStart();
+        agent.applicationStop();
+        agent.applicationStop();
     }
 
     /**
@@ -146,7 +145,7 @@ public class AflAgentTest {
     @Test
     public void testCollectResults() {
         TestVector t = new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null);
-        Result r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/AFLTest/graph.trace"), t);
+        AgentResult r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/AFLTest/graph.trace"), t);
         assertTrue("Failure: Test result should have exactly 4 Vertices",
                 r.getBranchTrace().getVerticesSet().size() == 4);
         assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getEdgeMap().size() == 6);

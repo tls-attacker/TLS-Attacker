@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.UniqueFlowsRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import tlsattacker.fuzzer.workflow.WorkflowTraceType;
 import tlsattacker.fuzzer.workflow.WorkflowTraceTypeManager;
@@ -67,15 +67,15 @@ public class UniqueFlowsRule extends Rule {
     }
 
     /**
-     * The rule applies if the WorkflowTracetype of the Result has not yet been
-     * seen by this rule
+     * The rule applies if the WorkflowTracetype of the AgentResult has not yet been
+ seen by this rule
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True if the WorkflowTracetype has not yet been seen by this rule
      */
     @Override
-    public synchronized boolean applies(Result result) {
+    public synchronized boolean applies(AgentResult result) {
         WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
                 ConnectionEnd.CLIENT);
         type.clean();
@@ -87,10 +87,10 @@ public class UniqueFlowsRule extends Rule {
      * Stores the TestVector and adds the WorkflowTraceType to the set
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
 
         WorkflowTraceType type = WorkflowTraceTypeManager.generateWorkflowTraceType(result.getVector().getTrace(),
                 ConnectionEnd.CLIENT);
@@ -117,10 +117,10 @@ public class UniqueFlowsRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

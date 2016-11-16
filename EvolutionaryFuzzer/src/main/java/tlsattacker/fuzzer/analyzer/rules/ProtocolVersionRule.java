@@ -23,7 +23,7 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.analyzer.ProtocolVersionRuleConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
@@ -77,12 +77,12 @@ public class ProtocolVersionRule extends Rule {
      * it supports
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True if the Server did not choos the highest offered version it
      *         supports
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         ProtocolVersion serverVersion = null;
 
         WorkflowTrace trace = result.getVector().getTrace();
@@ -136,10 +136,10 @@ public class ProtocolVersionRule extends Rule {
      * described the violation
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         WorkflowTrace trace = result.getVector().getTrace();
         List<HandshakeMessage> sentClientHellos = trace
                 .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO);
@@ -173,10 +173,10 @@ public class ProtocolVersionRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

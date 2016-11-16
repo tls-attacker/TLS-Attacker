@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.IsCrashRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import java.io.File;
 import java.io.IOException;
@@ -52,11 +52,11 @@ public class IsCrashRule extends Rule {
      * The rule applies if the TestVector caused the Server to crash
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         return result.hasCrashed();
     }
 
@@ -64,10 +64,10 @@ public class IsCrashRule extends Rule {
      * Stores the TestVector
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         found++;
         File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
         try {
@@ -85,10 +85,10 @@ public class IsCrashRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.graphs.Edge;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -30,7 +30,7 @@ import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 /**
  * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
  * tool.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
@@ -42,7 +42,7 @@ public class PINAgent extends Agent {
 
     /**
      * Parses the readers contents into a BranchTrace object
-     * 
+     *
      * @param bufferedReader
      * @return A newly generated BranchTrace object
      */
@@ -97,15 +97,16 @@ public class PINAgent extends Agent {
      * Config object used
      */
     private FuzzerGeneralConfig config;
-    
+
     /**
      * Default Constructor
-     * 
+     *
      * @param keypair
      */
-    public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair) {
-        super(keypair);
+    public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair, TLSServer server) {
+        super(keypair, server);
         this.config = config;
+
         timeout = false;
         crash = false;
         // TODO put into config File
@@ -117,7 +118,7 @@ public class PINAgent extends Agent {
     }
 
     @Override
-    public void applicationStart(TLSServer server) {
+    public void applicationStart() {
         if (running) {
             throw new IllegalStateException("Cannot start a running PIN Agent");
         }
@@ -127,7 +128,7 @@ public class PINAgent extends Agent {
     }
 
     @Override
-    public void applicationStop(TLSServer server) {
+    public void applicationStop() {
         if (!running) {
             throw new IllegalStateException("Cannot stop a stopped PIN Agent");
         }
@@ -137,7 +138,7 @@ public class PINAgent extends Agent {
     }
 
     @Override
-    public Result collectResults(File branchTrace, TestVector vector) {
+    public AgentResult collectResults(File branchTrace, TestVector vector) {
         if (running) {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
@@ -149,8 +150,8 @@ public class PINAgent extends Agent {
 
             if (line != null
                     && (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
-                            || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
-                                .contains("SIGALRM"))) {
+                    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
+                    .contains("SIGALRM"))) {
                 crash = true;
                 LOG.log(Level.INFO, "Found a crash:{0}", line);
                 // Skip 2 lines
@@ -166,8 +167,8 @@ public class PINAgent extends Agent {
             ex.printStackTrace();
         }
 
-        Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-                .getFilename());
+        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+                .getFilename(), server);
 
         return result;
     }

@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.RuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,28 +60,28 @@ public abstract class Rule {
     public abstract RuleConfig getConfig();
 
     /**
-     * A method that checks if the Rule should be applied to to a Result
+     * A method that checks if the Rule should be applied to to a AgentResult
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True if the Rule should apply
      */
-    public abstract boolean applies(Result result);
+    public abstract boolean applies(AgentResult result);
 
     /**
      * This method is called when the applies method returned true
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
-    public abstract void onApply(Result result);
+    public abstract void onApply(AgentResult result);
 
     /**
      * This method is called when the applies method returned false
      * 
      * @param result
      */
-    public abstract void onDecline(Result result);
+    public abstract void onDecline(AgentResult result);
 
     /**
      * Generates a status report

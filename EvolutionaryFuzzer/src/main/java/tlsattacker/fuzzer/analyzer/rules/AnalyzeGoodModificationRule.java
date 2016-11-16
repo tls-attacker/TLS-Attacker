@@ -12,7 +12,7 @@ import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.modification.Modification;
 import tlsattacker.fuzzer.modification.ModificationType;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
 import java.util.ArrayList;
@@ -65,25 +65,25 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     * This method returns true if the TestVector in the Result is conisdered as
-     * a good TestVector
+     * This method returns true if the TestVector in the AgentResult is conisdered as
+ a good TestVector
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True if TestVector is good
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         return result.isGoodTrace() == Boolean.TRUE;
     }
 
     /**
-     * Counts the modifications on the Result
+     * Counts the modifications on the AgentResult
      * 
      * @param result
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         executedTraces++;
         for (Modification mod : result.getVector().getModificationList()) {
             ModificationCounter counter = getCounter(mod);
@@ -118,10 +118,10 @@ public class AnalyzeGoodModificationRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

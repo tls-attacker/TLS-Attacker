@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -20,15 +20,10 @@ import tlsattacker.fuzzer.testvector.TestVector;
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
  * American Fuzzy Lop
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BlindAgent extends Agent {
-
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
     /**
      * The name of the Agent when referred by command line
@@ -37,19 +32,18 @@ public class BlindAgent extends Agent {
 
     /**
      * Default Constructor
-     * 
-     * @param keypair
-     *            Server certificate key pair the agent should start the server
-     *            with.
+     *
+     * @param keypair Server certificate key pair the agent should start the
+     * server with.
      */
-    public BlindAgent(ServerCertificateStructure keypair) {
-        super(keypair);
+    public BlindAgent(ServerCertificateStructure keypair, TLSServer server) {
+        super(keypair, server);
         timeout = false;
         crash = false;
     }
 
     @Override
-    public void applicationStart(TLSServer server) {
+    public void applicationStart() {
         if (running) {
             throw new IllegalStateException("Cannot start a running Agent");
         }
@@ -59,7 +53,7 @@ public class BlindAgent extends Agent {
     }
 
     @Override
-    public void applicationStop(TLSServer server) {
+    public void applicationStop() {
         if (!running) {
             throw new IllegalStateException("Cannot stop a stopped Agent");
         }
@@ -72,17 +66,22 @@ public class BlindAgent extends Agent {
     }
 
     @Override
-    public Result collectResults(File branchTrace, TestVector vector) {
+    public AgentResult collectResults(File branchTrace, TestVector vector) {
         if (running) {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
 
         BranchTrace t = new BranchTrace();
 
-        Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-                .getFilename());
+        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+                .getFilename(), server);
 
         return result;
     }
+    
+    /**
+     *
+     */
+    private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
 }

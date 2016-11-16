@@ -11,7 +11,7 @@ import tlsattacker.fuzzer.config.analyzer.IsGoodRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.MergeResult;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +25,7 @@ import javax.xml.bind.JAXBException;
 
 /**
  * A rule which analyzes if the TestVector reached new codepaths and set a flag
- * in the Result object accordingly.
+ in the AgentResult object accordingly.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -84,15 +84,15 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     * The rule applies if the trace in the Result contains Edges or Codeblocks
-     * the rule has not seen before
+     * The rule applies if the trace in the AgentResult contains Edges or Codeblocks
+ the rule has not seen before
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True if the Rule contains new Codeblocks or Edges
      */
     @Override
-    public synchronized boolean applies(Result result) {
+    public synchronized boolean applies(AgentResult result) {
         MergeResult r = null;
         r = branch.merge(result.getBranchTrace());
 
@@ -111,10 +111,10 @@ public class IsGoodRule extends Rule {
      * as good.
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         // Write statistics
         outWriter.println(System.currentTimeMillis() - lastGoodTimestamp);
         outWriter.flush();
@@ -144,10 +144,10 @@ public class IsGoodRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
         result.setGoodTrace(Boolean.FALSE);
     }
 

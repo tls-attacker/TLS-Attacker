@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.analyzer.rules.UniqueFlowsRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
@@ -72,8 +72,8 @@ public class UniqueFlowsRuleTest {
     public void testApplys() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new CertificateRequestMessage()));
-        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "tes2t.unit");
+        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "tes2t.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(rule.applies(result));// Should apply since its the first
         // time
@@ -92,8 +92,8 @@ public class UniqueFlowsRuleTest {
     public void testOnApply() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new CertificateRequestMessage()));
-        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "tes2t.unit");
+        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "tes2t.unit", null);
         rule.onApply(result);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -118,8 +118,8 @@ public class UniqueFlowsRuleTest {
         trace.add(new SendAction(clientHello));
         ServerHelloMessage serverHello = new ServerHelloMessage();
         trace.add(new ReceiveAction(serverHello));
-        Result result = new Result(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "tes2t.unit");
+        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
+                ExecutorType.TLS, null), "tes2t.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertNotNull(rule.report());

@@ -8,10 +8,10 @@
 package tlsattacker.fuzzer.analyzer;
 
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
- * The Analyzer class which can analyze Result objects
+ * The Analyzer class which can analyze AgentResult objects
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -21,9 +21,9 @@ public abstract class Analyzer {
      * Analyzes a result
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
-    public abstract void analyze(Result result);
+    public abstract void analyze(TestVectorResult result);
 
     /**
      * Generates a status report

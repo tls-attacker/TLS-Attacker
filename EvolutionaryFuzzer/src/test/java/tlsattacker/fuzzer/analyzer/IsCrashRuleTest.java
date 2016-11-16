@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.analyzer;
 import tlsattacker.fuzzer.analyzer.rules.IsCrashRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
@@ -64,11 +64,11 @@ public class IsCrashRuleTest {
      */
     @Test
     public void testApplys() {
-        Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit2.test");
+        AgentResult result = new AgentResult(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit2.test", null);
         assertTrue(rule.applies(result));
-        result = new Result(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "unit2.test");
+        result = new AgentResult(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
+                ExecutorType.TLS, null), "unit2.test", null);
         assertFalse(rule.applies(result));
 
     }
@@ -78,8 +78,8 @@ public class IsCrashRuleTest {
      */
     @Test
     public void testOnApply() {
-        Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit2.test");
+        AgentResult result = new AgentResult(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit2.test", null);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -98,8 +98,8 @@ public class IsCrashRuleTest {
     @Test
     public void testReport() {
         assertNull(rule.report());
-        Result result = new Result(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit2.test");
+        AgentResult result = new AgentResult(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "unit2.test", null);
         rule.onApply(result);
         assertNotNull(rule.report());
     }

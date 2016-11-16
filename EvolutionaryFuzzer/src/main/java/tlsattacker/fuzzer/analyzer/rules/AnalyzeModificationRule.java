@@ -11,7 +11,7 @@ import tlsattacker.fuzzer.analyzer.helpers.ModificationCounter;
 import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.modification.Modification;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,21 +62,21 @@ public class AnalyzeModificationRule extends Rule {
      * This rule applies to all TestVectors
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         return true;
     }
 
     /**
-     * Counts the modifications on the Result
+     * Counts the modifications on the AgentResult
      * 
      * @param result
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         executedTraces++;
         for (Modification mod : result.getVector().getModificationList()) {
             ModificationCounter counter = getCounter(mod);
@@ -111,10 +111,10 @@ public class AnalyzeModificationRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

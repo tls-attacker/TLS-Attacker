@@ -29,7 +29,7 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
+import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
  * This is an Implementation of an Executor. This Executor is specially designed
@@ -78,7 +79,7 @@ public class TLSExecutor extends Executor {
     /**
      * Config object used
      */
-    private EvolutionaryFuzzerConfig config;
+    private final EvolutionaryFuzzerConfig config;
 
     /**
      * Constructor for the TLSExecutor
@@ -120,8 +121,8 @@ public class TLSExecutor extends Executor {
     private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
 
     @Override
-    public Result call() throws Exception {
-        Result result = null;
+    public TestVectorResult call() throws Exception {
+        AgentResult result = null;
         try {
             boolean timeout = false;
             ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
@@ -135,7 +136,7 @@ public class TLSExecutor extends Executor {
                 fc.setKeystore(testVector.getClientKeyCert().getJKSfile().getAbsolutePath());
                 fc.setPassword(testVector.getClientKeyCert().getPassword());
                 fc.setAlias(testVector.getClientKeyCert().getAlias());
-                agent.applicationStart(server);
+                agent.applicationStart();
                 GeneralConfig gc = new GeneralConfig();
                 gc.setLogLevel(Level.OFF);
                 configHandler.initialize(gc);
@@ -150,8 +151,8 @@ public class TLSExecutor extends Executor {
                         // yet
                         if (time + fc.getBootTimeout() < System.currentTimeMillis()) {
                             LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
-                            agent.applicationStop(server);
-                            agent.applicationStart(server);
+                            agent.applicationStop();
+                            agent.applicationStart();
                             time = System.currentTimeMillis();
                             counter++;
                         }
@@ -215,7 +216,7 @@ public class TLSExecutor extends Executor {
                 if (transportHandler != null) {
                     transportHandler.closeConnection();
                 }
-                agent.applicationStop(server);
+                agent.applicationStop();
                 File branchTrace = new File(config.getTracesFolder().getAbsolutePath()
                         + "/" + server.getID());
                 try {
@@ -237,6 +238,6 @@ public class TLSExecutor extends Executor {
         } finally {
             server.release();
         }
-        return result;
+        return new TestVectorResult(testVector, result);
     }
 }

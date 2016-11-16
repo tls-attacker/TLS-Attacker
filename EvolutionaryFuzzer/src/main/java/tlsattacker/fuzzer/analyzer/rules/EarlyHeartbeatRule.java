@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.EarlyHeartbeatRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -60,12 +60,12 @@ public class EarlyHeartbeatRule extends Rule {
      * Finished message
      * 
      * @param result
-     *            Result to analyze the Workflowtrace from
+     *            AgentResult to analyze the Workflowtrace from
      * @return True if the the Server sent a Heartbeat message before it sent a
      *         Finished message
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         WorkflowTrace trace = result.getVector().getTrace();
         if (!trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HEARTBEAT).isEmpty()) {
             return hasHeartbeatWithoutFinished(trace) || hasHeartbeatBeforeFinished(trace);
@@ -78,10 +78,10 @@ public class EarlyHeartbeatRule extends Rule {
      * Stores the TestVector
      * 
      * @param result
-     *            Result to store
+     *            AgentResult to store
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         found++;
         File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
         try {
@@ -102,10 +102,10 @@ public class EarlyHeartbeatRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

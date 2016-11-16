@@ -9,7 +9,7 @@ package tlsattacker.fuzzer.analyzer.rules;
 
 import tlsattacker.fuzzer.config.analyzer.AnalyzeTimeRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -94,11 +94,11 @@ public class AnalyzeTimeRule extends Rule {
      * The rule always applies
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      * @return True
      */
     @Override
-    public boolean applies(Result result) {
+    public boolean applies(AgentResult result) {
         return true;
     }
 
@@ -106,10 +106,10 @@ public class AnalyzeTimeRule extends Rule {
      * Updates timing statistics
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public synchronized void onApply(Result result) {
+    public synchronized void onApply(AgentResult result) {
         numberExecutedTraces++;
         executedTimeTotal += (result.getStopTime() - result.getStartTime());
         if ((result.getStopTime() - result.getStartTime()) > slowestTime) {
@@ -126,10 +126,10 @@ public class AnalyzeTimeRule extends Rule {
      * Do nothing
      * 
      * @param result
-     *            Result to analyze
+     *            AgentResult to analyze
      */
     @Override
-    public void onDecline(Result result) {
+    public void onDecline(AgentResult result) {
     }
 
     /**

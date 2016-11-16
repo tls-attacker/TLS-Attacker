@@ -2,7 +2,8 @@ package tlsattacker.fuzzer.executor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.RunnableFuture;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
+import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
@@ -19,5 +20,8 @@ import tlsattacker.fuzzer.result.Result;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class Executor implements Callable<Result> {
+public abstract class Executor implements Callable<TestVectorResult> {
+
+    @Override
+    public abstract TestVectorResult call() throws Exception;
 }

@@ -24,7 +24,8 @@ import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
+import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
  * An analyzer implementation which uses a set of Rules to find interesting
@@ -92,16 +93,19 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     /**
-     * Analyzes a Result by trying to apply all rules to it
+     * Analyzes a AgentResult by trying to apply all rules to it
      *
      * @param result
      */
-    public void analyze(Result result) {
-        for (Rule r : ruleList) {
-            if (r.applies(result)) {
-                r.onApply(result);
-            } else {
-                r.onDecline(result);
+    @Override
+    public void analyze(TestVectorResult result) {
+        for (AgentResult agentResult : result.getAgentResults() ) {
+            for (Rule r : ruleList) {
+                if (r.applies(agentResult)) {
+                    r.onApply(agentResult);
+                } else {
+                    r.onDecline(agentResult);
+                }
             }
         }
     }
@@ -111,6 +115,7 @@ public class RuleAnalyzer extends Analyzer {
      *
      * @return
      */
+    @Override
     public String getReport() {
         StringBuilder builder = new StringBuilder();
         for (Rule r : ruleList) {
@@ -126,9 +131,7 @@ public class RuleAnalyzer extends Analyzer {
     public BranchTrace getBranchTrace() {
         if (goodRule.isActive()) {
             return goodRule.getBranchTrace();
-        }
-        else
-        {
+        } else {
             return new BranchTrace();
         }
     }

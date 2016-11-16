@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.graphs.Edge;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-import tlsattacker.fuzzer.result.Result;
+import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -110,14 +110,14 @@ public class AFLAgent extends Agent {
      * @param keypair
      *            The key certificate pair the server should be started with
      */
-    public AFLAgent(ServerCertificateStructure keypair) {
-        super(keypair);
+    public AFLAgent(ServerCertificateStructure keypair, TLSServer server) {
+        super(keypair,server);
         timeout = false;
         crash = false;
     }
 
     @Override
-    public void applicationStart(TLSServer server) {
+    public void applicationStart() {
         if (running) {
             throw new IllegalStateException("Cannot start a running AFL Agent");
         }
@@ -127,7 +127,7 @@ public class AFLAgent extends Agent {
     }
 
     @Override
-    public void applicationStop(TLSServer server) {
+    public void applicationStop() {
         if (!running) {
             throw new IllegalStateException("Cannot stop a stopped AFL Agent");
         }
@@ -137,7 +137,7 @@ public class AFLAgent extends Agent {
     }
 
     @Override
-    public Result collectResults(File branchTrace, TestVector vector) {
+    public AgentResult collectResults(File branchTrace, TestVector vector) {
         if (running) {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
@@ -155,14 +155,14 @@ public class AFLAgent extends Agent {
             }
             BranchTrace t = getBranchTrace(branchTrace);
 
-            Result result = new Result(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
-                    .getFilename());
+            AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager.getInstance()
+                    .getFilename(),server);
 
             return result;
         } else {
             LOG.log(Level.FINE, "Failed to collect instrumentation output");
-            return new Result(crash, timeout, startTime, startTime, new BranchTrace(), vector, LogFileIDManager
-                    .getInstance().getFilename());
+            return new AgentResult(crash, timeout, startTime, startTime, new BranchTrace(), vector, LogFileIDManager
+                    .getInstance().getFilename(), server);
         }
     }
 
