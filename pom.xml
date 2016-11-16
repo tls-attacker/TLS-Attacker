@@ -218,18 +218,4 @@
         <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
     </properties>
-    
-    <!--<profiles>
-        <profile>
-            <properties>
-                <exclude.tests>**/TlsClientTest.java</exclude.tests>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>extended</id>
-        </profile>
-    </profiles>-->
 </project>

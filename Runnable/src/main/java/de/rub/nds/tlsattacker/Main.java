@@ -23,12 +23,10 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
@@ -39,7 +37,6 @@ import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
 import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attack;
-import de.rub.nds.tlsattacker.attacks.impl.ManInTheMiddleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
@@ -100,8 +97,6 @@ public class Main {
         jc.addCommand(ServerCommandConfig.COMMAND, server);
         ClientCommandConfig client = new ClientCommandConfig();
         jc.addCommand(ClientCommandConfig.COMMAND, client);
-        ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
-        jc.addCommand(ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND, MitM_Attack);
         ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
         jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
         TestServerConfig testServerConfig = new TestServerConfig();
@@ -167,9 +162,6 @@ public class Main {
                 break;
             case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
                 attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
-                break;
-            case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new ManInTheMiddleAttack(MitM_Attack);
                 break;
             default:
                 throw new ConfigurationException("No command found");
