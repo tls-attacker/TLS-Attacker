@@ -254,10 +254,10 @@ public class TLSServer {
 
                 // any error message?
                 errorGobbler = new StreamGobbler(p.getErrorStream(), "ERR", accepted);
-
+                errorGobbler.setName("Error Gobbler - " + id);
                 // any output?
                 outputGobbler = new StreamGobbler(p.getInputStream(), "OUT", accepted);
-
+                outputGobbler.setName("Output Gobbler - " + id);
                 // kick them off
                 errorGobbler.start();
                 outputGobbler.start();
