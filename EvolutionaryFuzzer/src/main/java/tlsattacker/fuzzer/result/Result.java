@@ -57,7 +57,10 @@ public class Result {
     private final String id;
 
     /**
-     *
+     * If the Result is considered a good Trace, eg. if it found new Codepaths
+     * false means no
+     * true means yes
+     * and null means, we dont know yet
      */
     private Boolean goodTrace = null;
 
