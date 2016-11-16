@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.agent;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.ServerSerializer;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -92,6 +94,7 @@ public class PinAgentTest {
      *
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testStartStop() {
         agent.applicationStart();
         agent.applicationStop();
@@ -101,6 +104,7 @@ public class PinAgentTest {
      *
      */
     @Test(expected = IllegalStateException.class)
+    @Category(IntegrationTest.class)
     public void testDoubleStart() {
         agent.applicationStart();
         agent.applicationStart();
@@ -110,6 +114,7 @@ public class PinAgentTest {
      *
      */
     @Test(expected = IllegalStateException.class)
+    @Category(IntegrationTest.class)
     public void testNotStarted() {
         agent.applicationStop();
     }
@@ -118,6 +123,7 @@ public class PinAgentTest {
      *
      */
     @Test(expected = IllegalStateException.class)
+    @Category(IntegrationTest.class)
     public void testDoubleStop() {
         agent.applicationStart();
         agent.applicationStop();
@@ -129,6 +135,7 @@ public class PinAgentTest {
      * Tests the Collect Results with a real world Demo Trace
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testCollectResults() {
         TestVector t = new TestVector(null, null, null, ExecutorType.TLS, null);
         agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/test.trace"), t);
@@ -139,6 +146,7 @@ public class PinAgentTest {
      * trace files
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testCollectResultsGraph() {
         TestVector t = new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null);
         AgentResult r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/PinTest/graph.trace"), t);

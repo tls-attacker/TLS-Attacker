@@ -1,5 +1,6 @@
 package tlsattacker.fuzzer.agent;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import java.io.File;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -7,6 +8,7 @@ import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -56,6 +58,7 @@ public class AFLTest {
     /**
      *
      */
+    @Category(IntegrationTest.class)
     public void testAflexists() {
         File f = new File("AFL/afl-as");
         assertTrue("Failure: Tool afl-as was not found", f.exists());

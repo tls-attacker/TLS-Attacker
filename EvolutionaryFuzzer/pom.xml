@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.rub.nds.tlsattacker</groupId>
+    <parent>
+        <groupId>de.rub.nds.tlsattacker</groupId>
+        <artifactId>TLS-Attacker</artifactId>
+        <version>1.2</version>
+    </parent>
     <artifactId>EvolutionaryFuzzer</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <repositories>
-        <repository>
-            <id>libs</id>
-            <url>https://repo.nds.rub.de/repository/libs/</url>
-        </repository>
-    </repositories>
+    
     <dependencies>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
             <version>0.9.2</version>
         </dependency>
+        <!-- TODO this should be removed, but then the tests freeze ??? -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency> 
@@ -39,12 +38,6 @@
             <version>0.9.2</version>
         </dependency>
         <dependency>
-            <groupId>de.rub.nds.tlsattacker</groupId>
-            <artifactId>TLS</artifactId>
-            <version>1.2</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>com.googlecode.openpojo</groupId>
             <artifactId>openpojo</artifactId>
             <version>0.7.3</version>
@@ -53,6 +46,11 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
             <version>5.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TLS</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -115,14 +113,6 @@
                         </configuration> 
                     </execution>
                 </executions> 
-            </plugin>
-            <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <configuration>
-                    <configFile>/home/ic0ns/NetBeansProjects/TLS-Attacker-Development/maven-eclipse-codestyle.xml</configFile>
-                    <lineEnding>LF</lineEnding>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

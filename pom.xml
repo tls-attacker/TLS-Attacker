@@ -102,10 +102,23 @@
                     <version>2.18.1</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
-                        <excludes>
+                        <!--<excludes>
                             <exclude>${exclude.tests}</exclude>
-                        </excludes>
+                        </excludes>-->
                     </configuration>
+                    <executions>
+                        <!-- Default execution will skip SlowTest and WindowsTest categories -->
+                        <execution>
+                            <id>default-test</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <excludedGroups>de.rub.nds.tlsattacker.tests.IntegrationTest</excludedGroups>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <!-- Specify Java Version -->
                 <plugin>
@@ -206,7 +219,7 @@
         <main.basedir>${project.basedir}</main.basedir>
     </properties>
     
-    <profiles>
+    <!--<profiles>
         <profile>
             <properties>
                 <exclude.tests>**/TlsClientTest.java</exclude.tests>
@@ -218,5 +231,5 @@
         <profile>
             <id>extended</id>
         </profile>
-    </profiles>
+    </profiles>-->
 </project>

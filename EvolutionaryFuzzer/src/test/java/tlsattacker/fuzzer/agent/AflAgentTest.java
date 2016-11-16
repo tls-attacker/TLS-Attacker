@@ -7,6 +7,7 @@
  */
 package tlsattacker.fuzzer.agent;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import java.io.File;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -26,6 +27,7 @@ import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -107,6 +109,7 @@ public class AflAgentTest {
      *
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testStartStop() {
         agent.applicationStart();
         agent.applicationStop();
@@ -116,6 +119,7 @@ public class AflAgentTest {
      *
      */
     @Test(expected = IllegalStateException.class)
+    @Category(IntegrationTest.class)
     public void testDoubleStart() {
         agent.applicationStart();
         agent.applicationStart();
@@ -125,6 +129,7 @@ public class AflAgentTest {
      *
      */
     @Test(expected = IllegalStateException.class)
+    @Category(IntegrationTest.class)
     public void testNotStarted() {
         agent.applicationStop();
     }
@@ -133,6 +138,7 @@ public class AflAgentTest {
      *
      */
     @Test(expected = IllegalStateException.class)
+    @Category(IntegrationTest.class)
     public void testDoubleStop() {
         agent.applicationStart();
         agent.applicationStop();
@@ -143,6 +149,7 @@ public class AflAgentTest {
      *
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testCollectResults() {
         TestVector t = new TestVector(new WorkflowTrace(), null, null, ExecutorType.TLS, null);
         AgentResult r = agent.collectResults(new File("../resources/EvolutionaryFuzzer/AFLTest/graph.trace"), t);

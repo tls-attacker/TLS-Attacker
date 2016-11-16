@@ -13,32 +13,15 @@
         That way multiple projects can share the same settings (useful for formatting rules for example).
         Any value defined here will override the pom.xml file value but is only applicable to the current project.
         -->
+        <netbeans.hint.licensePath>${project.basedir}/../license_header.txt</netbeans.hint.licensePath>
         <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
-        <netbeans.hint.licensePath>${project.basedir}/licenseheader.txt</netbeans.hint.licensePath>
-        <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
-        <netbeans.compile.on.save>all</netbeans.compile.on.save>
         <de-markiewb-netbeans-plugins-eclipse-formatter.preserveBreakPoints>true</de-markiewb-netbeans-plugins-eclipse-formatter.preserveBreakPoints>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile>Java Conventions </de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>/home/ic0ns/NetBeansProjects/TLS-Attacker-Development/maven-eclipse-codestyle.xml</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile>JavaConventionsEclipse</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterActiveProfile>
+        <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>${project.basedir}/maven-eclipse-codestyle.xml</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterLocation>
         <de-markiewb-netbeans-plugins-eclipse-formatter.showNotifications>true</de-markiewb-netbeans-plugins-eclipse-formatter.showNotifications>
         <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>true</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>
         <de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>false</de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>
         <de-markiewb-netbeans-plugins-eclipse-formatter.useProjectSettings>true</de-markiewb-netbeans-plugins-eclipse-formatter.useProjectSettings>
-        <netbeans.checkstyle.format>true</netbeans.checkstyle.format>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.SaveActionModifiedLinesOnly>false</de-markiewb-netbeans-plugins-eclipse-formatter.SaveActionModifiedLinesOnly>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.linefeed/>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.useProjectPref>true</de-markiewb-netbeans-plugins-eclipse-formatter.useProjectPref>
-        <de-markiewb-netbeans-plugins-eclipse-formatter.sourcelevel/>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.SaveActionModifiedLinesOnly>false</de-markiewb-netbeans-plugins-eclipse-formatter44.SaveActionModifiedLinesOnly>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.preserveBreakPoints>true</de-markiewb-netbeans-plugins-eclipse-formatter44.preserveBreakPoints>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.linefeed/>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.eclipseFormatterActiveProfile>Java Conventions </de-markiewb-netbeans-plugins-eclipse-formatter44.eclipseFormatterActiveProfile>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.useProjectPref>true</de-markiewb-netbeans-plugins-eclipse-formatter44.useProjectPref>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.eclipseFormatterLocation>/home/ic0ns/NetBeansProjects/TLS-Attacker-Development/maven-eclipse-codestyle.xml</de-markiewb-netbeans-plugins-eclipse-formatter44.eclipseFormatterLocation>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.showNotifications>true</de-markiewb-netbeans-plugins-eclipse-formatter44.showNotifications>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.eclipseFormatterEnabled>true</de-markiewb-netbeans-plugins-eclipse-formatter44.eclipseFormatterEnabled>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.enableFormatAsSaveAction>false</de-markiewb-netbeans-plugins-eclipse-formatter44.enableFormatAsSaveAction>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.sourcelevel/>
-        <de-markiewb-netbeans-plugins-eclipse-formatter44.useProjectSettings>true</de-markiewb-netbeans-plugins-eclipse-formatter44.useProjectSettings>
+        <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
     </properties>
 </project-shared-configuration>

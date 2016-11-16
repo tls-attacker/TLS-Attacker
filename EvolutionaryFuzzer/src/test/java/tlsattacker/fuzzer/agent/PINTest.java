@@ -7,12 +7,14 @@
  */
 package tlsattacker.fuzzer.agent;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import java.io.File;
 import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -44,6 +46,7 @@ public class PINTest {
      *
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testPinExists() {
         File f = new File("PIN/pin");
         assertTrue("Failure: Could not find PIN implementation", f.exists());

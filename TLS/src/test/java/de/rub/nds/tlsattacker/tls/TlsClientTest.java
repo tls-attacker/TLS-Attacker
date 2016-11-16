@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
@@ -59,6 +60,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
 /**
@@ -81,6 +83,7 @@ public class TlsClientTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
 
@@ -101,6 +104,7 @@ public class TlsClientTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256);

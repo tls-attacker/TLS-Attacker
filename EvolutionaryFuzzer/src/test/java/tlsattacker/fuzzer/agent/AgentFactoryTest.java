@@ -8,14 +8,11 @@
  */
 package tlsattacker.fuzzer.agent;
 
-import tlsattacker.fuzzer.agent.BlindAgent;
-import tlsattacker.fuzzer.agent.Agent;
-import tlsattacker.fuzzer.agent.AFLAgent;
-import tlsattacker.fuzzer.agent.AgentFactory;
-import tlsattacker.fuzzer.agent.PINAgent;
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.experimental.categories.Category;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 
@@ -36,6 +33,7 @@ public class AgentFactoryTest {
      * Test of generateAgent method, of class AgentFactory.
      */
     @Test
+    @Category(IntegrationTest.class)
     public void testGenerateAgent() throws IllegalAgentException {
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
         config.setAgent("BLIND");

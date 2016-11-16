@@ -85,7 +85,7 @@ public class FixedCertificateMutator extends CertificateMutator {
         }
         if (config == null) {
             config = new FixedCertificateMutatorConfig(generalConfig);
-            f.mkdirs();
+            new File(generalConfig.getCertificateMutatorConfigFolder()).mkdirs();
             config.serialize(f);
         }
         this.clientCertList = config.getClientCertificates();

@@ -54,6 +54,11 @@
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.54</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
