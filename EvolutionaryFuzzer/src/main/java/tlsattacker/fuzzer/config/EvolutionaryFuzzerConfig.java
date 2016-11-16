@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import tlsattacker.fuzzer.controller.CommandLineController;
+import tlsattacker.fuzzer.executor.MultiTLSExecutor;
+import tlsattacker.fuzzer.executor.SingleTLSExecutor;
 import tlsattacker.fuzzer.mutator.NoneMutator;
 import tlsattacker.fuzzer.mutator.SimpleMutator;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
@@ -47,6 +49,13 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors. Possible: "
             + SimpleMutator.optionName + ", " + NoneMutator.optionName + "")
     private String mutator = SimpleMutator.optionName;
+    
+    /**
+     * The executor that should be used
+     */
+    @Parameter(names = "-executor", description = "The Executor the Fuzzer uses to execute TestVectors. Possible: "
+            + SingleTLSExecutor.optionName + ", " + MultiTLSExecutor.optionName + "")
+    private String executor = SingleTLSExecutor.optionName;
 
     /**
      * The controller that should be used
@@ -207,6 +216,10 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         return configFolder + "certificates/server/";
     }
 
+    public String getExecutor() {
+        return executor;
+    }
+    
     /**
      * Creates the nessecary Folders as specified in the different Paths
      */

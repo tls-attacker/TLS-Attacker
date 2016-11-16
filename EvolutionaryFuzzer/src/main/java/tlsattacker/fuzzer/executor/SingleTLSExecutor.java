@@ -41,7 +41,10 @@ import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
+import tlsattacker.fuzzer.agent.AgentFactory;
+import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 import tlsattacker.fuzzer.result.TestVectorResult;
+import tlsattacker.fuzzer.server.ServerManager;
 
 /**
  * This is an Implementation of an Executor. This Executor is specially designed
@@ -52,14 +55,17 @@ import tlsattacker.fuzzer.result.TestVectorResult;
  * It is also possible to Design a new Executor which executes the
  * Workflowtraces with another Library than TLS-Attacker.
  *
+ * This Executor executes a TestVector on a Single Server and returns a
+ * TestVectorResult object which contains only one AgentResult.
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class TLSExecutor extends Executor {
+public class SingleTLSExecutor extends Executor {
 
     /**
      * The name of the Executor when referred by command line
      */
-    public static final String optionName = "tlsexecutor";
+    public static final String optionName = "singletls";
 
     /**
      * The TestVector that the executor should execute
@@ -86,17 +92,30 @@ public class TLSExecutor extends Executor {
      *
      * @param config Config that should be used
      * @param testVector TestVector that should be executed
-     * @param server Server on which the Executor should execute the Trace
-     * @param agent
+     * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
-    public TLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server, Agent agent) {
+    public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException {
         this.testVector = testVector;
-        this.server = server;
-        this.agent = agent;
         this.config = config;
-
+        server = ServerManager.getInstance().getFreeServer();
+        agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
-
+    
+    /**
+     * Constructor for the TLSExecutor
+     *
+     * @param config Config that should be used
+     * @param testVector TestVector that should be executed
+     * @param server Server on which the Executor should execute the Trace
+     * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
+     */
+    public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server) throws IllegalAgentException {
+        this.testVector = testVector;
+        this.config = config;
+        this.server = server;
+        agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
+    }
+    
     /**
      * Generates a TransportHandler according to the TLSServer and the config
      *
@@ -118,7 +137,7 @@ public class TLSExecutor extends Executor {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(TLSExecutor.class.getName());
+    private static final Logger LOG = Logger.getLogger(SingleTLSExecutor.class.getName());
 
     @Override
     public TestVectorResult call() throws Exception {

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
-import static java.util.concurrent.Executors.callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +26,6 @@ import tlsattacker.fuzzer.config.ExecuteFaultyConfig;
 import tlsattacker.fuzzer.config.ServerConfig;
 import tlsattacker.fuzzer.config.TestCrashesConfig;
 import tlsattacker.fuzzer.config.TraceTypesConfig;
-import tlsattacker.fuzzer.controller.CommandLineController;
 import tlsattacker.fuzzer.controller.Controller;
 import tlsattacker.fuzzer.controller.ControllerFactory;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
@@ -35,9 +33,8 @@ import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalControllerException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
-import tlsattacker.fuzzer.executor.TLSExecutor;
+import tlsattacker.fuzzer.executor.SingleTLSExecutor;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
-import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.result.TestVectorResult;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.ServerSerializer;
@@ -136,8 +133,7 @@ public class Main {
                     vector.getTrace().reset();
                     vector.getTrace().makeGeneric();
                     TLSServer server = ServerManager.getInstance().getFreeServer();
-                    TLSExecutor executor = new TLSExecutor(faultyConfig, vector, server,
-                            AgentFactory.generateAgent(faultyConfig, vector.getServerKeyCert(), server));
+                    SingleTLSExecutor executor = new SingleTLSExecutor(faultyConfig, vector, server);
                     FutureTask<TestVectorResult> futureTask = new FutureTask<>(executor);
                     Thread t = new Thread(futureTask);
                     t.start();
@@ -179,8 +175,7 @@ public class Main {
                         vector.getTrace().reset();
                         vector.getTrace().makeGeneric();
                         server = ServerManager.getInstance().getFreeServer();
-                        TLSExecutor executor = new TLSExecutor(testCrashedConfig, vector, server,
-                                AgentFactory.generateAgent(evoConfig, vector.getServerKeyCert(), server));
+                        SingleTLSExecutor executor = new SingleTLSExecutor(testCrashedConfig, vector, server);
                         FutureTask<TestVectorResult> futureTask = new FutureTask<>(executor);
                         Thread t = new Thread(futureTask);
                         t.start();

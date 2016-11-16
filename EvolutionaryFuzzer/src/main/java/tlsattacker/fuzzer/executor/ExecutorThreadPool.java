@@ -8,15 +8,12 @@
 package tlsattacker.fuzzer.executor;
 
 import tlsattacker.fuzzer.mutator.Mutator;
-import tlsattacker.fuzzer.agent.AgentFactory;
-import tlsattacker.fuzzer.agent.Agent;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
@@ -50,7 +47,7 @@ import javax.xml.bind.JAXBException;
 import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-
+import tlsattacker.fuzzer.controller.ExecutorFactory;
 /**
  * This ThreadPool manages the Threads for the different Executors and is
  * responsible for the continious exectution of new TestVectors.
@@ -191,26 +188,20 @@ public class ExecutorThreadPool implements Runnable {
         config.setSerialize(false);
         if (!config.isNoOld()) {
             File f = new File(config.getArchiveFolder());
-            for (int i = 0; i < f.listFiles(new GitIgnoreFileFilter()).length; i++) {
-
+            for (File listFile : f.listFiles(new GitIgnoreFileFilter())) {
                 TLSServer server = null;
                 try {
                     if (!stopped) {
-                        TestVector vector = TestVectorSerializer.read(new FileInputStream(f
-                                .listFiles(new GitIgnoreFileFilter())[i]));
+                        TestVector vector = TestVectorSerializer.read(new FileInputStream(listFile));
                         if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
                             continue;
                         }
-                        server = ServerManager.getInstance().getFreeServer();
                         vector.getTrace().reset();
                         vector.getTrace().makeGeneric();
-
-                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert(),server);
-                        Callable worker = new TLSExecutor(config, vector, server, agent);
+                        Callable worker = ExecutorFactory.getExecutor(config, vector);
                         Future future = executor.submit(worker);
                         analyzerThread.addToAnalyzeQueque(future);
                         runs++;
-
                     } else {
                         try {
                             Thread.sleep(1000);
@@ -219,7 +210,7 @@ public class ExecutorThreadPool implements Runnable {
                                     "Thread interruiped while the ThreadPool is paused.", ex);
                         }
                     }
-                } catch (Throwable ex) {
+                }catch (Throwable ex) {
                     LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
                     if (server != null) {
                         server.release();
@@ -237,10 +228,7 @@ public class ExecutorThreadPool implements Runnable {
                         if (!mutator.getCertMutator().isSupported(vector.getServerKeyCert())) {
                             continue;
                         }
-                        server = ServerManager.getInstance().getFreeServer();
-
-                        Agent agent = AgentFactory.generateAgent(config, vector.getServerKeyCert(), server);
-                        Callable worker = new TLSExecutor(config ,vector, server, agent);
+                        Callable worker = ExecutorFactory.getExecutor(config, vector);
                         Future future = executor.submit(worker);
                         analyzerThread.addToAnalyzeQueque(future);
                         runs++;
