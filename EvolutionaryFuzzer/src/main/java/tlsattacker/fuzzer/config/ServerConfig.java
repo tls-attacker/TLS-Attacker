@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.config;
 
@@ -65,7 +66,7 @@ public class ServerConfig {
      */
     @Parameter(names = "-mayor", required = false, description = "The mayor Version of the TLS Server")
     private String mayorVersion = "";
-    
+
     /**
      * The minor Version of the TLS Server
      */
@@ -87,9 +88,7 @@ public class ServerConfig {
     public void setMinorVersion(String minorVersion) {
         this.minorVersion = minorVersion;
     }
-    
-    
-    
+
     public String getIp() {
         return ip;
     }

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
@@ -66,10 +67,10 @@ public class FixedCertificateMutator extends CertificateMutator {
     private Random r;
 
     /**
-     * EvolutionaryFuzzerConfig used 
+     * EvolutionaryFuzzerConfig used
      */
     private final FuzzerGeneralConfig generalConfig;
-    
+
     /**
      * The name of the config file //TODO should perhaps not be here
      */
@@ -109,8 +110,7 @@ public class FixedCertificateMutator extends CertificateMutator {
         if (config.isAutofix()) {
             config.setClientCertificates(clientCertList);
             config.setServerCertificates(serverCertList);
-            File f = new File(generalConfig.getCertificateMutatorConfigFolder()
-                    + configFileName);
+            File f = new File(generalConfig.getCertificateMutatorConfigFolder() + configFileName);
             if (f.exists()) {
                 f.delete();
             }

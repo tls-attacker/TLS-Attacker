@@ -20,7 +20,7 @@ public class IllegalAnalyzerException extends Exception {
     public IllegalAnalyzerException(String message) {
         super(message);
     }
-    
+
     private static final Logger LOG = Logger.getLogger(IllegalAnalyzerException.class.getName());
-    
+
 }

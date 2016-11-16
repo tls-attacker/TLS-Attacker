@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer;
 
@@ -50,7 +51,7 @@ public class AnalyzeGoodModificationRuleTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     /**
      *
      */
@@ -81,7 +82,8 @@ public class AnalyzeGoodModificationRuleTest {
      */
     @Test
     public void testApplys() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+                "unittest.id", null);
 
         assertFalse(rule.applies(result));
         result.setGoodTrace(true);

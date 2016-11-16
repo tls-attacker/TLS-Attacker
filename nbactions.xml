@@ -5,7 +5,7 @@
         <displayName>format</displayName>
         <goals>
             <goal>initialize</goal>
-            <goal>java-formatter:format</goal>
+            <goal>formatter:format</goal>
         </goals>
     </action>
     <action>

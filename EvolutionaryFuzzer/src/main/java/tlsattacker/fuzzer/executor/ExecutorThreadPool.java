@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.executor;
 
@@ -48,6 +49,7 @@ import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.controller.ExecutorFactory;
+
 /**
  * This ThreadPool manages the Threads for the different Executors and is
  * responsible for the continious exectution of new TestVectors.
@@ -91,17 +93,21 @@ public class ExecutorThreadPool implements Runnable {
      * The AnalyzerThread that is used to analyze the Results
      */
     private final AnalyzerThread analyzerThread;
-    
+
     /**
      * Constructor for the ExecutorThreadPool
      *
-     * @param poolSize Number of Threads the pool Manages
-     * @param mutator Mutator which is used for the Generation of new
-     * FuzzingVectors.
+     * @param poolSize
+     *            Number of Threads the pool Manages
+     * @param mutator
+     *            Mutator which is used for the Generation of new
+     *            FuzzingVectors.
      * @param config
-     * @param analyzerThread The analyzer Thread to commit results to
+     * @param analyzerThread
+     *            The analyzer Thread to commit results to
      */
-    public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config, AnalyzerThread analyzerThread) {
+    public ExecutorThreadPool(int poolSize, Mutator mutator, EvolutionaryFuzzerConfig config,
+            AnalyzerThread analyzerThread) {
         this.config = config;
         this.poolSize = poolSize;
         this.mutator = mutator;
@@ -210,7 +216,7 @@ public class ExecutorThreadPool implements Runnable {
                                     "Thread interruiped while the ThreadPool is paused.", ex);
                         }
                     }
-                }catch (Throwable ex) {
+                } catch (Throwable ex) {
                     LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
                     if (server != null) {
                         server.release();

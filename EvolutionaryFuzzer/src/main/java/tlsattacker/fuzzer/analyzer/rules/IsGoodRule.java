@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer.rules;
 
@@ -25,7 +26,7 @@ import javax.xml.bind.JAXBException;
 
 /**
  * A rule which analyzes if the TestVector reached new codepaths and set a flag
- in the AgentResult object accordingly.
+ * in the AgentResult object accordingly.
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -84,8 +85,8 @@ public class IsGoodRule extends Rule {
     }
 
     /**
-     * The rule applies if the trace in the AgentResult contains Edges or Codeblocks
- the rule has not seen before
+     * The rule applies if the trace in the AgentResult contains Edges or
+     * Codeblocks the rule has not seen before
      * 
      * @param result
      *            AgentResult to analyze

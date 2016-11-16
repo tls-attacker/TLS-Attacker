@@ -35,7 +35,7 @@ import java.util.List;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public abstract class CommandConfig implements Serializable{
+public abstract class CommandConfig implements Serializable {
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints help")
     protected boolean help;

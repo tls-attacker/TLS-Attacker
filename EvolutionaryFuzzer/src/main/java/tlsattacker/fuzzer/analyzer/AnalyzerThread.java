@@ -44,7 +44,8 @@ public class AnalyzerThread extends Thread {
     /**
      * Adds a result to the worklist
      *
-     * @param result AgentResult to add to the worklist
+     * @param result
+     *            AgentResult to add to the worklist
      */
     public synchronized void addToAnalyzeQueque(Future<TestVectorResult> result) {
         workList.add(result);
@@ -74,8 +75,7 @@ public class AnalyzerThread extends Thread {
                 }
             } else {
                 try {
-                    synchronized(this)
-                    {
+                    synchronized (this) {
                         wait();
                     }
                 } catch (InterruptedException ex) {
@@ -84,6 +84,7 @@ public class AnalyzerThread extends Thread {
             }
         }
     }
+
     private static final Logger LOG = Logger.getLogger(AnalyzerThread.class.getName());
 
 }

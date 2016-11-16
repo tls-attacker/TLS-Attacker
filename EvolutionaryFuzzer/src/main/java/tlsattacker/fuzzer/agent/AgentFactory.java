@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -25,10 +26,13 @@ public class AgentFactory {
      * Generates the correct Agent depending on the agent field set in the
      * configuration
      *
-     * @param config The configuration object
-     * @param keypair The server certificate key pair the agent should be
-     * created with
-     * @param server The server used by the Agent
+     * @param config
+     *            The configuration object
+     * @param keypair
+     *            The server certificate key pair the agent should be created
+     *            with
+     * @param server
+     *            The server used by the Agent
      * @return A newly generated Agent
      */
     public static Agent generateAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair, TLSServer server)

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer.rules;
 
@@ -65,8 +66,8 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     * This method returns true if the TestVector in the AgentResult is conisdered as
- a good TestVector
+     * This method returns true if the TestVector in the AgentResult is
+     * conisdered as a good TestVector
      * 
      * @param result
      *            AgentResult to analyze

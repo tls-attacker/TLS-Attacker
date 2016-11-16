@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.executor;
 
@@ -19,8 +20,8 @@ import tlsattacker.fuzzer.result.TestVectorResult;
 import tlsattacker.fuzzer.server.ServerManager;
 
 /**
- * This is implementation of the Executor executes a TestVector on a List
- * of TLSServers and returns a TestVectorResult object which contains an Agent
+ * This is implementation of the Executor executes a TestVector on a List of
+ * TLSServers and returns a TestVectorResult object which contains an Agent
  * Result for each executed TLSServer.
  *
  * @author Robert Merget - robert.merget@rub.de
@@ -50,8 +51,10 @@ public class MultiTLSExecutor extends Executor {
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config Config that should be used
-     * @param testVector TestVector that should be executed
+     * @param config
+     *            Config that should be used
+     * @param testVector
+     *            TestVector that should be executed
      */
     public MultiTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) {
         this.testVector = testVector;
@@ -62,22 +65,18 @@ public class MultiTLSExecutor extends Executor {
     @Override
     public TestVectorResult call() throws Exception {
         List<AgentResult> agentResults = new LinkedList<>();
-        for(TLSServer server : servers)
-        {
-            try
-            {
+        for (TLSServer server : servers) {
+            try {
                 TestVector tempTestVector = (TestVector) UnoptimizedDeepCopy.copy(testVector);
                 SingleTLSExecutor singleExecutor = new SingleTLSExecutor(config, tempTestVector, server);
-                TestVectorResult result  = singleExecutor.call();
+                TestVectorResult result = singleExecutor.call();
                 agentResults.addAll(result.getAgentResults());
-            }
-            catch(Exception E)
-            {
+            } catch (Exception E) {
                 E.printStackTrace();
             }
         }
         return new TestVectorResult(testVector, agentResults);
     }
-    
+
     private static final Logger LOG = Logger.getLogger(MultiTLSExecutor.class.getName());
 }
