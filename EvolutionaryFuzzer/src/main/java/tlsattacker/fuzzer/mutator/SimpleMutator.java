@@ -20,14 +20,11 @@ import java.util.Random;
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
-import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
  * A simple Mutator implementations that applies modifications to random good

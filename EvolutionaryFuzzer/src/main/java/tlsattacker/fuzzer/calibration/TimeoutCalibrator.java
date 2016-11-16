@@ -131,6 +131,7 @@ public class TimeoutCalibrator {
         List<CipherSuite> ciperSuiteList = CipherSuite.getImplemented();
 
         for (CipherSuite ciphersuite : ciperSuiteList) {
+            LOG.log(Level.INFO, "Testing: {0}", ciphersuite.name());
             if (testCiphersuite(serverCerts, ciphersuite, limit)) {
                 workingCipherSuites.add(ciphersuite);
             }

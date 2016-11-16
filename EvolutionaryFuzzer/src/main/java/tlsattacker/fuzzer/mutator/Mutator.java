@@ -23,7 +23,7 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
  * The Mutator is the generator of new FuzzingVectors, different Implementations
  * should implement different Strategies to generate new Workflowtraces to be
  * executed.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Mutator {
@@ -49,7 +49,7 @@ public abstract class Mutator {
 
     /**
      * Checks if good TestVectors already exist
-     * 
+     *
      * @return True if good TestVectors exist
      */
     protected boolean goodVectorsExist() {
@@ -60,7 +60,7 @@ public abstract class Mutator {
 
     /**
      * Checks if TestVectors exist in the archive Folder
-     * 
+     *
      * @return True if archive TestVectors exist
      */
     protected boolean archiveVectorsExist() {
@@ -70,16 +70,12 @@ public abstract class Mutator {
 
     /**
      * Chooses a random TestVector from a folder
-     * 
-     * @param folder
-     *            Folder to choose from
+     *
+     * @param folder Folder to choose from
      * @return A random TestVector in the folder
-     * @throws IOException
-     *             If something goes wrong while reading
-     * @throws JAXBException
-     *             If desirialisation goes wrong
-     * @throws XMLStreamException
-     *             If desirialisation goes wrong
+     * @throws IOException If something goes wrong while reading
+     * @throws JAXBException If desirialisation goes wrong
+     * @throws XMLStreamException If desirialisation goes wrong
      */
     protected TestVector chooseRandomTestVectorFromFolder(File folder) throws IOException, JAXBException,
             XMLStreamException {
@@ -90,7 +86,11 @@ public abstract class Mutator {
                 File[] files = folder.listFiles(new GitIgnoreFileFilter());
                 Random r = new Random();
                 File chosenFile = files[r.nextInt(files.length)];
-                chosenTestVector = TestVectorSerializer.read(new FileInputStream(chosenFile));
+                try {
+                    chosenTestVector = TestVectorSerializer.read(new FileInputStream(chosenFile));
+                } catch (IOException | JAXBException | XMLStreamException E) {
+                    throw new IOException("Could not read TestVector from file:" + chosenFile.getAbsolutePath());
+                }
             } while (chosenTestVector == null && tries < 1000);
             if (chosenTestVector == null) {
                 throw new IOException("Cannot choose random TestVector from " + folder.getAbsolutePath());
@@ -104,7 +104,7 @@ public abstract class Mutator {
 
     /**
      * Generates a new TestVector to execute
-     * 
+     *
      * @return New TestVector
      */
     public abstract TestVector getNewMutation();
