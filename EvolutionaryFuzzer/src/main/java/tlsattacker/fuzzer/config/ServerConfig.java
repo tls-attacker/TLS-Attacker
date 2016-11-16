@@ -60,6 +60,36 @@ public class ServerConfig {
     @Parameter(names = "-killCommand", required = false, description = "The Command needed to kill the Server after each execution, probably makes only sense in a single Threaded enviroment")
     private String killCommand;
 
+    /**
+     * The mayor Version of the TLS Server
+     */
+    @Parameter(names = "-mayor", required = false, description = "The mayor Version of the TLS Server")
+    private String mayorVersion = "";
+    
+    /**
+     * The minor Version of the TLS Server
+     */
+    @Parameter(names = "-minor", required = false, description = "The minor Version of the TLS Server")
+    private String minorVersion = "";
+
+    public String getMayorVersion() {
+        return mayorVersion;
+    }
+
+    public void setMayorVersion(String mayorVersion) {
+        this.mayorVersion = mayorVersion;
+    }
+
+    public String getMinorVersion() {
+        return minorVersion;
+    }
+
+    public void setMinorVersion(String minorVersion) {
+        this.minorVersion = minorVersion;
+    }
+    
+    
+    
     public String getIp() {
         return ip;
     }

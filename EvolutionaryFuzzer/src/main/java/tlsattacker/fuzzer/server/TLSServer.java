@@ -65,6 +65,16 @@ public class TLSServer {
     private String killServerCommand = "";
 
     /**
+     * Mayor Version of the TLSServer eg. Openssl, Botan etc
+     */
+    private String mayorVersion = "";
+
+    /**
+     * Minor Version of the TLSServer eg. 1.03g etc.
+     */
+    private String minorVersion = "";
+
+    /**
      * The ErrorStream reader
      */
     private StreamGobbler errorGobbler;
@@ -108,15 +118,33 @@ public class TLSServer {
      *            Server is fully started
      * @param killServerCommand
      */
-    public TLSServer(FuzzerGeneralConfig config, String ip, int port, String restartServerCommand, String accepted, String killServerCommand) {
+    public TLSServer(FuzzerGeneralConfig config, String ip, int port, String restartServerCommand, String accepted, String killServerCommand, String mayorVersion, String minorVersion) {
         this.config = config;
         this.ip = ip;
         this.port = port;
         this.restartServerCommand = restartServerCommand;
         this.accepted = accepted;
         this.killServerCommand = killServerCommand;
+        this.mayorVersion = mayorVersion;
+        this.minorVersion = minorVersion;
     }
 
+    public String getMayorVersion() {
+        return mayorVersion;
+    }
+
+    public void setMayorVersion(String mayorVersion) {
+        this.mayorVersion = mayorVersion;
+    }
+
+    public String getMinorVersion() {
+        return minorVersion;
+    }
+
+    public void setMinorVersion(String minorVersion) {
+        this.minorVersion = minorVersion;
+    }
+    
     public String getKillServerCommand() {
         return killServerCommand;
     }

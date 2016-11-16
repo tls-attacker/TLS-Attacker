@@ -141,7 +141,7 @@ public class Main {
                 break;
             case "new-server":
                 TLSServer server = new TLSServer(null, serverConfig.getIp(), serverConfig.getPort(),
-                        serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand());
+                        serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand(), serverConfig.getMayorVersion(), serverConfig.getMinorVersion());
                  {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
