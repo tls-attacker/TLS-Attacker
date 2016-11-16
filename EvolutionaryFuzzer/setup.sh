@@ -1,4 +1,3 @@
-rm implementations -rf
 rm PIN -rf
 mkdir implementations
 wget -qO- http://software.intel.com/sites/landingpage/pintool/downloads/pin-3.0-76991-gcc-linux.tar.gz | tar xvz
