@@ -62,14 +62,14 @@ public class FixedCertificateMutatorConfig implements Serializable {
         this.config = config;
         clientCertificates = new ArrayList<>();
         // Initialize the Config File with some certificates if we can find them
-        new File("conifg/certificates/client/").mkdirs();
-        File jksFile = new File("conifg/certificates/client/rsa1024.jks");
+        new File("config/certificates/client/").mkdirs();
+        File jksFile = new File("config/certificates/client/rsa1024.jks");
         if (jksFile.exists()) {
             clientCertificates.add(new ClientCertificateStructure("password", "alias", jksFile));
         }
         serverCertificates = new ArrayList<>();
-        File keyFile = new File("conifg/certificates/server/dsakey.pem");
-        File certFile = new File("conifg/certificates/server/dsacert.pem");
+        File keyFile = new File("config/certificates/server/dsakey.pem");
+        File certFile = new File("config/certificates/server/dsacert.pem");
         if (keyFile.exists() && certFile.exists()) {
             serverCertificates.add(new ServerCertificateStructure(keyFile, certFile));
         }
