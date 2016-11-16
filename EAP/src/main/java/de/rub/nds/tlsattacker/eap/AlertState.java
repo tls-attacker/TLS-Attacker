@@ -30,12 +30,12 @@ public class AlertState implements EapState {
 
     public AlertState(EapolMachine eapolMachine, int id) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
 
-	nic.closeCon();
-	LOGGER.info("Alert, Connection refused");
-	// System.exit(0);
+        nic.closeCon();
+        LOGGER.info("Alert, Connection refused");
+        // System.exit(0);
 
     }
 
@@ -51,17 +51,17 @@ public class AlertState implements EapState {
 
     @Override
     public byte[] receive() {
-	return null;
+        return null;
     }
 
     public String getState() {
-	return "AlertState";
+        return "AlertState";
     }
 
     @Override
     public int getID() {
 
-	return 0;
+        return 0;
 
     }
 

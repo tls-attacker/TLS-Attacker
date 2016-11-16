@@ -48,7 +48,7 @@ public class ModifiableVariableTest {
     @Test
     public void testRandomByteArrayModification() throws Exception {
         ModifiableByteArray array = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        array.setOriginalValue(new byte[]{0, 1, 2});
+        array.setOriginalValue(new byte[] { 0, 1, 2 });
         array.createRandomModificationAtRuntime();
         LOGGER.info("Randomly modified byte array: " + ArrayConverter.bytesToHexString(array.getValue()));
         assertNotNull(array.getModification());
@@ -59,7 +59,7 @@ public class ModifiableVariableTest {
         ModifiableByte singleByte = ModifiableVariableFactory.createByteModifiableVariable();
         singleByte.setOriginalValue((byte) 0);
         singleByte.createRandomModificationAtRuntime();
-        LOGGER.info("Randomly modified byte: " + ArrayConverter.bytesToHexString(new byte[]{singleByte.getValue()}));
+        LOGGER.info("Randomly modified byte: " + ArrayConverter.bytesToHexString(new byte[] { singleByte.getValue() }));
         assertNotNull(singleByte.getModification());
     }
 

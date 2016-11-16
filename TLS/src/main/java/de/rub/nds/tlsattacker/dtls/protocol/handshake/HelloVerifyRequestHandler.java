@@ -24,71 +24,71 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @param <HandshakeMessage>
  */
 public class HelloVerifyRequestHandler<Message extends HelloVerifyRequestMessage> extends
-	HandshakeMessageHandler<Message> {
+        HandshakeMessageHandler<Message> {
 
     @SuppressWarnings("unchecked")
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = (Class<? extends Message>) HelloVerifyRequestMessage.class;
+        super(tlsContext);
+        this.correctProtocolMessageClass = (Class<? extends Message>) HelloVerifyRequestMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
-	byte[] content;
-	protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
+        byte[] content;
+        protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
 
-	// TODO: Calculate cookie via HMAC
-	byte[] cookie = new byte[3];
-	cookie[0] = (byte) 11;
-	cookie[1] = (byte) 22;
-	cookie[2] = (byte) 33;
+        // TODO: Calculate cookie via HMAC
+        byte[] cookie = new byte[3];
+        cookie[0] = (byte) 11;
+        cookie[1] = (byte) 22;
+        cookie[2] = (byte) 33;
 
-	tlsContext.setDtlsHandshakeCookie(cookie);
-	protocolMessage.setCookie(cookie);
-	protocolMessage.setCookieLength((byte) cookie.length);
+        tlsContext.setDtlsHandshakeCookie(cookie);
+        protocolMessage.setCookie(cookie);
+        protocolMessage.setCookieLength((byte) cookie.length);
 
-	content = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(),
-		new byte[] { protocolMessage.getCookieLength().getValue() }, protocolMessage.getCookie().getValue());
+        content = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(),
+                new byte[] { protocolMessage.getCookieLength().getValue() }, protocolMessage.getCookie().getValue());
 
-	protocolMessage.setLength(content.length);
+        protocolMessage.setLength(content.length);
 
-	protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-		new byte[] { HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue() },
-		ArrayConverter.intToBytes(protocolMessage.getLength().getValue(), 3), content));
+        protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+                new byte[] { HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue() },
+                ArrayConverter.intToBytes(protocolMessage.getLength().getValue(), 3), content));
 
-	return protocolMessage.getCompleteResultingMessage().getValue();
+        return protocolMessage.getCompleteResultingMessage().getValue();
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	if (message[pointer] != HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue()) {
-	    throw new InvalidMessageTypeException("This is not a client verify message");
-	}
-	protocolMessage.setType(message[pointer]);
+        if (message[pointer] != HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue()) {
+            throw new InvalidMessageTypeException("This is not a client verify message");
+        }
+        protocolMessage.setType(message[pointer]);
 
-	int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-	int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
-	int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-	protocolMessage.setLength(length);
+        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+        int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
+        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setLength(length);
 
-	currentPointer = nextPointer;
-	nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
-	ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
-		currentPointer, nextPointer));
-	protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
+        currentPointer = nextPointer;
+        nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
+        ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
+                currentPointer, nextPointer));
+        protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
 
-	currentPointer = nextPointer;
-	nextPointer += HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH;
-	int cookieLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        currentPointer = nextPointer;
+        nextPointer += HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH;
+        int cookieLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
-	byte[] cookie;
-	currentPointer = nextPointer;
-	nextPointer += cookieLength;
-	cookie = Arrays.copyOfRange(message, currentPointer, nextPointer);
-	protocolMessage.setCookie(cookie);
-	protocolMessage.setCookieLength((byte) cookie.length);
-	tlsContext.setDtlsHandshakeCookie(cookie);
+        byte[] cookie;
+        currentPointer = nextPointer;
+        nextPointer += cookieLength;
+        cookie = Arrays.copyOfRange(message, currentPointer, nextPointer);
+        protocolMessage.setCookie(cookie);
+        protocolMessage.setCookieLength((byte) cookie.length);
+        tlsContext.setDtlsHandshakeCookie(cookie);
 
-	return nextPointer;
+        return nextPointer;
     }
 }

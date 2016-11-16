@@ -24,11 +24,11 @@ public class CompressionMethodConverter implements IStringConverter<CompressionM
     @Override
     public CompressionMethod convert(String value) {
 
-	try {
-	    return CompressionMethod.valueOf(value);
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a compression method. "
-		    + "Available values are: " + Arrays.toString(CompressionMethod.values()));
-	}
+        try {
+            return CompressionMethod.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException("Value " + value + " cannot be converted to a compression method. "
+                    + "Available values are: " + Arrays.toString(CompressionMethod.values()));
+        }
     }
 }

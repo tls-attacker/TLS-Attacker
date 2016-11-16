@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -24,9 +23,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.tls.TlsFatalAlert;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -79,51 +81,48 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
         nextPointer = currentPointer + publicKeyLength;
         protocolMessage.setPublicKey(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
-        byte[] ecParams = ArrayConverter.concatenate(new byte[]{protocolMessage.getCurveType().getValue()},
+        byte[] ecParams = ArrayConverter.concatenate(new byte[] { protocolMessage.getCurveType().getValue() },
                 protocolMessage.getNamedCurve().getValue(), ArrayConverter.intToBytes(protocolMessage
                         .getPublicKeyLength().getValue(), 1), protocolMessage.getPublicKey().getValue());
         InputStream is = new ByteArrayInputStream(ecParams);
-
+        ECPublicKeyParameters publicKeyParameters = null;
         try {
-            ECPublicKeyParameters publicKeyParameters = ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
+            publicKeyParameters = ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
             LOGGER.debug("Parsed the following EC domain parameters: ");
             LOGGER.debug("  Curve order: {}", publicKeyParameters.getParameters().getCurve().getOrder());
             LOGGER.debug("  Parameter A: {}", publicKeyParameters.getParameters().getCurve().getA());
             LOGGER.debug("  Parameter B: {}", publicKeyParameters.getParameters().getCurve().getB());
             LOGGER.debug("  Base point: {} ", publicKeyParameters.getParameters().getG());
             LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
-
-            tlsContext.getEcContext().setServerPublicKeyParameters(publicKeyParameters);
-
-            if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
-                    || tlsContext.getProtocolVersion() == ProtocolVersion.TLS12) {
-                currentPointer = nextPointer;
-                nextPointer++;
-                HashAlgorithm ha = HashAlgorithm.getHashAlgorithm(message[currentPointer]);
-                protocolMessage.setHashAlgorithm(ha.getValue());
-
-                currentPointer = nextPointer;
-                nextPointer++;
-                SignatureAlgorithm sa = SignatureAlgorithm.getSignatureAlgorithm(message[currentPointer]);
-                protocolMessage.setSignatureAlgorithm(sa.getValue());
-            }
-
-            currentPointer = nextPointer;
-            nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
-            int signatureLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-            protocolMessage.setSignatureLength(signatureLength);
-
-            currentPointer = nextPointer;
-            nextPointer = currentPointer + signatureLength;
-            protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
-
-            protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
-
-            return nextPointer;
+        } catch (TlsFatalAlert alert) {
+            throw new UnsupportedOperationException("Problematic EC parameters, we dont support these yet", alert);
         } catch (IOException ex) {
-//	    ex.printStackTrace();
             throw new WorkflowExecutionException("EC public key parsing failed", ex);
         }
+        tlsContext.getEcContext().setServerPublicKeyParameters(publicKeyParameters);
+
+        if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS12
+                || tlsContext.getProtocolVersion() == ProtocolVersion.TLS12) {
+            currentPointer = nextPointer;
+            nextPointer++;
+            HashAlgorithm ha = HashAlgorithm.getHashAlgorithm(message[currentPointer]);
+            protocolMessage.setHashAlgorithm(ha.getValue());
+
+            currentPointer = nextPointer;
+            nextPointer++;
+            SignatureAlgorithm sa = SignatureAlgorithm.getSignatureAlgorithm(message[currentPointer]);
+            protocolMessage.setSignatureAlgorithm(sa.getValue());
+        }
+        currentPointer = nextPointer;
+        nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
+        int signatureLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setSignatureLength(signatureLength);
+        currentPointer = nextPointer;
+        nextPointer = currentPointer + signatureLength;
+        protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
+        return nextPointer;
+
     }
 
     @Override

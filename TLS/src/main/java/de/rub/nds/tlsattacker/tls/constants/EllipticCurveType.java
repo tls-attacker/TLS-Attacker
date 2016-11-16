@@ -31,21 +31,21 @@ public enum EllipticCurveType {
     private static final Map<Byte, EllipticCurveType> MAP;
 
     private EllipticCurveType(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (EllipticCurveType c : EllipticCurveType.values()) {
-	    MAP.put(c.value, c);
-	}
+        MAP = new HashMap<>();
+        for (EllipticCurveType c : EllipticCurveType.values()) {
+            MAP.put(c.value, c);
+        }
     }
 
     public static EllipticCurveType getCurveType(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 }

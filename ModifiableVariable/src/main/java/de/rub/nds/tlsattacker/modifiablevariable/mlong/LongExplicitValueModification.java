@@ -26,19 +26,19 @@ public class LongExplicitValueModification extends VariableModification<Long> {
     }
 
     public LongExplicitValueModification(Long bi) {
-	this.explicitValue = bi;
+        this.explicitValue = bi;
     }
 
     @Override
     protected Long modifyImplementationHook(final Long input) {
-	return explicitValue;
+        return explicitValue;
     }
 
     public Long getExplicitValue() {
-	return explicitValue;
+        return explicitValue;
     }
 
     public void setExplicitValue(Long explicitValue) {
-	this.explicitValue = explicitValue;
+        this.explicitValue = explicitValue;
     }
 }

@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public abstract class TestTLS {

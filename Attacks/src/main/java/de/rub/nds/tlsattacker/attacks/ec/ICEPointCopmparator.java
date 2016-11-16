@@ -18,7 +18,7 @@ public class ICEPointCopmparator implements Comparator<ICEPoint> {
 
     @Override
     public int compare(ICEPoint o1, ICEPoint o2) {
-	return Integer.compare(o1.getOrder(), o2.getOrder());
+        return Integer.compare(o1.getOrder(), o2.getOrder());
     }
 
 }

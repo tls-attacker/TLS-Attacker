@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class SignatureAndHashAlgorithmsExtensionHandler extends
-	ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
+        ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private static SignatureAndHashAlgorithmsExtensionHandler instance;
 
@@ -28,10 +28,10 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     }
 
     public static SignatureAndHashAlgorithmsExtensionHandler getInstance() {
-	if (instance == null) {
-	    instance = new SignatureAndHashAlgorithmsExtensionHandler();
-	}
-	return instance;
+        if (instance == null) {
+            instance = new SignatureAndHashAlgorithmsExtensionHandler();
+        }
+        return instance;
     }
 
     /**
@@ -39,27 +39,27 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
      */
     @Override
     public void initializeClientHelloExtension(SignatureAndHashAlgorithmsExtensionMessage extension) {
-	byte[] algorithms = null;
-	for (SignatureAndHashAlgorithm algorithm : extension.getSignatureAndHashAlgorithmsConfig()) {
-	    algorithms = ArrayConverter.concatenate(algorithms, algorithm.getByteValue());
-	}
+        byte[] algorithms = new byte[0];
+        for (SignatureAndHashAlgorithm algorithm : extension.getSignatureAndHashAlgorithmsConfig()) {
+            algorithms = ArrayConverter.concatenate(algorithms, algorithm.getByteValue());
+        }
 
-	extension.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
-	extension.setSignatureAndHashAlgorithms(algorithms);
-	extension.setSignatureAndHashAlgorithmsLength(algorithms != null ? algorithms.length : 0);
-	extension.setExtensionLength(extension.getSignatureAndHashAlgorithmsLength().getValue()
-		+ ExtensionByteLength.EXTENSIONS);
+        extension.setExtensionType(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue());
+        extension.setSignatureAndHashAlgorithms(algorithms);
+        extension.setSignatureAndHashAlgorithmsLength(algorithms != null ? algorithms.length : 0);
+        extension.setExtensionLength(extension.getSignatureAndHashAlgorithmsLength().getValue()
+                + ExtensionByteLength.EXTENSIONS);
 
-	byte[] extensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
-		.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
-		.intToBytes(extension.getSignatureAndHashAlgorithmsLength().getValue(),
-			SIGNATURE_AND_HASH_ALGORITHMS_LENGTH), extension.getSignatureAndHashAlgorithms().getValue());
+        byte[] extensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
+                .intToBytes(extension.getSignatureAndHashAlgorithmsLength().getValue(),
+                        SIGNATURE_AND_HASH_ALGORITHMS_LENGTH), extension.getSignatureAndHashAlgorithms().getValue());
 
-	extension.setExtensionBytes(extensionBytes);
+        extension.setExtensionBytes(extensionBytes);
     }
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

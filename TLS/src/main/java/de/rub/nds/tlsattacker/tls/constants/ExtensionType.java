@@ -46,62 +46,62 @@ public enum ExtensionType {
     private static final Map<Integer, ExtensionType> MAP;
 
     private ExtensionType(byte[] value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (ExtensionType c : ExtensionType.values()) {
-	    MAP.put(valueToInt(c.value), c);
-	}
+        MAP = new HashMap<>();
+        for (ExtensionType c : ExtensionType.values()) {
+            MAP.put(valueToInt(c.value), c);
+        }
     }
 
     private static int valueToInt(byte[] value) {
-	return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
     public static ExtensionType getExtensionType(byte[] value) {
-	return MAP.get(valueToInt(value));
+        return MAP.get(valueToInt(value));
     }
 
     public byte[] getValue() {
-	return value;
+        return value;
     }
 
     public byte getMajor() {
-	return value[0];
+        return value[0];
     }
 
     public byte getMinor() {
-	return value[1];
+        return value[1];
     }
 
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	ExtensionHandler<? extends ExtensionMessage> eh = null;
-	switch (this) {
-	    case SERVER_NAME_INDICATION:
-		eh = ServerNameIndicationExtensionHandler.getInstance();
-		break;
-	    case MAX_FRAGMENT_LENGTH:
-		eh = MaxFragmentLengthExtensionHandler.getInstance();
-		break;
-	    case EC_POINT_FORMATS:
-		eh = ECPointFormatExtensionHandler.getInstance();
-		break;
-	    case ELLIPTIC_CURVES:
-		eh = EllipticCurvesExtensionHandler.getInstance();
-		break;
-	    case SIGNATURE_AND_HASH_ALGORITHMS:
-		eh = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
-		break;
-	    case HEARTBEAT:
-		eh = HeartbeatExtensionHandler.getInstance();
-		break;
-	    default:
-	}
-	if (eh == null) {
-	    throw new UnsupportedOperationException("Extension not supported yet");
-	}
-	return eh;
+        ExtensionHandler<? extends ExtensionMessage> eh = null;
+        switch (this) {
+            case SERVER_NAME_INDICATION:
+                eh = ServerNameIndicationExtensionHandler.getInstance();
+                break;
+            case MAX_FRAGMENT_LENGTH:
+                eh = MaxFragmentLengthExtensionHandler.getInstance();
+                break;
+            case EC_POINT_FORMATS:
+                eh = ECPointFormatExtensionHandler.getInstance();
+                break;
+            case ELLIPTIC_CURVES:
+                eh = EllipticCurvesExtensionHandler.getInstance();
+                break;
+            case SIGNATURE_AND_HASH_ALGORITHMS:
+                eh = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+                break;
+            case HEARTBEAT:
+                eh = HeartbeatExtensionHandler.getInstance();
+                break;
+            default:
+        }
+        if (eh == null) {
+            throw new UnsupportedOperationException("Extension not supported yet");
+        }
+        return eh;
     }
 }

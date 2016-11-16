@@ -33,31 +33,31 @@ public class ConnectionHandler implements Runnable {
      *            - The socket of the connection
      */
     public ConnectionHandler(final Socket socket) {
-	applicationSocket = socket;
+        applicationSocket = socket;
     }
 
     @Override
     public void run() {
 
-	LOGGER.debug("new Thread started");
+        LOGGER.debug("new Thread started");
 
-	try {
-	    final BufferedReader br = new BufferedReader(new InputStreamReader(applicationSocket.getInputStream()));
-	    final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(applicationSocket.getOutputStream()));
-	    String line = "";
-	    while ((line = br.readLine()) != null) {
-		LOGGER.debug(line);
-		bw.write("ack");
-		bw.flush();
-	    }
-	} catch (IOException e) {
-	    LOGGER.debug(e.getLocalizedMessage(), e);
-	} finally {
-	    try {
-		applicationSocket.close();
-	    } catch (final IOException ioe) {
-		LOGGER.debug(ioe.getLocalizedMessage(), ioe);
-	    }
-	}
+        try {
+            final BufferedReader br = new BufferedReader(new InputStreamReader(applicationSocket.getInputStream()));
+            final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(applicationSocket.getOutputStream()));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                LOGGER.debug(line);
+                bw.write("ack");
+                bw.flush();
+            }
+        } catch (IOException e) {
+            LOGGER.debug(e.getLocalizedMessage(), e);
+        } finally {
+            try {
+                applicationSocket.close();
+            } catch (final IOException ioe) {
+                LOGGER.debug(ioe.getLocalizedMessage(), ioe);
+            }
+        }
     }
 }

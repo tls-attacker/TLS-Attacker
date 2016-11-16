@@ -28,16 +28,16 @@ public class EapTlsStartState implements EapState {
 
     public EapTlsStartState(EapolMachine eapolMachine, int id) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
 
     }
 
     @Override
     public void send() {
 
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPNAK", id);
-	nic.sendFrame(eapstart.getFrame());
+        EAPFrame eapstart = eaptlsfactory.createFrame("EAPNAK", id);
+        nic.sendFrame(eapstart.getFrame());
 
     }
 
@@ -49,26 +49,26 @@ public class EapTlsStartState implements EapState {
     @Override
     public byte[] receive() {
 
-	data = nic.receiveFrame();
-	int id = (int) data[19]; // Get ID
+        data = nic.receiveFrame();
+        int id = (int) data[19]; // Get ID
 
-	if (data[22] == 0x0d) {
-	    eapolMachine.setState(new HelloState(eapolMachine, id));
-	} else {
-	    eapolMachine.setState(new EapTlsStartState(eapolMachine, id));
-	}
-	return data;
+        if (data[22] == 0x0d) {
+            eapolMachine.setState(new HelloState(eapolMachine, id));
+        } else {
+            eapolMachine.setState(new EapTlsStartState(eapolMachine, id));
+        }
+        return data;
     }
 
     @Override
     public String getState() {
-	return "EapTlsStartState";
+        return "EapTlsStartState";
     }
 
     @Override
     public int getID() {
 
-	return (int) data[19];
+        return (int) data[19];
 
     }
 

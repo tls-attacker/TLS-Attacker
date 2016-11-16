@@ -65,13 +65,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
         ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
                 currentPointer, nextPointer));
-        protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
+
+        protocolMessage.setProtocolVersion(Arrays.copyOfRange(message, currentPointer, nextPointer));
+        if (serverProtocolVersion == null) {
+            System.out.println("Unknown protocolversion"
+                    + ArrayConverter.bytesToHexString(Arrays.copyOfRange(message, currentPointer, nextPointer)));// TODO
+        }
 
         currentPointer = nextPointer;
         nextPointer = currentPointer + HandshakeByteLength.UNIX_TIME;
         byte[] serverUnixTime = Arrays.copyOfRange(message, currentPointer, nextPointer);
         protocolMessage.setUnixTime(serverUnixTime);
-	// System.out.println(new
+        // System.out.println(new
         // Date(ArrayConverter.bytesToLong(serverUnixTime) * 1000));
 
         currentPointer = nextPointer;
@@ -101,8 +106,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         nextPointer = currentPointer + HandshakeByteLength.CIPHER_SUITE;
         CipherSuite selectedCipher;
         try {
-            selectedCipher = CipherSuite.getCipherSuite(Arrays
-                    .copyOfRange(message, currentPointer, nextPointer));
+            selectedCipher = CipherSuite.getCipherSuite(Arrays.copyOfRange(message, currentPointer, nextPointer));
         } catch (UnknownCiphersuiteException ex) {
             LOGGER.error(ex.getLocalizedMessage());
             LOGGER.debug(ex.getLocalizedMessage(), ex);
@@ -129,14 +133,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             while ((currentPointer - pointer) < length) {
                 nextPointer = currentPointer + ExtensionByteLength.TYPE;
                 byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
-		// Not implemented/unknown extensions will generate an Exception
+                // Not implemented/unknown extensions will generate an Exception
                 // ...
                 try {
-                    ExtensionHandler<? extends ExtensionMessage> eh = ExtensionType.getExtensionType(extensionType).getExtensionHandler();
+                    ExtensionHandler<? extends ExtensionMessage> eh = ExtensionType.getExtensionType(extensionType)
+                            .getExtensionHandler();
                     currentPointer = eh.parseExtension(message, currentPointer);
                     protocolMessage.addExtension(eh.getExtensionMessage());
                 } // ... which we catch, then disregard that extension and carry
-                // on.
+                  // on.
                 catch (Exception ex) {
                     currentPointer = nextPointer;
                     nextPointer += 2;
@@ -161,7 +166,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.isSessionResumption()) {
             protocolMessage.setSessionId(tlsContext.getSessionID());
         } else {
-	    // since the server cannot handle more than one Client at once a
+            // since the server cannot handle more than one Client at once a
             // static Session-ID is set
             protocolMessage.setSessionId(ArrayConverter
                     .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
@@ -190,11 +195,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         byte[] result = ArrayConverter.concatenate(protocolMessage.getProtocolVersion().getValue(), protocolMessage
                 .getUnixTime().getValue(), protocolMessage.getRandom().getValue(), ArrayConverter.intToBytes(
-                        protocolMessage.getSessionIdLength().getValue(), 1), protocolMessage.getSessionId().getValue(),
-                protocolMessage.getSelectedCipherSuite().getValue(), new byte[]{protocolMessage
-                    .getSelectedCompressionMethod().getValue()});
+                protocolMessage.getSessionIdLength().getValue(), 1), protocolMessage.getSessionId().getValue(),
+                protocolMessage.getSelectedCipherSuite().getValue(), new byte[] { protocolMessage
+                        .getSelectedCompressionMethod().getValue() });
 
-	// extensions have to be added to the protocol message before the
+        // extensions have to be added to the protocol message before the
         // workflow trace is generated
         byte[] extensionBytes = null;
         for (ExtensionMessage extension : protocolMessage.getExtensions()) {

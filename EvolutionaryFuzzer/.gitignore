@@ -1,0 +1,11 @@
+/target/
+/PIN/
+/implementations/
+/pin.log
+/vertices.dump
+/edges.dump
+/file.id
+/config/
+/archive/
+/data/
+/nbactions.xml

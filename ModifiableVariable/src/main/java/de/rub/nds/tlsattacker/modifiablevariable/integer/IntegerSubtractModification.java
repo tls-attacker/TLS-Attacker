@@ -26,19 +26,19 @@ public class IntegerSubtractModification extends VariableModification<Integer> {
     }
 
     public IntegerSubtractModification(Integer bi) {
-	this.subtrahend = bi;
+        this.subtrahend = bi;
     }
 
     @Override
     protected Integer modifyImplementationHook(final Integer input) {
-	return (input == null) ? -subtrahend : input - subtrahend;
+        return (input == null) ? -subtrahend : input - subtrahend;
     }
 
     public Integer getSubtrahend() {
-	return subtrahend;
+        return subtrahend;
     }
 
     public void setSubtrahend(Integer subtrahend) {
-	this.subtrahend = subtrahend;
+        this.subtrahend = subtrahend;
     }
 }

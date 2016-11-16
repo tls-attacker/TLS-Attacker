@@ -18,13 +18,13 @@ public class ByteArrayAdapter extends XmlAdapter<String, byte[]> {
 
     @Override
     public byte[] unmarshal(String value) {
-	value = value.replaceAll("\\s", "");
-	return ArrayConverter.hexStringToByteArray(value);
+        value = value.replaceAll("\\s", "");
+        return ArrayConverter.hexStringToByteArray(value);
     }
 
     @Override
     public String marshal(byte[] value) {
-	return ArrayConverter.bytesToHexString(value);
+        return ArrayConverter.bytesToHexString(value);
     }
 
 }

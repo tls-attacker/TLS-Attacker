@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 
 /**
@@ -31,54 +32,58 @@ public class SignatureAndHashAlgorithm implements Serializable {
     }
 
     public SignatureAndHashAlgorithm(byte[] value) {
-	if (value == null || value.length != 2) {
-	    throw new ConfigurationException("SignatureAndHashAlgorithm always consists of two bytes, but found "
-		    + ArrayConverter.bytesToHexString(value));
-	}
-	hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[0]);
-	signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
+        if (value == null || value.length != 2) {
+            throw new ConfigurationException("SignatureAndHashAlgorithm always consists of two bytes, but found "
+                    + ArrayConverter.bytesToHexString(value));
+        }
+        hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[0]);
+        signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
     }
 
     public SignatureAndHashAlgorithm(SignatureAlgorithm sigAlgorithm, HashAlgorithm hashAlgorithm) {
-	this.signatureAlgorithm = sigAlgorithm;
-	this.hashAlgorithm = hashAlgorithm;
+        this.signatureAlgorithm = sigAlgorithm;
+        this.hashAlgorithm = hashAlgorithm;
     }
 
     public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(byte[] value) {
-	return new SignatureAndHashAlgorithm(value);
+        return new SignatureAndHashAlgorithm(value);
     }
 
     public byte[] getByteValue() {
-	return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
+        return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
     }
 
     public SignatureAlgorithm getSignatureAlgorithm() {
-	return signatureAlgorithm;
+        return signatureAlgorithm;
     }
 
     public void setSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
-	this.signatureAlgorithm = signatureAlgorithm;
+        this.signatureAlgorithm = signatureAlgorithm;
     }
 
     public HashAlgorithm getHashAlgorithm() {
-	return hashAlgorithm;
+        return hashAlgorithm;
     }
 
     public void setHashAlgorithm(HashAlgorithm hashAlgorithm) {
-	this.hashAlgorithm = hashAlgorithm;
+        this.hashAlgorithm = hashAlgorithm;
+    }
+
+    public static SignatureAndHashAlgorithm getRandom() {
+        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(), HashAlgorithm.getRandom());
     }
 
     public String getJavaName() {
-	String hashAlgorithmName = hashAlgorithm.getJavaName().replace("-", "");
-	String signatureAlgorithmName = signatureAlgorithm.getJavaName();
-	return hashAlgorithmName + "with" + signatureAlgorithmName;
+        String hashAlgorithmName = hashAlgorithm.getJavaName().replace("-", "");
+        String signatureAlgorithmName = signatureAlgorithm.getJavaName();
+        return hashAlgorithmName + "with" + signatureAlgorithmName;
     }
-    
+
     public static SignatureAndHashAlgorithm[] values() {
         int size = SignatureAlgorithm.values().length * HashAlgorithm.values().length;
         SignatureAndHashAlgorithm[] result = new SignatureAndHashAlgorithm[size];
         int pos = 0;
-        for(SignatureAlgorithm sa : SignatureAlgorithm.values()) {
+        for (SignatureAlgorithm sa : SignatureAlgorithm.values()) {
             for (HashAlgorithm ha : HashAlgorithm.values()) {
                 result[pos] = new SignatureAndHashAlgorithm(sa, ha);
                 pos++;
@@ -86,7 +91,7 @@ public class SignatureAndHashAlgorithm implements Serializable {
         }
         return result;
     }
-    
+
     @Override
     public String toString() {
         return signatureAlgorithm + "-" + hashAlgorithm;

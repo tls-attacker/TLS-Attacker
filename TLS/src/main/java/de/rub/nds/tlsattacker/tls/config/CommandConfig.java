@@ -23,7 +23,9 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ import java.util.List;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public abstract class CommandConfig {
+public abstract class CommandConfig implements Serializable{
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints help")
     protected boolean help;
@@ -51,11 +53,11 @@ public abstract class CommandConfig {
     protected String alias;
 
     @Parameter(names = "-cipher", description = "TLS Ciphersuites to use, divided by a comma, e.g. "
-	    + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
+            + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
     protected List<CipherSuite> cipherSuites;
 
     @Parameter(names = "-compression", description = "TLS compression methods to use, divided by a comma. "
-	    + "(currently, only NULL compression is supported)", converter = CipherSuiteConverter.class)
+            + "(currently, only NULL compression is supported)", converter = CipherSuiteConverter.class)
     protected List<CompressionMethod> compressionMethods;
 
     @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma. ", converter = NamedCurveConverter.class)
@@ -65,7 +67,7 @@ public abstract class CommandConfig {
     protected String serverName;
 
     @Parameter(names = "-timeout", description = "Timeout for socket connection")
-    protected int timeout;
+    protected int timeout = 1000;
 
     // @Parameter(names = "-nextprotoneg", description =
     // "Enables NPN extension, considering named protocols supported "
@@ -94,7 +96,7 @@ public abstract class CommandConfig {
     protected boolean dynamicWorkflow;
 
     @Parameter(names = "-verify_workflow_correctness", description = "If this parameter is set, the workflow correctness is evaluated after the worklow stops. This involves"
-	    + "checks on the protocol message sequences.")
+            + "checks on the protocol message sequences.")
     protected boolean verifyWorkflowCorrectness;
 
     @Parameter(names = "-max_fragment_length", description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
@@ -109,97 +111,109 @@ public abstract class CommandConfig {
     @Parameter(names = "-session_resumption", description = "YES or NO")
     protected boolean sessionResumption = false;
 
+    @Parameter(names = "-fuzzing", description = "If sets, supresses Value and generates invalid Data for Cryptographic operations on the FLY. Throws Exceptions otherwise.")
+    protected boolean fuzzingMode = false;
+
+    public boolean isFuzzingMode() {
+        return fuzzingMode;
+    }
+
+    public void setFuzzingMode(boolean fuzzingMode) {
+        ProtocolMessage.setFuzzingMode(fuzzingMode);
+        this.fuzzingMode = fuzzingMode;
+    }
+
     // todo define parameter
     protected List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
 
     public CommandConfig() {
-	cipherSuites = new LinkedList<>();
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-	// cipherSuites.addAll(Arrays.asList(CipherSuite.values()));
-	compressionMethods = new LinkedList<>();
-	compressionMethods.add(CompressionMethod.NULL);
-	pointFormats = new LinkedList<>();
-	pointFormats.add(ECPointFormat.UNCOMPRESSED);
-	namedCurves = new LinkedList<>();
-	namedCurves.add(NamedCurve.SECP192R1);
-	namedCurves.add(NamedCurve.SECP256R1);
-	namedCurves.add(NamedCurve.SECP384R1);
-	namedCurves.add(NamedCurve.SECP521R1);
-	// nextProtoNeg = new LinkedList<>();
-	tlsTimeout = 400;
-	alias = "";
-	signatureAndHashAlgorithms = new LinkedList<>();
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA512));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA384));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA384));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA256));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA256));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA256));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA224));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA224));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA224));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA1));
-	signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA1));
+        cipherSuites = new LinkedList<>();
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        // cipherSuites.addAll(Arrays.asList(CipherSuite.values()));
+        compressionMethods = new LinkedList<>();
+        compressionMethods.add(CompressionMethod.NULL);
+        pointFormats = new LinkedList<>();
+        pointFormats.add(ECPointFormat.UNCOMPRESSED);
+        namedCurves = new LinkedList<>();
+        namedCurves.add(NamedCurve.SECP192R1);
+        namedCurves.add(NamedCurve.SECP256R1);
+        namedCurves.add(NamedCurve.SECP384R1);
+        namedCurves.add(NamedCurve.SECP521R1);
+        // nextProtoNeg = new LinkedList<>();
+        tlsTimeout = 400;
+        alias = "";
+        signatureAndHashAlgorithms = new LinkedList<>();
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA512));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA384));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA384));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA256));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA256));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA256));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA224));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA224));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA224));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA1));
+        signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA1));
     }
 
     public boolean isHelp() {
-	return help;
+        return help;
     }
 
     public void setHelp(boolean help) {
-	this.help = help;
+        this.help = help;
     }
 
     public ProtocolVersion getProtocolVersion() {
-	return protocolVersion;
+        return protocolVersion;
     }
 
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
-	this.protocolVersion = protocolVersion;
+        this.protocolVersion = protocolVersion;
     }
 
     public String getKeystore() {
-	return keystore;
+        return keystore;
     }
 
     public void setKeystore(String keystore) {
-	this.keystore = keystore;
+        this.keystore = keystore;
     }
 
     public String getPassword() {
-	return password;
+        return password;
     }
 
     public void setPassword(String password) {
-	this.password = password;
+        this.password = password;
     }
 
     public List<CipherSuite> getCipherSuites() {
-	return cipherSuites;
+        return cipherSuites;
     }
 
     public void setCipherSuites(List<CipherSuite> cipher) {
-	this.cipherSuites = cipher;
+        this.cipherSuites = cipher;
     }
 
     public String getServerName() {
-	return serverName;
+        return serverName;
     }
 
     public void setServerName(String serverName) {
-	this.serverName = serverName;
+        this.serverName = serverName;
     }
 
     public int getTimeout() {
-	return timeout;
+        return timeout;
     }
 
     public void setTimeout(int timeout) {
-	this.timeout = timeout;
+        this.timeout = timeout;
     }
 
     // public List<String> getNextProtoNeg() {
@@ -211,130 +225,130 @@ public abstract class CommandConfig {
     // }
 
     public boolean isLegacyRenegotiation() {
-	return legacyRenegotiation;
+        return legacyRenegotiation;
     }
 
     public void setLegacyRenegotiation(boolean legacyRenegotiation) {
-	this.legacyRenegotiation = legacyRenegotiation;
+        this.legacyRenegotiation = legacyRenegotiation;
     }
 
     public TransportHandlerType getTransportHandlerType() {
-	return transportHandlerType;
+        return transportHandlerType;
     }
 
     public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
-	this.transportHandlerType = transportHandlerType;
+        this.transportHandlerType = transportHandlerType;
     }
 
     public String getWorkflowInput() {
-	return workflowInput;
+        return workflowInput;
     }
 
     public void setWorkflowInput(String workflowInput) {
-	this.workflowInput = workflowInput;
+        this.workflowInput = workflowInput;
     }
 
     public String getWorkflowOutput() {
-	return workflowOutput;
+        return workflowOutput;
     }
 
     public void setWorkflowOutput(String workflowOutput) {
-	this.workflowOutput = workflowOutput;
+        this.workflowOutput = workflowOutput;
     }
 
     public List<CompressionMethod> getCompressionMethods() {
-	return compressionMethods;
+        return compressionMethods;
     }
 
     public void setCompressionMethods(List<CompressionMethod> compressionMethods) {
-	this.compressionMethods = compressionMethods;
+        this.compressionMethods = compressionMethods;
     }
 
     public List<NamedCurve> getNamedCurves() {
-	return namedCurves;
+        return namedCurves;
     }
 
     public void setNamedCurves(List<NamedCurve> namedCurves) {
-	this.namedCurves = namedCurves;
+        this.namedCurves = namedCurves;
     }
 
     public HeartbeatMode getHeartbeatMode() {
-	return heartbeatMode;
+        return heartbeatMode;
     }
 
     public void setHeartbeatMode(HeartbeatMode heartbeatMode) {
-	this.heartbeatMode = heartbeatMode;
+        this.heartbeatMode = heartbeatMode;
     }
 
     public List<ECPointFormat> getPointFormats() {
-	return pointFormats;
+        return pointFormats;
     }
 
     public boolean isDynamicWorkflow() {
-	return dynamicWorkflow;
+        return dynamicWorkflow;
     }
 
     public void setDynamicWorkflow(boolean dynamicWorkflow) {
-	this.dynamicWorkflow = dynamicWorkflow;
+        this.dynamicWorkflow = dynamicWorkflow;
     }
 
     public boolean isVerifyWorkflowCorrectness() {
-	return verifyWorkflowCorrectness;
+        return verifyWorkflowCorrectness;
     }
 
     public void setVerifyWorkflowCorrectness(boolean verifyWorkflowCorrectness) {
-	this.verifyWorkflowCorrectness = verifyWorkflowCorrectness;
+        this.verifyWorkflowCorrectness = verifyWorkflowCorrectness;
     }
 
     public void setPointFormats(List<ECPointFormat> pointFormats) {
-	this.pointFormats = pointFormats;
+        this.pointFormats = pointFormats;
     }
 
     public Integer getMaxFragmentLength() {
-	return maxFragmentLength;
+        return maxFragmentLength;
     }
 
     public void setMaxFragmentLength(Integer maxFragmentLength) {
-	this.maxFragmentLength = maxFragmentLength;
+        this.maxFragmentLength = maxFragmentLength;
     }
 
     public Integer getTlsTimeout() {
-	return tlsTimeout;
+        return tlsTimeout;
     }
 
     public void setTlsTimeout(Integer tlsTimeout) {
-	this.tlsTimeout = tlsTimeout;
+        this.tlsTimeout = tlsTimeout;
     }
 
     public String getAlias() {
-	return alias;
+        return alias;
     }
 
     public void setAlias(String alias) {
-	this.alias = alias;
+        this.alias = alias;
     }
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
-	return signatureAndHashAlgorithms;
+        return signatureAndHashAlgorithms;
     }
 
     public void setSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
-	this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
+        this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
     }
 
     public boolean isClientAuthentication() {
-	return clientAuthentication;
+        return clientAuthentication;
     }
 
     public void setClientAuthentication(boolean clientAuthentication) {
-	this.clientAuthentication = clientAuthentication;
+        this.clientAuthentication = clientAuthentication;
     }
 
     public boolean isSessionResumption() {
-	return sessionResumption;
+        return sessionResumption;
     }
 
     public void setSessionResumption(boolean sessionResumption) {
-	this.sessionResumption = sessionResumption;
+        this.sessionResumption = sessionResumption;
     }
 }

@@ -40,53 +40,53 @@ public enum ProtocolMessageType {
     private static final Map<Byte, ProtocolMessageType> MAP;
 
     private ProtocolMessageType(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (ProtocolMessageType cm : ProtocolMessageType.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (ProtocolMessageType cm : ProtocolMessageType.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static ProtocolMessageType getContentType(byte value) {
-	return MAP.get(value);
+        return MAP.get(value);
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
 
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(byte value, TlsContext tlsContext) {
-	ProtocolMessageHandler<? extends ProtocolMessage> pmh = null;
-	LOGGER.debug("Trying to get a protocol message handler for the following content type: {}", this);
-	switch (this) {
-	    case HANDSHAKE:
-		HandshakeMessageType hmt = HandshakeMessageType.getMessageType(value);
-		LOGGER.debug("Trying to get a protocol message handler for the following handshake message: {}", hmt);
-		pmh = hmt.getProtocolMessageHandler(tlsContext);
-		break;
-	    case CHANGE_CIPHER_SPEC:
-		pmh = new ChangeCipherSpecHandler(tlsContext);
-		break;
-	    case ALERT:
-		pmh = new AlertHandler(tlsContext);
-		break;
-	    case APPLICATION_DATA:
-		pmh = new ApplicationHandler(tlsContext);
-		break;
-	    case HEARTBEAT:
-		pmh = new HeartbeatHandler(tlsContext);
-		break;
-	}
-	if (pmh == null) {
-	    throw new UnsupportedOperationException("Not supported yet.");
-	}
-	return pmh;
+        ProtocolMessageHandler<? extends ProtocolMessage> pmh = null;
+        LOGGER.debug("Trying to get a protocol message handler for the following content type: {}", this);
+        switch (this) {
+            case HANDSHAKE:
+                HandshakeMessageType hmt = HandshakeMessageType.getMessageType(value);
+                LOGGER.debug("Trying to get a protocol message handler for the following handshake message: {}", hmt);
+                pmh = hmt.getProtocolMessageHandler(tlsContext);
+                break;
+            case CHANGE_CIPHER_SPEC:
+                pmh = new ChangeCipherSpecHandler(tlsContext);
+                break;
+            case ALERT:
+                pmh = new AlertHandler(tlsContext);
+                break;
+            case APPLICATION_DATA:
+                pmh = new ApplicationHandler(tlsContext);
+                break;
+            case HEARTBEAT:
+                pmh = new HeartbeatHandler(tlsContext);
+                break;
+        }
+        if (pmh == null) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        return pmh;
     }
 }

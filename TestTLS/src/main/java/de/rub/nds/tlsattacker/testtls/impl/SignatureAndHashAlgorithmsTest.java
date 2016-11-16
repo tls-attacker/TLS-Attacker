@@ -27,14 +27,14 @@ import java.util.Set;
 /**
  * Tests the acceptance of the Signature and Hash Algorithm extension. See
  * https://tools.ietf.org/html/rfc5246#section-7.4.1.4.1
- *
+ * 
  * We just send different values in the extension with all the supported
  * extension values. If the server responds with a ServerHello message, it must
  * support the proposed signature and hash algorithms.
- *
+ * 
  * This extension is only fully supported in TLS 1.2. In previous versions, it
  * can be ignored if the server does not understand it.
- *
+ * 
  * From https://tools.ietf.org/html/rfc5246#section-7.4.3 (describing
  * ServerKeyExchange message): "If the client has offered the
  * "signature_algorithms" extension, the signature algorithm and hash algorithm
@@ -45,7 +45,7 @@ import java.util.Set;
  * suites against the "signature_algorithms" extension before selecting them.
  * This is somewhat inelegant but is a compromise designed to minimize changes
  * to the original cipher suite design."
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
@@ -63,12 +63,13 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
 
     @Override
     public void startTests() {
-        // This extension is only supported in TLS 1.2 
+        // This extension is only supported in TLS 1.2
         // (see https://tools.ietf.org/html/rfc5246#section-7.4.1.4.1)
         if (!supportedCipherSuites.get(ProtocolVersion.TLS12).isEmpty()) {
             testSupportedSignatureAndHashAlgorithms(ProtocolVersion.TLS12);
         }
-        result = "\n Supported signature and hash algorithms: " + signatureAndHashAlgorithmsToString(signatureAndHashAlgorithms);
+        result = "\n Supported signature and hash algorithms: "
+                + signatureAndHashAlgorithmsToString(signatureAndHashAlgorithms);
     }
 
     private void testSupportedSignatureAndHashAlgorithms(ProtocolVersion pv) {
@@ -85,11 +86,14 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
             }
             if (success) {
                 signatureAndHashAlgorithms.add(algorithm);
-                if (lastTlsContext.getWorkflowTrace().containsHandshakeMessage(HandshakeMessageType.SERVER_KEY_EXCHANGE)) {
-                    ServerKeyExchangeMessage skm = (ServerKeyExchangeMessage) lastTlsContext.getWorkflowTrace().getFirstHandshakeMessage(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+                if (lastTlsContext.getWorkflowTrace()
+                        .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_KEY_EXCHANGE).get(0) != null) {
+                    ServerKeyExchangeMessage skm = (ServerKeyExchangeMessage) lastTlsContext.getWorkflowTrace()
+                            .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_KEY_EXCHANGE)
+                            .get(0);
                     Byte sa = skm.getSignatureAlgorithm().getValue();
                     Byte ha = skm.getHashAlgorithm().getValue();
-                    signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(new byte[]{ha,sa}));
+                    signatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(new byte[] { ha, sa }));
                 }
             }
         }

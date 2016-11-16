@@ -25,32 +25,32 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     ModifiableByteArray heartbeatMode;
 
     public HeartbeatExtensionMessage() {
-	this.extensionTypeConstant = ExtensionType.HEARTBEAT;
+        this.extensionTypeConstant = ExtensionType.HEARTBEAT;
     }
 
     public ModifiableByteArray getHeartbeatMode() {
-	return heartbeatMode;
+        return heartbeatMode;
     }
 
     public void setHeartbeatMode(ModifiableByteArray heartbeatMode) {
-	this.heartbeatMode = heartbeatMode;
+        this.heartbeatMode = heartbeatMode;
     }
 
     public void setHeartbeatMode(byte[] heartbeatMode) {
-	this.heartbeatMode = ModifiableVariableFactory.safelySetValue(this.heartbeatMode, heartbeatMode);
+        this.heartbeatMode = ModifiableVariableFactory.safelySetValue(this.heartbeatMode, heartbeatMode);
     }
 
     public HeartbeatMode getHeartbeatModeConfig() {
-	return heartbeatModeConfig;
+        return heartbeatModeConfig;
     }
 
     public void setHeartbeatModeConfig(HeartbeatMode heartbeatModeConfig) {
-	this.heartbeatModeConfig = heartbeatModeConfig;
+        this.heartbeatModeConfig = heartbeatModeConfig;
     }
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	return HeartbeatExtensionHandler.getInstance();
+        return HeartbeatExtensionHandler.getInstance();
     }
 
 }

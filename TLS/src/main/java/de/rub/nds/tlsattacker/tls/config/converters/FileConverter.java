@@ -26,11 +26,11 @@ public class FileConverter implements IStringConverter<String> {
     @Override
     public String convert(String value) {
 
-	try {
-	    Path path = FileSystems.getDefault().getPath(value);
-	    return new String(Files.readAllBytes(path));
-	} catch (IOException | IllegalArgumentException e) {
-	    throw new ParameterException("File " + value + " could not be opened and read: " + e.getLocalizedMessage());
-	}
+        try {
+            Path path = FileSystems.getDefault().getPath(value);
+            return new String(Files.readAllBytes(path));
+        } catch (IOException | IllegalArgumentException e) {
+            throw new ParameterException("File " + value + " could not be opened and read: " + e.getLocalizedMessage());
+        }
     }
 }

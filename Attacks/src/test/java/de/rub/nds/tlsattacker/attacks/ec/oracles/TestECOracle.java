@@ -25,41 +25,41 @@ public class TestECOracle extends ECOracle {
     private final ECComputer computer;
 
     public TestECOracle(String namedCurve) {
-	curve = CurveFactory.getNamedCurve(namedCurve);
-	BigInteger privateKey = new BigInteger(curve.getKeyBits(), new Random());
-	computer = new ECComputer(curve, privateKey);
+        curve = CurveFactory.getNamedCurve(namedCurve);
+        BigInteger privateKey = new BigInteger(curve.getKeyBits(), new Random());
+        computer = new ECComputer(curve, privateKey);
     }
 
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret) {
-	numberOfQueries++;
-	if (numberOfQueries % 100 == 0) {
-	    LOGGER.info("Number of queries so far: {}", numberOfQueries);
-	}
-	Point result;
-	try {
-	    result = computer.mul(ecPoint, true);
-	} catch (DivisionException ex) {
-	    result = null;
-	}
+        numberOfQueries++;
+        if (numberOfQueries % 100 == 0) {
+            LOGGER.info("Number of queries so far: {}", numberOfQueries);
+        }
+        Point result;
+        try {
+            result = computer.mul(ecPoint, true);
+        } catch (DivisionException ex) {
+            result = null;
+        }
 
-	if (result == null || result.isInfinity()) {
-	    return false;
-	} else {
-	    return (result.getX().compareTo(guessedSecret) == 0);
-	}
+        if (result == null || result.isInfinity()) {
+            return false;
+        } else {
+            return (result.getX().compareTo(guessedSecret) == 0);
+        }
     }
 
     public ECComputer getComputer() {
-	return computer;
+        return computer;
     }
 
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
-	if (guessedSecret.equals(computer.getSecret())) {
-	    return true;
-	} else {
-	    return false;
-	}
+        if (guessedSecret.equals(computer.getSecret())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

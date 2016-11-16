@@ -28,19 +28,19 @@ public class WinshockCommandConfig extends ClientCommandConfig {
     BigInteger signature;
 
     public Integer getSignatureLength() {
-	return signatureLength;
+        return signatureLength;
     }
 
     public void setSignatureLength(Integer signatureLength) {
-	this.signatureLength = signatureLength;
+        this.signatureLength = signatureLength;
     }
 
     public BigInteger getSignature() {
-	return signature;
+        return signature;
     }
 
     public void setSignature(BigInteger signature) {
-	this.signature = signature;
+        this.signature = signature;
     }
 
 }

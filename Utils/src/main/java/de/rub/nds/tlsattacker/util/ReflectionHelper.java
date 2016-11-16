@@ -38,19 +38,19 @@ public class ReflectionHelper {
      * @return
      */
     public static List<Field> getFieldsUpTo(Class<?> startClass, Class<?> exclusiveParent, Class<?> filterClass) {
-	List<Field> currentClassFields;
+        List<Field> currentClassFields;
 
-	currentClassFields = filterFieldList(Arrays.asList(startClass.getDeclaredFields()), filterClass);
+        currentClassFields = filterFieldList(Arrays.asList(startClass.getDeclaredFields()), filterClass);
 
-	Class<?> parentClass = startClass.getSuperclass();
+        Class<?> parentClass = startClass.getSuperclass();
 
-	if ((parentClass != null) && ((exclusiveParent == null) || !(parentClass.equals(exclusiveParent)))) {
-	    List<Field> parentClassFields = (List<Field>) getFieldsUpTo(parentClass, exclusiveParent, filterClass);
+        if ((parentClass != null) && ((exclusiveParent == null) || !(parentClass.equals(exclusiveParent)))) {
+            List<Field> parentClassFields = (List<Field>) getFieldsUpTo(parentClass, exclusiveParent, filterClass);
 
-	    currentClassFields.addAll(parentClassFields);
-	}
+            currentClassFields.addAll(parentClassFields);
+        }
 
-	return currentClassFields;
+        return currentClassFields;
     }
 
     /**
@@ -62,26 +62,26 @@ public class ReflectionHelper {
      * @return
      */
     private static List<Field> filterFieldList(List<Field> fields, Class<?> filterClass) {
-	List<Field> filteredFields = new LinkedList<>();
+        List<Field> filteredFields = new LinkedList<>();
 
-	for (Field f : fields) {
-	    if ((filterClass == null) || filterClass.isAssignableFrom(f.getType())) {
-		filteredFields.add(f);
-	    }
-	}
+        for (Field f : fields) {
+            if ((filterClass == null) || filterClass.isAssignableFrom(f.getType())) {
+                filteredFields.add(f);
+            }
+        }
 
-	return filteredFields;
+        return filteredFields;
     }
 
     public static List<Object> getValuesFromFieldList(Object object, List<Field> fields) throws IllegalAccessException {
-	List<Object> list = new LinkedList<>();
+        List<Object> list = new LinkedList<>();
 
-	for (Field f : fields) {
-	    f.setAccessible(true);
-	    list.add(f.get(object));
-	}
+        for (Field f : fields) {
+            f.setAccessible(true);
+            list.add(f.get(object));
+        }
 
-	return list;
+        return list;
     }
 
     // /**
@@ -118,12 +118,12 @@ public class ReflectionHelper {
     // }
     // }
     public static Type[] getParameterizedTypes(Object object) {
-	Type superclassType = object.getClass().getGenericSuperclass();
+        Type superclassType = object.getClass().getGenericSuperclass();
 
-	if (!ParameterizedType.class.isAssignableFrom(superclassType.getClass())) {
-	    return null;
-	}
+        if (!ParameterizedType.class.isAssignableFrom(superclassType.getClass())) {
+            return null;
+        }
 
-	return ((ParameterizedType) superclassType).getActualTypeArguments();
+        return ((ParameterizedType) superclassType).getActualTypeArguments();
     }
 }

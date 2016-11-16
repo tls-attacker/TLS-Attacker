@@ -33,7 +33,7 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static List<Field> getAllModifiableVariableFields(Object object) {
-	return ReflectionHelper.getFieldsUpTo(object.getClass(), null, ModifiableVariable.class);
+        return ReflectionHelper.getFieldsUpTo(object.getClass(), null, ModifiableVariable.class);
     }
 
     /**
@@ -44,9 +44,9 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static Field getRandomModifiableVariableField(Object object) {
-	List<Field> fields = getAllModifiableVariableFields(object);
-	int randomField = RandomHelper.getRandom().nextInt(fields.size());
-	return fields.get(randomField);
+        List<Field> fields = getAllModifiableVariableFields(object);
+        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        return fields.get(randomField);
     }
 
     /**
@@ -56,8 +56,8 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static boolean isModifiableVariableHolder(Object object) {
-	List<Field> fields = getAllModifiableVariableFields(object);
-	return !fields.isEmpty();
+        List<Field> fields = getAllModifiableVariableFields(object);
+        return !fields.isEmpty();
     }
 
     /**
@@ -68,14 +68,14 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
-	List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
-	List<ModifiableVariableField> fields = new LinkedList<>();
-	for (ModifiableVariableListHolder holder : holders) {
-	    for (Field f : holder.getFields()) {
-		fields.add(new ModifiableVariableField(holder.getObject(), f));
-	    }
-	}
-	return fields;
+        List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
+        List<ModifiableVariableField> fields = new LinkedList<>();
+        for (ModifiableVariableListHolder holder : holders) {
+            for (Field f : holder.getFields()) {
+                fields.add(new ModifiableVariableField(holder.getObject(), f));
+            }
+        }
+        return fields;
     }
 
     /**
@@ -86,31 +86,31 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
-	List<ModifiableVariableListHolder> holders = new LinkedList<>();
-	List<Field> modFields = getAllModifiableVariableFields(object);
-	if (!modFields.isEmpty()) {
-	    holders.add(new ModifiableVariableListHolder(object, modFields));
-	}
-	List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
-	for (Field f : allFields) {
-	    try {
-		HoldsModifiableVariable holdsVariable = f.getAnnotation(HoldsModifiableVariable.class);
-		f.setAccessible(true);
-		Object possibleHolder = f.get(object);
-		if (possibleHolder != null && holdsVariable != null) {
-		    if (possibleHolder instanceof List) {
-			holders.addAll(getAllModifiableVariableHoldersFromList((List) possibleHolder));
-		    } else if (possibleHolder.getClass().isArray()) {
-			holders.addAll(getAllModifiableVariableHoldersFromArray((Object[]) possibleHolder));
-		    } else {
-			holders.addAll(getAllModifiableVariableHoldersRecursively(possibleHolder));
-		    }
-		}
-	    } catch (IllegalAccessException | IllegalArgumentException ex) {
-		LOGGER.info("Accessing field {} of type {} not possible: {}", f.getName(), f.getType(), ex.toString());
-	    }
-	}
-	return holders;
+        List<ModifiableVariableListHolder> holders = new LinkedList<>();
+        List<Field> modFields = getAllModifiableVariableFields(object);
+        if (!modFields.isEmpty()) {
+            holders.add(new ModifiableVariableListHolder(object, modFields));
+        }
+        List<Field> allFields = ReflectionHelper.getFieldsUpTo(object.getClass(), null, null);
+        for (Field f : allFields) {
+            try {
+                HoldsModifiableVariable holdsVariable = f.getAnnotation(HoldsModifiableVariable.class);
+                f.setAccessible(true);
+                Object possibleHolder = f.get(object);
+                if (possibleHolder != null && holdsVariable != null) {
+                    if (possibleHolder instanceof List) {
+                        holders.addAll(getAllModifiableVariableHoldersFromList((List) possibleHolder));
+                    } else if (possibleHolder.getClass().isArray()) {
+                        holders.addAll(getAllModifiableVariableHoldersFromArray((Object[]) possibleHolder));
+                    } else {
+                        holders.addAll(getAllModifiableVariableHoldersRecursively(possibleHolder));
+                    }
+                }
+            } catch (IllegalAccessException | IllegalArgumentException ex) {
+                LOGGER.info("Accessing field {} of type {} not possible: {}", f.getName(), f.getType(), ex.toString());
+            }
+        }
+        return holders;
     }
 
     /**
@@ -118,11 +118,16 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersFromList(List<Object> list) {
-	List<ModifiableVariableListHolder> result = new LinkedList<>();
-	for (Object o : list) {
-	    result.addAll(getAllModifiableVariableHoldersRecursively(o));
-	}
-	return result;
+        List<ModifiableVariableListHolder> result = new LinkedList<>();
+        for (Object o : list) {
+            if (o != null) {
+                result.addAll(getAllModifiableVariableHoldersRecursively(o));
+            } else {
+                // TODO
+                System.out.println("Found null getAllModifiableVariableHoldersFromList");
+            }
+        }
+        return result;
     }
 
     /**
@@ -130,11 +135,11 @@ public class ModifiableVariableAnalyzer {
      * @return
      */
     public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersFromArray(Object[] array) {
-	List<ModifiableVariableListHolder> result = new LinkedList<>();
-	for (Object o : array) {
-	    result.addAll(getAllModifiableVariableHoldersRecursively(o));
-	}
-	return result;
+        List<ModifiableVariableListHolder> result = new LinkedList<>();
+        for (Object o : array) {
+            result.addAll(getAllModifiableVariableHoldersRecursively(o));
+        }
+        return result;
     }
 
     // /**

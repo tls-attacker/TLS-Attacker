@@ -31,6 +31,8 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
@@ -47,144 +49,142 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     private final List<ProtocolMessage> lastMessages;
 
     public PaddingOracleAttack(PaddingOracleCommandConfig config) {
-	super(config);
-	lastMessages = new LinkedList<>();
+        super(config);
+        lastMessages = new LinkedList<>();
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	List<Record> records = new LinkedList<>();
-	records.addAll(createRecordsWithPlainData());
-	records.addAll(createRecordsWithModifiedMac());
-	records.addAll(createRecordsWithModifiedPadding());
+        List<Record> records = new LinkedList<>();
+        records.addAll(createRecordsWithPlainData());
+        records.addAll(createRecordsWithModifiedMac());
+        records.addAll(createRecordsWithModifiedPadding());
 
-	for (Record record : records) {
-	    executeAttackRound(configHandler, record);
+        for (Record record : records) {
+            executeAttackRound(configHandler, record);
 
-	}
+        }
 
-	LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
-	LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
+        LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
+        LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
 
-	LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
-	for (int i = 0; i < lastMessages.size(); i++) {
-	    ProtocolMessage pm = lastMessages.get(i);
-	    pmSet.add(pm);
-	    Record r = records.get(i);
-	    LOGGER.info("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
-	    if (r.getPlainRecordBytes() != null) {
-		LOGGER.info("Plain record bytes of the modified record: ");
-		LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
-		LOGGER.info("Last protocol message in the protocol flow");
-	    }
-	    LOGGER.info(pm.toString());
-	}
-	List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
+        LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
+        for (int i = 0; i < lastMessages.size(); i++) {
+            ProtocolMessage pm = lastMessages.get(i);
+            pmSet.add(pm);
+            Record r = records.get(i);
+            LOGGER.info("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
+            if (r.getPlainRecordBytes() != null) {
+                LOGGER.info("Plain record bytes of the modified record: ");
+                LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
+                LOGGER.info("Last protocol message in the protocol flow");
+            }
+            LOGGER.info(pm.toString());
+        }
+        List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
 
-	if (pmSet.size() == 1) {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
-		    pmSetList);
+        if (pmSet.size() == 1) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
+                    pmSetList);
             vulnerable = false;
-	} else {
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
-		    config.getConnect(), pmSetList);
-            vulnerable  = true;
-	}
+        } else {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
+                    config.getConnect(), pmSetList);
+            vulnerable = true;
+        }
     }
 
     public void executeAttackRound(ConfigHandler configHandler, Record record) {
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-	ApplicationMessage applicationMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
-	applicationMessage.addRecord(record);
+        ApplicationMessage applicationMessage = new ApplicationMessage();
+        applicationMessage.addRecord(record);
+        trace.add(new SendAction(applicationMessage));
+        AlertMessage alertMessage = new AlertMessage();
+        trace.add(new ReceiveAction(alertMessage));
 
-	AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+        }
 
-	trace.getProtocolMessages().add(applicationMessage);
-	trace.getProtocolMessages().add(allertMessage);
+        lastMessages.add(trace.getLastConfiguredSendMesssage());
+        tlsContexts.add(tlsContext);
 
-	try {
-	    workflowExecutor.executeWorkflow();
-	} catch (WorkflowExecutionException ex) {
-	    LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
-	}
-
-	lastMessages.add(trace.getLastProtocolMesssage());
-	tlsContexts.add(tlsContext);
-
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
     }
 
     private List<Record> createRecordsWithPlainData() {
-	List<Record> records = new LinkedList<>();
-	for (int i = 0; i < 64; i++) {
-	    byte[] padding = createPaddingBytes(i);
-	    int messageSize = config.getBlockSize() - (padding.length % config.getBlockSize());
-	    byte[] message = new byte[messageSize];
-	    byte[] plain = ArrayConverter.concatenate(message, padding);
-	    Record r = createRecordWithPlainData(plain);
-	    records.add(r);
-	}
-	Record r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255 });
-	records.add(r);
+        List<Record> records = new LinkedList<>();
+        for (int i = 0; i < 64; i++) {
+            byte[] padding = createPaddingBytes(i);
+            int messageSize = config.getBlockSize() - (padding.length % config.getBlockSize());
+            byte[] message = new byte[messageSize];
+            byte[] plain = ArrayConverter.concatenate(message, padding);
+            Record r = createRecordWithPlainData(plain);
+            records.add(r);
+        }
+        Record r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255 });
+        records.add(r);
 
-	r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-		(byte) 255, (byte) 255, (byte) 255 });
-	records.add(r);
+        r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255 });
+        records.add(r);
 
-	return records;
+        return records;
     }
 
     private Record createRecordWithPlainData(byte[] plain) {
-	Record r = new Record();
-	ModifiableByteArray plainData = new ModifiableByteArray();
-	VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
-	plainData.setModification(modifier);
-	r.setPlainRecordBytes(plainData);
-	return r;
+        Record r = new Record();
+        ModifiableByteArray plainData = new ModifiableByteArray();
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
+        plainData.setModification(modifier);
+        r.setPlainRecordBytes(plainData);
+        return r;
     }
 
     private List<Record> createRecordsWithModifiedPadding() {
-	List<Record> records = new LinkedList<>();
+        List<Record> records = new LinkedList<>();
 
-	Record r = new Record();
-	ModifiableByteArray padding = new ModifiableByteArray();
-	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
-	padding.setModification(modifier);
-	r.setPadding(padding);
-	records.add(r);
+        Record r = new Record();
+        ModifiableByteArray padding = new ModifiableByteArray();
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
+        padding.setModification(modifier);
+        r.setPadding(padding);
+        records.add(r);
 
-	return records;
+        return records;
     }
 
     private List<Record> createRecordsWithModifiedMac() {
-	List<Record> records = new LinkedList<>();
+        List<Record> records = new LinkedList<>();
 
-	Record r = new Record();
-	ModifiableByteArray mac = new ModifiableByteArray();
-	VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0);
-	mac.setModification(modifier);
-	r.setMac(mac);
-	records.add(r);
+        Record r = new Record();
+        ModifiableByteArray mac = new ModifiableByteArray();
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0);
+        mac.setModification(modifier);
+        r.setMac(mac);
+        records.add(r);
 
-	return records;
+        return records;
     }
 
     private byte[] createPaddingBytes(int padding) {
-	byte[] paddingBytes = new byte[padding + 1];
-	for (int i = 0; i < paddingBytes.length; i++) {
-	    paddingBytes[i] = (byte) padding;
-	}
-	return paddingBytes;
+        byte[] paddingBytes = new byte[padding + 1];
+        for (int i = 0; i < paddingBytes.length; i++) {
+            paddingBytes[i] = (byte) padding;
+        }
+        return paddingBytes;
     }
 
 }

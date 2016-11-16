@@ -33,60 +33,60 @@ public class FinishedState implements EapState {
 
     public FinishedState(EapolMachine eapolMachine, int id) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
 
     }
 
     @Override
     public void send() {
 
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSFRAGACK", id);
+        EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSFRAGACK", id);
 
-	LOGGER.debug("send(): {}", eapolMachine.getState());
+        LOGGER.debug("send(): {}", eapolMachine.getState());
 
-	nic.sendFrame(eapstart.getFrame());
+        nic.sendFrame(eapstart.getFrame());
 
     }
 
     @Override
     public void sendTLS(byte[] tlspacket) {
 
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSCH", id, tlspacket);
+        EAPFrame eapstart = eaptlsfactory.createFrame("EAPTLSCH", id, tlspacket);
 
-	LOGGER.debug("sendTLS(): {}", eapolMachine.getState());
+        LOGGER.debug("sendTLS(): {}", eapolMachine.getState());
 
-	nic.sendFrame(eapstart.getFrame());
+        nic.sendFrame(eapstart.getFrame());
 
     }
 
     @Override
     public byte[] receive() {
 
-	data = nic.receiveFrame();
-	id = (int) data[19]; // Get ID
+        data = nic.receiveFrame();
+        id = (int) data[19]; // Get ID
 
-	if (data[18] == (byte) 0x03) {
-	    eapolMachine.setState(new SuccessState(eapolMachine, id));
-	} else
+        if (data[18] == (byte) 0x03) {
+            eapolMachine.setState(new SuccessState(eapolMachine, id));
+        } else
 
-	if (data[18] == (byte) 0x04) {
-	    eapolMachine.setState(new FailureState(eapolMachine, id));
-	}
+        if (data[18] == (byte) 0x04) {
+            eapolMachine.setState(new FailureState(eapolMachine, id));
+        }
 
-	return data;
+        return data;
     }
 
     @Override
     public String getState() {
-	return "FinishedState";
+        return "FinishedState";
 
     }
 
     @Override
     public int getID() {
 
-	return id;
+        return id;
 
     }
 

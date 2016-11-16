@@ -20,14 +20,14 @@ public class ConfigHandlerFactory {
     }
 
     public static ConfigHandler createConfigHandler(String command) {
-	switch (command) {
-	    case ClientCommandConfig.COMMAND:
-		return new ClientConfigHandler();
-	    case ServerCommandConfig.COMMAND:
-		return new ServerConfigHandler();
-	    default:
-		throw new UnsupportedOperationException("You have to select one of the available commands");
+        switch (command) {
+            case ClientCommandConfig.COMMAND:
+                return new ClientConfigHandler();
+            case ServerCommandConfig.COMMAND:
+                return new ServerConfigHandler();
+            default:
+                throw new UnsupportedOperationException("You have to select one of the available commands");
 
-	}
+        }
     }
 }

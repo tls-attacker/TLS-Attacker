@@ -23,12 +23,12 @@ public class ApplicationHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-	ApplicationHandler handler = new ApplicationHandler(new TlsContext());
-	handler.setProtocolMessage(new ApplicationMessage());
-	byte[] message = { 1, 2, 3, 4 };
-	int pointer = handler.parseMessageAction(message, 0);
-	assertEquals(message.length, pointer);
-	assertArrayEquals(message, handler.getProtocolMessage().getData().getOriginalValue());
+        ApplicationHandler handler = new ApplicationHandler(new TlsContext());
+        handler.setProtocolMessage(new ApplicationMessage());
+        byte[] message = { 1, 2, 3, 4 };
+        int pointer = handler.parseMessageAction(message, 0);
+        assertEquals(message.length, pointer);
+        assertArrayEquals(message, handler.getProtocolMessage().getData().getOriginalValue());
 
     }
 }

@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.alert;
 
@@ -44,17 +43,6 @@ public final class AlertMessage extends ProtocolMessage {
 
     public AlertMessage() {
         this.protocolMessageType = ProtocolMessageType.ALERT;
-    }
-
-    public AlertMessage(ConnectionEnd messageIssuer) {
-        this();
-        this.messageIssuer = messageIssuer;
-    }
-
-    public AlertMessage(ConnectionEnd messageIssuer, AlertLevel level, AlertDescription description) {
-        this();
-        this.messageIssuer = messageIssuer;
-        setConfig(level, description);
     }
 
     public ModifiableByte getLevel() {
@@ -98,16 +86,38 @@ public final class AlertMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nALERT message:\n  Level: ").append(AlertLevel.getAlertLevel(level.getValue()))
-                .append("\n  Description: ").append(AlertDescription.getAlertDescription(description.getValue()));
+        sb.append("\nALERT message:\n  Level: ");
+        if (level != null) {
+            sb.append(AlertLevel.getAlertLevel(level.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Description: ");
+        if (description != null) {
+            sb.append(AlertDescription.getAlertDescription(description.getValue()));
+        } else {
+            sb.append("null");
+        }
         return sb.toString();
     }
 
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ALERT (").append(AlertLevel.getAlertLevel(level.getValue())).append(", ")
-                .append(AlertDescription.getAlertDescription(description.getValue())).append(")");
+
+        sb.append("ALERT (");
+        if (level != null && level.getValue() != null) {
+            sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
+        } else {
+            sb.append("null");
+        }
+        sb.append(", ");
+        if (description != null && description.getValue() != null) {
+            sb.append(AlertDescription.getAlertDescription(description.getValue()).toString());
+        } else {
+            sb.append("null");
+        }
+        sb.append(")");
         return sb.toString();
     }
 

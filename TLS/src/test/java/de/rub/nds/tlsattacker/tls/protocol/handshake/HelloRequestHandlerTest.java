@@ -22,7 +22,7 @@ public class HelloRequestHandlerTest {
     private HelloRequestHandler handler;
 
     public HelloRequestHandlerTest() {
-	handler = new HelloRequestHandler(new TlsContext());
+        handler = new HelloRequestHandler(new TlsContext());
     }
 
     /**
@@ -30,16 +30,16 @@ public class HelloRequestHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-	handler.setProtocolMessage(new HelloRequestMessage());
+        handler.setProtocolMessage(new HelloRequestMessage());
 
-	HelloRequestMessage message = (HelloRequestMessage) handler.getProtocolMessage();
+        HelloRequestMessage message = (HelloRequestMessage) handler.getProtocolMessage();
 
-	byte[] returned = handler.prepareMessageAction();
-	byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.HELLO_REQUEST.getValue() },
-		new byte[] { 0x00, 0x00, 0x00 });
+        byte[] returned = handler.prepareMessageAction();
+        byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.HELLO_REQUEST.getValue() },
+                new byte[] { 0x00, 0x00, 0x00 });
 
-	assertNotNull("Confirm function didn't return 'NULL'", returned);
-	assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
+        assertNotNull("Confirm function didn't return 'NULL'", returned);
+        assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
     /**
@@ -47,18 +47,18 @@ public class HelloRequestHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-	byte[] helloRequestMsg = { 0x00, 0x00, 0x00, 0x00 };
-	handler.initializeProtocolMessage();
+        byte[] helloRequestMsg = { 0x00, 0x00, 0x00, 0x00 };
+        handler.initializeProtocolMessage();
 
-	int endPointer = handler.parseMessage(helloRequestMsg, 0);
-	HelloRequestMessage message = handler.getProtocolMessage();
+        int endPointer = handler.parseMessage(helloRequestMsg, 0);
+        HelloRequestMessage message = handler.getProtocolMessage();
 
-	assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
-	assertEquals("Confirm expected message type: \"HelloRequest\"", HandshakeMessageType.HELLO_REQUEST,
-		message.getHandshakeMessageType());
-	assertEquals("Confirm expected message length of \"0\"", new Integer(0), message.getLength().getValue());
-	assertEquals("Confirm the correct value of endPointer representing the " + "actual number of message bytes",
-		helloRequestMsg.length, endPointer);
+        assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
+        assertEquals("Confirm expected message type: \"HelloRequest\"", HandshakeMessageType.HELLO_REQUEST,
+                message.getHandshakeMessageType());
+        assertEquals("Confirm expected message length of \"0\"", new Integer(0), message.getLength().getValue());
+        assertEquals("Confirm the correct value of endPointer representing the " + "actual number of message bytes",
+                helloRequestMsg.length, endPointer);
     }
 
 }

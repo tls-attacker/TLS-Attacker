@@ -53,76 +53,76 @@ public class LongSerializationTest {
 
     @Before
     public void setUp() throws JAXBException {
-	start = new ModifiableLong();
-	start.setOriginalValue(10L);
-	expectedResult = null;
-	result = null;
+        start = new ModifiableLong();
+        start.setOriginalValue(10L);
+        expectedResult = null;
+        result = null;
 
-	writer = new StringWriter();
-	context = JAXBContext.newInstance(ModifiableLong.class, LongAddModification.class,
-		ByteArrayModificationFactory.class);
-	m = context.createMarshaller();
-	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-	um = context.createUnmarshaller();
+        writer = new StringWriter();
+        context = JAXBContext.newInstance(ModifiableLong.class, LongAddModification.class,
+                ByteArrayModificationFactory.class);
+        m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        um = context.createUnmarshaller();
     }
 
     @Test
     public void testSerializeDeserializeSimple() throws Exception {
-	start.setModification(null);
-	m.marshal(start, writer);
+        start.setModification(null);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	System.out.println(xmlString);
+        String xmlString = writer.toString();
+        System.out.println(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = 10L;
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
+        expectedResult = 10L;
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
 
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModification() throws Exception {
-	VariableModification<Long> modifier = LongModificationFactory.add(1L);
-	VariableModification<Long> modifier2 = LongModificationFactory.add(1L);
-	modifier.setPostModification(modifier2);
-	start.setModification(modifier);
-	m.marshal(start, writer);
+        VariableModification<Long> modifier = LongModificationFactory.add(1L);
+        VariableModification<Long> modifier2 = LongModificationFactory.add(1L);
+        modifier.setPostModification(modifier2);
+        start.setModification(modifier);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	LOGGER.debug(xmlString);
+        String xmlString = writer.toString();
+        LOGGER.debug(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = 12L;
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
+        expectedResult = 12L;
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
 
     }
 
     @Test
     public void testSerializeDeserializeWithDoubleModificationFilter() throws Exception {
-	VariableModification<Long> modifier = LongModificationFactory.add(1L);
-	int[] filtered = { 1, 3 };
-	AccessModificationFilter filter = ModificationFilterFactory.access(filtered);
-	modifier.setModificationFilter(filter);
-	VariableModification<Long> modifier2 = LongModificationFactory.add(1L);
-	modifier.setPostModification(modifier2);
-	start.setModification(modifier);
-	m.marshal(start, writer);
+        VariableModification<Long> modifier = LongModificationFactory.add(1L);
+        int[] filtered = { 1, 3 };
+        AccessModificationFilter filter = ModificationFilterFactory.access(filtered);
+        modifier.setModificationFilter(filter);
+        VariableModification<Long> modifier2 = LongModificationFactory.add(1L);
+        modifier.setPostModification(modifier2);
+        start.setModification(modifier);
+        m.marshal(start, writer);
 
-	String xmlString = writer.toString();
-	LOGGER.debug(xmlString);
+        String xmlString = writer.toString();
+        LOGGER.debug(xmlString);
 
-	um = context.createUnmarshaller();
-	ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));
+        um = context.createUnmarshaller();
+        ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));
 
-	expectedResult = 10L;
-	result = mv.getValue();
-	assertEquals(expectedResult, result);
+        expectedResult = 10L;
+        result = mv.getValue();
+        assertEquals(expectedResult, result);
 
     }
 

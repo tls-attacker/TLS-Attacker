@@ -20,11 +20,11 @@ public class OracleException extends RuntimeException {
     }
 
     public OracleException(String message) {
-	super(message);
+        super(message);
     }
 
     public OracleException(String message, Throwable t) {
-	super(message, t);
+        super(message, t);
     }
 
 }

@@ -26,19 +26,19 @@ public class IntegerAddModification extends VariableModification<Integer> {
     }
 
     public IntegerAddModification(Integer bi) {
-	this.summand = bi;
+        this.summand = bi;
     }
 
     @Override
     protected Integer modifyImplementationHook(Integer input) {
-	return (input == null) ? summand : input + summand;
+        return (input == null) ? summand : input + summand;
     }
 
     public Integer getSummand() {
-	return summand;
+        return summand;
     }
 
     public void setSummand(Integer summand) {
-	this.summand = summand;
+        this.summand = summand;
     }
 }

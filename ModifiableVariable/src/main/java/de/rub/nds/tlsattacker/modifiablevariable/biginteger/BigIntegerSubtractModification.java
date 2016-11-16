@@ -27,22 +27,22 @@ public class BigIntegerSubtractModification extends VariableModification<BigInte
     }
 
     public BigIntegerSubtractModification(BigInteger bi) {
-	this.subtrahend = bi;
+        this.subtrahend = bi;
     }
 
     @Override
     protected BigInteger modifyImplementationHook(BigInteger input) {
-	if (input == null) {
-	    input = BigInteger.ZERO;
-	}
-	return input.subtract(subtrahend);
+        if (input == null) {
+            input = BigInteger.ZERO;
+        }
+        return input.subtract(subtrahend);
     }
 
     public BigInteger getSubtrahend() {
-	return subtrahend;
+        return subtrahend;
     }
 
     public void setSubtrahend(BigInteger subtrahend) {
-	this.subtrahend = subtrahend;
+        this.subtrahend = subtrahend;
     }
 }

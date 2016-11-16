@@ -24,77 +24,77 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      */
     boolean checkDecryptedBytes(final byte[] msg) {
 
-	boolean conform = false;
-	byte[] tmpMsg = msg;
+        boolean conform = false;
+        byte[] tmpMsg = msg;
 
-	// BigIP checks only the second byte
-	if (oracleType == OracleType.BigIP && tmpMsg[1] == 0x02) {
-	    conform = true;
-	}
+        // BigIP checks only the second byte
+        if (oracleType == OracleType.BigIP && tmpMsg[1] == 0x02) {
+            conform = true;
+        }
 
-	// remove the first 0x00 byte and shorten the array
-	if (tmpMsg[0] == 0x00) {
-	    byte[] tmp = new byte[tmpMsg.length - 1];
-	    System.arraycopy(tmpMsg, 1, tmp, 0, tmp.length);
-	    tmpMsg = tmp;
-	}
+        // remove the first 0x00 byte and shorten the array
+        if (tmpMsg[0] == 0x00) {
+            byte[] tmp = new byte[tmpMsg.length - 1];
+            System.arraycopy(tmpMsg, 1, tmp, 0, tmp.length);
+            tmpMsg = tmp;
+        }
 
-	// manger checks only the first 0x00 byte
-	if (oracleType == OracleType.MANGER_0x00 && tmpMsg.length == (blockSize - 1)) {
-	    conform = true;
-	}
+        // manger checks only the first 0x00 byte
+        if (oracleType == OracleType.MANGER_0x00 && tmpMsg.length == (blockSize - 1)) {
+            conform = true;
+        }
 
-	if (tmpMsg[0] == 0x02 && tmpMsg.length == (blockSize - 1)) {
-	    switch (oracleType) {
-		case TTT:
-		case BigIP:
-		    conform = true;
-		    break;
+        if (tmpMsg[0] == 0x02 && tmpMsg.length == (blockSize - 1)) {
+            switch (oracleType) {
+                case TTT:
+                case BigIP:
+                    conform = true;
+                    break;
 
-		case FTT:
-		    if (checkFirst(tmpMsg)) {
-			conform = true;
-		    }
-		    break;
+                case FTT:
+                    if (checkFirst(tmpMsg)) {
+                        conform = true;
+                    }
+                    break;
 
-		case TFT:
-		    if (checkSecond(tmpMsg)) {
-			conform = true;
-		    }
-		    break;
+                case TFT:
+                    if (checkSecond(tmpMsg)) {
+                        conform = true;
+                    }
+                    break;
 
-		case FFT:
-		    if (checkFirst(tmpMsg) && checkSecond(tmpMsg)) {
-			conform = true;
-		    }
-		    break;
+                case FFT:
+                    if (checkFirst(tmpMsg) && checkSecond(tmpMsg)) {
+                        conform = true;
+                    }
+                    break;
 
-		case FFF:
-		    if (checkFirst(tmpMsg) && checkSecond(tmpMsg) && checkThird(tmpMsg)) {
-			conform = true;
-		    }
-		    break;
+                case FFF:
+                    if (checkFirst(tmpMsg) && checkSecond(tmpMsg) && checkThird(tmpMsg)) {
+                        conform = true;
+                    }
+                    break;
 
-		case JSSE:
-		    if (checkJSSE(tmpMsg)) {
-			conform = true;
-		    }
-		    break;
+                case JSSE:
+                    if (checkJSSE(tmpMsg)) {
+                        conform = true;
+                    }
+                    break;
 
-		case XMLENC:
-		    if (checkXMLENC(tmpMsg)) {
-			conform = true;
-		    }
-		    break;
+                case XMLENC:
+                    if (checkXMLENC(tmpMsg)) {
+                        conform = true;
+                    }
+                    break;
 
-		default:
-		    break;
-	    }
-	}
-	if (conform) {
-	    LOGGER.debug("-------- Valid message by query number {} -----------", numberOfQueries);
-	}
-	return conform;
+                default:
+                    break;
+            }
+        }
+        if (conform) {
+            LOGGER.debug("-------- Valid message by query number {} -----------", numberOfQueries);
+        }
+        return conform;
     }
 
     /**
@@ -105,14 +105,14 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * @return
      */
     private boolean checkFirst(final byte[] msg) {
-	boolean result = false;
-	for (int i = 9; i < blockSize - 1; i++) {
-	    if (msg[i] == 0x00) {
-		result = true;
-	    }
-	}
+        boolean result = false;
+        for (int i = 9; i < blockSize - 1; i++) {
+            if (msg[i] == 0x00) {
+                result = true;
+            }
+        }
 
-	return result;
+        return result;
     }
 
     /**
@@ -123,13 +123,13 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * @return
      */
     private boolean checkSecond(final byte[] msg) {
-	boolean result = true;
-	for (int i = 1; i < 9; i++) {
-	    if (msg[i] == 0x00) {
-		result = false;
-	    }
-	}
-	return result;
+        boolean result = true;
+        for (int i = 1; i < 9; i++) {
+            if (msg[i] == 0x00) {
+                result = false;
+            }
+        }
+        return result;
     }
 
     /**
@@ -140,11 +140,11 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * @return
      */
     private boolean checkThird(final byte[] msg) {
-	boolean result = false;
-	if (hasCorrectKeySize(48, msg)) {
-	    result = true;
-	}
-	return result;
+        boolean result = false;
+        if (hasCorrectKeySize(48, msg)) {
+            result = true;
+        }
+        return result;
     }
 
     /**
@@ -162,32 +162,32 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * @return
      */
     private boolean checkJSSE(final byte[] msg) {
-	// check first 8 bytes
-	if (!checkSecond(msg)) {
-	    return false;
-	}
-	// check if the second last byte is equal to 0x00
-	if (msg[msg.length - 2] == 0x00) {
-	    if (!containsByte((byte) 0x00, msg, 10, msg.length - 2)) {
-		return true;
-	    }
-	}
+        // check first 8 bytes
+        if (!checkSecond(msg)) {
+            return false;
+        }
+        // check if the second last byte is equal to 0x00
+        if (msg[msg.length - 2] == 0x00) {
+            if (!containsByte((byte) 0x00, msg, 10, msg.length - 2)) {
+                return true;
+            }
+        }
 
-	if (msg.length > 128) {
-	    // check the following bytes (excluding the last PMS and 80 padding
-	    // bytes)
-	    int last = msg.length - 1 - 48 - 80;
-	    for (int i = 9; i < last; i++) {
-		if (msg[i] == 0x00) {
-		    // if message contains 0x00 in one of the following bytes,
-		    // our
-		    // oracle returns an Internal error
-		    return true;
-		}
-	    }
-	}
-	// otherwise, no Internal error is returned
-	return false;
+        if (msg.length > 128) {
+            // check the following bytes (excluding the last PMS and 80 padding
+            // bytes)
+            int last = msg.length - 1 - 48 - 80;
+            for (int i = 9; i < last; i++) {
+                if (msg[i] == 0x00) {
+                    // if message contains 0x00 in one of the following bytes,
+                    // our
+                    // oracle returns an Internal error
+                    return true;
+                }
+            }
+        }
+        // otherwise, no Internal error is returned
+        return false;
     }
 
     /**
@@ -199,15 +199,15 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      */
     private boolean checkXMLENC(final byte[] msg) {
 
-	// check first 8 bytes
-	if (!checkSecond(msg)) {
-	    return false;
-	}
+        // check first 8 bytes
+        if (!checkSecond(msg)) {
+            return false;
+        }
 
-	if (hasCorrectKeySize(16, msg) || hasCorrectKeySize(24, msg) || hasCorrectKeySize(32, msg)) {
-	    return true;
-	}
-	return false;
+        if (hasCorrectKeySize(16, msg) || hasCorrectKeySize(24, msg) || hasCorrectKeySize(32, msg)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -220,14 +220,14 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * @return
      */
     private boolean containsByte(final byte b, final byte[] msg, final int from, final int to) {
-	boolean result = false;
-	for (int i = from; i < to; i++) {
-	    if (msg[i] == b) {
-		result = true;
-		break;
-	    }
-	}
-	return result;
+        boolean result = false;
+        for (int i = from; i < to; i++) {
+            if (msg[i] == b) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -241,18 +241,18 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
      * @return
      */
     private boolean hasCorrectKeySize(final int keySize, final byte[] msg) {
-	boolean result = false;
-	// check if the second last byte is equal to 0x00
-	if (msg[msg.length - keySize - 1] == 0x00) {
-	    /*
-	     * Starts from 10 because the first 8 bytes are checked by
-	     * checkSecond and the first 2 bytes are the PKCS type (covered by
-	     * implicit check of checkDecryptedBytes)
-	     */
-	    if (!containsByte((byte) 0x00, msg, 10, msg.length - keySize - 1)) {
-		result = true;
-	    }
-	}
-	return result;
+        boolean result = false;
+        // check if the second last byte is equal to 0x00
+        if (msg[msg.length - keySize - 1] == 0x00) {
+            /*
+             * Starts from 10 because the first 8 bytes are checked by
+             * checkSecond and the first 2 bytes are the PKCS type (covered by
+             * implicit check of checkDecryptedBytes)
+             */
+            if (!containsByte((byte) 0x00, msg, 10, msg.length - keySize - 1)) {
+                result = true;
+            }
+        }
+        return result;
     }
 }

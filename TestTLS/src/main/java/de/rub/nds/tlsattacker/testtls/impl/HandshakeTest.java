@@ -22,12 +22,13 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public abstract class HandshakeTest extends TestTLS {
@@ -49,13 +50,25 @@ public abstract class HandshakeTest extends TestTLS {
         tlsContext.setProtocolVersion(serverConfig.getProtocolVersion());
         tlsContext.setSelectedCipherSuite(serverConfig.getCipherSuites().get(0));
         WorkflowTrace workflowTrace = new WorkflowTrace();
-        ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-        workflowTrace.add(ch);
-        workflowTrace.add(new ArbitraryMessage());
-        // we have to send this alert to make clear the connection will be closed
-        // and the server does not wait for further messages (there are test servers, 
+        ClientHelloMessage ch = new ClientHelloMessage();
+        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
+        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
+                new ArbitraryMessage()));
+        // we have to send this alert to make clear the connection will be
+        // closed
+        // and the server does not wait for further messages (there are test
+        // servers,
         // for example Botan, for which closing connection is not enough)
-        workflowTrace.add(new AlertMessage(ConnectionEnd.CLIENT, AlertLevel.FATAL, AlertDescription.HANDSHAKE_FAILURE));
+        AlertMessage alert = new AlertMessage();
+        alert.setLevel(AlertLevel.FATAL.getValue());
+        alert.setDescription(AlertDescription.HANDSHAKE_FAILURE.getValue());// TODO
+                                                                            // why
+                                                                            // not
+                                                                            // send
+                                                                            // close
+                                                                            // notify?
+        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, alert));
+
         ch.setSupportedCipherSuites(serverConfig.getCipherSuites());
         ch.setSupportedCompressionMethods(serverConfig.getCompressionMethods());
         WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig, ch);
@@ -70,7 +83,7 @@ public abstract class HandshakeTest extends TestTLS {
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
         transportHandler.closeConnection();
-        return workflowTrace.containsHandshakeMessage(HandshakeMessageType.SERVER_HELLO);
+        return workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO) != null;
     }
 
 }

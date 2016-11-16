@@ -16,19 +16,19 @@ package de.rub.nds.tlsattacker.tls.exceptions;
 public class CryptoException extends RuntimeException {
 
     public CryptoException() {
-	super();
+        super();
     }
 
     public CryptoException(String message) {
-	super(message);
+        super(message);
     }
 
     public CryptoException(Throwable t) {
-	super(t);
+        super(t);
     }
 
     public CryptoException(String message, Throwable t) {
-	super(message, t);
+        super(message, t);
     }
 
 }

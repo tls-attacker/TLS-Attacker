@@ -41,76 +41,76 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     ModifiableByteArray serverName;
 
     public ServerNameIndicationExtensionMessage() {
-	this.extensionTypeConstant = ExtensionType.SERVER_NAME_INDICATION;
+        this.extensionTypeConstant = ExtensionType.SERVER_NAME_INDICATION;
     }
 
     public NameType getNameTypeConfig() {
-	return nameTypeConfig;
+        return nameTypeConfig;
     }
 
     public void setNameTypeConfig(NameType nameTypeConfig) {
-	this.nameTypeConfig = nameTypeConfig;
+        this.nameTypeConfig = nameTypeConfig;
     }
 
     public ModifiableInteger getServerNameListLength() {
-	return serverNameListLength;
+        return serverNameListLength;
     }
 
     public void setServerNameListLength(ModifiableInteger serverNameListLength) {
-	this.serverNameListLength = serverNameListLength;
+        this.serverNameListLength = serverNameListLength;
     }
 
     public void setServerNameListLength(int length) {
-	this.serverNameListLength = ModifiableVariableFactory.safelySetValue(serverNameListLength, length);
+        this.serverNameListLength = ModifiableVariableFactory.safelySetValue(serverNameListLength, length);
     }
 
     public ModifiableByte getServerNameType() {
-	return serverNameType;
+        return serverNameType;
     }
 
     public void setServerNameType(ModifiableByte serverNameType) {
-	this.serverNameType = serverNameType;
+        this.serverNameType = serverNameType;
     }
 
     public void setServerNameType(byte serverNameType) {
-	this.serverNameType = ModifiableVariableFactory.safelySetValue(this.serverNameType, serverNameType);
+        this.serverNameType = ModifiableVariableFactory.safelySetValue(this.serverNameType, serverNameType);
     }
 
     public ModifiableInteger getServerNameLength() {
-	return serverNameLength;
+        return serverNameLength;
     }
 
     public void setServerNameLength(ModifiableInteger serverNameLength) {
-	this.serverNameLength = serverNameLength;
+        this.serverNameLength = serverNameLength;
     }
 
     public void setServerNameLength(int serverNameLength) {
-	this.serverNameLength = ModifiableVariableFactory.safelySetValue(this.serverNameLength, serverNameLength);
+        this.serverNameLength = ModifiableVariableFactory.safelySetValue(this.serverNameLength, serverNameLength);
     }
 
     public ModifiableByteArray getServerName() {
-	return serverName;
+        return serverName;
     }
 
     public void setServerName(ModifiableByteArray serverName) {
-	this.serverName = serverName;
+        this.serverName = serverName;
     }
 
     public void setServerName(byte[] serverName) {
-	this.serverName = ModifiableVariableFactory.safelySetValue(this.serverName, serverName);
+        this.serverName = ModifiableVariableFactory.safelySetValue(this.serverName, serverName);
     }
 
     public String getServerNameConfig() {
-	return serverNameConfig;
+        return serverNameConfig;
     }
 
     public void setServerNameConfig(String serverNameConfig) {
-	this.serverNameConfig = serverNameConfig;
+        this.serverNameConfig = serverNameConfig;
     }
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	return ServerNameIndicationExtensionHandler.getInstance();
+        return ServerNameIndicationExtensionHandler.getInstance();
     }
 
 }

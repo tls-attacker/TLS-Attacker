@@ -22,10 +22,10 @@ public class ProtocolVersionConverter implements IStringConverter<ProtocolVersio
 
     @Override
     public ProtocolVersion convert(String value) {
-	try {
-	    return ProtocolVersion.fromString(value);
-	} catch (IllegalArgumentException ex) {
-	    throw new ParameterException(ex);
-	}
+        try {
+            return ProtocolVersion.fromString(value);
+        } catch (IllegalArgumentException ex) {
+            throw new ParameterException(ex);
+        }
     }
 }

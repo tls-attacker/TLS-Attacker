@@ -30,54 +30,54 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
     }
 
     public static MaxFragmentLengthExtensionHandler getInstance() {
-	if (instance == null) {
-	    instance = new MaxFragmentLengthExtensionHandler();
-	}
-	return instance;
+        if (instance == null) {
+            instance = new MaxFragmentLengthExtensionHandler();
+        }
+        return instance;
     }
 
     @Override
     public void initializeClientHelloExtension(MaxFragmentLengthExtensionMessage extension) {
-	byte[] maxFragmentLength = { extension.getMaxFragmentLengthConfig().getValue() };
+        byte[] maxFragmentLength = { extension.getMaxFragmentLengthConfig().getValue() };
 
-	extension.setExtensionType(ExtensionType.MAX_FRAGMENT_LENGTH.getValue());
-	extension.setMaxFragmentLength(maxFragmentLength);
+        extension.setExtensionType(ExtensionType.MAX_FRAGMENT_LENGTH.getValue());
+        extension.setMaxFragmentLength(maxFragmentLength);
 
-	extension.setExtensionLength(extension.getMaxFragmentLength().getValue().length);
+        extension.setExtensionLength(extension.getMaxFragmentLength().getValue().length);
 
-	byte[] result = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
-		ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
-		extension.getMaxFragmentLength().getValue());
+        byte[] result = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
+                ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
+                extension.getMaxFragmentLength().getValue());
 
-	extension.setExtensionBytes(result);
+        extension.setExtensionBytes(result);
     }
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	if (extensionMessage == null) {
-	    extensionMessage = new MaxFragmentLengthExtensionMessage();
-	}
-	MaxFragmentLengthExtensionMessage mflExtension = (MaxFragmentLengthExtensionMessage) extensionMessage;
-	int nextPointer = pointer + ExtensionByteLength.TYPE;
-	byte[] extensionType = Arrays.copyOfRange(message, pointer, nextPointer);
-	mflExtension.setExtensionType(extensionType);
+        if (extensionMessage == null) {
+            extensionMessage = new MaxFragmentLengthExtensionMessage();
+        }
+        MaxFragmentLengthExtensionMessage mflExtension = (MaxFragmentLengthExtensionMessage) extensionMessage;
+        int nextPointer = pointer + ExtensionByteLength.TYPE;
+        byte[] extensionType = Arrays.copyOfRange(message, pointer, nextPointer);
+        mflExtension.setExtensionType(extensionType);
 
-	pointer = nextPointer;
-	nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
-	int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
-	mflExtension.setExtensionLength(extensionLength);
+        pointer = nextPointer;
+        nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
+        int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
+        mflExtension.setExtensionLength(extensionLength);
 
-	pointer = nextPointer;
-	byte[] fragmentLength = { message[pointer] };
-	mflExtension.setMaxFragmentLength(fragmentLength);
+        pointer = nextPointer;
+        byte[] fragmentLength = { message[pointer] };
+        mflExtension.setMaxFragmentLength(fragmentLength);
 
-	byte[] result = ArrayConverter
-		.concatenate(mflExtension.getExtensionType().getValue(), ArrayConverter.intToBytes(mflExtension
-			.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), mflExtension
-			.getMaxFragmentLength().getValue());
-	mflExtension.setExtensionBytes(result);
+        byte[] result = ArrayConverter
+                .concatenate(mflExtension.getExtensionType().getValue(), ArrayConverter.intToBytes(mflExtension
+                        .getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), mflExtension
+                        .getMaxFragmentLength().getValue());
+        mflExtension.setExtensionBytes(result);
 
-	return pointer + 1;
+        return pointer + 1;
     }
 
 }

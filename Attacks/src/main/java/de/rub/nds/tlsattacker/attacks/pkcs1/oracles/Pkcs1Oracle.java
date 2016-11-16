@@ -69,15 +69,15 @@ public abstract class Pkcs1Oracle {
      */
     public enum OracleType {
 
-	TTT,
-	TFT,
-	FTT,
-	FFT,
-	FFF,
-	JSSE,
-	XMLENC,
-	BigIP,
-	MANGER_0x00
+        TTT,
+        TFT,
+        FTT,
+        FFT,
+        FFF,
+        JSSE,
+        XMLENC,
+        BigIP,
+        MANGER_0x00
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract class Pkcs1Oracle {
      * @return Blocksize
      */
     public int getBlockSize() {
-	return this.blockSize;
+        return this.blockSize;
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class Pkcs1Oracle {
      * @return Number of queries
      */
     public long getNumberOfQueries() {
-	return this.numberOfQueries;
+        return this.numberOfQueries;
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class Pkcs1Oracle {
      * @return Public key
      */
     public PublicKey getPublicKey() {
-	return publicKey;
+        return publicKey;
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class Pkcs1Oracle {
      * @return isPlaintextOracle
      */
     public boolean isPlaintextOracle() {
-	return isPlaintextOracle;
+        return isPlaintextOracle;
     }
 
     /**
@@ -132,10 +132,10 @@ public abstract class Pkcs1Oracle {
      * @return
      */
     public OracleType getOracleType() {
-	return oracleType;
+        return oracleType;
     }
 
     public void resetNumberOfQueries() {
-	this.numberOfQueries = 0;
+        this.numberOfQueries = 0;
     }
 }

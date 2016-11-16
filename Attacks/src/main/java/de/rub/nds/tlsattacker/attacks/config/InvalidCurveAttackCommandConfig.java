@@ -34,36 +34,36 @@ public class InvalidCurveAttackCommandConfig extends ClientCommandConfig {
     BigInteger publicPointBaseY;
 
     public InvalidCurveAttackCommandConfig() {
-	cipherSuites.clear();
-	cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-	namedCurves.clear();
-	namedCurves.add(NamedCurve.SECP256R1);
-	workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        cipherSuites.clear();
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        namedCurves.clear();
+        namedCurves.add(NamedCurve.SECP256R1);
+        workflowTraceType = WorkflowTraceType.HANDSHAKE;
     }
 
     public BigInteger getPremasterSecret() {
-	return premasterSecret;
+        return premasterSecret;
     }
 
     public void setPremasterSecret(BigInteger premasterSecret) {
-	this.premasterSecret = premasterSecret;
+        this.premasterSecret = premasterSecret;
     }
 
     public BigInteger getPublicPointBaseX() {
-	return publicPointBaseX;
+        return publicPointBaseX;
     }
 
     public void setPublicPointBaseX(BigInteger publicPointBaseX) {
-	this.publicPointBaseX = publicPointBaseX;
+        this.publicPointBaseX = publicPointBaseX;
     }
 
     public BigInteger getPublicPointBaseY() {
-	return publicPointBaseY;
+        return publicPointBaseY;
     }
 
     public void setPublicPointBaseY(BigInteger publicPointBaseY) {
-	this.publicPointBaseY = publicPointBaseY;
+        this.publicPointBaseY = publicPointBaseY;
     }
 
 }

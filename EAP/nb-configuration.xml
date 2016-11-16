@@ -22,5 +22,6 @@
         <de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>true</de-markiewb-netbeans-plugins-eclipse-formatter.eclipseFormatterEnabled>
         <de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>false</de-markiewb-netbeans-plugins-eclipse-formatter.enableFormatAsSaveAction>
         <de-markiewb-netbeans-plugins-eclipse-formatter.useProjectSettings>true</de-markiewb-netbeans-plugins-eclipse-formatter.useProjectSettings>
+        <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
     </properties>
 </project-shared-configuration>

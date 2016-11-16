@@ -15,14 +15,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Config>
  */
 public abstract class Attacker<Config extends CommandConfig> {
 
     protected Config config;
-    
+
     protected boolean vulnerable;
 
     /**
@@ -37,7 +37,7 @@ public abstract class Attacker<Config extends CommandConfig> {
 
     /**
      * Executes a given attack.
-     *
+     * 
      * @param configHandler
      */
     public abstract void executeAttack(ConfigHandler configHandler);

@@ -18,21 +18,21 @@ import java.util.Arrays;
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
     public ApplicationHandler(TlsContext tlsContext) {
-	super(tlsContext);
-	this.correctProtocolMessageClass = ApplicationMessage.class;
+        super(tlsContext);
+        this.correctProtocolMessageClass = ApplicationMessage.class;
     }
 
     @Override
     public byte[] prepareMessageAction() {
-	protocolMessage.setData("test".getBytes());
-	byte[] result = protocolMessage.getData().getValue();
-	return result;
+        protocolMessage.setData("test".getBytes());
+        byte[] result = protocolMessage.getData().getValue();
+        return result;
     }
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-	protocolMessage.setData(Arrays.copyOfRange(message, pointer, message.length));
-	return pointer + message.length;
+        protocolMessage.setData(Arrays.copyOfRange(message, pointer, message.length));
+        return pointer + message.length;
     }
 
 }

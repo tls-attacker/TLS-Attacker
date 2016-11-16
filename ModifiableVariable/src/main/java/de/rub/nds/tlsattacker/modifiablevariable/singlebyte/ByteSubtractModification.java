@@ -26,22 +26,22 @@ public class ByteSubtractModification extends VariableModification<Byte> {
     }
 
     public ByteSubtractModification(Byte bi) {
-	this.subtrahend = bi;
+        this.subtrahend = bi;
     }
 
     @Override
     protected Byte modifyImplementationHook(Byte input) {
-	if (input == null) {
-	    input = 0;
-	}
-	return (byte) (input - subtrahend);
+        if (input == null) {
+            input = 0;
+        }
+        return (byte) (input - subtrahend);
     }
 
     public Byte getSubtrahend() {
-	return subtrahend;
+        return subtrahend;
     }
 
     public void setSubtrahend(Byte subtrahend) {
-	this.subtrahend = subtrahend;
+        this.subtrahend = subtrahend;
     }
 }

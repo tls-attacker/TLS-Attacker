@@ -23,11 +23,11 @@ public class CipherSuiteConverter implements IStringConverter<CipherSuite> {
     @Override
     public CipherSuite convert(String value) {
 
-	try {
-	    return CipherSuite.valueOf(value);
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a ciphersuite. "
-		    + "Available values are: " + Arrays.toString(CipherSuite.values()));
-	}
+        try {
+            return CipherSuite.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException("Value " + value + " cannot be converted to a ciphersuite. "
+                    + "Available values are: " + Arrays.toString(CipherSuite.values()));
+        }
     }
 }

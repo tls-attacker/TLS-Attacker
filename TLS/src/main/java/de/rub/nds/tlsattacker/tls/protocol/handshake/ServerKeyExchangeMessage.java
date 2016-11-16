@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ServerKeyExchangeMessage extends HandshakeMessage {
+public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /**
      * hash algorithm
@@ -44,55 +44,55 @@ public class ServerKeyExchangeMessage extends HandshakeMessage {
     ModifiableByteArray signature;
 
     public ServerKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
-	super(handshakeMessageType);
+        super(handshakeMessageType);
     }
 
     public ModifiableVariable<Byte> getHashAlgorithm() {
-	return hashAlgorithm;
+        return hashAlgorithm;
     }
 
     public void setHashAlgorithm(ModifiableByte hashAlgorithm) {
-	this.hashAlgorithm = hashAlgorithm;
+        this.hashAlgorithm = hashAlgorithm;
     }
 
     public void setHashAlgorithm(byte algorithm) {
-	this.hashAlgorithm = ModifiableVariableFactory.safelySetValue(this.hashAlgorithm, algorithm);
+        this.hashAlgorithm = ModifiableVariableFactory.safelySetValue(this.hashAlgorithm, algorithm);
     }
 
     public ModifiableVariable<Byte> getSignatureAlgorithm() {
-	return signatureAlgorithm;
+        return signatureAlgorithm;
     }
 
     public void setSignatureAlgorithm(ModifiableByte signatureAlgorithm) {
-	this.signatureAlgorithm = signatureAlgorithm;
+        this.signatureAlgorithm = signatureAlgorithm;
     }
 
     public void setSignatureAlgorithm(byte algorithm) {
-	this.signatureAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureAlgorithm, algorithm);
+        this.signatureAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureAlgorithm, algorithm);
     }
 
     public ModifiableInteger getSignatureLength() {
-	return signatureLength;
+        return signatureLength;
     }
 
     public void setSignatureLength(ModifiableInteger signatureLength) {
-	this.signatureLength = signatureLength;
+        this.signatureLength = signatureLength;
     }
 
     public void setSignatureLength(int length) {
-	this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
+        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
     }
 
     public ModifiableByteArray getSignature() {
-	return signature;
+        return signature;
     }
 
     public void setSignature(ModifiableByteArray signature) {
-	this.signature = signature;
+        this.signature = signature;
     }
 
     public void setSignature(byte[] signature) {
-	this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
 }

@@ -30,32 +30,32 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     ModifiableByteArray maxFragmentLength;
 
     public MaxFragmentLengthExtensionMessage() {
-	this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
+        this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
     }
 
     public MaxFragmentLength getMaxFragmentLengthConfig() {
-	return maxFragmentLengthConfig;
+        return maxFragmentLengthConfig;
     }
 
     public void setMaxFragmentLengthConfig(MaxFragmentLength maxFragmentLengthConfig) {
-	this.maxFragmentLengthConfig = maxFragmentLengthConfig;
+        this.maxFragmentLengthConfig = maxFragmentLengthConfig;
     }
 
     public ModifiableByteArray getMaxFragmentLength() {
-	return maxFragmentLength;
+        return maxFragmentLength;
     }
 
     public void setMaxFragmentLength(ModifiableByteArray maxFragmentLength) {
-	this.maxFragmentLength = maxFragmentLength;
+        this.maxFragmentLength = maxFragmentLength;
     }
 
     public void setMaxFragmentLength(byte[] maxFragmentLength) {
-	this.maxFragmentLength = ModifiableVariableFactory.safelySetValue(this.maxFragmentLength, maxFragmentLength);
+        this.maxFragmentLength = ModifiableVariableFactory.safelySetValue(this.maxFragmentLength, maxFragmentLength);
     }
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-	return MaxFragmentLengthExtensionHandler.getInstance();
+        return MaxFragmentLengthExtensionHandler.getInstance();
     }
 
 }

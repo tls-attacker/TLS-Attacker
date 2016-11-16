@@ -20,19 +20,19 @@ public class Start8021X extends EAPFrame {
 
     public Start8021X(byte version) {
 
-	this.version = version;
-	createFrame();
+        this.version = version;
+        createFrame();
 
     }
 
     @Override
     public void createFrame() {
 
-	frame = new byte[4];
-	frame[0] = version; // Version
-	frame[1] = 0x01; // Type:Start
-	frame[2] = 0x00;
-	frame[3] = 0x00; // Length
+        frame = new byte[4];
+        frame[0] = version; // Version
+        frame[1] = 0x01; // Type:Start
+        frame[2] = 0x00;
+        frame[3] = 0x00; // Length
 
     }
 

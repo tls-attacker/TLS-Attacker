@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -29,12 +30,12 @@ public class RecordHandlerTest {
     RecordHandler recordHandler;
 
     public RecordHandlerTest() {
-	Security.addProvider(new BouncyCastleProvider());
-	ClientCommandConfig config = new ClientCommandConfig();
-	WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
-	TlsContext context = factory.createHandshakeTlsContext();
-	context.setRecordHandler(new RecordHandler(context));
-	recordHandler = context.getRecordHandler();
+        Security.addProvider(new BouncyCastleProvider());
+        ClientCommandConfig config = new ClientCommandConfig();
+        WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
+        TlsContext context = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT);
+        context.setRecordHandler(new RecordHandler(context));
+        recordHandler = context.getRecordHandler();
     }
 
     /**
@@ -42,37 +43,37 @@ public class RecordHandlerTest {
      */
     @Test
     public void testWrapData() {
-	byte[] data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	byte[] result;
-	List<Record> records = new LinkedList<>();
-	records.add(new Record());
-	result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
+        byte[] data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        byte[] result;
+        List<Record> records = new LinkedList<>();
+        records.add(new Record());
+        result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
 
-	byte[] expectedResult = { 22, 3, 3, 0, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        byte[] expectedResult = { 22, 3, 3, 0, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-	assertEquals(records.size(), 1);
-	assertArrayEquals(expectedResult, result);
+        assertEquals(records.size(), 1);
+        assertArrayEquals(expectedResult, result);
 
-	Record preconfiguredRecord = new Record();
-	preconfiguredRecord.setMaxRecordLengthConfig(2);
-	records.clear();
-	records.add(preconfiguredRecord);
+        Record preconfiguredRecord = new Record();
+        preconfiguredRecord.setMaxRecordLengthConfig(2);
+        records.clear();
+        records.add(preconfiguredRecord);
 
-	result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
-	assertEquals(2, records.size());
-	assertEquals(20, result.length);
+        result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
+        assertEquals(2, records.size());
+        assertEquals(20, result.length);
 
-	records.clear();
-	preconfiguredRecord = new Record();
-	preconfiguredRecord.setMaxRecordLengthConfig(2);
-	records.add(preconfiguredRecord);
-	records.add(preconfiguredRecord);
+        records.clear();
+        preconfiguredRecord = new Record();
+        preconfiguredRecord.setMaxRecordLengthConfig(2);
+        records.add(preconfiguredRecord);
+        records.add(preconfiguredRecord);
 
-	result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
-	assertEquals(3, records.size());
-	assertEquals(25, result.length);
+        result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
+        assertEquals(3, records.size());
+        assertEquals(25, result.length);
 
-	records = recordHandler.parseRecords(result);
-	assertEquals(3, records.size());
+        records = recordHandler.parseRecords(result);
+        assertEquals(3, records.size());
     }
 }

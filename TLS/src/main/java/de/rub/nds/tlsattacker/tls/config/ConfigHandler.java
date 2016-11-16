@@ -41,48 +41,48 @@ public abstract class ConfigHandler {
      */
     public void initialize(GeneralConfig config) {
 
-	// ECC does not work properly in the NSS provider
-	Security.removeProvider("SunPKCS11-NSS");
-	Security.addProvider(new BouncyCastleProvider());
-	LOGGER.debug("Using the following security providers");
-	for (Provider p : Security.getProviders()) {
-	    LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
-	}
+        // ECC does not work properly in the NSS provider
+        Security.removeProvider("SunPKCS11-NSS");
+        Security.addProvider(new BouncyCastleProvider());
+        LOGGER.debug("Using the following security providers");
+        for (Provider p : Security.getProviders()) {
+            LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
+        }
 
-	LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-	Configuration ctxConfig = ctx.getConfiguration();
-	LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-	if (config.isDebug()) {
-	    loggerConfig.setLevel(Level.DEBUG);
-	    ctx.updateLoggers();
-	} else if (config.isQuiet()) {
-	    loggerConfig.setLevel(Level.OFF);
-	    ctx.updateLoggers();
-	} else if (config.getLogLevel() != null) {
-	    loggerConfig.setLevel(config.getLogLevel());
-	    ctx.updateLoggers();
-	}
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration ctxConfig = ctx.getConfiguration();
+        LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+        if (config.isDebug()) {
+            loggerConfig.setLevel(Level.DEBUG);
+            ctx.updateLoggers();
+        } else if (config.isQuiet()) {
+            loggerConfig.setLevel(Level.OFF);
+            ctx.updateLoggers();
+        } else if (config.getLogLevel() != null) {
+            loggerConfig.setLevel(config.getLogLevel());
+            ctx.updateLoggers();
+        }
 
-	// remove stupid Oracle JDK security restriction (otherwise, it is not
-	// possible to use strong crypto with Oracle JDK)
-	try {
-	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-	    field.setAccessible(true);
-	    if (field.getBoolean(null)) {
-	        field.set(null, java.lang.Boolean.FALSE);
-	    }
-	} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException
-		| SecurityException ex) {
-	    throw new ConfigurationException("Not possible to use unrestricted policy in Oracle JDK", ex);
-	}
+        // remove stupid Oracle JDK security restriction (otherwise, it is not
+        // possible to use strong crypto with Oracle JDK)
+        try {
+            Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+            field.setAccessible(true);
+            if (field.getBoolean(null)) {
+                field.set(null, java.lang.Boolean.FALSE);
+            }
+        } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException
+                | SecurityException ex) {
+            throw new ConfigurationException("Not possible to use unrestricted policy in Oracle JDK", ex);
+        }
     }
 
     public boolean printHelpForCommand(JCommander jc, CommandConfig config) {
-	if (config.isHelp()) {
-	    jc.usage(jc.getParsedCommand());
-	    return true;
-	}
-	return false;
+        if (config.isHelp()) {
+            jc.usage(jc.getParsedCommand());
+            return true;
+        }
+        return false;
     }
 
     public abstract TransportHandler initializeTransportHandler(CommandConfig config) throws ConfigurationException;

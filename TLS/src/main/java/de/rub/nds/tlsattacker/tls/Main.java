@@ -30,66 +30,66 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-	GeneralConfig generalConfig = new GeneralConfig();
-	JCommander jc = new JCommander(generalConfig);
+        GeneralConfig generalConfig = new GeneralConfig();
+        JCommander jc = new JCommander(generalConfig);
 
-	ServerCommandConfig server = new ServerCommandConfig();
-	jc.addCommand(ServerCommandConfig.COMMAND, server);
-	ClientCommandConfig client = new ClientCommandConfig();
-	jc.addCommand(ClientCommandConfig.COMMAND, client);
+        ServerCommandConfig server = new ServerCommandConfig();
+        jc.addCommand(ServerCommandConfig.COMMAND, server);
+        ClientCommandConfig client = new ClientCommandConfig();
+        jc.addCommand(ClientCommandConfig.COMMAND, client);
 
-	jc.parse(args);
+        jc.parse(args);
 
-	if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
-	    jc.usage();
-	    return;
-	}
+        if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+            jc.usage();
+            return;
+        }
 
-	CommandConfig config;
-	if (jc.getParsedCommand().equals(ServerCommandConfig.COMMAND)) {
-	    config = server;
-	} else {
-	    config = client;
-	}
+        CommandConfig config;
+        if (jc.getParsedCommand().equals(ServerCommandConfig.COMMAND)) {
+            config = server;
+        } else {
+            config = client;
+        }
 
-	ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
-	configHandler.initialize(generalConfig);
+        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
+        configHandler.initialize(generalConfig);
 
-	if (configHandler.printHelpForCommand(jc, config)) {
-	    return;
-	}
+        if (configHandler.printHelpForCommand(jc, config)) {
+            return;
+        }
 
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	workflowExecutor.executeWorkflow();
+        workflowExecutor.executeWorkflow();
 
-	// if (config.isVerifyWorkflowCorrectness()) {
-	// workflowExecutor.checkConfiguredProtocolMessagesOrder();
-	// }
+        // if (config.isVerifyWorkflowCorrectness()) {
+        // workflowExecutor.checkConfiguredProtocolMessagesOrder();
+        // }
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
 
-	// setting and executing the session resumption workflow trace
-	if (config.isSessionResumption()) {
-	    TransportHandler transportHandlerSR = configHandler.initializeTransportHandler(config);
+        // setting and executing the session resumption workflow trace
+        if (config.isSessionResumption()) {
+            TransportHandler transportHandlerSR = configHandler.initializeTransportHandler(config);
 
-	    SessionResumptionWorkflowConfiguration SRworkflow = new SessionResumptionWorkflowConfiguration(tlsContext,
-		    config);
-	    SRworkflow.createWorkflow();
+            SessionResumptionWorkflowConfiguration SRworkflow = new SessionResumptionWorkflowConfiguration(tlsContext,
+                    config);
+            SRworkflow.createWorkflow();
 
-	    WorkflowExecutor workflowExecutorSR = configHandler.initializeWorkflowExecutor(transportHandlerSR,
-		    tlsContext);
+            WorkflowExecutor workflowExecutorSR = configHandler.initializeWorkflowExecutor(transportHandlerSR,
+                    tlsContext);
 
-	    workflowExecutorSR.executeWorkflow();
+            workflowExecutorSR.executeWorkflow();
 
-	    transportHandlerSR.closeConnection();
-	}
+            transportHandlerSR.closeConnection();
+        }
 
-	if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-	    FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
-	    WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
-	}
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
+            WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
+        }
     }
 }

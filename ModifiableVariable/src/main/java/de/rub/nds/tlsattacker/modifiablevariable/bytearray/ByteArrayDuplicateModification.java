@@ -23,12 +23,12 @@ public class ByteArrayDuplicateModification extends VariableModification<byte[]>
     public ByteArrayDuplicateModification() {
 
     }
-    
+
     @Override
     protected byte[] modifyImplementationHook(byte[] input) {
-	if (input == null) {
-	    input = new byte[0];
-	}
-	return ArrayConverter.concatenate(input, input);
+        if (input == null) {
+            input = new byte[0];
+        }
+        return ArrayConverter.concatenate(input, input);
     }
 }

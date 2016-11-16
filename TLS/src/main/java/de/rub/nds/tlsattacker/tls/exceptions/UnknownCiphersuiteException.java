@@ -16,14 +16,14 @@ package de.rub.nds.tlsattacker.tls.exceptions;
 public class UnknownCiphersuiteException extends RuntimeException {
 
     public UnknownCiphersuiteException() {
-	super();
+        super();
     }
 
     public UnknownCiphersuiteException(String message) {
-	super(message);
+        super(message);
     }
 
     public UnknownCiphersuiteException(String message, Throwable cause) {
-	super(message, cause);
+        super(message, cause);
     }
 }

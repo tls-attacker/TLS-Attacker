@@ -25,19 +25,19 @@ public class PaddingOracleCommandConfig extends ClientCommandConfig {
     Integer blockSize = 16;
 
     public PaddingOracleCommandConfig() {
-	cipherSuites = new LinkedList<>();
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
-	cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
+        cipherSuites = new LinkedList<>();
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
     }
 
     public Integer getBlockSize() {
-	return blockSize;
+        return blockSize;
     }
 
     public void setBlockSize(Integer blockSize) {
-	this.blockSize = blockSize;
+        this.blockSize = blockSize;
     }
 
 }

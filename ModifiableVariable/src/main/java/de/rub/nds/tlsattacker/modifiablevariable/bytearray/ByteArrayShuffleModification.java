@@ -18,11 +18,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * Shuffles the byte array, using a pre-defined array of array pointers
  * (#shuffle). Array pointers are currently defined as bytes, since we are
  * modifying rather smaller arrays.
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
-@XmlType(propOrder = {"shuffle", "modificationFilter", "postModification"})
+@XmlType(propOrder = { "shuffle", "modificationFilter", "postModification" })
 public class ByteArrayShuffleModification extends VariableModification<byte[]> {
 
     private byte[] shuffle;

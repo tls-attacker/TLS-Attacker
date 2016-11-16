@@ -23,14 +23,14 @@ public class ServerTestSuiteConfig extends ClientCommandConfig {
     String folder;
 
     public ServerTestSuiteConfig() {
-	folder = "../resources/testsuite";
+        folder = "../resources/testsuite";
     }
 
     public String getFolder() {
-	return folder;
+        return folder;
     }
 
     public void setFolder(String folder) {
-	this.folder = folder;
+        this.folder = folder;
     }
 }
