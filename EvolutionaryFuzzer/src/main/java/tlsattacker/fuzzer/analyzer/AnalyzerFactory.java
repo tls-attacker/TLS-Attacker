@@ -31,6 +31,8 @@ public class AnalyzerFactory {
         switch (config.getAnalyzer()) {
             case RuleAnalyzer.optionName:
                 return new RuleAnalyzer(config);
+            case FingerprintAnalyzer.optionName:
+                return new FingerprintAnalyzer(config);
             default:
                 throw new IllegalAnalyzerException("Illegal Value for Analyzer:" + config.getAnalyzer());
         }
