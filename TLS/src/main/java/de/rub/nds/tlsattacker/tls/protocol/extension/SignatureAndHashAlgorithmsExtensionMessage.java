@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import java.util.LinkedList;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -32,6 +33,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
         this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
+        this.signatureAndHashAlgorithmsConfig = new LinkedList<>();
     }
 
     public ModifiableInteger getSignatureAndHashAlgorithmsLength() {
