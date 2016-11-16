@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.util.List;
-import tlsattacker.fuzzer.agent.AgentFactory;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.result.TestVectorResult;
 import tlsattacker.fuzzer.server.ServerManager;
