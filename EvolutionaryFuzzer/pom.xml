@@ -64,6 +64,21 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin> 
+                <artifactId>maven-dependency-plugin</artifactId> 
+                <executions> 
+                    <execution> 
+                        <goals> 
+                            <goal>copy-dependencies</goal> 
+                        </goals> 
+                        <configuration> 
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <!--Ensures only runnable dependencies are included-->
+                            <includeScope>compile</includeScope> 
+                        </configuration> 
+                    </execution>
+                </executions> 
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
