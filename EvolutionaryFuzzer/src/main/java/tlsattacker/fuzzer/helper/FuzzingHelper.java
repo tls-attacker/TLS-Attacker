@@ -685,7 +685,7 @@ public class FuzzingHelper {
     public AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
         TLSAction newAction = new ToggleEncryptionAction();
         List<TLSAction> actionList = trace.getTLSActions();
-        int positon = random.nextInt(actionList.size());
+        int positon = random.nextInt(actionList.size()+1);
         actionList.add(positon, newAction);
         return new AddToggleEncrytionActionModification(positon);
     }
@@ -699,6 +699,10 @@ public class FuzzingHelper {
     }
 
     public void setRandom(Random random) {
+        if(random == null)
+        {
+            throw new IllegalArgumentException("Cannot set Random to null");
+        }
         this.random = random;
     }
     
