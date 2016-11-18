@@ -174,13 +174,6 @@ public class FuzzingHelper {
      */
     public ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object, Field field) {
         try {
-            // Type type = field.getGenericType();
-            // ParameterizedType pType = (ParameterizedType) type;
-            // String typeString = ((Class)
-            // pType.getActualTypeArguments()[0]).getSimpleName();
-            // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
-            // field.getName(), typeString,
-            // object.getClass().getSimpleName());
             field.setAccessible(true);
             ModifiableVariable mv = (ModifiableVariable) field.get(object);
             if (mv == null) {
