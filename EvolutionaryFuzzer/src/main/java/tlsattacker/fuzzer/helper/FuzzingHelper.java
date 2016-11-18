@@ -428,7 +428,7 @@ public class FuzzingHelper {
      * 
      * @return A newly generated ProtocolMessage
      */
-    private ProtocolMessage generateRandomMessage() {
+    public ProtocolMessage generateRandomMessage() {
         ProtocolMessage message = null;
         do {
 
