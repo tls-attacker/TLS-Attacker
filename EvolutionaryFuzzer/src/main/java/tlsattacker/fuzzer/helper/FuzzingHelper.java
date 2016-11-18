@@ -530,7 +530,7 @@ public class FuzzingHelper {
      * 
      * @return Newly generated random ExtensionMessage
      */
-    private ExtensionMessage generateRandomExtensionMessage() {
+    public ExtensionMessage generateRandomExtensionMessage() {
         ExtensionMessage message = null;
         switch (random.nextInt(6)) {
             case 0:
