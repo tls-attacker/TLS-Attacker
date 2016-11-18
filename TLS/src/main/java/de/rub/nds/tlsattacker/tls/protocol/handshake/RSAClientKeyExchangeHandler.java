@@ -58,7 +58,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
         RSAPublicKey publicKey = null;
         if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
 
-            if (protocolMessage.isFuzzingMode()) {
+            if (tlsContext.isFuzzingMode()) {
                 if (bufferedKey == null) {
                     KeyPairGenerator keyGen = null;
                     try {
@@ -126,7 +126,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
                 paddedPremasterSecret = new byte[] { 0 };
             }
             if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
-                if (protocolMessage.isFuzzingMode()) {
+                if (tlsContext.isFuzzingMode()) {
                     paddedPremasterSecret = masterSecret;
                 } else {
                     throw new IllegalStateException("Trying to encrypt more data then modulus size!");

@@ -28,7 +28,7 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
         if (protocolMessage.getConfig() != null && protocolMessage.getConfig().length > 0) {
             protocolMessage.setLevel(protocolMessage.getConfig()[0]);
         } else {
-            if (protocolMessage.isFuzzingMode()) {
+            if (tlsContext.isFuzzingMode()) {
                 Random r = new Random();
                 protocolMessage.setConfig(AlertLevel.values()[r.nextInt(AlertLevel.values().length)],
                         AlertDescription.values()[r.nextInt(AlertDescription.values().length)]);

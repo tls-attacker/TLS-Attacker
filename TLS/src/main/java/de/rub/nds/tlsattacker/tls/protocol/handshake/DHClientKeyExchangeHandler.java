@@ -102,7 +102,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
             SubjectPublicKeyInfo keyInfo = x509Cert.getSubjectPublicKeyInfo();
             DHPublicKeyParameters parameters;
             if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.dhpublicnumber)) {
-                if (protocolMessage.isFuzzingMode()) {
+                if (tlsContext.isFuzzingMode()) {
                     kp = RandomKeyGeneratorHelper.generateDHPublicKey();
                     parameters = (DHPublicKeyParameters) kp.getPublic();
                 } else {
@@ -151,7 +151,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
             premasterSecret = TlsDHUtils.calculateDHBasicAgreement(tlsContext.getServerDHParameters().getPublicKey(),
                     newDhPrivate);
         } catch (IllegalArgumentException e) {
-            if (protocolMessage.isFuzzingMode()) {
+            if (tlsContext.isFuzzingMode()) {
                 premasterSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublic, dhPrivate);
             } else {
                 throw new IllegalArgumentException(e);
