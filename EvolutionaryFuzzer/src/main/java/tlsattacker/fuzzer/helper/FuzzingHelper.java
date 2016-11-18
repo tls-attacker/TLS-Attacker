@@ -540,10 +540,7 @@ public class FuzzingHelper {
                     ((ClientHelloMessage) pm).addExtension(message);
                     return new AddExtensionModification(message);
                 }
-                if (pm instanceof ClientHelloDtlsMessage) {
-                    ((ClientHelloDtlsMessage) pm).addExtension(message);
-                    return new AddExtensionModification(message);
-                }
+                
             }
         }
         return null;
@@ -625,7 +622,7 @@ public class FuzzingHelper {
             return null;
         }
         SendAction action = getRandomSendAction(trace);
-        int insertPosition = random.nextInt(action.getConfiguredMessages().size());
+        int insertPosition = random.nextInt(action.getConfiguredMessages().size()+1);
 
         action.getConfiguredMessages().add(insertPosition, message);
         return new DuplicateMessageModification(message, action, insertPosition);
