@@ -30,30 +30,30 @@ public class InvalidCurveAttackFullCommandConfig extends ClientCommandConfig {
     protected ICEAttacker.ServerType serverType;
 
     public InvalidCurveAttackFullCommandConfig() {
-	cipherSuites.clear();
-	cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
-	cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-	namedCurves.clear();
-	namedCurves.add(NamedCurve.SECP256R1);
-	workflowTraceType = WorkflowTraceType.HANDSHAKE;
-	additionalEquations = 3;
-	serverType = ICEAttacker.ServerType.NORMAL;
+        cipherSuites.clear();
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        namedCurves.clear();
+        namedCurves.add(NamedCurve.SECP256R1);
+        workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        additionalEquations = 3;
+        serverType = ICEAttacker.ServerType.NORMAL;
     }
 
     public int getAdditionalEquations() {
-	return additionalEquations;
+        return additionalEquations;
     }
 
     public void setAdditionalEquations(int additionalEquations) {
-	this.additionalEquations = additionalEquations;
+        this.additionalEquations = additionalEquations;
     }
 
     public ICEAttacker.ServerType getServerType() {
-	return serverType;
+        return serverType;
     }
 
     public void setServerType(ICEAttacker.ServerType serverType) {
-	this.serverType = serverType;
+        this.serverType = serverType;
     }
 
 }

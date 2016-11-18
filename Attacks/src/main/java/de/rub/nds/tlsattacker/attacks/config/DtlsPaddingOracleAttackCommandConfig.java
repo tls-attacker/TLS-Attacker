@@ -40,55 +40,55 @@ public class DtlsPaddingOracleAttackCommandConfig extends ClientCommandConfig {
     long messageWaitNanos = 0;
 
     public DtlsPaddingOracleAttackCommandConfig() {
-	// Just to be sure
-	transportHandlerType = TransportHandlerType.UDP;
-	protocolVersion = ProtocolVersion.DTLS12;
-	workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        // Just to be sure
+        transportHandlerType = TransportHandlerType.UDP;
+        protocolVersion = ProtocolVersion.DTLS12;
+        workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
-	// Until all dtls workflow factories are adapted, this is to make sure
-	// the right workflow factory is used
-	List<CipherSuite> cs = new ArrayList<>();
-	cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-	cipherSuites = cs;
+        // Until all dtls workflow factories are adapted, this is to make sure
+        // the right workflow factory is used
+        List<CipherSuite> cs = new ArrayList<>();
+        cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        cipherSuites = cs;
     }
 
     public int getMessagesPerTrain() {
-	return messagesPerTrain;
+        return messagesPerTrain;
     }
 
     public int getTrainMessageSize() {
-	return trainMessageSize;
+        return trainMessageSize;
     }
 
     public int getNrOfRounds() {
-	return nrOfRounds;
+        return nrOfRounds;
     }
 
     public String getResultFilePath() {
-	return resultFilePath;
+        return resultFilePath;
     }
 
     public long getMessageWaitNanos() {
-	return messageWaitNanos;
+        return messageWaitNanos;
     }
 
     public void setMessagesPerTrain(int messagesPerTrain) {
-	this.messagesPerTrain = messagesPerTrain;
+        this.messagesPerTrain = messagesPerTrain;
     }
 
     public void setTrainMessageSize(int trainMessageSize) {
-	this.trainMessageSize = trainMessageSize;
+        this.trainMessageSize = trainMessageSize;
     }
 
     public void setNrOfRounds(int nrOfRounds) {
-	this.nrOfRounds = nrOfRounds;
+        this.nrOfRounds = nrOfRounds;
     }
 
     public void setResultFilePath(String resultFilePath) {
-	this.resultFilePath = resultFilePath;
+        this.resultFilePath = resultFilePath;
     }
 
     public void setMessageWaitNanos(long messageWaitNanos) {
-	this.messageWaitNanos = messageWaitNanos;
+        this.messageWaitNanos = messageWaitNanos;
     }
 }

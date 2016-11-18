@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public enum AlertLevel {
 
+    UNDEFINED((byte) 0),
     WARNING((byte) 1),
     FATAL((byte) 2);
 
@@ -26,25 +27,36 @@ public enum AlertLevel {
     private static final Map<Byte, AlertLevel> MAP;
 
     private AlertLevel(byte value) {
-	this.value = value;
+        this.value = value;
     }
 
     static {
-	MAP = new HashMap<>();
-	for (AlertLevel cm : AlertLevel.values()) {
-	    MAP.put(cm.value, cm);
-	}
+        MAP = new HashMap<>();
+        for (AlertLevel cm : AlertLevel.values()) {
+            MAP.put(cm.value, cm);
+        }
     }
 
     public static AlertLevel getAlertLevel(byte value) {
-	return MAP.get(value);
+        // TODO kann probleme machen wenn byte value not defined ist
+        AlertLevel level = MAP.get(value);
+        if (level == null) {
+            level = UNDEFINED;
+        }
+        return level;
     }
 
     public byte getValue() {
-	return value;
+        return value;
     }
 
     public byte[] getArrayValue() {
-	return new byte[] { value };
+        return new byte[] { value };
     }
+
+    @Override
+    public String toString() {
+        return "AlertLevel{" + "value=" + this.name() + '}';
+    }
+
 }

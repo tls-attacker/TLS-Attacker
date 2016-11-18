@@ -26,22 +26,22 @@ public class ByteXorModification extends VariableModification<Byte> {
     }
 
     public ByteXorModification(Byte bi) {
-	this.xor = bi;
+        this.xor = bi;
     }
 
     @Override
     protected Byte modifyImplementationHook(Byte input) {
-	if (input == null) {
-	    input = 0;
-	}
-	return (byte) (input ^ xor);
+        if (input == null) {
+            input = 0;
+        }
+        return (byte) (input ^ xor);
     }
 
     public Byte getXor() {
-	return xor;
+        return xor;
     }
 
     public void setXor(Byte xor) {
-	this.xor = xor;
+        this.xor = xor;
     }
 }

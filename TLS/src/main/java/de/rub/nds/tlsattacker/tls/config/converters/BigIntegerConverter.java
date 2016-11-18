@@ -23,15 +23,15 @@ public class BigIntegerConverter implements IStringConverter<BigInteger> {
     @Override
     public BigInteger convert(String value) {
 
-	try {
-	    if (value.startsWith("0x")) {
-		return new BigInteger(value.substring(2), 16);
-	    } else {
-		return new BigInteger(value);
-	    }
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a BigInteger. "
-		    + "The value can be hexadecimal (starting with 0x) or decimal.");
-	}
+        try {
+            if (value.startsWith("0x")) {
+                return new BigInteger(value.substring(2), 16);
+            } else {
+                return new BigInteger(value);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException("Value " + value + " cannot be converted to a BigInteger. "
+                    + "The value can be hexadecimal (starting with 0x) or decimal.");
+        }
     }
 }

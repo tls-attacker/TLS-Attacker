@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class NamedCurvesTest extends HandshakeTest {
@@ -47,7 +47,7 @@ public class NamedCurvesTest extends HandshakeTest {
 
     @Override
     public void startTests() {
-        // we execute this test for every protocol since different protocols 
+        // we execute this test for every protocol since different protocols
         // can contain different curves support
         for (ProtocolVersion pv : supportedCipherSuites.keySet()) {
             testSupportedCurves(pv);
@@ -80,8 +80,10 @@ public class NamedCurvesTest extends HandshakeTest {
             if (success) {
                 supportedCurves.add(nc);
                 if (lastTlsContext.getEcContext().getServerPublicKeyParameters() != null) {
-                    LOGGER.info("EC parameter public key size: {}", lastTlsContext.getEcContext().getServerPublicKeyParameters().getParameters().getCurve().getFieldSize());
-                    int groupSize = lastTlsContext.getEcContext().getServerPublicKeyParameters().getParameters().getCurve().getFieldSize();
+                    LOGGER.info("EC parameter public key size: {}", lastTlsContext.getEcContext()
+                            .getServerPublicKeyParameters().getParameters().getCurve().getFieldSize());
+                    int groupSize = lastTlsContext.getEcContext().getServerPublicKeyParameters().getParameters()
+                            .getCurve().getFieldSize();
                     if (minimumECDHGroupSize == 0 || groupSize < minimumECDHGroupSize) {
                         minimumECDHGroupSize = groupSize;
                     }

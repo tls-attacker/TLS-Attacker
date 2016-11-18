@@ -28,45 +28,39 @@ public class ClientHelloDtlsMessage extends ClientHelloMessage {
     ModifiableByte cookieLength = null;
 
     public ClientHelloDtlsMessage() {
-	cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
-	cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public ClientHelloDtlsMessage(ConnectionEnd messageIssuer) {
-	this();
-	this.messageIssuer = messageIssuer;
+        cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+        cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
     }
 
     public ModifiableByteArray getCookie() {
-	return cookie;
+        return cookie;
     }
 
     public ModifiableByte getCookieLength() {
-	return cookieLength;
+        return cookieLength;
     }
 
     public void setCookie(byte[] cookie) {
-	this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
+        this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
     }
 
     public void setCookie(ModifiableByteArray cookie) {
-	this.cookie = cookie;
+        this.cookie = cookie;
     }
 
     public void setCookieLength(byte cookieLength) {
-	this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
     public void setCookieLength(ModifiableByte cookieLength) {
-	this.cookieLength = cookieLength;
+        this.cookieLength = cookieLength;
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append(super.toString()).append("\n DTLS cookie length: ").append(cookieLength.getValue())
-		.append("\n DTLS cookie: ").append(ArrayConverter.bytesToHexString(cookie.getValue()));
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString()).append("\n DTLS cookie length: ").append(cookieLength.getValue())
+                .append("\n DTLS cookie: ").append(ArrayConverter.bytesToHexString(cookie.getValue()));
+        return sb.toString();
     }
 }

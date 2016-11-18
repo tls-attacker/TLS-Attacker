@@ -27,13 +27,13 @@ public class AlertHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-	AlertHandler handler = new AlertHandler(new TlsContext());
-	AlertMessage message = new AlertMessage();
-	message.setConfig(AlertLevel.FATAL, AlertDescription.UNKNOWN_CA);
-	handler.setProtocolMessage(message);
-	byte[] result = handler.prepareMessageAction();
-	assertEquals(AlertLevel.FATAL.getValue(), result[0]);
-	assertEquals(AlertDescription.UNKNOWN_CA.getValue(), result[1]);
+        AlertHandler handler = new AlertHandler(new TlsContext());
+        AlertMessage message = new AlertMessage();
+        message.setConfig(AlertLevel.FATAL, AlertDescription.UNKNOWN_CA);
+        handler.setProtocolMessage(message);
+        byte[] result = handler.prepareMessageAction();
+        assertEquals(AlertLevel.FATAL.getValue(), result[0]);
+        assertEquals(AlertDescription.UNKNOWN_CA.getValue(), result[1]);
     }
 
     /**
@@ -41,13 +41,13 @@ public class AlertHandlerTest {
      */
     @Test
     public void testParseMessageAction() {
-	AlertHandler handler = new AlertHandler(new TlsContext());
-	handler.setProtocolMessage(new AlertMessage());
-	byte[] message = { 3, 3 };
-	int pointer = handler.parseMessageAction(message, 0);
-	assertEquals(2, pointer);
-	assertEquals(3, handler.getProtocolMessage().getLevel().getValue().byteValue());
-	assertEquals(3, handler.getProtocolMessage().getDescription().getValue().byteValue());
+        AlertHandler handler = new AlertHandler(new TlsContext());
+        handler.setProtocolMessage(new AlertMessage());
+        byte[] message = { 3, 3 };
+        int pointer = handler.parseMessageAction(message, 0);
+        assertEquals(2, pointer);
+        assertEquals(3, handler.getProtocolMessage().getLevel().getValue().byteValue());
+        assertEquals(3, handler.getProtocolMessage().getDescription().getValue().byteValue());
     }
 
 }

@@ -24,29 +24,29 @@ public @interface ModifiableVariableProperty {
 
     public enum Type {
 
-	LENGTH,
-	COUNT,
-	PADDING,
-	/** variable presenting one or more (array of) TLS constants */
-	TLS_CONSTANT,
-	SIGNATURE,
-	CIPHERTEXT,
-	HMAC,
-	PUBLIC_KEY,
-	PRIVATE_KEY,
-	KEY_MATERIAL,
-	CERTIFICATE,
-	/** plain protocol message, always in a decrypted state */
-	PLAIN_PROTOCOL_MESSAGE,
-	COOKIE,
-	NONE
+        LENGTH,
+        COUNT,
+        PADDING,
+        /** variable presenting one or more (array of) TLS constants */
+        TLS_CONSTANT,
+        SIGNATURE,
+        CIPHERTEXT,
+        HMAC,
+        PUBLIC_KEY,
+        PRIVATE_KEY,
+        KEY_MATERIAL,
+        CERTIFICATE,
+        /** plain protocol message, always in a decrypted state */
+        PLAIN_PROTOCOL_MESSAGE,
+        COOKIE,
+        NONE
     }
 
     public enum Format {
 
-	ASN1,
-	PKCS1,
-	NONE
+        ASN1,
+        PKCS1,
+        NONE
     }
 
     Type type() default Type.NONE;

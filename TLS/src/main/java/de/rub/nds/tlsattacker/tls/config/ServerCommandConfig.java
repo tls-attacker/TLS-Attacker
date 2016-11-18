@@ -27,31 +27,31 @@ public class ServerCommandConfig extends CommandConfig {
     protected WorkflowTraceType workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
     @Parameter(names = "-servername_fatal", description = "On mismatch in the server name the server sends a fatal "
-	    + "alert")
+            + "alert")
     boolean serverNameFatal;
 
     public String getPort() {
-	return port;
+        return port;
     }
 
     public void setPort(String port) {
-	this.port = port;
+        this.port = port;
     }
 
     public WorkflowTraceType getWorkflowTraceType() {
-	return workflowTraceType;
+        return workflowTraceType;
     }
 
     public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
-	this.workflowTraceType = workflowTraceType;
+        this.workflowTraceType = workflowTraceType;
     }
 
     public boolean isServerNameFatal() {
-	return serverNameFatal;
+        return serverNameFatal;
     }
 
     public void setServerNameFatal(boolean serverNameFatal) {
-	this.serverNameFatal = serverNameFatal;
+        this.serverNameFatal = serverNameFatal;
     }
 
 }

@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
- *
+ * 
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
@@ -57,10 +58,9 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     public void executeAttack(ConfigHandler configHandler) {
         ProtocolVersion[] versions;
         if (config.getProtocolVersion() == null) {
-            versions = new ProtocolVersion[]{ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
-            };
+            versions = new ProtocolVersion[] { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
         } else {
-            versions = new ProtocolVersion[]{config.getProtocolVersion()};
+            versions = new ProtocolVersion[] { config.getProtocolVersion() };
         }
         List<CipherSuite> ciphers = new LinkedList<>();
         if (config.getCipherSuites().isEmpty()) {
@@ -96,7 +96,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     }
 
     private void executeAttackRound(ConfigHandler configHandler) {
-        LOGGER.info( "Testing {}, {}", config.getProtocolVersion(), config.getCipherSuites().get(0));
+        LOGGER.info("Testing {}, {}", config.getProtocolVersion(), config.getCipherSuites().get(0));
 
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
         TlsContext tlsContext = configHandler.initializeTlsContext(config);
@@ -104,40 +104,40 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
-        FinishedMessage finishedMessage = (FinishedMessage) trace.getFirstHandshakeMessage(HandshakeMessageType.FINISHED);
+        FinishedMessage finishedMessage = (FinishedMessage) trace
+                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.FINISHED);
         Record record = createRecordWithBadPadding();
         finishedMessage.addRecord(record);
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.
-        int size = trace.getProtocolMessages().size();
-        trace.remove(size - 1);
-        trace.remove(size - 2);
+        AlertMessage alertMessage = new AlertMessage();
 
-        AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
-        trace.getProtocolMessages().add(allertMessage);
-
+        ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(alertMessage);
+        action.setConfiguredMessages(lastMessages);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        ProtocolMessage lm = trace.getLastProtocolMesssage();
+        ProtocolMessage lm = trace.getLastConfiguredReceiveMesssage();
         lastMessages.add(lm);
         tlsContexts.add(tlsContext);
 
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);
-            LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]",
-                    AlertLevel.getAlertLevel(am.getLevel().getValue()),
-                    AlertDescription.getAlertDescription(am.getDescription().getValue()),
-                    am.getLevel().getValue(), am.getDescription().getValue());
+            LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]", AlertLevel.getAlertLevel(am.getLevel()
+                    .getValue()), AlertDescription.getAlertDescription(am.getDescription().getValue()), am.getLevel()
+                    .getValue(), am.getDescription().getValue());
         } else {
             LOGGER.info("  Last protocol message: {}", lm.getProtocolMessageType());
         }
-        
-        if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT && ((AlertMessage) lm).getDescription().getValue() == 22) {
+
+        if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
+                && ((AlertMessage) lm).getDescription().getValue() == 22) {
             LOGGER.info("  Vulnerable");
             vulnerable = true;
         } else {
@@ -148,15 +148,15 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Record createRecordWithBadPadding() {
-        byte[] plain = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-            (byte) 255, (byte) 255, (byte) 255};
+        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255 };
         Record r = new Record();
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);

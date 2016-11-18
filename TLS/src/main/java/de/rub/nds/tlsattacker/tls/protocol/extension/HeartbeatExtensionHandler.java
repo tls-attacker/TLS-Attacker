@@ -25,52 +25,52 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     }
 
     public static HeartbeatExtensionHandler getInstance() {
-	if (instance == null) {
-	    instance = new HeartbeatExtensionHandler();
-	}
-	return instance;
+        if (instance == null) {
+            instance = new HeartbeatExtensionHandler();
+        }
+        return instance;
     }
 
     @Override
     public void initializeClientHelloExtension(HeartbeatExtensionMessage extension) {
-	byte[] heartbeatMode = { extension.getHeartbeatModeConfig().getValue() };
+        byte[] heartbeatMode = { extension.getHeartbeatModeConfig().getValue() };
 
-	extension.setExtensionType(ExtensionType.HEARTBEAT.getValue());
-	extension.setHeartbeatMode(heartbeatMode);
+        extension.setExtensionType(ExtensionType.HEARTBEAT.getValue());
+        extension.setHeartbeatMode(heartbeatMode);
 
-	extension.setExtensionLength(extension.getHeartbeatMode().getValue().length);
+        extension.setExtensionLength(extension.getHeartbeatMode().getValue().length);
 
-	byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
-		ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
-		extension.getHeartbeatMode().getValue());
+        byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
+                ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
+                extension.getHeartbeatMode().getValue());
 
-	extension.setExtensionBytes(pfExtension);
+        extension.setExtensionBytes(pfExtension);
     }
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	if (extensionMessage == null) {
-	    extensionMessage = new HeartbeatExtensionMessage();
-	}
-	HeartbeatExtensionMessage hem = (HeartbeatExtensionMessage) extensionMessage;
-	int nextPointer = pointer + ExtensionByteLength.TYPE;
-	byte[] extensionType = Arrays.copyOfRange(message, pointer, nextPointer);
-	hem.setExtensionType(extensionType);
+        if (extensionMessage == null) {
+            extensionMessage = new HeartbeatExtensionMessage();
+        }
+        HeartbeatExtensionMessage hem = (HeartbeatExtensionMessage) extensionMessage;
+        int nextPointer = pointer + ExtensionByteLength.TYPE;
+        byte[] extensionType = Arrays.copyOfRange(message, pointer, nextPointer);
+        hem.setExtensionType(extensionType);
 
-	pointer = nextPointer;
-	nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
-	int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
-	hem.setExtensionLength(extensionLength);
+        pointer = nextPointer;
+        nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
+        int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
+        hem.setExtensionLength(extensionLength);
 
-	pointer = nextPointer;
-	byte[] mode = { message[pointer] };
-	hem.setHeartbeatMode(mode);
+        pointer = nextPointer;
+        byte[] mode = { message[pointer] };
+        hem.setHeartbeatMode(mode);
 
-	byte[] result = ArrayConverter.concatenate(hem.getExtensionType().getValue(), ArrayConverter.intToBytes(hem
-		.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), hem.getHeartbeatMode().getValue());
-	hem.setExtensionBytes(result);
+        byte[] result = ArrayConverter.concatenate(hem.getExtensionType().getValue(), ArrayConverter.intToBytes(hem
+                .getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), hem.getHeartbeatMode().getValue());
+        hem.setExtensionBytes(result);
 
-	return pointer + 1;
+        return pointer + 1;
     }
 
 }

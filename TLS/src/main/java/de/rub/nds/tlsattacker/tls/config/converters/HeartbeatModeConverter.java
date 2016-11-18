@@ -24,11 +24,11 @@ public class HeartbeatModeConverter implements IStringConverter<HeartbeatMode> {
     @Override
     public HeartbeatMode convert(String value) {
 
-	try {
-	    return HeartbeatMode.valueOf(value);
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a HeartbeatMode. "
-		    + "Available values are: " + Arrays.toString(HeartbeatMode.values()));
-	}
+        try {
+            return HeartbeatMode.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException("Value " + value + " cannot be converted to a HeartbeatMode. "
+                    + "Available values are: " + Arrays.toString(HeartbeatMode.values()));
+        }
     }
 }

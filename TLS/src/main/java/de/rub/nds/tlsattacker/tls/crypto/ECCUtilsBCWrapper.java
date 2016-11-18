@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.tls.crypto;
 
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
@@ -39,10 +43,10 @@ public class ECCUtilsBCWrapper {
      * @throws IOException
      */
     public static ECDomainParameters readECParameters(NamedCurve[] namedCurves, ECPointFormat[] pointFormats,
-	    InputStream input) throws IOException {
-	int[] nc = convertNamedCurves(namedCurves);
-	short[] pf = convertPointFormats(pointFormats);
-	return TlsECCUtils.readECParameters(nc, pf, input);
+            InputStream input) throws IOException {
+        int[] nc = convertNamedCurves(namedCurves);
+        short[] pf = convertPointFormats(pointFormats);
+        return TlsECCUtils.readECParameters(nc, pf, input);
     }
 
     /**
@@ -54,9 +58,9 @@ public class ECCUtilsBCWrapper {
      * @throws IOException
      */
     public static ECDomainParameters readECParameters(InputStream input) throws IOException {
-	NamedCurve[] namedCurves = NamedCurve.values();
-	ECPointFormat[] poinFormats = ECPointFormat.values();
-	return readECParameters(namedCurves, poinFormats, input);
+        NamedCurve[] namedCurves = NamedCurve.values();
+        ECPointFormat[] poinFormats = ECPointFormat.values();
+        return readECParameters(namedCurves, poinFormats, input);
     }
 
     /**
@@ -69,18 +73,19 @@ public class ECCUtilsBCWrapper {
      * @throws IOException
      */
     public static ECPublicKeyParameters readECParametersWithPublicKey(InputStream input) throws IOException {
-	ECDomainParameters domainParameters = readECParameters(input);
+        ECDomainParameters domainParameters = readECParameters(input);
 
-	// read the length byte for the ec point
-	int length = input.read();
-	byte[] point = new byte[length];
-	// read the point bytes
-	input.read(point);
+        // read the length byte for the ec point
+        int length = input.read();
+        byte[] point = new byte[length];
+        // read the point bytes
+        input.read(point);
 
-	short[] pointFormats = convertPointFormats(ECPointFormat.values());
-
-	return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
+        short[] pointFormats = convertPointFormats(ECPointFormat.values());
+        return TlsECCUtils.deserializeECPublicKey(pointFormats, domainParameters, point);
     }
+
+    private static final Logger LOG = Logger.getLogger(ECCUtilsBCWrapper.class.getName());
 
     /**
      * Converts named curves into BC style notation
@@ -89,14 +94,14 @@ public class ECCUtilsBCWrapper {
      * @return
      */
     public static int[] convertNamedCurves(NamedCurve[] namedCurves) {
-	if (namedCurves == null || namedCurves.length == 0) {
-	    return null;
-	}
-	int[] nc = new int[namedCurves.length];
-	for (int i = 0; i < namedCurves.length; i++) {
-	    nc[i] = namedCurves[i].getIntValue();
-	}
-	return nc;
+        if (namedCurves == null || namedCurves.length == 0) {
+            return null;
+        }
+        int[] nc = new int[namedCurves.length];
+        for (int i = 0; i < namedCurves.length; i++) {
+            nc[i] = namedCurves[i].getIntValue();
+        }
+        return nc;
     }
 
     /**
@@ -106,14 +111,14 @@ public class ECCUtilsBCWrapper {
      * @return
      */
     public static short[] convertPointFormats(ECPointFormat[] pointFormats) {
-	if (pointFormats == null || pointFormats.length == 0) {
-	    return null;
-	}
-	short[] pf = new short[pointFormats.length];
-	for (int i = 0; i < pointFormats.length; i++) {
-	    pf[i] = pointFormats[i].getShortValue();
-	}
-	return pf;
+        if (pointFormats == null || pointFormats.length == 0) {
+            return null;
+        }
+        short[] pf = new short[pointFormats.length];
+        for (int i = 0; i < pointFormats.length; i++) {
+            pf[i] = pointFormats[i].getShortValue();
+        }
+        return pf;
     }
 
     /**
@@ -126,7 +131,7 @@ public class ECCUtilsBCWrapper {
      * @throws IOException
      */
     public static byte[] serializeECPoint(ECPointFormat[] ecPointFormats, ECPoint point) throws IOException {
-	short[] pf = convertPointFormats(ecPointFormats);
-	return TlsECCUtils.serializeECPoint(pf, point);
+        short[] pf = convertPointFormats(ecPointFormats);
+        return TlsECCUtils.serializeECPoint(pf, point);
     }
 }

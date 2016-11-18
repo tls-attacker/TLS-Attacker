@@ -44,51 +44,51 @@ public class TlsECContext {
     private ECPointFormat[] clientPointFormats;
 
     public void setClientPublicKeyParameters(ECPublicKeyParameters ecPublicKeyParameters) {
-	this.clientPublicKeyParameters = ecPublicKeyParameters;
+        this.clientPublicKeyParameters = ecPublicKeyParameters;
     }
 
     public ECPublicKeyParameters getClientPublicKeyParameters() {
-	return clientPublicKeyParameters;
+        return clientPublicKeyParameters;
     }
 
     public ECPrivateKeyParameters getClientPrivateKeyParameters() {
-	return clientPrivateKeyParameters;
+        return clientPrivateKeyParameters;
     }
 
     public void setClientPrivateKeyParameters(ECPrivateKeyParameters clientPrivateKeyParameters) {
-	this.clientPrivateKeyParameters = clientPrivateKeyParameters;
+        this.clientPrivateKeyParameters = clientPrivateKeyParameters;
     }
 
     public NamedCurve[] getNamedCurves() {
-	return namedCurves;
+        return namedCurves;
     }
 
     public void setNamedCurves(NamedCurve[] namedCurves) {
-	this.namedCurves = namedCurves;
+        this.namedCurves = namedCurves;
     }
 
     public ECPointFormat[] getServerPointFormats() {
-	return serverPointFormats;
+        return serverPointFormats;
     }
 
     public void setServerPointFormats(ECPointFormat[] serverPointFormats) {
-	this.serverPointFormats = serverPointFormats;
+        this.serverPointFormats = serverPointFormats;
     }
 
     public ECPointFormat[] getClientPointFormats() {
-	return clientPointFormats;
+        return clientPointFormats;
     }
 
     public void setClientPointFormats(ECPointFormat[] clientPointFormats) {
-	this.clientPointFormats = clientPointFormats;
+        this.clientPointFormats = clientPointFormats;
     }
 
     public ECPublicKeyParameters getServerPublicKeyParameters() {
-	return serverPublicKeyParameters;
+        return serverPublicKeyParameters;
     }
 
     public void setServerPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
-	this.serverPublicKeyParameters = serverPublicKeyParameters;
+        this.serverPublicKeyParameters = serverPublicKeyParameters;
     }
 
 }

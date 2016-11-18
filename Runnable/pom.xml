@@ -11,11 +11,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>TLS-Fuzzer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>TestSuite</artifactId>
             <version>${project.version}</version>
         </dependency>

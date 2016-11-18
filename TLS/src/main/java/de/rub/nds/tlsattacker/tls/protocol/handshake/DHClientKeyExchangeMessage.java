@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
 /**
@@ -54,93 +56,99 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     ModifiableByteArray serializedPublicKey;
 
     public DHClientKeyExchangeMessage() {
-	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = ConnectionEnd.CLIENT;
-    }
-
-    public DHClientKeyExchangeMessage(ConnectionEnd messageIssuer) {
-	super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-	this.messageIssuer = messageIssuer;
+        super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
     public ModifiableBigInteger getP() {
-	return p;
+        return p;
     }
 
     public void setP(ModifiableBigInteger p) {
-	this.p = p;
+        this.p = p;
     }
 
     public void setP(BigInteger p) {
-	this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
+        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
     }
 
     public ModifiableBigInteger getG() {
-	return g;
+        return g;
     }
 
     public void setG(ModifiableBigInteger g) {
-	this.g = g;
+        this.g = g;
     }
 
     public void setG(BigInteger g) {
-	this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
+        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
     public ModifiableBigInteger getY() {
-	return y;
+        return y;
     }
 
     public void setY(ModifiableBigInteger y) {
-	this.y = y;
+        this.y = y;
     }
 
     public void setY(BigInteger y) {
-	this.y = ModifiableVariableFactory.safelySetValue(this.y, y);
+        this.y = ModifiableVariableFactory.safelySetValue(this.y, y);
     }
 
     public ModifiableBigInteger getX() {
-	return x;
+        return x;
     }
 
     public void setX(ModifiableBigInteger x) {
-	this.x = x;
+        this.x = x;
     }
 
     public void setX(BigInteger x) {
-	this.x = ModifiableVariableFactory.safelySetValue(this.x, x);
+        this.x = ModifiableVariableFactory.safelySetValue(this.x, x);
     }
 
     public ModifiableInteger getSerializedPublicKeyLength() {
-	return serializedPublicKeyLength;
+        return serializedPublicKeyLength;
     }
 
     public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
-	this.serializedPublicKeyLength = serializedPublicKeyLength;
+        this.serializedPublicKeyLength = serializedPublicKeyLength;
     }
 
     public void setSerializedPublicKeyLength(Integer publicKeyLength) {
-	this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-		publicKeyLength);
+        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
+                publicKeyLength);
     }
 
     public ModifiableByteArray getSerializedPublicKey() {
-	return serializedPublicKey;
+        return serializedPublicKey;
     }
 
     public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
-	this.serializedPublicKey = serializedPublicKey;
+        this.serializedPublicKey = serializedPublicKey;
     }
 
     public void setSerializedPublicKey(byte[] serializedPublicKey) {
-	this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-		serializedPublicKey);
+        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
+                serializedPublicKey);
     }
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder(super.toString());
-	sb.append("\n  Y (client's public key): ").append(y.getValue().toString(16));
-	return sb.toString();
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n  Y (client's public key): ");
+        if (y != null) {
+            sb.append(y.getValue().toString(16));
+        } else {
+            sb.append("null");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
+        ProtocolMessageHandler handler = new DHClientKeyExchangeHandler(tlsContext);
+        handler.setProtocolMessage(this);
+        return handler;
     }
 }

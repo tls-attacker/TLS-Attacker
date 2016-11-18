@@ -23,6 +23,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,97 +36,52 @@ import java.util.List;
  */
 public class DHWorkflowConfigurationFactory extends WorkflowConfigurationFactory {
 
-    private final CommandConfig config;
-
-    DHWorkflowConfigurationFactory(CommandConfig config) {
-	this.config = config;
+    public DHWorkflowConfigurationFactory(CommandConfig config) {
+        super(config);
     }
 
-    @Override
-    public TlsContext createClientHelloTlsContext() {
-	TlsContext context = new TlsContext();
-	context.setProtocolVersion(config.getProtocolVersion());
+    /**
+     * Creates a basic TLS context with a TLS handshake messages
+     * 
+     * @return
+     */
+    public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
+        TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+        List<ProtocolMessage> messages = new LinkedList<>();
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
 
-	context.setSelectedCipherSuite(config.getCipherSuites().get(0));
-	WorkflowTrace workflowTrace = new WorkflowTrace();
+        messages.add(new ServerHelloMessage());
+        messages.add(new CertificateMessage());
+        CertificateRequestMessage certificateRequestMessage = new CertificateRequestMessage();
+        certificateRequestMessage.setRequired(false);
 
-	ClientHelloMessage ch = new ClientHelloMessage(ConnectionEnd.CLIENT);
-	workflowTrace.add(ch);
+        if (config.getCipherSuites().get(0).isEphemeral()) {
+            messages.add(new DHEServerKeyExchangeMessage());
+            messages.add(certificateRequestMessage);
+        }
+        if (config.getKeystore() != null && config.isClientAuthentication()) {
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
+            messages.add(new CertificateMessage());
+            messages.add(new DHClientKeyExchangeMessage());
+            messages.add(new CertificateVerifyMessage());
 
-	ch.setSupportedCipherSuites(config.getCipherSuites());
-	ch.setSupportedCompressionMethods(config.getCompressionMethods());
+        } else {
+            messages.add(new ServerHelloDoneMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+            messages = new LinkedList<>();
+            messages.add(new DHClientKeyExchangeMessage());
+        }
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        messages = new LinkedList<>();
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        initializeProtocolMessageOrder(context);
 
-	initializeClientHelloExtensions(config, ch);
-
-	context.setWorkflowTrace(workflowTrace);
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
-    @Override
-    public TlsContext createHandshakeTlsContext() {
-	TlsContext context = this.createClientHelloTlsContext();
-
-	WorkflowTrace workflowTrace = context.getWorkflowTrace();
-
-	workflowTrace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-	workflowTrace.add(new CertificateMessage(ConnectionEnd.SERVER));
-        CertificateRequestMessage crm = new CertificateRequestMessage(ConnectionEnd.SERVER);
-        crm.setRequired(false);
-
-	if (config.getCipherSuites().get(0).isEphemeral()) {
-	    workflowTrace.add(new DHEServerKeyExchangeMessage(ConnectionEnd.SERVER));
-            workflowTrace.add(crm);
-	}
-	if (config.getKeystore() != null && config.isClientAuthentication()) {
-	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(new CertificateMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	    workflowTrace.add(new CertificateVerifyMessage(ConnectionEnd.CLIENT));
-	} else {
-	    workflowTrace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-	    workflowTrace.add(new DHClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-	}
-	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-	workflowTrace.add(new FinishedMessage(ConnectionEnd.CLIENT));
-
-	workflowTrace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-	workflowTrace.add(new FinishedMessage(ConnectionEnd.SERVER));
-
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
-    @Override
-    public TlsContext createFullTlsContext() {
-	TlsContext context = this.createHandshakeTlsContext();
-
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.CLIENT));
-
-	if (config.getHeartbeatMode() != null) {
-	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.CLIENT));
-	    protocolMessages.add(new HeartbeatMessage(ConnectionEnd.SERVER));
-	}
-
-	initializeProtocolMessageOrder(context);
-
-	return context;
-    }
-
-    @Override
-    public TlsContext createFullServerResponseTlsContext() {
-	TlsContext context = this.createFullTlsContext();
-
-	List<ProtocolMessage> protocolMessages = context.getWorkflowTrace().getProtocolMessages();
-
-	protocolMessages.add(new ApplicationMessage(ConnectionEnd.SERVER));
-
-	initializeProtocolMessageOrder(context);
-
-	return context;
+        return context;
     }
 }

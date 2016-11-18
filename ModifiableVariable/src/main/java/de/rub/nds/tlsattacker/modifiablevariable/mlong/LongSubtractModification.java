@@ -26,19 +26,19 @@ public class LongSubtractModification extends VariableModification<Long> {
     }
 
     public LongSubtractModification(Long bi) {
-	this.subtrahend = bi;
+        this.subtrahend = bi;
     }
 
     @Override
     protected Long modifyImplementationHook(final Long input) {
-	return (input == null) ? -subtrahend : input - subtrahend;
+        return (input == null) ? -subtrahend : input - subtrahend;
     }
 
     public Long getSubtrahend() {
-	return subtrahend;
+        return subtrahend;
     }
 
     public void setSubtrahend(Long subtrahend) {
-	this.subtrahend = subtrahend;
+        this.subtrahend = subtrahend;
     }
 }

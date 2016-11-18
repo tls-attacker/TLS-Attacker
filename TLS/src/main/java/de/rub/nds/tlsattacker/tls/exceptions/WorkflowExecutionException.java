@@ -16,14 +16,14 @@ package de.rub.nds.tlsattacker.tls.exceptions;
 public class WorkflowExecutionException extends RuntimeException {
 
     public WorkflowExecutionException() {
-	super();
+        super();
     }
 
     public WorkflowExecutionException(String message) {
-	super(message);
+        super(message);
     }
 
     public WorkflowExecutionException(String message, Throwable t) {
-	super(message, t);
+        super(message, t);
     }
 }

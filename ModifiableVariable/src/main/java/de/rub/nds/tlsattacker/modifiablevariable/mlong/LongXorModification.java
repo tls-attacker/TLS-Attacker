@@ -26,19 +26,19 @@ public class LongXorModification extends VariableModification<Long> {
     }
 
     public LongXorModification(Long bi) {
-	this.xor = bi;
+        this.xor = bi;
     }
 
     @Override
     protected Long modifyImplementationHook(final Long input) {
-	return (input == null) ? xor : input ^ xor;
+        return (input == null) ? xor : input ^ xor;
     }
 
     public Long getXor() {
-	return xor;
+        return xor;
     }
 
     public void setXor(Long xor) {
-	this.xor = xor;
+        this.xor = xor;
     }
 }

@@ -23,12 +23,10 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.ManInTheMiddleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
@@ -39,12 +37,10 @@ import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
 import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attack;
-import de.rub.nds.tlsattacker.attacks.impl.ManInTheMiddleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
-import de.rub.nds.tlsattacker.fuzzer.config.MultiFuzzerConfig;
-import de.rub.nds.tlsattacker.fuzzer.impl.MultiFuzzer;
+
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
@@ -65,6 +61,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 /**
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
@@ -75,9 +72,6 @@ public class Main {
 
         GeneralConfig generalConfig = new GeneralConfig();
         JCommander jc = new JCommander(generalConfig);
-
-        MultiFuzzerConfig cmconfig = new MultiFuzzerConfig();
-        jc.addCommand(MultiFuzzerConfig.COMMAND, cmconfig);
 
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig();
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
@@ -103,8 +97,6 @@ public class Main {
         jc.addCommand(ServerCommandConfig.COMMAND, server);
         ClientCommandConfig client = new ClientCommandConfig();
         jc.addCommand(ClientCommandConfig.COMMAND, client);
-        ManInTheMiddleAttackCommandConfig MitM_Attack = new ManInTheMiddleAttackCommandConfig();
-        jc.addCommand(ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND, MitM_Attack);
         ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
         jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
         TestServerConfig testServerConfig = new TestServerConfig();
@@ -119,9 +111,6 @@ public class Main {
 
         Attacker<? extends CommandConfig> attacker;
         switch (jc.getParsedCommand()) {
-            case MultiFuzzerConfig.COMMAND:
-                startMultiFuzzer(cmconfig, generalConfig, jc);
-                return;
             case ServerCommandConfig.COMMAND:
                 startSimpleTls(generalConfig, server, jc);
                 return;
@@ -174,9 +163,6 @@ public class Main {
             case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
                 attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
                 break;
-            case ManInTheMiddleAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new ManInTheMiddleAttack(MitM_Attack);
-                break;
             default:
                 throw new ConfigurationException("No command found");
         }
@@ -193,15 +179,6 @@ public class Main {
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowOutput());
         }
-    }
-
-    private static void startMultiFuzzer(MultiFuzzerConfig fuzzerConfig, GeneralConfig generalConfig, JCommander jc) {
-        MultiFuzzer fuzzer = new MultiFuzzer(fuzzerConfig, generalConfig);
-        if (fuzzerConfig.isHelp()) {
-            jc.usage(MultiFuzzerConfig.COMMAND);
-            return;
-        }
-        fuzzer.startFuzzer();
     }
 
     private static void startSimpleTls(GeneralConfig generalConfig, CommandConfig config, JCommander jc)

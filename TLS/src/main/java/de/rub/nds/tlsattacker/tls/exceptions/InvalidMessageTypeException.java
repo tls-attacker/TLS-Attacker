@@ -20,18 +20,18 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 public class InvalidMessageTypeException extends RuntimeException {
 
     public InvalidMessageTypeException() {
-	super();
+        super();
     }
 
     public InvalidMessageTypeException(String message) {
-	super(message);
+        super(message);
     }
 
     public InvalidMessageTypeException(ProtocolMessageType protocolMessageType) {
-	super("This is not a " + protocolMessageType + " message");
+        super("This is not a " + protocolMessageType + " message");
     }
 
     public InvalidMessageTypeException(HandshakeMessageType handshakeMessageType) {
-	super("This is not a " + handshakeMessageType + " message");
+        super("This is not a " + handshakeMessageType + " message");
     }
 }

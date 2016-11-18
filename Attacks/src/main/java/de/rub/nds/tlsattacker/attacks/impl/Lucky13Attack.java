@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.FileWriter;
@@ -125,15 +126,13 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
-        ApplicationMessage applicationMessage = new ApplicationMessage(ConnectionEnd.CLIENT);
+        // Client
+        ApplicationMessage applicationMessage = new ApplicationMessage();
         applicationMessage.addRecord(record);
-
-        AlertMessage allertMessage = new AlertMessage(ConnectionEnd.SERVER);
-
-        trace.getProtocolMessages().add(applicationMessage);
-        trace.getProtocolMessages().add(allertMessage);
-
+        // Server
+        AlertMessage alertMessage = new AlertMessage();
+        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, applicationMessage));
+        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

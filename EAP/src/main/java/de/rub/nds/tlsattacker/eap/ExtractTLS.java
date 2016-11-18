@@ -22,8 +22,8 @@ public class ExtractTLS {
     }
 
     public byte[] extract(byte[] frame) {
-	tls = new byte[frame.length - 28];
-	System.arraycopy(frame, 28, tls, 0, frame.length - 28);
-	return tls;
+        tls = new byte[frame.length - 28];
+        System.arraycopy(frame, 28, tls, 0, frame.length - 28);
+        return tls;
     }
 }

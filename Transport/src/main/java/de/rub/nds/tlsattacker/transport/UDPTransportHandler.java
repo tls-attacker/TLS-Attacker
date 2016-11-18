@@ -26,8 +26,6 @@ public class UDPTransportHandler extends TransportHandler {
 
     private static final int DEFAULT_TLS_TIMEOUT = 3000;
 
-    private int tlsTimeout = DEFAULT_TLS_TIMEOUT;
-
     private DatagramSocket datagramSocket;
 
     private final DatagramPacket receivedPacket = new DatagramPacket(new byte[65527], 65527);
@@ -35,6 +33,10 @@ public class UDPTransportHandler extends TransportHandler {
     private DatagramPacket sentPacket;
 
     private long responseNanos = -1;
+
+    public UDPTransportHandler() {
+        tlsTimeout = DEFAULT_TLS_TIMEOUT;
+    }
 
     @Override
     public void initialize(String remoteAddress, int remotePort) throws IOException {

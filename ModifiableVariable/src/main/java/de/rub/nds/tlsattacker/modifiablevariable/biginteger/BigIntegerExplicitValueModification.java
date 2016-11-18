@@ -27,19 +27,19 @@ public class BigIntegerExplicitValueModification extends VariableModification<Bi
     }
 
     public BigIntegerExplicitValueModification(BigInteger bi) {
-	this.explicitValue = bi;
+        this.explicitValue = bi;
     }
 
     @Override
     protected BigInteger modifyImplementationHook(final BigInteger input) {
-	return explicitValue;
+        return explicitValue;
     }
 
     public BigInteger getExplicitValue() {
-	return explicitValue;
+        return explicitValue;
     }
 
     public void setExplicitValue(BigInteger explicitValue) {
-	this.explicitValue = explicitValue;
+        this.explicitValue = explicitValue;
     }
 }

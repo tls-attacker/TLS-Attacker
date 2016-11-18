@@ -31,53 +31,53 @@ public class ByteArrayDeleteModification extends VariableModification<byte[]> {
     }
 
     public ByteArrayDeleteModification(int startPosition, int count) {
-	this.startPosition = startPosition;
-	this.count = count;
+        this.startPosition = startPosition;
+        this.count = count;
     }
 
     @Override
     protected byte[] modifyImplementationHook(byte[] input) {
-	if (input == null) {
-	    input = new byte[0];
-	}
-	int start = startPosition;
-	if (start < 0) {
-	    start += input.length;
-	    if (start < 0) {
-		throw new IllegalArgumentException("Trying to delete from too negative Startposition. start = "
-			+ (start - input.length));
-	    }
-	}
-	final int endPosition = start + count;
-	if ((endPosition) > input.length) {
-	    throw new ArrayIndexOutOfBoundsException(String.format(
-		    "Bytes %d..%d cannot be deleted from {%s} of length %d", start, endPosition,
-		    bytesToHexString(input), input.length));
-	}
-	if (count <= 0) {
-	    throw new IllegalArgumentException("You must delete at least one byte. count = " + count);
-	}
-	byte[] ret1 = Arrays.copyOf(input, start);
-	byte[] ret2 = null;
-	if ((endPosition) < input.length) {
-	    ret2 = Arrays.copyOfRange(input, endPosition, input.length);
-	}
-	return ArrayConverter.concatenate(ret1, ret2);
+        if (input == null) {
+            input = new byte[0];
+        }
+        int start = startPosition;
+        if (start < 0) {
+            start += input.length;
+            if (start < 0) {
+                throw new IllegalArgumentException("Trying to delete from too negative Startposition. start = "
+                        + (start - input.length));
+            }
+        }
+        final int endPosition = start + count;
+        if ((endPosition) > input.length) {
+            throw new ArrayIndexOutOfBoundsException(String.format(
+                    "Bytes %d..%d cannot be deleted from {%s} of length %d", start, endPosition,
+                    bytesToHexString(input), input.length));
+        }
+        if (count <= 0) {
+            throw new IllegalArgumentException("You must delete at least one byte. count = " + count);
+        }
+        byte[] ret1 = Arrays.copyOf(input, start);
+        byte[] ret2 = null;
+        if ((endPosition) < input.length) {
+            ret2 = Arrays.copyOfRange(input, endPosition, input.length);
+        }
+        return ArrayConverter.concatenate(ret1, ret2);
     }
 
     public int getStartPosition() {
-	return startPosition;
+        return startPosition;
     }
 
     public void setStartPosition(int startPosition) {
-	this.startPosition = startPosition;
+        this.startPosition = startPosition;
     }
 
     public int getCount() {
-	return count;
+        return count;
     }
 
     public void setCount(int count) {
-	this.count = count;
+        this.count = count;
     }
 }

@@ -23,56 +23,56 @@ public class ProtocolMessageTypeHolder {
     private HandshakeMessageType handshakeMessageType;
 
     public ProtocolMessageTypeHolder(byte value) {
-	this.protocolMessageType = ProtocolMessageType.getContentType(value);
+        this.protocolMessageType = ProtocolMessageType.getContentType(value);
     }
 
     public ProtocolMessageTypeHolder(ProtocolMessageType value) {
-	this.protocolMessageType = value;
+        this.protocolMessageType = value;
     }
 
     public ProtocolMessageTypeHolder(byte protocolMessageType, byte handshakeMessageType) {
-	this.protocolMessageType = ProtocolMessageType.getContentType(protocolMessageType);
-	this.handshakeMessageType = HandshakeMessageType.getMessageType(handshakeMessageType);
+        this.protocolMessageType = ProtocolMessageType.getContentType(protocolMessageType);
+        this.handshakeMessageType = HandshakeMessageType.getMessageType(handshakeMessageType);
     }
 
     public ProtocolMessageTypeHolder(ProtocolMessageType protocolMessageType, HandshakeMessageType handshakeMessageType) {
-	this.protocolMessageType = protocolMessageType;
-	this.handshakeMessageType = handshakeMessageType;
+        this.protocolMessageType = protocolMessageType;
+        this.handshakeMessageType = handshakeMessageType;
     }
 
     public ProtocolMessageTypeHolder(ProtocolMessage protocolMessage) {
-	this.protocolMessageType = protocolMessage.getProtocolMessageType();
-	if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
-	    this.handshakeMessageType = ((HandshakeMessage) protocolMessage).getHandshakeMessageType();
-	}
+        this.protocolMessageType = protocolMessage.getProtocolMessageType();
+        if (protocolMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
+            this.handshakeMessageType = ((HandshakeMessage) protocolMessage).getHandshakeMessageType();
+        }
     }
 
     public ProtocolMessageType getContentType() {
-	return protocolMessageType;
+        return protocolMessageType;
     }
 
     public void setContentType(ProtocolMessageType contentType) {
-	this.protocolMessageType = contentType;
+        this.protocolMessageType = contentType;
     }
 
     public HandshakeMessageType getHandshakeMessageType() {
-	return handshakeMessageType;
+        return handshakeMessageType;
     }
 
     public void setHandshakeMessageType(HandshakeMessageType handshakeMessageType) {
-	this.handshakeMessageType = handshakeMessageType;
+        this.handshakeMessageType = handshakeMessageType;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
-	}
-	if (!(obj instanceof ProtocolMessageTypeHolder)) {
-	    return false;
-	}
-	ProtocolMessageTypeHolder pmth = (ProtocolMessageTypeHolder) obj;
-	return protocolMessageType == pmth.protocolMessageType && handshakeMessageType == pmth.handshakeMessageType;
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ProtocolMessageTypeHolder)) {
+            return false;
+        }
+        ProtocolMessageTypeHolder pmth = (ProtocolMessageTypeHolder) obj;
+        return protocolMessageType == pmth.protocolMessageType && handshakeMessageType == pmth.handshakeMessageType;
     }
 
 }

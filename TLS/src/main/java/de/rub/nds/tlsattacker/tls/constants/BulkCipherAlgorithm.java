@@ -26,20 +26,20 @@ public enum BulkCipherAlgorithm {
      * @return
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
-	String cipher = cipherSuite.toString().toUpperCase();
-	if (cipher.contains("3DES_EDE")) {
-	    return DESede;
-	} else if (cipher.contains("AES")) {
-	    return AES;
-	} else if (cipher.contains("RC4")) {
-	    return RC4;
-	} else if (cipher.contains("NULL")) {
-	    return NULL;
-	}
-	throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+        String cipher = cipherSuite.toString().toUpperCase();
+        if (cipher.contains("3DES_EDE")) {
+            return DESede;
+        } else if (cipher.contains("AES")) {
+            return AES;
+        } else if (cipher.contains("RC4")) {
+            return RC4;
+        } else if (cipher.contains("NULL")) {
+            return NULL;
+        }
+        throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
     }
 
     public String getJavaName() {
-	return this.toString();
+        return this.toString();
     }
 }

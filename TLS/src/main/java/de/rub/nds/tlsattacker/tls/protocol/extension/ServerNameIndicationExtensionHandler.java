@@ -34,39 +34,39 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
     }
 
     public static ServerNameIndicationExtensionHandler getInstance() {
-	if (instance == null) {
-	    instance = new ServerNameIndicationExtensionHandler();
-	}
-	return instance;
+        if (instance == null) {
+            instance = new ServerNameIndicationExtensionHandler();
+        }
+        return instance;
     }
 
     @Override
     public void initializeClientHelloExtension(ServerNameIndicationExtensionMessage extension) {
-	byte serverNameType = extension.getNameTypeConfig().getValue();
-	byte[] serverName = extension.getServerNameConfig().getBytes();
+        byte serverNameType = extension.getNameTypeConfig().getValue();
+        byte[] serverName = extension.getServerNameConfig().getBytes();
 
-	extension.setExtensionType(ExtensionType.SERVER_NAME_INDICATION.getValue());
-	extension.setServerNameType(serverNameType);
-	extension.setServerName(serverName);
-	extension.setServerNameLength(extension.getServerName().getValue().length);
+        extension.setExtensionType(ExtensionType.SERVER_NAME_INDICATION.getValue());
+        extension.setServerNameType(serverNameType);
+        extension.setServerName(serverName);
+        extension.setServerNameLength(extension.getServerName().getValue().length);
 
-	extension.setServerNameLength(extension.getServerNameLength().getValue());
-	extension.setServerNameListLength(1 + SERVER_NAME_LIST_LENGTH + extension.getServerNameLength().getValue());
+        extension.setServerNameLength(extension.getServerNameLength().getValue());
+        extension.setServerNameListLength(1 + SERVER_NAME_LIST_LENGTH + extension.getServerNameLength().getValue());
 
-	extension.setExtensionLength(SERVER_NAME_LIST_LENGTH + extension.getServerNameListLength().getValue());
+        extension.setExtensionLength(SERVER_NAME_LIST_LENGTH + extension.getServerNameListLength().getValue());
 
-	byte[] sniExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
-		.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
-		.intToBytes(extension.getServerNameListLength().getValue(), SERVER_NAME_LIST_LENGTH),
-		new byte[] { extension.getServerNameType().getValue() }, ArrayConverter.intToBytes(extension
-			.getServerNameLength().getValue(), SERVER_NAME_LENGTH), extension.getServerName().getValue());
+        byte[] sniExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
+                .intToBytes(extension.getServerNameListLength().getValue(), SERVER_NAME_LIST_LENGTH),
+                new byte[] { extension.getServerNameType().getValue() }, ArrayConverter.intToBytes(extension
+                        .getServerNameLength().getValue(), SERVER_NAME_LENGTH), extension.getServerName().getValue());
 
-	extension.setExtensionBytes(sniExtension);
+        extension.setExtensionBytes(sniExtension);
     }
 
     @Override
     public int parseExtension(byte[] message, int pointer) {
-	throw new UnsupportedOperationException("Server name indication extension parsing not supported yet.");
+        throw new UnsupportedOperationException("Server name indication extension parsing not supported yet.");
     }
 
 }

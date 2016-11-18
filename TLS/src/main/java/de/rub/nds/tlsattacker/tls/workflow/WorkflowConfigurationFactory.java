@@ -22,7 +22,16 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionM
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -36,15 +45,21 @@ public abstract class WorkflowConfigurationFactory {
 
     static final Logger LOGGER = LogManager.getLogger(WorkflowConfigurationFactory.class);
 
+    protected final CommandConfig config;
+
+    public WorkflowConfigurationFactory(CommandConfig config) {
+        this.config = config;
+    }
+
     /**
      * This method constructs an instance of WorkflowConfigurationFactory based
      * on the used CommandConfig parameter. It can be either a dynamic
      * configuration factory or a static configuration factory, with a
      * predefined list of protocol messages.
-     *
+     * 
      * The list of protocol messages is generated based on the first ciphersuite
      * in the ciphersuite list.
-     *
+     * 
      * @param config
      * @return
      */
@@ -83,7 +98,8 @@ public abstract class WorkflowConfigurationFactory {
                             return new DHWorkflowConfigurationFactory(config);
                         }
                     default:
-                        LOGGER.info("Unsupported key exchange algorithm " + AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+                        LOGGER.info("Unsupported key exchange algorithm "
+                                + AlgorithmResolver.getKeyExchangeAlgorithm(cs));
                         return new UnsupportedWorkflowConfigurationFactory(config);
                 }
             } catch (UnsupportedOperationException ex) {
@@ -95,39 +111,100 @@ public abstract class WorkflowConfigurationFactory {
 
     /**
      * Creates a basic TLS context with a single ClientHello message
-     *
+     * 
      * @return
      */
-    public abstract TlsContext createClientHelloTlsContext();
+    public TlsContext createClientHelloTlsContext(ConnectionEnd myConnectionEnd) {
+        TlsContext context = new TlsContext();
+        context.setProtocolVersion(config.getProtocolVersion());
+
+        context.setSelectedCipherSuite(config.getCipherSuites().get(0));
+        WorkflowTrace workflowTrace = new WorkflowTrace();
+
+        ClientHelloMessage clientHello = new ClientHelloMessage();
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, clientHello));
+        clientHello.setSupportedCipherSuites(config.getCipherSuites());
+        clientHello.setSupportedCompressionMethods(config.getCompressionMethods());
+        initializeClientHelloExtensions(config, clientHello);
+        context.setWorkflowTrace(workflowTrace);
+        initializeProtocolMessageOrder(context);
+
+        return context;
+    }
 
     /**
      * Creates a basic TLS context with a TLS handshake messages
-     *
+     * 
      * @return
      */
-    public abstract TlsContext createHandshakeTlsContext();
+    public TlsContext createHandshakeTlsContext(ConnectionEnd myConnectionEnd) {
+        TlsContext context = this.createClientHelloTlsContext(myConnectionEnd);
+        List<ProtocolMessage> messages = new LinkedList<>();
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
+
+        messages.add(new ServerHelloMessage());
+        messages.add(new CertificateMessage());
+        messages.add(new ServerHelloDoneMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        messages = new LinkedList<>();
+
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        messages = new LinkedList<>();
+        messages.add(new ChangeCipherSpecMessage());
+        messages.add(new FinishedMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        initializeProtocolMessageOrder(context);
+
+        return context;
+    }
 
     /**
      * Creates an extended TLS context including an application data and
      * heartbeat messages
-     *
+     * 
      * @return
      */
-    public abstract TlsContext createFullTlsContext();
+    public TlsContext createFullTlsContext(ConnectionEnd myConnectionEnd) {
+        TlsContext context = this.createHandshakeTlsContext(myConnectionEnd);
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(new ApplicationMessage());
+
+        if (config.getHeartbeatMode() != null) {
+            messages.add(new HeartbeatMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+            messages = new LinkedList<>();
+            messages.add(new HeartbeatMessage());
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        } else {
+            workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.CLIENT, messages));
+        }
+        initializeProtocolMessageOrder(context);
+        return context;
+    }
 
     /**
      * Creates a full TLS context with additional application data
      * ServerResponse
-     *
+     * 
      * @return
      */
-    public TlsContext createFullServerResponseTlsContext() {
-        return createFullTlsContext();
+    public TlsContext createFullServerResponseTlsContext(ConnectionEnd myConnectionEnd) {
+        TlsContext context = this.createFullTlsContext(myConnectionEnd);
+        WorkflowTrace workflowTrace = context.getWorkflowTrace();
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(new ApplicationMessage());
+        workflowTrace.add(MessageActionFactory.createAction(myConnectionEnd, ConnectionEnd.SERVER, messages));
+        initializeProtocolMessageOrder(context);
+
+        return context;
     }
 
     /**
      * Initializes ClientHello extensions
-     *
+     * 
      * @param config
      * @param ch
      */
@@ -175,26 +252,25 @@ public abstract class WorkflowConfigurationFactory {
      * Initializes the preconfigured protocol message order according to the
      * workflow trace. This protocol message order can be used to compare the
      * configured and real message order.
-     *
+     * 
      * @param context
      */
     public static void initializeProtocolMessageOrder(TlsContext context) {
         List<ProtocolMessageTypeHolder> configuredProtocolMessageOrder = new LinkedList<>();
-        for (ProtocolMessage pm : context.getWorkflowTrace().getProtocolMessages()) {
+        for (ProtocolMessage pm : context.getWorkflowTrace().getAllConfiguredMessages()) {
             ProtocolMessageTypeHolder pmth = new ProtocolMessageTypeHolder(pm);
             configuredProtocolMessageOrder.add(pmth);
         }
-        context.setPreconfiguredProtocolMessages(configuredProtocolMessageOrder);
     }
 
     /**
-     *
-     *
+     * 
+     * 
      * @param context
      * @param protocolMessages
      */
     public static void appendProtocolMessagesToWorkflow(TlsContext context, List<ProtocolMessage> protocolMessages) {
-        List<ProtocolMessage> configured = context.getWorkflowTrace().getProtocolMessages();
+        List<ProtocolMessage> configured = context.getWorkflowTrace().getAllConfiguredMessages();
         for (ProtocolMessage pm : protocolMessages) {
             configured.add(pm);
         }

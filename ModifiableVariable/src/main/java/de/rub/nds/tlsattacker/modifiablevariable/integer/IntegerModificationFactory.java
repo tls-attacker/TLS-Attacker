@@ -33,7 +33,7 @@ final public class IntegerModificationFactory {
 
     private static List<VariableModification<Integer>> modificationsFromFile;
 
-    public static final String FILE_NAME = "integer.vec";
+    public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/integer.vec";
 
     private IntegerModificationFactory() {
     }

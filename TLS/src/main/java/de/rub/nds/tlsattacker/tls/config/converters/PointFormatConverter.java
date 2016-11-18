@@ -24,11 +24,11 @@ public class PointFormatConverter implements IStringConverter<ECPointFormat> {
     @Override
     public ECPointFormat convert(String value) {
 
-	try {
-	    return ECPointFormat.valueOf(value);
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to a ECPointFormat. "
-		    + "Available values are: " + Arrays.toString(ECPointFormat.values()));
-	}
+        try {
+            return ECPointFormat.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException("Value " + value + " cannot be converted to a ECPointFormat. "
+                    + "Available values are: " + Arrays.toString(ECPointFormat.values()));
+        }
     }
 }

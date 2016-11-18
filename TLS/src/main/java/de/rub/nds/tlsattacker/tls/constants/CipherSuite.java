@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -368,6 +370,15 @@ public enum CipherSuite {
         this.value = value;
     }
 
+    public static CipherSuite getRandom() {
+        CipherSuite c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
+    }
+
     static {
         MAP = new HashMap<>();
         for (CipherSuite c : CipherSuite.values()) {
@@ -402,7 +413,7 @@ public enum CipherSuite {
     /**
      * Returns true in case the cipher suite enforces ephemeral keys. This is
      * the case for ECDHE and DHE cipher suites.
-     *
+     * 
      * @return
      */
     public boolean isEphemeral() {
@@ -411,7 +422,7 @@ public enum CipherSuite {
 
     /**
      * Returns true in case the cipher suite is an AEAD cipher suite.
-     *
+     * 
      * @return
      */
     public boolean isAEAD() {
@@ -420,7 +431,7 @@ public enum CipherSuite {
 
     /**
      * Returns true in case the cipher suite is a CBC cipher suite.
-     *
+     * 
      * @return
      */
     public boolean isCBC() {
@@ -430,9 +441,9 @@ public enum CipherSuite {
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version.
-     *
+     * 
      * TODO: this is still very imprecise and must be improved with new ciphers.
-     *
+     * 
      * @param version
      * @return
      */

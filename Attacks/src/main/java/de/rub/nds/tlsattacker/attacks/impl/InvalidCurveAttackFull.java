@@ -30,24 +30,24 @@ public class InvalidCurveAttackFull extends Attacker<InvalidCurveAttackFullComma
     private static final Logger LOGGER = LogManager.getLogger(InvalidCurveAttackFull.class);
 
     public InvalidCurveAttackFull(InvalidCurveAttackFullCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-	if (config.getNamedCurves().size() > 1) {
-	    throw new ConfigurationException("Please specify only one named curve which should be attacked");
-	}
+        if (config.getNamedCurves().size() > 1) {
+            throw new ConfigurationException("Please specify only one named curve which should be attacked");
+        }
 
-	LOGGER.info("Executing attack against the server with named curve {}", config.getNamedCurves().get(0));
+        LOGGER.info("Executing attack against the server with named curve {}", config.getNamedCurves().get(0));
 
-	Curve curve = CurveFactory.getNamedCurve(config.getNamedCurves().get(0).name());
-	RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(config, curve);
-	ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
-	attacker.attack();
-	BigInteger result = attacker.getResult();
+        Curve curve = CurveFactory.getNamedCurve(config.getNamedCurves().get(0).name());
+        RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(config, curve);
+        ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
+        attacker.attack();
+        BigInteger result = attacker.getResult();
 
-	LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Result found: {}", result);
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Result found: {}", result);
     }
 
 }

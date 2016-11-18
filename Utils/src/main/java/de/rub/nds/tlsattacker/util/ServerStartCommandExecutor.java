@@ -48,9 +48,9 @@ public final class ServerStartCommandExecutor {
      *            The command to be executed.
      */
     public ServerStartCommandExecutor(final String command) {
-	this.startCommand = command + " ";
-	serverOutput = new LinkedList<>();
-	serverErrorOutput = new LinkedList<>();
+        this.startCommand = command + " ";
+        serverOutput = new LinkedList<>();
+        serverErrorOutput = new LinkedList<>();
     }
 
     /**
@@ -59,50 +59,50 @@ public final class ServerStartCommandExecutor {
      * @throws java.io.IOException
      */
     public void startServer() throws IOException {
-	Runtime rt = Runtime.getRuntime();
-	process = rt.exec(startCommand);
-	// error fetcher
-	CommandLineFetcher error = new CommandLineFetcher(process.getErrorStream(), serverErrorOutput);
+        Runtime rt = Runtime.getRuntime();
+        process = rt.exec(startCommand);
+        // error fetcher
+        CommandLineFetcher error = new CommandLineFetcher(process.getErrorStream(), serverErrorOutput);
 
-	// output fetcher
-	CommandLineFetcher output = new CommandLineFetcher(process.getInputStream(), serverOutput);
+        // output fetcher
+        CommandLineFetcher output = new CommandLineFetcher(process.getInputStream(), serverOutput);
 
-	error.start();
-	output.start();
+        error.start();
+        output.start();
 
-	LOGGER.info("Server successfully started.");
+        LOGGER.info("Server successfully started.");
     }
 
     public List<String> getServerOutput() {
-	return serverOutput;
+        return serverOutput;
     }
 
     public List<String> getServerErrorOutput() {
-	return serverErrorOutput;
+        return serverErrorOutput;
     }
 
     private String getOutputString(List<String> list) {
-	StringBuilder sb = new StringBuilder();
-	for (String s : list) {
-	    sb.append(s).append(System.getProperty("line.separator"));
-	}
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            sb.append(s).append(System.getProperty("line.separator"));
+        }
+        return sb.toString();
     }
 
     public String getServerOutputString() {
-	return getOutputString(serverOutput);
+        return getOutputString(serverOutput);
     }
 
     public String getServerErrorOutputString() {
-	return getOutputString(serverErrorOutput);
+        return getOutputString(serverErrorOutput);
     }
 
     public void clearServerOutput() {
-	serverOutput.clear();
+        serverOutput.clear();
     }
 
     public void clearServerErrorOutput() {
-	serverErrorOutput.clear();
+        serverErrorOutput.clear();
     }
 
     /**
@@ -111,67 +111,67 @@ public final class ServerStartCommandExecutor {
      * @return
      */
     public boolean isServerTerminated() {
-	try {
-	    process.exitValue();
-	} catch (IllegalThreadStateException itse) {
-	    return false;
-	}
-	return true;
+        try {
+            process.exitValue();
+        } catch (IllegalThreadStateException itse) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * Kills the server subprocess using the process destroy function.
      */
     public void terminateServer() {
-	process.destroy();
+        process.destroy();
     }
 
     private class CommandLineFetcher extends Thread {
 
-	/**
-	 * Input stream from the command line.
-	 */
-	private final InputStream is;
+        /**
+         * Input stream from the command line.
+         */
+        private final InputStream is;
 
-	/**
-	 * Exception found during processing.
-	 */
-	Exception e;
+        /**
+         * Exception found during processing.
+         */
+        Exception e;
 
-	/**
+        /**
          *
          */
-	List<String> output;
+        List<String> output;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param is
-	 *            command line input stream
-	 */
-	CommandLineFetcher(InputStream is, List<String> out) {
-	    this.is = is;
-	    this.output = out;
-	}
+        /**
+         * Constructor
+         * 
+         * @param is
+         *            command line input stream
+         */
+        CommandLineFetcher(InputStream is, List<String> out) {
+            this.is = is;
+            this.output = out;
+        }
 
-	@Override
-	public void run() {
-	    try {
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		String line;
-		while ((line = br.readLine()) != null) {
-		    LOGGER.debug(line);
-		    output.add(line);
-		    if (output.size() > MAX_OUTPUT_LINES) {
-			output.remove(0);
-		    }
-		}
-		is.close();
-	    } catch (IOException ioe) {
-		e = ioe;
-	    }
-	}
+        @Override
+        public void run() {
+            try {
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line;
+                while ((line = br.readLine()) != null) {
+                    LOGGER.debug(line);
+                    output.add(line);
+                    if (output.size() > MAX_OUTPUT_LINES) {
+                        output.remove(0);
+                    }
+                }
+                is.close();
+            } catch (IOException ioe) {
+                e = ioe;
+            }
+        }
     }
 
 }

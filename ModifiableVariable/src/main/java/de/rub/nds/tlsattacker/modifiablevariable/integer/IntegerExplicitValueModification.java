@@ -26,19 +26,19 @@ public class IntegerExplicitValueModification extends VariableModification<Integ
     }
 
     public IntegerExplicitValueModification(Integer bi) {
-	this.explicitValue = bi;
+        this.explicitValue = bi;
     }
 
     @Override
     protected Integer modifyImplementationHook(final Integer input) {
-	return explicitValue;
+        return explicitValue;
     }
 
     public Integer getExplicitValue() {
-	return explicitValue;
+        return explicitValue;
     }
 
     public void setExplicitValue(Integer explicitValue) {
-	this.explicitValue = explicitValue;
+        this.explicitValue = explicitValue;
     }
 }

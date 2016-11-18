@@ -33,12 +33,12 @@ public class ModificationApprovalTest {
 
     @Before
     public void setUp() {
-	start = new ModifiableBigInteger();
-	start.setOriginalValue(BigInteger.TEN);
-	int[] filtered = { 1, 3 };
-	filter = ModificationFilterFactory.access(filtered);
-	expectedResult = null;
-	result = null;
+        start = new ModifiableBigInteger();
+        start.setOriginalValue(BigInteger.TEN);
+        int[] filtered = { 1, 3 };
+        filter = ModificationFilterFactory.access(filtered);
+        expectedResult = null;
+        result = null;
     }
 
     /**
@@ -47,22 +47,22 @@ public class ModificationApprovalTest {
      */
     @Test
     public void testAdd() {
-	VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
-	start.setModification(modifier);
-	modifier.setModificationFilter(filter);
-	expectedResult = new BigInteger("10");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
+        VariableModification<BigInteger> modifier = BigIntegerModificationFactory.add(BigInteger.ONE);
+        start.setModification(modifier);
+        modifier.setModificationFilter(filter);
+        expectedResult = new BigInteger("10");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
 
-	expectedResult = new BigInteger("11");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
+        expectedResult = new BigInteger("11");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
 
-	expectedResult = new BigInteger("10");
-	result = start.getValue();
-	assertEquals(expectedResult, result);
-	assertNotSame(expectedResult, result);
+        expectedResult = new BigInteger("10");
+        result = start.getValue();
+        assertEquals(expectedResult, result);
+        assertNotSame(expectedResult, result);
     }
 
 }

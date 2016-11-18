@@ -26,19 +26,19 @@ public class IntegerShiftRightModification extends VariableModification<Integer>
     }
 
     public IntegerShiftRightModification(int shift) {
-	this.shift = shift;
+        this.shift = shift;
     }
 
     @Override
     protected Integer modifyImplementationHook(final Integer input) {
-	return (input == null) ? 0 : input >> shift;
+        return (input == null) ? 0 : input >> shift;
     }
 
     public int getShift() {
-	return shift;
+        return shift;
     }
 
     public void setShift(int shift) {
-	this.shift = shift;
+        this.shift = shift;
     }
 }

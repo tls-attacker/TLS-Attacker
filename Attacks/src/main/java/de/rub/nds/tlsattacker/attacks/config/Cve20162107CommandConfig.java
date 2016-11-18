@@ -18,7 +18,7 @@ import java.util.LinkedList;
 public class Cve20162107CommandConfig extends ClientCommandConfig {
 
     public static final String ATTACK_COMMAND = "cve20162107";
-    
+
     public Cve20162107CommandConfig() {
         cipherSuites = new LinkedList<>();
         protocolVersion = null;

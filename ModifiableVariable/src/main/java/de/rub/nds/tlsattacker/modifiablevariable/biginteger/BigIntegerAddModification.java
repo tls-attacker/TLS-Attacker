@@ -27,19 +27,19 @@ public class BigIntegerAddModification extends VariableModification<BigInteger> 
     }
 
     public BigIntegerAddModification(BigInteger bi) {
-	this.summand = bi;
+        this.summand = bi;
     }
 
     @Override
     protected BigInteger modifyImplementationHook(BigInteger input) {
-	return (input == null) ? summand : input.add(summand);
+        return (input == null) ? summand : input.add(summand);
     }
 
     public BigInteger getSummand() {
-	return summand;
+        return summand;
     }
 
     public void setSummand(BigInteger summand) {
-	this.summand = summand;
+        this.summand = summand;
     }
 }

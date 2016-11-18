@@ -22,10 +22,10 @@ import java.security.cert.CertificateException;
 public class KeystoreHandler {
 
     public static KeyStore loadKeyStore(final String keyStorePath, final String keyStorePassword)
-	    throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-	KeyStore ks = KeyStore.getInstance("JKS");
-	ks.load(new FileInputStream(keyStorePath), keyStorePassword.toCharArray());
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+        KeyStore ks = KeyStore.getInstance("JKS");
+        ks.load(new FileInputStream(keyStorePath), keyStorePassword.toCharArray());
 
-	return ks;
+        return ks;
     }
 }

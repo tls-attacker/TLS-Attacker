@@ -27,22 +27,22 @@ public class BigIntegerShiftRightModification extends VariableModification<BigIn
     }
 
     public BigIntegerShiftRightModification(int shift) {
-	this.shift = shift;
+        this.shift = shift;
     }
 
     @Override
     protected BigInteger modifyImplementationHook(BigInteger input) {
-	if (input == null) {
-	    input = BigInteger.ZERO;
-	}
-	return input.shiftRight(shift);
+        if (input == null) {
+            input = BigInteger.ZERO;
+        }
+        return input.shiftRight(shift);
     }
 
     public int getShift() {
-	return shift;
+        return shift;
     }
 
     public void setShift(int shift) {
-	this.shift = shift;
+        this.shift = shift;
     }
 }

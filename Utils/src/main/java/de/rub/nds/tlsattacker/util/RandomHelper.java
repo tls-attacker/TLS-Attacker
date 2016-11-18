@@ -21,9 +21,9 @@ public class RandomHelper {
     }
 
     public static Random getRandom() {
-	if (random == null) {
-	    random = new Random();
-	}
-	return random;
+        if (random == null) {
+            random = new Random();
+        }
+        return random;
     }
 }

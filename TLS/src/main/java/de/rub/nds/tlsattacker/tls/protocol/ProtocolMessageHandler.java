@@ -40,12 +40,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @param tlsContext
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
-	// ProtocolController protocolController =
-	// ProtocolController.getInstance();
-	this.tlsContext = tlsContext;
-	if (tlsContext == null) {
-	    throw new ConfigurationException("TLS Context is not configured yet");
-	}
+        // ProtocolController protocolController =
+        // ProtocolController.getInstance();
+        this.tlsContext = tlsContext;
+        if (tlsContext == null) {
+            throw new ConfigurationException("TLS Context is not configured yet");
+        }
     }
 
     /**
@@ -55,10 +55,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @return message in bytes
      */
     public byte[] prepareMessage() {
-	beforePrepareMessageAction();
-	byte[] ret = prepareMessageAction();
-	ret = afterPrepareMessageAction(ret);
-	return ret;
+        beforePrepareMessageAction();
+        byte[] ret = prepareMessageAction();
+        ret = afterPrepareMessageAction(ret);
+        return ret;
     }
 
     /**
@@ -72,11 +72,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      *         message following, i.e. lastProcessedBytePointer + 1
      */
     public int parseMessage(byte[] message, int pointer) {
-	byte[] hookedMessage;
-	hookedMessage = beforeParseMessageAction(message, pointer);
-	int ret = parseMessageAction(hookedMessage, pointer);
-	ret = afterParseMessageAction(ret);
-	return ret;
+        byte[] hookedMessage;
+        hookedMessage = beforeParseMessageAction(message, pointer);
+        int ret = parseMessageAction(hookedMessage, pointer);
+        ret = afterParseMessageAction(ret);
+        return ret;
     }
 
     /**
@@ -108,7 +108,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * after the prepareMessageAction is executed
      */
     protected byte[] afterPrepareMessageAction(byte[] ret) {
-	return ret;
+        return ret;
     }
 
     /**
@@ -120,7 +120,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @return
      */
     protected byte[] beforeParseMessageAction(byte[] message, int pointer) {
-	return message;
+        return message;
     }
 
     /**
@@ -131,7 +131,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @return
      */
     protected int afterParseMessageAction(int ret) {
-	return ret;
+        return ret;
     }
 
     /**
@@ -141,11 +141,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @return
      */
     public boolean isCorrectProtocolMessage(ProtocolMessage protocolMessage) {
-	if (protocolMessage == null) {
-	    return false;
-	} else {
-	    return protocolMessage.getClass().equals(correctProtocolMessageClass);
-	}
+        if (protocolMessage == null) {
+            return false;
+        } else {
+            return protocolMessage.getClass().equals(correctProtocolMessageClass);
+        }
 
     }
 
@@ -156,21 +156,21 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      */
     public void initializeProtocolMessage() {
 
-	try {
-	    Constructor<? extends Message> c = correctProtocolMessageClass.getConstructor();
-	    Message pm = c.newInstance();
-	    this.protocolMessage = pm;
-	} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException
-		| InvocationTargetException | NoSuchMethodException ex) {
-	    throw new ConfigurationException(ex.getLocalizedMessage(), ex);
-	}
+        try {
+            Constructor<? extends Message> c = correctProtocolMessageClass.getConstructor();
+            Message pm = c.newInstance();
+            this.protocolMessage = pm;
+        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException
+                | InvocationTargetException | NoSuchMethodException ex) {
+            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+        }
     }
 
     /**
      * @return newly initialized protocol message used by this handler
      */
     public Message getProtocolMessage() {
-	return this.protocolMessage;
+        return this.protocolMessage;
     }
 
     /**
@@ -178,6 +178,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      */
     @SuppressWarnings("unchecked")
     public void setProtocolMessage(ProtocolMessage protocolMessage) {
-	this.protocolMessage = (Message) protocolMessage;
+        this.protocolMessage = (Message) protocolMessage;
     }
 }

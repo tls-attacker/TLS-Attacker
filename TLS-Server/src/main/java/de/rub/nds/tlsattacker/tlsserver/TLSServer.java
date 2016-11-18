@@ -129,7 +129,7 @@ public class TLSServer extends Thread {
         SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
         serverSocket = serverSocketFactory.createServerSocket(port);
         serverSocket.setReuseAddress(true);
-	// if (cipherSuites != null) {
+        // if (cipherSuites != null) {
         // ((SSLServerSocket)
         // serverSocket).setEnabledCipherSuites(cipherSuites);
         // }

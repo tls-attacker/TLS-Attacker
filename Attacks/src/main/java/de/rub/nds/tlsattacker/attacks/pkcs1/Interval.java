@@ -24,10 +24,10 @@ public class Interval {
     public BigInteger upper;
 
     public Interval(BigInteger a, BigInteger b) {
-	this.lower = a;
-	this.upper = b;
-	if (a.compareTo(b) > 0) {
-	    throw new RuntimeException("something went wrong, a cannot be greater than b");
-	}
+        this.lower = a;
+        this.upper = b;
+        if (a.compareTo(b) > 0) {
+            throw new RuntimeException("something went wrong, a cannot be greater than b");
+        }
     }
 }

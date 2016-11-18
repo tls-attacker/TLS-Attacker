@@ -46,15 +46,15 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlRootElement
 @XmlTransient
-@XmlSeeAlso({AccessModificationFilter.class, BigIntegerAddModification.class,
-    BigIntegerExplicitValueModification.class, BigIntegerSubtractModification.class,
-    BigIntegerXorModification.class, BigIntegerShiftLeftModification.class, BigIntegerShiftRightModification.class,
-    IntegerAddModification.class, IntegerExplicitValueModification.class, IntegerSubtractModification.class,
-    IntegerXorModification.class, IntegerShiftLeftModification.class, IntegerShiftRightModification.class,
-    ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class, ByteArrayInsertModification.class,
-    ByteArrayXorModification.class, ByteArrayDuplicateModification.class, ByteArrayShuffleModification.class,
-    ByteAddModification.class, ByteExplicitValueModification.class,
-    ByteSubtractModification.class, ByteXorModification.class})
+@XmlSeeAlso({ AccessModificationFilter.class, BigIntegerAddModification.class,
+        BigIntegerExplicitValueModification.class, BigIntegerSubtractModification.class,
+        BigIntegerXorModification.class, BigIntegerShiftLeftModification.class, BigIntegerShiftRightModification.class,
+        IntegerAddModification.class, IntegerExplicitValueModification.class, IntegerSubtractModification.class,
+        IntegerXorModification.class, IntegerShiftLeftModification.class, IntegerShiftRightModification.class,
+        ByteArrayDeleteModification.class, ByteArrayExplicitValueModification.class, ByteArrayInsertModification.class,
+        ByteArrayXorModification.class, ByteArrayDuplicateModification.class, ByteArrayShuffleModification.class,
+        ByteAddModification.class, ByteExplicitValueModification.class, ByteSubtractModification.class,
+        ByteXorModification.class })
 public abstract class VariableModification<E> {
 
     private static final Logger LOGGER = LogManager.getLogger(VariableModification.class);
@@ -73,7 +73,7 @@ public abstract class VariableModification<E> {
 
     /**
      * Get the value of postModification
-     *
+     * 
      * @return the value of postModification
      */
     // http://stackoverflow.com/questions/5122296/jaxb-not-unmarshalling-xml-any-element-to-jaxbelement
@@ -84,8 +84,9 @@ public abstract class VariableModification<E> {
 
     /**
      * Set the value of postModification
-     *
-     * @param postModification new value of postModification
+     * 
+     * @param postModification
+     *            new value of postModification
      */
     final public void setPostModification(VariableModification<E> postModification) {
         this.postModification = postModification;
@@ -109,7 +110,7 @@ public abstract class VariableModification<E> {
     /**
      * Debugging modified variables. Getting stack trace can be time consuming,
      * thus we use isDebugEnabled() function
-     *
+     * 
      * @param value
      */
     protected void debug(E value) {

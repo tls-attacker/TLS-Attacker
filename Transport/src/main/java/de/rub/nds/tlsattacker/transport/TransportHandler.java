@@ -15,11 +15,13 @@ import java.io.IOException;
  */
 public abstract class TransportHandler {
 
-    long lastSystemNano;
+    protected int tlsTimeout;
 
-    long lastMeasurement;
+    protected long lastSystemNano;
 
-    boolean measuringTiming;
+    protected long lastMeasurement;
+
+    protected boolean measuringTiming;
 
     public abstract void closeConnection();
 

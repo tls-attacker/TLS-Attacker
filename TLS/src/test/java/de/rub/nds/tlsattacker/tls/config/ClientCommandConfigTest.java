@@ -24,20 +24,20 @@ public class ClientCommandConfigTest {
      */
     @Test
     public void testCommandLineParsing() {
-	JCommander jc = new JCommander(new GeneralConfig());
+        JCommander jc = new JCommander(new GeneralConfig());
 
-	ServerCommandConfig server = new ServerCommandConfig();
-	jc.addCommand(ServerCommandConfig.COMMAND, server);
-	ClientCommandConfig client = new ClientCommandConfig();
-	jc.addCommand(ClientCommandConfig.COMMAND, client);
+        ServerCommandConfig server = new ServerCommandConfig();
+        jc.addCommand(ServerCommandConfig.COMMAND, server);
+        ClientCommandConfig client = new ClientCommandConfig();
+        jc.addCommand(ClientCommandConfig.COMMAND, client);
 
-	jc.parse("client", "-connect", "localhost:443", "-keystore", "test.pem", "-password", "password",
-		"-workflow_trace_type", "FULL");
+        jc.parse("client", "-connect", "localhost:443", "-keystore", "test.pem", "-password", "password",
+                "-workflow_trace_type", "FULL");
 
-	assertEquals("client", jc.getParsedCommand());
-	assertEquals("localhost:443", client.getConnect());
-	assertEquals("test.pem", client.getKeystore());
-	assertEquals("password", client.getPassword());
+        assertEquals("client", jc.getParsedCommand());
+        assertEquals("localhost:443", client.getConnect());
+        assertEquals("test.pem", client.getKeystore());
+        assertEquals("password", client.getPassword());
     }
 
     /**
@@ -45,11 +45,11 @@ public class ClientCommandConfigTest {
      */
     @Test(expected = ParameterException.class)
     public void testInvalidCommandLineParsing() {
-	JCommander jc = new JCommander();
+        JCommander jc = new JCommander();
 
-	ClientCommandConfig client = new ClientCommandConfig();
-	jc.addCommand(ClientCommandConfig.COMMAND, client);
+        ClientCommandConfig client = new ClientCommandConfig();
+        jc.addCommand(ClientCommandConfig.COMMAND, client);
 
-	jc.parse("client", "-connect");
+        jc.parse("client", "-connect");
     }
 }

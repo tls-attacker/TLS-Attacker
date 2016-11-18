@@ -15,9 +15,14 @@ import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +37,8 @@ public class RecordHandler {
     protected final TlsContext tlsContext;
 
     protected TlsRecordBlockCipher recordCipher;
+    protected boolean encryptSending = false;
+    protected boolean decryptReceiving = false;
 
     protected byte[] finishedBytes = null;
 
@@ -75,7 +82,7 @@ public class RecordHandler {
             byte[] ctArray = { record.getContentType().getValue() };
             byte[] pv = record.getProtocolVersion().getValue();
             byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
-            if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
                 byte[] pm = record.getProtocolMessageBytes().getValue();
                 result = ArrayConverter.concatenate(result, ctArray, pv, rl, pm);
             } else {
@@ -91,12 +98,28 @@ public class RecordHandler {
         return result;
     }
 
+    public boolean isEncryptSending() {
+        return encryptSending;
+    }
+
+    public void setEncryptSending(boolean encryptSending) {
+        this.encryptSending = encryptSending;
+    }
+
+    public boolean isDecryptReceiving() {
+        return decryptReceiving;
+    }
+
+    public void setDecryptReceiving(boolean decryptReceiving) {
+        this.decryptReceiving = decryptReceiving;
+    }
+
     /**
      * Takes the data going to be sent and wraps it inside of the record. It
      * returns the size of the data, which were currently wrapped in the records
      * (it is namely possible to divide Protocol message data into several
      * records).
-     * 
+     *
      * @param record
      *            record going to be filled in
      * @param contentType
@@ -123,9 +146,24 @@ public class RecordHandler {
         record.setLength(pmData.length);
         record.setProtocolMessageBytes(pmData);
 
-        if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-            byte[] mac = recordCipher.calculateMac(tlsContext.getProtocolVersion(), contentType, record
-                    .getProtocolMessageBytes().getValue());
+        if (encryptSending && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            if (recordCipher == null && tlsContext.isFuzzingMode()) {
+                try {
+                    recordCipher = new TlsRecordBlockCipher(tlsContext);
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
+                        | InvalidAlgorithmParameterException ex) {
+                    throw new UnsupportedOperationException(ex);
+                }
+            } else if (recordCipher == null) {
+                throw new WorkflowExecutionException("Cannot encrypt Record, RecordCipher is not yet initialized");
+            }
+            byte[] mac = null;
+            try {
+                mac = recordCipher.calculateMac(tlsContext.getProtocolVersion().getValue(), contentType, record
+                        .getProtocolMessageBytes().getValue());
+            } catch (NullPointerException E) {
+                E.printStackTrace();
+            }
             record.setMac(mac);
             byte[] macedData = ArrayConverter.concatenate(record.getProtocolMessageBytes().getValue(), record.getMac()
                     .getValue());
@@ -147,7 +185,7 @@ public class RecordHandler {
     }
 
     /**
-     * 
+     *
      * @param rawRecordData
      * @return list of parsed records or null, if there was not enough data
      */
@@ -181,9 +219,9 @@ public class RecordHandler {
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC && lastByte < rawRecordData.length) {
                 finishedBytes = Arrays.copyOfRange(rawRecordData, lastByte, rawRecordData.length);
                 lastByte = rawRecordData.length;
+                decryptReceiving = true;
             }
-
-            if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
+            if (decryptReceiving && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
                     && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
                 record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
                 byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);
@@ -201,7 +239,6 @@ public class RecordHandler {
                 rawBytesFromCurrentRecord = Arrays.copyOf(unpaddedData,
                         (unpaddedData.length - recordCipher.getMacLength()));
             }
-
             record.setProtocolMessageBytes(rawBytesFromCurrentRecord);
             records.add(record);
             dataPointer = lastByte;
@@ -230,5 +267,21 @@ public class RecordHandler {
 
     public void setFinishedBytes(byte[] finishedBytes) {
         this.finishedBytes = finishedBytes;
+    }
+
+    /**
+     * Parses stored finish bytes into records and sets the stored finished
+     * bytes to null. Returns null if no records were parsed
+     *
+     * @return List of parsed Records
+     */
+    public List<Record> parseFinishedBytes() {
+        if (finishedBytes == null) {
+            return null;
+        } else {
+            List<Record> records = parseRecords(finishedBytes);
+            finishedBytes = null;
+            return records;
+        }
     }
 }

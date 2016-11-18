@@ -20,17 +20,17 @@ public class Eap8021X extends EAPFrame {
 
     public Eap8021X(byte version) {
 
-	this.version = version;
-	createFrame();
+        this.version = version;
+        createFrame();
 
     }
 
     @Override
     public final void createFrame() {
 
-	frame = new byte[2];
-	frame[0] = version;
-	frame[1] = 0x00;
+        frame = new byte[2];
+        frame[0] = version;
+        frame[1] = 0x00;
 
     }
 

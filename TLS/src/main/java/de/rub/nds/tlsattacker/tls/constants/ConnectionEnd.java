@@ -19,11 +19,11 @@ public enum ConnectionEnd {
     SERVER;
 
     public ConnectionEnd getPeer() {
-	if (this == CLIENT) {
-	    return SERVER;
-	} else {
-	    return CLIENT;
-	}
+        if (this == CLIENT) {
+            return SERVER;
+        } else {
+            return CLIENT;
+        }
     }
 
 }

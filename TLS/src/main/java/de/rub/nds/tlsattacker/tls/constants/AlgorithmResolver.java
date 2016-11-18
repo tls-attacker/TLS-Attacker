@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Resolves crypto algorithms and their properties from a given cipehr suite
  * (and TLS version).
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class AlgorithmResolver {
@@ -33,7 +33,7 @@ public class AlgorithmResolver {
      * uses per default SHA256 PRF, but allows for definition of further PRFs in
      * specific cipher suites (the last part of a cipher suite string identifies
      * the PRF).
-     *
+     * 
      * @param protocolVersion
      * @param cipherSuite
      * @return
@@ -60,7 +60,7 @@ public class AlgorithmResolver {
      * SHA256 digest algorithm, but allows for definition of further digest
      * algorithms in specific cipher suites (the last part of a cipher suite
      * string identifies the digest).
-     *
+     * 
      * @param protocolVersion
      * @param cipherSuite
      * @return
@@ -114,17 +114,18 @@ public class AlgorithmResolver {
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
             return KeyExchangeAlgorithm.CECPQ1;
         }
-        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
+        throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
+                + " is not supported yet.");
     }
 
     /**
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
      * there are possibly more than one cipher suites needed.
-     *
+     * 
      * This function returns a list of public key algorithms needed when running
      * a server with a cipher suite.
-     *
+     * 
      * @param cipherSuite
      * @return
      */
@@ -178,7 +179,7 @@ public class AlgorithmResolver {
 
     /**
      * TODO handle aead ciphers
-     *
+     * 
      * @param cipherSuite
      * @return
      */

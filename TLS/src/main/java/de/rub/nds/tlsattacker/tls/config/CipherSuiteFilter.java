@@ -26,13 +26,13 @@ public class CipherSuiteFilter {
      * @param cipherSuites
      */
     public static void filterCipherSuites(List<CipherSuite> cipherSuites) {
-	KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuites.get(0));
-	boolean ephemeral = cipherSuites.get(0).isEphemeral();
-	for (int i = cipherSuites.size() - 1; i > 0; i--) {
-	    CipherSuite cs = cipherSuites.get(i);
-	    if (AlgorithmResolver.getKeyExchangeAlgorithm(cs) != algorithm || cs.isEphemeral() != ephemeral) {
-		cipherSuites.remove(i);
-	    }
-	}
+        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuites.get(0));
+        boolean ephemeral = cipherSuites.get(0).isEphemeral();
+        for (int i = cipherSuites.size() - 1; i > 0; i--) {
+            CipherSuite cs = cipherSuites.get(i);
+            if (AlgorithmResolver.getKeyExchangeAlgorithm(cs) != algorithm || cs.isEphemeral() != ephemeral) {
+                cipherSuites.remove(i);
+            }
+        }
     }
 }

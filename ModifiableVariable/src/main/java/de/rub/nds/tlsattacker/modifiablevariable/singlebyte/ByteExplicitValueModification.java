@@ -26,19 +26,19 @@ public class ByteExplicitValueModification extends VariableModification<Byte> {
     }
 
     public ByteExplicitValueModification(Byte bi) {
-	this.explicitValue = bi;
+        this.explicitValue = bi;
     }
 
     @Override
     protected Byte modifyImplementationHook(final Byte input) {
-	return explicitValue;
+        return explicitValue;
     }
 
     public Byte getExplicitValue() {
-	return explicitValue;
+        return explicitValue;
     }
 
     public void setExplicitValue(Byte explicitValue) {
-	this.explicitValue = explicitValue;
+        this.explicitValue = explicitValue;
     }
 }

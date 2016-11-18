@@ -28,20 +28,20 @@ public class ByteArrayExplicitValueModification extends VariableModification<byt
     }
 
     public ByteArrayExplicitValueModification(byte[] explicitValue) {
-	this.explicitValue = explicitValue;
+        this.explicitValue = explicitValue;
     }
 
     @Override
     protected byte[] modifyImplementationHook(final byte[] input) {
-	return explicitValue.clone();
+        return explicitValue.clone();
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public byte[] getExplicitValue() {
-	return explicitValue;
+        return explicitValue;
     }
 
     public void setExplicitValue(byte[] explicitValue) {
-	this.explicitValue = explicitValue;
+        this.explicitValue = explicitValue;
     }
 }

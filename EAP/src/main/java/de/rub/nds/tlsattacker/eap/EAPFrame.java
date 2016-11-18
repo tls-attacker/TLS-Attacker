@@ -23,7 +23,7 @@ public abstract class EAPFrame {
     int id;
 
     public byte[] getFrame() {
-	return frame;
+        return frame;
     }
 
     public abstract void createFrame();

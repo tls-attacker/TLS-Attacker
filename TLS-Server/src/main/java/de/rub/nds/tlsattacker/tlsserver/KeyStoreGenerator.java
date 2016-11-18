@@ -54,74 +54,74 @@ public class KeyStoreGenerator {
     public static final String ALIAS = "alias";
 
     public static KeyPair createRSAKeyPair(int bits) throws NoSuchAlgorithmException {
-	KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-	keyPairGenerator.initialize(bits, new SecureRandom());
-	KeyPair keyPair = keyPairGenerator.generateKeyPair();
-	return keyPair;
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(bits, new SecureRandom());
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
     }
 
     public static KeyPair createECKeyPair(int bits) throws NoSuchAlgorithmException {
-	KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
-	keyPairGenerator.initialize(bits, new SecureRandom());
-	KeyPair keyPair = keyPairGenerator.generateKeyPair();
-	return keyPair;
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
+        keyPairGenerator.initialize(bits, new SecureRandom());
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
     }
 
     public static KeyStore createKeyStore(KeyPair keyPair) throws CertificateException, IOException,
-	    InvalidKeyException, KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException,
-	    SignatureException, OperatorCreationException {
-	PublicKey publicKey = keyPair.getPublic();
-	PrivateKey privateKey = keyPair.getPrivate();
+            InvalidKeyException, KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException,
+            SignatureException, OperatorCreationException {
+        PublicKey publicKey = keyPair.getPublic();
+        PrivateKey privateKey = keyPair.getPrivate();
 
-	X500Name issuerName = new X500Name("CN=127.0.0.1, O=TLS-Attacker, L=RUB, ST=NRW, C=DE");
-	X500Name subjectName = issuerName;
+        X500Name issuerName = new X500Name("CN=127.0.0.1, O=TLS-Attacker, L=RUB, ST=NRW, C=DE");
+        X500Name subjectName = issuerName;
 
-	BigInteger serial = BigInteger.valueOf(new SecureRandom().nextInt());
+        BigInteger serial = BigInteger.valueOf(new SecureRandom().nextInt());
 
-	X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, BEFORE, AFTER,
-		subjectName, publicKey);
-	builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, BEFORE, AFTER,
+                subjectName, publicKey);
+        builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 
-	KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
-		| KeyUsage.dataEncipherment);
-	builder.addExtension(Extension.keyUsage, false, usage);
+        KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
+                | KeyUsage.dataEncipherment);
+        builder.addExtension(Extension.keyUsage, false, usage);
 
-	ASN1EncodableVector purposes = new ASN1EncodableVector();
-	purposes.add(KeyPurposeId.id_kp_serverAuth);
-	purposes.add(KeyPurposeId.id_kp_clientAuth);
-	purposes.add(KeyPurposeId.anyExtendedKeyUsage);
-	builder.addExtension(Extension.extendedKeyUsage, false, new DERSequence(purposes));
+        ASN1EncodableVector purposes = new ASN1EncodableVector();
+        purposes.add(KeyPurposeId.id_kp_serverAuth);
+        purposes.add(KeyPurposeId.id_kp_clientAuth);
+        purposes.add(KeyPurposeId.anyExtendedKeyUsage);
+        builder.addExtension(Extension.extendedKeyUsage, false, new DERSequence(purposes));
 
-	String algorithm = createSigningAlgorithm(keyPair);
-	X509Certificate cert = signCertificate(algorithm, builder, privateKey);
-	cert.checkValidity(new Date());
-	cert.verify(publicKey);
+        String algorithm = createSigningAlgorithm(keyPair);
+        X509Certificate cert = signCertificate(algorithm, builder, privateKey);
+        cert.checkValidity(new Date());
+        cert.verify(publicKey);
 
-	KeyStore keyStore = KeyStore.getInstance("JKS");
-	keyStore.load(null, null);
-	keyStore.setKeyEntry(ALIAS, privateKey, PASSWORD.toCharArray(), new java.security.cert.Certificate[] { cert });
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(null, null);
+        keyStore.setKeyEntry(ALIAS, privateKey, PASSWORD.toCharArray(), new java.security.cert.Certificate[] { cert });
 
-	return keyStore;
+        return keyStore;
     }
 
     private static X509Certificate signCertificate(String algorithm, X509v3CertificateBuilder builder,
-	    PrivateKey privateKey) throws OperatorCreationException, CertificateException {
-	ContentSigner signer = new JcaContentSignerBuilder(algorithm).build(privateKey);
-	return new JcaX509CertificateConverter().getCertificate(builder.build(signer));
+            PrivateKey privateKey) throws OperatorCreationException, CertificateException {
+        ContentSigner signer = new JcaContentSignerBuilder(algorithm).build(privateKey);
+        return new JcaX509CertificateConverter().getCertificate(builder.build(signer));
     }
 
     private static String createSigningAlgorithm(KeyPair keyPair) {
-	switch (keyPair.getPublic().getAlgorithm()) {
-	    case "RSA":
-		return "SHA256withRSA";
-	    case "EC":
-		return "SHA256withECDSA";
-	    case "DH":
-		return "SHa256withDSA";
-	    default:
-		throw new UnsupportedOperationException("Algorithm " + keyPair.getPublic().getAlgorithm()
-			+ " not supported");
-	}
+        switch (keyPair.getPublic().getAlgorithm()) {
+            case "RSA":
+                return "SHA256withRSA";
+            case "EC":
+                return "SHA256withECDSA";
+            case "DH":
+                return "SHa256withDSA";
+            default:
+                throw new UnsupportedOperationException("Algorithm " + keyPair.getPublic().getAlgorithm()
+                        + " not supported");
+        }
     }
 
 }

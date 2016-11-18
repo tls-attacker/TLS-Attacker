@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.modifiablevariable;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class FileConfigurationException extends RuntimeException {

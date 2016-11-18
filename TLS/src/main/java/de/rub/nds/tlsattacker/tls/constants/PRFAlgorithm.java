@@ -18,12 +18,12 @@ public enum PRFAlgorithm {
     TLS_PRF_SHA384(MacAlgorithm.HMAC_SHA384);
 
     private PRFAlgorithm(MacAlgorithm macAlgorithm) {
-	this.macAlgorithm = macAlgorithm;
+        this.macAlgorithm = macAlgorithm;
     }
 
     private final MacAlgorithm macAlgorithm;
 
     public MacAlgorithm getMacAlgorithm() {
-	return macAlgorithm;
+        return macAlgorithm;
     }
 }

@@ -67,106 +67,106 @@ abstract class HelloMessage extends HandshakeMessage {
     List<ExtensionMessage> extensions = new LinkedList<>();
 
     public HelloMessage(HandshakeMessageType handshakeMessageType) {
-	super(handshakeMessageType);
+        super(handshakeMessageType);
     }
 
     public ModifiableByteArray getRandom() {
-	return random;
+        return random;
     }
 
     public ModifiableByteArray getSessionId() {
-	return sessionId;
+        return sessionId;
     }
 
     public ModifiableByteArray getUnixTime() {
-	return unixTime;
+        return unixTime;
     }
 
     public ModifiableByteArray getProtocolVersion() {
-	return protocolVersion;
+        return protocolVersion;
     }
 
     public ModifiableInteger getSessionIdLength() {
-	return sessionIdLength;
+        return sessionIdLength;
     }
 
     public void setProtocolVersion(ModifiableByteArray protocolVersion) {
-	this.protocolVersion = protocolVersion;
+        this.protocolVersion = protocolVersion;
     }
 
     public void setUnixTime(ModifiableByteArray unixTime) {
-	this.unixTime = unixTime;
+        this.unixTime = unixTime;
     }
 
     public void setRandom(ModifiableByteArray random) {
-	this.random = random;
+        this.random = random;
     }
 
     public void setSessionIdLength(ModifiableInteger sessionIdLength) {
-	this.sessionIdLength = sessionIdLength;
+        this.sessionIdLength = sessionIdLength;
     }
 
     public void setSessionId(ModifiableByteArray sessionId) {
-	this.sessionId = sessionId;
+        this.sessionId = sessionId;
     }
 
     public void setRandom(byte[] random) {
-	this.random = ModifiableVariableFactory.safelySetValue(this.random, random);
+        this.random = ModifiableVariableFactory.safelySetValue(this.random, random);
     }
 
     public void setSessionId(byte[] sessionId) {
-	this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
+        this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
     }
 
     public void setUnixTime(byte[] unixTime) {
-	this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
+        this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
     }
 
     public void setSessionIdLength(int sessionIdLength) {
-	this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIdLength);
+        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIdLength);
     }
 
     public void setProtocolVersion(byte[] array) {
-	this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
     @XmlElementWrapper
     @XmlElements(value = {
-	    @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
-	    @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
-	    @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
-	    @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
-	    @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
-	    @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
+            @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
+            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
+            @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
+            @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
+            @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
     public List<ExtensionMessage> getExtensions() {
-	return extensions;
+        return extensions;
     }
 
     public void setExtensions(List<ExtensionMessage> extensions) {
-	this.extensions = extensions;
+        this.extensions = extensions;
     }
 
     public void addExtension(ExtensionMessage extension) {
-	this.extensions.add(extension);
+        this.extensions.add(extension);
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
-	for (ExtensionMessage e : extensions) {
-	    if (e.getExtensionTypeConstant() == extensionType) {
-		return true;
-	    }
-	}
-	return false;
+        for (ExtensionMessage e : extensions) {
+            if (e.getExtensionTypeConstant() == extensionType) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-	List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-	if (extensions != null) {
-	    for (ExtensionMessage em : extensions) {
-		holders.add(em);
-	    }
-	}
-	return holders;
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (extensions != null) {
+            for (ExtensionMessage em : extensions) {
+                holders.add(em);
+            }
+        }
+        return holders;
     }
 }

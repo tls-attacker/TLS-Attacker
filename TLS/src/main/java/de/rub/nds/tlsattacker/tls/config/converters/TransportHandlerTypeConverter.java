@@ -22,10 +22,10 @@ public class TransportHandlerTypeConverter implements IStringConverter<Transport
 
     @Override
     public TransportHandlerType convert(String value) {
-	try {
-	    return TransportHandlerType.valueOf(value);
-	} catch (IllegalArgumentException e) {
-	    throw new ParameterException("Value " + value + " cannot be converted to TransportHandlerType.");
-	}
+        try {
+            return TransportHandlerType.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException("Value " + value + " cannot be converted to TransportHandlerType.");
+        }
     }
 }

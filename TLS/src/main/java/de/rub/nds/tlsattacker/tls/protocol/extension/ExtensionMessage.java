@@ -38,52 +38,61 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
     ModifiableByteArray extensionBytes;
 
     public ModifiableByteArray getExtensionType() {
-	return extensionType;
+        return extensionType;
     }
 
     public ModifiableInteger getExtensionLength() {
-	return extensionLength;
+        return extensionLength;
     }
 
     public ModifiableByteArray getExtensionBytes() {
-	return extensionBytes;
+        return extensionBytes;
     }
 
     public void setExtensionType(byte[] array) {
-	this.extensionType = ModifiableVariableFactory.safelySetValue(extensionType, array);
+        this.extensionType = ModifiableVariableFactory.safelySetValue(extensionType, array);
     }
 
     public void setExtensionLength(int length) {
-	this.extensionLength = ModifiableVariableFactory.safelySetValue(extensionLength, length);
+        this.extensionLength = ModifiableVariableFactory.safelySetValue(extensionLength, length);
     }
 
     public void setExtensionBytes(byte[] data) {
-	this.extensionBytes = ModifiableVariableFactory.safelySetValue(extensionBytes, data);
+        this.extensionBytes = ModifiableVariableFactory.safelySetValue(extensionBytes, data);
     }
 
     public void setExtensionType(ModifiableByteArray extensionType) {
-	this.extensionType = extensionType;
+        this.extensionType = extensionType;
     }
 
     public void setExtensionLength(ModifiableInteger extensionLength) {
-	this.extensionLength = extensionLength;
+        this.extensionLength = extensionLength;
     }
 
     public void setExtensionBytes(ModifiableByteArray extensionBytes) {
-	this.extensionBytes = extensionBytes;
+        this.extensionBytes = extensionBytes;
     }
 
     public ExtensionType getExtensionTypeConstant() {
-	return extensionTypeConstant;
+        return extensionTypeConstant;
     }
 
     public abstract ExtensionHandler<? extends ExtensionMessage> getExtensionHandler();
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder();
-	sb.append("\n    Extension type: ").append(ArrayConverter.bytesToHexString(extensionType.getValue()))
-		.append("\n    Extension length: ").append(extensionLength.getValue());
-	return sb.toString();
+        StringBuilder sb = new StringBuilder();
+        if (extensionType == null || extensionType.getValue() == null) {
+            sb.append("\n    Extension type: null");
+        } else {
+            sb.append("\n    Extension type: ").append(ArrayConverter.bytesToHexString(extensionType.getValue()));
+        }
+        if (extensionLength == null || extensionLength.getValue() == null) {
+            sb.append("\n    Extension length: null");
+
+        } else {
+            sb.append("\n    Extension length: ").append(extensionLength.getValue());
+        }
+        return sb.toString();
     }
 }
