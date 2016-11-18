@@ -18,10 +18,11 @@ import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TestableCommandLineController extends CommandLineController {
-    
-    public TestableCommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException {
+
+    public TestableCommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
+            IllegalCertificateMutatorException, IllegalAnalyzerException {
         super(config);
-        
+
     }
-    
+
 }

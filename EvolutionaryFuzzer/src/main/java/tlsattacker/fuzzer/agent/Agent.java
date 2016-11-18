@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -53,7 +54,7 @@ public abstract class Agent {
      * If the application did crash
      */
     protected boolean crash;
-    
+
     /**
      * The TLSServer the Agent should use
      */
@@ -65,7 +66,8 @@ public abstract class Agent {
      * @param keypair
      *            The server certificate key pair the agent should start the
      *            server with
-     * @param server The TLSServer the Agent should use
+     * @param server
+     *            The TLSServer the Agent should use
      */
     public Agent(ServerCertificateStructure keypair, TLSServer server) {
         this.keypair = keypair;
@@ -92,7 +94,7 @@ public abstract class Agent {
      * @param vector
      *            The TestVector that was executed.
      * @return AgentResult Object which contains all Information of the executed
-         TestVector.
+     *         TestVector.
      */
     public abstract AgentResult collectResults(File branchTrace, TestVector vector);
 }

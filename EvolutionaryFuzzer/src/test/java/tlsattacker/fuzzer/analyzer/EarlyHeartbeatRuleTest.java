@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer;
 
@@ -43,9 +44,9 @@ public class EarlyHeartbeatRuleTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     private EvolutionaryFuzzerConfig config;
-    
+
     /**
      *
      */
@@ -74,8 +75,8 @@ public class EarlyHeartbeatRuleTest {
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new HeartbeatMessage()));
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null,
+                null, ExecutorType.TLS, null), "unittest.id", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(rule.applies(result));
         trace.add(new ReceiveAction(new FinishedMessage()));
@@ -114,8 +115,8 @@ public class EarlyHeartbeatRuleTest {
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new ReceiveAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new HeartbeatMessage()));
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null,
+                null, ExecutorType.TLS, null), "unittest.id", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -141,8 +142,8 @@ public class EarlyHeartbeatRuleTest {
         trace.add(new SendAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new HeartbeatMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null,
+                null, ExecutorType.TLS, null), "unittest.id", null);
         rule.onApply(result);
         assertNotNull(rule.report());
     }

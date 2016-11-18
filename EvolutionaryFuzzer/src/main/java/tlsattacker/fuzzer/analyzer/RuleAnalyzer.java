@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer;
 
@@ -80,7 +81,8 @@ public class RuleAnalyzer extends Analyzer {
     /**
      * Returns a rule from the Rule list
      *
-     * @param tempClass Class of the rule to return
+     * @param tempClass
+     *            Class of the rule to return
      * @return First Rule from the rule list of matching class
      */
     public Rule getRule(Class tempClass) {
@@ -99,7 +101,7 @@ public class RuleAnalyzer extends Analyzer {
      */
     @Override
     public void analyze(TestVectorResult result) {
-        for (AgentResult agentResult : result.getAgentResults() ) {
+        for (AgentResult agentResult : result.getAgentResults()) {
             for (Rule r : ruleList) {
                 if (r.applies(agentResult)) {
                     r.onApply(agentResult);

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.controller;
 
@@ -29,18 +30,20 @@ import tlsattacker.fuzzer.testvector.TestVector;
 public class ExecutorFactory {
 
     /**
-     * Chooses the correct Executor depending on the Executor specified in
-     * the config
+     * Chooses the correct Executor depending on the Executor specified in the
+     * config
      * 
      * @param config
      *            Config object to use
      * @param testVector
-     * @return Correct Executor instance
-     *             If an invalid controller is selected
-     * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException Thrown if the Executor cannot generate the Specified Agent
-     * @throws tlsattacker.fuzzer.exceptions.IllegalExecutorException Thrown if the Executor cannot be generated
+     * @return Correct Executor instance If an invalid controller is selected
+     * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
+     *             Thrown if the Executor cannot generate the Specified Agent
+     * @throws tlsattacker.fuzzer.exceptions.IllegalExecutorException
+     *             Thrown if the Executor cannot be generated
      */
-    public static Executor getExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException, IllegalExecutorException {
+    public static Executor getExecutor(EvolutionaryFuzzerConfig config, TestVector testVector)
+            throws IllegalAgentException, IllegalExecutorException {
         switch (config.getExecutor()) {
             case SingleTLSExecutor.optionName:
                 SingleTLSExecutor executor = new SingleTLSExecutor(config, testVector);

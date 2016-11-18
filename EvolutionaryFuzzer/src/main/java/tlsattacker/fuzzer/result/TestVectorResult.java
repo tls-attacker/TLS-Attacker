@@ -17,19 +17,17 @@ import tlsattacker.fuzzer.testvector.TestVector;
  * @author ic0ns
  */
 public class TestVectorResult {
-    
+
     private final List<AgentResult> agentResults;
     private final TestVector testVector;
-    
-    public TestVectorResult(TestVector testVector, AgentResult result)
-    {
+
+    public TestVectorResult(TestVector testVector, AgentResult result) {
         this.agentResults = new LinkedList<>();
         this.agentResults.add(result);
         this.testVector = testVector;
     }
-    
-    public TestVectorResult(TestVector testVector, List<AgentResult> agentResults)
-    {
+
+    public TestVectorResult(TestVector testVector, List<AgentResult> agentResults) {
         this.agentResults = agentResults;
         this.testVector = testVector;
     }

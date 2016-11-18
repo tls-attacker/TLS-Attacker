@@ -58,12 +58,6 @@
             <version>2.5</version>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-            <artifactId>maven-java-formatter-plugin</artifactId>
-            <version>0.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
             <version>1.35</version>
@@ -132,9 +126,9 @@
                 </plugin>
                 <!-- Format the Code -->
                 <plugin>
-                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                    <artifactId>maven-java-formatter-plugin</artifactId>
-                    <version>0.4</version>
+                    <groupId>net.revelc.code</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>0.5.2</version>
                     <configuration>
                         <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
                         <lineEnding>LF</lineEnding>
@@ -185,7 +179,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.3</version>
+                <version>3.0.4</version>
                 <configuration>
                     <effort>Max</effort>
                     <threshold>Low</threshold>

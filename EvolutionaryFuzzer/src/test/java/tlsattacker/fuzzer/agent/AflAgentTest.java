@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -40,7 +41,7 @@ public class AflAgentTest {
      *
      */
     private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
-    
+
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -100,7 +101,7 @@ public class AflAgentTest {
         } catch (Exception ex) {
             Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        agent = new AFLAgent(pair,server);
+        agent = new AFLAgent(pair, server);
         server.occupie();
 
     }

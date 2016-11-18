@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer;
 
@@ -42,12 +43,11 @@ public class FindAlertsRuleTest {
      */
     private FindAlertsRule rule;
 
-    
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     private EvolutionaryFuzzerConfig config;
-    
+
     /**
      *
      */
@@ -76,8 +76,8 @@ public class FindAlertsRuleTest {
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new HeartbeatMessage()));
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null,
+                null, ExecutorType.TLS, null), "unittest.id", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertFalse(rule.applies(result)); // Should not apply cause it has no
         // alert message
@@ -113,8 +113,8 @@ public class FindAlertsRuleTest {
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
         trace.add(new ReceiveAction(new AlertMessage()));
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null,
+                null, ExecutorType.TLS, null), "unittest.id", null);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
     }
@@ -128,8 +128,8 @@ public class FindAlertsRuleTest {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new SendAction(new HeartbeatMessage()));
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(trace, null,
+                null, ExecutorType.TLS, null), "unittest.id", null);
         AlertMessage message = new AlertMessage();
         message.setDescription((byte) 20);
         trace.add(new ReceiveAction(message));
@@ -155,8 +155,8 @@ public class FindAlertsRuleTest {
      */
     @Test
     public void testReport() {
-        rule.onApply(new AgentResult(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null, null,
-                ExecutorType.TLS, null), "2unit.test", null));
+        rule.onApply(new AgentResult(true, true, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
+                null, ExecutorType.TLS, null), "2unit.test", null));
         assertNotNull(rule.report());
     }
 

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.config;
 
@@ -26,7 +27,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
      */
     @Parameter(names = "-agent", description = "The Agent the Fuzzer uses to monitor the application (Default: AFL). Possible: AFL, PIN, BLIND")
     protected String agent = "AFL";
-    
+
     /**
      * The agent that should be used
      */
@@ -70,7 +71,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
      */
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
     private String outputFolder = "./data/";
-    
+
     /**
      * Temporary Folder which contains currently executed traces
      */
@@ -85,7 +86,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getAnalyzer() {
         return analyzer;
     }
-    
+
     public boolean getInjectPinChild() {
         return injectPinChild;
     }
@@ -109,7 +110,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getOutputCertificateFolder() {
         return outputFolder + "certificates/";
     }
-    
+
     public String getOutputFaultyFolder() {
         return outputFolder + "faulty/";
     }

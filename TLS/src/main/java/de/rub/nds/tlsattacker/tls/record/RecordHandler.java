@@ -79,7 +79,7 @@ public class RecordHandler {
         // create resulting byte array
         byte[] result = new byte[0];
         for (Record record : records) {
-            byte[] ctArray = {record.getContentType().getValue()};
+            byte[] ctArray = { record.getContentType().getValue() };
             byte[] pv = record.getProtocolVersion().getValue();
             byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
@@ -120,10 +120,14 @@ public class RecordHandler {
      * (it is namely possible to divide Protocol message data into several
      * records).
      *
-     * @param record record going to be filled in
-     * @param contentType content type
-     * @param data data array
-     * @param dataPointer current position in the read data
+     * @param record
+     *            record going to be filled in
+     * @param contentType
+     *            content type
+     * @param data
+     *            data array
+     * @param dataPointer
+     *            current position in the read data
      * @return new position of the data going to be sent in the records
      */
     private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
@@ -197,9 +201,9 @@ public class RecordHandler {
             }
             Record record = new Record();
             record.setContentType(contentType.getValue());
-            byte[] protocolVersion = {rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2]};
+            byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
             record.setProtocolVersion(protocolVersion);
-            byte[] byteLength = {rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4]};
+            byte[] byteLength = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
             int length = ArrayConverter.bytesToInt(byteLength);
             record.setLength(length);
             if (dataPointer + 5 + length > rawRecordData.length) {

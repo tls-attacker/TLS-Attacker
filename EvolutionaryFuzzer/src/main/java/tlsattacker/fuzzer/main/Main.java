@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.main;
 
@@ -57,7 +58,8 @@ public class Main {
     /**
      * Main function which Starts the fuzzer
      *
-     * @param args Arguments which are parsed
+     * @param args
+     *            Arguments which are parsed
      */
     public static void main(String args[]) throws IllegalAgentException {
         LOG.log(Level.FINE, Utils.arrayToString(args));
@@ -141,8 +143,9 @@ public class Main {
                 break;
             case "new-server":
                 TLSServer server = new TLSServer(null, serverConfig.getIp(), serverConfig.getPort(),
-                        serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand(), serverConfig.getMayorVersion(), serverConfig.getMinorVersion());
-                 {
+                        serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand(),
+                        serverConfig.getMayorVersion(), serverConfig.getMinorVersion());
+                {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
                         LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());

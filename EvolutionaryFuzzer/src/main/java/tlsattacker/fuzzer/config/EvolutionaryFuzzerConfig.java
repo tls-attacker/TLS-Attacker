@@ -1,3 +1,11 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package tlsattacker.fuzzer.config;
 
 import tlsattacker.fuzzer.config.mutator.ActionExecutorTypeConfig;
@@ -49,7 +57,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     @Parameter(names = "-mutator", description = "The Mutator the Fuzzer uses to generate new TestVectors. Possible: "
             + SimpleMutator.optionName + ", " + NoneMutator.optionName + "")
     private String mutator = SimpleMutator.optionName;
-    
+
     /**
      * The executor that should be used
      */
@@ -219,7 +227,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     public String getExecutor() {
         return executor;
     }
-    
+
     /**
      * Creates the nessecary Folders as specified in the different Paths
      */

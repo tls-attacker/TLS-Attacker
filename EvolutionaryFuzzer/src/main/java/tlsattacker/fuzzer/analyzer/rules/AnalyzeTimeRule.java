@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer.rules;
 
@@ -143,7 +144,8 @@ public class AnalyzeTimeRule extends Rule {
             return "Executed: " + numberExecutedTraces + " Highest:" + decimalFormat.format(slowestTime / 1000)
                     + "s Lowest:" + decimalFormat.format(fastestTime / 1000) + "s Medium:"
                     + decimalFormat.format((executedTimeTotal / numberExecutedTraces) / 1000) + "s Traces/Second:"
-                    + decimalFormat.format(numberExecutedTraces / ((System.currentTimeMillis()-startTime) / 1000)) + "\n";
+                    + decimalFormat.format(numberExecutedTraces / ((System.currentTimeMillis() - startTime) / 1000))
+                    + "\n";
         } else {
             return null;
         }

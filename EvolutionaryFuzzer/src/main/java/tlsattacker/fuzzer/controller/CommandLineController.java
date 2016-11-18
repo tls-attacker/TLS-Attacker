@@ -1,3 +1,11 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package tlsattacker.fuzzer.controller;
 
 import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
@@ -62,34 +70,34 @@ public class CommandLineController extends Controller {
      * The used ThreadPool for the fuzzer
      */
     private final ExecutorThreadPool pool;
-    
+
     /**
      * Analyzer to use
      */
     private final Analyzer analyzer;
-    
+
     /**
      * Thread that manages the thread pool
      */
     private final Thread poolThread;
-    
+
     /**
      * Thread that analyzes the results
      */
     private AnalyzerThread analyzerThread;
-    
+
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
      *
-     * @param config Configuration used by the Controller
+     * @param config
+     *            Configuration used by the Controller
      * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
      */
     public CommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
-            IllegalCertificateMutatorException,
-            IllegalAnalyzerException {
+            IllegalCertificateMutatorException, IllegalAnalyzerException {
         super(config);
         ServerManager serverManager = ServerManager.getInstance();
         serverManager.init(config);
@@ -106,9 +114,8 @@ public class CommandLineController extends Controller {
         poolThread = new Thread(pool);
         poolThread.setName("Executor Thread Pool");
     }
-    
-    public void start()
-    {
+
+    public void start() {
         analyzerThread.start();
         poolThread.start();
     }
@@ -231,8 +238,7 @@ public class CommandLineController extends Controller {
                     try {
                         objectinputstream.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
-                                ex);
+                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -264,16 +270,14 @@ public class CommandLineController extends Controller {
                     try {
                         fout.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
-                                ex);
+                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 if (oos != null) {
                     try {
                         oos.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null,
-                                ex);
+                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

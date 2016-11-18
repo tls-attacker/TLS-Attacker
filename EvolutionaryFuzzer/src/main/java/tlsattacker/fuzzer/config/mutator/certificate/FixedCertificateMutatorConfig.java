@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.config.mutator.certificate;
 
@@ -57,7 +58,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
      */
     @XmlTransient
     private FuzzerGeneralConfig config;
-    
+
     public FixedCertificateMutatorConfig(FuzzerGeneralConfig config) {
         this.config = config;
         clientCertificates = new ArrayList<>();
@@ -76,11 +77,9 @@ public class FixedCertificateMutatorConfig implements Serializable {
     }
 
     private FixedCertificateMutatorConfig() {
-        //Private Constructor for JAXB magic
+        // Private Constructor for JAXB magic
     }
-    
-    
-    
+
     /**
      * Serializes this config to a File
      * 
