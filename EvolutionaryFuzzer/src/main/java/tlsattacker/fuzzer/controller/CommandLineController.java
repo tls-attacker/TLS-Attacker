@@ -41,6 +41,7 @@ import tlsattacker.fuzzer.analyzer.Analyzer;
 import tlsattacker.fuzzer.analyzer.AnalyzerFactory;
 import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 
 /**
@@ -59,32 +60,32 @@ public class CommandLineController extends Controller {
     /**
      * Chosen Mutator
      */
-    private final Mutator mutator;
+    protected final Mutator mutator;
 
     /**
      * Chosen CertificateMutator
      */
-    private final CertificateMutator certMutator;
+    protected final CertificateMutator certMutator;
 
     /**
      * The used ThreadPool for the fuzzer
      */
-    private final ExecutorThreadPool pool;
+    protected final ExecutorThreadPool pool;
 
     /**
      * Analyzer to use
      */
-    private final Analyzer analyzer;
+    protected final Analyzer analyzer;
 
     /**
      * Thread that manages the thread pool
      */
-    private final Thread poolThread;
+    protected final Thread poolThread;
 
     /**
      * Thread that analyzes the results
      */
-    private AnalyzerThread analyzerThread;
+    protected AnalyzerThread analyzerThread;
 
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
@@ -95,18 +96,17 @@ public class CommandLineController extends Controller {
      * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
+     * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
      */
     public CommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
-            IllegalCertificateMutatorException, IllegalAnalyzerException {
+            IllegalCertificateMutatorException, IllegalAnalyzerException, FuzzerConfigurationException {
         super(config);
-        ServerManager serverManager = ServerManager.getInstance();
-        serverManager.init(config);
         analyzer = AnalyzerFactory.getAnalyzer(config);
         certMutator = CertificateMutatorFactory.getCertificateMutator(config);
         mutator = MutatorFactory.getMutator(certMutator, config);
         int threads = config.getThreads();
         if (threads == -1) {
-            threads = serverManager.getNumberOfServers();
+            threads = ServerManager.getInstance().getNumberOfServers();
         }
         analyzerThread = new AnalyzerThread(analyzer);
         analyzerThread.setName("Analyzer Thread");
