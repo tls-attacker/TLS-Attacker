@@ -113,7 +113,8 @@ public class FuzzingHelper {
      * Chooses a random modifiableVariableField from a List of
      * modifiableVariableFields
      *
-     * @param fields A list of Fields to pick from
+     * @param fields
+     *            A list of Fields to pick from
      * @return A Random field
      */
     public ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
@@ -126,7 +127,8 @@ public class FuzzingHelper {
      * Returns a list of all ModifiableVariableHolders from the WorkflowTrace
      * that we send
      *
-     * @param trace Trace to search in
+     * @param trace
+     *            Trace to search in
      * @return A list of all ModifieableVariableHolders
      */
     public List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
@@ -141,7 +143,8 @@ public class FuzzingHelper {
     /**
      * Tries to find all ModifieableVariableFields in an Object
      *
-     * @param object Object to search in
+     * @param object
+     *            Object to search in
      * @return List of all ModifieableVariableFields in an object
      */
     public List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
@@ -163,12 +166,13 @@ public class FuzzingHelper {
      * http://stackoverflow.com/questions/1868333/how-can-i-determine-the
      * -type-of-a-generic-field-in-java
      *
-     * @param object Holder of the Field
-     * @param field Field to modify
+     * @param object
+     *            Holder of the Field
+     * @param field
+     *            Field to modify
      * @return The ModificationObject
      */
-    public ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
-            Field field) {
+    public ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object, Field field) {
         try {
             // Type type = field.getGenericType();
             // ParameterizedType pType = (ParameterizedType) type;
@@ -194,7 +198,8 @@ public class FuzzingHelper {
     /**
      * Adds random records to the workflow trace
      *
-     * @param trace WorkflowTrace to which the Record should be added
+     * @param trace
+     *            WorkflowTrace to which the Record should be added
      * @return The ModificationObject
      */
     public AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
@@ -218,7 +223,8 @@ public class FuzzingHelper {
     /**
      * Removes a random Message from a SendAction
      *
-     * @param tempTrace The WorkflowTrace to modify
+     * @param tempTrace
+     *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
     public RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
@@ -238,7 +244,8 @@ public class FuzzingHelper {
      * initially contains a random message, and the receive action only contains
      * an arbitary message
      *
-     * @param tempTrace The WorkflowTrace to modify
+     * @param tempTrace
+     *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
     public AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
@@ -252,7 +259,8 @@ public class FuzzingHelper {
     /**
      * Adds a random Message to a random SendAction
      *
-     * @param tempTrace The WorkflowTrace to modify
+     * @param tempTrace
+     *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
     public AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
@@ -269,7 +277,8 @@ public class FuzzingHelper {
     /**
      * Chooses a random SendAction from the WorkflowTrace
      *
-     * @param tempTrace WorkflowTrace to choose from
+     * @param tempTrace
+     *            WorkflowTrace to choose from
      * @return Random SendAction from the WorkflowTrace
      */
     private SendAction getRandomSendAction(WorkflowTrace tempTrace) {
@@ -284,15 +293,17 @@ public class FuzzingHelper {
      * Adds a random action which changes something in the TLSContext to the
      * WorkflowTrace
      *
-     * @param tempTrace WorkflowTrace to modify
-     * @param mutator CertificateMutator to use
+     * @param tempTrace
+     *            WorkflowTrace to modify
+     * @param mutator
+     *            CertificateMutator to use
      * @return The ModificationObject
      */
     public AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
         AddContextActionModification modification = null;
         TLSAction action = null;
         ModificationType type = null;
-        int position = random.nextInt(tempTrace.getTLSActions().size()+1);
+        int position = random.nextInt(tempTrace.getTLSActions().size() + 1);
         switch (random.nextInt(9)) {
             case 0:
                 type = ModificationType.ADD_CHANGE_CIPHERSUITE_ACTION;
@@ -300,23 +311,21 @@ public class FuzzingHelper {
                 break;
             case 1:
                 type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
-                ClientCertificateStructure clientCert
-                        = mutator.getClientCertificateStructure();
+                ClientCertificateStructure clientCert = mutator.getClientCertificateStructure();
                 String alias = clientCert.getAlias();
                 String password = clientCert.getPassword();
                 java.security.cert.Certificate sunCert = null;
                 KeyStore ks = null;
                 try {
-                    ks = KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(),
-                            password);
+                    ks = KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(), password);
                     sunCert = ks.getCertificate(alias);
                     if (alias == null || sunCert == null) {
                         return null;
                     }
                     byte[] certBytes = sunCert.getEncoded();
                     ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-                    org.bouncycastle.asn1.x509.Certificate cert
-                            = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+                    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
+                            .getInstance(asn1Cert);
 
                     org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
                     certs[0] = cert;
@@ -358,23 +367,21 @@ public class FuzzingHelper {
                 break;
             case 7:
                 type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
-                ClientCertificateStructure serverCert
-                        = mutator.getClientCertificateStructure();//TODO
+                ClientCertificateStructure serverCert = mutator.getClientCertificateStructure();// TODO
                 alias = serverCert.getAlias();
                 password = serverCert.getPassword();
                 sunCert = null;
                 ks = null;
                 try {
-                    ks = KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(),
-                            password);
+                    ks = KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(), password);
                     sunCert = ks.getCertificate(alias);
                     if (alias == null || sunCert == null) {
                         return null;
                     }
                     byte[] certBytes = sunCert.getEncoded();
                     ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-                    org.bouncycastle.asn1.x509.Certificate cert
-                            = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+                    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
+                            .getInstance(asn1Cert);
 
                     org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
                     certs[0] = cert;
@@ -498,7 +505,8 @@ public class FuzzingHelper {
     /**
      * Adds and extension to a random ClientHello or DTLSClientHello message
      *
-     * @param trace WorkflowTrace to modify
+     * @param trace
+     *            WorkflowTrace to modify
      * @return The ModificationObject
      */
     public AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
@@ -579,15 +587,16 @@ public class FuzzingHelper {
      * Duplicates a random ProtocolMessage and and adds it to a random position
      * in the Action
      *
-     * @param trace WorkflowTrace to modify
+     * @param trace
+     *            WorkflowTrace to modify
      * @return The ModificationObject
      */
     public DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
         ProtocolMessage message = null;
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
         if (protocolMessages.size() > 0) {
-            message = (ProtocolMessage) UnoptimizedDeepCopy
-                    .copy(protocolMessages.get(random.nextInt(protocolMessages.size())));
+            message = (ProtocolMessage) UnoptimizedDeepCopy.copy(protocolMessages.get(random.nextInt(protocolMessages
+                    .size())));
         } else {
             return null;
         }
@@ -602,7 +611,8 @@ public class FuzzingHelper {
      * Returns a list of all the modifiable variable holders in the object,
      * including this instance.
      *
-     * @param object Object to search in
+     * @param object
+     *            Object to search in
      * @return List of all ModifieableVariableListHolders
      */
     public List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
@@ -644,7 +654,8 @@ public class FuzzingHelper {
     /**
      * Adds a ToggleEncryptionAction to a WorkflowTrace
      *
-     * @param trace WorkflowTrace to modify
+     * @param trace
+     *            WorkflowTrace to modify
      * @return The ModificationObject
      */
     public AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {

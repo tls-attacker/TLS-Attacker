@@ -39,11 +39,10 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements ProtocolMessageHandlerBearer,
         Serializable {
 
-    public ProtocolMessage()
-    {
+    public ProtocolMessage() {
         records = new LinkedList<>();
     }
-    
+
     /**
      * content type
      */
