@@ -24,7 +24,7 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
  * The Mutator is the generator of new FuzzingVectors, different Implementations
  * should implement different Strategies to generate new Workflowtraces to be
  * executed.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Mutator {
@@ -50,7 +50,7 @@ public abstract class Mutator {
 
     /**
      * Checks if good TestVectors already exist
-     *
+     * 
      * @return True if good TestVectors exist
      */
     protected boolean goodVectorsExist() {
@@ -61,7 +61,7 @@ public abstract class Mutator {
 
     /**
      * Checks if TestVectors exist in the archive Folder
-     *
+     * 
      * @return True if archive TestVectors exist
      */
     protected boolean archiveVectorsExist() {
@@ -71,7 +71,7 @@ public abstract class Mutator {
 
     /**
      * Chooses a random TestVector from a folder
-     *
+     * 
      * @param folder
      *            Folder to choose from
      * @return A random TestVector in the folder
@@ -109,7 +109,7 @@ public abstract class Mutator {
 
     /**
      * Generates a new TestVector to execute
-     *
+     * 
      * @return New TestVector
      */
     public abstract TestVector getNewMutation();

@@ -119,7 +119,7 @@ public class RecordHandler {
      * returns the size of the data, which were currently wrapped in the records
      * (it is namely possible to divide Protocol message data into several
      * records).
-     *
+     * 
      * @param record
      *            record going to be filled in
      * @param contentType
@@ -185,7 +185,7 @@ public class RecordHandler {
     }
 
     /**
-     *
+     * 
      * @param rawRecordData
      * @return list of parsed records or null, if there was not enough data
      */
@@ -272,7 +272,7 @@ public class RecordHandler {
     /**
      * Parses stored finish bytes into records and sets the stored finished
      * bytes to null. Returns null if no records were parsed
-     *
+     * 
      * @return List of parsed Records
      */
     public List<Record> parseFinishedBytes() {

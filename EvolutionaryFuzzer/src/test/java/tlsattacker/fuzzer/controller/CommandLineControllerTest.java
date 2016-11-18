@@ -20,7 +20,7 @@ import tlsattacker.fuzzer.mutator.SimpleMutator;
 import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CommandLineControllerTest {

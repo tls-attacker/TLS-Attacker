@@ -40,7 +40,7 @@ import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 /**
  * A class that tries to find the lowest tls_timeout possible to such that
  * normal handshakes still execute probably with a tested Server.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TimeoutCalibrator {
@@ -85,7 +85,7 @@ public class TimeoutCalibrator {
     /**
      * Calibrates the lowest timeout that all ciphersuites did support and
      * multiplies it with the gain factor
-     *
+     * 
      * @return Lowest timeout possible * gain factor
      */
     public int calibrateTimeout() {
@@ -95,7 +95,7 @@ public class TimeoutCalibrator {
 
     /**
      * Calibrates the lowest timeout that all ciphersuite did support
-     *
+     * 
      * @return Lowest timout supported
      */
     private int getLowestTimoutGlobal() {
@@ -123,7 +123,7 @@ public class TimeoutCalibrator {
 
     /**
      * Tries to find all Ciphersuites that the server certificate supports
-     *
+     * 
      * @param serverCerts
      *            The certificate to start the server with
      * @return List of all ciphersuites that the server certificate supports
@@ -144,7 +144,7 @@ public class TimeoutCalibrator {
     /**
      * Tests if a ciphersuite leads to a succesful handshake with the server
      * with the specified timeout and certificate
-     *
+     * 
      * @param serverCerts
      *            The certificate the server should be started with
      * @param suite
@@ -188,7 +188,7 @@ public class TimeoutCalibrator {
 
     /**
      * Executes a workflow specified in the client command config
-     *
+     * 
      * @param configHandler
      *            Configuration handler used
      * @param config
@@ -239,7 +239,7 @@ public class TimeoutCalibrator {
 
     /**
      * Tests if all required messages were actually received in a WorkflowTrace
-     *
+     * 
      * @param trace
      *            WorkflowTrace to analyze
      * @return True if all required messages were actually received
@@ -267,7 +267,7 @@ public class TimeoutCalibrator {
 
     /**
      * Tries to find the lowest timeout for a ciphersuite
-     *
+     * 
      * @param serverCerts
      *            Certificate to start the Server with
      * @param suite

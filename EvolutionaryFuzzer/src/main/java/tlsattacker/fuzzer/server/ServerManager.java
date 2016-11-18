@@ -20,14 +20,14 @@ import java.util.logging.Logger;
 
 /**
  * Manages the different Servers that the fuzzer is configured with.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerManager {
 
     /**
      * Singleton
-     *
+     * 
      * @return Instance of the ServerManager
      */
     public static ServerManager getInstance() {
@@ -54,7 +54,7 @@ public class ServerManager {
 
     /**
      * Adds a TLSServer to the List of TLSServers
-     *
+     * 
      * @param server
      *            Server to add
      */
@@ -64,7 +64,7 @@ public class ServerManager {
 
     /**
      * Reads the config files and adds Servers to the serverList accordingly
-     *
+     * 
      * @param config
      *            Config file used to find the correct config folder
      */
@@ -114,7 +114,7 @@ public class ServerManager {
      * no free Server available. If it still searches for a free Server after 10
      * seconds, it throws an Exception. If a server is found, the Server is
      * reserved. Its the caller duty to release the Server once it is finished.
-     *
+     * 
      * @return A Free Server
      */
     public synchronized TLSServer getFreeServer() {
@@ -143,7 +143,7 @@ public class ServerManager {
     /**
      * Waits till all TLSServers are free and occupies them all and returns
      * them.
-     *
+     * 
      * @return List of all configured Servers
      */
     public synchronized List<TLSServer> occupieAllServers() {
@@ -184,7 +184,7 @@ public class ServerManager {
 
     /**
      * Returns the Number of Servers the Fuzzer controls
-     *
+     * 
      * @return Number of Servers the Fuzzer controls
      */
     public int getNumberOfServers() {
@@ -193,7 +193,7 @@ public class ServerManager {
 
     /**
      * Returns the number of Servers in the serverList
-     *
+     * 
      * @return
      */
     public int getServerCount() {
@@ -202,7 +202,7 @@ public class ServerManager {
 
     /**
      * Returns the number of currently free servers
-     *
+     * 
      * @return
      */
     public int getFreeServerCount() {
@@ -217,7 +217,7 @@ public class ServerManager {
 
     /**
      * Returns all Servers
-     *
+     * 
      * @return
      */
     public List<TLSServer> getAllServers() {

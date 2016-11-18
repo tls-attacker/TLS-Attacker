@@ -50,14 +50,14 @@ import weka.core.Utils;
 
 /**
  * Tha main class which parses the commands passed to the fuzzer and starts it
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Main {
 
     /**
      * Main function which Starts the fuzzer
-     *
+     * 
      * @param args
      *            Arguments which are parsed
      */

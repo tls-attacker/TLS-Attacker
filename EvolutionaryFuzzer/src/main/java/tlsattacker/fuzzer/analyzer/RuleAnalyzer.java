@@ -31,7 +31,7 @@ import tlsattacker.fuzzer.result.TestVectorResult;
 /**
  * An analyzer implementation which uses a set of Rules to find interesting
  * TestVectors.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {
@@ -80,7 +80,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Returns a rule from the Rule list
-     *
+     * 
      * @param tempClass
      *            Class of the rule to return
      * @return First Rule from the rule list of matching class
@@ -96,7 +96,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Analyzes a AgentResult by trying to apply all rules to it
-     *
+     * 
      * @param result
      */
     @Override
@@ -114,7 +114,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Generates a status report
-     *
+     * 
      * @return
      */
     @Override

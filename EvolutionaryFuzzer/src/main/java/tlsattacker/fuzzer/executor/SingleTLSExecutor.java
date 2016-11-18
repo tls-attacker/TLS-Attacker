@@ -52,13 +52,13 @@ import tlsattacker.fuzzer.server.ServerManager;
  * for the TLS Protocol. The whole Program is not completely generic in this
  * Fashion designed, but with a little work the Fuzzer can be adapted for other
  * Programs, as long as a new Executor is designed.
- *
+ * 
  * It is also possible to Design a new Executor which executes the
  * Workflowtraces with another Library than TLS-Attacker.
- *
+ * 
  * This Executor executes a TestVector on a Single Server and returns a
  * TestVectorResult object which contains only one AgentResult.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class SingleTLSExecutor extends Executor {
@@ -90,7 +90,7 @@ public class SingleTLSExecutor extends Executor {
 
     /**
      * Constructor for the TLSExecutor
-     *
+     * 
      * @param config
      *            Config that should be used
      * @param testVector
@@ -106,7 +106,7 @@ public class SingleTLSExecutor extends Executor {
 
     /**
      * Constructor for the TLSExecutor
-     *
+     * 
      * @param config
      *            Config that should be used
      * @param testVector
@@ -125,7 +125,7 @@ public class SingleTLSExecutor extends Executor {
 
     /**
      * Generates a TransportHandler according to the TLSServer and the config
-     *
+     * 
      * @param server
      *            TLSServer to use
      * @param config

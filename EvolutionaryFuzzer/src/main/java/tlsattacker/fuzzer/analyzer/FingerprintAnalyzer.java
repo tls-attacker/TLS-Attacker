@@ -14,7 +14,7 @@ import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class FingerprintAnalyzer extends Analyzer {

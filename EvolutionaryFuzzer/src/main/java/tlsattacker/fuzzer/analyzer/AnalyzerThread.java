@@ -21,7 +21,7 @@ import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
  * This class runs an infitie Loop and analyzes all Results passed to it
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzerThread extends Thread {
@@ -43,7 +43,7 @@ public class AnalyzerThread extends Thread {
 
     /**
      * Adds a result to the worklist
-     *
+     * 
      * @param result
      *            AgentResult to add to the worklist
      */

@@ -14,7 +14,7 @@ import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TestableCommandLineController extends CommandLineController {

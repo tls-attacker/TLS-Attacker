@@ -102,7 +102,7 @@ import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 /**
  * A helper class which implements useful methods to modify a TestVector on a
  * higher level.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzingHelper {
@@ -112,7 +112,7 @@ public class FuzzingHelper {
     /**
      * Chooses a random modifiableVariableField from a List of
      * modifiableVariableFields
-     *
+     * 
      * @param fields
      *            A list of Fields to pick from
      * @return A Random field
@@ -126,7 +126,7 @@ public class FuzzingHelper {
     /**
      * Returns a list of all ModifiableVariableHolders from the WorkflowTrace
      * that we send
-     *
+     * 
      * @param trace
      *            Trace to search in
      * @return A list of all ModifieableVariableHolders
@@ -142,7 +142,7 @@ public class FuzzingHelper {
 
     /**
      * Tries to find all ModifieableVariableFields in an Object
-     *
+     * 
      * @param object
      *            Object to search in
      * @return List of all ModifieableVariableFields in an object
@@ -165,7 +165,7 @@ public class FuzzingHelper {
      * Executes a random modification on a defined field. Source:
      * http://stackoverflow.com/questions/1868333/how-can-i-determine-the
      * -type-of-a-generic-field-in-java
-     *
+     * 
      * @param object
      *            Holder of the Field
      * @param field
@@ -197,7 +197,7 @@ public class FuzzingHelper {
 
     /**
      * Adds random records to the workflow trace
-     *
+     * 
      * @param trace
      *            WorkflowTrace to which the Record should be added
      * @return The ModificationObject
@@ -222,7 +222,7 @@ public class FuzzingHelper {
 
     /**
      * Removes a random Message from a SendAction
-     *
+     * 
      * @param tempTrace
      *            The WorkflowTrace to modify
      * @return The ModificationObject
@@ -243,7 +243,7 @@ public class FuzzingHelper {
      * Adds a new SendAction followed by a new Receive Action. The SendAction
      * initially contains a random message, and the receive action only contains
      * an arbitary message
-     *
+     * 
      * @param tempTrace
      *            The WorkflowTrace to modify
      * @return The ModificationObject
@@ -258,7 +258,7 @@ public class FuzzingHelper {
 
     /**
      * Adds a random Message to a random SendAction
-     *
+     * 
      * @param tempTrace
      *            The WorkflowTrace to modify
      * @return The ModificationObject
@@ -276,7 +276,7 @@ public class FuzzingHelper {
 
     /**
      * Chooses a random SendAction from the WorkflowTrace
-     *
+     * 
      * @param tempTrace
      *            WorkflowTrace to choose from
      * @return Random SendAction from the WorkflowTrace
@@ -292,7 +292,7 @@ public class FuzzingHelper {
     /**
      * Adds a random action which changes something in the TLSContext to the
      * WorkflowTrace
-     *
+     * 
      * @param tempTrace
      *            WorkflowTrace to modify
      * @param mutator
@@ -409,7 +409,7 @@ public class FuzzingHelper {
 
     /**
      * Generates a new RandomMessage
-     *
+     * 
      * @return A newly generated ProtocolMessage
      */
     public ProtocolMessage generateRandomMessage() {
@@ -504,7 +504,7 @@ public class FuzzingHelper {
 
     /**
      * Adds and extension to a random ClientHello or DTLSClientHello message
-     *
+     * 
      * @param trace
      *            WorkflowTrace to modify
      * @return The ModificationObject
@@ -527,7 +527,7 @@ public class FuzzingHelper {
 
     /**
      * Generates a random ExtensionMessage
-     *
+     * 
      * @return Newly generated random ExtensionMessage
      */
     private ExtensionMessage generateRandomExtensionMessage() {
@@ -586,7 +586,7 @@ public class FuzzingHelper {
     /**
      * Duplicates a random ProtocolMessage and and adds it to a random position
      * in the Action
-     *
+     * 
      * @param trace
      *            WorkflowTrace to modify
      * @return The ModificationObject
@@ -610,7 +610,7 @@ public class FuzzingHelper {
     /**
      * Returns a list of all the modifiable variable holders in the object,
      * including this instance.
-     *
+     * 
      * @param object
      *            Object to search in
      * @return List of all ModifieableVariableListHolders
@@ -653,7 +653,7 @@ public class FuzzingHelper {
 
     /**
      * Adds a ToggleEncryptionAction to a WorkflowTrace
-     *
+     * 
      * @param trace
      *            WorkflowTrace to modify
      * @return The ModificationObject

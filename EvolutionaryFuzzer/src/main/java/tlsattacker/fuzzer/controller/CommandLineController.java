@@ -46,7 +46,7 @@ import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 /**
  * Currently only Implementation of the Controller Interface which controls the
  * the fuzzer with a commandline interface.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CommandLineController extends Controller {
@@ -89,7 +89,7 @@ public class CommandLineController extends Controller {
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
-     *
+     * 
      * @param config
      *            Configuration used by the Controller
      * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException

@@ -23,7 +23,7 @@ import tlsattacker.fuzzer.server.ServerManager;
  * This is implementation of the Executor executes a TestVector on a List of
  * TLSServers and returns a TestVectorResult object which contains an Agent
  * Result for each executed TLSServer.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MultiTLSExecutor extends Executor {
@@ -50,7 +50,7 @@ public class MultiTLSExecutor extends Executor {
 
     /**
      * Constructor for the TLSExecutor
-     *
+     * 
      * @param config
      *            Config that should be used
      * @param testVector

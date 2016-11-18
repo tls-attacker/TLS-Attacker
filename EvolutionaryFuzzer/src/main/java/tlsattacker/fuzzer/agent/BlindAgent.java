@@ -21,7 +21,7 @@ import tlsattacker.fuzzer.testvector.TestVector;
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
  * American Fuzzy Lop
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BlindAgent extends Agent {
@@ -33,7 +33,7 @@ public class BlindAgent extends Agent {
 
     /**
      * Default Constructor
-     *
+     * 
      * @param keypair
      *            Server certificate key pair the agent should start the server
      *            with.

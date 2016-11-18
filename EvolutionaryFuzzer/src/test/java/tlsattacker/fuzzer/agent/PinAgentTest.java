@@ -32,7 +32,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PinAgentTest {

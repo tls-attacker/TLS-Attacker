@@ -31,7 +31,7 @@ import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 /**
  * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
  * tool.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
@@ -43,7 +43,7 @@ public class PINAgent extends Agent {
 
     /**
      * Parses the readers contents into a BranchTrace object
-     *
+     * 
      * @param bufferedReader
      * @return A newly generated BranchTrace object
      */
@@ -101,7 +101,7 @@ public class PINAgent extends Agent {
 
     /**
      * Default Constructor
-     *
+     * 
      * @param keypair
      */
     public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair, TLSServer server) {

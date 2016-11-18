@@ -25,7 +25,7 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * A Config class which controlls the behavior of the fuzzer
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */

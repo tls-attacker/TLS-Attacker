@@ -53,7 +53,7 @@ import tlsattacker.fuzzer.controller.ExecutorFactory;
 /**
  * This ThreadPool manages the Threads for the different Executors and is
  * responsible for the continious exectution of new TestVectors.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ExecutorThreadPool implements Runnable {
@@ -96,7 +96,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Constructor for the ExecutorThreadPool
-     *
+     * 
      * @param poolSize
      *            Number of Threads the pool Manages
      * @param mutator
@@ -137,7 +137,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Generates a seed for the Fuzzer with normal TLS/DTLS Handshakes
-     *
+     * 
      * @return A list of generated TestVectors
      */
     private List<TestVector> generateSeed() {
@@ -177,7 +177,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Returns the Number of executed FuzzingVectors
-     *
+     * 
      * @return Number of executed FuzzingVectors
      */
     public long getRuns() {
@@ -260,7 +260,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Returns if the ThreadPool is currently stopped.
-     *
+     * 
      * @return if the ThreadPool is currently stopped
      */
     public synchronized boolean isStopped() {
@@ -269,7 +269,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Starts or stops the Threadpool
-     *
+     * 
      * @param stopped
      */
     public synchronized void setStopped(boolean stopped) {
@@ -278,7 +278,7 @@ public class ExecutorThreadPool implements Runnable {
 
     /**
      * Returns true if atleast one thread is still running
-     *
+     * 
      * @return True if atleast one thread is still running
      */
     public synchronized boolean hasRunningThreads() {
