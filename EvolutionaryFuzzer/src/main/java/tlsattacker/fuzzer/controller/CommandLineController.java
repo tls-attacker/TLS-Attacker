@@ -125,7 +125,7 @@ public class CommandLineController extends Controller {
      */
     @Override
     public void startFuzzer() {
-        this.isRunning = false;
+        this.isRunning = true;
         pool.setStopped(false);
     }
 
