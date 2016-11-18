@@ -94,6 +94,8 @@ import java.util.logging.Level;
  */
 public class FuzzingHelper {
 
+    private Random random;
+    
     /**
      * Chooses a random modifiableVariableField from a List of
      * modifiableVariableFields
@@ -102,9 +104,9 @@ public class FuzzingHelper {
      *            A list of Fields to pick from
      * @return A Random field
      */
-    public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
-        Random r = new Random();
-        int fieldNumber = r.nextInt(fields.size());
+    public ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
+        
+        int fieldNumber = random.nextInt(fields.size());
         return fields.get(fieldNumber);
     }
 
@@ -116,7 +118,7 @@ public class FuzzingHelper {
      *            Trace to search in
      * @return A list of all ModifieableVariableHolders
      */
-    public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
+    public List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
         List<ModifiableVariableHolder> result = new LinkedList<>();
         for (ProtocolMessage pm : protocolMessages) {
@@ -132,7 +134,7 @@ public class FuzzingHelper {
      *            Object to search in
      * @return List of all ModifieableVariableFields in an object
      */
-    public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
+    public List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
         List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
         List<ModifiableVariableField> fields = new LinkedList<>();
         for (ModifiableVariableListHolder holder : holders) {
@@ -157,7 +159,7 @@ public class FuzzingHelper {
      *            Field to modify
      * @return The ModificationObject
      */
-    public static ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
+    public ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
             Field field) {
         try {
             // Type type = field.getGenericType();
@@ -188,9 +190,8 @@ public class FuzzingHelper {
      *            WorkflowTrace to which the Record should be added
      * @return The ModificationObject
      */
-    public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
+    public AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
-        Random random = RandomHelper.getRandom();
         for (int i = 0; i < protocolMessages.size(); i++) {
             int randomPM = random.nextInt(protocolMessages.size());
             ProtocolMessage pm = protocolMessages.get(randomPM);
@@ -214,14 +215,13 @@ public class FuzzingHelper {
      *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
+    public RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
         SendAction action = getRandomSendAction(tempTrace);
         if (action.getConfiguredMessages().size() <= 1) {
             // We dont remove the last message from a flight
             return null;
         }
-        Random r = new Random();
-        int index = r.nextInt(action.getConfiguredMessages().size());
+        int index = random.nextInt(action.getConfiguredMessages().size());
         ProtocolMessage message = action.getConfiguredMessages().get(index);
         action.getConfiguredMessages().remove(index);
         return new RemoveMessageModification(message, action, index);
@@ -236,7 +236,7 @@ public class FuzzingHelper {
      *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
+    public AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
         SendAction sendAction = new SendAction(generateRandomMessage());
         ReceiveAction receiveAction = new ReceiveAction(new ArbitraryMessage());
         tempTrace.add(sendAction);
@@ -251,7 +251,7 @@ public class FuzzingHelper {
      *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
+    public AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
         SendAction action = getRandomSendAction(tempTrace);
         if (action == null) {
             return null;
@@ -269,10 +269,13 @@ public class FuzzingHelper {
      *            WorkflowTrace to choose from
      * @return Random SendAction from the WorkflowTrace
      */
-    private static SendAction getRandomSendAction(WorkflowTrace tempTrace) {
-        Random r = new Random();
+    private SendAction getRandomSendAction(WorkflowTrace tempTrace) {
         List<SendAction> sendActions = tempTrace.getSendActions();
-        return sendActions.get(r.nextInt(sendActions.size()));
+        if(sendActions.isEmpty())
+        {
+            return null;
+        }
+        return sendActions.get(random.nextInt(sendActions.size()));
     }
 
     /**
@@ -285,13 +288,12 @@ public class FuzzingHelper {
      *            CertificateMutator to use
      * @return The ModificationObject
      */
-    public static AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
-        Random r = new Random();
+    public AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
         AddContextActionModification modification = null;
         TLSAction action = null;
         ModificationType type = null;
-        int position = r.nextInt(tempTrace.getTLSActions().size());
-        switch (r.nextInt(9)) {
+        int position = random.nextInt(tempTrace.getTLSActions().size());
+        switch (random.nextInt(9)) {
             case 0:
                 type = ModificationType.ADD_CHANGE_CIPHERSUITE_ACTION;
                 action = new ChangeCipherSuiteAction(CipherSuite.getRandom());
@@ -339,8 +341,8 @@ public class FuzzingHelper {
                 return null;
             case 2:
                 type = ModificationType.ADD_CHANGE_CLIENT_RANDOM_ACTION;
-                byte[] newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                byte[] newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangeClientRandomAction(newBytes);
                 break;
             case 3:
@@ -350,14 +352,14 @@ public class FuzzingHelper {
                 break;
             case 4:
                 type = ModificationType.ADD_CHANGE_MASTER_SECRET_ACTION;
-                newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangeMasterSecretAction(newBytes);
                 break;
             case 5:
                 type = ModificationType.ADD_CHANGE_PREMASTER_SECRET_ACTION;
-                newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangePreMasterSecretAction(newBytes);
                 break;
             case 6:
@@ -409,8 +411,8 @@ public class FuzzingHelper {
                 return null;
             case 8:
                 type = ModificationType.ADD_CHANGE_SERVER_RANDOM_ACTION;
-                newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangeServerRandomAction(newBytes);
                 break;
         }
@@ -426,12 +428,11 @@ public class FuzzingHelper {
      * 
      * @return A newly generated ProtocolMessage
      */
-    private static ProtocolMessage generateRandomMessage() {
+    private ProtocolMessage generateRandomMessage() {
         ProtocolMessage message = null;
-        Random r = new Random();
         do {
 
-            switch (r.nextInt(18)) {
+            switch (random.nextInt(18)) {
                 case 0:
                     message = new AlertMessage();
                     break;
@@ -453,7 +454,7 @@ public class FuzzingHelper {
                 case 6:
                     message = new ClientHelloDtlsMessage();
                     LinkedList<CipherSuite> list = new LinkedList<>();
-                    int limit = new Random().nextInt(0xFF);
+                    int limit = random.nextInt(0xFF);
 
                     for (int i = 0; i < limit; i++) {
                         CipherSuite suite = null;
@@ -529,7 +530,7 @@ public class FuzzingHelper {
      *            WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
+    public AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
         ExtensionMessage message = generateRandomExtensionMessage();
         if (message != null) {
             List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
@@ -553,14 +554,13 @@ public class FuzzingHelper {
      * 
      * @return Newly generated random ExtensionMessage
      */
-    private static ExtensionMessage generateRandomExtensionMessage() {
+    private ExtensionMessage generateRandomExtensionMessage() {
         ExtensionMessage message = null;
-        Random r = new Random();
-        switch (r.nextInt(6)) {
+        switch (random.nextInt(6)) {
             case 0:
                 EllipticCurvesExtensionMessage ecc = new EllipticCurvesExtensionMessage();
                 List<NamedCurve> namedCurveList = new LinkedList<>();
-                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                for (int i = 0; i < random.nextInt(100); i++)// TODO Config
                 {
                     namedCurveList.add(NamedCurve.getRandom());
                 }
@@ -570,7 +570,7 @@ public class FuzzingHelper {
             case 1:
                 ECPointFormatExtensionMessage pfc = new ECPointFormatExtensionMessage();
                 List<ECPointFormat> formatList = new LinkedList<>();
-                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                for (int i = 0; i < random.nextInt(100); i++)// TODO Config
                 {
                     formatList.add(ECPointFormat.getRandom());
                 }
@@ -596,7 +596,7 @@ public class FuzzingHelper {
             case 5:
                 SignatureAndHashAlgorithmsExtensionMessage sae = new SignatureAndHashAlgorithmsExtensionMessage();
                 List<SignatureAndHashAlgorithm> signatureHashList = new LinkedList<>();
-                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                for (int i = 0; i < random.nextInt(100); i++)// TODO Config
                 {
                     signatureHashList.add(SignatureAndHashAlgorithm.getRandom());
                 }
@@ -615,18 +615,17 @@ public class FuzzingHelper {
      *            WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
-        Random r = new Random();
+    public DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
         ProtocolMessage message = null;
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
         if (protocolMessages.size() > 0) {
             message = (ProtocolMessage) UnoptimizedDeepCopy
-                    .copy(protocolMessages.get(r.nextInt(protocolMessages.size())));
+                    .copy(protocolMessages.get(random.nextInt(protocolMessages.size())));
         } else {
             return null;
         }
         SendAction action = getRandomSendAction(trace);
-        int insertPosition = r.nextInt(action.getConfiguredMessages().size());
+        int insertPosition = random.nextInt(action.getConfiguredMessages().size());
 
         action.getConfiguredMessages().add(insertPosition, message);
         return new DuplicateMessageModification(message, action, insertPosition);
@@ -640,7 +639,7 @@ public class FuzzingHelper {
      *            Object to search in
      * @return List of all ModifieableVariableListHolders
      */
-    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
+    public List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
         List<ModifiableVariableListHolder> holders = new LinkedList<>();
         List<Field> modFields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(object);
         if (!modFields.isEmpty()) {
@@ -683,18 +682,28 @@ public class FuzzingHelper {
      *            WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
+    public AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
         TLSAction newAction = new ToggleEncryptionAction();
         List<TLSAction> actionList = trace.getTLSActions();
-        Random r = new Random();
-        int positon = r.nextInt(actionList.size());
+        int positon = random.nextInt(actionList.size());
         actionList.add(positon, newAction);
         return new AddToggleEncrytionActionModification(positon);
     }
 
-    private FuzzingHelper() {
+    public FuzzingHelper() {
+       random = new Random();
     }
 
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+    
+    
+    
     private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
             .getName());
 }
