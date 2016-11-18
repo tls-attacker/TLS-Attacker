@@ -282,7 +282,7 @@ public class ExecutorThreadPool implements Runnable {
      * @return True if atleast one thread is still running
      */
     public synchronized boolean hasRunningThreads() {
-        return executor.getActiveCount() == 0;
+        return executor.getActiveCount() > 0;
     }
 
     private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
