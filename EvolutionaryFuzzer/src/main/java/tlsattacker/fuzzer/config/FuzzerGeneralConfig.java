@@ -107,10 +107,6 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
         return outputFolder;
     }
 
-    public String getOutputCertificateFolder() {
-        return outputFolder + "certificates/";
-    }
-
     public String getOutputFaultyFolder() {
         return outputFolder + "faulty/";
     }

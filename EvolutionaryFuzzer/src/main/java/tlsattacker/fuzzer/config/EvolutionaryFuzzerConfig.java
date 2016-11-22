@@ -119,7 +119,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         setKeystore("../resources/rsa1024.jks");
         setPassword("password");
         setAlias("alias");
-        new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
@@ -235,7 +234,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         super.createFolders();
         new File(getOutputFaultyFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
-        new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
 
     }
