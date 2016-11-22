@@ -230,6 +230,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     /**
      * Creates the nessecary Folders as specified in the different Paths
      */
+    @Override
     public void createFolders() {
         super.createFolders();
         new File(getOutputFaultyFolder()).mkdirs();
