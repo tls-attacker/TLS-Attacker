@@ -129,42 +129,12 @@
                     <groupId>net.revelc.code</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
                     <version>0.5.2</version>
-                    <configuration>
-                        <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
-                        <lineEnding>LF</lineEnding>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>format</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <!-- Use a Licence Header -->
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <version>2.11</version>
-                    <configuration>
-                        <header>${main.basedir}/license_header_plain.txt</header>
-                        <strictCheck>true</strictCheck>
-                        <includes>
-                            <include>src/**/*.java</include>
-                        </includes>
-                        <properties>
-                            <year>${project.inceptionYear}</year>
-                            <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
-                        </properties>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>format</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -172,6 +142,47 @@
                 </plugin>
             </plugins>
         </pluginManagement> 
+        <plugins>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <configuration>
+                    <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
+                    <lineEnding>LF</lineEnding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <header>${main.basedir}/license_header_plain.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <includes>
+                        <include>src/**/*.java</include>
+                    </includes>
+                    <properties>
+                        <year>${project.inceptionYear}</year>
+                        <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <reporting>
