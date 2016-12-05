@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -130,6 +131,43 @@ public class TestVector implements Serializable {
 
     public TestVector getParent() {
         return parent;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.trace);
+        hash = 89 * hash + Objects.hashCode(this.serverKeyCert);
+        hash = 89 * hash + Objects.hashCode(this.clientKeyCert);
+        hash = 89 * hash + Objects.hashCode(this.executorType);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TestVector other = (TestVector) obj;
+        if (!Objects.equals(this.trace, other.trace)) {
+            return false;
+        }
+        if (!Objects.equals(this.serverKeyCert, other.serverKeyCert)) {
+            return false;
+        }
+        if (!Objects.equals(this.clientKeyCert, other.clientKeyCert)) {
+            return false;
+        }
+        if (this.executorType != other.executorType) {
+            return false;
+        }
+        return true;
     }
 
     private static final Logger LOG = Logger.getLogger(TestVector.class.getName());
