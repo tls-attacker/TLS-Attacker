@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 
 /**
  * Manages the different Servers that the fuzzer is configured with.
@@ -68,13 +69,13 @@ public class ServerManager {
      * @param config
      *            Config file used to find the correct config folder
      */
-    public void init(FuzzerGeneralConfig config) {
+    public void init(FuzzerGeneralConfig config) throws FuzzerConfigurationException {
         this.config = config;
         File file = new File(config.getServerCommandFromFile());
         if (!file.exists()) {
             LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
             LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-            System.exit(-1);
+            throw new FuzzerConfigurationException("Server not properly configured!");
 
         } else {
             if (file.isDirectory()) {
@@ -83,7 +84,7 @@ public class ServerManager {
                     LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}",
                             file.getAbsolutePath());
                     LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-                    System.exit(-1);
+                    throw new FuzzerConfigurationException("Server not properly configured!");
                 } else {
                     // ServerConfig is a Folder
                     for (File f : filesInDic) {
@@ -100,7 +101,7 @@ public class ServerManager {
             } else {
                 LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
                 LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-                System.exit(-1);
+                throw new FuzzerConfigurationException("Server not properly configured!");
             }
         }
         for (TLSServer server : serverList) {
