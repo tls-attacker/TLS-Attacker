@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
