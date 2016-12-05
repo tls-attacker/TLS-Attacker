@@ -8,10 +8,8 @@
  */
 package tlsattacker.fuzzer.controller;
 
-import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
 import tlsattacker.fuzzer.executor.ExecutorThreadPool;
 import tlsattacker.fuzzer.mutator.Mutator;
-import tlsattacker.fuzzer.controller.Controller;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
@@ -40,7 +38,6 @@ import java.util.Set;
 import tlsattacker.fuzzer.analyzer.Analyzer;
 import tlsattacker.fuzzer.analyzer.AnalyzerFactory;
 import tlsattacker.fuzzer.analyzer.AnalyzerThread;
-import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
 import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 

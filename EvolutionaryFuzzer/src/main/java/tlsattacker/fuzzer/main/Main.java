@@ -29,6 +29,7 @@ import tlsattacker.fuzzer.config.TestCrashesConfig;
 import tlsattacker.fuzzer.config.TraceTypesConfig;
 import tlsattacker.fuzzer.controller.Controller;
 import tlsattacker.fuzzer.controller.ControllerFactory;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
@@ -50,18 +51,17 @@ import weka.core.Utils;
 
 /**
  * Tha main class which parses the commands passed to the fuzzer and starts it
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class Main {
 
     /**
      * Main function which Starts the fuzzer
-     * 
-     * @param args
-     *            Arguments which are parsed
+     *
+     * @param args Arguments which are parsed
      */
-    public static void main(String args[]) throws IllegalAgentException {
+    public static void main(String args[]) throws IllegalAgentException, FuzzerConfigurationException {
         LOG.log(Level.FINE, Utils.arrayToString(args));
         GeneralConfig generalConfig = new GeneralConfig();
 
@@ -94,6 +94,8 @@ public class Main {
         switch (jc.getParsedCommand()) {
             case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
                 try {
+                    ServerManager serverManager = ServerManager.getInstance();
+                    serverManager.init(evoConfig);
                     Controller controller = ControllerFactory.getController(evoConfig);
                     controller.startFuzzer();
                     controller.startInterface();
@@ -145,7 +147,7 @@ public class Main {
                 TLSServer server = new TLSServer(null, serverConfig.getIp(), serverConfig.getPort(),
                         serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand(),
                         serverConfig.getMayorVersion(), serverConfig.getMinorVersion());
-                {
+                 {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
                         LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());

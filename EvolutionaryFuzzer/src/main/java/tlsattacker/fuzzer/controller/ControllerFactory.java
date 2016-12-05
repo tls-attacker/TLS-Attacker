@@ -10,6 +10,7 @@ package tlsattacker.fuzzer.controller;
 
 import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalControllerException;
@@ -38,7 +39,7 @@ public class ControllerFactory {
      *             If an invalid CertificateMutator is selected
      */
     public static Controller getController(EvolutionaryFuzzerConfig config) throws IllegalControllerException,
-            IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException {
+            IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException, FuzzerConfigurationException {
         switch (config.getController()) {
             case CommandLineController.optionName:
                 CommandLineController controller = new CommandLineController(config);
