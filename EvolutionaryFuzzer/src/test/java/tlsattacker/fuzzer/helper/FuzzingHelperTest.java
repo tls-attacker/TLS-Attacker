@@ -60,7 +60,7 @@ import tlsattacker.fuzzer.testhelper.MockedRandom;
 import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzingHelperTest {
@@ -135,6 +135,7 @@ public class FuzzingHelperTest {
         random.addNumber(20000);
         fuzzingHelper.addRecordAtRandom(trace);
         assertTrue(trace.getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_HELLO).getRecords().size() == 2);
+        assertNull(fuzzingHelper.addRecordAtRandom(new WorkflowTrace()));
 
     }
 
@@ -372,6 +373,16 @@ public class FuzzingHelperTest {
         assertTrue(trace.getTLSActions().size() == 2);
         assertTrue(trace.getTLSActions().get(0) instanceof SendAction);
         assertTrue(trace.getTLSActions().get(1) instanceof ReceiveAction);
+    }
+
+    @Test
+    public void testExecuteModifiabeVariableModification() {
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(new SendAction(new ClientHelloMessage()));
+        List<ModifiableVariableField> variableList = fuzzingHelper
+                .getAllModifiableVariableFieldsRecursively(trace);
+        ModifiableVariableField field = variableList.get(0);
+        fuzzingHelper.executeModifiableVariableModification((ModifiableVariableHolder)(field.getObject()),field.getField());
     }
 
     private static final Logger LOG = Logger.getLogger(FuzzingHelperTest.class.getName());
