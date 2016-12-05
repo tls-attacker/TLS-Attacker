@@ -40,18 +40,12 @@ public class NoneMutator extends Mutator {
 
     /**
      * The config to use
+     * @param evoConfig
+     * @param certMutator
      */
-    private final SimpleMutatorConfig simpleConfig;
 
     public NoneMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator) {
         super(evoConfig, certMutator);
-        File f = new File(evoConfig.getMutatorConfigFolder() + "simple.conf");
-        if (f.exists()) {
-            simpleConfig = JAXB.unmarshal(f, SimpleMutatorConfig.class);
-        } else {
-            simpleConfig = new SimpleMutatorConfig();
-            JAXB.marshal(simpleConfig, f);
-        }
     }
 
     /**
