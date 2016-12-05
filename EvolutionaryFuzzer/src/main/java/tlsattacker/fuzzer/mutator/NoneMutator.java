@@ -62,13 +62,13 @@ public class NoneMutator extends Mutator {
 
         if (goodVectorsExist()) {
             try {
-                tempVector = chooseRandomTestVectorFromFolder(new File("data/good/"));
+                tempVector = chooseRandomTestVectorFromFolder(new File(config.getOutputFolder()+"/good/"));
             } catch (IOException | JAXBException | XMLStreamException ex) {
                 LOG.log(Level.SEVERE, "Could not read good TestVector", ex);
             }
         } else if (archiveVectorsExist()) {
             try {
-                tempVector = chooseRandomTestVectorFromFolder(new File("archive/"));
+                tempVector = chooseRandomTestVectorFromFolder(new File(config.getArchiveFolder()));
             } catch (IOException | JAXBException | XMLStreamException ex) {
                 LOG.log(Level.SEVERE, "Could not read archive TestVector", ex);
             }
