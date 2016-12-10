@@ -9,9 +9,6 @@
 package tlsattacker.fuzzer.analyzer;
 
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
