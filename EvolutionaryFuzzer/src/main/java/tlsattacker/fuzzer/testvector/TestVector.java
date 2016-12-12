@@ -142,7 +142,7 @@ public class TestVector implements Serializable {
         hash = 89 * hash + Objects.hashCode(this.executorType);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -155,7 +155,7 @@ public class TestVector implements Serializable {
             return false;
         }
         final TestVector other = (TestVector) obj;
-        if (!Objects.equals(this.trace, other.trace)) {
+        if (!this.trace.equals(other.trace)) {
             return false;
         }
         if (!Objects.equals(this.serverKeyCert, other.serverKeyCert)) {
@@ -168,6 +168,13 @@ public class TestVector implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "TestVector{" + "trace=" + trace + ", serverKeyCert=" + serverKeyCert + ", clientKeyCert="
+                + clientKeyCert + ", parent=" + parent + ", modificationList=" + modificationList + ", executorType="
+                + executorType + '}';
     }
 
     private static final Logger LOG = Logger.getLogger(TestVector.class.getName());
