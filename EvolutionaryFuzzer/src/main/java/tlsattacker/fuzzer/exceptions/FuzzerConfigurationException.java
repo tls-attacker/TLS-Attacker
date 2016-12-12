@@ -10,12 +10,13 @@ package tlsattacker.fuzzer.exceptions;
 
 /**
  * Exception thrown if the Fuzzer is not correctly configured.
+ * 
  * @author ic0ns
  */
-public class FuzzerConfigurationException extends Exception{
+public class FuzzerConfigurationException extends Exception {
 
     public FuzzerConfigurationException(String message) {
         super(message);
     }
-    
+
 }
