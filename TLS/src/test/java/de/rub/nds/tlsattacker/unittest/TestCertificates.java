@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.unittest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.cert.CertificateParsingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.Certificate;
