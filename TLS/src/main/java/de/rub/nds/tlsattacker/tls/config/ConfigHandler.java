@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
@@ -66,10 +67,15 @@ public abstract class ConfigHandler {
         // remove stupid Oracle JDK security restriction (otherwise, it is not
         // possible to use strong crypto with Oracle JDK)
         try {
-            Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-            field.setAccessible(true);
-            if (field.getBoolean(null)) {
-                field.set(null, java.lang.Boolean.FALSE);
+            Field isRestricted = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+            isRestricted.setAccessible(true);
+            if (Boolean.TRUE.equals(isRestricted.get(null))) {
+                if (Modifier.isFinal(isRestricted.getModifiers())) {
+                    Field modifiers = Field.class.getDeclaredField("modifiers");
+                    modifiers.setAccessible(true);
+                    modifiers.setInt(isRestricted, isRestricted.getModifiers() & ~Modifier.FINAL);
+                }
+                isRestricted.setBoolean(null, false); // isRestricted = false;
             }
         } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | NoSuchFieldException
                 | SecurityException ex) {

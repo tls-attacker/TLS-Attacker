@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.misc;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.security.InvalidKeyException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -36,10 +37,15 @@ public class UnlimitedStrengthTest {
     @Test
     public void testAES256() throws Exception {
         try {
-            Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-            field.setAccessible(true);
-            if (field.getBoolean(null)) {
-                field.set(null, java.lang.Boolean.FALSE);
+            Field isRestricted = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+            isRestricted.setAccessible(true);
+            if (Boolean.TRUE.equals(isRestricted.get(null))) {
+                if (Modifier.isFinal(isRestricted.getModifiers())) {
+                    Field modifiers = Field.class.getDeclaredField("modifiers");
+                    modifiers.setAccessible(true);
+                    modifiers.setInt(isRestricted, isRestricted.getModifiers() & ~Modifier.FINAL);
+                }
+                isRestricted.setBoolean(null, false); // isRestricted = false;
             }
 
             Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
