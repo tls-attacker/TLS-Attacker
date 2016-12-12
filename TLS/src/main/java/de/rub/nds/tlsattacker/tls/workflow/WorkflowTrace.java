@@ -454,7 +454,5 @@ public class WorkflowTrace implements Serializable {
         }
         return true;
     }
-    
-    
 
 }
