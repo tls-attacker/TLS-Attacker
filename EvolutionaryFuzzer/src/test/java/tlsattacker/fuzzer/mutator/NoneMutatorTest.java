@@ -33,10 +33,10 @@ public class NoneMutatorTest {
     private NoneMutator mutator;
     private CertificateMutator certMutator;
     private EvolutionaryFuzzerConfig config;
-    
+
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    
+
     public NoneMutatorTest() {
     }
 
@@ -45,9 +45,10 @@ public class NoneMutatorTest {
         config = new EvolutionaryFuzzerConfig();
         config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
         config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
+        config.setArchiveFolder(tempFolder.newFolder().getAbsolutePath());
         certMutator = new tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator();
         mutator = new NoneMutator(config, certMutator);
-    
+
     }
 
     /**
@@ -56,13 +57,15 @@ public class NoneMutatorTest {
     @Test
     public void testGetNewMutation() {
         WorkflowTrace trace = new WorkflowTrace();
-        TestVector test = new TestVector(trace, certMutator.getServerCertificateStructure(), certMutator.getClientCertificateStructure(), ExecutorType.TLS, null);
-        
+        TestVector test = new TestVector(trace, certMutator.getServerCertificateStructure(),
+                certMutator.getClientCertificateStructure(), ExecutorType.TLS, null);
+
         TestVector generated = mutator.getNewMutation();
+        System.out.println("generated" + generated.toString() + " test" + test.toString());
         assertEquals(generated, test);
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new ReceiveAction(new ArbitraryMessage()));
-        
+
     }
 
 }

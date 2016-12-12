@@ -26,7 +26,8 @@ import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 
 /**
- * //TODO Dont only check that controller does not crash, check that its actually working
+ * //TODO Dont only check that controller does not crash, check that its
+ * actually working
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -41,18 +42,20 @@ public class CommandLineControllerTest {
     }
 
     @Before
-    public void setUp() throws IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException, IOException, FuzzerConfigurationException {
+    public void setUp() throws IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException,
+            IOException, FuzzerConfigurationException {
 
         EvolutionaryFuzzerConfig config = new EvolutionaryFuzzerConfig();
         config.setOutputFolder(folder.newFolder().getAbsolutePath());
         config.setConfigFolder(folder.newFolder().getAbsolutePath());
+        config.setArchiveFolder(folder.newFolder().getAbsolutePath());
         config.createFolders();
         config.setAgent(BlindAgent.optionName);
         config.setMutator(SimpleMutator.optionName);
         config.setCertMutator(FixedCertificateMutator.optionName);
         ServerManager manager = ServerManager.getInstance();
         manager.addServer(new TLSServer(null, "", 0, "", "", "", "", ""));
-        controller = new CommandLineController(config);
+        controller = new TestableCommandLineController(config);
 
     }
 
@@ -86,6 +89,7 @@ public class CommandLineControllerTest {
 
     /**
      * Test of dumpEdges method, of class CommandLineController.
+     * 
      * @throws java.io.IOException
      */
     @Test
@@ -96,11 +100,12 @@ public class CommandLineControllerTest {
         controller.dumpEdges(split);
         split = new String[0];
         controller.dumpEdges(split);
-        
+
     }
 
     /**
      * Test of dumpVertices method, of class CommandLineController.
+     * 
      * @throws java.io.IOException
      */
     @Test
@@ -111,11 +116,12 @@ public class CommandLineControllerTest {
         controller.dumpVertices(split);
         split = new String[0];
         controller.dumpVertices(split);
-        
+
     }
 
     /**
      * Test of loadGraph method, of class CommandLineController.
+     * 
      * @throws java.io.IOException
      */
     @Test
@@ -127,11 +133,12 @@ public class CommandLineControllerTest {
         controller.loadGraph(split);
         split = new String[0];
         controller.loadGraph(split);
-        
+
     }
 
     /**
      * Test of saveGraph method, of class CommandLineController.
+     * 
      * @throws java.io.IOException
      */
     @Test
@@ -142,7 +149,7 @@ public class CommandLineControllerTest {
         controller.saveGraph(split);
         split = new String[0];
         controller.saveGraph(split);
-        
+
     }
 
     /**

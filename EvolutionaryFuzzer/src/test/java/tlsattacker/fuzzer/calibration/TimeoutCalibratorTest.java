@@ -23,10 +23,10 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
  * @author ic0ns
  */
 public class TimeoutCalibratorTest {
-    
+
     public TimeoutCalibratorTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -58,5 +58,5 @@ public class TimeoutCalibratorTest {
     @Test
     public void testTestCiphersuite() {
     }
-    
+
 }

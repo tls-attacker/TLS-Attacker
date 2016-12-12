@@ -23,10 +23,10 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
  * @author ic0ns
  */
 public class IllegalAgentExceptionTest {
-    
+
     public IllegalAgentExceptionTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -44,5 +44,5 @@ public class IllegalAgentExceptionTest {
         // Start the Test
         pojoValidator.runValidation(pojoClass);
     }
-    
+
 }

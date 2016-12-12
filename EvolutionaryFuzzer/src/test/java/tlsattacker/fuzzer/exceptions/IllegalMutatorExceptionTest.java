@@ -23,10 +23,10 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
  * @author ic0ns
  */
 public class IllegalMutatorExceptionTest {
-    
+
     public IllegalMutatorExceptionTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
@@ -44,5 +44,5 @@ public class IllegalMutatorExceptionTest {
         // Start the Test
         pojoValidator.runValidation(pojoClass);
     }
-    
+
 }

@@ -379,10 +379,10 @@ public class FuzzingHelperTest {
     public void testExecuteModifiabeVariableModification() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new ClientHelloMessage()));
-        List<ModifiableVariableField> variableList = fuzzingHelper
-                .getAllModifiableVariableFieldsRecursively(trace);
+        List<ModifiableVariableField> variableList = fuzzingHelper.getAllModifiableVariableFieldsRecursively(trace);
         ModifiableVariableField field = variableList.get(0);
-        fuzzingHelper.executeModifiableVariableModification((ModifiableVariableHolder)(field.getObject()),field.getField());
+        fuzzingHelper.executeModifiableVariableModification((ModifiableVariableHolder) (field.getObject()),
+                field.getField());
     }
 
     private static final Logger LOG = Logger.getLogger(FuzzingHelperTest.class.getName());
