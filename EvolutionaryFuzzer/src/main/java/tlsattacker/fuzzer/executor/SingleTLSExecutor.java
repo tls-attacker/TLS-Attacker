@@ -52,13 +52,13 @@ import tlsattacker.fuzzer.server.ServerManager;
  * for the TLS Protocol. The whole Program is not completely generic in this
  * Fashion designed, but with a little work the Fuzzer can be adapted for other
  * Programs, as long as a new Executor is designed.
- * 
+ *
  * It is also possible to Design a new Executor which executes the
  * Workflowtraces with another Library than TLS-Attacker.
- * 
+ *
  * This Executor executes a TestVector on a Single Server and returns a
  * TestVectorResult object which contains only one AgentResult.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class SingleTLSExecutor extends Executor {
@@ -76,12 +76,12 @@ public class SingleTLSExecutor extends Executor {
     /**
      * The TLSServer that the Executor should execute the TestVector on
      */
-    private final TLSServer server;
+    private TLSServer server = null;
 
     /**
      * The Agent that the Executor should use
      */
-    private final Agent agent;
+    private Agent agent = null;
 
     /**
      * Config object used
@@ -90,7 +90,7 @@ public class SingleTLSExecutor extends Executor {
 
     /**
      * Constructor for the TLSExecutor
-     * 
+     *
      * @param config
      *            Config that should be used
      * @param testVector
@@ -100,19 +100,17 @@ public class SingleTLSExecutor extends Executor {
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException {
         this.testVector = testVector;
         this.config = config;
-        server = ServerManager.getInstance().getFreeServer();
-        agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
 
     /**
      * Constructor for the TLSExecutor
-     * 
+     *
      * @param config
      *            Config that should be used
      * @param testVector
      *            TestVector that should be executed
      * @param server
-     *            Server on which the Executor should execute the Trace
+     *            TLSServer the executor should use
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server)
@@ -120,12 +118,11 @@ public class SingleTLSExecutor extends Executor {
         this.testVector = testVector;
         this.config = config;
         this.server = server;
-        agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
 
     /**
      * Generates a TransportHandler according to the TLSServer and the config
-     * 
+     *
      * @param server
      *            TLSServer to use
      * @param config
@@ -151,7 +148,12 @@ public class SingleTLSExecutor extends Executor {
     @Override
     public TestVectorResult call() throws Exception {
         AgentResult result = null;
+        if (server == null) {
+            occupyResources();
+        }
         try {
+            agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
+
             boolean timeout = false;
             ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
             TransportHandler transportHandler = null;
@@ -261,8 +263,20 @@ public class SingleTLSExecutor extends Executor {
                 }
             }
         } finally {
-            server.release();
+            releaseResources();
         }
         return new TestVectorResult(testVector, result);
+    }
+
+    @Override
+    public void occupyResources() {
+        server = ServerManager.getInstance().getFreeServer();
+    }
+
+    @Override
+    public void releaseResources() {
+        if (server != null) {
+            server.release();
+        }
     }
 }

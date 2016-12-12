@@ -32,4 +32,9 @@ public abstract class Executor implements Callable<TestVectorResult> {
 
     @Override
     public abstract TestVectorResult call() throws Exception;
+
+    public abstract void occupyResources();
+
+    public abstract void releaseResources();
+
 }

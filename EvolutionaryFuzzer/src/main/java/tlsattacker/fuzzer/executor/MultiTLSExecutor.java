@@ -23,7 +23,7 @@ import tlsattacker.fuzzer.server.ServerManager;
  * This is implementation of the Executor executes a TestVector on a List of
  * TLSServers and returns a TestVectorResult object which contains an Agent
  * Result for each executed TLSServer.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MultiTLSExecutor extends Executor {
@@ -41,7 +41,7 @@ public class MultiTLSExecutor extends Executor {
     /**
      * The TLSServers that the Executor should execute the TestVector on
      */
-    private final List<TLSServer> servers;
+    private List<TLSServer> servers = null;
 
     /**
      * Config object used
@@ -50,7 +50,7 @@ public class MultiTLSExecutor extends Executor {
 
     /**
      * Constructor for the TLSExecutor
-     * 
+     *
      * @param config
      *            Config that should be used
      * @param testVector
@@ -58,24 +58,44 @@ public class MultiTLSExecutor extends Executor {
      */
     public MultiTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) {
         this.testVector = testVector;
-        this.servers = ServerManager.getInstance().occupieAllServers();
         this.config = config;
     }
 
     @Override
     public TestVectorResult call() throws Exception {
         List<AgentResult> agentResults = new LinkedList<>();
-        for (TLSServer server : servers) {
-            try {
-                TestVector tempTestVector = (TestVector) UnoptimizedDeepCopy.copy(testVector);
-                SingleTLSExecutor singleExecutor = new SingleTLSExecutor(config, tempTestVector, server);
-                TestVectorResult result = singleExecutor.call();
-                agentResults.addAll(result.getAgentResults());
-            } catch (Exception E) {
-                E.printStackTrace();
+        try {
+            occupyResources();
+            for (TLSServer server : servers) {
+                try {
+                    TestVector tempTestVector = (TestVector) UnoptimizedDeepCopy.copy(testVector);
+                    SingleTLSExecutor singleExecutor = new SingleTLSExecutor(config, tempTestVector, server);
+                    TestVectorResult result = singleExecutor.call();
+                    agentResults.addAll(result.getAgentResults());
+                } catch (Exception E) {
+                    E.printStackTrace();
+                }
             }
+        } finally {
+            releaseResources();
         }
         return new TestVectorResult(testVector, agentResults);
+    }
+
+    @Override
+    public void occupyResources() {
+        this.servers = ServerManager.getInstance().occupieAllServers();
+    }
+
+    @Override
+    public void releaseResources() {
+        if (servers != null) {
+            for (TLSServer server : servers) {
+                if (!server.isFree()) {
+                    server.release();
+                }
+            }
+        }
     }
 
     private static final Logger LOG = Logger.getLogger(MultiTLSExecutor.class.getName());
