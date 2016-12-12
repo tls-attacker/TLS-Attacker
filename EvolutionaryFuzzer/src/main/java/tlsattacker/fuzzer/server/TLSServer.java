@@ -132,35 +132,35 @@ public class TLSServer {
         this.minorVersion = minorVersion;
     }
 
-    public String getMayorVersion() {
+    public synchronized String getMayorVersion() {
         return mayorVersion;
     }
 
-    public void setMayorVersion(String mayorVersion) {
+    public synchronized void setMayorVersion(String mayorVersion) {
         this.mayorVersion = mayorVersion;
     }
 
-    public String getMinorVersion() {
+    public synchronized String getMinorVersion() {
         return minorVersion;
     }
 
-    public void setMinorVersion(String minorVersion) {
+    public synchronized void setMinorVersion(String minorVersion) {
         this.minorVersion = minorVersion;
     }
 
-    public String getKillServerCommand() {
+    public synchronized String getKillServerCommand() {
         return killServerCommand;
     }
 
-    public void setKillServerCommand(String killServerCommand) {
+    public synchronized void setKillServerCommand(String killServerCommand) {
         this.killServerCommand = killServerCommand;
     }
 
-    public String getAccepted() {
+    public synchronized String getAccepted() {
         return accepted;
     }
 
-    public String getRestartServerCommand() {
+    public synchronized String getRestartServerCommand() {
         return restartServerCommand;
     }
 
@@ -169,7 +169,7 @@ public class TLSServer {
      * 
      * @return IP of the Server
      */
-    public String getIp() {
+    public synchronized String getIp() {
         return ip;
     }
 
@@ -186,7 +186,7 @@ public class TLSServer {
      * 
      * @param ip
      */
-    public void setIp(String ip) {
+    public synchronized void setIp(String ip) {
         this.ip = ip;
     }
 
@@ -194,15 +194,15 @@ public class TLSServer {
      * 
      * @param port
      */
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
 
-    public void setRestartServerCommand(String restartServerCommand) {
+    public synchronized void setRestartServerCommand(String restartServerCommand) {
         this.restartServerCommand = restartServerCommand;
     }
 
-    public void setAccepted(String accepted) {
+    public synchronized void setAccepted(String accepted) {
         this.accepted = accepted;
     }
 
@@ -258,6 +258,8 @@ public class TLSServer {
     /**
      * Restarts the Server by executing the restart Server command
      * 
+     * @param prefix
+     * @param certificateFile
      * @param keyFile
      */
     public synchronized void restart(String prefix, File certificateFile, File keyFile) {
@@ -348,7 +350,7 @@ public class TLSServer {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return "TLSServer{free=" + free + ", ip=" + ip + ", port=" + port + ", id=" + id + ", restartServerCommand="
                 + restartServerCommand + ", accepted=" + accepted + '}';
     }
@@ -356,7 +358,7 @@ public class TLSServer {
     /**
      * Stops the Server process
      */
-    public void stop() {
+    public synchronized void stop() {
         try {
             LOG.log(Level.FINE, "Stopping Server");
             if (p != null) {
@@ -373,11 +375,11 @@ public class TLSServer {
         }
     }
 
-    public FuzzerGeneralConfig getConfig() {
+    public synchronized FuzzerGeneralConfig getConfig() {
         return config;
     }
 
-    public void setConfig(FuzzerGeneralConfig config) {
+    public synchronized void setConfig(FuzzerGeneralConfig config) {
         this.config = config;
     }
 
