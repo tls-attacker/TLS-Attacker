@@ -37,9 +37,14 @@ public class ControllerFactory {
      *             If an invalid Mutator is selected
      * @throws IllegalCertificateMutatorException
      *             If an invalid CertificateMutator is selected
+     * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
+     *             If an invalid Analyzer is selected
+     * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
+     *             If the fuzzer is not correctly configured
      */
     public static Controller getController(EvolutionaryFuzzerConfig config) throws IllegalControllerException,
-            IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException, FuzzerConfigurationException {
+            IllegalMutatorException, IllegalCertificateMutatorException, IllegalAnalyzerException,
+            FuzzerConfigurationException {
         switch (config.getController()) {
             case CommandLineController.optionName:
                 CommandLineController controller = new CommandLineController(config);
