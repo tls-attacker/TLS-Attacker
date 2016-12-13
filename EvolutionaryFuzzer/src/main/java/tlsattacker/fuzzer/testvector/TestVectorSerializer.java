@@ -11,10 +11,14 @@ package tlsattacker.fuzzer.testvector;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -162,6 +169,21 @@ public class TestVectorSerializer {
             throw new IllegalArgumentException("Cannot read Folder, because its not a Folder:" + f.getAbsolutePath());
         }
 
+    }
+    
+    /**
+     * Returns a somehow deep copy of the TestVector. The WorkflowTrace is deep copied and the rest is passed as a reference.
+     * @param vector
+     * @return 
+     */
+    public static TestVector copyTestVector(TestVector testVector) throws JAXBException, IOException, XMLStreamException
+    {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        WorkflowTraceSerializer.write(stream, testVector.getTrace());
+        stream.flush();
+        WorkflowTrace copiedTrace = WorkflowTraceSerializer.read(new ByteArrayInputStream(stream.toByteArray()));
+        TestVector tempVector = new TestVector(copiedTrace, testVector.getServerKeyCert(), testVector.getClientKeyCert(), ExecutorType.TLS, testVector.getParent());
+        return tempVector;
     }
 
     private TestVectorSerializer() {
