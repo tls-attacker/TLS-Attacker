@@ -61,7 +61,6 @@ public class NoneMutatorTest {
                 certMutator.getClientCertificateStructure(), ExecutorType.TLS, null);
 
         TestVector generated = mutator.getNewMutation();
-        System.out.println("generated" + generated.toString() + " test" + test.toString());
         assertEquals(generated, test);
         trace.add(new SendAction(new ClientHelloMessage()));
         trace.add(new ReceiveAction(new ArbitraryMessage()));

@@ -59,7 +59,7 @@ public abstract class Mutator {
      */
     protected boolean goodVectorsExist() {
         File f = new File("data/good/"); // TODO fixed FILE
-        return f.listFiles().length > 0;
+        return f.exists() && f.listFiles().length > 0;
 
     }
 
