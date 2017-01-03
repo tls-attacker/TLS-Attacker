@@ -13,8 +13,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.graphs.Edge;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
@@ -25,16 +23,19 @@ import tlsattacker.fuzzer.testvector.TestVector;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
 /**
  * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
  * tool.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
+
+    static final Logger LOGGER = LogManager.getLogger(PINAgent.class);
 
     /**
      * The name of the Agent when referred by command line
@@ -43,7 +44,7 @@ public class PINAgent extends Agent {
 
     /**
      * Parses the readers contents into a BranchTrace object
-     *
+     * 
      * @param bufferedReader
      * @return A newly generated BranchTrace object
      */
@@ -83,8 +84,7 @@ public class PINAgent extends Agent {
             return new BranchTrace(verticesSet, edgeMap);
 
         } catch (IOException ex) {
-            Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE,
-                    "Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
+            LOGGER.error("Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
         }
         return new BranchTrace();
     }
@@ -101,7 +101,7 @@ public class PINAgent extends Agent {
 
     /**
      * Default Constructor
-     *
+     * 
      * @param keypair
      */
     public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair, TLSServer server) {
@@ -154,7 +154,7 @@ public class PINAgent extends Agent {
                             || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
                                 .contains("SIGALRM"))) {
                 crash = true;
-                LOG.log(Level.INFO, "Found a crash:{0}", line);
+                LOGGER.info("Found a crash:{0}", line);
                 // Skip 2 lines
                 line = br.readLine();
                 line = br.readLine();
@@ -164,8 +164,7 @@ public class PINAgent extends Agent {
             br.close();
 
         } catch (IOException ex) {
-            Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
 
         AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
@@ -174,5 +173,4 @@ public class PINAgent extends Agent {
         return result;
     }
 
-    private static final Logger LOG = Logger.getLogger(PINAgent.class.getName());
 }

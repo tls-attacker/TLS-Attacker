@@ -8,7 +8,6 @@
  */
 package tlsattacker.fuzzer.config.analyzer;
 
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,5 +22,4 @@ public class UniqueFlowsRuleConfig extends RuleConfig {
         super("uniqueFlows/");
     }
 
-    private static final Logger LOG = Logger.getLogger(UniqueFlowsRuleConfig.class.getName());
 }

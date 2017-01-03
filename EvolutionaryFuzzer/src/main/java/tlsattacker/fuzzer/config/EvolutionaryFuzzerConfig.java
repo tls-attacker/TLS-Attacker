@@ -14,7 +14,6 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import java.io.File;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import tlsattacker.fuzzer.controller.CommandLineController;
 import tlsattacker.fuzzer.executor.MultiTLSExecutor;
@@ -25,7 +24,7 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * A Config class which controlls the behavior of the fuzzer
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -119,7 +118,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         setKeystore("../resources/rsa1024.jks");
         setPassword("password");
         setAlias("alias");
-        new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
@@ -231,14 +229,13 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     /**
      * Creates the nessecary Folders as specified in the different Paths
      */
+    @Override
     public void createFolders() {
         super.createFolders();
         new File(getOutputFaultyFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
-        new File(getOutputCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
 
     }
 
-    private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 }

@@ -13,8 +13,8 @@ import tlsattacker.fuzzer.helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
 /**
@@ -24,6 +24,8 @@ import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSServer {
+
+    private static final Logger LOGGER = LogManager.getLogger(TLSServer.class);
 
     /**
      * Server process
@@ -132,35 +134,35 @@ public class TLSServer {
         this.minorVersion = minorVersion;
     }
 
-    public String getMayorVersion() {
+    public synchronized String getMayorVersion() {
         return mayorVersion;
     }
 
-    public void setMayorVersion(String mayorVersion) {
+    public synchronized void setMayorVersion(String mayorVersion) {
         this.mayorVersion = mayorVersion;
     }
 
-    public String getMinorVersion() {
+    public synchronized String getMinorVersion() {
         return minorVersion;
     }
 
-    public void setMinorVersion(String minorVersion) {
+    public synchronized void setMinorVersion(String minorVersion) {
         this.minorVersion = minorVersion;
     }
 
-    public String getKillServerCommand() {
+    public synchronized String getKillServerCommand() {
         return killServerCommand;
     }
 
-    public void setKillServerCommand(String killServerCommand) {
+    public synchronized void setKillServerCommand(String killServerCommand) {
         this.killServerCommand = killServerCommand;
     }
 
-    public String getAccepted() {
+    public synchronized String getAccepted() {
         return accepted;
     }
 
-    public String getRestartServerCommand() {
+    public synchronized String getRestartServerCommand() {
         return restartServerCommand;
     }
 
@@ -169,7 +171,7 @@ public class TLSServer {
      * 
      * @return IP of the Server
      */
-    public String getIp() {
+    public synchronized String getIp() {
         return ip;
     }
 
@@ -186,7 +188,7 @@ public class TLSServer {
      * 
      * @param ip
      */
-    public void setIp(String ip) {
+    public synchronized void setIp(String ip) {
         this.ip = ip;
     }
 
@@ -194,15 +196,15 @@ public class TLSServer {
      * 
      * @param port
      */
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
 
-    public void setRestartServerCommand(String restartServerCommand) {
+    public synchronized void setRestartServerCommand(String restartServerCommand) {
         this.restartServerCommand = restartServerCommand;
     }
 
-    public void setAccepted(String accepted) {
+    public synchronized void setAccepted(String accepted) {
         this.accepted = accepted;
     }
 
@@ -258,6 +260,8 @@ public class TLSServer {
     /**
      * Restarts the Server by executing the restart Server command
      * 
+     * @param prefix
+     * @param certificateFile
      * @param keyFile
      */
     public synchronized void restart(String prefix, File certificateFile, File keyFile) {
@@ -277,7 +281,7 @@ public class TLSServer {
                 command = command.replace("[port]", "" + port);
                 command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
                 command = command.replace("[key]", "" + keyFile.getAbsolutePath());
-                LOG.log(Level.FINE, "Starting Server:{0}", command);
+                LOGGER.debug("Starting Server:{0}", command);
                 long time = System.currentTimeMillis();
                 Runtime rt = Runtime.getRuntime();
                 p = rt.exec(command);
@@ -297,14 +301,14 @@ public class TLSServer {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                     if (System.currentTimeMillis() - time >= config.getBootTimeout()) {
                         throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
                     }
                 }
-            } catch (IOException t) {
-                t.printStackTrace();
+            } catch (IOException ex) {
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
 
         } else {
@@ -348,7 +352,7 @@ public class TLSServer {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return "TLSServer{free=" + free + ", ip=" + ip + ", port=" + port + ", id=" + id + ", restartServerCommand="
                 + restartServerCommand + ", accepted=" + accepted + '}';
     }
@@ -356,9 +360,9 @@ public class TLSServer {
     /**
      * Stops the Server process
      */
-    public void stop() {
+    public synchronized void stop() {
         try {
-            LOG.log(Level.FINE, "Stopping Server");
+            LOGGER.debug("Stopping Server");
             if (p != null) {
                 p.destroy();
                 p.waitFor();
@@ -373,13 +377,12 @@ public class TLSServer {
         }
     }
 
-    public FuzzerGeneralConfig getConfig() {
+    public synchronized FuzzerGeneralConfig getConfig() {
         return config;
     }
 
-    public void setConfig(FuzzerGeneralConfig config) {
+    public synchronized void setConfig(FuzzerGeneralConfig config) {
         this.config = config;
     }
 
-    private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 }

@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +41,7 @@ import org.junit.Test;
  */
 public class WorkflowTraceSerializerTest {
 
-    private static Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);
 
     /**
      * Test of write method, of class WorkflowTraceSerializer.
@@ -140,11 +139,8 @@ public class WorkflowTraceSerializerTest {
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());
             f.delete();
-        } catch (JAXBException ex) {
-            java.util.logging.Logger.getLogger(WorkflowTraceSerializerTest.class.getName()).log(Level.SEVERE, null, ex);
-            Assert.fail();
-        } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(WorkflowTraceSerializerTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JAXBException | IOException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
             Assert.fail();
         }
     }

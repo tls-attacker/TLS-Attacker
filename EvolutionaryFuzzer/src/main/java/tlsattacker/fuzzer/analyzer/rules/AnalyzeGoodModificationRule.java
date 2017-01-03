@@ -12,16 +12,10 @@ import tlsattacker.fuzzer.analyzer.helpers.ModificationCounter;
 import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.modification.Modification;
-import tlsattacker.fuzzer.modification.ModificationType;
 import tlsattacker.fuzzer.result.AgentResult;
-import de.rub.nds.tlsattacker.wrapper.MutableInt;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
@@ -156,5 +150,4 @@ public class AnalyzeGoodModificationRule extends Rule {
         return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 }

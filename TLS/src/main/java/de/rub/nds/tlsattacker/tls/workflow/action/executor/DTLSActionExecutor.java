@@ -12,26 +12,19 @@ import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeFragmentHandler;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.util.Arrays;
 
 /**
@@ -108,7 +101,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private void handleMyProtocolMessage(ProtocolMessage pm) throws IOException {
-        LOG.log(Level.FINE, "Preparing the following protocol message to send: {}", pm.getClass());
+        LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
 
         if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             handleMyHandshakeMessage((HandshakeMessage) pm);
@@ -136,7 +129,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         }
         byte[] record = recordHandler.wrapData(messageBytes, protocolMessage.getProtocolMessageType(),
                 protocolMessage.getRecords());
-        LOG.log(Level.FINE, "Sending the following protocol message to DTLS peer: " + protocolMessage.getClass()
+        LOGGER.debug("Sending the following protocol message to DTLS peer: " + protocolMessage.getClass()
                 + "\nRaw Bytes: {}", ArrayConverter.bytesToHexString(record));
         transportHandler.sendData(record);
     }
@@ -190,7 +183,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     private void sendBufferedData() throws IOException {
 
-        LOG.log(Level.FINE, "Sending the following protocol messages to DTLS peer: {}",
+        LOGGER.debug("Sending the following protocol messages to DTLS peer: {}",
                 ArrayConverter.bytesToHexString(recordSendBuffer));
         int pointer = 0;
         int currentRecordSize = 0;
@@ -250,7 +243,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
         messageParseBufferOffset = pmh.parseMessage(rawMessageBytes, messageParseBufferOffset);
 
-        LOG.log(Level.FINE, "The following message was parsed: {}", pmh.getProtocolMessage().toString());
+        LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
 
         switch (protocolMessage.getProtocolMessageType()) {
             case ALERT:
@@ -289,8 +282,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private ProtocolMessage wrongMessageFound(ProtocolMessageHandler pmh) {
-        LOG.log(Level.FINE,
-                "The configured protocol message is not equal to the message being parsed or the message was not found.");
+        LOGGER.debug("The configured protocol message is not equal to the message being parsed or the message was not found.");
         pmh.initializeProtocolMessage();
         ProtocolMessage pm = pmh.getProtocolMessage();
         return pm;
@@ -511,7 +503,5 @@ public class DTLSActionExecutor extends ActionExecutor {
         retransmitEpoch = recordHandler.getEpoch();
         retransmitList.clear();
     }
-
-    private static final Logger LOG = Logger.getLogger(DTLSActionExecutor.class.getName());
 
 }

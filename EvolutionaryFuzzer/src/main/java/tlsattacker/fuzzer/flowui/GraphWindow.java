@@ -8,9 +8,9 @@
  */
 package tlsattacker.fuzzer.flowui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgraph.JGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DirectedMultigraph;
@@ -22,6 +22,8 @@ import tlsattacker.fuzzer.workflow.MessageFlow;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class GraphWindow {
+
+    private static final Logger LOGGER = LogManager.getLogger(GraphWindow.class);
 
     /**
      * Shows a Window which visualizes a graph
@@ -43,7 +45,7 @@ public class GraphWindow {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(GraphWindow.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -51,5 +53,4 @@ public class GraphWindow {
     private GraphWindow() {
     }
 
-    private static final Logger LOG = Logger.getLogger(GraphWindow.class.getName());
 }

@@ -15,10 +15,10 @@ import java.lang.reflect.Field;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 /**
@@ -28,6 +28,8 @@ import org.bouncycastle.crypto.tls.TlsUtils;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public final class PseudoRandomFunction {
+
+    static final Logger LOGGER = LogManager.getLogger(PseudoRandomFunction.class);
 
     /** master secret label */
     public static final String MASTER_SECRET_LABEL = "master secret";
@@ -96,19 +98,15 @@ public final class PseudoRandomFunction {
                         Field field = keySpec.getClass().getDeclaredField("key");
                         field.setAccessible(true);
                         field.set(keySpec, new byte[0]);
-                    } catch (NoSuchFieldException ex) {
-                        Logger.getLogger(PseudoRandomFunction.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (SecurityException ex) {
-                        Logger.getLogger(PseudoRandomFunction.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(PseudoRandomFunction.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException
+                            | SecurityException ex) {
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                 } else {
                     keySpec = new SecretKeySpec(secret, macAlgorithm);
                 }
-            } catch (java.lang.IllegalArgumentException E) {
-                System.out.println("");
-                E.printStackTrace();
+            } catch (java.lang.IllegalArgumentException ex) {
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
             Mac mac = Mac.getInstance(macAlgorithm);
             mac.init(keySpec);

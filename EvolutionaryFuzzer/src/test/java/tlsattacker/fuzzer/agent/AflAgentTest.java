@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.agent;
 
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import java.io.File;
-import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
@@ -23,7 +22,8 @@ import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.IOException;
-import java.util.logging.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
@@ -37,10 +37,7 @@ import org.junit.rules.TemporaryFolder;
  */
 public class AflAgentTest {
 
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(AflAgentTest.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(AflAgentTest.class);
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -99,7 +96,7 @@ public class AflAgentTest {
             server = ServerSerializer.read(f);
             server.setConfig(config);
         } catch (Exception ex) {
-            Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         agent = new AFLAgent(pair, server);
         server.occupie();

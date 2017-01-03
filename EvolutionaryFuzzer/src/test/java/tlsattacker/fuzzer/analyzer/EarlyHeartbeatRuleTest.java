@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -155,7 +154,5 @@ public class EarlyHeartbeatRuleTest {
     public void testGetConfig() {
         assertNotNull(rule.getConfig());
     }
-
-    private static final Logger LOG = Logger.getLogger(EarlyHeartbeatRuleTest.class.getName());
 
 }

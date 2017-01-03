@@ -8,11 +8,8 @@
  */
 package tlsattacker.fuzzer.workflow;
 
-import tlsattacker.fuzzer.workflow.MessageFlow;
-import tlsattacker.fuzzer.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,12 +18,6 @@ import static org.junit.Assert.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class WorkFlowTraceTypeTest {
-
-    /**
-     *
-     */
-    public WorkFlowTraceTypeTest() {
-    }
 
     /**
      * Test of equals method, of class WorkflowTraceType.
@@ -66,7 +57,5 @@ public class WorkFlowTraceTypeTest {
         instance.clean();
         assertEquals(instance, instance2);
     }
-
-    private static final Logger LOG = Logger.getLogger(WorkFlowTraceTypeTest.class.getName());
 
 }

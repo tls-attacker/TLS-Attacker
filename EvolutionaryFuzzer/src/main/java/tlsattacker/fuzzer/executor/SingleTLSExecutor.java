@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.Level;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -76,12 +75,12 @@ public class SingleTLSExecutor extends Executor {
     /**
      * The TLSServer that the Executor should execute the TestVector on
      */
-    private final TLSServer server;
+    private TLSServer server = null;
 
     /**
      * The Agent that the Executor should use
      */
-    private final Agent agent;
+    private Agent agent = null;
 
     /**
      * Config object used
@@ -100,8 +99,6 @@ public class SingleTLSExecutor extends Executor {
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException {
         this.testVector = testVector;
         this.config = config;
-        server = ServerManager.getInstance().getFreeServer();
-        agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
 
     /**
@@ -112,7 +109,7 @@ public class SingleTLSExecutor extends Executor {
      * @param testVector
      *            TestVector that should be executed
      * @param server
-     *            Server on which the Executor should execute the Trace
+     *            TLSServer the executor should use
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server)
@@ -120,7 +117,6 @@ public class SingleTLSExecutor extends Executor {
         this.testVector = testVector;
         this.config = config;
         this.server = server;
-        agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
     }
 
     /**
@@ -146,12 +142,15 @@ public class SingleTLSExecutor extends Executor {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(SingleTLSExecutor.class.getName());
-
     @Override
     public TestVectorResult call() throws Exception {
         AgentResult result = null;
+        if (server == null) {
+            occupyResources();
+        }
         try {
+            agent = AgentFactory.generateAgent(config, testVector.getServerKeyCert(), server);
+
             boolean timeout = false;
             ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
             TransportHandler transportHandler = null;
@@ -178,7 +177,7 @@ public class SingleTLSExecutor extends Executor {
                         // It may happen that the implementation is not ready
                         // yet
                         if (time + fc.getBootTimeout() < System.currentTimeMillis()) {
-                            LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
+                            LOGGER.debug("Could not start Server! Trying to Restart it!");
                             agent.applicationStop();
                             agent.applicationStart();
                             time = System.currentTimeMillis();
@@ -228,17 +227,17 @@ public class SingleTLSExecutor extends Executor {
                 // Skip Workflows we dont support yet
             } catch (ServerDoesNotStartException E) {
                 timeout = true; // TODO
-            } catch (Throwable E) {
+            } catch (Throwable e) {
                 File f = new File(config.getOutputFaultyFolder() + LogFileIDManager.getInstance().getFilename());
 
                 try {
                     TestVectorSerializer.write(f, testVector);
-                } catch (JAXBException | IOException Ex) {
-                    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
-                    Ex.printStackTrace();
+                } catch (JAXBException | IOException ex) {
+                    LOGGER.info("Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
+                    LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
-                LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
-                E.printStackTrace();
+                LOGGER.info("File:{0}", f.getName());
+                LOGGER.debug(e.getLocalizedMessage(), e);
             } finally {
                 if (transportHandler != null) {
                     transportHandler.closeConnection();
@@ -261,8 +260,20 @@ public class SingleTLSExecutor extends Executor {
                 }
             }
         } finally {
-            server.release();
+            releaseResources();
         }
         return new TestVectorResult(testVector, result);
+    }
+
+    @Override
+    public void occupyResources() {
+        server = ServerManager.getInstance().getFreeServer();
+    }
+
+    @Override
+    public void releaseResources() {
+        if (server != null) {
+            server.release();
+        }
     }
 }

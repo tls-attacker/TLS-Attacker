@@ -8,7 +8,6 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 
@@ -27,6 +26,7 @@ public class AnalyzerFactory {
      * @param config
      *            Config object to use
      * @return Correct Analyzer instance
+     * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
      */
     public static Analyzer getAnalyzer(EvolutionaryFuzzerConfig config) throws IllegalAnalyzerException {
         switch (config.getAnalyzer()) {
@@ -45,5 +45,4 @@ public class AnalyzerFactory {
     private AnalyzerFactory() {
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzerFactory.class.getName());
 }

@@ -21,9 +21,7 @@ import tlsattacker.fuzzer.analyzer.rules.AnalyzeTimeRule;
 import tlsattacker.fuzzer.analyzer.rules.IsCrashRule;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.result.TestVectorResult;
@@ -31,7 +29,7 @@ import tlsattacker.fuzzer.result.TestVectorResult;
 /**
  * An analyzer implementation which uses a set of Rules to find interesting
  * TestVectors.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RuleAnalyzer extends Analyzer {
@@ -80,7 +78,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Returns a rule from the Rule list
-     *
+     * 
      * @param tempClass
      *            Class of the rule to return
      * @return First Rule from the rule list of matching class
@@ -96,7 +94,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Analyzes a AgentResult by trying to apply all rules to it
-     *
+     * 
      * @param result
      */
     @Override
@@ -114,7 +112,7 @@ public class RuleAnalyzer extends Analyzer {
 
     /**
      * Generates a status report
-     *
+     * 
      * @return
      */
     @Override
@@ -138,5 +136,4 @@ public class RuleAnalyzer extends Analyzer {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(RuleAnalyzer.class.getName());
 }

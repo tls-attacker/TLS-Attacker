@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -100,15 +98,13 @@ public class UniqueFlowsRule extends Rule {
             found++;
             // It may be that we dont want to safe good Traces, for example if
             // we execute already saved Traces
-            LOG.log(Level.FINE, "Found a new WorkFlowTraceType");
-            LOG.log(Level.FINER, type.toString());
+            LOGGER.debug("Found a new WorkFlowTraceType: {}", type.toString());
             File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
             try {
                 f.createNewFile();
                 TestVectorSerializer.write(f, result.getVector());
-            } catch (JAXBException | IOException E) {
-                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-                        + f.getAbsolutePath(), E);
+            } catch (JAXBException | IOException ex) {
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -138,6 +134,4 @@ public class UniqueFlowsRule extends Rule {
     public UniqueFlowsRuleConfig getConfig() {
         return config;
     }
-
-    private static final Logger LOG = Logger.getLogger(UniqueFlowsRule.class.getName());
 }

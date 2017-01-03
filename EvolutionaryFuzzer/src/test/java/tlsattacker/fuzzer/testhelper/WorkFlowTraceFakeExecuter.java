@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -35,6 +34,4 @@ public class WorkFlowTraceFakeExecuter {
             }
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(WorkFlowTraceFakeExecuter.class.getName());
 }

@@ -39,6 +39,10 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements ProtocolMessageHandlerBearer,
         Serializable {
 
+    public ProtocolMessage() {
+        records = new LinkedList<>();
+    }
+
     /**
      * content type
      */
@@ -75,19 +79,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
-    /**
-     * If fuzzing Mode is enabled
-     */
-    protected static boolean fuzzingMode = false;
-
-    public boolean isFuzzingMode() {
-        return ProtocolMessage.fuzzingMode;
-    }
-
-    public static void setFuzzingMode(boolean fuzzingMode) {
-        ProtocolMessage.fuzzingMode = fuzzingMode;
-    }
-
     @Override
     public abstract ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext);
 
@@ -107,9 +98,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public void addRecord(Record record) {
-        if (this.records == null) {
-            this.records = new LinkedList<>();
-        }
         this.records.add(record);
     }
 

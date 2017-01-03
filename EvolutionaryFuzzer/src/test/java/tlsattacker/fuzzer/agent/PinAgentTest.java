@@ -21,8 +21,8 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,27 +32,20 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PinAgentTest {
 
-    /**
-     *
-     */
+    private static final Logger LOGGER = LogManager.getLogger(PinAgentTest.class);
+
     private static PINAgent agent;
 
-    /**
-     *
-     */
     private static TLSServer server;
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    /**
-     *
-     */
     private UnitTestCertificateMutator mut = null;
 
     /**
@@ -85,7 +78,7 @@ public class PinAgentTest {
             server = ServerSerializer.read(f);
             server.setConfig(config);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(AflAgentTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         agent = new PINAgent(config, pair, server);
         server.occupie();
@@ -156,7 +149,5 @@ public class PinAgentTest {
         assertTrue("Failure: Test result should have exactly 6 Edges", r.getBranchTrace().getEdgeMap().size() == 6);
 
     }
-
-    private static final Logger LOG = Logger.getLogger(PinAgentTest.class.getName());
 
 }

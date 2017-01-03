@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Small Helper to Generate incrementing IDs used to generate unique Filenames
@@ -22,6 +22,8 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class LogFileIDManager {
+
+    private static final Logger LOGGER = LogManager.getLogger(LogFileIDManager.class);
 
     /**
      * Singleton: Return the Instance of the LogFileIDManager
@@ -60,12 +62,12 @@ public class LogFileIDManager {
             w = new FileWriter(f);
             w.write("" + run);
         } catch (IOException ex) {
-            Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         } finally {
             try {
                 w.close();
             } catch (IOException ex) {
-                Logger.getLogger(LogFileIDManager.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -105,5 +107,4 @@ public class LogFileIDManager {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(LogFileIDManager.class.getName());
 }

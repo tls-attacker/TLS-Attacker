@@ -8,6 +8,8 @@
  */
 package tlsattacker.fuzzer.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 
 /**
@@ -18,6 +20,9 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Controller {
+
+    static final Logger LOGGER = LogManager.getLogger(Controller.class);
+
     /**
      * The config used by the Fuzzer
      */

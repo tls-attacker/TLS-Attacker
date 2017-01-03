@@ -15,19 +15,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 
 /**
  * Manages the different Servers that the fuzzer is configured with.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerManager {
 
+    private static final Logger LOGGER = LogManager.getLogger(ServerManager.class);
+
     /**
      * Singleton
-     *
+     * 
      * @return Instance of the ServerManager
      */
     public static ServerManager getInstance() {
@@ -54,7 +57,7 @@ public class ServerManager {
 
     /**
      * Adds a TLSServer to the List of TLSServers
-     *
+     * 
      * @param server
      *            Server to add
      */
@@ -64,26 +67,27 @@ public class ServerManager {
 
     /**
      * Reads the config files and adds Servers to the serverList accordingly
-     *
+     * 
      * @param config
      *            Config file used to find the correct config folder
+     * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
      */
-    public void init(FuzzerGeneralConfig config) {
+    public void init(FuzzerGeneralConfig config) throws FuzzerConfigurationException {
         this.config = config;
         File file = new File(config.getServerCommandFromFile());
         if (!file.exists()) {
-            LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
-            LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-            System.exit(-1);
+            LOGGER.info("Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+            LOGGER.info("You can create new Configuration files with the command new-server");
+            throw new FuzzerConfigurationException("Server not properly configured!");
 
         } else {
             if (file.isDirectory()) {
                 File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
                 if (filesInDic.length == 0) {
-                    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}",
+                    LOGGER.info("No Server Configurations Files in the Server Config Folder:{0}",
                             file.getAbsolutePath());
-                    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-                    System.exit(-1);
+                    LOGGER.info("You can create new Configuration files with the command new-server");
+                    throw new FuzzerConfigurationException("Server not properly configured!");
                 } else {
                     // ServerConfig is a Folder
                     for (File f : filesInDic) {
@@ -93,14 +97,14 @@ public class ServerManager {
                                 addServer(server);
                             }
                         } catch (Exception ex) {
-                            LOG.log(Level.SEVERE, "Could not read Server!", ex);
+                            LOGGER.error(ex.getLocalizedMessage(), ex);
                         }
                     }
                 }
             } else {
-                LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
-                LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
-                System.exit(-1);
+                LOGGER.info("Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+                LOGGER.info("You can create new Configuration files with the command new-server");
+                throw new FuzzerConfigurationException("Server not properly configured!");
             }
         }
         for (TLSServer server : serverList) {
@@ -114,7 +118,7 @@ public class ServerManager {
      * no free Server available. If it still searches for a free Server after 10
      * seconds, it throws an Exception. If a server is found, the Server is
      * reserved. Its the caller duty to release the Server once it is finished.
-     *
+     * 
      * @return A Free Server
      */
     public synchronized TLSServer getFreeServer() {
@@ -143,7 +147,7 @@ public class ServerManager {
     /**
      * Waits till all TLSServers are free and occupies them all and returns
      * them.
-     *
+     * 
      * @return List of all configured Servers
      */
     public synchronized List<TLSServer> occupieAllServers() {
@@ -184,7 +188,7 @@ public class ServerManager {
 
     /**
      * Returns the Number of Servers the Fuzzer controls
-     *
+     * 
      * @return Number of Servers the Fuzzer controls
      */
     public int getNumberOfServers() {
@@ -193,7 +197,7 @@ public class ServerManager {
 
     /**
      * Returns the number of Servers in the serverList
-     *
+     * 
      * @return
      */
     public int getServerCount() {
@@ -202,7 +206,7 @@ public class ServerManager {
 
     /**
      * Returns the number of currently free servers
-     *
+     * 
      * @return
      */
     public int getFreeServerCount() {
@@ -217,7 +221,7 @@ public class ServerManager {
 
     /**
      * Returns all Servers
-     *
+     * 
      * @return
      */
     public List<TLSServer> getAllServers() {
@@ -237,6 +241,4 @@ public class ServerManager {
         private ServerManagerHolder() {
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 }

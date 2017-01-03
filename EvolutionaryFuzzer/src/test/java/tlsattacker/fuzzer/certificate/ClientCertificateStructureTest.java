@@ -9,17 +9,13 @@
 package tlsattacker.fuzzer.certificate;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * 

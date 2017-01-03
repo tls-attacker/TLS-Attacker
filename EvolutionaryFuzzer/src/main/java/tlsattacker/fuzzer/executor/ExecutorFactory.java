@@ -6,19 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.controller;
+package tlsattacker.fuzzer.executor;
 
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
-import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
-import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
-import tlsattacker.fuzzer.exceptions.IllegalControllerException;
 import tlsattacker.fuzzer.exceptions.IllegalExecutorException;
-import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
-import tlsattacker.fuzzer.executor.Executor;
-import tlsattacker.fuzzer.executor.MultiTLSExecutor;
-import tlsattacker.fuzzer.executor.SingleTLSExecutor;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
@@ -62,5 +54,4 @@ public class ExecutorFactory {
     private ExecutorFactory() {
     }
 
-    private static final Logger LOG = Logger.getLogger(ControllerFactory.class.getName());
 }

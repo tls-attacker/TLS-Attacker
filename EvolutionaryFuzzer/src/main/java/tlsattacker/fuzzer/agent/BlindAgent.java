@@ -8,9 +8,7 @@
  */
 package tlsattacker.fuzzer.agent;
 
-import tlsattacker.fuzzer.agent.Agent;
 import java.io.File;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.AgentResult;
@@ -21,7 +19,7 @@ import tlsattacker.fuzzer.testvector.TestVector;
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
  * American Fuzzy Lop
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class BlindAgent extends Agent {
@@ -33,7 +31,7 @@ public class BlindAgent extends Agent {
 
     /**
      * Default Constructor
-     *
+     * 
      * @param keypair
      *            Server certificate key pair the agent should start the server
      *            with.
@@ -80,10 +78,5 @@ public class BlindAgent extends Agent {
 
         return result;
     }
-
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
 }

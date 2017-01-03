@@ -8,10 +8,8 @@
  */
 package tlsattacker.fuzzer.controller;
 
-import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
 import tlsattacker.fuzzer.executor.ExecutorThreadPool;
 import tlsattacker.fuzzer.mutator.Mutator;
-import tlsattacker.fuzzer.controller.Controller;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
@@ -24,8 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 import java.io.FileInputStream;
@@ -40,13 +36,13 @@ import java.util.Set;
 import tlsattacker.fuzzer.analyzer.Analyzer;
 import tlsattacker.fuzzer.analyzer.AnalyzerFactory;
 import tlsattacker.fuzzer.analyzer.AnalyzerThread;
-import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
  * the fuzzer with a commandline interface.
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CommandLineController extends Controller {
@@ -59,54 +55,53 @@ public class CommandLineController extends Controller {
     /**
      * Chosen Mutator
      */
-    private final Mutator mutator;
+    protected final Mutator mutator;
 
     /**
      * Chosen CertificateMutator
      */
-    private final CertificateMutator certMutator;
+    protected final CertificateMutator certMutator;
 
     /**
      * The used ThreadPool for the fuzzer
      */
-    private final ExecutorThreadPool pool;
+    protected final ExecutorThreadPool pool;
 
     /**
      * Analyzer to use
      */
-    private final Analyzer analyzer;
+    protected final Analyzer analyzer;
 
     /**
      * Thread that manages the thread pool
      */
-    private final Thread poolThread;
+    protected final Thread poolThread;
 
     /**
      * Thread that analyzes the results
      */
-    private AnalyzerThread analyzerThread;
+    protected AnalyzerThread analyzerThread;
 
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
-     *
+     * 
      * @param config
      *            Configuration used by the Controller
      * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
+     * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
      */
     public CommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
-            IllegalCertificateMutatorException, IllegalAnalyzerException {
+            IllegalCertificateMutatorException, IllegalAnalyzerException, FuzzerConfigurationException {
         super(config);
-        ServerManager serverManager = ServerManager.getInstance();
-        serverManager.init(config);
         analyzer = AnalyzerFactory.getAnalyzer(config);
         certMutator = CertificateMutatorFactory.getCertificateMutator(config);
         mutator = MutatorFactory.getMutator(certMutator, config);
         int threads = config.getThreads();
         if (threads == -1) {
-            threads = serverManager.getNumberOfServers();
+            threads = ServerManager.getInstance().getNumberOfServers();
         }
         analyzerThread = new AnalyzerThread(analyzer);
         analyzerThread.setName("Analyzer Thread");
@@ -125,7 +120,7 @@ public class CommandLineController extends Controller {
      */
     @Override
     public void startFuzzer() {
-        this.isRunning = false;
+        this.isRunning = true;
         pool.setStopped(false);
     }
 
@@ -134,17 +129,17 @@ public class CommandLineController extends Controller {
      */
     @Override
     public void stopFuzzer() {
-        LOG.log(Level.INFO, "Stopping Fuzzer!");
+        LOGGER.info("Stopping Fuzzer!");
         this.isRunning = false;
         pool.setStopped(true);
         do {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         } while (pool.hasRunningThreads());
-        LOG.log(Level.INFO, "Fuzzer stopped!");
+        LOGGER.info("Fuzzer stopped!");
     }
 
     public void printServerStatus() {
@@ -159,13 +154,13 @@ public class CommandLineController extends Controller {
         if (split.length == 2) {
             file = split[1];
         }
-        LOG.log(Level.INFO, "Dumping Edge Information to {0}", file);
+        LOGGER.info("Dumping Edge Information to {0}", file);
         stopFuzzer();
         do {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         } while (pool.hasRunningThreads());
 
@@ -179,9 +174,9 @@ public class CommandLineController extends Controller {
             }
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
-        LOG.log(Level.INFO, "Dump finished");
+        LOGGER.info("Dump finished");
         startFuzzer();
     }
 
@@ -190,13 +185,13 @@ public class CommandLineController extends Controller {
         if (split.length == 2) {
             file = split[1];
         }
-        LOG.log(Level.INFO, "Dumping Vertex Information to {0}", file);
+        LOGGER.info("Dumping Vertex Information to {0}", file);
         stopFuzzer();
         do {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         } while (pool.hasRunningThreads());
 
@@ -209,36 +204,34 @@ public class CommandLineController extends Controller {
                 writer.println(vertex);
             }
             writer.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
-        LOG.log(Level.INFO, "Dump finished");
+        LOGGER.info("Dump finished");
         startFuzzer();
     }
 
     public void loadGraph(String[] split) {
         BranchTrace trace = analyzer.getBranchTrace();
         if (split.length != 2) {
-            LOG.log(Level.INFO, "You need to specify a File to load");
+            LOGGER.info("You need to specify a File to load");
         } else {
             String file = split[1];
-            LOG.log(Level.INFO, "Loading from:{0}", file);
+            LOGGER.info("Loading from:{0}", file);
             ObjectInputStream objectinputstream = null;
             try {
                 FileInputStream streamIn = new FileInputStream(file);
                 objectinputstream = new ObjectInputStream(streamIn);
                 BranchTrace tempTrace = (BranchTrace) objectinputstream.readObject();
                 trace.merge(tempTrace);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException | ClassNotFoundException ex) {
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             } finally {
                 if (objectinputstream != null) {
                     try {
                         objectinputstream.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                 }
             }
@@ -248,10 +241,10 @@ public class CommandLineController extends Controller {
     public void saveGraph(String split[]) {
         BranchTrace trace = analyzer.getBranchTrace();
         if (split.length != 2) {
-            LOG.log(Level.INFO, "You need to specify a File to Save to");
+            LOGGER.info("You need to specify a File to Save to");
         } else {
             String file = split[1];
-            LOG.log(Level.INFO, "Saving to:{0}", file);
+            LOGGER.info("Saving to:{0}", file);
             FileOutputStream fout = null;
             ObjectOutputStream oos = null;
             try {
@@ -259,25 +252,21 @@ public class CommandLineController extends Controller {
                 oos = new ObjectOutputStream(fout);
                 oos.writeObject(trace);
 
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             } finally {
                 if (fout != null) {
                     try {
                         fout.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                 }
                 if (oos != null) {
                     try {
                         oos.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                 }
             }
@@ -306,7 +295,7 @@ public class CommandLineController extends Controller {
                 System.out.print(">");
                 s = br.readLine();
             } catch (IOException ex) {
-                Logger.getLogger(CommandLineController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
             String[] split = s.split(" ");
             if (split.length > 0) {
@@ -343,5 +332,4 @@ public class CommandLineController extends Controller {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(CommandLineController.class.getName());
 }

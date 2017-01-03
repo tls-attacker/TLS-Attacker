@@ -16,10 +16,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
-import tlsattacker.fuzzer.agent.AgentFactory;
 import tlsattacker.fuzzer.calibration.TimeoutCalibrator;
 import tlsattacker.fuzzer.config.CalibrationConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
@@ -29,6 +28,7 @@ import tlsattacker.fuzzer.config.TestCrashesConfig;
 import tlsattacker.fuzzer.config.TraceTypesConfig;
 import tlsattacker.fuzzer.controller.Controller;
 import tlsattacker.fuzzer.controller.ControllerFactory;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
@@ -55,14 +55,16 @@ import weka.core.Utils;
  */
 public class Main {
 
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+
     /**
      * Main function which Starts the fuzzer
      *
      * @param args
      *            Arguments which are parsed
      */
-    public static void main(String args[]) throws IllegalAgentException {
-        LOG.log(Level.FINE, Utils.arrayToString(args));
+    public static void main(String args[]) throws IllegalAgentException, FuzzerConfigurationException {
+        LOGGER.debug(Utils.arrayToString(args));
         GeneralConfig generalConfig = new GeneralConfig();
 
         EvolutionaryFuzzerConfig evoConfig = new EvolutionaryFuzzerConfig();
@@ -86,7 +88,7 @@ public class Main {
                 return;
             }
         } catch (Exception E) {
-            LOG.log(Level.FINE, E.getLocalizedMessage(), E);
+            LOGGER.debug(E.getLocalizedMessage(), E);
             jc.usage();
             return;
         }
@@ -94,17 +96,19 @@ public class Main {
         switch (jc.getParsedCommand()) {
             case EvolutionaryFuzzerConfig.ATTACK_COMMAND:
                 try {
+                    ServerManager serverManager = ServerManager.getInstance();
+                    serverManager.init(evoConfig);
                     Controller controller = ControllerFactory.getController(evoConfig);
                     controller.startFuzzer();
                     controller.startInterface();
                 } catch (IllegalCertificateMutatorException ex) {
-                    LOG.info("Unknown Certificate Mutator. Aborting...");
+                    LOGGER.info("Unknown Certificate Mutator. Aborting...");
                 } catch (IllegalMutatorException ex) {
-                    LOG.info("Unknown Mutator. Aborting...");
+                    LOGGER.info("Unknown Mutator. Aborting...");
                 } catch (IllegalAnalyzerException ex) {
-                    LOG.info("Unknown Analyzer. Aborting...");
+                    LOGGER.info("Unknown Analyzer. Aborting...");
                 } catch (IllegalControllerException ex) {
-                    LOG.info("Unknown Controller. Aborting...");
+                    LOGGER.info("Unknown Controller. Aborting...");
                 }
                 break;
             case "tracetypes":
@@ -112,17 +116,16 @@ public class Main {
                 if (f.exists() && f.isDirectory()) {
                     List<TestVector> vectors = TestVectorSerializer.readFolder(f);
 
-                    LOG.log(Level.INFO, "Fininshed reading.");
+                    LOGGER.info("Fininshed reading.");
                     Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
                             ConnectionEnd.CLIENT);
-                    LOG.log(Level.INFO, "Found {0} different TraceTypes", set.size());
+                    LOGGER.info("Found {0} different TraceTypes", set.size());
                     DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
-                    LOG.log(Level.INFO, "Printing out graph in .DOT format.");
+                    LOGGER.info("Printing out graph in .DOT format.");
                     String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
-                    LOG.log(Level.INFO, dotFormat);
+                    LOGGER.info(dotFormat);
                 } else {
-                    LOG.log(Level.INFO, "The Specified Folder does not exist or is not a Folder:{0}",
-                            f.getAbsolutePath());
+                    LOGGER.info("The Specified Folder does not exist or is not a Folder:{0}", f.getAbsolutePath());
                 }
                 break;
             case "execute-faulty":
@@ -131,7 +134,7 @@ public class Main {
                 f = new File(faultyConfig.getOutputFaultyFolder());
                 List<TestVector> vectors = TestVectorSerializer.readFolder(f);
                 for (TestVector vector : vectors) {
-                    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
+                    LOGGER.info("Trace:{0}", vector.getTrace().getName());
                     vector.getTrace().reset();
                     vector.getTrace().makeGeneric();
                     TLSServer server = ServerManager.getInstance().getFreeServer();
@@ -148,9 +151,9 @@ public class Main {
                 {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
-                        LOG.log(Level.INFO, "Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
+                        LOGGER.info("Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Could not write Server to file!", ex);
+                        LOGGER.error("Could not write Server to file!", ex);
                     }
                 }
                 break;
@@ -160,7 +163,7 @@ public class Main {
                 calibrator.setLimit(calibrationConfig.getTimeoutLimit());
                 ServerManager.getInstance().init(calibrationConfig);
                 int timeout = calibrator.calibrateTimeout();
-                LOG.log(Level.INFO, "Recommended Timeout for this Server is:{0}", timeout);
+                LOGGER.info("Recommended Timeout for this Server is:{0}", timeout);
                 break;
             case "test-certificates":
                 ServerManager.getInstance().init(calibrationConfig);
@@ -173,7 +176,7 @@ public class Main {
                 f = new File(testCrashedConfig.getCrashFolder());
                 vectors = TestVectorSerializer.readFolder(f);
                 for (TestVector vector : vectors) {
-                    LOG.log(Level.INFO, "Trace:{0}", vector.getTrace().getName());
+                    LOGGER.info("Trace:{0}", vector.getTrace().getName());
                     for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
                         vector.getTrace().reset();
                         vector.getTrace().makeGeneric();
@@ -191,5 +194,4 @@ public class Main {
 
     }
 
-    private static final Logger LOG = Logger.getLogger(Main.class.getName());
 }

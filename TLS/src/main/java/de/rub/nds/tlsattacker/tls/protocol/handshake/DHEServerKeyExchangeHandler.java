@@ -36,7 +36,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.Arrays;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -47,12 +46,7 @@ import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
 import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsDHUtils;
-import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.util.BigIntegers;
-import sun.security.rsa.RSAKeyFactory;
-import sun.security.rsa.RSAKeyPairGenerator;
-import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -235,7 +229,6 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             p = new BigInteger(1, serializedP);
             g = new BigInteger(1, serializedG);
             BigInteger y = new BigInteger(1, serializedPublicKey);
-            ;
 
             ServerDHParams publicKeyParameters = new ServerDHParams(
                     new DHPublicKeyParameters(y, new DHParameters(p, g)));
@@ -289,7 +282,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
                 | SignatureException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
         } catch (IOException | CertificateException ex) {
-            java.util.logging.Logger.getLogger(DHEServerKeyExchangeHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
 
         return protocolMessage.getCompleteResultingMessage().getValue();

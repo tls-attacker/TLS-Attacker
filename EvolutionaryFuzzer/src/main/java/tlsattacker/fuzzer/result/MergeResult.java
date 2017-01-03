@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.result;
 
-import java.util.logging.Logger;
-
 /**
  * A class which represents the outcome of a BranchTrace merge operation. It
  * contains statistics about the different new found vertices, branches, and hit
@@ -58,5 +56,4 @@ public class MergeResult {
         return "New Vertices:" + newVertices + "  New Branches:" + newBranches + "  Hit Verticies:" + hitVertices;
     }
 
-    private static final Logger LOG = Logger.getLogger(MergeResult.class.getName());
 }

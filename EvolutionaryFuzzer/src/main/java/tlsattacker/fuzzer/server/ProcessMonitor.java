@@ -8,8 +8,8 @@
  */
 package tlsattacker.fuzzer.server;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Processmonitor which can tell you, when a command has finished in a non
@@ -18,6 +18,8 @@ import java.util.logging.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProcessMonitor implements Runnable {
+
+    private static final Logger LOGGER = LogManager.getLogger(ProcessMonitor.class);
 
     /**
      * Creates a new ProcessMonitor for a Process
@@ -74,9 +76,8 @@ public class ProcessMonitor implements Runnable {
             process.waitFor();
             completed = true;
         } catch (InterruptedException ex) {
-            LOG.log(Level.WARNING, "Processmonitor received an InterruptedException!");
+            LOGGER.warn("Processmonitor received an InterruptedException!");
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(ProcessMonitor.class.getName());
 }

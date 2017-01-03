@@ -119,7 +119,6 @@ public abstract class CommandConfig implements Serializable {
     }
 
     public void setFuzzingMode(boolean fuzzingMode) {
-        ProtocolMessage.setFuzzingMode(fuzzingMode);
         this.fuzzingMode = fuzzingMode;
     }
 

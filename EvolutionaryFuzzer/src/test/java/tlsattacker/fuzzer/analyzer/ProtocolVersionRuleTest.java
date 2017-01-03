@@ -21,12 +21,8 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -173,7 +169,5 @@ public class ProtocolVersionRuleTest {
     public void testGetConfig() {
         assertNotNull(rule.getConfig());
     }
-
-    private static final Logger LOG = Logger.getLogger(ProtocolVersionRuleTest.class.getName());
 
 }

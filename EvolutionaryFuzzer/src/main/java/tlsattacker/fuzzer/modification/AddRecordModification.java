@@ -9,7 +9,6 @@
 package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a new record was added to the
@@ -33,5 +32,4 @@ public class AddRecordModification extends Modification {
         return message;
     }
 
-    private static final Logger LOG = Logger.getLogger(AddRecordModification.class.getName());
 }

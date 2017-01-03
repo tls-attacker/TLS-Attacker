@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -155,6 +154,4 @@ public class AnalyzeGoodModificationRuleTest {
         counter = counterList.get(0);
         assertTrue(counter.getCounter() == 3);
     }
-
-    private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRuleTest.class.getName());
 }

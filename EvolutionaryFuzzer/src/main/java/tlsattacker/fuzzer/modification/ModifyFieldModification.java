@@ -9,7 +9,6 @@
 package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
-import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a field in the WorkflowTrace was changed.
@@ -42,5 +41,4 @@ public class ModifyFieldModification extends Modification {
         return modificationHolder;
     }
 
-    private static final Logger LOG = Logger.getLogger(ModifyFieldModification.class.getName());
 }

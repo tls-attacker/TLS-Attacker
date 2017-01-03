@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.workflow;
 
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * An abstraction layer of a Handshake which represents a single message object
@@ -108,8 +107,6 @@ public class MessageFlow extends org.jgrapht.graph.DefaultEdge {
     public String toString() {
         return "" + message.getSimpleName() + ":" + issuer;
     }
-
-    private static final Logger LOG = Logger.getLogger(MessageFlow.class.getName());
 
     @Override
     public Object clone() {

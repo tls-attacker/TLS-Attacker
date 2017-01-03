@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 
 /**
@@ -65,6 +64,4 @@ public class ServerSerializer {
 
     private ServerSerializer() {
     }
-
-    private static final Logger LOG = Logger.getLogger(ServerSerializer.class.getName());
 }

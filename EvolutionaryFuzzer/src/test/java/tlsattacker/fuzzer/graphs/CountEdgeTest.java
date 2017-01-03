@@ -8,12 +8,7 @@
  */
 package tlsattacker.fuzzer.graphs;
 
-import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -22,48 +17,6 @@ import org.junit.Test;
  */
 public class CountEdgeTest {
 
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(CountEdgeTest.class.getName());
-
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    /**
-     *
-     */
-    public CountEdgeTest() {
-    }
-
-    /**
-     *
-     */
-    @Before
-    public void setUp() {
-    }
-
-    /**
-     *
-     */
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     *
-     */
     @Test
     public void testCountEdge() {
         CountEdge edge = new CountEdge();

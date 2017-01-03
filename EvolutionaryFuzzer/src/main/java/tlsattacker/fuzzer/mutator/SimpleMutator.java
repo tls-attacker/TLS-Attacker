@@ -11,12 +11,9 @@ package tlsattacker.fuzzer.mutator;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.mutator.Mutator;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import tlsattacker.fuzzer.helper.FuzzingHelper;
-import static tlsattacker.fuzzer.helper.FuzzingHelper.executeModifiableVariableModification;
-import static tlsattacker.fuzzer.helper.FuzzingHelper.getAllModifiableVariableFieldsRecursively;
 import tlsattacker.fuzzer.modification.ChangeClientCertificateModification;
 import tlsattacker.fuzzer.modification.ChangeServerCertificateModification;
 import tlsattacker.fuzzer.modification.Modification;
@@ -25,11 +22,9 @@ import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -52,8 +47,14 @@ public class SimpleMutator extends Mutator {
      */
     private final SimpleMutatorConfig simpleConfig;
 
+    /**
+     * The fuzzing helper that should be used
+     */
+    private FuzzingHelper fuzzingHelper;
+
     public SimpleMutator(EvolutionaryFuzzerConfig evoConfig, CertificateMutator certMutator) {
         super(evoConfig, certMutator);
+        fuzzingHelper = new FuzzingHelper();
         File f = new File(evoConfig.getMutatorConfigFolder() + "simple.conf");
         if (f.exists()) {
             simpleConfig = JAXB.unmarshal(f, SimpleMutatorConfig.class);
@@ -83,13 +84,13 @@ public class SimpleMutator extends Mutator {
                 try {
                     tempVector = chooseRandomTestVectorFromFolder(new File("data/good/"));
                 } catch (IOException | JAXBException | XMLStreamException ex) {
-                    LOG.log(Level.SEVERE, "Could not read good TestVector", ex);
+                    LOGGER.error("Could not read good TestVector", ex);
                 }
             } else if (archiveVectorsExist()) {
                 try {
                     tempVector = chooseRandomTestVectorFromFolder(new File("archive/"));
                 } catch (IOException | JAXBException | XMLStreamException ex) {
-                    LOG.log(Level.SEVERE, "Could not read archive TestVector", ex);
+                    LOGGER.error("Could not read archive TestVector", ex);
                 }
             }
             if (tempVector == null) {
@@ -117,60 +118,60 @@ public class SimpleMutator extends Mutator {
                 tempVector.addModification(modification);
             }
             if (r.nextInt(100) < simpleConfig.getAddContextActionPercentage()) {
-                tempVector.addModification(FuzzingHelper.addContextAction(trace, certMutator));
+                tempVector.addModification(fuzzingHelper.addContextAction(trace, certMutator));
                 modified = true;
             }
             if (r.nextInt(100) < simpleConfig.getAddExtensionPercentage()) {
-                tempVector.addModification(FuzzingHelper.addExtensionMessage(trace));
+                tempVector.addModification(fuzzingHelper.addExtensionMessage(trace));
                 modified = true;
             }
             // perhaps add a flight
             if (trace.getTLSActions().isEmpty() || r.nextInt(100) < simpleConfig.getAddFlightPercentage()) {
-                tempVector.addModification(FuzzingHelper.addMessageFlight(trace));
+                tempVector.addModification(fuzzingHelper.addMessageFlight(trace));
                 modified = true;
             }
             if (r.nextInt(100) < simpleConfig.getAddMessagePercentage()) {
-                tempVector.addModification(FuzzingHelper.addRandomMessage(trace));
+                tempVector.addModification(fuzzingHelper.addRandomMessage(trace));
                 modified = true;
             }
             // perhaps remove a message
             if (r.nextInt(100) <= simpleConfig.getRemoveMessagePercentage()) {
-                tempVector.addModification(FuzzingHelper.removeRandomMessage(trace));
+                tempVector.addModification(fuzzingHelper.removeRandomMessage(trace));
                 modified = true;
             }
             // perhaps toggle Encryption
             if (r.nextInt(100) <= simpleConfig.getAddToggleEncrytionPercentage()) {
-                tempVector.addModification(FuzzingHelper.addToggleEncrytionActionModification(trace));
+                tempVector.addModification(fuzzingHelper.addToggleEncrytionActionModification(trace));
                 modified = true;
             }
             // perhaps add records
             if (r.nextInt(100) <= simpleConfig.getAddRecordPercentage()) {
-                tempVector.addModification(FuzzingHelper.addRecordAtRandom(trace));
+                tempVector.addModification(fuzzingHelper.addRecordAtRandom(trace));
                 modified = true;
             }
             // Modify a random field:
             if (r.nextInt(100) <= simpleConfig.getModifyVariablePercentage()) {
-                List<ModifiableVariableField> variableList = getAllModifiableVariableFieldsRecursively(trace);
-                // LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
+                List<ModifiableVariableField> variableList = fuzzingHelper
+                        .getAllModifiableVariableFieldsRecursively(trace);
+                // LOGGER.info(""+trace.getProtocolMessages().size());
                 if (variableList.size() > 0) {
                     ModifiableVariableField field = variableList.get(r.nextInt(variableList.size()));
                     // String currentFieldName = field.getField().getName();
                     // String currentMessageName =
                     // field.getObject().getClass().getSimpleName();
-                    // LOG.log(Level.INFO, "Fieldname:{0} Message:{1}", new
+                    // LOGGER.info("Fieldname:{0} Message:{1}", new
                     // Object[]{currentFieldName, currentMessageName});
-                    tempVector.addModification(executeModifiableVariableModification(
+                    tempVector.addModification(fuzzingHelper.executeModifiableVariableModification(
                             (ModifiableVariableHolder) field.getObject(), field.getField()));
                     modified = true;
                 }
             }
             if (r.nextInt(100) <= simpleConfig.getDuplicateMessagePercentage()) {
-                tempVector.addModification(FuzzingHelper.duplicateRandomProtocolMessage(trace));
+                tempVector.addModification(fuzzingHelper.duplicateRandomProtocolMessage(trace));
                 modified = true;
             }
         } while (!modified || r.nextInt(100) <= simpleConfig.getMultipleModifications());
         return tempVector;
     }
 
-    private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 }

@@ -9,13 +9,10 @@
 package tlsattacker.fuzzer.server;
 
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import java.util.logging.Logger;
 import org.junit.After;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import tlsattacker.fuzzer.server.ServerManager;
-import tlsattacker.fuzzer.server.TLSServer;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -24,25 +21,8 @@ import static org.junit.Assert.assertNull;
  */
 public class ServerManagerTest {
 
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(ServerManagerTest.class.getName());
-
-    /**
-     *
-     */
     ServerManager manager = null;
 
-    /**
-     *
-     */
-    public ServerManagerTest() {
-    }
-
-    /**
-     *
-     */
     @Before
     public void setUp() {
         manager = ServerManager.getInstance();
@@ -59,17 +39,11 @@ public class ServerManagerTest {
 
     }
 
-    /**
-     *
-     */
     @After
     public void tearDown() {
         manager.clear();
     }
 
-    /**
-     *
-     */
     @Test(expected = RuntimeException.class)
     public void TestOccupyAllServers() {
         manager.getConfig().setBootTimeout(10);
@@ -78,19 +52,12 @@ public class ServerManagerTest {
         }
     }
 
-    /**
-     *
-     */
     @Test
     public void TestGetServer() {
-
         TLSServer server = manager.getFreeServer();
         assertNotNull("Failure: Could not get a free Server", server);
     }
 
-    /**
-     *
-     */
     public void TestEmptyServer() {
         manager.getConfig().setBootTimeout(10);
         manager.clear();

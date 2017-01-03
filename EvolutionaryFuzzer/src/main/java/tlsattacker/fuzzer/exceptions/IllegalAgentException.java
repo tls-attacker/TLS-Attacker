@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  * Exception thrown when an undefined Agent is configured
  * 
@@ -20,7 +18,5 @@ public class IllegalAgentException extends Exception {
     public IllegalAgentException(String string) {
         super(string);
     }
-
-    private static final Logger LOG = Logger.getLogger(IllegalAgentException.class.getName());
 
 }

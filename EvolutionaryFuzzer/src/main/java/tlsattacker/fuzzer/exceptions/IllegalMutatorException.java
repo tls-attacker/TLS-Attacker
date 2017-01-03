@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  * Exception thrown when an undefined Mutator is configured
  * 
@@ -20,7 +18,5 @@ public class IllegalMutatorException extends Exception {
     public IllegalMutatorException(String string) {
         super(string);
     }
-
-    private static final Logger LOG = Logger.getLogger(IllegalMutatorException.class.getName());
 
 }

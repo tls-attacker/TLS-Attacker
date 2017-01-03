@@ -13,7 +13,7 @@ import java.util.List;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
- *
+ * 
  * @author ic0ns
  */
 public class TestVectorResult {

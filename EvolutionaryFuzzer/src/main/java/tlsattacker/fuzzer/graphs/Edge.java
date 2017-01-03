@@ -9,10 +9,9 @@
 package tlsattacker.fuzzer.graphs;
 
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 /**
- * An edge class wbich represents an edge from one probe id to another. Carries
+ * An edge class which represents an edge from one probe id to another. Carries
  * a counter to count how often it appeared.
  * 
  * @author Robert Merget - robert.merget@rub.de
@@ -93,5 +92,4 @@ public class Edge implements Serializable {
         return this.Destination == other.Destination;
     }
 
-    private static final Logger LOG = Logger.getLogger(Edge.class.getName());
 }

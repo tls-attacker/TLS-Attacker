@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  * This Exception should be thrown if a Bug in the Instrumentation is suspected!
  * 
@@ -21,5 +19,4 @@ public class InstrumentationException extends RuntimeException {
         super(message);
     }
 
-    private static final Logger LOG = Logger.getLogger(InstrumentationException.class.getName());
 }

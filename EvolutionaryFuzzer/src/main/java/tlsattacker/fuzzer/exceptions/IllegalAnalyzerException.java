@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  * Exception thrown if an illegal Analyzer is selected
  * 
@@ -20,7 +18,5 @@ public class IllegalAnalyzerException extends Exception {
     public IllegalAnalyzerException(String message) {
         super(message);
     }
-
-    private static final Logger LOG = Logger.getLogger(IllegalAnalyzerException.class.getName());
 
 }

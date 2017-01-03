@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.validators.PercentageValidator;
-import java.util.logging.Logger;
 
 /**
  * The configuration class for the "calibrate" command
@@ -46,7 +45,5 @@ public class CalibrationConfig extends FuzzerGeneralConfig {
     public void setTimeoutLimit(int timeoutLimit) {
         this.timeoutLimit = timeoutLimit;
     }
-
-    private static final Logger LOG = Logger.getLogger(CalibrationConfig.class.getName());
 
 }

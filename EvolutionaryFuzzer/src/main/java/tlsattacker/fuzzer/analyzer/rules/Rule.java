@@ -8,13 +8,14 @@
  */
 package tlsattacker.fuzzer.analyzer.rules;
 
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import tlsattacker.fuzzer.config.analyzer.RuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.AgentResult;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A is a class that can be used to analyze TestVectors. It seperates the
@@ -24,6 +25,8 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Rule {
+
+    static final Logger LOGGER = LogManager.getLogger(Rule.class);
 
     /**
      * The Folder in which the rule should store its results
@@ -99,7 +102,7 @@ public abstract class Rule {
     protected void writeConfig(RuleConfig c) {
         File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
         if (f.exists()) {
-            LOG.log(Level.SEVERE, "Config File already exists, not writing new Config:{0}", configFileName);
+            LOGGER.error("Config File already exists, not writing new Config:{0}", configFileName);
         } else {
             JAXB.marshal(c, f);
         }
@@ -121,5 +124,4 @@ public abstract class Rule {
         ruleFolder.mkdirs();
     }
 
-    private static final Logger LOG = Logger.getLogger(Rule.class.getName());
 }

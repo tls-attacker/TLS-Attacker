@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -87,7 +86,5 @@ public class SendAction extends MessageAction {
         return ((protocolMessages.size() == (pointer + 1)) || currentProtocolMessage.getProtocolMessageType() != (protocolMessages
                 .get(pointer + 1).getProtocolMessageType()));
     }
-
-    private static final Logger LOG = Logger.getLogger(SendAction.class.getName());
 
 }

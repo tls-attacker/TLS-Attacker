@@ -11,10 +11,14 @@ package tlsattacker.fuzzer.testvector;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,8 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -33,6 +35,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 
 /**
@@ -41,6 +45,8 @@ import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TestVectorSerializer {
+
+    private static final Logger LOGGER = LogManager.getLogger(TestVectorSerializer.class);
 
     /**
      * context initialization is expensive, we need to do that only once
@@ -152,9 +158,8 @@ public class TestVectorSerializer {
                     vector.getTrace().setName(file.getAbsolutePath());
                     list.add(vector);
                 } catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
-                    LOG.log(Level.INFO, "Could not load file:{0}", file.getAbsolutePath());
-                    LOG.log(Level.FINE, "Reason:", ex);
-                    ex.printStackTrace();
+                    LOGGER.info("Could not load file:{0}", file.getAbsolutePath());
+                    LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
             }
             return list;
@@ -164,8 +169,28 @@ public class TestVectorSerializer {
 
     }
 
+    /**
+     * Returns a somehow deep copy of the TestVector. The WorkflowTrace is deep
+     * copied and the rest is passed as a reference.
+     * 
+     * @param testVector
+     * @return
+     * @throws javax.xml.bind.JAXBException
+     * @throws java.io.IOException
+     * @throws javax.xml.stream.XMLStreamException
+     */
+    public static TestVector copyTestVector(TestVector testVector) throws JAXBException, IOException,
+            XMLStreamException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        WorkflowTraceSerializer.write(stream, testVector.getTrace());
+        stream.flush();
+        WorkflowTrace copiedTrace = WorkflowTraceSerializer.read(new ByteArrayInputStream(stream.toByteArray()));
+        TestVector tempVector = new TestVector(copiedTrace, testVector.getServerKeyCert(),
+                testVector.getClientKeyCert(), ExecutorType.TLS, testVector.getParent());
+        return tempVector;
+    }
+
     private TestVectorSerializer() {
     }
 
-    private static final Logger LOG = Logger.getLogger(TestVectorSerializer.class.getName());
 }

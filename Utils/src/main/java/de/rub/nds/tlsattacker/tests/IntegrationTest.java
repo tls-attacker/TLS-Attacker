@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tests;
 
 /**
- *
+ * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public interface IntegrationTest {

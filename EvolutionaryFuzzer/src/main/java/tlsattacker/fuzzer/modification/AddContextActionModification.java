@@ -9,7 +9,6 @@
 package tlsattacker.fuzzer.modification;
 
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
-import java.util.logging.Logger;
 
 /**
  * A modification which indicates that a new action was added to the
@@ -32,7 +31,5 @@ public class AddContextActionModification extends Modification {
     public TLSAction getAction() {
         return action;
     }
-
-    private static final Logger LOG = Logger.getLogger(AddContextActionModification.class.getName());
 
 }

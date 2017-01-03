@@ -9,18 +9,19 @@
 package tlsattacker.fuzzer.controller;
 
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 
 /**
- *
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TestableCommandLineController extends CommandLineController {
 
     public TestableCommandLineController(EvolutionaryFuzzerConfig config) throws IllegalMutatorException,
-            IllegalCertificateMutatorException, IllegalAnalyzerException {
+            IllegalCertificateMutatorException, IllegalAnalyzerException, FuzzerConfigurationException {
         super(config);
 
     }

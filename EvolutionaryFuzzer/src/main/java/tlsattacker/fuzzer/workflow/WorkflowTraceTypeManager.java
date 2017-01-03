@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
@@ -33,7 +32,7 @@ public class WorkflowTraceTypeManager {
      * a Category of Workflowtraces which reached a new Branch in the
      * Implementation at some Point.
      * 
-     * @param traces
+     * @param vectors
      * @param connectionEnd
      * @return
      */
@@ -69,7 +68,7 @@ public class WorkflowTraceTypeManager {
      * Point. The List then represents all WorkflowTraceTypes which bring the
      * Server in different States.
      * 
-     * @param traces
+     * @param vectors
      * @param myConnectionEnd
      * @return
      */
@@ -160,6 +159,4 @@ public class WorkflowTraceTypeManager {
      */
     private WorkflowTraceTypeManager() {
     }
-
-    private static final Logger LOG = Logger.getLogger(WorkflowTraceTypeManager.class.getName());
 }

@@ -17,8 +17,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
@@ -83,10 +81,9 @@ public class AnalyzeTimeRule extends Rule {
             }
             outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
         } catch (IOException ex) {
-            Logger.getLogger(AnalyzeTimeRule.class.getName())
-                    .log(Level.SEVERE,
-                            "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
-                            ex);
+            LOGGER.error(
+                    "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
+                    ex);
         }
         startTime = System.currentTimeMillis();
     }
@@ -172,5 +169,4 @@ public class AnalyzeTimeRule extends Rule {
         return fastestTime;
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzeTimeRule.class.getName());
 }

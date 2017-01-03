@@ -8,15 +8,11 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import tlsattacker.fuzzer.result.AgentResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
@@ -26,6 +22,8 @@ import tlsattacker.fuzzer.result.TestVectorResult;
  */
 public class AnalyzerThread extends Thread {
 
+    static final Logger LOGGER = LogManager.getLogger(AnalyzerThread.class);
+
     /**
      * The analyzer used to analyze the Results
      */
@@ -34,11 +32,11 @@ public class AnalyzerThread extends Thread {
     /**
      * The list of Results to analyze, used as a queque
      */
-    private final List<Future<TestVectorResult>> workList;
+    private final LinkedList<Future<TestVectorResult>> workList;
 
     public AnalyzerThread(Analyzer analyzer) {
         this.analyzer = analyzer;
-        workList = new CopyOnWriteArrayList<>();
+        workList = new LinkedList<>();
     }
 
     /**
@@ -56,21 +54,20 @@ public class AnalyzerThread extends Thread {
     public void run() {
         while (true) {
             if (!workList.isEmpty()) {
-                for (Future future : workList) {
+                synchronized (this) {
+                    Future future = workList.pop();
                     if (future.isDone()) {
-                        workList.remove(future);
                         TestVectorResult result = null;
                         try {
                             result = (TestVectorResult) future.get();
-                        } catch (InterruptedException ex) {
-                            LOG.log(Level.SEVERE, "Could not retrieve Result from finished Future");
-                        } catch (ExecutionException ex) {
-                            LOG.log(Level.SEVERE, "Could not retrieve Result from finished Future");
+                        } catch (InterruptedException | ExecutionException ex) {
+                            LOGGER.error("Could not retrieve Result from finished Future", ex);
                         }
                         if (result != null) {
                             analyzer.analyze(result);
                         }
-
+                    } else {
+                        workList.addLast(future);
                     }
                 }
             } else {
@@ -79,12 +76,10 @@ public class AnalyzerThread extends Thread {
                         wait();
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(AnalyzerThread.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex.getLocalizedMessage(), ex);
                 }
             }
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(AnalyzerThread.class.getName());
 
 }

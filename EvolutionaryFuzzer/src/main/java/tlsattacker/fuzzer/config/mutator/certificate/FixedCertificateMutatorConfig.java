@@ -14,18 +14,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 
 /**
  * A configuration class for the FixedCertificateMutator
@@ -36,6 +34,8 @@ import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FixedCertificateMutatorConfig implements Serializable {
     // Fixes the configuration File after a selftest and serializes it
+
+    private static final Logger LOGGER = LogManager.getLogger(FixedCertificateMutatorConfig.class);
 
     /**
      * If set, the Configuration file deletes all incompatible or not found
@@ -91,7 +91,7 @@ public class FixedCertificateMutatorConfig implements Serializable {
             try {
                 file.createNewFile();
             } catch (IOException ex) {
-                Logger.getLogger(FixedCertificateMutator.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
         JAXB.marshal(this, file);
@@ -121,5 +121,4 @@ public class FixedCertificateMutatorConfig implements Serializable {
         this.serverCertificates = serverCertificates;
     }
 
-    private static final Logger LOG = Logger.getLogger(FixedCertificateMutatorConfig.class.getName());
 }

@@ -65,27 +65,40 @@ import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCompressionAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeProtocolVersionAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ToggleEncryptionAction;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.tlsattacker.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.X509CertificateObject;
+import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 
 /**
  * A helper class which implements useful methods to modify a TestVector on a
@@ -95,6 +108,10 @@ import java.util.logging.Level;
  */
 public class FuzzingHelper {
 
+    private static final Logger LOGGER = LogManager.getLogger(FuzzingHelper.class);
+
+    private Random random;
+
     /**
      * Chooses a random modifiableVariableField from a List of
      * modifiableVariableFields
@@ -103,9 +120,9 @@ public class FuzzingHelper {
      *            A list of Fields to pick from
      * @return A Random field
      */
-    public static ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
-        Random r = new Random();
-        int fieldNumber = r.nextInt(fields.size());
+    public ModifiableVariableField pickRandomField(List<ModifiableVariableField> fields) {
+
+        int fieldNumber = random.nextInt(fields.size());
         return fields.get(fieldNumber);
     }
 
@@ -117,7 +134,7 @@ public class FuzzingHelper {
      *            Trace to search in
      * @return A list of all ModifieableVariableHolders
      */
-    public static List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
+    public List<ModifiableVariableHolder> getModifiableVariableHolders(WorkflowTrace trace) {
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
         List<ModifiableVariableHolder> result = new LinkedList<>();
         for (ProtocolMessage pm : protocolMessages) {
@@ -133,7 +150,7 @@ public class FuzzingHelper {
      *            Object to search in
      * @return List of all ModifieableVariableFields in an object
      */
-    public static List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
+    public List<ModifiableVariableField> getAllModifiableVariableFieldsRecursively(Object object) {
         List<ModifiableVariableListHolder> holders = getAllModifiableVariableHoldersRecursively(object);
         List<ModifiableVariableField> fields = new LinkedList<>();
         for (ModifiableVariableListHolder holder : holders) {
@@ -158,16 +175,8 @@ public class FuzzingHelper {
      *            Field to modify
      * @return The ModificationObject
      */
-    public static ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object,
-            Field field) {
+    public ModifyFieldModification executeModifiableVariableModification(ModifiableVariableHolder object, Field field) {
         try {
-            // Type type = field.getGenericType();
-            // ParameterizedType pType = (ParameterizedType) type;
-            // String typeString = ((Class)
-            // pType.getActualTypeArguments()[0]).getSimpleName();
-            // LOGGER.debug("Modifying field {} of type {} from the following class: {} ",
-            // field.getName(), typeString,
-            // object.getClass().getSimpleName());
             field.setAccessible(true);
             ModifiableVariable mv = (ModifiableVariable) field.get(object);
             if (mv == null) {
@@ -189,9 +198,8 @@ public class FuzzingHelper {
      *            WorkflowTrace to which the Record should be added
      * @return The ModificationObject
      */
-    public static AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
+    public AddRecordModification addRecordAtRandom(WorkflowTrace trace) {
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
-        Random random = RandomHelper.getRandom();
         for (int i = 0; i < protocolMessages.size(); i++) {
             int randomPM = random.nextInt(protocolMessages.size());
             ProtocolMessage pm = protocolMessages.get(randomPM);
@@ -215,14 +223,13 @@ public class FuzzingHelper {
      *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
+    public RemoveMessageModification removeRandomMessage(WorkflowTrace tempTrace) {
         SendAction action = getRandomSendAction(tempTrace);
         if (action.getConfiguredMessages().size() <= 1) {
             // We dont remove the last message from a flight
             return null;
         }
-        Random r = new Random();
-        int index = r.nextInt(action.getConfiguredMessages().size());
+        int index = random.nextInt(action.getConfiguredMessages().size());
         ProtocolMessage message = action.getConfiguredMessages().get(index);
         action.getConfiguredMessages().remove(index);
         return new RemoveMessageModification(message, action, index);
@@ -237,7 +244,7 @@ public class FuzzingHelper {
      *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
+    public AddMessageFlightModification addMessageFlight(WorkflowTrace tempTrace) {
         SendAction sendAction = new SendAction(generateRandomMessage());
         ReceiveAction receiveAction = new ReceiveAction(new ArbitraryMessage());
         tempTrace.add(sendAction);
@@ -252,7 +259,7 @@ public class FuzzingHelper {
      *            The WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
+    public AddMessageModification addRandomMessage(WorkflowTrace tempTrace) {
         SendAction action = getRandomSendAction(tempTrace);
         if (action == null) {
             return null;
@@ -270,10 +277,12 @@ public class FuzzingHelper {
      *            WorkflowTrace to choose from
      * @return Random SendAction from the WorkflowTrace
      */
-    private static SendAction getRandomSendAction(WorkflowTrace tempTrace) {
-        Random r = new Random();
+    private SendAction getRandomSendAction(WorkflowTrace tempTrace) {
         List<SendAction> sendActions = tempTrace.getSendActions();
-        return sendActions.get(r.nextInt(sendActions.size()));
+        if (sendActions.isEmpty()) {
+            return null;
+        }
+        return sendActions.get(random.nextInt(sendActions.size()));
     }
 
     /**
@@ -286,62 +295,48 @@ public class FuzzingHelper {
      *            CertificateMutator to use
      * @return The ModificationObject
      */
-    public static AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
-        Random r = new Random();
+    public AddContextActionModification addContextAction(WorkflowTrace tempTrace, CertificateMutator mutator) {
         AddContextActionModification modification = null;
         TLSAction action = null;
         ModificationType type = null;
-        int position = r.nextInt(tempTrace.getTLSActions().size());
-        switch (r.nextInt(9)) {
+        int position = random.nextInt(tempTrace.getTLSActions().size() + 1);
+        switch (random.nextInt(9)) {
             case 0:
                 type = ModificationType.ADD_CHANGE_CIPHERSUITE_ACTION;
                 action = new ChangeCipherSuiteAction(CipherSuite.getRandom());
                 break;
             case 1:
-                // TODO
-                // type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
-                // ClientCertificateStructure clientCert =
-                // mutator.getClientCertificateStructure();
-                // String alias = clientCert.getAlias();
-                // String password = clientCert.getPassword();
-                // java.security.cert.Certificate sunCert = null;
-                // KeyStore ks = null;
-                // try
-                // {
-                // ks =
-                // KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(),
-                // password);
-                // sunCert = ks.getCertificate(alias);
-                // if (alias == null || sunCert == null)
-                // {
-                // return null;
-                // }
-                // byte[] certBytes = sunCert.getEncoded();
-                // ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-                // org.bouncycastle.asn1.x509.Certificate cert =
-                // org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-                //
-                // org.bouncycastle.asn1.x509.Certificate[] certs = new
-                // org.bouncycastle.asn1.x509.Certificate[1];
-                // certs[0] = cert;
-                // Certificate tlsCerts = new Certificate(certs);
-                //
-                // X509CertificateObject x509CertObject = new
-                // X509CertificateObject(tlsCerts.getCertificateAt(0));
-                // action = new
-                // ChangeClientCertificateAction(cert,x509CertObject);
-                // return null;//TODO
-                // }
-                // catch (KeyStoreException | IOException |
-                // NoSuchAlgorithmException | CertificateException ex)
-                // {
-                // return null;
-                // }
-                return null;
+                type = ModificationType.ADD_CHANGE_CLIENT_CERTIFICATE_ACTION;
+                ClientCertificateStructure clientCert = mutator.getClientCertificateStructure();
+                String alias = clientCert.getAlias();
+                String password = clientCert.getPassword();
+                java.security.cert.Certificate sunCert = null;
+                KeyStore ks = null;
+                try {
+                    ks = KeystoreHandler.loadKeyStore(clientCert.getJKSfile().getAbsolutePath(), password);
+                    sunCert = ks.getCertificate(alias);
+                    if (alias == null || sunCert == null) {
+                        return null;
+                    }
+                    byte[] certBytes = sunCert.getEncoded();
+                    ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+                    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
+                            .getInstance(asn1Cert);
+
+                    org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
+                    certs[0] = cert;
+                    Certificate tlsCerts = new Certificate(certs);
+
+                    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
+                    action = new ChangeClientCertificateAction(cert, x509CertObject);
+                } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException E) {
+                    return null;
+                }
+                break;
             case 2:
                 type = ModificationType.ADD_CHANGE_CLIENT_RANDOM_ACTION;
-                byte[] newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                byte[] newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangeClientRandomAction(newBytes);
                 break;
             case 3:
@@ -351,14 +346,14 @@ public class FuzzingHelper {
                 break;
             case 4:
                 type = ModificationType.ADD_CHANGE_MASTER_SECRET_ACTION;
-                newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangeMasterSecretAction(newBytes);
                 break;
             case 5:
                 type = ModificationType.ADD_CHANGE_PREMASTER_SECRET_ACTION;
-                newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangePreMasterSecretAction(newBytes);
                 break;
             case 6:
@@ -367,51 +362,37 @@ public class FuzzingHelper {
                 action = new ChangeProtocolVersionAction(verion);
                 break;
             case 7:
-                // TODO
-                // type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
-                // ClientCertificateStructure serverCert =
-                // mutator.getClientCertificateStructure();//TODO
-                // alias = serverCert.getAlias();
-                // password = serverCert.getPassword();
-                // sunCert = null;
-                // ks = null;
-                // try
-                // {
-                // ks =
-                // KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(),
-                // password);
-                // sunCert = ks.getCertificate(alias);
-                // if (alias == null || sunCert == null)
-                // {
-                // return null;
-                // }
-                // byte[] certBytes = sunCert.getEncoded();
-                // ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-                // org.bouncycastle.asn1.x509.Certificate cert =
-                // org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-                //
-                // org.bouncycastle.asn1.x509.Certificate[] certs = new
-                // org.bouncycastle.asn1.x509.Certificate[1];
-                // certs[0] = cert;
-                // Certificate tlsCerts = new Certificate(certs);
-                //
-                // X509CertificateObject x509CertObject = new
-                // X509CertificateObject(tlsCerts.getCertificateAt(0));
-                // action = new
-                // ChangeServerCertificateAction(cert,x509CertObject);
-                //
-                // }
-                // catch (KeyStoreException | IOException |
-                // NoSuchAlgorithmException | CertificateException ex)
-                // {
-                // return null;
-                // }
-                // return null;//TODO
-                return null;
+                type = ModificationType.ADD_CHANGE_SERVER_CERTIFICATE_ACTION;
+                ClientCertificateStructure serverCert = mutator.getClientCertificateStructure();// TODO
+                alias = serverCert.getAlias();
+                password = serverCert.getPassword();
+                sunCert = null;
+                ks = null;
+                try {
+                    ks = KeystoreHandler.loadKeyStore(serverCert.getJKSfile().getAbsolutePath(), password);
+                    sunCert = ks.getCertificate(alias);
+                    if (alias == null || sunCert == null) {
+                        return null;
+                    }
+                    byte[] certBytes = sunCert.getEncoded();
+                    ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
+                    org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate
+                            .getInstance(asn1Cert);
+
+                    org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
+                    certs[0] = cert;
+                    Certificate tlsCerts = new Certificate(certs);
+
+                    X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
+                    action = new ChangeServerCertificateAction(cert, x509CertObject);
+                    break;
+                } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
+                    return null;
+                }
             case 8:
                 type = ModificationType.ADD_CHANGE_SERVER_RANDOM_ACTION;
-                newBytes = new byte[r.nextInt(1024)];
-                r.nextBytes(newBytes);
+                newBytes = new byte[random.nextInt(1024)];
+                random.nextBytes(newBytes);
                 action = new ChangeServerRandomAction(newBytes);
                 break;
         }
@@ -427,12 +408,11 @@ public class FuzzingHelper {
      * 
      * @return A newly generated ProtocolMessage
      */
-    private static ProtocolMessage generateRandomMessage() {
+    public ProtocolMessage generateRandomMessage() {
         ProtocolMessage message = null;
-        Random r = new Random();
         do {
 
-            switch (r.nextInt(18)) {
+            switch (random.nextInt(18)) {
                 case 0:
                     message = new AlertMessage();
                     break;
@@ -454,15 +434,11 @@ public class FuzzingHelper {
                 case 6:
                     message = new ClientHelloDtlsMessage();
                     LinkedList<CipherSuite> list = new LinkedList<>();
-                    int limit = new Random().nextInt(0xFF);
-
+                    int limit = random.nextInt(0xFF);
                     for (int i = 0; i < limit; i++) {
                         CipherSuite suite = null;
-
                         do {
-
                             suite = CipherSuite.getRandom();
-
                         } while (suite == null);
                         list.add(suite);
                     }
@@ -513,7 +489,6 @@ public class FuzzingHelper {
                     break;
                 case 16:
                     message = new ServerHelloDoneMessage();
-
                     break;
                 case 17:
                     message = new HelloRequestMessage();
@@ -530,7 +505,7 @@ public class FuzzingHelper {
      *            WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
+    public AddExtensionModification addExtensionMessage(WorkflowTrace trace) {
         ExtensionMessage message = generateRandomExtensionMessage();
         if (message != null) {
             List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
@@ -540,10 +515,7 @@ public class FuzzingHelper {
                     ((ClientHelloMessage) pm).addExtension(message);
                     return new AddExtensionModification(message);
                 }
-                if (pm instanceof ClientHelloDtlsMessage) {
-                    ((ClientHelloDtlsMessage) pm).addExtension(message);
-                    return new AddExtensionModification(message);
-                }
+
             }
         }
         return null;
@@ -554,14 +526,13 @@ public class FuzzingHelper {
      * 
      * @return Newly generated random ExtensionMessage
      */
-    private static ExtensionMessage generateRandomExtensionMessage() {
+    public ExtensionMessage generateRandomExtensionMessage() {
         ExtensionMessage message = null;
-        Random r = new Random();
-        switch (r.nextInt(6)) {
+        switch (random.nextInt(6)) {
             case 0:
                 EllipticCurvesExtensionMessage ecc = new EllipticCurvesExtensionMessage();
                 List<NamedCurve> namedCurveList = new LinkedList<>();
-                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                for (int i = 0; i < random.nextInt(100); i++)// TODO Config
                 {
                     namedCurveList.add(NamedCurve.getRandom());
                 }
@@ -571,7 +542,7 @@ public class FuzzingHelper {
             case 1:
                 ECPointFormatExtensionMessage pfc = new ECPointFormatExtensionMessage();
                 List<ECPointFormat> formatList = new LinkedList<>();
-                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                for (int i = 0; i < random.nextInt(100); i++)// TODO Config
                 {
                     formatList.add(ECPointFormat.getRandom());
                 }
@@ -597,7 +568,7 @@ public class FuzzingHelper {
             case 5:
                 SignatureAndHashAlgorithmsExtensionMessage sae = new SignatureAndHashAlgorithmsExtensionMessage();
                 List<SignatureAndHashAlgorithm> signatureHashList = new LinkedList<>();
-                for (int i = 0; i < r.nextInt(100); i++)// TODO Config
+                for (int i = 0; i < random.nextInt(100); i++)// TODO Config
                 {
                     signatureHashList.add(SignatureAndHashAlgorithm.getRandom());
                 }
@@ -616,18 +587,17 @@ public class FuzzingHelper {
      *            WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
-        Random r = new Random();
+    public DuplicateMessageModification duplicateRandomProtocolMessage(WorkflowTrace trace) {
         ProtocolMessage message = null;
         List<ProtocolMessage> protocolMessages = trace.getAllConfiguredSendMessages();
         if (protocolMessages.size() > 0) {
-            message = (ProtocolMessage) UnoptimizedDeepCopy
-                    .copy(protocolMessages.get(r.nextInt(protocolMessages.size())));
+            message = (ProtocolMessage) UnoptimizedDeepCopy.copy(protocolMessages.get(random.nextInt(protocolMessages
+                    .size())));
         } else {
             return null;
         }
         SendAction action = getRandomSendAction(trace);
-        int insertPosition = r.nextInt(action.getConfiguredMessages().size());
+        int insertPosition = random.nextInt(action.getConfiguredMessages().size() + 1);
 
         action.getConfiguredMessages().add(insertPosition, message);
         return new DuplicateMessageModification(message, action, insertPosition);
@@ -641,7 +611,7 @@ public class FuzzingHelper {
      *            Object to search in
      * @return List of all ModifieableVariableListHolders
      */
-    public static List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
+    public List<ModifiableVariableListHolder> getAllModifiableVariableHoldersRecursively(Object object) {
         List<ModifiableVariableListHolder> holders = new LinkedList<>();
         List<Field> modFields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(object);
         if (!modFields.isEmpty()) {
@@ -671,7 +641,7 @@ public class FuzzingHelper {
                     }
                 }
             } catch (IllegalAccessException | IllegalArgumentException ex) {
-                LOG.log(Level.SEVERE, "Could not access Field!", ex);
+                LOGGER.error("Could not access Field!", ex);
             }
         }
         return holders;
@@ -684,18 +654,27 @@ public class FuzzingHelper {
      *            WorkflowTrace to modify
      * @return The ModificationObject
      */
-    public static AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
+    public AddToggleEncrytionActionModification addToggleEncrytionActionModification(WorkflowTrace trace) {
         TLSAction newAction = new ToggleEncryptionAction();
         List<TLSAction> actionList = trace.getTLSActions();
-        Random r = new Random();
-        int positon = r.nextInt(actionList.size());
+        int positon = random.nextInt(actionList.size() + 1);
         actionList.add(positon, newAction);
         return new AddToggleEncrytionActionModification(positon);
     }
 
-    private FuzzingHelper() {
+    public FuzzingHelper() {
+        random = new Random();
     }
 
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
-            .getName());
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        if (random == null) {
+            throw new IllegalArgumentException("Cannot set Random to null");
+        }
+        this.random = random;
+    }
+
 }
