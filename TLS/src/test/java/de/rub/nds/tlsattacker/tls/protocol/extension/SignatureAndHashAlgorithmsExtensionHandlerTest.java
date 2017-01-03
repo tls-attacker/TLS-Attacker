@@ -1,0 +1,96 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.tls.protocol.extension;
+
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+/**
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
+ */
+public class SignatureAndHashAlgorithmsExtensionHandlerTest {
+
+    private final byte[] createdExtension = {(byte) 0, (byte) 13, // Extension type is signature_algorithms
+        (byte) 0, (byte) 6, // Extension length
+        (byte) 0, (byte) 4, //Count of supported_signature_algorithms bytes
+        (byte) 2, (byte) 2, //SHA-1 and DSA
+        (byte) 1, (byte) 1};  // MD5 and RSA
+    private final byte[] originalAlgorithms = {(byte) 2, (byte) 2, (byte) 1, (byte) 1};
+
+    /**
+     * Tests the initializeClientHelloExtension method. The
+     * SignatureAndHashAlgorithmsConfig is provided, the method fills in the
+     * other values. The method works on the reference of the object.
+     */
+    @Test
+    public void testInitializeClientHelloMethod() {
+        byte[] correctExtensionBytes = {(byte) 00, (byte) 13, (byte) 00, (byte) 4, (byte) 0, (byte) 2, (byte) 1, (byte) 1};
+        SignatureAndHashAlgorithmsExtensionMessage initializeMethodMessage = new SignatureAndHashAlgorithmsExtensionMessage();
+        ArrayList<SignatureAndHashAlgorithm> config = new ArrayList<>();
+        config.add(new SignatureAndHashAlgorithm(new byte[]{01, 01}));
+        initializeMethodMessage.setSignatureAndHashAlgorithmsConfig(config);
+
+        SignatureAndHashAlgorithmsExtensionHandler clientHelloHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+        clientHelloHandler.initializeClientHelloExtension(initializeMethodMessage);
+
+        assertArrayEquals("Tests the complete extension bytes returned by the initializeClientHello method",
+                correctExtensionBytes, initializeMethodMessage.getExtensionBytes().getValue());
+        assertEquals("Tests the extension length returned by the initializeClientHello method",
+                new Integer(4), initializeMethodMessage.getExtensionLength().getValue());
+        assertArrayEquals("Tests the extension type returned by the initializeClientHello method",
+                new byte[]{(byte) 0, (byte) 13}, initializeMethodMessage.getExtensionType().getValue());
+        assertArrayEquals("Tests the set signature and hash algorithms returned by the initializeClientHello method",
+                new byte[]{(byte) 1, (byte) 1}, initializeMethodMessage.getSignatureAndHashAlgorithms().getValue());
+        assertEquals("Tests the signature and hash algorithms length returned by the initializeClientHello method",
+                new Integer(2), initializeMethodMessage.getSignatureAndHashAlgorithmsLength().getValue());
+
+    }
+
+    @Test
+    public void testParseExtensionMethod() throws IOException {
+        SignatureAndHashAlgorithmsExtensionHandler msgHandler;
+        SignatureAndHashAlgorithmsExtensionMessage parseMethodMessage;
+        int gotPointer;
+
+        msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+        gotPointer = msgHandler.parseExtension(createdExtension, 0);
+        parseMethodMessage = (SignatureAndHashAlgorithmsExtensionMessage) msgHandler.getExtensionMessage();
+
+        assertEquals("Tests the returned pointer",
+                (int) 10, gotPointer);
+        assertArrayEquals("Tests the extension bytes",
+                createdExtension,
+                parseMethodMessage.getExtensionBytes().getValue());
+        assertArrayEquals("Tests the extension type",
+                ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue(),
+                parseMethodMessage.getExtensionType().getValue());
+        assertEquals("Tests the signature and hash algorithms length",
+                new Integer(4), parseMethodMessage.getSignatureAndHashAlgorithmsLength().getValue());
+
+        ByteArrayOutputStream parsedAlgorithms = new ByteArrayOutputStream();
+        for (SignatureAndHashAlgorithm alg : parseMethodMessage.getSignatureAndHashAlgorithmsConfig()) {
+            parsedAlgorithms.write(alg.getByteValue());
+        }
+        /* The ArrayList can't be compared directly due to the hashmap in the datatype SignatureAndHashAlgorithm
+        assertEquals detects different ArrayLists, even if the values are identical. */
+        assertArrayEquals("Tests the set signature and hash algorithms config",
+                originalAlgorithms, parsedAlgorithms.toByteArray());
+
+        assertArrayEquals("Tests the set signature and hash algorithms bytes",
+                originalAlgorithms, parseMethodMessage.getSignatureAndHashAlgorithms().getValue());
+        assertEquals("Tests the extension length",
+                (int) 6, (int) parseMethodMessage.getExtensionLength().getValue());
+    }
+}
