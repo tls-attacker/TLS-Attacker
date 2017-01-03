@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.helper;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.logging.Logger;
 
 /**
  * A FileFilter that ignores .gitignore files
@@ -32,7 +31,5 @@ public class GitIgnoreFileFilter implements FilenameFilter {
     public boolean accept(File dir, String name) {
         return !name.equals(".gitignore");
     }
-
-    private static final Logger LOG = Logger.getLogger(GitIgnoreFileFilter.class.getName());
 
 }

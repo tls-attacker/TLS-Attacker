@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  * Exception that indicates that the server did not start properly
  * 
@@ -20,6 +18,4 @@ public class ServerDoesNotStartException extends RuntimeException {
     public ServerDoesNotStartException(String message) {
         super(message);
     }
-
-    private static final Logger LOG = Logger.getLogger(ServerDoesNotStartException.class.getName());
 }

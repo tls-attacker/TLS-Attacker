@@ -11,7 +11,6 @@ package tlsattacker.fuzzer.certificate;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -73,7 +72,5 @@ public class ServerCertificateStructure implements Serializable {
         }
         return Objects.equals(this.certificateFile, other.certificateFile);
     }
-
-    private static final Logger LOG = Logger.getLogger(ServerCertificateStructure.class.getName());
 
 }

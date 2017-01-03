@@ -9,22 +9,14 @@
 package tlsattacker.fuzzer.mutator;
 
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
-import tlsattacker.fuzzer.mutator.Mutator;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.util.Random;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
-import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 
 /**
  * A mutator implementation that does not modify the TestVectors
@@ -65,13 +57,13 @@ public class NoneMutator extends Mutator {
             try {
                 tempVector = chooseRandomTestVectorFromFolder(new File(config.getOutputFolder() + "/good/"));
             } catch (IOException | JAXBException | XMLStreamException ex) {
-                LOG.log(Level.SEVERE, "Could not read good TestVector", ex);
+                LOGGER.error("Could not read good TestVector", ex);
             }
         } else if (archiveVectorsExist()) {
             try {
                 tempVector = chooseRandomTestVectorFromFolder(new File(config.getArchiveFolder()));
             } catch (IOException | JAXBException | XMLStreamException ex) {
-                LOG.log(Level.SEVERE, "Could not read archive TestVector", ex);
+                LOGGER.error("Could not read archive TestVector", ex);
             }
         }
         if (tempVector == null) {
@@ -84,6 +76,4 @@ public class NoneMutator extends Mutator {
         return tempVector;
 
     }
-
-    private static final Logger LOG = Logger.getLogger(NoneMutator.class.getName());
 }

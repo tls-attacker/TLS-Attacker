@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -177,5 +176,4 @@ public class TestVector implements Serializable {
                 + executorType + '}';
     }
 
-    private static final Logger LOG = Logger.getLogger(TestVector.class.getName());
 }

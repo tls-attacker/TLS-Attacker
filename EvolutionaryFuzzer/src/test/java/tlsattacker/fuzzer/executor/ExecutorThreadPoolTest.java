@@ -9,19 +9,10 @@
 package tlsattacker.fuzzer.executor;
 
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.executor.ExecutorThreadPool;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
-import tlsattacker.fuzzer.mutator.SimpleMutator;
-import de.rub.nds.tlsattacker.util.FileHelper;
-import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
-import tlsattacker.fuzzer.analyzer.AnalyzerThread;
-import tlsattacker.fuzzer.analyzer.RuleAnalyzer;
 
 /**
  * 
@@ -40,6 +31,7 @@ public class ExecutorThreadPoolTest {
 
     /**
      *
+     * @throws java.io.IOException
      */
     @Test
     public void testConstructor() throws IOException {
@@ -62,7 +54,5 @@ public class ExecutorThreadPoolTest {
      */
     public void tearDown() {
     }
-
-    private static final Logger LOG = Logger.getLogger(ExecutorThreadPoolTest.class.getName());
 
 }

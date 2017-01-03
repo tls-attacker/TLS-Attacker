@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.workflow;
 
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import org.jgrapht.graph.DirectedMultigraph;
 
 /**
@@ -93,11 +92,6 @@ public class WorkflowGraphBuilder {
         return null;
     }
 
-    /**
-     *
-     */
     private WorkflowGraphBuilder() {
     }
-
-    private static final Logger LOG = Logger.getLogger(WorkflowGraphBuilder.class.getName());
 }

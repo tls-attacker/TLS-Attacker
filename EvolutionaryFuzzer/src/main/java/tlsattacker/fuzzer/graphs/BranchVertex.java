@@ -9,7 +9,6 @@
 package tlsattacker.fuzzer.graphs;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * A class which represents a node from a branch.
@@ -85,5 +84,4 @@ public class BranchVertex {
         return "CountVertice{" + "probeID=" + probeID + '}';
     }
 
-    private static final Logger LOG = Logger.getLogger(BranchVertex.class.getName());
 }

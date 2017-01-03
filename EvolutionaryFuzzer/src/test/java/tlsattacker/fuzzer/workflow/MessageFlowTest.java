@@ -11,7 +11,6 @@ package tlsattacker.fuzzer.workflow;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
-import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import org.junit.Test;
@@ -41,7 +40,5 @@ public class MessageFlowTest {
         instance2 = new MessageFlow(ServerHelloDoneMessage.class, ConnectionEnd.CLIENT);
         assertNotSame("Failure: MessageFlows have different MessageClasses", instance, instance2);
     }
-
-    private static final Logger LOG = Logger.getLogger(MessageFlowTest.class.getName());
 
 }

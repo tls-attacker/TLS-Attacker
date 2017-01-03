@@ -13,8 +13,6 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
@@ -45,10 +43,11 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
-import tlsattacker.fuzzer.controller.ExecutorFactory;
 
 /**
  * This ThreadPool manages the Threads for the different Executors and is
@@ -57,6 +56,8 @@ import tlsattacker.fuzzer.controller.ExecutorFactory;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ExecutorThreadPool implements Runnable {
+
+    private static final Logger LOGGER = LogManager.getLogger(ExecutorThreadPool.class);
 
     /**
      * Number of Threads which execute FuzzingVectors
@@ -121,14 +122,14 @@ public class ExecutorThreadPool implements Runnable {
 
         File f = new File(config.getArchiveFolder());
         if (f.listFiles().length == 0) {
-            LOG.log(Level.INFO, "Creating Fuzzer Seed:");
+            LOGGER.info("Creating Fuzzer Seed:");
             List<TestVector> list = generateSeed();
             for (TestVector vector : list) {
                 try {
                     TestVectorSerializer.write(new File(config.getArchiveFolder()
                             + LogFileIDManager.getInstance().getFilename()), vector);
                 } catch (JAXBException | IOException ex) {
-                    LOG.log(Level.SEVERE, "Could not write TestVector to archive Folder!", ex);
+                    LOGGER.error("Could not write TestVector to archive Folder!", ex);
                 }
             }
         }
@@ -212,12 +213,11 @@ public class ExecutorThreadPool implements Runnable {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-                                    "Thread interruiped while the ThreadPool is paused.", ex);
+                            LOGGER.error("Thread interruiped while the ThreadPool is paused.", ex);
                         }
                     }
                 } catch (Throwable ex) {
-                    LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
+                    LOGGER.warn("Exception encountered with TestVector", ex);
                 }
             }
 
@@ -239,12 +239,11 @@ public class ExecutorThreadPool implements Runnable {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(ExecutorThreadPool.class.getName()).log(Level.SEVERE,
-                                    "Thread interruiped while the ThreadPool is paused.", ex);
+                            LOGGER.error("Thread interruiped while the ThreadPool is paused.", ex);
                         }
                     }
                 } catch (Throwable ex) {
-                    LOG.log(Level.WARNING, "Exception encountered with TestVector", ex);
+                    LOGGER.warn("Exception encountered with TestVector", ex);
                 }
             }
         }
@@ -277,5 +276,4 @@ public class ExecutorThreadPool implements Runnable {
         return executor.getActiveCount() > 0;
     }
 
-    private static final Logger LOG = Logger.getLogger(ExecutorThreadPool.class.getName());
 }

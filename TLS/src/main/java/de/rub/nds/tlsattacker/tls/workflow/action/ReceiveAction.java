@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -46,7 +44,5 @@ public class ReceiveAction extends MessageAction {
         executed = true;
 
     }
-
-    private static final Logger LOG = Logger.getLogger(ReceiveAction.class.getName());
 
 }

@@ -15,11 +15,8 @@ import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -113,7 +110,5 @@ public class IsTimeoutRuleTest {
     public void testGetConfig() {
         assertNotNull(rule.getConfig());
     }
-
-    private static final Logger LOG = Logger.getLogger(IsTimeoutRuleTest.class.getName());
 
 }

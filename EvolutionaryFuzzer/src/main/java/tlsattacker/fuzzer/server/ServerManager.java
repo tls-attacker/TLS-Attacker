@@ -15,8 +15,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 
 /**
@@ -25,6 +25,8 @@ import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerManager {
+
+    private static final Logger LOGGER = LogManager.getLogger(ServerManager.class);
 
     /**
      * Singleton
@@ -68,22 +70,23 @@ public class ServerManager {
      * 
      * @param config
      *            Config file used to find the correct config folder
+     * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
      */
     public void init(FuzzerGeneralConfig config) throws FuzzerConfigurationException {
         this.config = config;
         File file = new File(config.getServerCommandFromFile());
         if (!file.exists()) {
-            LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
-            LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
+            LOGGER.info("Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+            LOGGER.info("You can create new Configuration files with the command new-server");
             throw new FuzzerConfigurationException("Server not properly configured!");
 
         } else {
             if (file.isDirectory()) {
                 File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
                 if (filesInDic.length == 0) {
-                    LOG.log(Level.INFO, "No Server Configurations Files in the Server Config Folder:{0}",
+                    LOGGER.info("No Server Configurations Files in the Server Config Folder:{0}",
                             file.getAbsolutePath());
-                    LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
+                    LOGGER.info("You can create new Configuration files with the command new-server");
                     throw new FuzzerConfigurationException("Server not properly configured!");
                 } else {
                     // ServerConfig is a Folder
@@ -94,13 +97,13 @@ public class ServerManager {
                                 addServer(server);
                             }
                         } catch (Exception ex) {
-                            LOG.log(Level.SEVERE, "Could not read Server!", ex);
+                            LOGGER.error(ex.getLocalizedMessage(), ex);
                         }
                     }
                 }
             } else {
-                LOG.log(Level.INFO, "Could not find Server Configuration Files:{0}", file.getAbsolutePath());
-                LOG.log(Level.INFO, "You can create new Configuration files with the command new-server");
+                LOGGER.info("Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+                LOGGER.info("You can create new Configuration files with the command new-server");
                 throw new FuzzerConfigurationException("Server not properly configured!");
             }
         }
@@ -238,6 +241,4 @@ public class ServerManager {
         private ServerManagerHolder() {
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(ServerManager.class.getName());
 }

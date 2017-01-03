@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.Level;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -143,8 +142,6 @@ public class SingleTLSExecutor extends Executor {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(SingleTLSExecutor.class.getName());
-
     @Override
     public TestVectorResult call() throws Exception {
         AgentResult result = null;
@@ -180,7 +177,7 @@ public class SingleTLSExecutor extends Executor {
                         // It may happen that the implementation is not ready
                         // yet
                         if (time + fc.getBootTimeout() < System.currentTimeMillis()) {
-                            LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
+                            LOGGER.debug("Could not start Server! Trying to Restart it!");
                             agent.applicationStop();
                             agent.applicationStart();
                             time = System.currentTimeMillis();
@@ -230,17 +227,17 @@ public class SingleTLSExecutor extends Executor {
                 // Skip Workflows we dont support yet
             } catch (ServerDoesNotStartException E) {
                 timeout = true; // TODO
-            } catch (Throwable E) {
+            } catch (Throwable e) {
                 File f = new File(config.getOutputFaultyFolder() + LogFileIDManager.getInstance().getFilename());
 
                 try {
                     TestVectorSerializer.write(f, testVector);
-                } catch (JAXBException | IOException Ex) {
-                    LOG.log(java.util.logging.Level.INFO, "Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
-                    Ex.printStackTrace();
+                } catch (JAXBException | IOException ex) {
+                    LOGGER.info("Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
+                    LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
-                LOG.log(java.util.logging.Level.INFO, "File:{0}", f.getName());
-                E.printStackTrace();
+                LOGGER.info("File:{0}", f.getName());
+                LOGGER.debug(e.getLocalizedMessage(), e);
             } finally {
                 if (transportHandler != null) {
                     transportHandler.closeConnection();

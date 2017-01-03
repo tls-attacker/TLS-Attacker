@@ -16,15 +16,12 @@ import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.FileHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,9 +34,6 @@ import org.junit.rules.TemporaryFolder;
  */
 public class IsGoodRuleTest {
 
-    /**
-     *
-     */
     private IsGoodRule rule;
 
     @Rule
@@ -55,6 +49,7 @@ public class IsGoodRuleTest {
 
     /**
      *
+     * @throws java.io.IOException
      */
     @Before
     public void setUp() throws IOException {
@@ -186,7 +181,5 @@ public class IsGoodRuleTest {
     public void testGetConfig() {
         assertNotNull(rule.getConfig());
     }
-
-    private static final Logger LOG = Logger.getLogger(IsGoodRuleTest.class.getName());
 
 }

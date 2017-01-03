@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.result.MergeResult;
 
 /**
@@ -104,5 +103,4 @@ public class BranchTrace implements Serializable {
         return edgeMap.size();
     }
 
-    private static final Logger LOG = Logger.getLogger(BranchTrace.class.getName());
 }

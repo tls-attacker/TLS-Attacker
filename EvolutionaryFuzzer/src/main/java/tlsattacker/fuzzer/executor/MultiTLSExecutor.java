@@ -8,11 +8,8 @@
  */
 package tlsattacker.fuzzer.executor;
 
-import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.util.LinkedList;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.util.List;
@@ -70,7 +67,7 @@ public class MultiTLSExecutor extends Executor {
             occupyResources();
             for (TLSServer server : servers) {
                 try {
-                    //Get a copy of the TestVector
+                    // Get a copy of the TestVector
                     TestVector tempTestVector = TestVectorSerializer.copyTestVector(testVector);
                     SingleTLSExecutor singleExecutor = new SingleTLSExecutor(config, tempTestVector, server);
                     TestVectorResult result = singleExecutor.call();
@@ -100,6 +97,4 @@ public class MultiTLSExecutor extends Executor {
             }
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(MultiTLSExecutor.class.getName());
 }

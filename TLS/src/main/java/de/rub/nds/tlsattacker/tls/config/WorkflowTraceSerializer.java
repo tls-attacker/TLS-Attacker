@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -35,12 +33,16 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public final class WorkflowTraceSerializer {
+
+    static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializer.class);
 
     /**
      * context initialization is expensive, we need to do that only once
@@ -140,15 +142,8 @@ public final class WorkflowTraceSerializer {
                     trace = WorkflowTraceSerializer.read(new FileInputStream(file));
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
-                } catch (JAXBException ex) {
-
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                } catch (XMLStreamException ex) {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
-                } catch (Throwable ex) {
-                    Logger.getLogger(WorkflowTraceSerializer.class.getName()).log(Level.SEVERE, f.getName(), ex);
+                } catch (JAXBException | IOException | XMLStreamException ex) {
+                    LOGGER.error(ex.getLocalizedMessage(), ex);
                 }
             }
             return list;
@@ -157,7 +152,5 @@ public final class WorkflowTraceSerializer {
         }
 
     }
-
-    private static final Logger LOG = Logger.getLogger(WorkflowTraceSerializer.class.getName());
 
 }

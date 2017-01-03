@@ -9,8 +9,8 @@
 package tlsattacker.fuzzer.executor;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.RunnableFuture;
-import tlsattacker.fuzzer.result.AgentResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
@@ -29,6 +29,8 @@ import tlsattacker.fuzzer.result.TestVectorResult;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Executor implements Callable<TestVectorResult> {
+
+    static final Logger LOGGER = LogManager.getLogger(Executor.class);
 
     @Override
     public abstract TestVectorResult call() throws Exception;

@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.exceptions.FatalAertMessageException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -26,8 +24,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This ActionExecutor tries to perform Actions in a way that imitates a TLS
@@ -90,7 +86,7 @@ public class TLSActionExecutor extends ActionExecutor {
         } catch (IOException ex) {
             // TODO
         } catch (Exception ex) {
-            LOG.log(Level.INFO, "Uncaught exception while parsing the received Messages", ex);
+            LOGGER.info("Uncaught exception while parsing the received Messages", ex);
         }
         return receivedList;
 
@@ -109,7 +105,7 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     private void sendData(TransportHandler handler, MessageBytesCollector messageBytesCollector) throws IOException {
         if (messageBytesCollector.getRecordBytes().length != 0) {
-            LOG.log(Level.FINER, "Records going to be sent: {}",
+            LOGGER.debug("Records going to be sent: {}",
                     ArrayConverter.bytesToHexString(messageBytesCollector.getRecordBytes()));
             handler.sendData(messageBytesCollector.getRecordBytes());
             messageBytesCollector.flushRecordBytes();
@@ -125,7 +121,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @return Prepared message bytes for the ProtocolMessage
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
-        LOG.log(Level.FINER, "Preparing the following protocol message to send: {}", message.getClass());
+        LOGGER.debug("Preparing the following protocol message to send: {}", message.getClass());
         ProtocolMessageHandler handler = message.getProtocolMessageHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage();
         return protocolMessageBytes;
@@ -273,7 +269,7 @@ public class TLSActionExecutor extends ActionExecutor {
             } else {
                 pmh.initializeProtocolMessage();
                 dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
-                LOG.log(Level.FINE, "The following message was parsed: {}", pmh.getProtocolMessage().toString());
+                LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
                 receivedMessages.add(pmh.getProtocolMessage());
                 if (receivedFatalAlert(pmh)) {
                     if (!context.isFuzzingMode()) {
@@ -296,7 +292,7 @@ public class TLSActionExecutor extends ActionExecutor {
         if (protocolMessageHandler.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = (AlertMessage) protocolMessageHandler.getProtocolMessage();
             if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-                LOG.log(Level.FINE, "The workflow received a FATAL error");
+                LOGGER.debug("The workflow received a FATAL error");
                 return true;
             }
         }
@@ -371,5 +367,4 @@ public class TLSActionExecutor extends ActionExecutor {
         return records;
     }
 
-    private static final Logger LOG = Logger.getLogger(TLSActionExecutor.class.getName());
 }

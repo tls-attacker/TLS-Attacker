@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +48,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 // TODO in Config auslagern und exception handling Ã¼bernehmen
                 digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
             } catch (NoSuchAlgorithmException ex) {
-                java.util.logging.Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
         byte[] handshakeMessagesHash = digest.digest();

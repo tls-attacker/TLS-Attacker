@@ -11,14 +11,11 @@ package de.rub.nds.tlsattacker.tls.protocol.ccs;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.NoSuchPaddingException;
 
 /**
@@ -73,12 +70,10 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
                                     + "install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files. Stupid, I know.",
                             ex);
                 } else {
-                    LOG.log(Level.FINE, "Changed Ciphersuite on the fly");
+                    LOGGER.debug("Changed Ciphersuite on the fly");
                     tlsContext.setSelectedCipherSuite(CipherSuite.getRandom());
                 }
             }
         } while (tlsRecordBlockCipher == null);
     }
-
-    private static final Logger LOG = Logger.getLogger(ChangeCipherSpecHandler.class.getName());
 }

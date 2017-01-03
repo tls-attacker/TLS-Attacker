@@ -10,15 +10,18 @@ package de.rub.nds.tlsattacker.tls.protocol;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
+
+    protected static final Logger LOGGER = LogManager.getLogger(ProtocolMessageHandler.class);
 
     /**
      * tls context

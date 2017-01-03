@@ -49,13 +49,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import tlsattacker.fuzzer.modification.AddExtensionModification;
 import tlsattacker.fuzzer.modification.Modification;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
 import tlsattacker.fuzzer.testhelper.MockedRandom;
 import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
 
@@ -68,9 +66,6 @@ public class FuzzingHelperTest {
     private FuzzingHelper fuzzingHelper;
     private MockedRandom random;
 
-    /**
-     *
-     */
     public FuzzingHelperTest() {
     }
 
@@ -384,7 +379,5 @@ public class FuzzingHelperTest {
         fuzzingHelper.executeModifiableVariableModification((ModifiableVariableHolder) (field.getObject()),
                 field.getField());
     }
-
-    private static final Logger LOG = Logger.getLogger(FuzzingHelperTest.class.getName());
 
 }

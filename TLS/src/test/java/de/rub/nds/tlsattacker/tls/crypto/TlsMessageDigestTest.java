@@ -10,16 +10,13 @@ package de.rub.nds.tlsattacker.tls.crypto;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.logging.log4j.LogManager;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
@@ -27,17 +24,14 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class TlsMessageDigestTest {
 
-    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(TlsMessageDigest.class);
+    private static final Logger LOGGER = LogManager.getLogger(TlsMessageDigest.class);
     private TlsMessageDigest digest1; // TLS10
     private TlsMessageDigest digest2; // TLS12
-    private String testAlgorithm1 = "MD5";
-    private int testAlgorithm1Length = 16;
-    private String testAlgorithm2 = "SHA1";
-    private int testAlgorithm2Length = 20;
-    private String testAlgorithm3 = "SHA-256";
-    private int testAlgorithm3Length = 32;
-    private byte[] testarray = { 3, 0, 5, 6 };
-    private byte[] testarray2 = { 1, 2, 3, 4, 5, 6, 7 };
+    private final int testAlgorithm1Length = 16;
+    private final int testAlgorithm2Length = 20;
+    private final int testAlgorithm3Length = 32;
+    private final byte[] testarray = { 3, 0, 5, 6 };
+    private final byte[] testarray2 = { 1, 2, 3, 4, 5, 6, 7 };
 
     /**
      * Test for the Different Constructors
@@ -146,7 +140,7 @@ public class TlsMessageDigestTest {
             digestTest.setRawBytes(result);
             assertArrayEquals(digestTest.digest(), digresult);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         digest1.setRawBytes(testarray);
         digest1.update(testarray2); // sollte byte Array anhängen
@@ -166,7 +160,7 @@ public class TlsMessageDigestTest {
             digestTest.setRawBytes(result);
             assertArrayEquals(digestTest.digest(), digresult);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         digest1.setRawBytes(testarray);
         int testLength = 2;
@@ -190,7 +184,7 @@ public class TlsMessageDigestTest {
             digestTest.setRawBytes(result);
             assertArrayEquals(digestTest.digest(), digresult);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(TlsMessageDigestTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -216,7 +210,7 @@ public class TlsMessageDigestTest {
             dig = corruptedDigest.digest();
 
         } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         // testen ob das concatinieren klappt
         Exception e = null;

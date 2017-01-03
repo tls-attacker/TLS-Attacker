@@ -12,13 +12,9 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 

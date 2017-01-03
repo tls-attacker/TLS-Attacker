@@ -10,7 +10,6 @@ package tlsattacker.fuzzer.agent;
 
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import java.io.File;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
@@ -23,29 +22,6 @@ import org.junit.experimental.categories.Category;
  */
 public class PINTest {
 
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    /**
-     *
-     */
-    public PINTest() {
-    }
-
-    /**
-     *
-     */
     @Test
     @Category(IntegrationTest.class)
     public void testPinExists() {
@@ -55,6 +31,4 @@ public class PINTest {
         assertTrue("Failure: Could not find PIN script", f.exists());
 
     }
-
-    private static final Logger LOG = Logger.getLogger(PINTest.class.getName());
 }

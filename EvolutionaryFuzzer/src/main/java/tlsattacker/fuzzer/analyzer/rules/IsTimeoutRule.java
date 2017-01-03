@@ -14,8 +14,6 @@ import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
@@ -76,7 +74,7 @@ public class IsTimeoutRule extends Rule {
             f.createNewFile();
             TestVectorSerializer.write(f, result.getVector());
         } catch (JAXBException | IOException E) {
-            LOG.log(Level.SEVERE,
+            LOGGER.error(
                     "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
                             + f.getAbsolutePath(), E);
         }
@@ -111,5 +109,4 @@ public class IsTimeoutRule extends Rule {
         return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(IsTimeoutRule.class.getName());
 }

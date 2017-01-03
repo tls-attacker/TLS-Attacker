@@ -16,7 +16,6 @@ import tlsattacker.fuzzer.result.AgentResult;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 
 /**
@@ -149,5 +148,4 @@ public class AnalyzeModificationRule extends Rule {
         return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalyzeGoodModificationRule.class.getName());
 }

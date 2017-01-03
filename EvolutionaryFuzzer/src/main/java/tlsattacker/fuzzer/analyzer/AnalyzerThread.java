@@ -11,8 +11,8 @@ package tlsattacker.fuzzer.analyzer;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
@@ -21,6 +21,8 @@ import tlsattacker.fuzzer.result.TestVectorResult;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AnalyzerThread extends Thread {
+
+    static final Logger LOGGER = LogManager.getLogger(AnalyzerThread.class);
 
     /**
      * The analyzer used to analyze the Results
@@ -58,10 +60,8 @@ public class AnalyzerThread extends Thread {
                         TestVectorResult result = null;
                         try {
                             result = (TestVectorResult) future.get();
-                        } catch (InterruptedException ex) {
-                            LOG.log(Level.SEVERE, "Could not retrieve Result from finished Future", ex);
-                        } catch (ExecutionException ex) {
-                            LOG.log(Level.SEVERE, "Could not retrieve Result from finished Future", ex);
+                        } catch (InterruptedException | ExecutionException ex) {
+                            LOGGER.error("Could not retrieve Result from finished Future", ex);
                         }
                         if (result != null) {
                             analyzer.analyze(result);
@@ -76,12 +76,10 @@ public class AnalyzerThread extends Thread {
                         wait();
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(AnalyzerThread.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex.getLocalizedMessage(), ex);
                 }
             }
         }
     }
-
-    private static final Logger LOG = Logger.getLogger(AnalyzerThread.class.getName());
 
 }

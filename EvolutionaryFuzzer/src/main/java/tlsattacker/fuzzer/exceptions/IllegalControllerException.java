@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.exceptions;
 
-import java.util.logging.Logger;
-
 /**
  * Exception thrown when an undefined Controller is configured
  * 
@@ -20,7 +18,5 @@ public class IllegalControllerException extends Exception {
     public IllegalControllerException(String string) {
         super(string);
     }
-
-    private static final Logger LOG = Logger.getLogger(IllegalControllerException.class.getName());
 
 }

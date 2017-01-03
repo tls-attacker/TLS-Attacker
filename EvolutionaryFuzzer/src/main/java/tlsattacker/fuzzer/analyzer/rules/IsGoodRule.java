@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
@@ -77,10 +75,9 @@ public class IsGoodRule extends Rule {
             }
             outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
         } catch (IOException ex) {
-            Logger.getLogger(AnalyzeTimeRule.class.getName())
-                    .log(Level.SEVERE,
-                            "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
-                            ex);
+            LOGGER.error(
+                    "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
+                    ex);
         }
     }
 
@@ -98,7 +95,7 @@ public class IsGoodRule extends Rule {
         r = branch.merge(result.getBranchTrace());
 
         if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
-            LOG.log(Level.FINE, "Found a GoodTrace:{0}", r.toString());
+            LOGGER.debug("Found a GoodTrace:{0}", r.toString());
             return true;
         } else {
             return false;
@@ -130,8 +127,9 @@ public class IsGoodRule extends Rule {
                 f.createNewFile();
                 TestVectorSerializer.write(f, result.getVector());
             } catch (JAXBException | IOException E) {
-                LOG.log(Level.SEVERE, "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
-                        + f.getAbsolutePath(), E);
+                LOGGER.error(
+                        "Could not write Results to Disk! Does the Fuzzer have the rights to write to "
+                                + f.getAbsolutePath(), E);
             }
         }
         result.getVector().getTrace().makeGeneric();
@@ -168,5 +166,4 @@ public class IsGoodRule extends Rule {
         return config;
     }
 
-    private static final Logger LOG = Logger.getLogger(IsGoodRule.class.getName());
 }

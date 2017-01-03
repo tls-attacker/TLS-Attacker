@@ -8,9 +8,7 @@
  */
 package tlsattacker.fuzzer.agent;
 
-import tlsattacker.fuzzer.agent.Agent;
 import java.io.File;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.AgentResult;
@@ -80,10 +78,5 @@ public class BlindAgent extends Agent {
 
         return result;
     }
-
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(BlindAgent.class.getName());
 
 }

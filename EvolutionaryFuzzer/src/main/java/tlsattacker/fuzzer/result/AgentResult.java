@@ -8,7 +8,6 @@
  */
 package tlsattacker.fuzzer.result;
 
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -142,5 +141,4 @@ public class AgentResult {
         return vector;
     }
 
-    private static final Logger LOG = Logger.getLogger(AgentResult.class.getName());
 }

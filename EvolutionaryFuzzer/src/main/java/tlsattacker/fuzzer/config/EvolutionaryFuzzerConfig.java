@@ -14,7 +14,6 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.validators.PositiveInteger;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import java.io.File;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXB;
 import tlsattacker.fuzzer.controller.CommandLineController;
 import tlsattacker.fuzzer.executor.MultiTLSExecutor;
@@ -239,5 +238,4 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
 
     }
 
-    private static final Logger LOG = Logger.getLogger(EvolutionaryFuzzerConfig.class.getName());
 }

@@ -8,12 +8,9 @@
  */
 package tlsattacker.fuzzer.agent;
 
-import tlsattacker.fuzzer.agent.Agent;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.graphs.Edge;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
@@ -27,6 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
@@ -36,10 +35,7 @@ import java.util.Set;
  */
 public class AFLAgent extends Agent {
 
-    /**
-     * Logger
-     */
-    private static final Logger LOG = Logger.getLogger(AFLAgent.class.getName());
+    static final Logger LOGGER = LogManager.getLogger(AFLAgent.class);
 
     /**
      * The name of the Agent when referred by command line
@@ -86,15 +82,14 @@ public class AFLAgent extends Agent {
             }
             return new BranchTrace(verticesSet, edgeMap);
         } catch (IOException ex) {
-            Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE,
-                    "Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
+            LOGGER.error("Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
         } finally {
             try {
                 if (br != null) {
                     br.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(AFLAgent.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
         return new BranchTrace();
@@ -146,11 +141,11 @@ public class AFLAgent extends Agent {
             String tail = tail(branchTrace);
             switch (tail) {
                 case "CRASH":
-                    LOG.log(Level.INFO, "Found a Crash!");
+                    LOGGER.info("Found a Crash!");
                     crash = true;
                     break;
                 case "TIMEOUT":
-                    LOG.log(Level.INFO, "Found a Timeout!");
+                    LOGGER.info("Found a Timeout!");
                     timeout = true;
                     break;
             }
@@ -161,7 +156,7 @@ public class AFLAgent extends Agent {
 
             return result;
         } else {
-            LOG.log(Level.FINE, "Failed to collect instrumentation output");
+            LOGGER.debug("Failed to collect instrumentation output");
             return new AgentResult(crash, timeout, startTime, startTime, new BranchTrace(), vector, LogFileIDManager
                     .getInstance().getFilename(), server);
         }

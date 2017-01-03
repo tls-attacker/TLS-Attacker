@@ -8,13 +8,10 @@
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXB;
 
 /**
  * A mutator super class that modifies Certificates.
@@ -22,6 +19,8 @@ import javax.xml.bind.JAXB;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class CertificateMutator {
+
+    static final Logger LOGGER = LogManager.getLogger(CertificateMutator.class);
 
     /**
      * Returns a newly generated client certificate

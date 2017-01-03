@@ -30,14 +30,12 @@ import java.security.UnrecoverableKeyException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
-import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -64,12 +62,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
                     KeyPairGenerator keyGen = null;
                     try {
                         keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-                    } catch (NoSuchAlgorithmException ex) {
-                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(
-                                Level.SEVERE, null, ex);
-                    } catch (NoSuchProviderException ex) {
-                        java.util.logging.Logger.getLogger(RSAClientKeyExchangeHandler.class.getName()).log(
-                                Level.SEVERE, null, ex);
+                    } catch (NoSuchAlgorithmException | NoSuchProviderException ex) {
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                     bufferedKey = (RSAPublicKey) keyGen.genKeyPair().getPublic();
                 }

@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.Random;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.helper.GitIgnoreFileFilter;
@@ -28,6 +30,8 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Mutator {
+
+    static final Logger LOGGER = LogManager.getLogger(Mutator.class);
 
     /**
      * The config used

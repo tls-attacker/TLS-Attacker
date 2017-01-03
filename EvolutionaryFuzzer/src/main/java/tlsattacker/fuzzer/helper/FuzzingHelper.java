@@ -92,7 +92,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
@@ -106,6 +107,8 @@ import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FuzzingHelper {
+
+    private static final Logger LOGGER = LogManager.getLogger(FuzzingHelper.class);
 
     private Random random;
 
@@ -638,7 +641,7 @@ public class FuzzingHelper {
                     }
                 }
             } catch (IllegalAccessException | IllegalArgumentException ex) {
-                LOG.log(Level.SEVERE, "Could not access Field!", ex);
+                LOGGER.error("Could not access Field!", ex);
             }
         }
         return holders;
@@ -674,6 +677,4 @@ public class FuzzingHelper {
         this.random = random;
     }
 
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(FuzzingHelper.class
-            .getName());
 }

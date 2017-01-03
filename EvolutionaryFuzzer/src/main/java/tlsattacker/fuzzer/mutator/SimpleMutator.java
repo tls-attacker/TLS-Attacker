@@ -22,11 +22,9 @@ import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -86,13 +84,13 @@ public class SimpleMutator extends Mutator {
                 try {
                     tempVector = chooseRandomTestVectorFromFolder(new File("data/good/"));
                 } catch (IOException | JAXBException | XMLStreamException ex) {
-                    LOG.log(Level.SEVERE, "Could not read good TestVector", ex);
+                    LOGGER.error("Could not read good TestVector", ex);
                 }
             } else if (archiveVectorsExist()) {
                 try {
                     tempVector = chooseRandomTestVectorFromFolder(new File("archive/"));
                 } catch (IOException | JAXBException | XMLStreamException ex) {
-                    LOG.log(Level.SEVERE, "Could not read archive TestVector", ex);
+                    LOGGER.error("Could not read archive TestVector", ex);
                 }
             }
             if (tempVector == null) {
@@ -155,13 +153,13 @@ public class SimpleMutator extends Mutator {
             if (r.nextInt(100) <= simpleConfig.getModifyVariablePercentage()) {
                 List<ModifiableVariableField> variableList = fuzzingHelper
                         .getAllModifiableVariableFieldsRecursively(trace);
-                // LOG.log(Level.INFO, ""+trace.getProtocolMessages().size());
+                // LOGGER.info(""+trace.getProtocolMessages().size());
                 if (variableList.size() > 0) {
                     ModifiableVariableField field = variableList.get(r.nextInt(variableList.size()));
                     // String currentFieldName = field.getField().getName();
                     // String currentMessageName =
                     // field.getObject().getClass().getSimpleName();
-                    // LOG.log(Level.INFO, "Fieldname:{0} Message:{1}", new
+                    // LOGGER.info("Fieldname:{0} Message:{1}", new
                     // Object[]{currentFieldName, currentMessageName});
                     tempVector.addModification(fuzzingHelper.executeModifiableVariableModification(
                             (ModifiableVariableHolder) field.getObject(), field.getField()));
@@ -176,5 +174,4 @@ public class SimpleMutator extends Mutator {
         return tempVector;
     }
 
-    private static final Logger LOG = Logger.getLogger(SimpleMutator.class.getName());
 }

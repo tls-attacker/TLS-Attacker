@@ -15,15 +15,10 @@ package tlsattacker.fuzzer.graphs;
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-import tlsattacker.fuzzer.graphs.Edge;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import tlsattacker.fuzzer.result.MergeResult;
 import java.util.HashMap;
@@ -38,56 +33,22 @@ import static org.junit.Assert.assertTrue;
  */
 public class BranchTest {
 
-    /**
-     *
-     */
-    private static final Logger LOG = Logger.getLogger(BranchTest.class.getName());
-
-    /**
-     *
-     */
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    /**
-     *
-     */
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    /**
-     *
-     */
     private BranchTrace tree;
 
-    /**
-     *
-     */
     public BranchTest() {
         tree = new BranchTrace();
     }
 
-    /**
-     *
-     */
     @Before
     public void setUp() {
         tree = new BranchTrace();
     }
 
-    /**
-     *
-     */
     @After
     public void tearDown() {
         tree = null;
     }
 
-    /**
-     *
-     */
     @Test
     public void testConstructor() {
 

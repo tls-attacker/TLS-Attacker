@@ -21,9 +21,7 @@ import tlsattacker.fuzzer.analyzer.rules.AnalyzeTimeRule;
 import tlsattacker.fuzzer.analyzer.rules.IsCrashRule;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.result.TestVectorResult;
@@ -138,5 +136,4 @@ public class RuleAnalyzer extends Analyzer {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(RuleAnalyzer.class.getName());
 }

@@ -13,8 +13,8 @@ import tlsattacker.fuzzer.helper.LogFileIDManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
 
 /**
@@ -24,6 +24,8 @@ import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSServer {
+
+    private static final Logger LOGGER = LogManager.getLogger(TLSServer.class);
 
     /**
      * Server process
@@ -279,7 +281,7 @@ public class TLSServer {
                 command = command.replace("[port]", "" + port);
                 command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
                 command = command.replace("[key]", "" + keyFile.getAbsolutePath());
-                LOG.log(Level.FINE, "Starting Server:{0}", command);
+                LOGGER.debug("Starting Server:{0}", command);
                 long time = System.currentTimeMillis();
                 Runtime rt = Runtime.getRuntime();
                 p = rt.exec(command);
@@ -299,14 +301,14 @@ public class TLSServer {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(TLSServer.class.getName()).log(Level.SEVERE, null, ex);
+                        LOGGER.error(ex.getLocalizedMessage(), ex);
                     }
                     if (System.currentTimeMillis() - time >= config.getBootTimeout()) {
                         throw new ServerDoesNotStartException("Timeout in StreamGobler, Server never finished starting");
                     }
                 }
-            } catch (IOException t) {
-                t.printStackTrace();
+            } catch (IOException ex) {
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
 
         } else {
@@ -360,7 +362,7 @@ public class TLSServer {
      */
     public synchronized void stop() {
         try {
-            LOG.log(Level.FINE, "Stopping Server");
+            LOGGER.debug("Stopping Server");
             if (p != null) {
                 p.destroy();
                 p.waitFor();
@@ -383,5 +385,4 @@ public class TLSServer {
         this.config = config;
     }
 
-    private static final Logger LOG = Logger.getLogger(TLSServer.class.getName());
 }

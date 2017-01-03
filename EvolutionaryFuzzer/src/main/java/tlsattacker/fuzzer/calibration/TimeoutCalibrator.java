@@ -32,8 +32,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 
@@ -44,6 +44,8 @@ import tlsattacker.fuzzer.exceptions.IllegalAgentException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TimeoutCalibrator {
+
+    private static final Logger LOGGER = LogManager.getLogger(TimeoutCalibrator.class);
 
     /**
      * We try to find the lowest Timeout that does not alter with Workflow
@@ -89,7 +91,7 @@ public class TimeoutCalibrator {
      * @return Lowest timeout possible * gain factor
      */
     public int calibrateTimeout() {
-        LOG.log(Level.INFO, "Calibrating Timeout, this may take some time.");
+        LOGGER.info("Calibrating Timeout, this may take some time.");
         return (int) (getLowestTimoutGlobal() * gainFactor);
     }
 
@@ -103,16 +105,15 @@ public class TimeoutCalibrator {
         FixedCertificateMutator mutator = new FixedCertificateMutator(config);
 
         for (ServerCertificateStructure serverCert : mutator.getServerPairList()) {
-            LOG.log(Level.INFO, "Grabbing supported Ciphersuites for {0}", serverCert.getCertificateFile()
-                    .getAbsolutePath());
+            LOGGER.info("Grabbing supported Ciphersuites for {0}", serverCert.getCertificateFile().getAbsolutePath());
             List<CipherSuite> supportedList = getWorkingCiphersuites(serverCert);
-            LOG.log(Level.INFO, "Finished grabbing");
+            LOGGER.info("Finished grabbing");
 
             for (CipherSuite suite : supportedList) {
                 int localSmall = getSmallestTimeoutPossible(serverCert, suite);
-                LOG.log(Level.INFO, "Lowest Timeout for {0} is {1}", new Object[] { suite.name(), localSmall });
+                LOGGER.info("Lowest Timeout for {0} is {1}", new Object[] { suite.name(), localSmall });
                 if (localSmall > highestTimeout) {
-                    LOG.log(Level.INFO, "Found a new highest timeout!");
+                    LOGGER.info("Found a new highest timeout!");
                     highestTimeout = localSmall;
                 }
             }
@@ -133,7 +134,7 @@ public class TimeoutCalibrator {
         List<CipherSuite> ciperSuiteList = CipherSuite.getImplemented();
 
         for (CipherSuite ciphersuite : ciperSuiteList) {
-            LOG.log(Level.INFO, "Testing: {0}", ciphersuite.name());
+            LOGGER.info("Testing: {0}", ciphersuite.name());
             if (testCiphersuite(serverCerts, ciphersuite, limit)) {
                 workingCipherSuites.add(ciphersuite);
             }
@@ -163,7 +164,7 @@ public class TimeoutCalibrator {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException ex) {
-                Logger.getLogger(TimeoutCalibrator.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getLocalizedMessage(), ex);
             }
             GeneralConfig generalConfig = new GeneralConfig();
             generalConfig.setLogLevel(org.apache.logging.log4j.Level.OFF);
@@ -209,7 +210,7 @@ public class TimeoutCalibrator {
                 // It may happen that the implementation is not ready
                 // yet
                 if (time + this.config.getBootTimeout() < System.currentTimeMillis()) {
-                    LOG.log(java.util.logging.Level.FINE, "Could not start Server! Trying to Restart it!");
+                    LOGGER.debug("Could not start Server! Trying to Restart it!");
                     agent.applicationStop();
                     agent.applicationStart();
                     time = System.currentTimeMillis();
@@ -297,6 +298,4 @@ public class TimeoutCalibrator {
         return testedTimeout;
     }
 
-    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(TimeoutCalibrator.class
-            .getName());
 }

@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.io.Serializable;
 import java.util.Random;
-import java.util.logging.Logger;
 
 /**
  * The configuration file for the ActionExecutors used while fuzzing
@@ -69,6 +68,4 @@ public class ActionExecutorTypeConfig implements Serializable {
         }
 
     }
-
-    private static final Logger LOG = Logger.getLogger(ActionExecutorTypeConfig.class.getName());
 }

@@ -14,18 +14,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * An asymetric Streamreader, which reads a Stream, and marks when the output of
- * the Stream equals reaches a specific state. This Class is used to see if an
- * Implementation is already in a state, where it is able to see if the
+ * An asymmetric Streamreader, which reads a Stream, and marks when the output
+ * of the Stream equals reaches a specific state. This Class is used to see if
+ * an Implementation is already in a state, where it is able to see if the
  * implementation is ready to accept incoming connections
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 class StreamGobbler extends Thread {
+
+    static final Logger LOGGER = LogManager.getLogger(StreamGobbler.class);
 
     /**
      * Stream to read from
@@ -66,7 +68,7 @@ class StreamGobbler extends Thread {
     }
 
     /**
-     * Starts reading from the Stream and if the accpeted String is read, the
+     * Starts reading from the Stream and if the accepted String is read, the
      * Server is considered to have started
      */
     @Override
@@ -89,7 +91,7 @@ class StreamGobbler extends Thread {
                 } else {
 
                 }
-                LOG.log(Level.FINEST, line);
+                LOGGER.debug(line);
             }
             if (pw != null) {
                 pw.flush();
@@ -106,12 +108,12 @@ class StreamGobbler extends Thread {
         try {
             os.close();
         } catch (IOException ex) {
-            Logger.getLogger(StreamGobbler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         try {
             is.close();
         } catch (IOException ex) {
-            Logger.getLogger(StreamGobbler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -123,6 +125,4 @@ class StreamGobbler extends Thread {
     public boolean accepted() {
         return hasAccepted;
     }
-
-    private static final Logger LOG = Logger.getLogger(StreamGobbler.class.getName());
 }

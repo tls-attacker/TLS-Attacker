@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.graphs;
 
-import java.util.logging.Logger;
-
 /**
  * An implementation of JGrapgTs default edge which carries a counter.
  * 
@@ -58,6 +56,4 @@ public class CountEdge extends org.jgrapht.graph.DefaultEdge {
         return super.clone(); // To change body of generated methods, choose
         // Tools | Templates.
     }
-
-    private static final Logger LOG = Logger.getLogger(CountEdge.class.getName());
 }

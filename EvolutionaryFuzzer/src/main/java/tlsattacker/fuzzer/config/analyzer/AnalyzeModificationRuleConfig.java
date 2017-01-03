@@ -8,7 +8,6 @@
  */
 package tlsattacker.fuzzer.config.analyzer;
 
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,7 +21,5 @@ public class AnalyzeModificationRuleConfig extends RuleConfig {
     public AnalyzeModificationRuleConfig() {
         super(null);
     }
-
-    private static final Logger LOG = Logger.getLogger(AnalyzeModificationRuleConfig.class.getName());
 
 }

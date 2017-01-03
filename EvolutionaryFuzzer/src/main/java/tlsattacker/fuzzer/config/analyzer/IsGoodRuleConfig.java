@@ -8,7 +8,6 @@
  */
 package tlsattacker.fuzzer.config.analyzer;
 
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,7 +34,5 @@ public class IsGoodRuleConfig extends RuleConfig {
     public void setOutputFileGraph(String outputFileGraph) {
         this.outputFileGraph = outputFileGraph;
     }
-
-    private static final Logger LOG = Logger.getLogger(IsGoodRuleConfig.class.getName());
 
 }
