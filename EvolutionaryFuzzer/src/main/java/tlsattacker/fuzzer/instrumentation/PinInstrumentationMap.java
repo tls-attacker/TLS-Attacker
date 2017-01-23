@@ -65,7 +65,7 @@ public class PinInstrumentationMap extends InstrumentationMap {
             }
         }
         for (Branch branch : instrumentationMap.getBranches()) {
-           if (!branchMap.containsKey(branch)) {
+            if (!branchMap.containsKey(branch)) {
                 return true;
             }
         }

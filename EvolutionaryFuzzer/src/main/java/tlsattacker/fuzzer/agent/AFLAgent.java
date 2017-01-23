@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -22,7 +21,6 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.instrumentation.AFLInstrumentationMap;
@@ -125,6 +123,12 @@ public class AFLAgent extends Agent {
         stopTime = System.currentTimeMillis();
         running = false;
         server.stop();
+        if (server.getExitCode() == 2) {
+            crash = true;
+        }
+        if (server.getExitCode() == 1) {
+            timeout = true;
+        }
     }
 
     @Override

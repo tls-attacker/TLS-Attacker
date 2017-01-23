@@ -97,6 +97,11 @@ public class TLSServer {
      */
     private FuzzerGeneralConfig config = null;
 
+    /**
+     * Exit code of the process
+     */
+    private int exitCode;
+
     // TODO akward constructor
     public TLSServer() {
         config = null;
@@ -364,8 +369,9 @@ public class TLSServer {
         try {
             LOGGER.debug("Stopping Server");
             if (p != null) {
+
                 p.destroy();
-                p.waitFor();
+                exitCode = p.waitFor();
                 if (config.isUseKill()) {
                     Runtime rt = Runtime.getRuntime();
                     p = rt.exec(killServerCommand);
@@ -385,4 +391,7 @@ public class TLSServer {
         this.config = config;
     }
 
+    public int getExitCode() {
+        return exitCode;
+    }
 }
