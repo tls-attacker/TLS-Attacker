@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer.rules;
+package tlsattacker.fuzzer.analyzer.rule;
 
 import tlsattacker.fuzzer.config.analyzer.EarlyHeartbeatRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;

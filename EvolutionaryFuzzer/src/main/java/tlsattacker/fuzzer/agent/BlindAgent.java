@@ -9,11 +9,12 @@
 package tlsattacker.fuzzer.agent;
 
 import java.io.File;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
@@ -71,10 +72,10 @@ public class BlindAgent extends Agent {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
 
-        BranchTrace t = new BranchTrace();
+        InstrumentationMap instrumentationMap = new EmptyInstrumentationMap();
 
-        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
-                .getInstance().getFilename(), server);
+        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, instrumentationMap, vector,
+                LogFileIDManager.getInstance().getFilename(), server);
 
         return result;
     }

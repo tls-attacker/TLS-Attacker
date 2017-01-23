@@ -13,8 +13,7 @@ import tlsattacker.fuzzer.mutator.Mutator;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
-import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.graphs.Edge;
+import tlsattacker.fuzzer.instrumentation.Branch;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutatorFactory;
 import tlsattacker.fuzzer.mutator.MutatorFactory;
@@ -38,6 +37,7 @@ import tlsattacker.fuzzer.analyzer.AnalyzerFactory;
 import tlsattacker.fuzzer.analyzer.AnalyzerThread;
 import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 
 /**
  * Currently only Implementation of the Controller Interface which controls the
@@ -164,12 +164,12 @@ public class CommandLineController extends Controller {
             }
         } while (pool.hasRunningThreads());
 
-        BranchTrace trace = analyzer.getBranchTrace();
+        InstrumentationMap instrumentationMap = analyzer.getInstrumentationMap();
         PrintWriter writer;
         try {
             writer = new PrintWriter(file, "UTF-8");
-            Map<Edge, Edge> set = trace.getEdgeMap();
-            for (Edge edge : set.values()) {
+            Set<Branch> set = instrumentationMap.getBranches();
+            for (Branch edge : set) {
                 writer.println(edge.getSource() + " " + edge.getDestination());
             }
             writer.close();
@@ -195,11 +195,11 @@ public class CommandLineController extends Controller {
             }
         } while (pool.hasRunningThreads());
 
-        BranchTrace trace = analyzer.getBranchTrace();
+        InstrumentationMap instrumentationMap = analyzer.getInstrumentationMap();
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(file, "UTF-8");
-            Set<Long> set = trace.getVerticesSet();
+            Set<Long> set = instrumentationMap.getCodeblocks();
             for (Long vertex : set) {
                 writer.println(vertex);
             }
@@ -212,7 +212,7 @@ public class CommandLineController extends Controller {
     }
 
     public void loadGraph(String[] split) {
-        BranchTrace trace = analyzer.getBranchTrace();
+        InstrumentationMap trace = analyzer.getInstrumentationMap();
         if (split.length != 2) {
             LOGGER.info("You need to specify a File to load");
         } else {
@@ -222,7 +222,7 @@ public class CommandLineController extends Controller {
             try {
                 FileInputStream streamIn = new FileInputStream(file);
                 objectinputstream = new ObjectInputStream(streamIn);
-                BranchTrace tempTrace = (BranchTrace) objectinputstream.readObject();
+                InstrumentationMap tempTrace = (InstrumentationMap) objectinputstream.readObject();
                 trace.merge(tempTrace);
             } catch (IOException | ClassNotFoundException ex) {
                 LOGGER.error(ex.getLocalizedMessage(), ex);
@@ -239,7 +239,7 @@ public class CommandLineController extends Controller {
     }
 
     public void saveGraph(String split[]) {
-        BranchTrace trace = analyzer.getBranchTrace();
+        InstrumentationMap instrumentationMap = analyzer.getInstrumentationMap();
         if (split.length != 2) {
             LOGGER.info("You need to specify a File to Save to");
         } else {
@@ -250,7 +250,7 @@ public class CommandLineController extends Controller {
             try {
                 fout = new FileOutputStream(file);
                 oos = new ObjectOutputStream(fout);
-                oos.writeObject(trace);
+                oos.writeObject(instrumentationMap);
 
             } catch (IOException ex) {
                 LOGGER.error(ex.getLocalizedMessage(), ex);

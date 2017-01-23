@@ -11,8 +11,7 @@ package tlsattacker.fuzzer.agent;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.graphs.Edge;
+import tlsattacker.fuzzer.instrumentation.Branch;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
@@ -26,16 +25,23 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tlsattacker.fuzzer.instrumentation.AFLInstrumentationMap;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 
 /**
  * An Agent implemented with the modified Binary Instrumentation used by
  * American Fuzzy Lop
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AFLAgent extends Agent {
 
     static final Logger LOGGER = LogManager.getLogger(AFLAgent.class);
+
+    /**
+     * AFL map size
+     */
+    private int mapSize = 1 << 16;
 
     /**
      * The name of the Agent when referred by command line
@@ -44,43 +50,30 @@ public class AFLAgent extends Agent {
 
     /**
      * Parses a file into a BranchTrace object
-     * 
+     *
      * @param file
      *            File to parse
      * @return Newly generated BranchTrace object
      */
-    private static BranchTrace getBranchTrace(File file) {
+    private InstrumentationMap getInstrumentationMap(File file) {
+        long[] bitmap = new long[mapSize];
         BufferedReader br = null;
-        Set<Long> verticesSet = new HashSet<>();
-        Map<Edge, Edge> edgeMap = new HashMap<>();
         try {
             br = new BufferedReader(new FileReader(file));
-            long previousNumber = Long.MIN_VALUE;
             String line = null;
             while ((line = br.readLine()) != null) {
                 // Check if the Line can be parsed
-                long parsedNumber;
+                int parsedLocation;
+                long parsedValue;
                 try {
-                    parsedNumber = Long.parseLong(line, 16);
-                    verticesSet.add(parsedNumber);
+                    parsedLocation = Integer.parseInt(line.split(":")[0]);
+                    parsedValue = Long.parseLong(line.split(":")[1]);
+                    bitmap[parsedLocation] = parsedValue;
                 } catch (NumberFormatException e) {
-                    if (line.contains("CRASH") || line.contains("TIMEOUT")) {
-                        continue;
-                    }
                     throw new NumberFormatException("BranchTrace contains unparsable Lines: " + line);
                 }
-                if (previousNumber != Long.MIN_VALUE) {
-                    Edge e = edgeMap.get(new Edge(previousNumber, parsedNumber));
-                    if (e == null) {
-                        e = new Edge(previousNumber, parsedNumber);
-                        edgeMap.put(e, e);
-                    }
-                    e.addCounter(1l);
-
-                }
-                previousNumber = parsedNumber;
             }
-            return new BranchTrace(verticesSet, edgeMap);
+            return new AFLInstrumentationMap(bitmap);
         } catch (IOException ex) {
             LOGGER.error("Could not read BranchTrace from file, using Empty BranchTrace instead", ex);
         } finally {
@@ -92,7 +85,7 @@ public class AFLAgent extends Agent {
                 LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
-        return new BranchTrace();
+        return new AFLInstrumentationMap(new long[mapSize]);
     }
 
     /**
@@ -102,9 +95,11 @@ public class AFLAgent extends Agent {
 
     /**
      * Default Constructor
-     * 
+     *
      * @param keypair
      *            The key certificate pair the server should be started with
+     * @param server
+     *            Server used by the Agent
      */
     public AFLAgent(ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
@@ -149,22 +144,22 @@ public class AFLAgent extends Agent {
                     timeout = true;
                     break;
             }
-            BranchTrace t = getBranchTrace(branchTrace);
+            InstrumentationMap instrumentationMap = getInstrumentationMap(branchTrace);
 
-            AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
-                    .getInstance().getFilename(), server);
+            AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, instrumentationMap, vector,
+                    LogFileIDManager.getInstance().getFilename(), server);
 
             return result;
         } else {
             LOGGER.debug("Failed to collect instrumentation output");
-            return new AgentResult(crash, timeout, startTime, startTime, new BranchTrace(), vector, LogFileIDManager
-                    .getInstance().getFilename(), server);
+            return new AgentResult(crash, timeout, startTime, startTime, new AFLInstrumentationMap(new long[mapSize]),
+                    vector, LogFileIDManager.getInstance().getFilename(), server);
         }
     }
 
     /**
      * Returns the last line in a File
-     * 
+     *
      * @param file
      *            File to search in
      * @return Last line in the File

@@ -18,9 +18,9 @@ package tlsattacker.fuzzer.result;
 public class MergeResult {
 
     /**
-     * Number of newly discovered Code blocks
+     * Number of newly discovered Codeblocks
      */
-    private int newVertices = 0;
+    private int newCodeblocks = 0;
 
     /**
      * Number of newly discovered Code branches
@@ -28,19 +28,19 @@ public class MergeResult {
     private int newBranches = 0;
 
     /**
-     * Number of hit Vertices
+     * Number of hit Codeblocks
      */
-    private int hitVertices = 0;
+    private int hitCodeblocks = 0;
 
     public MergeResult(int newVertices, int newBranches, int hitVertices) {
-        this.hitVertices = hitVertices;
+        this.hitCodeblocks = hitVertices;
         this.newBranches = newBranches;
-        this.newVertices = newVertices;
+        this.newCodeblocks = newVertices;
 
     }
 
     public int getNewVertices() {
-        return newVertices;
+        return newCodeblocks;
     }
 
     public int getNewBranches() {
@@ -48,12 +48,13 @@ public class MergeResult {
     }
 
     public int getHitVertices() {
-        return hitVertices;
+        return hitCodeblocks;
     }
 
     @Override
     public String toString() {
-        return "New Vertices:" + newVertices + "  New Branches:" + newBranches + "  Hit Verticies:" + hitVertices;
+        return "New Codeblocks:" + newCodeblocks + "  New Branches:" + newBranches + "  Hit Codeblocks:"
+                + hitCodeblocks;
     }
 
 }

@@ -6,12 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer;
+package tlsattacker.fuzzer.analyzer.rule;
 
 import tlsattacker.fuzzer.analyzer.helpers.ModificationCounter;
-import tlsattacker.fuzzer.analyzer.rules.AnalyzeModificationRule;
+import tlsattacker.fuzzer.analyzer.rule.AnalyzeModificationRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.modification.AddMessageModification;
 import tlsattacker.fuzzer.modification.AddRecordModification;
 import tlsattacker.fuzzer.modification.ChangeServerCertificateModification;
@@ -31,6 +30,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
 
 /**
  * 
@@ -81,7 +81,7 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testApplys() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         assertTrue(rule.applies(result));
     }
@@ -91,7 +91,8 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testOnApply() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), vector,
+                "unittest.id", null);
         rule.onApply(result);
     }
 
@@ -108,7 +109,8 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testReport() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), vector,
+                "unittest.id", null);
         assertNull(rule.report());
         rule.onApply(result);
         assertNotNull(rule.report());
@@ -127,7 +129,8 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testGetExecutedTraces() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), vector,
+                "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getExecutedTraces() == 1);
         rule.onApply(result);
@@ -140,7 +143,8 @@ public class AnalyzeModificationRuleTest {
      */
     @Test
     public void testGetTypeMap() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), vector, "unittest.id", null);
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), vector,
+                "unittest.id", null);
         rule.onApply(result);
         vector.addModification(new AddMessageModification(new ServerHelloDoneMessage(), new SendAction()));
         rule.onApply(result);

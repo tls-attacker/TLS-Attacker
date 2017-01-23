@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.graphs;
+package tlsattacker.fuzzer.instrumentation;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ import java.io.Serializable;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class Edge implements Serializable {
+public class Branch implements Serializable {
 
     /**
      * SerialVersion Unique Identifier for version compatibility
@@ -24,12 +24,12 @@ public class Edge implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Edge Source probeID
+     * Branch Source probeID
      */
     private final long source;
 
     /**
-     * Edge Destination probeID
+     * Branch Destination probeID
      */
     private final long Destination;
 
@@ -38,7 +38,7 @@ public class Edge implements Serializable {
      */
     private long counter = 0;
 
-    public Edge(long source, long destination) {
+    public Branch(long source, long destination) {
         this.source = source;
         this.Destination = destination;
     }
@@ -85,7 +85,7 @@ public class Edge implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Edge other = (Edge) obj;
+        final Branch other = (Branch) obj;
         if (this.source != other.source) {
             return false;
         }

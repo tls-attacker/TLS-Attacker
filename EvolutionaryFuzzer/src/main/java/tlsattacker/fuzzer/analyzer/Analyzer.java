@@ -8,7 +8,7 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.graphs.BranchTrace;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
@@ -40,5 +40,5 @@ public abstract class Analyzer {
      * 
      * @return BranchTrace containing all seen Edges and Vertices
      */
-    public abstract BranchTrace getBranchTrace();
+    public abstract InstrumentationMap getInstrumentationMap();
 }

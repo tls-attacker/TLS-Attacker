@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer;
+package tlsattacker.fuzzer.analyzer.rule;
 
-import tlsattacker.fuzzer.analyzer.rules.AnalyzeTimeRule;
+import tlsattacker.fuzzer.analyzer.rule.AnalyzeTimeRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import java.io.IOException;
@@ -19,6 +18,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
 
 /**
  * 
@@ -58,7 +58,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testApplys() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         assertTrue(rule.applies(result));
     }
@@ -68,7 +68,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testOnApply() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         rule.onApply(result);
     }
@@ -86,7 +86,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testReport() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         assertNull("Failure: Report should be null!", rule.report());
         rule.onApply(result);
@@ -106,7 +106,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetExecutedTimeTotal() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getExecutedTimeTotal() == 1000);
@@ -119,7 +119,7 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetNumberExecutedTraces() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getNumberExecutedTraces() == 1);
@@ -132,11 +132,12 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetSlowestTime() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getSlowestTime() == 1000);
-        result = new AgentResult(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id", null);
+        result = new AgentResult(false, false, 1000, 4000, new EmptyInstrumentationMap(), new TestVector(),
+                "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getSlowestTime() == 3000);
     }
@@ -146,11 +147,12 @@ public class AnalyzeTimeRuleTest {
      */
     @Test
     public void testGetFastestTime() {
-        AgentResult result = new AgentResult(false, false, 1000, 2000, new BranchTrace(), new TestVector(),
+        AgentResult result = new AgentResult(false, false, 1000, 2000, new EmptyInstrumentationMap(), new TestVector(),
                 "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getFastestTime() == 1000);
-        result = new AgentResult(false, false, 1000, 4000, new BranchTrace(), new TestVector(), "unittest.id", null);
+        result = new AgentResult(false, false, 1000, 4000, new EmptyInstrumentationMap(), new TestVector(),
+                "unittest.id", null);
         rule.onApply(result);
         assertTrue(rule.getFastestTime() == 1000);
     }

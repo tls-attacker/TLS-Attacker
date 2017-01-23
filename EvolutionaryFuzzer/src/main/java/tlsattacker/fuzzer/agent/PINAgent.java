@@ -13,8 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import tlsattacker.fuzzer.graphs.BranchTrace;
-import tlsattacker.fuzzer.graphs.Edge;
+import tlsattacker.fuzzer.instrumentation.Branch;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
@@ -26,6 +25,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
+import tlsattacker.fuzzer.instrumentation.PinInstrumentationMap;
 
 /**
  * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
@@ -48,10 +49,10 @@ public class PINAgent extends Agent {
      * @param bufferedReader
      * @return A newly generated BranchTrace object
      */
-    private static BranchTrace getBranchTrace(BufferedReader bufferedReader) {
+    private InstrumentationMap getInstrumentationMap(BufferedReader bufferedReader) {
         try {
             Set<Long> verticesSet = new HashSet<>();
-            Map<Edge, Edge> edgeMap = new HashMap<>();
+            Map<Branch, Branch> edgeMap = new HashMap<>();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 try {
@@ -74,19 +75,19 @@ public class PINAgent extends Agent {
                     int count = Integer.parseInt(split[3]);
                     verticesSet.add(src);
                     verticesSet.add(dst);
-                    Edge e = new Edge(src, dst);
+                    Branch e = new Branch(src, dst);
                     e.setCounter(count);
                     edgeMap.put(e, e);
                 } catch (Exception E) {
                     E.printStackTrace();
                 }
             }
-            return new BranchTrace(verticesSet, edgeMap);
+            return new PinInstrumentationMap(verticesSet, edgeMap);
 
         } catch (IOException ex) {
             LOGGER.error("Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
         }
-        return new BranchTrace();
+        return new PinInstrumentationMap();
     }
 
     /**
@@ -143,7 +144,7 @@ public class PINAgent extends Agent {
         if (running) {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
-        BranchTrace t = null;
+        InstrumentationMap instrumentationMap = null;
         try {
             BufferedReader br = new BufferedReader(new FileReader(branchTrace));
 
@@ -160,15 +161,15 @@ public class PINAgent extends Agent {
                 line = br.readLine();
 
             }
-            t = getBranchTrace(br);
+            instrumentationMap = getInstrumentationMap(br);
             br.close();
 
         } catch (IOException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
         }
 
-        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, t, vector, LogFileIDManager
-                .getInstance().getFilename(), server);
+        AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, instrumentationMap, vector,
+                LogFileIDManager.getInstance().getFilename(), server);
 
         return result;
     }

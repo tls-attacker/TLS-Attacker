@@ -6,9 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer.rules;
+package tlsattacker.fuzzer.analyzer.rule;
 
-import tlsattacker.fuzzer.config.analyzer.IsTimeoutRuleConfig;
+import tlsattacker.fuzzer.config.analyzer.IsCrashRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
@@ -18,11 +18,11 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 /**
- * A rule which records TestVectors that caused a timeout.
+ * A rule which records TestVectors that crash the server
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class IsTimeoutRule extends Rule {
+public class IsCrashRule extends Rule {
 
     /**
      * The number of TestVectors that this rule applied to
@@ -32,35 +32,35 @@ public class IsTimeoutRule extends Rule {
     /**
      * The configuration object for this rule
      */
-    private IsTimeoutRuleConfig config;
+    private IsCrashRuleConfig config;
 
-    public IsTimeoutRule(EvolutionaryFuzzerConfig evoConfig) {
-        super(evoConfig, "is_timeout.rule");
+    public IsCrashRule(EvolutionaryFuzzerConfig evoConfig) {
+        super(evoConfig, "is_crash.rule");
         File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
         if (f.exists()) {
-            config = JAXB.unmarshal(f, IsTimeoutRuleConfig.class);
+            config = JAXB.unmarshal(f, IsCrashRuleConfig.class);
         }
         if (config == null) {
-            config = new IsTimeoutRuleConfig();
+            config = new IsCrashRuleConfig();
             writeConfig(config);
         }
         prepareConfigOutputFolder();
     }
 
     /**
-     * The rule apples if the TestVector is considered as timedout
+     * The rule applies if the TestVector caused the Server to crash
      * 
      * @param result
      *            AgentResult to analyze
-     * @return True if the TestVector did timeout
+     * @return
      */
     @Override
     public boolean applies(AgentResult result) {
-        return result.didTimeout();
+        return result.hasCrashed();
     }
 
     /**
-     * Stores the Testvector
+     * Stores the TestVector
      * 
      * @param result
      *            AgentResult to analyze
@@ -70,7 +70,7 @@ public class IsTimeoutRule extends Rule {
         found++;
         File f = new File(evoConfig.getOutputFolder() + config.getOutputFolder() + result.getId());
         try {
-            result.getVector().getTrace().setDescription("WorkflowTrace did Timeout!");
+            result.getVector().getTrace().setDescription("WorkflowTrace crashed!");
             f.createNewFile();
             TestVectorSerializer.write(f, result.getVector());
         } catch (JAXBException | IOException E) {
@@ -98,14 +98,14 @@ public class IsTimeoutRule extends Rule {
     @Override
     public synchronized String report() {
         if (found > 0) {
-            return "Found " + found + " Traces which caused the Server to Timeout\n";
+            return "Found " + found + " Traces which crashed the Server\n";
         } else {
             return null;
         }
     }
 
     @Override
-    public IsTimeoutRuleConfig getConfig() {
+    public IsCrashRuleConfig getConfig() {
         return config;
     }
 

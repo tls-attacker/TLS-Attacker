@@ -8,7 +8,7 @@
  */
 package tlsattacker.fuzzer.result;
 
-import tlsattacker.fuzzer.graphs.BranchTrace;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.testvector.TestVector;
 
@@ -45,7 +45,7 @@ public class AgentResult {
     /**
      * The instrumentation result
      */
-    private final BranchTrace branchTrace;
+    private final InstrumentationMap instrumentationMap;
 
     /**
      * The TestVector that was executed
@@ -66,7 +66,7 @@ public class AgentResult {
     /**
      * The Server on which the TestVector was executed on
      */
-    private TLSServer server;
+    private final TLSServer server;
 
     /**
      * 
@@ -74,18 +74,18 @@ public class AgentResult {
      * @param didTimeout
      * @param startTime
      * @param stopTime
-     * @param branchTrace
+     * @param instrumentationMap
      * @param vector
      * @param id
      * @param server
      */
-    public AgentResult(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime, BranchTrace branchTrace,
-            TestVector vector, String id, TLSServer server) {
+    public AgentResult(boolean hasCrashed, boolean didTimeout, long startTime, long stopTime,
+            InstrumentationMap instrumentationMap, TestVector vector, String id, TLSServer server) {
         this.hasCrashed = hasCrashed;
         this.didTimeout = didTimeout;
         this.startTime = startTime;
         this.stopTime = stopTime;
-        this.branchTrace = branchTrace;
+        this.instrumentationMap = instrumentationMap;
         this.vector = vector;
         this.id = id;
         this.server = server;
@@ -123,8 +123,8 @@ public class AgentResult {
         return stopTime;
     }
 
-    public BranchTrace getBranchTrace() {
-        return branchTrace;
+    public InstrumentationMap getInstrumentationMap() {
+        return instrumentationMap;
     }
 
     public TLSServer getServer() {
@@ -134,7 +134,7 @@ public class AgentResult {
     @Override
     public String toString() {
         return "Result{" + "hasCrashed=" + hasCrashed + ", didTimeout=" + didTimeout + ", startTime=" + startTime
-                + ", stopTime=" + stopTime + ", edges=" + branchTrace.toString() + '}';
+                + ", stopTime=" + stopTime + ", instrumentationMap=" + instrumentationMap.toString() + '}';
     }
 
     public TestVector getVector() {

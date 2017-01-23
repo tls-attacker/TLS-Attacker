@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer.rules;
+package tlsattacker.fuzzer.analyzer.rule;
 
 import tlsattacker.fuzzer.config.analyzer.IsGoodRuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.MergeResult;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
@@ -21,11 +20,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 
 /**
  * A rule which analyzes if the TestVector reached new codepaths and set a flag
  * in the AgentResult object accordingly.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class IsGoodRule extends Rule {
@@ -36,9 +37,9 @@ public class IsGoodRule extends Rule {
     private PrintWriter outWriter;
 
     /**
-     * BranchTrace with which other Workflows are merged
+     * InstrumentationMap with which other Workflows are merged
      */
-    private final BranchTrace branch;
+    private InstrumentationMap instrumentationMap;
 
     /**
      * The number of TestVectors that this rule applied to
@@ -65,7 +66,7 @@ public class IsGoodRule extends Rule {
             config = new IsGoodRuleConfig();
             writeConfig(config);
         }
-        this.branch = new BranchTrace();
+        this.instrumentationMap = null;
         prepareConfigOutputFolder();
         try {
             f = new File(evoConfig.getOutputFolder() + config.getOutputFileGraph());
@@ -76,25 +77,28 @@ public class IsGoodRule extends Rule {
             outWriter = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
         } catch (IOException ex) {
             LOGGER.error(
-                    "AnalyzeTimeRule could not initialize the output File! Does the fuzzer have the rights to write to ",
-                    ex);
+                    "IsGoodRule could not initialize the output File! Does the fuzzer have the rights to write to ", ex);
         }
     }
 
     /**
      * The rule applies if the trace in the AgentResult contains Edges or
      * Codeblocks the rule has not seen before
-     * 
+     *
      * @param result
      *            AgentResult to analyze
-     * @return True if the Rule contains new Codeblocks or Edges
+     * @return True if the Rule contains new Codeblocks or Branches
      */
     @Override
     public synchronized boolean applies(AgentResult result) {
         MergeResult r = null;
-        r = branch.merge(result.getBranchTrace());
+        if (instrumentationMap == null) {
+            instrumentationMap = result.getInstrumentationMap();
+            return true;
+        }
 
-        if (r != null && (r.getNewBranches() > 0 || r.getNewVertices() > 0)) {
+        if (instrumentationMap.didHitNew(result.getInstrumentationMap())) {
+            r = instrumentationMap.merge(result.getInstrumentationMap());
             LOGGER.debug("Found a GoodTrace:{0}", r.toString());
             return true;
         } else {
@@ -107,7 +111,7 @@ public class IsGoodRule extends Rule {
      * Updates statistics and stores the TestVector. Also sets a flag in the
      * TestVector such that other rules know that this TestVector is considered
      * as good.
-     * 
+     *
      * @param result
      *            AgentResult to analyze
      */
@@ -135,13 +139,16 @@ public class IsGoodRule extends Rule {
         result.getVector().getTrace().makeGeneric();
     }
 
-    public synchronized BranchTrace getBranchTrace() {
-        return branch;
+    public synchronized InstrumentationMap getInstrumentationMap() {
+        if (instrumentationMap == null) {
+            return new EmptyInstrumentationMap();
+        }
+        return instrumentationMap;
     }
 
     /**
      * Do nothing
-     * 
+     *
      * @param result
      *            AgentResult to analyze
      */
@@ -152,13 +159,13 @@ public class IsGoodRule extends Rule {
 
     /**
      * Generates a status report
-     * 
+     *
      * @return
      */
     @Override
     public synchronized String report() {
-        return "Vertices:" + branch.getVerticesCount() + " Edges:" + branch.getBranchCount() + " Good:" + found
-                + " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0 + " seconds ago\n";
+        return "Good:" + found + " Last Good " + (System.currentTimeMillis() - lastGoodTimestamp) / 1000.0
+                + " seconds ago\n";
     }
 
     @Override

@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer;
+package tlsattacker.fuzzer.analyzer.rule;
 
-import tlsattacker.fuzzer.analyzer.rules.ProtocolVersionRule;
+import tlsattacker.fuzzer.analyzer.rule.ProtocolVersionRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -28,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
 
 /**
  * 
@@ -72,8 +72,8 @@ public class ProtocolVersionRuleTest {
         ClientHelloMessage clientHello = new ClientHelloMessage();
         clientHello.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         trace.add(new SendAction(clientHello));
-        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "test.unit", null);
+        AgentResult result = new AgentResult(false, false, 0, 1, new EmptyInstrumentationMap(), new TestVector(trace,
+                null, null, ExecutorType.TLS, null), "test.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertFalse(rule.applies(result));
         ServerHelloMessage serverHello = new ServerHelloMessage();
@@ -126,8 +126,8 @@ public class ProtocolVersionRuleTest {
         ServerHelloMessage serverHello = new ServerHelloMessage();
         trace.add(new ReceiveAction(serverHello));
         serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "test.unit", null);
+        AgentResult result = new AgentResult(false, false, 0, 1, new EmptyInstrumentationMap(), new TestVector(trace,
+                null, null, ExecutorType.TLS, null), "test.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -155,8 +155,8 @@ public class ProtocolVersionRuleTest {
         ServerHelloMessage serverHello = new ServerHelloMessage();
         trace.add(new ReceiveAction(serverHello));
         serverHello.setProtocolVersion(ProtocolVersion.SSL2.getValue());
-        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "test.unit", null);
+        AgentResult result = new AgentResult(false, false, 0, 1, new EmptyInstrumentationMap(), new TestVector(trace,
+                null, null, ExecutorType.TLS, null), "test.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertNotNull(rule.report());

@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer;
+package tlsattacker.fuzzer.analyzer.rule;
 
-import tlsattacker.fuzzer.analyzer.rules.IsCrashRule;
+import tlsattacker.fuzzer.analyzer.rule.IsTimeoutRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -22,17 +21,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class IsCrashRuleTest {
+public class IsTimeoutRuleTest {
 
     /**
      *
      */
-    private IsCrashRule rule;
+    private IsTimeoutRule rule;
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -42,7 +42,7 @@ public class IsCrashRuleTest {
     /**
      *
      */
-    public IsCrashRuleTest() {
+    public IsTimeoutRuleTest() {
     }
 
     /**
@@ -54,7 +54,7 @@ public class IsCrashRuleTest {
         config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
         config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.createFolders();
-        rule = new IsCrashRule(config);
+        rule = new IsTimeoutRule(config);
     }
 
     /**
@@ -62,11 +62,11 @@ public class IsCrashRuleTest {
      */
     @Test
     public void testApplys() {
-        AgentResult result = new AgentResult(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(),
-                null, null, ExecutorType.TLS, null), "unit2.test", null);
+        AgentResult result = new AgentResult(false, true, 9, 10, new EmptyInstrumentationMap(), new TestVector(
+                new WorkflowTrace(), null, null, ExecutorType.TLS, null), "unit3.test", null);
         assertTrue(rule.applies(result));
-        result = new AgentResult(false, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(), null,
-                null, ExecutorType.TLS, null), "unit2.test", null);
+        result = new AgentResult(false, false, 9, 10, new EmptyInstrumentationMap(), new TestVector(
+                new WorkflowTrace(), null, null, ExecutorType.TLS, null), "unit3.test", null);
         assertFalse(rule.applies(result));
 
     }
@@ -76,10 +76,11 @@ public class IsCrashRuleTest {
      */
     @Test
     public void testOnApply() {
-        AgentResult result = new AgentResult(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(),
-                null, null, ExecutorType.TLS, null), "unit2.test", null);
+        AgentResult result = new AgentResult(false, true, 9, 10, new EmptyInstrumentationMap(), new TestVector(
+                new WorkflowTrace(), null, null, ExecutorType.TLS, null), "unit3.test", null);
         rule.onApply(result);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
+
     }
 
     /**
@@ -96,8 +97,8 @@ public class IsCrashRuleTest {
     @Test
     public void testReport() {
         assertNull(rule.report());
-        AgentResult result = new AgentResult(true, false, 9, 10, new BranchTrace(), new TestVector(new WorkflowTrace(),
-                null, null, ExecutorType.TLS, null), "unit2.test", null);
+        AgentResult result = new AgentResult(false, true, 9, 10, new EmptyInstrumentationMap(), new TestVector(
+                new WorkflowTrace(), null, null, ExecutorType.TLS, null), "unit3.test", null);
         rule.onApply(result);
         assertNotNull(rule.report());
     }

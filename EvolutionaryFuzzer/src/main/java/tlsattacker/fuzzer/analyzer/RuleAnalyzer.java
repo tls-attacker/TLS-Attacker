@@ -8,21 +8,22 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.analyzer.rules.ProtocolVersionRule;
-import tlsattacker.fuzzer.analyzer.rules.AnalyzeGoodModificationRule;
-import tlsattacker.fuzzer.analyzer.rules.Rule;
-import tlsattacker.fuzzer.analyzer.rules.FindAlertsRule;
-import tlsattacker.fuzzer.analyzer.rules.UniqueFlowsRule;
-import tlsattacker.fuzzer.analyzer.rules.IsGoodRule;
-import tlsattacker.fuzzer.analyzer.rules.IsTimeoutRule;
-import tlsattacker.fuzzer.analyzer.rules.AnalyzeModificationRule;
-import tlsattacker.fuzzer.analyzer.rules.EarlyHeartbeatRule;
-import tlsattacker.fuzzer.analyzer.rules.AnalyzeTimeRule;
-import tlsattacker.fuzzer.analyzer.rules.IsCrashRule;
+import tlsattacker.fuzzer.analyzer.rule.ProtocolVersionRule;
+import tlsattacker.fuzzer.analyzer.rule.AnalyzeGoodModificationRule;
+import tlsattacker.fuzzer.analyzer.rule.Rule;
+import tlsattacker.fuzzer.analyzer.rule.FindAlertsRule;
+import tlsattacker.fuzzer.analyzer.rule.UniqueFlowsRule;
+import tlsattacker.fuzzer.analyzer.rule.IsGoodRule;
+import tlsattacker.fuzzer.analyzer.rule.IsTimeoutRule;
+import tlsattacker.fuzzer.analyzer.rule.AnalyzeModificationRule;
+import tlsattacker.fuzzer.analyzer.rule.EarlyHeartbeatRule;
+import tlsattacker.fuzzer.analyzer.rule.AnalyzeTimeRule;
+import tlsattacker.fuzzer.analyzer.rule.IsCrashRule;
 import java.util.LinkedList;
 import java.util.List;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
@@ -128,11 +129,11 @@ public class RuleAnalyzer extends Analyzer {
     }
 
     @Override
-    public BranchTrace getBranchTrace() {
+    public InstrumentationMap getInstrumentationMap() {
         if (goodRule.isActive()) {
-            return goodRule.getBranchTrace();
+            return goodRule.getInstrumentationMap();
         } else {
-            return new BranchTrace();
+            return new EmptyInstrumentationMap();
         }
     }
 

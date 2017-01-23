@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer;
+package tlsattacker.fuzzer.analyzer.rule;
 
-import tlsattacker.fuzzer.analyzer.rules.UniqueFlowsRule;
+import tlsattacker.fuzzer.analyzer.rule.UniqueFlowsRule;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testhelper.WorkFlowTraceFakeExecuter;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -28,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
 
 /**
  * 
@@ -70,8 +70,8 @@ public class UniqueFlowsRuleTest {
     public void testApplys() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new CertificateRequestMessage()));
-        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "tes2t.unit", null);
+        AgentResult result = new AgentResult(false, false, 0, 1, new EmptyInstrumentationMap(), new TestVector(trace,
+                null, null, ExecutorType.TLS, null), "tes2t.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(rule.applies(result));// Should apply since its the first
         // time
@@ -90,8 +90,8 @@ public class UniqueFlowsRuleTest {
     public void testOnApply() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.add(new SendAction(new CertificateRequestMessage()));
-        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "tes2t.unit", null);
+        AgentResult result = new AgentResult(false, false, 0, 1, new EmptyInstrumentationMap(), new TestVector(trace,
+                null, null, ExecutorType.TLS, null), "tes2t.unit", null);
         rule.onApply(result);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(new File(config.getOutputFolder() + rule.getConfig().getOutputFolder()).listFiles().length == 1);
@@ -116,8 +116,8 @@ public class UniqueFlowsRuleTest {
         trace.add(new SendAction(clientHello));
         ServerHelloMessage serverHello = new ServerHelloMessage();
         trace.add(new ReceiveAction(serverHello));
-        AgentResult result = new AgentResult(false, false, 0, 1, new BranchTrace(), new TestVector(trace, null, null,
-                ExecutorType.TLS, null), "tes2t.unit", null);
+        AgentResult result = new AgentResult(false, false, 0, 1, new EmptyInstrumentationMap(), new TestVector(trace,
+                null, null, ExecutorType.TLS, null), "tes2t.unit", null);
         WorkFlowTraceFakeExecuter.execute(trace);
         rule.onApply(result);
         assertNotNull(rule.report());

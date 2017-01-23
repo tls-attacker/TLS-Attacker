@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.analyzer.rules;
+package tlsattacker.fuzzer.analyzer.rule;
 
 import tlsattacker.fuzzer.analyzer.helpers.ModificationCounter;
 import tlsattacker.fuzzer.config.analyzer.AnalyzeModificationRuleConfig;
@@ -19,12 +19,11 @@ import java.util.List;
 import javax.xml.bind.JAXB;
 
 /**
- * A Rule which counts the applied modifications which resulted in good
- * TestVectors
+ * A Rule which counts the applied modifications
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AnalyzeGoodModificationRule extends Rule {
+public class AnalyzeModificationRule extends Rule {
 
     /**
      * The number of TestVectors this rule saw
@@ -45,8 +44,8 @@ public class AnalyzeGoodModificationRule extends Rule {
      * 
      * @param evoConfig
      */
-    public AnalyzeGoodModificationRule(EvolutionaryFuzzerConfig evoConfig) {
-        super(evoConfig, "analyze_good_modification.rule");
+    public AnalyzeModificationRule(EvolutionaryFuzzerConfig evoConfig) {
+        super(evoConfig, "analyze_modification.rule");
         File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
         if (f.exists()) {
             config = JAXB.unmarshal(f, AnalyzeModificationRuleConfig.class);
@@ -60,16 +59,15 @@ public class AnalyzeGoodModificationRule extends Rule {
     }
 
     /**
-     * This method returns true if the TestVector in the AgentResult is
-     * conisdered as a good TestVector
+     * This rule applies to all TestVectors
      * 
      * @param result
      *            AgentResult to analyze
-     * @return True if TestVector is good
+     * @return True
      */
     @Override
     public boolean applies(AgentResult result) {
-        return result.isGoodTrace() == Boolean.TRUE;
+        return true;
     }
 
     /**
@@ -127,7 +125,7 @@ public class AnalyzeGoodModificationRule extends Rule {
     @Override
     public synchronized String report() {
         if (executedTraces > 0) {
-            StringBuilder b = new StringBuilder("Modifications which lead to good Traces:\n");
+            StringBuilder b = new StringBuilder("Modifications applied:\n");
             for (ModificationCounter counter : counterList) {
                 b.append(counter.getType().name()).append(" Count:").append(counter.getCounter()).append("\n");
             }

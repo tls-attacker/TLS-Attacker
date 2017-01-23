@@ -8,9 +8,8 @@
  */
 package tlsattacker.fuzzer.analyzer;
 
-import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
-import tlsattacker.fuzzer.graphs.BranchTrace;
+import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
@@ -53,7 +52,7 @@ public class FingerprintAnalyzer extends Analyzer {
     }
 
     @Override
-    public BranchTrace getBranchTrace() {
+    public InstrumentationMap getInstrumentationMap() {
         throw new UnsupportedOperationException("Not supported yet."); // To
                                                                        // change
                                                                        // body
