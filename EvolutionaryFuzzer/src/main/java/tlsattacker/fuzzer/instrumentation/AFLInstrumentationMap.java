@@ -78,7 +78,6 @@ public class AFLInstrumentationMap extends InstrumentationMap {
             }
             bitmap[i] += aflMap.bitmap[i];
         }
-        System.out.println(Arrays.toString(bitmap));
         return new MergeResult(newCodeblocks, newBranches, hitCodeblocks);
     }
 
