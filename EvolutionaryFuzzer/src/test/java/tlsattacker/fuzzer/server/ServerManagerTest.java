@@ -8,12 +8,15 @@
  */
 package tlsattacker.fuzzer.server;
 
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import org.junit.After;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertNull;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.exceptions.NoServerException;
 
 /**
  * 
@@ -36,7 +39,7 @@ public class ServerManagerTest {
                 ""));
         manager.addServer(new TLSServer(new EvolutionaryFuzzerConfig(), "127.0.0.5", 5, "command5", "ACCEPT", "", "",
                 ""));
-
+        manager.setConfig(new FuzzerGeneralConfig());
     }
 
     @After
@@ -44,7 +47,7 @@ public class ServerManagerTest {
         manager.clear();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NoServerException.class)
     public void TestOccupyAllServers() {
         manager.getConfig().setBootTimeout(10);
         while (true) {
@@ -54,10 +57,12 @@ public class ServerManagerTest {
 
     @Test
     public void TestGetServer() {
+        manager.getConfig().setBootTimeout(10);
         TLSServer server = manager.getFreeServer();
         assertNotNull("Failure: Could not get a free Server", server);
     }
 
+    @Test(expected = ConfigurationException.class)
     public void TestEmptyServer() {
         manager.getConfig().setBootTimeout(10);
         manager.clear();

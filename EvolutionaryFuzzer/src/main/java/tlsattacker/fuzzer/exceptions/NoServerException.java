@@ -9,14 +9,13 @@
 package tlsattacker.fuzzer.exceptions;
 
 /**
- * Exception thrown if the Fuzzer is not correctly configured.
+ * Exception thrown if the Fuzzer fails to find a free Server object.
  * 
- * @author Robert Merget
+ * @author ic0ns
  */
-public class FuzzerConfigurationException extends Exception {
+public class NoServerException extends RuntimeException {
 
-    public FuzzerConfigurationException(String message) {
+    public NoServerException(String message) {
         super(message);
     }
-
 }
