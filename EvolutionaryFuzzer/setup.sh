@@ -5,7 +5,3 @@ mv pin-3.0-76991-gcc-linux PIN
 cd PinScripts
 make -f makefile PIN_ROOT=../PIN/
 cd ..
-cd AFL
-make clean
-make
-./afl-gcc test.c -o test
