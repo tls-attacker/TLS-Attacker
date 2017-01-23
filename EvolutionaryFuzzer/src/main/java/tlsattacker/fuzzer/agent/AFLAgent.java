@@ -137,17 +137,6 @@ public class AFLAgent extends Agent {
             throw new IllegalStateException("Can't collect Results, Agent still running!");
         }
         if (branchTrace.exists()) {
-            String tail = tail(branchTrace);
-            switch (tail) {
-                case "CRASH":
-                    LOGGER.info("Found a Crash!");
-                    crash = true;
-                    break;
-                case "TIMEOUT":
-                    LOGGER.info("Found a Timeout!");
-                    timeout = true;
-                    break;
-            }
             InstrumentationMap instrumentationMap = getInstrumentationMap(branchTrace);
 
             AgentResult result = new AgentResult(crash, timeout, startTime, stopTime, instrumentationMap, vector,
