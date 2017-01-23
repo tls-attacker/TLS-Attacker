@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tlsattacker.fuzzer.exceptions.NoServerException;
 import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 
 /**
@@ -53,6 +54,10 @@ public class ServerManager {
 
     public FuzzerGeneralConfig getConfig() {
         return config;
+    }
+
+    public void setConfig(FuzzerGeneralConfig config) {
+        this.config = config;
     }
 
     /**
@@ -138,8 +143,8 @@ public class ServerManager {
             i++;
             if (startSearch < System.currentTimeMillis() - config.getBootTimeout() + 1000) {
                 // Searched longer than a minute and didnt find a free Server
-                throw new RuntimeException(
-                        "Could not find a free Server, if you have >= #servers than #executors there is a bug in the Code that causes Servers to not be properly released or not restart properly.");
+                throw new NoServerException(
+                        "Could not find a free Server. The Fuzzer probably stopped releasing Servers.");
             }
         }
     }
