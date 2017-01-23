@@ -11,7 +11,7 @@ package tlsattacker.fuzzer.exceptions;
 /**
  * Exception thrown if the Fuzzer fails to find a free Server object.
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class NoServerException extends RuntimeException {
 

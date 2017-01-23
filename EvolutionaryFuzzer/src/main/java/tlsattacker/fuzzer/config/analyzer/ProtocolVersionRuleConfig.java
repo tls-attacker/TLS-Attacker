@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * A configuration class for the ProtocolVersionRule
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 @XmlRootElement
 public class ProtocolVersionRuleConfig extends RuleConfig {

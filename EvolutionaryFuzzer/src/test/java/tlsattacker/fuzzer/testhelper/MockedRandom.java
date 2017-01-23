@@ -13,7 +13,7 @@ import java.util.Random;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class MockedRandom extends Random {
 

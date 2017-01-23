@@ -14,7 +14,7 @@ import tlsattacker.fuzzer.testvector.TestVector;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class TestVectorResult {
 
