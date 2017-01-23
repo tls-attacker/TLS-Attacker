@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package tlsattacker.fuzzer.testhelper;
+package tlsattacker.fuzzer.mutator.certificate;
 
 import tlsattacker.fuzzer.certificate.ClientCertificateStructure;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
@@ -24,6 +24,10 @@ import java.util.Random;
  */
 public class UnitTestCertificateMutator extends CertificateMutator {
 
+    /**
+     *
+     */
+    public static final String optionName = "test";
     /**
      *
      */

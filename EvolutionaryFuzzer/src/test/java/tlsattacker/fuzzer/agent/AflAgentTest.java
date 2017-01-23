@@ -15,7 +15,7 @@ import org.junit.Test;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.server.ServerSerializer;
 import tlsattacker.fuzzer.server.TLSServer;
-import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
+import tlsattacker.fuzzer.mutator.certificate.UnitTestCertificateMutator;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVector;

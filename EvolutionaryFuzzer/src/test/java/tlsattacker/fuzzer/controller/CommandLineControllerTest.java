@@ -21,7 +21,7 @@ import tlsattacker.fuzzer.exceptions.IllegalAnalyzerException;
 import tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException;
 import tlsattacker.fuzzer.exceptions.IllegalMutatorException;
 import tlsattacker.fuzzer.mutator.SimpleMutator;
-import tlsattacker.fuzzer.mutator.certificate.FixedCertificateMutator;
+import tlsattacker.fuzzer.mutator.certificate.UnitTestCertificateMutator;
 import tlsattacker.fuzzer.server.ServerManager;
 import tlsattacker.fuzzer.server.TLSServer;
 
@@ -52,7 +52,7 @@ public class CommandLineControllerTest {
         config.createFolders();
         config.setAgent(BlindAgent.optionName);
         config.setMutator(SimpleMutator.optionName);
-        config.setCertMutator(FixedCertificateMutator.optionName);
+        config.setCertMutator(UnitTestCertificateMutator.optionName);
         ServerManager manager = ServerManager.getInstance();
         manager.addServer(new TLSServer(null, "", 0, "", "", "", "", ""));
         controller = new TestableCommandLineController(config);
