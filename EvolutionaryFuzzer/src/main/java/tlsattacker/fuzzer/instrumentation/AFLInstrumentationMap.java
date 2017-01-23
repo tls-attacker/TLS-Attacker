@@ -8,17 +8,19 @@
  */
 package tlsattacker.fuzzer.instrumentation;
 
+import cern.colt.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import tlsattacker.fuzzer.result.MergeResult;
 
 /**
  * The AFL Bitmap. Since AFL loses the information about the exactly hit
- * Codeblocks we do not provide this Information here and return null if asked.
- * AFL stores its instrumentation output in a 64kb big bitmap where each byte
- * represents a possibly hit edge. If a byte value is greater than zero, the
- * edge is considered hit. Counters are not reliable and are able to wrap around
- * zero and are therfore considered as a guidance rather than exact information.
+ * Codeblocks we do not provide this Information here and return nothing if
+ * asked. AFL stores its instrumentation output in a 64kb big bitmap where each
+ * byte represents a possibly hit edge. If a byte value is greater than zero,
+ * the edge is considered hit. Counters are not reliable and are able to wrap
+ * around zero and are therfore considered as a guidance rather than exact
+ * information.
  *
  * @author Robert Merget - robert.merget@rub.de
  */
@@ -76,6 +78,7 @@ public class AFLInstrumentationMap extends InstrumentationMap {
             }
             bitmap[i] += aflMap.bitmap[i];
         }
+        System.out.println(Arrays.toString(bitmap));
         return new MergeResult(newCodeblocks, newBranches, hitCodeblocks);
     }
 

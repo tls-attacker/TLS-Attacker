@@ -39,7 +39,7 @@ public class MergeResult {
 
     }
 
-    public int getNewVertices() {
+    public int getNewCodeblocks() {
         return newCodeblocks;
     }
 
@@ -47,7 +47,7 @@ public class MergeResult {
         return newBranches;
     }
 
-    public int getHitVertices() {
+    public int getHitCodeblocks() {
         return hitCodeblocks;
     }
 

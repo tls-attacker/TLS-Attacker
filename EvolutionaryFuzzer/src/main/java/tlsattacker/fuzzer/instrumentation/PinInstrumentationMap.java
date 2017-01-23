@@ -59,20 +59,13 @@ public class PinInstrumentationMap extends InstrumentationMap {
 
     @Override
     public boolean didHitNew(InstrumentationMap instrumentationMap) {
-        System.out.println("our map");
-        for (Branch b : getBranches()) {
-            System.out.println("got: " + b.getSource() + " " + b.getDestination());
-        }
         for (Long codeblock : instrumentationMap.getCodeblocks()) {
             if (!codeblockSet.contains(codeblock)) {
-                System.out.println("found unknoen blog");
                 return true;
             }
         }
         for (Branch branch : instrumentationMap.getBranches()) {
-            System.out.println("looking for: " + branch.getSource() + " " + branch.getDestination());
-            if (!branchMap.containsKey(branch)) {
-                System.out.println("found");
+           if (!branchMap.containsKey(branch)) {
                 return true;
             }
         }
