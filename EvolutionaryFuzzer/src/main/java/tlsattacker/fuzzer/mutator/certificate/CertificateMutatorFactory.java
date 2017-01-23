@@ -30,6 +30,8 @@ public class CertificateMutatorFactory {
         switch (config.getCertMutator()) {
             case FixedCertificateMutator.optionName:
                 return new FixedCertificateMutator(config);
+            case UnitTestCertificateMutator.optionName:
+                return new UnitTestCertificateMutator();
             default:
                 throw new IllegalCertificateMutatorException("Illegal Value for Certificate Mutator:"
                         + config.getMutator());

@@ -46,7 +46,7 @@ public class NoneMutatorTest {
         config.setOutputFolder(tempFolder.newFolder().getAbsolutePath());
         config.setConfigFolder(tempFolder.newFolder().getAbsolutePath());
         config.setArchiveFolder(tempFolder.newFolder().getAbsolutePath());
-        certMutator = new tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator();
+        certMutator = new tlsattacker.fuzzer.mutator.certificate.UnitTestCertificateMutator();
         mutator = new NoneMutator(config, certMutator);
 
     }

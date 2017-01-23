@@ -55,12 +55,12 @@ public class CommandLineController extends Controller {
     /**
      * Chosen Mutator
      */
-    protected final Mutator mutator;
+    protected Mutator mutator;
 
     /**
      * Chosen CertificateMutator
      */
-    protected final CertificateMutator certMutator;
+    protected CertificateMutator certMutator;
 
     /**
      * The used ThreadPool for the fuzzer
@@ -70,7 +70,7 @@ public class CommandLineController extends Controller {
     /**
      * Analyzer to use
      */
-    protected final Analyzer analyzer;
+    protected Analyzer analyzer;
 
     /**
      * Thread that manages the thread pool

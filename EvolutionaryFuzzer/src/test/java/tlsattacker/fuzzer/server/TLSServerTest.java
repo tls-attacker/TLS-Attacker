@@ -8,6 +8,7 @@
  */
 package tlsattacker.fuzzer.server;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,10 +18,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.mutator.certificate.CertificateMutator;
-import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
+import tlsattacker.fuzzer.mutator.certificate.UnitTestCertificateMutator;
 
 /**
  * 
@@ -52,6 +54,7 @@ public class TLSServerTest {
         server = null;
     }
 
+    @Category(IntegrationTest.class)
     @Test
     public void testStart() {
         server.occupie();
@@ -61,6 +64,7 @@ public class TLSServerTest {
         server.serverHasBooted();
     }
 
+    @Category(IntegrationTest.class)
     @Test
     public void testRestart() {
         server.occupie();
@@ -70,15 +74,14 @@ public class TLSServerTest {
         server.serverHasBooted();
     }
 
+    @Category(IntegrationTest.class)
     @Test
     public void testOccupie() {
         server.occupie();
         assertFalse(server.isFree());
     }
 
-    /**
-     *
-     */
+    @Category(IntegrationTest.class)
     @Test
     public void testRelease() {
 
@@ -87,34 +90,26 @@ public class TLSServerTest {
         assertTrue(server.isFree());
     }
 
-    /**
-     *
-     */
+    @Category(IntegrationTest.class)
     @Test(expected = IllegalStateException.class)
     public void testWrongOccupie() {
         server.occupie();
         server.occupie();
     }
 
-    /**
-     *
-     */
+    @Category(IntegrationTest.class)
     @Test(expected = IllegalStateException.class)
     public void testWrongRelease() {
         server.release();
     }
 
-    /**
-     *
-     */
+    @Category(IntegrationTest.class)
     @Test(expected = IllegalStateException.class)
     public void testExitedNotStarted() {
         server.exited();
     }
 
-    /**
-     *
-     */
+    @Category(IntegrationTest.class)
     @Test
     public void testExitedStarted() {
         server.occupie();

@@ -55,7 +55,7 @@ import org.junit.Before;
 import tlsattacker.fuzzer.modification.AddExtensionModification;
 import tlsattacker.fuzzer.modification.Modification;
 import tlsattacker.fuzzer.testhelper.MockedRandom;
-import tlsattacker.fuzzer.testhelper.UnitTestCertificateMutator;
+import tlsattacker.fuzzer.mutator.certificate.UnitTestCertificateMutator;
 
 /**
  *
