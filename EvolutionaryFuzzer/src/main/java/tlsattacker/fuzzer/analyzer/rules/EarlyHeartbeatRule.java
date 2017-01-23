@@ -27,7 +27,7 @@ import javax.xml.bind.JAXBException;
  * A rule that tries to find TestVectors which allowed Heartbeat messages before
  * the handshake has finished
  * 
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class EarlyHeartbeatRule extends Rule {
 

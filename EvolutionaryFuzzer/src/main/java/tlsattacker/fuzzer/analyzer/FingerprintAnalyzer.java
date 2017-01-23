@@ -15,7 +15,7 @@ import tlsattacker.fuzzer.result.TestVectorResult;
 
 /**
  * 
- * @author ic0ns
+ * @author Robert Merget
  */
 public class FingerprintAnalyzer extends Analyzer {
 

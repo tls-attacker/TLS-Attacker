@@ -20,7 +20,7 @@ import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 
 /**
  *
- * @author ic0ns
+ * @author Robert Merget - robert.merget@rub.de
  */
 public class IllegalControllerExceptionTest {
 
