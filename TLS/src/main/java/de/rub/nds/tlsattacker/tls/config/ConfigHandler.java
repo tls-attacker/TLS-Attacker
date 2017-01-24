@@ -42,14 +42,6 @@ public abstract class ConfigHandler {
      */
     public void initialize(GeneralConfig config) {
 
-        // ECC does not work properly in the NSS provider
-        Security.removeProvider("SunPKCS11-NSS");
-        Security.addProvider(new BouncyCastleProvider());
-        LOGGER.debug("Using the following security providers");
-        for (Provider p : Security.getProviders()) {
-            LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
-        }
-
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration ctxConfig = ctx.getConfiguration();
         LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
@@ -63,6 +55,15 @@ public abstract class ConfigHandler {
             loggerConfig.setLevel(config.getLogLevel());
             ctx.updateLoggers();
         }
+        // ECC does not work properly in the NSS provider
+        Security.removeProvider("SunPKCS11-NSS");
+        Security.addProvider(new BouncyCastleProvider());
+        LOGGER.debug("Using the following security providers");
+        for (Provider p : Security.getProviders()) {
+            LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
+        }
+
+        
 
         // remove stupid Oracle JDK security restriction (otherwise, it is not
         // possible to use strong crypto with Oracle JDK)
