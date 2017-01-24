@@ -33,7 +33,7 @@ public class BlindAgent extends Agent {
      * The name of the Agent when referred by command line
      */
     public static final String optionName = "BLIND";
-    
+
     /**
      * Agent config used
      */

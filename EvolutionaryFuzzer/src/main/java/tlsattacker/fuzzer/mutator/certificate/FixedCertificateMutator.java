@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
@@ -163,13 +164,13 @@ public class FixedCertificateMutator extends CertificateMutator {
                 try {
                     server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
                     if (!server.serverHasBooted()) {
-                        LOGGER.info("Could not start Server with: " + serverStructure.getCertificateFile()
-                                .getAbsolutePath());
+                        LOGGER.info("Could not start Server with: "
+                                + serverStructure.getCertificateFile().getAbsolutePath());
                         continue;
                     }
                 } catch (Exception E) {
-                    LOGGER.info("Could not start Server with: " + serverStructure.getCertificateFile()
-                            .getAbsolutePath());
+                    LOGGER.info("Could not start Server with: "
+                            + serverStructure.getCertificateFile().getAbsolutePath());
                     continue;
                 }
             } catch (Exception E) {
@@ -189,8 +190,8 @@ public class FixedCertificateMutator extends CertificateMutator {
                 workingCerts.add(serverStructure);
                 LOGGER.info(serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
             } catch (Exception ex) {
-                LOGGER.info("Certificate not supported by TLS-Attacker:" + serverStructure.getCertificateFile()
-                        .getAbsolutePath());
+                LOGGER.info("Certificate not supported by TLS-Attacker:"
+                        + serverStructure.getCertificateFile().getAbsolutePath());
                 continue;
             }
 
@@ -222,7 +223,8 @@ public class FixedCertificateMutator extends CertificateMutator {
      * does not work as intended if the CertificateMutator is not properly
      * configured
      *
-     * @param structure Certificate to test
+     * @param structure
+     *            Certificate to test
      * @return True if it is supported
      */
     @Override

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer.rule;
 
@@ -64,7 +65,8 @@ public abstract class Rule {
     /**
      * A method that checks if the Rule should be applied to to a AgentResult
      *
-     * @param result AgentResult to analyze
+     * @param result
+     *            AgentResult to analyze
      * @return True if the Rule should apply
      */
     public abstract boolean applies(AgentResult result);
@@ -72,7 +74,8 @@ public abstract class Rule {
     /**
      * This method is called when the applies method returned true
      *
-     * @param result AgentResult to analyze
+     * @param result
+     *            AgentResult to analyze
      */
     public abstract void onApply(AgentResult result);
 

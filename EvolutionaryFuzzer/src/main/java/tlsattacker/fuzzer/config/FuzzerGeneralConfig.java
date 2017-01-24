@@ -139,11 +139,11 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getAnalyzerConfigFolder() {
         return configFolder + "analyzer/";
     }
-    
+
     public String getAgentConfigFolder() {
         return configFolder + "agent/";
     }
-    
+
     public void setConfigFolder(String configFolder) {
         this.configFolder = configFolder;
     }
@@ -165,7 +165,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
         f.mkdirs();
         f = new File(getAgentConfigFolder());
         f.mkdirs();
-        
+
     }
 
     public String getAgent() {

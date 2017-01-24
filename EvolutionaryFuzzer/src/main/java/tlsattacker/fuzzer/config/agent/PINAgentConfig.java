@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.config.agent;
 
@@ -16,12 +17,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class PINAgentConfig implements Serializable {
-    
+
     /**
      * If the PIN script should inject itself into the Child process
      */
     private boolean injectChild = true;
-    
+
     /**
      * Path to PIN
      */
@@ -45,6 +46,5 @@ public class PINAgentConfig implements Serializable {
     public void setPathToPin(String pathToPin) {
         this.pathToPin = pathToPin;
     }
-    
-    
+
 }

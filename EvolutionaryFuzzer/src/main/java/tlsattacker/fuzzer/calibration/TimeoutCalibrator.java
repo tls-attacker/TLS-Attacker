@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.calibration;
 
@@ -124,7 +125,8 @@ public class TimeoutCalibrator {
     /**
      * Tries to find all Ciphersuites that the server certificate supports
      *
-     * @param serverCerts The certificate to start the server with
+     * @param serverCerts
+     *            The certificate to start the server with
      * @return List of all ciphersuites that the server certificate supports
      */
     private List<CipherSuite> getWorkingCiphersuites(ServerCertificateStructure serverCerts) {
@@ -144,9 +146,12 @@ public class TimeoutCalibrator {
      * Tests if a ciphersuite leads to a succesful handshake with the server
      * with the specified timeout and certificate
      *
-     * @param serverCerts The certificate the server should be started with
-     * @param suite The ciphersuite be tested
-     * @param timeout The timeout that should be used
+     * @param serverCerts
+     *            The certificate the server should be started with
+     * @param suite
+     *            The ciphersuite be tested
+     * @param timeout
+     *            The timeout that should be used
      * @return True if a successful handshake was executed with the server
      */
     public boolean testCiphersuite(ServerCertificateStructure serverCerts, CipherSuite suite, int timeout) {
@@ -185,10 +190,12 @@ public class TimeoutCalibrator {
     /**
      * Executes a workflow specified in the client command config
      *
-     * @param configHandler Configuration handler used
-     * @param config ClientCommandConfig which ultimately contains the
-     * TLSContext
-     * @param agent The Agent that should be used
+     * @param configHandler
+     *            Configuration handler used
+     * @param config
+     *            ClientCommandConfig which ultimately contains the TLSContext
+     * @param agent
+     *            The Agent that should be used
      * @return True if the Workflowtrace did successfully execute
      */
     private boolean executeWorkflow(ConfigHandler configHandler, ClientCommandConfig config, Agent agent) {
@@ -234,7 +241,8 @@ public class TimeoutCalibrator {
     /**
      * Tests if all required messages were actually received in a WorkflowTrace
      *
-     * @param trace WorkflowTrace to analyze
+     * @param trace
+     *            WorkflowTrace to analyze
      * @return True if all required messages were actually received
      */
     private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
@@ -261,8 +269,10 @@ public class TimeoutCalibrator {
     /**
      * Tries to find the lowest timeout for a ciphersuite
      *
-     * @param serverCerts Certificate to start the Server with
-     * @param suite Ciphersuite to test
+     * @param serverCerts
+     *            Certificate to start the Server with
+     * @param suite
+     *            Ciphersuite to test
      * @return Lowest timeout in milliseconds
      */
     private int getSmallestTimeoutPossible(ServerCertificateStructure serverCerts, CipherSuite suite) {

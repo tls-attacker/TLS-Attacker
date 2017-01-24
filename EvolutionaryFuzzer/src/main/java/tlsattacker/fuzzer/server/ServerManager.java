@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.server;
 
@@ -62,7 +63,8 @@ public class ServerManager {
     /**
      * Adds a TLSServer to the List of TLSServers
      *
-     * @param server Server to add
+     * @param server
+     *            Server to add
      */
     public void addServer(TLSServer server) {
         serverList.add(server);
@@ -71,7 +73,8 @@ public class ServerManager {
     /**
      * Reads the config files and adds Servers to the serverList accordingly
      *
-     * @param config Config file used to find the correct config folder
+     * @param config
+     *            Config file used to find the correct config folder
      * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
      */
     public void init(FuzzerGeneralConfig config) throws FuzzerConfigurationException {
@@ -86,8 +89,7 @@ public class ServerManager {
             if (file.isDirectory()) {
                 File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
                 if (filesInDic.length == 0) {
-                    LOGGER.info("No Server Configurations Files in the Server Config Folder: "
-                            + file.getAbsolutePath());
+                    LOGGER.info("No Server Configurations Files in the Server Config Folder: " + file.getAbsolutePath());
                     LOGGER.info("You can create new Configuration files with the command new-server");
                     throw new FuzzerConfigurationException("Server not properly configured!");
                 } else {
