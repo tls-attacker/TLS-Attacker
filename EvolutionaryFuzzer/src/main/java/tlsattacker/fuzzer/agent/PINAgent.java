@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -22,6 +21,7 @@ import tlsattacker.fuzzer.testvector.TestVector;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
@@ -31,7 +31,7 @@ import tlsattacker.fuzzer.instrumentation.PinInstrumentationMap;
 /**
  * An Agent implemented with dynamic instrumentation with the aid of Intels Pin
  * tool.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class PINAgent extends Agent {
@@ -45,14 +45,14 @@ public class PINAgent extends Agent {
 
     /**
      * Parses the readers contents into a BranchTrace object
-     * 
+     *
      * @param bufferedReader
      * @return A newly generated BranchTrace object
      */
     private InstrumentationMap getInstrumentationMap(BufferedReader bufferedReader) {
         try {
-            Set<Long> verticesSet = new HashSet<>();
-            Map<Branch, Branch> edgeMap = new HashMap<>();
+            Set<Long> codeblockSet = new HashSet<>();
+            Map<Branch, Branch> branchMap = new HashMap<>();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 try {
@@ -73,16 +73,16 @@ public class PINAgent extends Agent {
                         dst = Long.parseLong(split[1].substring(2), 16);
                     }
                     int count = Integer.parseInt(split[3]);
-                    verticesSet.add(src);
-                    verticesSet.add(dst);
+                    codeblockSet.add(src);
+                    codeblockSet.add(dst);
                     Branch e = new Branch(src, dst);
                     e.setCounter(count);
-                    edgeMap.put(e, e);
+                    branchMap.put(e, e);
                 } catch (Exception E) {
                     E.printStackTrace();
                 }
             }
-            return new PinInstrumentationMap(verticesSet, edgeMap);
+            return new PinInstrumentationMap(codeblockSet, branchMap);
 
         } catch (IOException ex) {
             LOGGER.error("Could not create BranchTrace object From File! Creating empty BranchTrace instead!", ex);
@@ -101,9 +101,10 @@ public class PINAgent extends Agent {
     private FuzzerGeneralConfig config;
 
     /**
-     * Default Constructor
-     * 
+     *
+     * @param config
      * @param keypair
+     * @param server
      */
     public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
@@ -146,21 +147,35 @@ public class PINAgent extends Agent {
         }
         InstrumentationMap instrumentationMap = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(branchTrace));
+            String line = null;
+            BufferedReader br;
+            do {
+                
+                br = new BufferedReader(new FileReader(branchTrace));
 
-            String line = br.readLine();
-
-            if (line != null
-                    && (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
-                            || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
-                                .contains("SIGALRM"))) {
+                line = br.readLine();
+                //Pin script is not yet done writing the file
+                if(line == null)
+                {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        java.util.logging.Logger.getLogger(PINAgent.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    br.close();
+                }
+            }while(line == null);
+            if (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
+                    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
+                    .contains("SIGALRM")) {
                 crash = true;
                 LOGGER.info("Found a crash:{0}", line);
                 // Skip 2 lines
-                line = br.readLine();
-                line = br.readLine();
+                br.readLine();
+                br.readLine();
 
             }
+
             instrumentationMap = getInstrumentationMap(br);
             br.close();
 
