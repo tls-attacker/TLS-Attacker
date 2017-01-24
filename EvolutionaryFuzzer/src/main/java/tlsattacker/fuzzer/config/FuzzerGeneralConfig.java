@@ -59,13 +59,6 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     private Integer bootTimeout = 50000;
 
     /**
-     * If set the PinAgent should inject into the child process TODO put in
-     * agent config
-     */
-    @Parameter(names = "-inject_pin_child", description = "If the PIN Agent should instrument into the Childprocess")
-    private final boolean injectPinChild = true;
-
-    /**
      * The general folder in which results should be saved
      */
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
@@ -84,10 +77,6 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
 
     public String getAnalyzer() {
         return analyzer;
-    }
-
-    public boolean getInjectPinChild() {
-        return injectPinChild;
     }
 
     public Integer getBootTimeout() {
@@ -150,7 +139,11 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
     public String getAnalyzerConfigFolder() {
         return configFolder + "analyzer/";
     }
-
+    
+    public String getAgentConfigFolder() {
+        return configFolder + "agent/";
+    }
+    
     public void setConfigFolder(String configFolder) {
         this.configFolder = configFolder;
     }
@@ -168,8 +161,11 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
         f.mkdirs();
         f = new File(getAnalyzerConfigFolder());
         f.mkdirs();
-        f = new File(getServerCommandFromFile());
+        f = new File(getServerConfigFolder());
         f.mkdirs();
+        f = new File(getAgentConfigFolder());
+        f.mkdirs();
+        
     }
 
     public String getAgent() {
@@ -180,7 +176,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
         this.agent = agent;
     }
 
-    public String getServerCommandFromFile() {
+    public String getServerConfigFolder() {
         return configFolder + "server/";
     }
 
