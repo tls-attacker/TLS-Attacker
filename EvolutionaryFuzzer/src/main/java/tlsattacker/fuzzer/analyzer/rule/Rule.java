@@ -3,12 +3,10 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.analyzer.rule;
 
-import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import tlsattacker.fuzzer.config.analyzer.RuleConfig;
 import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
 import tlsattacker.fuzzer.result.AgentResult;
@@ -21,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  * A is a class that can be used to analyze TestVectors. It seperates the
  * different things an operator might want to look for in a TestVector into
  * different Classes.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Rule {
@@ -65,44 +63,42 @@ public abstract class Rule {
 
     /**
      * A method that checks if the Rule should be applied to to a AgentResult
-     * 
-     * @param result
-     *            AgentResult to analyze
+     *
+     * @param result AgentResult to analyze
      * @return True if the Rule should apply
      */
     public abstract boolean applies(AgentResult result);
 
     /**
      * This method is called when the applies method returned true
-     * 
-     * @param result
-     *            AgentResult to analyze
+     *
+     * @param result AgentResult to analyze
      */
     public abstract void onApply(AgentResult result);
 
     /**
      * This method is called when the applies method returned false
-     * 
+     *
      * @param result
      */
     public abstract void onDecline(AgentResult result);
 
     /**
      * Generates a status report
-     * 
+     *
      * @return
      */
     public abstract String report();
 
     /**
      * Serializes a Configuration file to its configuration file
-     * 
+     *
      * @param c
      */
     protected void writeConfig(RuleConfig c) {
         File f = new File(evoConfig.getAnalyzerConfigFolder() + configFileName);
         if (f.exists()) {
-            LOGGER.error("Config File already exists, not writing new Config:{0}", configFileName);
+            LOGGER.error("Config File already exists, not writing new Config:" + configFileName);
         } else {
             JAXB.marshal(c, f);
         }

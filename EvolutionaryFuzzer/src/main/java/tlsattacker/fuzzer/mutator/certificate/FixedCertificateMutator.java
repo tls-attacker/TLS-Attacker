@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
@@ -33,7 +32,7 @@ import tlsattacker.fuzzer.server.TLSServer;
 /**
  * An implementation of the CertificateMutator that does not modify the
  * Certificates and instead exchanges them completely.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -120,7 +119,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     /**
      * Tests all ClientCertificates and returns a list of all working
      * ClientCertificates
-     * 
+     *
      * @return A list of all working ClientCertificates
      */
     private List<ClientCertificateStructure> testClientCerts() {
@@ -128,9 +127,9 @@ public class FixedCertificateMutator extends CertificateMutator {
         LOGGER.info("Testing Client Certificates");
         for (ClientCertificateStructure clientCert : clientCertList) {
             if (!clientCert.getJKSfile().exists()) {
-                LOGGER.info("Could not find:{0}", clientCert.getJKSfile().getAbsolutePath());
+                LOGGER.info("Could not find:" + clientCert.getJKSfile().getAbsolutePath());
             } else {
-                LOGGER.info("{0} - OK", clientCert.getJKSfile().getAbsolutePath());
+                LOGGER.info(clientCert.getJKSfile().getAbsolutePath() + " - OK");
                 workingCerts.add(clientCert);
             }
         }
@@ -141,7 +140,7 @@ public class FixedCertificateMutator extends CertificateMutator {
     /**
      * Tests all ServerCertificates and returns a list of all working
      * ServerCertificates
-     * 
+     *
      * @return A list of all working ServerCertificates
      */
     private List<ServerCertificateStructure> testServerCerts() {
@@ -151,11 +150,11 @@ public class FixedCertificateMutator extends CertificateMutator {
         LOGGER.info("Testing Server Certificates");
         for (ServerCertificateStructure serverStructure : serverCertList) {
             if (!serverStructure.getCertificateFile().exists()) {
-                LOGGER.info("Could not find:{0}", serverStructure.getCertificateFile().getAbsolutePath());
+                LOGGER.info("Could not find: " + serverStructure.getCertificateFile().getAbsolutePath());
                 continue;
             }
             if (!serverStructure.getKeyFile().exists()) {
-                LOGGER.info("Could not find:{0}", serverStructure.getKeyFile().getAbsolutePath());
+                LOGGER.info("Could not find: " + serverStructure.getKeyFile().getAbsolutePath());
                 continue;
             }
             TLSServer server = null;
@@ -164,17 +163,17 @@ public class FixedCertificateMutator extends CertificateMutator {
                 try {
                     server.restart("", serverStructure.getCertificateFile(), serverStructure.getKeyFile());
                     if (!server.serverHasBooted()) {
-                        LOGGER.info("Could not start Server with:{0}", serverStructure.getCertificateFile()
+                        LOGGER.info("Could not start Server with: " + serverStructure.getCertificateFile()
                                 .getAbsolutePath());
                         continue;
                     }
                 } catch (Exception E) {
-                    LOGGER.info("Could not start Server with:{0}", serverStructure.getCertificateFile()
+                    LOGGER.info("Could not start Server with: " + serverStructure.getCertificateFile()
                             .getAbsolutePath());
                     continue;
                 }
             } catch (Exception E) {
-                LOGGER.info("Could not start Server with:{0}", serverStructure.getCertificateFile().getAbsolutePath());
+                LOGGER.info("Could not start Server with: " + serverStructure.getCertificateFile().getAbsolutePath());
                 continue;
             } finally {
                 if (server != null) {
@@ -188,9 +187,9 @@ public class FixedCertificateMutator extends CertificateMutator {
                 Collection<? extends Certificate> certs = certFactory.generateCertificates(new FileInputStream(
                         serverStructure.getCertificateFile()));
                 workingCerts.add(serverStructure);
-                LOGGER.info("{0} - OK", serverStructure.getCertificateFile().getAbsolutePath());
+                LOGGER.info(serverStructure.getCertificateFile().getAbsolutePath() + " - OK");
             } catch (Exception ex) {
-                LOGGER.info("Certificate not supported by TLS-Attacker:{0}", serverStructure.getCertificateFile()
+                LOGGER.info("Certificate not supported by TLS-Attacker:" + serverStructure.getCertificateFile()
                         .getAbsolutePath());
                 continue;
             }
@@ -222,9 +221,8 @@ public class FixedCertificateMutator extends CertificateMutator {
      * Checks if the ServerCertificate is in the serverCertList. This method
      * does not work as intended if the CertificateMutator is not properly
      * configured
-     * 
-     * @param structure
-     *            Certificate to test
+     *
+     * @param structure Certificate to test
      * @return True if it is supported
      */
     @Override

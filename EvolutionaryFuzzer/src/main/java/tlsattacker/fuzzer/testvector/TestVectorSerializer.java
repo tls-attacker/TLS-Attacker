@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.testvector;
 
@@ -41,7 +40,7 @@ import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
 
 /**
  * A helper class to serialize and deserialize TestVectors.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TestVectorSerializer {
@@ -55,7 +54,7 @@ public class TestVectorSerializer {
 
     /**
      * Returns an initialized JaxbContext
-     * 
+     *
      * @return
      * @throws JAXBException
      * @throws IOException
@@ -71,18 +70,13 @@ public class TestVectorSerializer {
 
     /**
      * Writes a WorkflowTrace to a File
-     * 
-     * @param file
-     *            File to which the TestVector should be written
-     * @param vector
-     *            TestVector that should be written
-     * @throws FileNotFoundException
-     *             Is thrown if the File cannot be found
-     * @throws JAXBException
-     *             Is thrown when the Object cannot be serialized
-     * @throws IOException
-     *             Is thrown if the Process doesn't have the rights to write to
-     *             the File
+     *
+     * @param file File to which the TestVector should be written
+     * @param vector TestVector that should be written
+     * @throws FileNotFoundException Is thrown if the File cannot be found
+     * @throws JAXBException Is thrown when the Object cannot be serialized
+     * @throws IOException Is thrown if the Process doesn't have the rights to
+     * write to the File
      */
     public static void write(File file, TestVector vector) throws FileNotFoundException, JAXBException, IOException {
         if (!file.exists()) {
@@ -94,15 +88,11 @@ public class TestVectorSerializer {
 
     /**
      * Writes a TestVector to an Outputstream
-     * 
-     * @param outputStream
-     *            Outputstream to write to
-     * @param vector
-     *            TestVector to serializ
-     * @throws JAXBException
-     *             If something goes wrong
-     * @throws IOException
-     *             If something goes wrong
+     *
+     * @param outputStream Outputstream to write to
+     * @param vector TestVector to serializ
+     * @throws JAXBException If something goes wrong
+     * @throws IOException If something goes wrong
      */
     public static void write(OutputStream outputStream, TestVector vector) throws JAXBException, IOException {
         context = getJAXBContext();
@@ -114,16 +104,12 @@ public class TestVectorSerializer {
 
     /**
      * Reads a TestVector from an InputStream
-     * 
-     * @param inputStream
-     *            Inputstream to read from
+     *
+     * @param inputStream Inputstream to read from
      * @return Read TestVector
-     * @throws JAXBException
-     *             If something goes wrong
-     * @throws IOException
-     *             If something goes wrong
-     * @throws XMLStreamException
-     *             If something goes wrong
+     * @throws JAXBException If something goes wrong
+     * @throws IOException If something goes wrong
+     * @throws XMLStreamException If something goes wrong
      */
     public static TestVector read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();
@@ -139,9 +125,8 @@ public class TestVectorSerializer {
 
     /**
      * Reads all TestVectors from a Folder
-     * 
-     * @param f
-     *            Folder to read from
+     *
+     * @param f Folder to read from
      * @return All TestVectors that were readable from the folder
      */
     public static List<TestVector> readFolder(File f) {
@@ -158,7 +143,7 @@ public class TestVectorSerializer {
                     vector.getTrace().setName(file.getAbsolutePath());
                     list.add(vector);
                 } catch (XMLStreamException | IOException | JAXBException | java.lang.NoSuchMethodError ex) {
-                    LOGGER.info("Could not load file:{0}", file.getAbsolutePath());
+                    LOGGER.info("Could not load file: " + file.getAbsolutePath());
                     LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
             }
@@ -172,7 +157,7 @@ public class TestVectorSerializer {
     /**
      * Returns a somehow deep copy of the TestVector. The WorkflowTrace is deep
      * copied and the rest is passed as a reference.
-     * 
+     *
      * @param testVector
      * @return
      * @throws javax.xml.bind.JAXBException

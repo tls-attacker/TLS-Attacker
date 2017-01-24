@@ -91,15 +91,14 @@ public class IsGoodRule extends Rule {
      */
     @Override
     public synchronized boolean applies(AgentResult result) {
-        MergeResult r = null;
-        if (instrumentationMap == null) {
+        if (instrumentationMap == null && result.getInstrumentationMap() != null) {
             instrumentationMap = result.getInstrumentationMap();
             return true;
         }
 
         if (instrumentationMap.didHitNew(result.getInstrumentationMap())) {
-            r = instrumentationMap.merge(result.getInstrumentationMap());
-            LOGGER.debug("Found a GoodTrace:{0}", r.toString());
+            MergeResult r = instrumentationMap.merge(result.getInstrumentationMap());
+            LOGGER.debug("Found a GoodTrace:" + r.toString());
             return true;
         } else {
             return false;

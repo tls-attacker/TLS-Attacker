@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.executor;
 
@@ -24,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
 import javax.xml.bind.JAXBException;
-import org.apache.logging.log4j.Level;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
@@ -41,6 +39,7 @@ import java.io.FileInputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
+import org.apache.logging.log4j.Level;
 import tlsattacker.fuzzer.agent.AgentFactory;
 import tlsattacker.fuzzer.exceptions.IllegalAgentException;
 import tlsattacker.fuzzer.result.TestVectorResult;
@@ -90,10 +89,8 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config
-     *            Config that should be used
-     * @param testVector
-     *            TestVector that should be executed
+     * @param config Config that should be used
+     * @param testVector TestVector that should be executed
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException {
@@ -104,12 +101,9 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config
-     *            Config that should be used
-     * @param testVector
-     *            TestVector that should be executed
-     * @param server
-     *            TLSServer the executor should use
+     * @param config Config that should be used
+     * @param testVector TestVector that should be executed
+     * @param server TLSServer the executor should use
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server)
@@ -122,10 +116,8 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Generates a TransportHandler according to the TLSServer and the config
      *
-     * @param server
-     *            TLSServer to use
-     * @param config
-     *            Config to use
+     * @param server TLSServer to use
+     * @param config Config to use
      * @return A newly generated Transporthandler
      */
     private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {
@@ -233,10 +225,10 @@ public class SingleTLSExecutor extends Executor {
                 try {
                     TestVectorSerializer.write(f, testVector);
                 } catch (JAXBException | IOException ex) {
-                    LOGGER.info("Could not serialize WorkflowTrace:{0}", f.getAbsolutePath());
+                    LOGGER.info("Could not serialize WorkflowTrace: " + f.getAbsolutePath());
                     LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
-                LOGGER.info("File:{0}", f.getName());
+                LOGGER.info("File: " + f.getName());
                 LOGGER.debug(e.getLocalizedMessage(), e);
             } finally {
                 if (transportHandler != null) {

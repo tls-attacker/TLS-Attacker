@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.server;
 
@@ -22,7 +21,7 @@ import tlsattacker.fuzzer.exceptions.FuzzerConfigurationException;
 
 /**
  * Manages the different Servers that the fuzzer is configured with.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerManager {
@@ -31,7 +30,7 @@ public class ServerManager {
 
     /**
      * Singleton
-     * 
+     *
      * @return Instance of the ServerManager
      */
     public static ServerManager getInstance() {
@@ -62,9 +61,8 @@ public class ServerManager {
 
     /**
      * Adds a TLSServer to the List of TLSServers
-     * 
-     * @param server
-     *            Server to add
+     *
+     * @param server Server to add
      */
     public void addServer(TLSServer server) {
         serverList.add(server);
@@ -72,16 +70,15 @@ public class ServerManager {
 
     /**
      * Reads the config files and adds Servers to the serverList accordingly
-     * 
-     * @param config
-     *            Config file used to find the correct config folder
+     *
+     * @param config Config file used to find the correct config folder
      * @throws tlsattacker.fuzzer.exceptions.FuzzerConfigurationException
      */
     public void init(FuzzerGeneralConfig config) throws FuzzerConfigurationException {
         this.config = config;
         File file = new File(config.getServerCommandFromFile());
         if (!file.exists()) {
-            LOGGER.info("Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+            LOGGER.info("Could not find Server Configuration Files: " + file.getAbsolutePath());
             LOGGER.info("You can create new Configuration files with the command new-server");
             throw new FuzzerConfigurationException("Server not properly configured!");
 
@@ -89,8 +86,8 @@ public class ServerManager {
             if (file.isDirectory()) {
                 File[] filesInDic = file.listFiles(new GitIgnoreFileFilter());
                 if (filesInDic.length == 0) {
-                    LOGGER.info("No Server Configurations Files in the Server Config Folder:{0}",
-                            file.getAbsolutePath());
+                    LOGGER.info("No Server Configurations Files in the Server Config Folder: "
+                            + file.getAbsolutePath());
                     LOGGER.info("You can create new Configuration files with the command new-server");
                     throw new FuzzerConfigurationException("Server not properly configured!");
                 } else {
@@ -107,7 +104,7 @@ public class ServerManager {
                     }
                 }
             } else {
-                LOGGER.info("Could not find Server Configuration Files:{0}", file.getAbsolutePath());
+                LOGGER.info("Could not find Server Configuration Files: " + file.getAbsolutePath());
                 LOGGER.info("You can create new Configuration files with the command new-server");
                 throw new FuzzerConfigurationException("Server not properly configured!");
             }
@@ -123,7 +120,7 @@ public class ServerManager {
      * no free Server available. If it still searches for a free Server after 10
      * seconds, it throws an Exception. If a server is found, the Server is
      * reserved. Its the caller duty to release the Server once it is finished.
-     * 
+     *
      * @return A Free Server
      */
     public synchronized TLSServer getFreeServer() {
@@ -152,7 +149,7 @@ public class ServerManager {
     /**
      * Waits till all TLSServers are free and occupies them all and returns
      * them.
-     * 
+     *
      * @return List of all configured Servers
      */
     public synchronized List<TLSServer> occupieAllServers() {
@@ -172,7 +169,7 @@ public class ServerManager {
                 for (TLSServer server : serverList) {
                     server.occupie();
                 }
-                return serverList;
+                return Collections.unmodifiableList(serverList);
             }
             // Not all servers were free
             i++;
@@ -193,7 +190,7 @@ public class ServerManager {
 
     /**
      * Returns the Number of Servers the Fuzzer controls
-     * 
+     *
      * @return Number of Servers the Fuzzer controls
      */
     public int getNumberOfServers() {
@@ -202,7 +199,7 @@ public class ServerManager {
 
     /**
      * Returns the number of Servers in the serverList
-     * 
+     *
      * @return
      */
     public int getServerCount() {
@@ -211,7 +208,7 @@ public class ServerManager {
 
     /**
      * Returns the number of currently free servers
-     * 
+     *
      * @return
      */
     public int getFreeServerCount() {
@@ -226,7 +223,7 @@ public class ServerManager {
 
     /**
      * Returns all Servers
-     * 
+     *
      * @return
      */
     public List<TLSServer> getAllServers() {

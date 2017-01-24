@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.controller;
 
@@ -42,7 +41,7 @@ import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 /**
  * Currently only Implementation of the Controller Interface which controls the
  * the fuzzer with a commandline interface.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CommandLineController extends Controller {
@@ -85,9 +84,8 @@ public class CommandLineController extends Controller {
     /**
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
-     * 
-     * @param config
-     *            Configuration used by the Controller
+     *
+     * @param config Configuration used by the Controller
      * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException
@@ -154,7 +152,7 @@ public class CommandLineController extends Controller {
         if (split.length == 2) {
             file = split[1];
         }
-        LOGGER.info("Dumping Edge Information to {0}", file);
+        LOGGER.info("Dumping Edge Information to " + file);
         stopFuzzer();
         do {
             try {
@@ -185,7 +183,7 @@ public class CommandLineController extends Controller {
         if (split.length == 2) {
             file = split[1];
         }
-        LOGGER.info("Dumping Vertex Information to {0}", file);
+        LOGGER.info("Dumping Vertex Information to " + file);
         stopFuzzer();
         do {
             try {
@@ -217,7 +215,7 @@ public class CommandLineController extends Controller {
             LOGGER.info("You need to specify a File to load");
         } else {
             String file = split[1];
-            LOGGER.info("Loading from:{0}", file);
+            LOGGER.info("Loading from: " + file);
             ObjectInputStream objectinputstream = null;
             try {
                 FileInputStream streamIn = new FileInputStream(file);
@@ -244,7 +242,7 @@ public class CommandLineController extends Controller {
             LOGGER.info("You need to specify a File to Save to");
         } else {
             String file = split[1];
-            LOGGER.info("Saving to:{0}", file);
+            LOGGER.info("Saving to: " + file);
             FileOutputStream fout = null;
             ObjectOutputStream oos = null;
             try {

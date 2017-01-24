@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.main;
 
@@ -60,8 +59,7 @@ public class Main {
     /**
      * Main function which Starts the fuzzer
      *
-     * @param args
-     *            Arguments which are parsed
+     * @param args Arguments which are parsed
      */
     public static void main(String args[]) throws IllegalAgentException, FuzzerConfigurationException {
         LOGGER.debug(Utils.arrayToString(args));
@@ -119,13 +117,14 @@ public class Main {
                     LOGGER.info("Fininshed reading.");
                     Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
                             ConnectionEnd.CLIENT);
-                    LOGGER.info("Found {0} different TraceTypes", set.size());
+                    LOGGER.info("Found " + set.size()
+                            + " different TraceTypes");
                     DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
                     LOGGER.info("Printing out graph in .DOT format.");
                     String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
                     LOGGER.info(dotFormat);
                 } else {
-                    LOGGER.info("The Specified Folder does not exist or is not a Folder:{0}", f.getAbsolutePath());
+                    LOGGER.info("The Specified Folder does not exist or is not a Folder: " + f.getAbsolutePath());
                 }
                 break;
             case "execute-faulty":
@@ -134,7 +133,7 @@ public class Main {
                 f = new File(faultyConfig.getOutputFaultyFolder());
                 List<TestVector> vectors = TestVectorSerializer.readFolder(f);
                 for (TestVector vector : vectors) {
-                    LOGGER.info("Trace:{0}", vector.getTrace().getName());
+                    LOGGER.info("Trace: " + vector.getTrace().getName());
                     vector.getTrace().reset();
                     vector.getTrace().makeGeneric();
                     TLSServer server = ServerManager.getInstance().getFreeServer();
@@ -148,10 +147,10 @@ public class Main {
                 TLSServer server = new TLSServer(null, serverConfig.getIp(), serverConfig.getPort(),
                         serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand(),
                         serverConfig.getMayorVersion(), serverConfig.getMinorVersion());
-                {
+                 {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
-                        LOGGER.info("Wrote Server to:{0}", new File(serverConfig.getOutput()).getAbsolutePath());
+                        LOGGER.info("Wrote Server to: " + new File(serverConfig.getOutput()).getAbsolutePath());
                     } catch (FileNotFoundException ex) {
                         LOGGER.error("Could not write Server to file!", ex);
                     }
@@ -163,7 +162,7 @@ public class Main {
                 calibrator.setLimit(calibrationConfig.getTimeoutLimit());
                 ServerManager.getInstance().init(calibrationConfig);
                 int timeout = calibrator.calibrateTimeout();
-                LOGGER.info("Recommended Timeout for this Server is:{0}", timeout);
+                LOGGER.info("Recommended Timeout for this Server is: " + timeout);
                 break;
             case "test-certificates":
                 ServerManager.getInstance().init(calibrationConfig);
@@ -176,7 +175,7 @@ public class Main {
                 f = new File(testCrashedConfig.getCrashFolder());
                 vectors = TestVectorSerializer.readFolder(f);
                 for (TestVector vector : vectors) {
-                    LOGGER.info("Trace:{0}", vector.getTrace().getName());
+                    LOGGER.info("Trace: " + vector.getTrace().getName());
                     for (int i = 0; i < testCrashedConfig.getExecuteNumber(); i++) {
                         vector.getTrace().reset();
                         vector.getTrace().makeGeneric();
@@ -191,7 +190,5 @@ public class Main {
             default:
                 jc.usage();
         }
-
     }
-
 }

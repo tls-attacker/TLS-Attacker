@@ -286,7 +286,7 @@ public class TLSServer {
                 command = command.replace("[port]", "" + port);
                 command = command.replace("[cert]", "" + certificateFile.getAbsolutePath());
                 command = command.replace("[key]", "" + keyFile.getAbsolutePath());
-                LOGGER.debug("Starting Server:{0}", command);
+                LOGGER.debug("Starting Server: " + command);
                 long time = System.currentTimeMillis();
                 Runtime rt = Runtime.getRuntime();
                 p = rt.exec(command);

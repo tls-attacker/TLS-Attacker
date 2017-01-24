@@ -150,13 +150,12 @@ public class PINAgent extends Agent {
             String line = null;
             BufferedReader br;
             do {
-                
+
                 br = new BufferedReader(new FileReader(branchTrace));
 
                 line = br.readLine();
                 //Pin script is not yet done writing the file
-                if(line == null)
-                {
+                if (line == null) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {
@@ -164,12 +163,12 @@ public class PINAgent extends Agent {
                     }
                     br.close();
                 }
-            }while(line == null);
+            } while (line == null);
             if (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
                     || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
                     .contains("SIGALRM")) {
                 crash = true;
-                LOGGER.info("Found a crash:{0}", line);
+                LOGGER.info("Found a crash: " + line);
                 // Skip 2 lines
                 br.readLine();
                 br.readLine();
