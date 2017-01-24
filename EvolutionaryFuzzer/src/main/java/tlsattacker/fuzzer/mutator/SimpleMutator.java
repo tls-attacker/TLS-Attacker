@@ -82,13 +82,13 @@ public class SimpleMutator extends Mutator {
         do {
             if (goodVectorsExist()) {
                 try {
-                    tempVector = chooseRandomTestVectorFromFolder(new File("data/good/"));
+                    tempVector = chooseRandomTestVectorFromFolder(new File(config.getOutputFolder() + "good/"));
                 } catch (IOException | JAXBException | XMLStreamException ex) {
                     LOGGER.error("Could not read good TestVector", ex);
                 }
             } else if (archiveVectorsExist()) {
                 try {
-                    tempVector = chooseRandomTestVectorFromFolder(new File("archive/"));
+                    tempVector = chooseRandomTestVectorFromFolder(new File(config.getArchiveFolder()));
                 } catch (IOException | JAXBException | XMLStreamException ex) {
                     LOGGER.error("Could not read archive TestVector", ex);
                 }
