@@ -76,7 +76,7 @@ public class ServerManager {
      */
     public void init(FuzzerGeneralConfig config) throws FuzzerConfigurationException {
         this.config = config;
-        File file = new File(config.getServerCommandFromFile());
+        File file = new File(config.getServerConfigFolder());
         if (!file.exists()) {
             LOGGER.info("Could not find Server Configuration Files: " + file.getAbsolutePath());
             LOGGER.info("You can create new Configuration files with the command new-server");

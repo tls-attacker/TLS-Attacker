@@ -118,20 +118,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         setKeystore("../resources/rsa1024.jks");
         setPassword("password");
         setAlias("alias");
-        new File(getOutputClientCertificateFolder()).mkdirs();
-        new File(getOutputFolder()).mkdirs();
-        new File(getOutputServerCertificateFolder()).mkdirs();
-        new File(getCertificateMutatorConfigFolder()).mkdirs();
-        new File(getAnalyzerConfigFolder()).mkdirs();
-        new File(getOutputFaultyFolder()).mkdirs();
-        new File(getArchiveFolder()).mkdirs();
-        File f = new File(getMutatorConfigFolder() + "action_executor.conf");
-        if (f.exists()) {
-            actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
-        } else {
-            actionExecutorConfig = new ActionExecutorTypeConfig();
-            JAXB.marshal(actionExecutorConfig, f);
-        }
+        createFolders();
     }
 
     public String getController() {
@@ -232,10 +219,24 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     @Override
     public void createFolders() {
         super.createFolders();
+        new File(getOutputClientCertificateFolder()).mkdirs();
+        new File(getOutputFolder()).mkdirs();
+        new File(getOutputServerCertificateFolder()).mkdirs();
+        new File(getCertificateMutatorConfigFolder()).mkdirs();
+        new File(getAnalyzerConfigFolder()).mkdirs();
+        new File(getOutputFaultyFolder()).mkdirs();
+        new File(getArchiveFolder()).mkdirs();
+        File f = new File(getMutatorConfigFolder() + "action_executor.conf");
+        if (f.exists()) {
+            actionExecutorConfig = JAXB.unmarshal(f, ActionExecutorTypeConfig.class);
+        } else {
+            actionExecutorConfig = new ActionExecutorTypeConfig();
+            JAXB.marshal(actionExecutorConfig, f);
+        }
         new File(getOutputFaultyFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
-
+        
     }
 
 }
