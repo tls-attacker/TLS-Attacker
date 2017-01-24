@@ -148,9 +148,12 @@ public class CommandLineController extends Controller {
     }
 
     public void dumpEdges(String split[]) {
-        String file = "edges.dump";
+        String file;
         if (split.length == 2) {
             file = split[1];
+        } else {
+            LOGGER.info("Specify a file name!");
+            return;
         }
         LOGGER.info("Dumping Edge Information to " + file);
         stopFuzzer();
@@ -179,9 +182,12 @@ public class CommandLineController extends Controller {
     }
 
     public void dumpVertices(String[] split) {
-        String file = "vertices.dump";
+        String file;
         if (split.length == 2) {
             file = split[1];
+        } else {
+            LOGGER.info("Specify a file name!");
+            return;
         }
         LOGGER.info("Dumping Vertex Information to " + file);
         stopFuzzer();
