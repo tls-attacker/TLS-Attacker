@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.executor;
 
@@ -89,8 +90,10 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config Config that should be used
-     * @param testVector TestVector that should be executed
+     * @param config
+     *            Config that should be used
+     * @param testVector
+     *            TestVector that should be executed
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector) throws IllegalAgentException {
@@ -101,9 +104,12 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Constructor for the TLSExecutor
      *
-     * @param config Config that should be used
-     * @param testVector TestVector that should be executed
-     * @param server TLSServer the executor should use
+     * @param config
+     *            Config that should be used
+     * @param testVector
+     *            TestVector that should be executed
+     * @param server
+     *            TLSServer the executor should use
      * @throws tlsattacker.fuzzer.exceptions.IllegalAgentException
      */
     public SingleTLSExecutor(EvolutionaryFuzzerConfig config, TestVector testVector, TLSServer server)
@@ -116,8 +122,10 @@ public class SingleTLSExecutor extends Executor {
     /**
      * Generates a TransportHandler according to the TLSServer and the config
      *
-     * @param server TLSServer to use
-     * @param config Config to use
+     * @param server
+     *            TLSServer to use
+     * @param config
+     *            Config to use
      * @return A newly generated Transporthandler
      */
     private TransportHandler generateTransportHandler(TLSServer server, EvolutionaryFuzzerConfig config) {

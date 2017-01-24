@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.controller;
 
@@ -85,7 +86,8 @@ public class CommandLineController extends Controller {
      * Basic Constructor, initializes the Server List, generates the necessary
      * Config Files and Contexts and also commints to a mutation Engine
      *
-     * @param config Configuration used by the Controller
+     * @param config
+     *            Configuration used by the Controller
      * @throws tlsattacker.fuzzer.exceptions.IllegalMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalCertificateMutatorException
      * @throws tlsattacker.fuzzer.exceptions.IllegalAnalyzerException

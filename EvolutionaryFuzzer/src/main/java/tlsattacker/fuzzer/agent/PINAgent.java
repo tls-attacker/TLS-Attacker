@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -45,7 +46,7 @@ public class PINAgent extends Agent {
      * The name of the Agent when referred by command line
      */
     public static final String optionName = "PIN";
-    
+
     /**
      * Agent config used
      */
@@ -102,8 +103,6 @@ public class PINAgent extends Agent {
      * The prefix that has to be set in front of the actual server command
      */
     private final String prefix;
-
-    
 
     /**
      *
@@ -164,7 +163,7 @@ public class PINAgent extends Agent {
                 br = new BufferedReader(new FileReader(branchTrace));
 
                 line = br.readLine();
-                //Pin script is not yet done writing the file
+                // Pin script is not yet done writing the file
                 if (line == null) {
                     try {
                         Thread.sleep(10);
@@ -175,8 +174,8 @@ public class PINAgent extends Agent {
                 }
             } while (line == null);
             if (line.contains("SIGSEV") || line.contains("SIGILL") || line.contains("SIGSYS")
-                    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE") || line
-                    .contains("SIGALRM")) {
+                    || line.contains("SIGABRT") || line.contains("SIGCHLD") || line.contains("SIGFPE")
+                    || line.contains("SIGALRM")) {
                 crash = true;
                 LOGGER.info("Found a crash: " + line);
                 // Skip 2 lines

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.main;
 
@@ -59,7 +60,8 @@ public class Main {
     /**
      * Main function which Starts the fuzzer
      *
-     * @param args Arguments which are parsed
+     * @param args
+     *            Arguments which are parsed
      */
     public static void main(String args[]) throws IllegalAgentException, FuzzerConfigurationException {
         LOGGER.debug(Utils.arrayToString(args));
@@ -117,8 +119,7 @@ public class Main {
                     LOGGER.info("Fininshed reading.");
                     Set<WorkflowTraceType> set = WorkflowTraceTypeManager.generateCleanTypeList(vectors,
                             ConnectionEnd.CLIENT);
-                    LOGGER.info("Found " + set.size()
-                            + " different TraceTypes");
+                    LOGGER.info("Found " + set.size() + " different TraceTypes");
                     DirectedMultigraph<Integer, MessageFlow> graph = WorkflowGraphBuilder.generateWorkflowGraph(set);
                     LOGGER.info("Printing out graph in .DOT format.");
                     String dotFormat = WorkflowGraphBuilder.generateDOTGraph(set);
@@ -147,7 +148,7 @@ public class Main {
                 TLSServer server = new TLSServer(null, serverConfig.getIp(), serverConfig.getPort(),
                         serverConfig.getStartcommand(), serverConfig.getAccept(), serverConfig.getKillCommand(),
                         serverConfig.getMayorVersion(), serverConfig.getMinorVersion());
-                 {
+                {
                     try {
                         ServerSerializer.write(server, new File(serverConfig.getOutput()));
                         LOGGER.info("Wrote Server to: " + new File(serverConfig.getOutput()).getAbsolutePath());

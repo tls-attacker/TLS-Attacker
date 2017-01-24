@@ -63,8 +63,6 @@ public abstract class ConfigHandler {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
         }
 
-        
-
         // remove stupid Oracle JDK security restriction (otherwise, it is not
         // possible to use strong crypto with Oracle JDK)
         try {

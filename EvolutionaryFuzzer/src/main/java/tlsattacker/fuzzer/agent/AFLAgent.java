@@ -107,7 +107,7 @@ public class AFLAgent extends Agent {
      * @param server
      *            Server used by the Agent
      */
-    public AFLAgent(FuzzerGeneralConfig generalConfig ,ServerCertificateStructure keypair, TLSServer server) {
+    public AFLAgent(FuzzerGeneralConfig generalConfig, ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
         timeout = false;
         crash = false;
@@ -160,8 +160,8 @@ public class AFLAgent extends Agent {
             return result;
         } else {
             LOGGER.debug("Failed to collect instrumentation output");
-            return new AgentResult(crash, timeout, startTime, startTime, new AFLInstrumentationMap(new long[config.getBitmapSize()]),
-                    vector, LogFileIDManager.getInstance().getFilename(), server);
+            return new AgentResult(crash, timeout, startTime, startTime, new AFLInstrumentationMap(
+                    new long[config.getBitmapSize()]), vector, LogFileIDManager.getInstance().getFilename(), server);
         }
     }
 }

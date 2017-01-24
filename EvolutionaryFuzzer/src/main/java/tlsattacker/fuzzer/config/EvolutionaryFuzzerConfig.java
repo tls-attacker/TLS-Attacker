@@ -236,7 +236,7 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
         new File(getOutputFaultyFolder()).mkdirs();
         new File(getOutputClientCertificateFolder()).mkdirs();
         new File(getOutputServerCertificateFolder()).mkdirs();
-        
+
     }
 
 }
