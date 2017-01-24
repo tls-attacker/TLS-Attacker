@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.mutator;
 
@@ -26,7 +25,7 @@ import tlsattacker.fuzzer.testvector.TestVectorSerializer;
  * The Mutator is the generator of new FuzzingVectors, different Implementations
  * should implement different Strategies to generate new Workflowtraces to be
  * executed.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class Mutator {
@@ -54,37 +53,33 @@ public abstract class Mutator {
 
     /**
      * Checks if good TestVectors already exist
-     * 
+     *
      * @return True if good TestVectors exist
      */
     protected boolean goodVectorsExist() {
-        File f = new File("data/good/"); // TODO fixed FILE
+        File f = new File(config.getOutputFolder() + "good/");
         return f.exists() && f.listFiles().length > 0;
 
     }
 
     /**
      * Checks if TestVectors exist in the archive Folder
-     * 
+     *
      * @return True if archive TestVectors exist
      */
     protected boolean archiveVectorsExist() {
-        File f = new File("archive/"); // TODO Fixed FILE
+        File f = new File(config.getArchiveFolder());
         return f.listFiles().length > 0;
     }
 
     /**
      * Chooses a random TestVector from a folder
-     * 
-     * @param folder
-     *            Folder to choose from
+     *
+     * @param folder Folder to choose from
      * @return A random TestVector in the folder
-     * @throws IOException
-     *             If something goes wrong while reading
-     * @throws JAXBException
-     *             If desirialisation goes wrong
-     * @throws XMLStreamException
-     *             If desirialisation goes wrong
+     * @throws IOException If something goes wrong while reading
+     * @throws JAXBException If desirialisation goes wrong
+     * @throws XMLStreamException If desirialisation goes wrong
      */
     protected TestVector chooseRandomTestVectorFromFolder(File folder) throws IOException, JAXBException,
             XMLStreamException {
@@ -113,7 +108,7 @@ public abstract class Mutator {
 
     /**
      * Generates a new TestVector to execute
-     * 
+     *
      * @return New TestVector
      */
     public abstract TestVector getNewMutation();
