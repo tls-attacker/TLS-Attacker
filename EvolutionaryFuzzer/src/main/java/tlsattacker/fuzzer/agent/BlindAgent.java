@@ -9,10 +9,14 @@
 package tlsattacker.fuzzer.agent;
 
 import java.io.File;
+import javax.xml.bind.JAXB;
 import tlsattacker.fuzzer.helper.LogFileIDManager;
 import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.server.TLSServer;
 import tlsattacker.fuzzer.certificate.ServerCertificateStructure;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.config.agent.AFLAgentConfig;
+import tlsattacker.fuzzer.config.agent.BlindAgentConfig;
 import tlsattacker.fuzzer.instrumentation.EmptyInstrumentationMap;
 import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.testvector.TestVector;
@@ -29,6 +33,11 @@ public class BlindAgent extends Agent {
      * The name of the Agent when referred by command line
      */
     public static final String optionName = "BLIND";
+    
+    /**
+     * Agent config used
+     */
+    private final BlindAgentConfig config;
 
     /**
      * Default Constructor
@@ -37,10 +46,17 @@ public class BlindAgent extends Agent {
      *            Server certificate key pair the agent should start the server
      *            with.
      */
-    public BlindAgent(ServerCertificateStructure keypair, TLSServer server) {
+    public BlindAgent(FuzzerGeneralConfig generalConfig, ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
         timeout = false;
         crash = false;
+        File f = new File(generalConfig.getAgentConfigFolder() + "blind.conf");
+        if (f.exists()) {
+            this.config = JAXB.unmarshal(f, BlindAgentConfig.class);
+        } else {
+            this.config = new BlindAgentConfig();
+            JAXB.marshal(this.config, f);
+        }
     }
 
     @Override

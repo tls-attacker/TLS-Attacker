@@ -22,8 +22,13 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import javax.xml.bind.JAXB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tlsattacker.fuzzer.config.EvolutionaryFuzzerConfig;
+import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.config.agent.AFLAgentConfig;
+import tlsattacker.fuzzer.config.mutator.SimpleMutatorConfig;
 import tlsattacker.fuzzer.instrumentation.AFLInstrumentationMap;
 import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 
@@ -38,9 +43,9 @@ public class AFLAgent extends Agent {
     static final Logger LOGGER = LogManager.getLogger(AFLAgent.class);
 
     /**
-     * AFL map size
+     * Agent config used
      */
-    private int mapSize = 1 << 16;
+    private final AFLAgentConfig config;
 
     /**
      * The name of the Agent when referred by command line
@@ -55,7 +60,7 @@ public class AFLAgent extends Agent {
      * @return Newly generated BranchTrace object
      */
     private InstrumentationMap getInstrumentationMap(File file) {
-        long[] bitmap = new long[mapSize];
+        long[] bitmap = new long[config.getBitmapSize()];
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -84,7 +89,7 @@ public class AFLAgent extends Agent {
                 LOGGER.error(ex.getLocalizedMessage(), ex);
             }
         }
-        return new AFLInstrumentationMap(new long[mapSize]);
+        return new AFLInstrumentationMap(new long[config.getBitmapSize()]);
     }
 
     /**
@@ -95,15 +100,24 @@ public class AFLAgent extends Agent {
     /**
      * Default Constructor
      *
+     * @param generalConfig
+     *            The EvolutionaryFuzzerConfig used
      * @param keypair
      *            The key certificate pair the server should be started with
      * @param server
      *            Server used by the Agent
      */
-    public AFLAgent(ServerCertificateStructure keypair, TLSServer server) {
+    public AFLAgent(FuzzerGeneralConfig generalConfig ,ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
         timeout = false;
         crash = false;
+        File f = new File(generalConfig.getAgentConfigFolder() + "afl.conf");
+        if (f.exists()) {
+            this.config = JAXB.unmarshal(f, AFLAgentConfig.class);
+        } else {
+            this.config = new AFLAgentConfig();
+            JAXB.marshal(this.config, f);
+        }
     }
 
     @Override
@@ -146,7 +160,7 @@ public class AFLAgent extends Agent {
             return result;
         } else {
             LOGGER.debug("Failed to collect instrumentation output");
-            return new AgentResult(crash, timeout, startTime, startTime, new AFLInstrumentationMap(new long[mapSize]),
+            return new AgentResult(crash, timeout, startTime, startTime, new AFLInstrumentationMap(new long[config.getBitmapSize()]),
                     vector, LogFileIDManager.getInstance().getFilename(), server);
         }
     }

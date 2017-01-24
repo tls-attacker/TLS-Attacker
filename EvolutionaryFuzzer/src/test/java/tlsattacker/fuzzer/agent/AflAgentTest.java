@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package tlsattacker.fuzzer.agent;
 
@@ -32,7 +31,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AflAgentTest {
@@ -98,7 +97,7 @@ public class AflAgentTest {
         } catch (Exception ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
         }
-        agent = new AFLAgent(pair, server);
+        agent = new AFLAgent(config, pair, server);
         server.occupie();
 
     }
@@ -158,5 +157,4 @@ public class AflAgentTest {
     // assertTrue("Failure: Test result should have exactly 6 Edges",
     // r.getInstrumentationMap().getEdgeMap().size() == 6);
     // }
-
 }

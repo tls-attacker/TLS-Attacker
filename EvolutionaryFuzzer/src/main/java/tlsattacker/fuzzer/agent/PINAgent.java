@@ -22,9 +22,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.xml.bind.JAXB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tlsattacker.fuzzer.config.FuzzerGeneralConfig;
+import tlsattacker.fuzzer.config.agent.BlindAgentConfig;
+import tlsattacker.fuzzer.config.agent.PINAgentConfig;
 import tlsattacker.fuzzer.instrumentation.InstrumentationMap;
 import tlsattacker.fuzzer.instrumentation.PinInstrumentationMap;
 
@@ -42,6 +45,11 @@ public class PINAgent extends Agent {
      * The name of the Agent when referred by command line
      */
     public static final String optionName = "PIN";
+    
+    /**
+     * Agent config used
+     */
+    private final PINAgentConfig config;
 
     /**
      * Parses the readers contents into a BranchTrace object
@@ -95,25 +103,27 @@ public class PINAgent extends Agent {
      */
     private final String prefix;
 
-    /**
-     * Config object used
-     */
-    private FuzzerGeneralConfig config;
+    
 
     /**
      *
-     * @param config
+     * @param generalConfig
      * @param keypair
      * @param server
      */
-    public PINAgent(FuzzerGeneralConfig config, ServerCertificateStructure keypair, TLSServer server) {
+    public PINAgent(FuzzerGeneralConfig generalConfig, ServerCertificateStructure keypair, TLSServer server) {
         super(keypair, server);
-        this.config = config;
 
         timeout = false;
         crash = false;
-        // TODO put into config File
-        if (config.getInjectPinChild()) {
+        File f = new File(generalConfig.getAgentConfigFolder() + "pin.conf");
+        if (f.exists()) {
+            this.config = JAXB.unmarshal(f, PINAgentConfig.class);
+        } else {
+            this.config = new PINAgentConfig();
+            JAXB.marshal(this.config, f);
+        }
+        if (config.isInjectChild()) {
             prefix = "PIN/pin -log_inline -injection child -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
         } else {
             prefix = "PIN/pin -log_inline -t PinScripts/obj-intel64/MyPinTool.so -o [output]/[id] -- ";
