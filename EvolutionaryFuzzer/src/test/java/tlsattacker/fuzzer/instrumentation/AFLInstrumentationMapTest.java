@@ -71,8 +71,8 @@ public class AFLInstrumentationMapTest {
     @Test
     public void testMerge() {
         map1.merge(map2);
-        assertFalse(map2.didHitNew(map1));
-        assertTrue(map1.didHitNew(map2));
+        assertFalse(map1.didHitNew(map2));
+        assertTrue(map2.didHitNew(map1));
     }
 
 }
