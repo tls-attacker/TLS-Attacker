@@ -91,6 +91,10 @@ public class IsGoodRule extends Rule {
      */
     @Override
     public synchronized boolean applies(AgentResult result) {
+        if(result.getInstrumentationMap() instanceof EmptyInstrumentationMap)
+        {
+            return false;
+        }
         if (instrumentationMap == null && result.getInstrumentationMap() != null) {
             instrumentationMap = result.getInstrumentationMap();
             return true;
