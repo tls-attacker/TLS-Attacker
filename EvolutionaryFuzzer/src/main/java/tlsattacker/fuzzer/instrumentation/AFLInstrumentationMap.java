@@ -51,7 +51,7 @@ public class AFLInstrumentationMap extends InstrumentationMap {
         AFLInstrumentationMap aflMap = (AFLInstrumentationMap) instrumentationMap;
         assert aflMap.bitmap.length == bitmap.length;
         for (int i = 0; i < bitmap.length; i++) {
-            if (bitmap[i] > 0 && aflMap.bitmap[i] == 0) {
+            if (bitmap[i] == 0 && aflMap.bitmap[i] > 0) {
                 return true;
             }
         }
