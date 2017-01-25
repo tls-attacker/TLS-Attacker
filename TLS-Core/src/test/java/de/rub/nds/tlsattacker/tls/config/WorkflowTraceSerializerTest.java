@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.ByteArrayInputStream;

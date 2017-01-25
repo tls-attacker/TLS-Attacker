@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.workflow;
+package de.rub.nds.tlsattacker.tls.workflow.factory;
 
 import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
@@ -19,8 +19,11 @@ import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
-import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeClientHelloExtensions;
-import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
+import static de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory.initializeClientHelloExtensions;
+import static de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import java.util.LinkedList;
 import java.util.List;

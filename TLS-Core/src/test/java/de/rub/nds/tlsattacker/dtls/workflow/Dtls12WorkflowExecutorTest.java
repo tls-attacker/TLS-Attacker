@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

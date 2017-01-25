@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;

@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;

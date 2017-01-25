@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;

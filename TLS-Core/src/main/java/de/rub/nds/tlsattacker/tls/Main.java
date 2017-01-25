@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.tls.workflow.SessionResumptionWorkflowConfiguration;
+import de.rub.nds.tlsattacker.tls.workflow.factory.SessionResumptionWorkflowConfiguration;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.transport.TransportHandler;

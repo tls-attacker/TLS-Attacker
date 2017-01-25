@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;

@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.workflow;
+package de.rub.nds.tlsattacker.tls.workflow.factory;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
@@ -27,7 +27,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
-import static de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import static de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory.initializeProtocolMessageOrder;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;

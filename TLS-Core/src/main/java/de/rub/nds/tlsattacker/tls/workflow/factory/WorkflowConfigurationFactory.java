@@ -6,8 +6,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.workflow;
+package de.rub.nds.tlsattacker.tls.workflow.factory;
 
+import de.rub.nds.tlsattacker.tls.workflow.factory.DHWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.ECDHWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.DtlsDhWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.DtlsRsaWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.DtlsEcdhWorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.RsaWorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -31,6 +37,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import java.util.LinkedList;
 import java.util.List;
