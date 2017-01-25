@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
+import de.rub.nds.tlsattacker.tls.util.ServerCertificateKey;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import org.junit.Test;
 import static org.junit.Assert.*;
