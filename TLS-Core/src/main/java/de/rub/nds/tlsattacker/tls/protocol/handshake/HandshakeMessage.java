@@ -24,16 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 public abstract class HandshakeMessage extends ProtocolMessage {
 
-    final HandshakeMessageType handshakeMessageType;
+    protected final HandshakeMessageType handshakeMessageType;
 
     /**
      * handshake type
      */
     @ModifiableVariableProperty
-    ModifiableByte type;
+    private ModifiableByte type;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    protected ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
+    private ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger messageSeq = null;
@@ -44,7 +44,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
 
-    boolean includeInDigest = true;
+    private boolean includeInDigest = true;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;

@@ -21,20 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
- * import java.util.LinkedList; import java.util.List; import
- * javax.xml.bind.annotation.XmlAccessType; import
- * javax.xml.bind.annotation.XmlAccessorType; import
- * javax.xml.bind.annotation.XmlElement; import
- * javax.xml.bind.annotation.XmlElementWrapper; import
- * javax.xml.bind.annotation.XmlElements; import
- * javax.xml.bind.annotation.XmlRootElement;
- */
-/**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
- */
-/**
- * @XmlRootElement @XmlAccessorType(XmlAccessType.FIELD)
  */
 public class CertificateRequestMessage extends HandshakeMessage {
 
@@ -49,22 +37,22 @@ public class CertificateRequestMessage extends HandshakeMessage {
      *                  supportedClientCertificateTypes = new LinkedList<>();
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    ModifiableInteger clientCertificateTypesCount;
+    private ModifiableInteger clientCertificateTypesCount;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray clientCertificateTypes;
+    private ModifiableByteArray clientCertificateTypes;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger signatureHashAlgorithmsLength;
+    private ModifiableInteger signatureHashAlgorithmsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray signatureHashAlgorithms;
+    private ModifiableByteArray signatureHashAlgorithms;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger distinguishedNamesLength;
+    private ModifiableInteger distinguishedNamesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray distinguishedNames;
+    private ModifiableByteArray distinguishedNames;
 
     public CertificateRequestMessage() {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);

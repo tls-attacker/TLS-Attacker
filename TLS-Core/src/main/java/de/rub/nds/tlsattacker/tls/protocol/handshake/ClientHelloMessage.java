@@ -56,26 +56,26 @@ public class ClientHelloMessage extends HelloMessage {
      * compression length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger compressionLength;
+    private ModifiableInteger compressionLength;
     /**
      * cipher suite byte length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger cipherSuiteLength;
+    private ModifiableInteger cipherSuiteLength;
     /**
      * array of supported ciphersuites
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray cipherSuites;
+    private ModifiableByteArray cipherSuites;
     /**
      * array of supported compressions
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray compressions;
+    private ModifiableByteArray compressions;
     /**
      * array of all extension bytes to forward them as MitM
      */
-    byte[] extensionBytes;
+    private byte[] extensionBytes;
 
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
@@ -157,14 +157,15 @@ public class ClientHelloMessage extends HelloMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString()).append("\n  Protocol Version: ")
-                .append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
+                .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Client Unix Time: ")
-                .append(new Date(ArrayConverter.bytesToLong(unixTime.getValue()) * 1000)).append("\n  Client Random: ")
-                .append(ArrayConverter.bytesToHexString(random.getValue())).append("\n  Session ID: ")
-                .append(ArrayConverter.bytesToHexString(sessionId.getValue())).append("\n  Supported Cipher Suites: ")
-                .append(ArrayConverter.bytesToHexString(cipherSuites.getValue()))
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
+                .append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
+                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()))
+                .append("\n  Supported Cipher Suites: ")
+                .append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()))
                 .append("\n  Supported Compression Methods: ")
-                .append(ArrayConverter.bytesToHexString(compressions.getValue())).append("\n  Extensions: ");
+                .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
         // Some ExtensionsTypes are not supported yet, so avoiding the
         // NULLPointerException needs to be done
         /**

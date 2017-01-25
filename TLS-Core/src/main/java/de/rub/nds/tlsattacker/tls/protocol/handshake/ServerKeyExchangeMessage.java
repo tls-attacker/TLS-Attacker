@@ -26,22 +26,22 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
      * hash algorithm
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte hashAlgorithm;
+    private ModifiableByte hashAlgorithm;
     /**
      * signature algorithm
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte signatureAlgorithm;
+    private ModifiableByte signatureAlgorithm;
     /**
      * signature length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger signatureLength;
+    private ModifiableInteger signatureLength;
     /**
      * signature
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    ModifiableByteArray signature;
+    private ModifiableByteArray signature;
 
     public ServerKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);

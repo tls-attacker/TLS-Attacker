@@ -29,10 +29,10 @@ import java.util.Date;
 public class ServerHelloMessage extends HelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray selectedCipherSuite;
+    private ModifiableByteArray selectedCipherSuite;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte selectedCompressionMethod;
+    private ModifiableByte selectedCompressionMethod;
 
     public ServerHelloMessage() {
         super(HandshakeMessageType.SERVER_HELLO);
@@ -67,17 +67,17 @@ public class ServerHelloMessage extends HelloMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString()).append("\n  Protocol Version: ")
-                .append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
+                .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Server Unix Time: ")
-                .append(new Date(ArrayConverter.bytesToLong(this.unixTime.getValue()) * 1000))
-                .append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(random.getValue()))
-                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(sessionId.getValue()))
+                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
+                .append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
+                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()))
                 .append("\n  Selected Cipher Suite: ")
                 .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()))
                 .append("\n  Selected Compression Method: ")
                 .append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()))
                 .append("\n  Extensions: ");
-        for (ExtensionMessage e : extensions) {
+        for (ExtensionMessage e : getExtensions()) {
             sb.append(e.toString());
         }
         return sb.toString();

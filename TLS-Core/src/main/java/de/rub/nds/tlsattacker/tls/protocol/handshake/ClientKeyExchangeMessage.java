@@ -22,10 +22,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    ModifiableByteArray masterSecret;
+    protected ModifiableByteArray masterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    ModifiableByteArray premasterSecret;
+    protected ModifiableByteArray premasterSecret;
 
     public ClientKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);

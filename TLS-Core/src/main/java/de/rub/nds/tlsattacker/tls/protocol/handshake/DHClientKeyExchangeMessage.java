@@ -28,32 +28,32 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger p;
+    private ModifiableBigInteger p;
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger g;
+    private ModifiableBigInteger g;
     /**
      * server's public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger y;
+    private ModifiableBigInteger y;
     /**
      * client's private key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    ModifiableBigInteger x;
+    private ModifiableBigInteger x;
     /**
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger serializedPublicKeyLength;
+    private ModifiableInteger serializedPublicKeyLength;
     /**
      * serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableByteArray serializedPublicKey;
+    private ModifiableByteArray serializedPublicKey;
 
     public DHClientKeyExchangeMessage() {
         super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);

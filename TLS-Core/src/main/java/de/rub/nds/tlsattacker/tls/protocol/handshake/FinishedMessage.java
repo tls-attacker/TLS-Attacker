@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public class FinishedMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    ModifiableByteArray verifyData;
+    private ModifiableByteArray verifyData;
 
     public FinishedMessage() {
         super(HandshakeMessageType.FINISHED);

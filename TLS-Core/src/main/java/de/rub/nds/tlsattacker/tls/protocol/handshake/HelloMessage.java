@@ -39,32 +39,32 @@ abstract class HelloMessage extends HandshakeMessage {
      * protocol version in the client and server hello
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion;
+    private ModifiableByteArray protocolVersion;
     /**
      * unix time
      */
     @ModifiableVariableProperty
-    ModifiableByteArray unixTime;
+    private ModifiableByteArray unixTime;
     /**
      * random
      */
     @ModifiableVariableProperty
-    ModifiableByteArray random;
+    private ModifiableByteArray random;
     /**
      * length of the session id length field indicating the session id length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger sessionIdLength;
+    private ModifiableInteger sessionIdLength;
     /**
      * session id
      */
     @ModifiableVariableProperty
-    ModifiableByteArray sessionId;
+    private ModifiableByteArray sessionId;
     /**
      * List of extensions
      */
     @HoldsModifiableVariable
-    List<ExtensionMessage> extensions = new LinkedList<>();
+    private List<ExtensionMessage> extensions = new LinkedList<>();
 
     public HelloMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);

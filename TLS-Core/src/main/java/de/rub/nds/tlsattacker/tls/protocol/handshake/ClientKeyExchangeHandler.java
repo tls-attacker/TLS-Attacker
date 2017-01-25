@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
 
-    KeyExchangeAlgorithm keyExchangeAlgorithm;
+    protected KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     public ClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

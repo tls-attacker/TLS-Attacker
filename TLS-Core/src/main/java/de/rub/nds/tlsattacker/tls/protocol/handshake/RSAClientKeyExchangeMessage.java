@@ -23,13 +23,13 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger encryptedPremasterSecretLength;
+    private ModifiableInteger encryptedPremasterSecretLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    ModifiableByteArray encryptedPremasterSecret;
+    private ModifiableByteArray encryptedPremasterSecret;
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    ModifiableByteArray plainPaddedPremasterSecret;
+    private ModifiableByteArray plainPaddedPremasterSecret;
 
     public RSAClientKeyExchangeMessage() {
         super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);

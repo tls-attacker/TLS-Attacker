@@ -28,17 +28,17 @@ public class CertificateVerifyMessage extends HandshakeMessage {
      * selected Signature and Hashalgorithm
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray signatureHashAlgorithm;
+    private ModifiableByteArray signatureHashAlgorithm;
     /**
      * signature length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger signatureLength;
+    private ModifiableInteger signatureLength;
     /**
      * signature
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
-    ModifiableByteArray signature;
+    private ModifiableByteArray signature;
 
     public CertificateVerifyMessage() {
         super(HandshakeMessageType.CERTIFICATE_VERIFY);

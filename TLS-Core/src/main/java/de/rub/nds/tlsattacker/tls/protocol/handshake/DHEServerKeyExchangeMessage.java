@@ -32,67 +32,67 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      * DH modulus length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger pLength;
+    private ModifiableInteger pLength;
     /**
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger p;
+    private ModifiableBigInteger p;
     /**
      * DH generator length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger gLength;
+    private ModifiableInteger gLength;
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger g;
+    private ModifiableBigInteger g;
     /**
      * public key length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger publicKeyLength;
+    private ModifiableInteger publicKeyLength;
     /**
      * public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger publicKey;
+    private ModifiableBigInteger publicKey;
     /**
      * server's private key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    ModifiableBigInteger privateKey;
+    private ModifiableBigInteger privateKey;
     /**
      * Length of the serialized DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger serializedPLength;
+    private ModifiableInteger serializedPLength;
     /**
      * serialized DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableByteArray serializedP;
+    private ModifiableByteArray serializedP;
     /**
      * Length of the serialized DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger serializedGLength;
+    private ModifiableInteger serializedGLength;
     /**
      * serialized DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableByteArray serializedG;
+    private ModifiableByteArray serializedG;
     /**
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger serializedPublicKeyLength;
+    private ModifiableInteger serializedPublicKeyLength;
     /**
      * serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableByteArray serializedPublicKey;
+    private ModifiableByteArray serializedPublicKey;
 
     public DHEServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
@@ -281,14 +281,14 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
         if (this.getHashAlgorithm() != null) {
-            sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue())).append(" ");
+            sb.append(HashAlgorithm.getHashAlgorithm(this.getHashAlgorithm().getValue())).append(" ");
         }
         if (this.getSignatureAlgorithm() != null) {
-            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
+            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.getSignatureAlgorithm().getValue()));
         }
         sb.append("\n  Signature: ");
-        if (signature != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.signature.getValue()));
+        if (this.getSignature() != null) {
+            sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");
         }

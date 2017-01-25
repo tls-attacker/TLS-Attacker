@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
@@ -29,16 +28,16 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte curveType;
+    private ModifiableByte curveType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray namedCurve;
+    private ModifiableByteArray namedCurve;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger publicKeyLength;
+    private ModifiableInteger publicKeyLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableByteArray publicKey;
+    private ModifiableByteArray publicKey;
 
     public ECDHEServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
@@ -114,15 +113,15 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
         if (this.getHashAlgorithm() != null) {
-            sb.append(HashAlgorithm.getHashAlgorithm(this.hashAlgorithm.getValue()));
+            sb.append(HashAlgorithm.getHashAlgorithm(this.getHashAlgorithm().getValue()));
             sb.append(" ");
         }
         if (this.getSignatureAlgorithm() != null) {
-            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.signatureAlgorithm.getValue()));
+            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.getSignatureAlgorithm().getValue()));
         }
         sb.append("\n  Signature: ");
-        if (signature != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.signature.getValue()));
+        if (getSignature() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getSignature().getValue()));
         } else {
             sb.append("null");
         }

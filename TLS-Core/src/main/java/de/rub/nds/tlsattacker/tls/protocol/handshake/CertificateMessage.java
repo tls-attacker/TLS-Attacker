@@ -29,13 +29,13 @@ public class CertificateMessage extends HandshakeMessage {
      * certificates length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger certificatesLength;
+    private ModifiableInteger certificatesLength;
 
     // List<ModifiableInteger> certificateLengths;
     //
     // List<Certificate> certificates;
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.CERTIFICATE)
-    ModifiableByteArray x509CertificateBytes;
+    private ModifiableByteArray x509CertificateBytes;
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);

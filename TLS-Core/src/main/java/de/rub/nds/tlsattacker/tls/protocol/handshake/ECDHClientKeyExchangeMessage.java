@@ -29,32 +29,32 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      * EC public key x coordinate
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger publicKeyBaseX;
+    private ModifiableBigInteger publicKeyBaseX;
     /**
      * EC public key y coordinate
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableBigInteger publicKeyBaseY;
+    private ModifiableBigInteger publicKeyBaseY;
     /**
      * EC point format of the encoded EC point
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte ecPointFormat;
+    private ModifiableByte ecPointFormat;
     /**
      * Encoded EC point (without EC point format)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    ModifiableByteArray ecPointEncoded;
+    private ModifiableByteArray ecPointEncoded;
     /**
      * Supported EC point formats (can be used to trigger compression)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray supportedPointFormats;
+    private ModifiableByteArray supportedPointFormats;
     /**
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger publicKeyLength;
+    private ModifiableInteger publicKeyLength;
 
     public ECDHClientKeyExchangeMessage() {
         super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
