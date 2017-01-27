@@ -36,14 +36,14 @@
         <module>Utils</module>
         <module>ModifiableVariable</module>
         <module>Transport</module>
+        <module>TLS-Core</module>
+        <module>TLS-Client</module>
         <module>EAP</module>
         <module>TLS-Server</module>
-        <module>TLS</module>
         <module>Attacks</module>
         <module>TestSuite</module>
         <module>Runnable</module>
         <module>TestTLS</module>
-        <module>EvolutionaryFuzzer</module>
     </modules>
 
     <dependencies>
