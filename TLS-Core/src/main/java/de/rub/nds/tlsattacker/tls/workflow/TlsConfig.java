@@ -184,6 +184,8 @@ public class TlsConfig {
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
 
+    private byte[] sessionId = new byte[0];
+    
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedCompressionMethods = new LinkedList<>();
@@ -198,6 +200,14 @@ public class TlsConfig {
         pointFormats = new LinkedList<>();
     }
 
+    public byte[] getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(byte[] sessionId) {
+        this.sessionId = sessionId;
+    }
+    
     public boolean isServerSendsApplicationData() {
         return serverSendsApplicationData;
     }
