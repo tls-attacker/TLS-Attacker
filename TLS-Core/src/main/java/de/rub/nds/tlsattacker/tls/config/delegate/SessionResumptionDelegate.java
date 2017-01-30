@@ -19,6 +19,9 @@ public class SessionResumptionDelegate extends Delegate {
 
     @Parameter(names = "-session_resumption", description = "YES or NO")
     private boolean sessionResumption = false;
+    @Parameter(names = "-session_id", description = "The sessionID to resume")
+    private byte[] sessionID = new byte[0];
+    
 
     public SessionResumptionDelegate() {
     }
@@ -31,8 +34,17 @@ public class SessionResumptionDelegate extends Delegate {
         this.sessionResumption = sessionResumption;
     }
 
+    public byte[] getSessionID() {
+        return sessionID;
+    }
+
+    public void setSessionID(byte[] sessionID) {
+        this.sessionID = sessionID;
+    }
+
     @Override
     public void applyDelegate(TlsConfig config) {
         config.setSessionResumption(sessionResumption);
+        config.setSessionId(sessionID);
     }
 }
