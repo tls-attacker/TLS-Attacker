@@ -159,6 +159,30 @@ public class TlsConfig {
      * send by servers
      */
     private boolean serverSendsApplicationData;
+    /**
+     * If we generate ClientHello with the ECPointFormat extension
+     */
+    private boolean addECPointFormatExtension = false;
+    /**
+     * If we generate ClientHello with the EllipticCurveExtension extension
+     */
+    private boolean addEllipticCurveExtension = false;
+    /**
+     * If we generate ClientHello with the Heartbeat extension
+     */
+    private boolean addHeartbeatExtension = false;
+    /**
+     * If we generate ClientHello with the MaxFragmentLength extension
+     */
+    private boolean addMaxFragmentLengthExtenstion = false;
+    /**
+     * If we generate ClientHello with the ServerNameIndication extension
+     */
+    private boolean addServerNameIndicationExtension = false;
+    /**
+     * If we generate ClientHello with the SignatureAndHashAlgorithm extension
+     */
+    private boolean addSignatureAndHashAlgrorithmsExtension = false;
 
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -172,7 +196,6 @@ public class TlsConfig {
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
-        namedCurves = new LinkedList<>();
     }
 
     public boolean isServerSendsApplicationData() {
@@ -446,5 +469,53 @@ public class TlsConfig {
             }
         }
         return ecAlgorithms;
+    }
+
+    public boolean isAddECPointFormatExtension() {
+        return addECPointFormatExtension;
+    }
+
+    public void setAddECPointFormatExtension(boolean addECPointFormatExtension) {
+        this.addECPointFormatExtension = addECPointFormatExtension;
+    }
+
+    public boolean isAddEllipticCurveExtension() {
+        return addEllipticCurveExtension;
+    }
+
+    public void setAddEllipticCurveExtension(boolean addEllipticCurveExtension) {
+        this.addEllipticCurveExtension = addEllipticCurveExtension;
+    }
+
+    public boolean isAddHeartbeatExtension() {
+        return addHeartbeatExtension;
+    }
+
+    public void setAddHeartbeatExtension(boolean addHeartbeatExtension) {
+        this.addHeartbeatExtension = addHeartbeatExtension;
+    }
+
+    public boolean isAddMaxFragmentLengthExtenstion() {
+        return addMaxFragmentLengthExtenstion;
+    }
+
+    public void setAddMaxFragmentLengthExtenstion(boolean addMaxFragmentLengthExtenstion) {
+        this.addMaxFragmentLengthExtenstion = addMaxFragmentLengthExtenstion;
+    }
+
+    public boolean isAddServerNameIndicationExtension() {
+        return addServerNameIndicationExtension;
+    }
+
+    public void setAddServerNameIndicationExtension(boolean addServerNameIndicationExtension) {
+        this.addServerNameIndicationExtension = addServerNameIndicationExtension;
+    }
+
+    public boolean isAddSignatureAndHashAlgrorithmsExtension() {
+        return addSignatureAndHashAlgrorithmsExtension;
+    }
+
+    public void setAddSignatureAndHashAlgrorithmsExtension(boolean addSignatureAndHashAlgrorithmsExtension) {
+        this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 }
