@@ -3,29 +3,37 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.BigIntegerConverter;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import java.math.BigInteger;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class WinshockCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "winshock";
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
 
     @Parameter(names = "-signature_length", description = "Length of the signature in the CertificateVerify protocol message")
     Integer signatureLength;
 
     @Parameter(names = "-signature", description = "Signature value in the CertificateVerify protocol message", converter = BigIntegerConverter.class, required = true)
     BigInteger signature;
+
+    public WinshockCommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
+    }
 
     public Integer getSignatureLength() {
         return signatureLength;

@@ -3,13 +3,14 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -18,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Lucky13CommandConfig extends TLSDelegateConfig {
@@ -40,7 +41,12 @@ public class Lucky13CommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-blocks", description = "Number of blocks to encrypt (default is set to the value from the Lucky 13 paper, Section 3)")
     Integer blocks = 18;
 
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
+
     public Lucky13CommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
     }
 
     public Integer getBlockSize() {

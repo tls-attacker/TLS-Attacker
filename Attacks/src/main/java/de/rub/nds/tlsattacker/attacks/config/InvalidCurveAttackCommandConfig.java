@@ -3,14 +3,15 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.BigIntegerConverter;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
@@ -21,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class InvalidCurveAttackCommandConfig extends TLSDelegateConfig {
@@ -37,8 +38,12 @@ public class InvalidCurveAttackCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-public_point_base_y", description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
     BigInteger publicPointBaseY;
 
-    public InvalidCurveAttackCommandConfig() {
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
 
+    public InvalidCurveAttackCommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
     }
 
     public BigInteger getPremasterSecret() {

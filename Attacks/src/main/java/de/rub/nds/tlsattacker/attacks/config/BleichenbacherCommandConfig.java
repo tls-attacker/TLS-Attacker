@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
@@ -22,7 +24,10 @@ import java.util.List;
 public class BleichenbacherCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "bleichenbacher";
-
+    
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
+    
     public enum Type {
 
         FULL,
@@ -33,6 +38,8 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
     Type type = Type.FAST;
 
     public BleichenbacherCommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
     }
 
     public Type getType() {

@@ -3,13 +3,14 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -41,7 +42,12 @@ public class DtlsPaddingOracleAttackCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-messagewaitnanos", description = "Wait for this amount of nanoseconds between sending two messages of any given train (rate limiting)")
     long messageWaitNanos = 0;
 
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
+
     public DtlsPaddingOracleAttackCommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
     }
 
     public int getMessagesPerTrain() {

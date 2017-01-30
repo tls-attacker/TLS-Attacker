@@ -3,14 +3,15 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -19,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class InvalidCurveAttackFullCommandConfig extends TLSDelegateConfig {
@@ -32,7 +33,12 @@ public class InvalidCurveAttackFullCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-server_type", description = "Allows to switch between a normal vulnerable server type and an Oracle server type (for oracle a slightly different algorithm is needed).")
     protected ICEAttacker.ServerType serverType = ICEAttacker.ServerType.NORMAL;
 
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
+
     public InvalidCurveAttackFullCommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
     }
 
     public int getAdditionalEquations() {

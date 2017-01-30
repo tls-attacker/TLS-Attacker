@@ -3,13 +3,14 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
@@ -25,8 +26,12 @@ public class HeartbleedCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-payload_length", description = "Payload length sent in the client heartbeat message")
     Integer payloadLength = 20000;
 
-    public HeartbleedCommandConfig() {
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
 
+    public HeartbleedCommandConfig() {
+        clientDelegate = new ClientDelegate();
+        addDelegate(clientDelegate);
     }
 
     public Integer getPayloadLength() {
