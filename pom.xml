@@ -25,6 +25,13 @@
         </developer>
     </developers>
     
+    <repositories>
+        <repository>
+            <id>libs</id>
+            <url>https://repo.nds.rub.de/repository/libs/</url>
+        </repository>
+    </repositories>
+    
     <modules>
         <module>Utils</module>
         <module>ModifiableVariable</module>
