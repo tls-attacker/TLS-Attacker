@@ -9,18 +9,22 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class InvalidCurveAttackCommandConfig extends ClientCommandConfig {
+public class InvalidCurveAttackCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve";
 
@@ -34,12 +38,7 @@ public class InvalidCurveAttackCommandConfig extends ClientCommandConfig {
     BigInteger publicPointBaseY;
 
     public InvalidCurveAttackCommandConfig() {
-        cipherSuites.clear();
-        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-        namedCurves.clear();
-        namedCurves.add(NamedCurve.SECP256R1);
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
+
     }
 
     public BigInteger getPremasterSecret() {
@@ -64,6 +63,20 @@ public class InvalidCurveAttackCommandConfig extends ClientCommandConfig {
 
     public void setPublicPointBaseY(BigInteger publicPointBaseY) {
         this.publicPointBaseY = publicPointBaseY;
+    }
+
+    @Override
+    public TlsConfig createConfig() {
+        TlsConfig config = super.createConfig();
+        List<CipherSuite> cipherSuites = new LinkedList<>();
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        config.setSupportedCiphersuites(cipherSuites);
+        List<NamedCurve> namedCurves = new LinkedList<>();
+        namedCurves.add(NamedCurve.SECP256R1);
+        config.setNamedCurves(namedCurves);
+        config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
+        return config;
     }
 
 }

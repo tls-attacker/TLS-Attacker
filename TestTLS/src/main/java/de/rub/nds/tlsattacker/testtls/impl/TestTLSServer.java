@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.BotanPolicyParser;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -33,16 +31,12 @@ public class TestTLSServer {
 
     private ConfigHandler configHandler;
 
-    private final GeneralConfig generalConfig;
-
-    public TestTLSServer(TestServerConfig serverTestConfig, GeneralConfig generalConfig) {
+    public TestTLSServer(TestServerConfig serverTestConfig) {
         this.testConfig = serverTestConfig;
-        this.generalConfig = generalConfig;
     }
 
     public boolean startTests() {
-        configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        configHandler.initialize(generalConfig);
+        configHandler = new ConfigHandler();
 
         List<TestTLS> tests = new LinkedList<>();
         TlsPeerProperties properties = new TlsPeerProperties();

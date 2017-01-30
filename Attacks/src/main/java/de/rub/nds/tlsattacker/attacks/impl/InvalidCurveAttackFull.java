@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,14 +36,15 @@ public class InvalidCurveAttackFull extends Attacker<InvalidCurveAttackFullComma
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-        if (config.getNamedCurves().size() > 1) {
+        TlsConfig tlsConfig = configHandler.initialize(config);
+        if (tlsConfig.getNamedCurves().size() > 1) {
             throw new ConfigurationException("Please specify only one named curve which should be attacked");
         }
 
-        LOGGER.info("Executing attack against the server with named curve {}", config.getNamedCurves().get(0));
+        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getNamedCurves().get(0));
 
-        Curve curve = CurveFactory.getNamedCurve(config.getNamedCurves().get(0).name());
-        RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(config, curve);
+        Curve curve = CurveFactory.getNamedCurve(tlsConfig.getNamedCurves().get(0).name());
+        RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
         ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
         attacker.attack();
         BigInteger result = attacker.getResult();

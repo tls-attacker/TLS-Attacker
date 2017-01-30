@@ -8,20 +8,28 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class Cve20162107CommandConfig extends ClientCommandConfig {
+public class Cve20162107CommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "cve20162107";
 
     public Cve20162107CommandConfig() {
-        cipherSuites = new LinkedList<>();
-        protocolVersion = null;
     }
 
+    @Override
+    public TlsConfig createConfig() {
+        TlsConfig config = super.createConfig();
+        config.setSupportedCiphersuites(new LinkedList<CipherSuite>()); // TODO
+                                                                        // really?
+        config.setProtocolVersion(null); // TODO really?
+        return config;
+    }
 }

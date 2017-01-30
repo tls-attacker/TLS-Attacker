@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
@@ -35,7 +35,7 @@ public class HelloVerifyRequestHandler<Message extends HelloVerifyRequestMessage
     @Override
     public byte[] prepareMessageAction() {
         byte[] content;
-        protocolMessage.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
+        protocolMessage.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
 
         // TODO: Calculate cookie via HMAC
         byte[] cookie = new byte[3];

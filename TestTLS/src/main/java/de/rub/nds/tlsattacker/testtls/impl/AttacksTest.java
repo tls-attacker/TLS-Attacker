@@ -22,6 +22,9 @@ import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
 
 /**
  * 
@@ -42,7 +45,7 @@ public class AttacksTest extends TestTLS {
         String attack;
         result = "\n ";
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
-        bb.setConnect(serverConfig.getConnect());
+        setHost(bb);
         attacker = new BleichenbacherAttack(bb);
         attacker.executeAttack(configHandler);
         attack = BleichenbacherCommandConfig.ATTACK_COMMAND;
@@ -53,7 +56,7 @@ public class AttacksTest extends TestTLS {
         }
 
         InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
-        icea.setConnect(serverConfig.getConnect());
+        setHost(icea);
         attacker = new InvalidCurveAttack(icea);
         attacker.executeAttack(configHandler);
         attack = InvalidCurveAttackCommandConfig.ATTACK_COMMAND;
@@ -64,7 +67,7 @@ public class AttacksTest extends TestTLS {
         }
 
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
-        heartbleed.setConnect(serverConfig.getConnect());
+        setHost(heartbleed);
         attacker = new HeartbleedAttack(heartbleed);
         attacker.executeAttack(configHandler);
         attack = HeartbleedCommandConfig.ATTACK_COMMAND;
@@ -75,7 +78,7 @@ public class AttacksTest extends TestTLS {
         }
 
         PoodleCommandConfig poodle = new PoodleCommandConfig();
-        poodle.setConnect(serverConfig.getConnect());
+        setHost(poodle);
         attacker = new PoodleAttack(poodle);
         attacker.executeAttack(configHandler);
         attack = PoodleCommandConfig.ATTACK_COMMAND;
@@ -86,7 +89,7 @@ public class AttacksTest extends TestTLS {
         }
 
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
-        po.setConnect(serverConfig.getConnect());
+        setHost(po);
         attacker = new PaddingOracleAttack(po);
         attacker.executeAttack(configHandler);
         attack = PaddingOracleCommandConfig.ATTACK_COMMAND;
@@ -95,6 +98,22 @@ public class AttacksTest extends TestTLS {
         } else {
             result = result + attack + ": Not vulnerable\n ";
         }
+    }
+
+    public void setHost(TLSDelegateConfig delegateConfig) {
+        String host = null;
+        for (Delegate delegate : serverConfig.getDelegateList()) {
+            if (delegate instanceof ClientDelegate) {
+                host = ((ClientDelegate) delegate).getHost();
+            }
+        }
+        for (Delegate delegate : delegateConfig.getDelegateList()) {
+            if (delegate instanceof ClientDelegate) {
+                ((ClientDelegate) delegate).setHost(host);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Provided Config did not contain ClientDelegate");
     }
 
     @Override

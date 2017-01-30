@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -73,11 +74,12 @@ public class CryptoTest extends HandshakeTest {
                 continue;
             }
             for (CipherSuite cs : CipherSuite.values()) {
-                serverConfig.setProtocolVersion(pv);
-                serverConfig.setCipherSuites(Collections.singletonList(cs));
+                TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+                tlsConfig.setProtocolVersion(pv);
+                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
                 boolean success = false;
                 try {
-                    success = executeHandshake();
+                    success = executeHandshake(tlsConfig);
                     if (success) {
                         analyzeHandshake(pv, cs);
                     }

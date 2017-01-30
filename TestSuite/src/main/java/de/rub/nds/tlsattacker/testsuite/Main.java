@@ -11,13 +11,12 @@ package de.rub.nds.tlsattacker.testsuite;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
@@ -25,23 +24,18 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
-
-        GeneralConfig generalConfig = new GeneralConfig();
-        JCommander jc = new JCommander(generalConfig);
-
         ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
-        jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
-
+        JCommander jc = new JCommander(stconfig);
         jc.parse(args);
 
-        if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+        if (stconfig.getGeneralDelegate().isHelp() || jc.getParsedCommand() == null) {
             jc.usage();
             return;
         }
-
+        // TODO Probably not needed anymore
         switch (jc.getParsedCommand()) {
             case ServerTestSuiteConfig.COMMAND:
-                ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
+                ServerTestSuite st = new ServerTestSuite(stconfig);
                 st.startTests();
                 return;
 

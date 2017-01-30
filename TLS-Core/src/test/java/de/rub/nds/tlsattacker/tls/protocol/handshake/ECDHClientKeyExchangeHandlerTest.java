@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import static de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeHandlerTest.testServerKeyExchangeECDSA;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -43,9 +44,9 @@ public class ECDHClientKeyExchangeHandlerTest {
     ECDHEServerKeyExchangeHandler skeHandler;
 
     public ECDHClientKeyExchangeHandlerTest() {
-        TlsContext context = new TlsContext();
+        TlsContext context = new TlsContext(new TlsConfig());
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
-        context.setProtocolVersion(ProtocolVersion.TLS12);
+        context.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
         handler = new ECDHClientKeyExchangeHandler(context);
 
         // initialize tls context with ec parameters

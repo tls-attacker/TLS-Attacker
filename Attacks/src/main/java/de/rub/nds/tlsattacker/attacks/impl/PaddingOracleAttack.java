@@ -21,13 +21,13 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -39,7 +39,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
  * server is vulnerable to poodle.
- * 
+ *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
@@ -47,9 +47,12 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttack.class);
 
     private final List<ProtocolMessage> lastMessages;
+    private TlsConfig tlsConfig;
 
     public PaddingOracleAttack(PaddingOracleCommandConfig config) {
         super(config);
+        ConfigHandler configHandler = new ConfigHandler();
+        tlsConfig = configHandler.initialize(config);
         lastMessages = new LinkedList<>();
     }
 
@@ -84,19 +87,19 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
         List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
 
         if (pmSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
                     pmSetList);
             vulnerable = false;
         } else {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
-                    config.getConnect(), pmSetList);
+                    tlsConfig.getHost(), pmSetList);
             vulnerable = true;
         }
     }
 
     public void executeAttackRound(ConfigHandler configHandler, Record record) {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();

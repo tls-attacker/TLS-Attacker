@@ -29,11 +29,6 @@ public class SimpleTransportHandler extends TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(SimpleTransportHandler.class);
 
-    /**
-     * min number of milliseconds to wait for a response to come
-     */
-    private static final int DEFAULT_TLS_TIMEOUT = 400;
-
     private Socket socket;
 
     private ServerSocket serverSocket;
@@ -46,19 +41,19 @@ public class SimpleTransportHandler extends TransportHandler {
 
     private byte[] readTimingData;
 
-    public SimpleTransportHandler() {
-        tlsTimeout = DEFAULT_TLS_TIMEOUT;
+    public SimpleTransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+        super(hostname, port, end, timeout);
     }
 
     @Override
-    public void initialize(String address, int port) throws IOException {
-        if (address.equals("server")) {
+    public void initialize() throws IOException {
+        if (end == ConnectionEnd.SERVER) {
             serverSocket = new ServerSocket(port);
             socket = serverSocket.accept();
             LOGGER.debug("Server");
             isServer = true;
         } else {
-            socket = new Socket(address, port);
+            socket = new Socket(hostname, port);
         }
 
         OutputStream os = socket.getOutputStream();

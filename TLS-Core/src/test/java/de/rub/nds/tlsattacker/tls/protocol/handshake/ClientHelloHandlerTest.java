@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ClientHelloHandler;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import static org.junit.Assert.*;
@@ -61,14 +63,14 @@ public class ClientHelloHandlerTest {
     ClientHelloHandler<ClientHelloDtlsMessage> handler;
     ClientHelloHandler<ClientHelloDtlsMessage> dtlshandler;
 
-    TlsContext tlsContext = new TlsContext();
+    TlsContext tlsContext = new TlsContext(new TlsConfig());
     TlsContext dtlsContext = new TlsContext();
 
     public ClientHelloHandlerTest() {
-        tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
         handler = new ClientHelloHandler<>(tlsContext);
         dtlsContext.setDtlsHandshakeCookie(cookie);
-        dtlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
+        dtlsContext.getConfig().setProtocolVersion(ProtocolVersion.DTLS12);
         dtlshandler = new ClientHelloHandler<>(dtlsContext);
 
     }
@@ -204,7 +206,8 @@ public class ClientHelloHandlerTest {
         assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 48", new Integer(48), message.getLength().getValue());
-        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
+        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getConfig()
+                .getProtocolVersion());
         assertEquals("Client Session ID Length", new Integer(0), message.getSessionIdLength().getValue());
         assertArrayEquals(
                 "Client Random",

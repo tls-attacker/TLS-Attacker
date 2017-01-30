@@ -12,17 +12,17 @@ import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,11 +44,11 @@ public abstract class HandshakeTest extends TestTLS {
         this.serverConfig = serverConfig;
     }
 
-    boolean executeHandshake() {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(serverConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(serverConfig);
-        tlsContext.setProtocolVersion(serverConfig.getProtocolVersion());
-        tlsContext.setSelectedCipherSuite(serverConfig.getCipherSuites().get(0));
+    boolean executeHandshake(TlsConfig tlsConfig) {
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+
+        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
+        tlsContext.setSelectedCipherSuite(tlsConfig.getSupportedCiphersuites().get(0));
         WorkflowTrace workflowTrace = new WorkflowTrace();
         ClientHelloMessage ch = new ClientHelloMessage();
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
@@ -69,11 +69,14 @@ public abstract class HandshakeTest extends TestTLS {
                                                                             // notify?
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, alert));
 
-        ch.setSupportedCipherSuites(serverConfig.getCipherSuites());
-        ch.setSupportedCompressionMethods(serverConfig.getCompressionMethods());
-        WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig, ch);
+        ch.setSupportedCipherSuites(tlsConfig.getSupportedCiphersuites());
+        ch.setSupportedCompressionMethods(tlsConfig.getSupportedCompressionMethods());
+        // TODO
+        // WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig,
+        // ch);
         tlsContext.setWorkflowTrace(workflowTrace);
-        WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
+        // TODO
+        // WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         lastTlsContext = tlsContext;
         try {

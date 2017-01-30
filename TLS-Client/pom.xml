@@ -59,6 +59,21 @@
             <artifactId>Utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TLS-Core</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.rub.nds.tlsattacker</groupId>
+                    <artifactId>EAP</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.rub.nds.tlsattacker</groupId>
+                    <artifactId>ModifiableVariable</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>

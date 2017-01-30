@@ -8,14 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -40,9 +41,9 @@ public class DHClientKeyExchangeHandlerTest {
     DHEServerKeyExchangeHandler skeHandler;
 
     public DHClientKeyExchangeHandlerTest() {
-        TlsContext context = new TlsContext();
+        TlsContext context = new TlsContext(new TlsConfig());
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.setProtocolVersion(ProtocolVersion.TLS12);
+        context.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
         handler = new DHClientKeyExchangeHandler(context);
 
         // initialize tls context with dh parameters

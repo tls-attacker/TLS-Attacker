@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -27,10 +28,10 @@ public class RecordHandlerTest {
 
     de.rub.nds.tlsattacker.tls.record.RecordHandler rh;
 
-    TlsContext tlsContext = new TlsContext();
+    TlsContext tlsContext = new TlsContext(new TlsConfig());
 
     public RecordHandlerTest() {
-        tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
+        tlsContext.getConfig().setProtocolVersion(ProtocolVersion.DTLS12);
         tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
         rh = tlsContext.getRecordHandler();
     }

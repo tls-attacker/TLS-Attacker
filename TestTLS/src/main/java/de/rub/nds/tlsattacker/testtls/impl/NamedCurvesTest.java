@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,12 +68,14 @@ public class NamedCurvesTest extends HandshakeTest {
 
     private void testSupportedCurves(ProtocolVersion pv, CipherSuite cs) {
         for (NamedCurve nc : NamedCurve.values()) {
-            serverConfig.setProtocolVersion(pv);
-            serverConfig.setCipherSuites(Collections.singletonList(cs));
-            serverConfig.setNamedCurves(Collections.singletonList(nc));
+            TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+
+            tlsConfig.setProtocolVersion(pv);
+            tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
+            tlsConfig.setNamedCurves(Collections.singletonList(nc));
             boolean success = false;
             try {
-                success = executeHandshake();
+                success = executeHandshake(tlsConfig);
             } catch (Exception ex) {
                 LOGGER.info(ex.getLocalizedMessage());
                 LOGGER.debug(ex.getLocalizedMessage(), ex);

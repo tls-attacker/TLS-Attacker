@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
-import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Config>
  */
-public abstract class Attacker<Config extends CommandConfig> {
+public abstract class Attacker<Config extends TLSDelegateConfig> {
 
     protected Config config;
 

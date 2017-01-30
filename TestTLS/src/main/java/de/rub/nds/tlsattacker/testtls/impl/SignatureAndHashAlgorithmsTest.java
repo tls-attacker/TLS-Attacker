@@ -13,11 +13,10 @@ import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,12 +73,14 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
 
     private void testSupportedSignatureAndHashAlgorithms(ProtocolVersion pv) {
         for (SignatureAndHashAlgorithm algorithm : SignatureAndHashAlgorithm.values()) {
-            serverConfig.setProtocolVersion(pv);
-            serverConfig.setCipherSuites(supportedCipherSuites.get(pv));
-            serverConfig.setSignatureAndHashAlgorithms(Collections.singletonList(algorithm));
+            TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+
+            tlsConfig.setProtocolVersion(pv);
+            tlsConfig.setSupportedCiphersuites(supportedCipherSuites.get(pv));
+            tlsConfig.setSupportedSignatureAndHashAlgorithms(Collections.singletonList(algorithm));
             boolean success = false;
             try {
-                success = executeHandshake();
+                success = executeHandshake(tlsConfig);
             } catch (Exception ex) {
                 LOGGER.info(ex.getLocalizedMessage());
                 LOGGER.debug(ex.getLocalizedMessage(), ex);

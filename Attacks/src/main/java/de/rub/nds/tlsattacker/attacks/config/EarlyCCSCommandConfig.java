@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EarlyCCSCommandConfig extends ClientCommandConfig {
+public class EarlyCCSCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "early_ccs";
 }

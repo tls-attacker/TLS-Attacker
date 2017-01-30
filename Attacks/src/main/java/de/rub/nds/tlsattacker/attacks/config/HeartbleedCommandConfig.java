@@ -9,25 +9,24 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class HeartbleedCommandConfig extends ClientCommandConfig {
+public class HeartbleedCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "heartbleed";
 
     @Parameter(names = "-payload_length", description = "Payload length sent in the client heartbeat message")
-    Integer payloadLength;
+    Integer payloadLength = 20000;
 
     public HeartbleedCommandConfig() {
-        workflowTraceType = WorkflowTraceType.FULL;
-        payloadLength = 20000;
-        heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
+
     }
 
     public Integer getPayloadLength() {
@@ -36,5 +35,13 @@ public class HeartbleedCommandConfig extends ClientCommandConfig {
 
     public void setPayloadLength(Integer payloadLength) {
         this.payloadLength = payloadLength;
+    }
+
+    @Override
+    public TlsConfig createConfig() {
+        TlsConfig config = super.createConfig();
+        config.setWorkflowTraceType(WorkflowTraceType.FULL);
+        config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
+        return config;
     }
 }

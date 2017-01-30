@@ -12,10 +12,10 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerAddModification;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
@@ -99,11 +99,11 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization2() throws Exception {
-        ClientCommandConfig config = new ClientCommandConfig();
-        WorkflowConfigurationFactory cf = WorkflowConfigurationFactory.createInstance(config);
-        TlsContext context = cf.createHandshakeTlsContext(ConnectionEnd.CLIENT);
+        TlsConfig config = new TlsConfig();
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = cf.createFullWorkflow();
 
-        m.marshal(context.getWorkflowTrace(), writer);
+        m.marshal(trace, writer);
 
         String xmlString = writer.toString();
         System.out.println(xmlString);

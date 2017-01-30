@@ -15,10 +15,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
@@ -51,12 +52,11 @@ public class WorkflowTraceSerializerTest {
      */
     @Test
     public void testWriteRead() throws Exception {
-        WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(new ClientCommandConfig());
-        TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
-
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(new TlsConfig());
+        WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable
-        List<ProtocolMessage> pms = context.getWorkflowTrace().getAllConfiguredMessages();
+        List<ProtocolMessage> pms = trace.getAllConfiguredMessages();
         int random = RandomHelper.getRandom().nextInt(pms.size());
         List<Record> records = new LinkedList<>();
         Record r = new Record();
@@ -69,7 +69,7 @@ public class WorkflowTraceSerializerTest {
         pms.get(random).setRecords(records);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        WorkflowTraceSerializer.write(os, context.getWorkflowTrace());
+        WorkflowTraceSerializer.write(os, trace);
 
         String serializedWorkflow = new String(os.toByteArray());
 
@@ -95,14 +95,14 @@ public class WorkflowTraceSerializerTest {
      */
     @Test
     public void testWriteReadDtls() throws Exception {
-        ClientCommandConfig ccc = new ClientCommandConfig();
-        ccc.setProtocolVersion(ProtocolVersion.DTLS12);
-        WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(ccc);
-        TlsContext context = factory.createFullTlsContext(ConnectionEnd.CLIENT);
+        TlsConfig config = new TlsConfig();
+        config.setProtocolVersion(ProtocolVersion.DTLS12);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createFullWorkflow();
 
         // pick random protocol message and initialize a record with modifiable
         // variable
-        List<ProtocolMessage> pms = context.getWorkflowTrace().getAllConfiguredMessages();
+        List<ProtocolMessage> pms = trace.getAllConfiguredMessages();
         int random = RandomHelper.getRandom().nextInt(pms.size());
         List<Record> records = new LinkedList<>();
         DtlsRecord r = new DtlsRecord();
@@ -115,7 +115,7 @@ public class WorkflowTraceSerializerTest {
         pms.get(random).setRecords(records);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        WorkflowTraceSerializer.write(os, context.getWorkflowTrace());
+        WorkflowTraceSerializer.write(os, trace);
 
         String serializedWorkflow = new String(os.toByteArray());
 

@@ -29,11 +29,13 @@ public class UDPTransportHandlerTest {
 
     @Test
     public void testSendData() throws Exception {
-        UDPTransportHandler udpTH = new UDPTransportHandler();
         DatagramSocket testSocket = new DatagramSocket();
+
+        UDPTransportHandler udpTH = new UDPTransportHandler(localhost.getHostName(), testSocket.getLocalPort(),
+                ConnectionEnd.CLIENT, 400);
         testSocket.setSoTimeout(1000);
 
-        udpTH.initialize(localhost.getHostName(), testSocket.getLocalPort());
+        udpTH.initialize();
 
         byte[] txData = new byte[8192];
         RandomHelper.getRandom().nextBytes(txData);
@@ -52,10 +54,12 @@ public class UDPTransportHandlerTest {
 
     @Test
     public void testFetchData() throws Exception {
-        UDPTransportHandler udpTH = new UDPTransportHandler();
         DatagramSocket testSocket = new DatagramSocket();
 
-        udpTH.initialize(localhost.getHostName(), testSocket.getLocalPort());
+        UDPTransportHandler udpTH = new UDPTransportHandler(localhost.getHostName(), testSocket.getLocalPort(),
+                ConnectionEnd.CLIENT, 400);
+
+        udpTH.initialize();
         testSocket.connect(localhost, udpTH.getLocalPort());
         udpTH.setTlsTimeout(1);
 

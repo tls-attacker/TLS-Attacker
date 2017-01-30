@@ -9,11 +9,12 @@
 package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import java.security.Security;
 import java.util.LinkedList;
@@ -31,9 +32,11 @@ public class RecordHandlerTest {
 
     public RecordHandlerTest() {
         Security.addProvider(new BouncyCastleProvider());
-        ClientCommandConfig config = new ClientCommandConfig();
-        WorkflowConfigurationFactory factory = WorkflowConfigurationFactory.createInstance(config);
-        TlsContext context = factory.createHandshakeTlsContext(ConnectionEnd.CLIENT);
+        TlsConfig config = new TlsConfig();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createHandshakeWorkflow();
+        config.setWorkflowTrace(trace);
+        TlsContext context = new TlsContext(config);
         context.setRecordHandler(new RecordHandler(context));
         recordHandler = context.getRecordHandler();
     }

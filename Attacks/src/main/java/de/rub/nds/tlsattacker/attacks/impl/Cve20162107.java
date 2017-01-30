@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -57,26 +58,35 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     @Override
     public void executeAttack(ConfigHandler configHandler) {
         ProtocolVersion[] versions;
-        if (config.getProtocolVersion() == null) {
+        TlsConfig tlsConfig = configHandler.initialize(config);
+
+        if (tlsConfig.getProtocolVersion() == null) {
             versions = new ProtocolVersion[] { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
         } else {
-            versions = new ProtocolVersion[] { config.getProtocolVersion() };
+            versions = new ProtocolVersion[] { tlsConfig.getProtocolVersion() };// TODO
+                                                                                // Initialisation
+                                                                                // should
+                                                                                // be
+                                                                                // done
+                                                                                // in
+                                                                                // config
         }
         List<CipherSuite> ciphers = new LinkedList<>();
-        if (config.getCipherSuites().isEmpty()) {
+        if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {
                 if (cs.isCBC()) {
                     ciphers.add(cs);
                 }
             }
         } else {
-            ciphers = config.getCipherSuites();
+            ciphers = tlsConfig.getSupportedCiphersuites();
         }
 
         for (ProtocolVersion pv : versions) {
             for (CipherSuite cs : ciphers) {
-                config.setProtocolVersion(pv);
-                config.setCipherSuites(Collections.singletonList(cs));
+                tlsConfig.setProtocolVersion(pv);
+                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs)); // TODO
+                                                                                   // what
                 executeAttackRound(configHandler);
             }
         }
@@ -96,10 +106,11 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     }
 
     private void executeAttackRound(ConfigHandler configHandler) {
-        LOGGER.info("Testing {}, {}", config.getProtocolVersion(), config.getCipherSuites().get(0));
+        TlsConfig tlsConfig = configHandler.initialize(config);
+        LOGGER.info("Testing {}, {}", tlsConfig.getProtocolVersion(), tlsConfig.getSupportedCiphersuites().get(0));
 
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();

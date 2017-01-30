@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.crypto;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
@@ -242,7 +242,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
             }
-            if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT) {
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
                         decryptIv);
             } else {
@@ -265,7 +265,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
 
     @Override
     public void init() throws NoSuchAlgorithmException, NoSuchPaddingException {
-        ProtocolVersion protocolVersion = tlsContext.getProtocolVersion();
+        ProtocolVersion protocolVersion = tlsContext.getConfig().getProtocolVersion();
         CipherSuite cipherSuite = tlsContext.getSelectedCipherSuite();
         if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12
                 || protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
@@ -290,7 +290,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
         byte[] masterSecret = tlsContext.getMasterSecret();
         byte[] seed = tlsContext.getServerClientRandom();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getProtocolVersion(),
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
                 tlsContext.getSelectedCipherSuite());
         byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                 PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
@@ -329,7 +329,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
             LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
         }
 
-        if (tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT) {
             encryptIv = new IvParameterSpec(clientWriteIv);
             decryptIv = new IvParameterSpec(serverWriteIv);
             encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());

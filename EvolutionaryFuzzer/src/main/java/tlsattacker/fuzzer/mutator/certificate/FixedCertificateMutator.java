@@ -8,8 +8,6 @@
  */
 package tlsattacker.fuzzer.mutator.certificate;
 
-import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;

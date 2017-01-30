@@ -14,7 +14,7 @@ import tlsattacker.fuzzer.result.AgentResult;
 import tlsattacker.fuzzer.testvector.TestVectorSerializer;
 import tlsattacker.fuzzer.workflow.WorkflowTraceType;
 import tlsattacker.fuzzer.workflow.WorkflowTraceTypeManager;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;

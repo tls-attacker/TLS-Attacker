@@ -31,13 +31,14 @@ import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.CommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -55,25 +56,22 @@ public class ServerTestSuite extends TestSuite {
 
     private ConfigHandler configHandler;
 
-    public ServerTestSuite(ServerTestSuiteConfig serverTestConfig, GeneralConfig generalConfig) {
-        super(generalConfig);
+    public ServerTestSuite(ServerTestSuiteConfig serverTestConfig) {
+        super();
         this.testConfig = serverTestConfig;
     }
 
     @Override
     public boolean startTests() {
-        configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        configHandler.initialize(generalConfig);
-
         this.startAttackTests();
         this.startTestFromFiles();
         return failedTests.isEmpty();
     }
 
     private void startAttackTests() {
-        Attacker<? extends CommandConfig> attacker;
+        Attacker<? extends TLSDelegateConfig> attacker;
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
-        bb.setConnect(testConfig.getConnect());
+        setHost(bb);
         attacker = new BleichenbacherAttack(bb);
         attacker.executeAttack(configHandler);
         if (attacker.isVulnerable()) {
@@ -83,7 +81,7 @@ public class ServerTestSuite extends TestSuite {
         }
 
         InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
-        icea.setConnect(testConfig.getConnect());
+        setHost(icea);
         attacker = new InvalidCurveAttack(icea);
         attacker.executeAttack(configHandler);
         if (attacker.isVulnerable()) {
@@ -93,7 +91,7 @@ public class ServerTestSuite extends TestSuite {
         }
 
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
-        heartbleed.setConnect(testConfig.getConnect());
+        setHost(heartbleed);
         attacker = new HeartbleedAttack(heartbleed);
         attacker.executeAttack(configHandler);
         if (attacker.isVulnerable()) {
@@ -103,7 +101,7 @@ public class ServerTestSuite extends TestSuite {
         }
 
         PoodleCommandConfig poodle = new PoodleCommandConfig();
-        poodle.setConnect(testConfig.getConnect());
+        setHost(poodle);
         attacker = new PoodleAttack(poodle);
         attacker.executeAttack(configHandler);
         if (attacker.isVulnerable()) {
@@ -113,7 +111,7 @@ public class ServerTestSuite extends TestSuite {
         }
 
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
-        po.setConnect(testConfig.getConnect());
+        setHost(po);
         attacker = new PaddingOracleAttack(po);
         attacker.executeAttack(configHandler);
         if (attacker.isVulnerable()) {
@@ -122,6 +120,24 @@ public class ServerTestSuite extends TestSuite {
             successfulTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
         }
 
+    }
+
+    // TODO Ugly probably better to have a client/server delegate config for
+    // this
+    public void setHost(TLSDelegateConfig delegateConfig) {
+        String host = null;
+        for (Delegate delegate : testConfig.getDelegateList()) {
+            if (delegate instanceof ClientDelegate) {
+                host = ((ClientDelegate) delegate).getHost();
+            }
+        }
+        for (Delegate delegate : delegateConfig.getDelegateList()) {
+            if (delegate instanceof ClientDelegate) {
+                ((ClientDelegate) delegate).setHost(host);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Provided Config did not contain ClientDelegate");
     }
 
     private void startTestFromFiles() {
@@ -187,9 +203,11 @@ public class ServerTestSuite extends TestSuite {
 
         for (File xmlFile : xmlFiles) {
             try {
-                testConfig.setWorkflowInput(xmlFile.getAbsolutePath());
-                TransportHandler transportHandler = configHandler.initializeTransportHandler(testConfig);
-                TlsContext tlsContext = configHandler.initializeTlsContext(testConfig);
+                TlsConfig tlsConfig = configHandler.initialize(testConfig);
+                tlsConfig.setWorkflowInput(xmlFile.getAbsolutePath());
+                TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+
+                TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
                 WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
                         tlsContext);
                 workflowExecutor.executeWorkflow();

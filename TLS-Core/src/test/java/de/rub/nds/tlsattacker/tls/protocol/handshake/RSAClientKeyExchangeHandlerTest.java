@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -66,16 +66,16 @@ public class RSAClientKeyExchangeHandlerTest {
 
         try {
             KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
-            tlsContext.setKeyStore(ks);
-            tlsContext.setAlias("alias");
-            tlsContext.setPassword("password");
+            tlsContext.getConfig().setKeyStore(ks);
+            tlsContext.getConfig().setAlias("alias");
+            tlsContext.getConfig().setPassword("password");
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException ex) {
             throw new ConfigurationException(
                     "Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
         }
         try {
-            String alias = tlsContext.getAlias();
-            java.security.cert.Certificate sunCert = tlsContext.getKeyStore().getCertificate(alias);
+            String alias = tlsContext.getConfig().getAlias();
+            java.security.cert.Certificate sunCert = tlsContext.getConfig().getKeyStore().getCertificate(alias);
             if (alias == null || sunCert == null) {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
                         + "certificate alias and key? (Current alias: " + alias + ")");

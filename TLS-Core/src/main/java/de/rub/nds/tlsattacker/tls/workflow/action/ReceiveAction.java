@@ -39,7 +39,7 @@ public class ReceiveAction extends MessageAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionPeer());
+        tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionPeer());
         actualMessages = executor.receiveMessages(configuredMessages);
         executed = true;
 

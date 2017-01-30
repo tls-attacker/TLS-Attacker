@@ -8,7 +8,7 @@
  */
 package tlsattacker.fuzzer.workflow;
 
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.Objects;
 
 /**

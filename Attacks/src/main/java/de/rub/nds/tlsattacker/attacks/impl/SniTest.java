@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensi
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -47,8 +48,9 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TlsConfig tlsConfig = configHandler.initialize(config);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();

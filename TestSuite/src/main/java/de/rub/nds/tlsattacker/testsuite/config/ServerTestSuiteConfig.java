@@ -9,21 +9,20 @@
 package de.rub.nds.tlsattacker.testsuite.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ServerTestSuiteConfig extends ClientCommandConfig {
+public class ServerTestSuiteConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "testsuite_server";
 
     @Parameter(names = "-folder", description = "Root folder including the test cases.")
-    String folder;
+    String folder = "../resources/testsuite";
 
     public ServerTestSuiteConfig() {
-        folder = "../resources/testsuite";
     }
 
     public String getFolder() {

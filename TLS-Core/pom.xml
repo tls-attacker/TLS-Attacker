@@ -25,10 +25,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TLS-Server</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.54</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <name>TLS-Core</name>

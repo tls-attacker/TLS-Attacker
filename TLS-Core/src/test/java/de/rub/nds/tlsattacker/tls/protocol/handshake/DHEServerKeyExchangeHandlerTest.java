@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
@@ -57,15 +59,15 @@ public class DHEServerKeyExchangeHandlerTest {
         Security.removeProvider("SunPKCS11-NSS");
         Security.addProvider(new BouncyCastleProvider());
 
-        tlsContext = new TlsContext();
+        tlsContext = new TlsContext(new TlsConfig());
         tlsContext.setClientRandom(clientRandom);
         tlsContext.setServerRandom(serverRandom);
 
         try {
             KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
-            tlsContext.setKeyStore(ks);
-            tlsContext.setAlias("alias");
-            tlsContext.setPassword("password");
+            tlsContext.getConfig().setKeyStore(ks);
+            tlsContext.getConfig().setAlias("alias");
+            tlsContext.getConfig().setPassword("password");
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException ex) {
             throw new ConfigurationException("Something went wrong loading key from Keystore", ex);
         }

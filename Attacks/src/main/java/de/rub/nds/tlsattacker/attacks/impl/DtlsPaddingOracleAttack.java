@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -43,7 +44,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Tests if the subject can be used as a padding oracle by sending messages with
  * invalid MACs or invalid paddings.
- * 
+ *
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
 public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
@@ -62,9 +63,12 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     private WorkflowExecutor workflowExecutor;
 
     private WorkflowTrace trace;
+    private TlsConfig tlsConfig;
 
     public DtlsPaddingOracleAttack(DtlsPaddingOracleAttackCommandConfig config) {
         super(config);
+        ConfigHandler configHandler = new ConfigHandler();
+        tlsConfig = configHandler.initialize(config);
     }
 
     @Override
@@ -279,9 +283,9 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     }
 
     private void initExecuteAttack(ConfigHandler configHandler) {
-        transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(config);
-        transportHandler.setTlsTimeout(config.getTimeout());
-        tlsContext = configHandler.initializeTlsContext(config);
+        transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(tlsConfig);
+        transportHandler.setTlsTimeout(tlsConfig.getTimeout());
+        tlsContext = configHandler.initializeTlsContext(tlsConfig);
         workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
         trace = tlsContext.getWorkflowTrace();
@@ -299,7 +303,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTlsTimeout(config.getTimeout());
+            transportHandler.setTlsTimeout(tlsConfig.getTimeout());
         }
     }
 }

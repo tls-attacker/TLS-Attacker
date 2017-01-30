@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,19 +16,19 @@ import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandlerBearer;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateVerifyHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ClientHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HelloRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloDoneHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**

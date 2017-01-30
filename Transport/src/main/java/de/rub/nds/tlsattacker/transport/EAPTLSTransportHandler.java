@@ -37,8 +37,12 @@ class EAPTLSTransportHandler extends TransportHandler {
 
     int y = 0, countpackets = 0;
 
+    public EAPTLSTransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+        super(hostname, port, end, timeout);
+    }
+
     @Override
-    public void initialize(String address, int port) throws IOException {
+    public void initialize() throws IOException {
         nic.init();
 
         while (true) {
@@ -93,9 +97,7 @@ class EAPTLSTransportHandler extends TransportHandler {
                 // und fügt es dem tlsraw Container hinzu
                 tlsraw = ArrayConverter.concatenate(tlsraw, extractor.extract(test));
 
-            } else
-
-            if (("FragState".equals(eapolMachine.getState()) || "HelloState".equals(eapolMachine.getState()))
+            } else if (("FragState".equals(eapolMachine.getState()) || "HelloState".equals(eapolMachine.getState()))
                     && countpackets != 0) {
                 eapolMachine.sendTLS(fragment.getFragment(y));
                 y++;

@@ -203,7 +203,7 @@ public class TLSActionExecutor extends ActionExecutor {
                     .getContentType().getValue());
             receivedMessages
                     .addAll(parseRawProtocolMessageBytes(rawProtocolMessageBytes, protocolMessageType, context));
-            if (!context.isRenegotiation()) {
+            if (!context.getConfig().isRenegotiation()) {
                 for (ProtocolMessage pm : receivedMessages) {
                     pm.setRecords(recordsOfSameContent);
                     // If we received more than one message in the records
@@ -228,19 +228,19 @@ public class TLSActionExecutor extends ActionExecutor {
          * and if isClientauthentication is true, we do not need to change the
          * WorkflowTrace
          */
-        if (context.getKeyStore() != null && !context.isClientAuthentication()) {
-            context.setClientAuthentication(true);
+        if (context.getConfig().getKeyStore() != null && !context.getConfig().isClientAuthentication()) {
+            context.getConfig().setClientAuthentication(true);
             // RenegotiationWorkflowConfiguration reneWorkflowConfig = new
             // RenegotiationWorkflowConfiguration(context);
             // reneWorkflowConfig.createWorkflow();
-        } else if (context.getKeyStore() == null && context.isSessionResumption()) {
+        } else if (context.getConfig().getKeyStore() == null && context.getConfig().isSessionResumption()) {
             // RenegotiationWorkflowConfiguration reneWorkflowConfig = new
             // RenegotiationWorkflowConfiguration(context);
             // reneWorkflowConfig.createWorkflow();
         }
 
-        context.setSessionResumption(false);
-        context.setRenegotiation(false);
+        context.getConfig().setSessionResumption(false);
+        context.getConfig().setRenegotiation(false);
         // TODO We have to deal with renegotiation differently
         // executeWorkflow();
     }
@@ -265,14 +265,14 @@ public class TLSActionExecutor extends ActionExecutor {
                     rawProtocolMessageBytes[dataPointer], context);
             if (Arrays.equals(rawProtocolMessageBytes,
                     new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
-                context.setRenegotiation(true);
+                context.getConfig().setRenegotiation(true);
             } else {
                 pmh.initializeProtocolMessage();
                 dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
                 LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
                 receivedMessages.add(pmh.getProtocolMessage());
                 if (receivedFatalAlert(pmh)) {
-                    if (!context.isFuzzingMode()) {
+                    if (!context.getConfig().isFuzzingMode()) {
                         workflowContext.setProceedWorkflow(false);
                     }
                 }

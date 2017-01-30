@@ -131,7 +131,7 @@ public class RecordHandler {
      */
     private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
         record.setContentType(contentType.getValue());
-        record.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
+        record.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
         byte[] pmData;
         int returnPointer = data.length;
         pmData = Arrays.copyOfRange(data, dataPointer, data.length);
@@ -146,7 +146,7 @@ public class RecordHandler {
         record.setProtocolMessageBytes(pmData);
 
         if (encryptSending && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-            if (recordCipher == null && tlsContext.isFuzzingMode()) {
+            if (recordCipher == null && tlsContext.getConfig().isFuzzingMode()) {
                 try {
                     recordCipher = new TlsRecordBlockCipher(tlsContext);
                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
@@ -158,8 +158,8 @@ public class RecordHandler {
             }
             byte[] mac = null;
             try {
-                mac = recordCipher.calculateMac(tlsContext.getProtocolVersion().getValue(), contentType, record
-                        .getProtocolMessageBytes().getValue());
+                mac = recordCipher.calculateMac(tlsContext.getConfig().getProtocolVersion().getValue(), contentType,
+                        record.getProtocolMessageBytes().getValue());
             } catch (NullPointerException E) {
                 E.printStackTrace();
             }

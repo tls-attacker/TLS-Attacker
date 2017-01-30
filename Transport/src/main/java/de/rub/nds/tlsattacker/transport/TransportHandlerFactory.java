@@ -17,22 +17,15 @@ public class TransportHandlerFactory {
 
     }
 
-    public static TransportHandler createTransportHandler() {
-        return new SimpleTransportHandler();
-    }
-
-    public static TransportHandler createTransportHandler(TransportHandlerType type, int tlsTimeout) {
+    public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEnd end, int timeout,
+            TransportHandlerType type) {
         switch (type) {
             case TCP:
-                SimpleTransportHandler th = new SimpleTransportHandler();
-                th.setTlsTimeout(tlsTimeout);
-                return th;
+                return new SimpleTransportHandler(hostname, port, end, timeout);
             case EAP_TLS:
-                return new EAPTLSTransportHandler();
+                return new EAPTLSTransportHandler(hostname, port, end, timeout);
             case UDP:
-                UDPTransportHandler udpth = new UDPTransportHandler();
-                udpth.setTlsTimeout(tlsTimeout);
-                return udpth;
+                return new UDPTransportHandler(hostname, port, end, timeout);
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
         }

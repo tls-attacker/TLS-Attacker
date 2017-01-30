@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.testsuite.impl;
 
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,13 +17,10 @@ import java.util.List;
  */
 public abstract class TestSuite {
 
-    GeneralConfig generalConfig;
-
     List<String> successfulTests = new LinkedList<>();
     List<String> failedTests = new LinkedList<>();
 
-    public TestSuite(GeneralConfig config) {
-        this.generalConfig = config;
+    public TestSuite() {
         successfulTests = new LinkedList<>();
         failedTests = new LinkedList<>();
     }

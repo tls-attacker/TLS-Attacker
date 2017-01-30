@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.BigIntegerConverter;
 import java.math.BigInteger;
 
@@ -17,7 +17,7 @@ import java.math.BigInteger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class WinshockCommandConfig extends ClientCommandConfig {
+public class WinshockCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "winshock";
 

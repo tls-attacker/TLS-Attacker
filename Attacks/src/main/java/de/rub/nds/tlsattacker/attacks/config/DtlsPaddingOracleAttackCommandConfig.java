@@ -9,18 +9,20 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPaddingOracleAttackCommandConfig extends ClientCommandConfig {
+public class DtlsPaddingOracleAttackCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "dtls_potest";
 
@@ -40,16 +42,6 @@ public class DtlsPaddingOracleAttackCommandConfig extends ClientCommandConfig {
     long messageWaitNanos = 0;
 
     public DtlsPaddingOracleAttackCommandConfig() {
-        // Just to be sure
-        transportHandlerType = TransportHandlerType.UDP;
-        protocolVersion = ProtocolVersion.DTLS12;
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
-
-        // Until all dtls workflow factories are adapted, this is to make sure
-        // the right workflow factory is used
-        List<CipherSuite> cs = new ArrayList<>();
-        cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        cipherSuites = cs;
     }
 
     public int getMessagesPerTrain() {
@@ -90,5 +82,20 @@ public class DtlsPaddingOracleAttackCommandConfig extends ClientCommandConfig {
 
     public void setMessageWaitNanos(long messageWaitNanos) {
         this.messageWaitNanos = messageWaitNanos;
+    }
+
+    @Override
+    public TlsConfig createConfig() {
+        TlsConfig config = super.createConfig();
+        config.setTransportHandlerType(TransportHandlerType.UDP);
+        config.setProtocolVersion(ProtocolVersion.DTLS12);
+        config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
+
+        // Until all dtls workflow factories are adapted, this is to make sure
+        // the right workflow factory is used //TODO what?!
+        List<CipherSuite> cs = new ArrayList<>();
+        cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        config.setSupportedCiphersuites(cs);
+        return config;
     }
 }

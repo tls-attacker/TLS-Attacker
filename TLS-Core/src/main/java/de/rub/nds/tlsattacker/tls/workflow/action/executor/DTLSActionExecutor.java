@@ -247,7 +247,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
         switch (protocolMessage.getProtocolMessageType()) {
             case ALERT:
-                if (isIncomingAlertFatal(pmh) && !tlsContext.isFuzzingMode()) {
+                if (isIncomingAlertFatal(pmh) && !tlsContext.getConfig().isFuzzingMode()) {
                     throw new WorkflowExecutionException("Received a fatal Alert, aborting!");
                 }
                 break;

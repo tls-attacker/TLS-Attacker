@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.ccs;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -34,7 +34,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public byte[] prepareMessageAction() {
         protocolMessage.setCcsProtocolType(CCS_PROTOCOL_TYPE);
-        if ((tlsContext.isRenegotiation() && tlsContext.getMyConnectionEnd() == ConnectionEnd.CLIENT)
+        if ((tlsContext.getConfig().isRenegotiation() && tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT)
                 || tlsContext.getRecordHandler().getRecordCipher() == null) {
             setRecordCipher();
         }
@@ -45,7 +45,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-        if ((tlsContext.isRenegotiation() && tlsContext.getMyConnectionEnd() == ConnectionEnd.SERVER)
+        if ((tlsContext.getConfig().isRenegotiation() && tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER)
                 || tlsContext.getRecordHandler().getRecordCipher() == null) {
             setRecordCipher();
         }
@@ -62,7 +62,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
                 tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
             } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
                     | InvalidAlgorithmParameterException ex) {
-                if (tlsContext.isFuzzingMode()) {
+                if (tlsContext.getConfig().isFuzzingMode()) {
                     throw new UnsupportedOperationException(
                             "It was not possible to initialize an algorithm from "
                                     + tlsContext.getSelectedCipherSuite()

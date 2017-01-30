@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -56,11 +57,12 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
         RSAPublicKey publicKey;
+        TlsConfig tlsConfig = configHandler.initialize(config);
         try {
-            publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
+            publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
             LOGGER.info("Fetched the following server public key: " + publicKey);
         } catch (Exception e) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, No connection possible: {}", config.getConnect(),
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, No connection possible: {}", tlsConfig.getHost(),
                     e.getLocalizedMessage());
             return;
         }
@@ -89,11 +91,11 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
         }
         sb.append(']');
         if (protocolMessageSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", config.getConnect(),
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
                     sb.toString());
             vulnerable = false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", config.getConnect(),
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getHost(),
                     sb.toString());
             vulnerable = true;
         }
@@ -103,8 +105,9 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
     private ProtocolMessage executeTlsFlow(ConfigHandler configHandler, byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TlsConfig tlsConfig = configHandler.initialize(config);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();

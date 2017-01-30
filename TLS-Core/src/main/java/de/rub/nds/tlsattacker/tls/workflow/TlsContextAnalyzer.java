@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ModificationException;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
@@ -50,7 +50,7 @@ public final class TlsContextAnalyzer {
      * @return
      */
     public static ProtocolMessage getNextReceiveProtocolMessage(TlsContext tlsContext, int position) {
-        ConnectionEnd peer = tlsContext.getMyConnectionEnd().getPeer();
+        ConnectionEnd peer = tlsContext.getConfig().getMyConnectionEnd().getPeer();
         for (int i = position; i < tlsContext.getWorkflowTrace().getAllConfiguredReceivingMessages().size(); i++) {
             ProtocolMessage pm = tlsContext.getWorkflowTrace().getAllConfiguredReceivingMessages().get(i);
             return pm;

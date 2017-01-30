@@ -13,8 +13,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificati
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
@@ -22,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -42,7 +41,7 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class RealDirectMessageECOracle extends ECOracle {
 
-    private final ClientCommandConfig config;
+    private final TlsConfig config;
 
     private Point checkPoint;
 
@@ -50,7 +49,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private final ECComputer computer;
 
-    public RealDirectMessageECOracle(ClientCommandConfig config, Curve curve) {
+    public RealDirectMessageECOracle(TlsConfig config, Curve curve) {
         this.config = config;
         this.curve = curve;
         this.computer = new ECComputer();
@@ -67,7 +66,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
-        ConfigHandler configHandler = new ClientConfigHandler();
+        ConfigHandler configHandler = new ConfigHandler();
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
         TlsContext tlsContext = configHandler.initializeTlsContext(config);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
@@ -141,7 +140,7 @@ public class RealDirectMessageECOracle extends ECOracle {
      * further validation purposes.
      */
     private void executeValidWorkflowAndExtractCheckValues() {
-        ConfigHandler configHandler = new ClientConfigHandler();
+        ConfigHandler configHandler = new ConfigHandler();
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
         TlsContext tlsContext = configHandler.initializeTlsContext(config);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);

@@ -8,18 +8,11 @@
  */
 package de.rub.nds.tlsattacker;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-
 import javax.xml.bind.JAXBException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.beust.jcommander.JCommander;
-
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
@@ -40,28 +33,23 @@ import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
-
+import de.rub.nds.tlsattacker.main.TlsClient;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.CommandConfig;
+import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
-import de.rub.nds.tlsattacker.tls.config.ServerCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.util.LogLevel;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tlsserver.ServerCommandConfig;
+import de.rub.nds.tlsattacker.tlsserver.TlsServer;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
@@ -69,9 +57,9 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-
-        GeneralConfig generalConfig = new GeneralConfig();
-        JCommander jc = new JCommander(generalConfig);
+        // TODO TODO TODO
+        GeneralDelegate generalDelegate = new GeneralDelegate();
+        JCommander jc = new JCommander(generalDelegate);
 
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig();
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
@@ -104,35 +92,37 @@ public class Main {
 
         jc.parse(args);
 
-        if (generalConfig.isHelp() || jc.getParsedCommand() == null) {
+        if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             jc.usage();
             return;
         }
 
-        Attacker<? extends CommandConfig> attacker;
+        Attacker<? extends TLSDelegateConfig> attacker;
         switch (jc.getParsedCommand()) {
             case ServerCommandConfig.COMMAND:
-                startSimpleTls(generalConfig, server, jc);
+                startSimpleTlsServer(server);
                 return;
             case ClientCommandConfig.COMMAND:
-                startSimpleTls(generalConfig, client, jc);
+                startSimpleTlsClient(client);
                 return;
             case ServerTestSuiteConfig.COMMAND:
-                ServerTestSuite st = new ServerTestSuite(stconfig, generalConfig);
+                ServerTestSuite st = new ServerTestSuite(stconfig);
                 boolean success = st.startTests();
                 if (success) {
                     System.exit(0);
                 } else {
                     System.exit(1);
                 }
+                return;
             case TestServerConfig.COMMAND:
-                TestTLSServer testTlsServer = new TestTLSServer(testServerConfig, generalConfig);
+                TestTLSServer testTlsServer = new TestTLSServer(testServerConfig);
                 success = testTlsServer.startTests();
                 if (success) {
                     System.exit(0);
                 } else {
                     System.exit(1);
                 }
+                return;
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
                 attacker = new BleichenbacherAttack(bleichenbacherTest);
                 break;
@@ -166,57 +156,31 @@ public class Main {
             default:
                 throw new ConfigurationException("No command found");
         }
-        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        configHandler.initialize(generalConfig);
-
+        ConfigHandler configHandler = new ConfigHandler();
         if (configHandler.printHelpForCommand(jc, attacker.getConfig())) {
             return;
         }
 
         attacker.executeAttack(configHandler);
 
-        CommandConfig config = attacker.getConfig();
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            logWorkflowTraces(attacker.getTlsContexts(), config.getWorkflowOutput());
-        }
+        TLSDelegateConfig config = attacker.getConfig();
+        // TODO this is the attackers job, not ours
+        // if (config.getWorkflowOutput() != null &&
+        // !config.getWorkflowOutput().isEmpty()) {
+        // logWorkflowTraces(attacker.getTlsContexts(),
+        // config.getWorkflowOutput());
+        // }
     }
 
-    private static void startSimpleTls(GeneralConfig generalConfig, CommandConfig config, JCommander jc)
-            throws JAXBException, IOException {
-        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler(jc.getParsedCommand());
-        configHandler.initialize(generalConfig);
-
-        if (configHandler.printHelpForCommand(jc, config)) {
-            return;
-        }
-
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.info(ex.getLocalizedMessage(), ex);
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
-        }
-
-        transportHandler.closeConnection();
-
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            FileOutputStream fos = new FileOutputStream(config.getWorkflowOutput());
-            WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
-        }
+    private static void startSimpleTlsClient(TLSDelegateConfig config) throws JAXBException, IOException {
+        TlsConfig tlsConfig = config.createConfig();
+        TlsClient client = new TlsClient();
+        client.startTlsClient(tlsConfig);
     }
 
-    private static void logWorkflowTraces(List<TlsContext> tlsContexts, String fileName) throws JAXBException,
-            FileNotFoundException, IOException {
-        int i = 0;
-        for (TlsContext context : tlsContexts) {
-            i++;
-            FileOutputStream fos = new FileOutputStream(fileName + i);
-            WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
-        }
+    private static void startSimpleTlsServer(TLSDelegateConfig config) throws JAXBException, IOException {
+        TlsConfig tlsConfig = config.createConfig();
+        TlsServer server = new TlsServer();
+        server.startTlsServer(tlsConfig);
     }
 }

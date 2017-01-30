@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.DatagramPacket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +25,6 @@ public class UDPTransportHandler extends TransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(UDPTransportHandler.class);
 
-    private static final int DEFAULT_TLS_TIMEOUT = 3000;
-
     private DatagramSocket datagramSocket;
 
     private final DatagramPacket receivedPacket = new DatagramPacket(new byte[65527], 65527);
@@ -34,15 +33,15 @@ public class UDPTransportHandler extends TransportHandler {
 
     private long responseNanos = -1;
 
-    public UDPTransportHandler() {
-        tlsTimeout = DEFAULT_TLS_TIMEOUT;
+    public UDPTransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+        super(hostname, port, end, timeout);
     }
 
     @Override
-    public void initialize(String remoteAddress, int remotePort) throws IOException {
+    public void initialize() throws IOException {
         datagramSocket = new DatagramSocket();
-        datagramSocket.setSoTimeout(DEFAULT_TLS_TIMEOUT);
-        datagramSocket.connect(InetAddress.getByName(remoteAddress), remotePort);
+        datagramSocket.setSoTimeout(tlsTimeout);
+        datagramSocket.connect(InetAddress.getByName(hostname), port);
 
         sentPacket = new DatagramPacket(new byte[0], 0, datagramSocket.getInetAddress(), datagramSocket.getPort());
 

@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import java.security.Security;
@@ -41,11 +41,11 @@ public class MangerAttackServerTest {
 
         Security.addProvider(new BouncyCastleProvider());
 
-        ClientCommandConfig config = new ClientCommandConfig();
-        config.setConnect(CONNECT);
+        TlsConfig config = new TlsConfig();
+        config.setHost(CONNECT);
         List<CipherSuite> ciphersuites = new LinkedList<>();
         ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        config.setCipherSuites(ciphersuites);
+        config.setSupportedCiphersuites(ciphersuites);
 
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
 

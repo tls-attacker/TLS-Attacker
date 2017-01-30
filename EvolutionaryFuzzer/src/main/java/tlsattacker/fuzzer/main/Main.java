@@ -10,7 +10,7 @@ package tlsattacker.fuzzer.main;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;

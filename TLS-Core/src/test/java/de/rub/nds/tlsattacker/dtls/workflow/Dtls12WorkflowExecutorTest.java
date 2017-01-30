@@ -8,12 +8,14 @@
  */
 package de.rub.nds.tlsattacker.dtls.workflow;
 
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.ClientConfigHandler;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -41,15 +43,12 @@ public class Dtls12WorkflowExecutorTest {
 
         if (enableTest) {
             try {
-                ClientCommandConfig config = new ClientCommandConfig();
-                ClientConfigHandler configHandler = new ClientConfigHandler();
-
+                TlsConfig config = new TlsConfig();
                 config.setProtocolVersion(ProtocolVersion.DTLS12);
-                config.setConnect("127.0.0.1:4444");
+                config.setHost("127.0.0.1:4444");
                 config.setTransportHandlerType(TransportHandlerType.UDP);
 
-                UDPTransportHandler th = (UDPTransportHandler) configHandler.initializeTransportHandler(config);
-
+                UDPTransportHandler th = (UDPTransportHandler) new ConfigHandler().initializeTransportHandler(config);
                 DatagramSocket sender = new DatagramSocket(4444, InetAddress.getByName("127.0.0.1"));
                 sender.connect(th.getLocalAddress(), th.getLocalPort());
 
@@ -92,11 +91,9 @@ public class Dtls12WorkflowExecutorTest {
                                 + "00000");
                 packet = new DatagramPacket(data, data.length);
                 sender.send(packet);
-
-                TlsContext context = WorkflowConfigurationFactory.createInstance(config).createFullTlsContext(
-                        ConnectionEnd.CLIENT);
-                context.setMyConnectionEnd(ConnectionEnd.CLIENT);
-                Dtls12WorkflowExecutor workflowExecutor = new Dtls12WorkflowExecutor(th, context);
+                config.setMyConnectionEnd(ConnectionEnd.CLIENT);
+                WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
+                Dtls12WorkflowExecutor workflowExecutor = new Dtls12WorkflowExecutor(th, new TlsContext(config));
                 workflowExecutor.executeWorkflow();
 
                 sender.close();

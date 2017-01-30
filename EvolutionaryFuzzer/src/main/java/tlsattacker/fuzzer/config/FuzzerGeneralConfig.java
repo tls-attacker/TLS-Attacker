@@ -9,7 +9,6 @@
 package tlsattacker.fuzzer.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.FileConverter;
 import java.io.File;
 
@@ -62,7 +61,7 @@ public class FuzzerGeneralConfig extends ClientCommandConfig {
      * The general folder in which results should be saved
      */
     @Parameter(names = "-output_folder", description = "Output folder for the fuzzing results.", converter = FileConverter.class)
-    private String outputFolder = "./data/";
+    private String outputFolder = "data/";
 
     /**
      * Temporary Folder which contains currently executed traces

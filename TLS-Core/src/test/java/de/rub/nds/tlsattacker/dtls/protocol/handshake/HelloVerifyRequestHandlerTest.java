@@ -14,11 +14,11 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
@@ -29,7 +29,7 @@ public class HelloVerifyRequestHandlerTest {
 
     ProtocolMessageHandler<? extends ProtocolMessage> handler;
 
-    TlsContext tlsContext = new TlsContext();
+    TlsConfig config = new TlsConfig();
 
     byte[] helloVerifyRequestMessageBytes = ArrayConverter
             .hexStringToByteArray("030000070005000000000007FEFD0448EA9A2C0300000B000600000000000BFEFD08112210F47DE981150300010100"
@@ -40,7 +40,7 @@ public class HelloVerifyRequestHandlerTest {
                     + "AC3E7C90194B802819AD2DB028231D259598E85CD260FA7D72BD3DDAB50703693A9196DD0628811F8705089B1CF469462EF83213");
 
     public HelloVerifyRequestHandlerTest() {
-        tlsContext.setProtocolVersion(ProtocolVersion.DTLS12);
+        config.setProtocolVersion(ProtocolVersion.DTLS12);
     }
 
     /**
@@ -48,7 +48,7 @@ public class HelloVerifyRequestHandlerTest {
      */
     @Test
     public void testPrepareMessage() {
-        handler = new HelloVerifyRequestHandler(tlsContext);
+        handler = new HelloVerifyRequestHandler(new TlsContext(config));
         handler.setProtocolMessage(new HelloVerifyRequestMessage());
         HelloVerifyRequestMessage message = (HelloVerifyRequestMessage) handler.getProtocolMessage();
 
@@ -60,9 +60,9 @@ public class HelloVerifyRequestHandlerTest {
         byte[] returned = handler.prepareMessage();
         byte[] expected = ArrayConverter.concatenate(
                 new byte[] { HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue() }, new byte[] { 0x00, 0x00, 0x06,
-                        0x01, (byte) 0xF4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06 }, tlsContext.getProtocolVersion()
-                        .getValue(), new byte[] { message.getCookieLength().getValue() }, message.getCookie()
-                        .getValue());
+                        0x01, (byte) 0xF4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06 },
+                config.getProtocolVersion().getValue(), new byte[] { message.getCookieLength().getValue() }, message
+                        .getCookie().getValue());
 
         assertNotNull("Confirm function didn't return 'NULL'", returned);
         assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
@@ -70,7 +70,7 @@ public class HelloVerifyRequestHandlerTest {
 
     @Test
     public void testParseMessageAction() {
-        handler = new HelloVerifyRequestHandler<>(tlsContext);
+        handler = new HelloVerifyRequestHandler<>(new TlsContext(config));
 
         handler.setProtocolMessage(new HelloVerifyRequestMessage());
 
@@ -92,7 +92,7 @@ public class HelloVerifyRequestHandlerTest {
         assertArrayEquals("Check cookie", expectedCookie, actualCookie);
         assertEquals("Check protocol message length pointer", 19, endPointer);
 
-        handler = new HelloVerifyRequestHandler(tlsContext);
+        handler = new HelloVerifyRequestHandler(new TlsContext(config));
         handler.setProtocolMessage(new HelloVerifyRequestMessage());
 
         endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
@@ -112,7 +112,7 @@ public class HelloVerifyRequestHandlerTest {
         assertArrayEquals("Check cookie", expectedCookie, actualCookie);
         assertEquals("Check protocol message length pointer", 42, endPointer);
 
-        handler = new HelloVerifyRequestHandler(tlsContext);
+        handler = new HelloVerifyRequestHandler(new TlsContext(config));
         handler.setProtocolMessage(new HelloVerifyRequestMessage());
 
         endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
@@ -138,5 +138,4 @@ public class HelloVerifyRequestHandlerTest {
         assertArrayEquals("Check cookie", expectedCookie, actualCookie);
         assertEquals("Check protocol message length pointer", 311, endPointer);
     }
-
 }

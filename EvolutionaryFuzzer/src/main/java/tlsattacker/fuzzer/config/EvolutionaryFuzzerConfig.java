@@ -58,13 +58,6 @@ public class EvolutionaryFuzzerConfig extends FuzzerGeneralConfig {
     private String mutator = SimpleMutator.optionName;
 
     /**
-     * The executor that should be used
-     */
-    @Parameter(names = "-executor", description = "The Executor the Fuzzer uses to execute TestVectors. Possible: "
-            + SingleTLSExecutor.optionName + ", " + MultiTLSExecutor.optionName + "")
-    private String executor = SingleTLSExecutor.optionName;
-
-    /**
      * The controller that should be used
      */
     @Parameter(names = "-controller", description = "The Controller that is used to communicate with the Operator. Possible: "

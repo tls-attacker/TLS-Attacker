@@ -14,7 +14,6 @@ package de.rub.nds.tlsattacker.tls.workflow;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public enum WorkflowTraceType {
-    FULL_SERVER_RESPONSE,
     FULL,
     HANDSHAKE,
     CLIENT_HELLO;

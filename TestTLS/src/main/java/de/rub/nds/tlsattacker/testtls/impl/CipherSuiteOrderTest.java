@@ -8,22 +8,23 @@
  */
 package de.rub.nds.tlsattacker.testtls.impl;
 
+import de.rub.nds.tlsattacker.main.TlsClient;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,13 +54,15 @@ public class CipherSuiteOrderTest extends HandshakeTest {
         collectCipherSuites();
         if (supportedCipherSuites.size() > 1) {
             try {
+                TlsConfig tlsConfig = configHandler.initialize(serverConfig);
                 List<CipherSuite> list = new ArrayList<>(supportedCipherSuites);
-                serverConfig.setCipherSuites(list);
-                serverConfig.setProtocolVersion(currentProtocolVersion);
-                CipherSuite cs1 = getSelectedCipherSuite();
+                tlsConfig.setSupportedCiphersuites(list);
+                tlsConfig.setProtocolVersion(currentProtocolVersion);
+                CipherSuite cs1 = getSelectedCipherSuite(tlsConfig);
                 Collections.reverse(list);
-                serverConfig.setCipherSuites(list);
-                CipherSuite cs2 = getSelectedCipherSuite();
+                tlsConfig = configHandler.initialize(serverConfig);
+                tlsConfig.setSupportedCiphersuites(list);
+                CipherSuite cs2 = getSelectedCipherSuite(tlsConfig);
                 if (cs2 == cs1) {
                     serverSupportsCipherSuitePreference = true;
                 }
@@ -81,11 +84,13 @@ public class CipherSuiteOrderTest extends HandshakeTest {
             }
             currentProtocolVersion = pv;
             for (CipherSuite cs : CipherSuite.values()) {
-                serverConfig.setProtocolVersion(pv);
-                serverConfig.setCipherSuites(Collections.singletonList(cs));
+                TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+
+                tlsConfig.setProtocolVersion(pv);
+                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
                 boolean success = false;
                 try {
-                    success = executeHandshake();
+                    success = executeHandshake(tlsConfig);
                 } catch (Exception ex) {
                     LOGGER.info(ex.getLocalizedMessage());
                     LOGGER.debug(ex.getLocalizedMessage(), ex);
@@ -100,24 +105,11 @@ public class CipherSuiteOrderTest extends HandshakeTest {
         }
     }
 
-    CipherSuite getSelectedCipherSuite() {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(serverConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(serverConfig);
-        tlsContext.setProtocolVersion(serverConfig.getProtocolVersion());
-        tlsContext.setSelectedCipherSuite(serverConfig.getCipherSuites().get(0));
-        WorkflowTrace workflowTrace = new WorkflowTrace();
-        ClientHelloMessage ch = new ClientHelloMessage();
-        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
-        workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
-                new ArbitraryMessage()));
-        ch.setSupportedCipherSuites(serverConfig.getCipherSuites());
-        ch.setSupportedCompressionMethods(serverConfig.getCompressionMethods());
-        WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig, ch);
-        tlsContext.setWorkflowTrace(workflowTrace);
-        WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-        workflowExecutor.executeWorkflow();
-        transportHandler.closeConnection();
+    CipherSuite getSelectedCipherSuite(TlsConfig tlsConfig) {
+        WorkflowTrace workflowTrace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        tlsConfig.setWorkflowTrace(workflowTrace);
+        TlsClient client = new TlsClient();
+        client.startTlsClient(tlsConfig);
         if (workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO) != null) {
             ServerHelloMessage shm = (ServerHelloMessage) workflowTrace
                     .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);

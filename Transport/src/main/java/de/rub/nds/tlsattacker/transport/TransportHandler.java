@@ -23,13 +23,34 @@ public abstract class TransportHandler {
 
     protected boolean measuringTiming;
 
+    protected ConnectionEnd end;
+
+    protected String hostname;
+
+    protected int port;
+
     public abstract void closeConnection();
 
     public abstract byte[] fetchData() throws IOException;
 
-    public abstract void initialize(String address, int port) throws IOException;
+    public abstract void initialize() throws IOException;
 
     public abstract void sendData(byte[] data) throws IOException;
+
+    public TransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+        this.end = end;
+        this.tlsTimeout = timeout;
+        this.hostname = hostname;
+        this.port = port;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
 
     public void measureTiming(boolean b) {
         measuringTiming = b;

@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
-import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -25,11 +24,8 @@ public class WorkflowTraceTest {
     WorkflowTrace trace;
 
     public WorkflowTraceTest() {
-        ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-        configHandler.initialize(new GeneralConfig());
-        ClientCommandConfig ccc = new ClientCommandConfig();
-        TlsContext tlsContext = configHandler.initializeTlsContext(ccc);
-        trace = tlsContext.getWorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(new TlsConfig());
+        trace = factory.createFullWorkflow();
     }
 
     @Test

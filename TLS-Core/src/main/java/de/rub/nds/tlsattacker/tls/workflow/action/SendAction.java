@@ -40,7 +40,7 @@ public class SendAction extends MessageAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        tlsContext.setTalkingConnectionEnd(tlsContext.getMyConnectionEnd());
+        tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionEnd());
         ensureMyLastProtocolMessagesHaveRecords(configuredMessages); // I dont
         // think we
         // want the

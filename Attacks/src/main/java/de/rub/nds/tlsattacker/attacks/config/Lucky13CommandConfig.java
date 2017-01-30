@@ -9,15 +9,19 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class Lucky13CommandConfig extends ClientCommandConfig {
+public class Lucky13CommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "lucky13";
 
@@ -37,9 +41,6 @@ public class Lucky13CommandConfig extends ClientCommandConfig {
     Integer blocks = 18;
 
     public Lucky13CommandConfig() {
-        cipherSuites = new LinkedList<>();
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
     }
 
     public Integer getBlockSize() {
@@ -80,6 +81,15 @@ public class Lucky13CommandConfig extends ClientCommandConfig {
 
     public void setBlocks(Integer blocks) {
         this.blocks = blocks;
+    }
+
+    @Override
+    public TlsConfig createConfig() {
+        TlsConfig config = super.createConfig();
+        List<CipherSuite> cipherSuites = new LinkedList<>();
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+        return config;
     }
 
 }

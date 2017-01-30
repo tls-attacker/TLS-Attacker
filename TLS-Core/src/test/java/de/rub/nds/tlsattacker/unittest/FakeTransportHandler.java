@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.unittest;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.SimpleTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class FakeTransportHandler extends TransportHandler {
     private byte[] sendByte;
 
     public FakeTransportHandler() {
+        super(null, 0, ConnectionEnd.CLIENT, 0);
     }
 
     public byte[] getSendByte() {
@@ -48,12 +50,12 @@ public class FakeTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void initialize(String address, int port) throws IOException {
+    public void sendData(byte[] data) throws IOException {
+        sendByte = data;
     }
 
     @Override
-    public void sendData(byte[] data) throws IOException {
-        sendByte = data;
+    public void initialize() throws IOException {
     }
 
 }

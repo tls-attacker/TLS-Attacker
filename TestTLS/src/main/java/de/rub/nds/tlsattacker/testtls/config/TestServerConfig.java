@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.testtls.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 
 /**
  * Configuration for testing TLS server capabilities. By now, per default all
  * the checks are performed. In the future, more fine granular tests can be
  * executed, as is the case in testssl.sh. See also the commented out variables.
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
-public class TestServerConfig extends ClientCommandConfig {
+public class TestServerConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "testtls_server";
 

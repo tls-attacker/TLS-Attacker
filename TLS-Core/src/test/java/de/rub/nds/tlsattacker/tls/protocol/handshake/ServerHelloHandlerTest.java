@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -52,7 +53,7 @@ public class ServerHelloHandlerTest {
 
     public ServerHelloHandlerTest() {
         tlsContext = new TlsContext();
-        tlsContext.setProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
         handler = new ServerHelloHandler(tlsContext);
     }
 
@@ -69,7 +70,8 @@ public class ServerHelloHandlerTest {
         assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
-        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
+        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getConfig()
+                .getProtocolVersion());
         assertArrayEquals(
                 "Server Session ID",
                 ArrayConverter.hexStringToByteArray("68220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0"),
@@ -99,7 +101,8 @@ public class ServerHelloHandlerTest {
         assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 77", new Integer(77), message.getLength().getValue());
-        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getProtocolVersion());
+        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getConfig()
+                .getProtocolVersion());
         assertArrayEquals(
                 "Server Session ID",
                 ArrayConverter.hexStringToByteArray("68220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0"),

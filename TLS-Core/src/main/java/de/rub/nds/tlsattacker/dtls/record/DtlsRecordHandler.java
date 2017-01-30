@@ -39,8 +39,8 @@ public class DtlsRecordHandler extends RecordHandler {
 
     public DtlsRecordHandler(TlsContext tlsContext) {
         super(tlsContext);
-        if (tlsContext.getProtocolVersion() != ProtocolVersion.DTLS12) {
-            if (tlsContext.getProtocolVersion() == ProtocolVersion.DTLS10) {
+        if (tlsContext.getConfig().getProtocolVersion() != ProtocolVersion.DTLS12) {
+            if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS10) {
                 throw new UnsupportedOperationException("DTLSv1.0 is not supported.");
             }
             throw new ConfigurationException("The workflow was configured with an unsuitable protocol.");
@@ -120,7 +120,7 @@ public class DtlsRecordHandler extends RecordHandler {
     private int fillRecord(de.rub.nds.tlsattacker.dtls.record.DtlsRecord record, ProtocolMessageType contentType,
             byte[] data, int dataPointer) {
         record.setContentType(contentType.getValue());
-        record.setProtocolVersion(tlsContext.getProtocolVersion().getValue());
+        record.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
         byte[] pmData;
         int returnPointer = data.length;
         pmData = Arrays.copyOfRange(data, dataPointer, data.length);
@@ -138,7 +138,7 @@ public class DtlsRecordHandler extends RecordHandler {
         record.setProtocolMessageBytes(pmData);
 
         if (recordCipher != null && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC && epochCounter > 0) {
-            byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getProtocolVersion(), contentType, record
+            byte[] mac = recordCipher.calculateDtlsMac(tlsContext.getConfig().getProtocolVersion(), contentType, record
                     .getProtocolMessageBytes().getValue(), record.getSequenceNumber().getValue().longValue(), record
                     .getEpoch().getValue());
             record.setMac(mac);

@@ -30,7 +30,7 @@ public class HeartbeatHandlerTest {
     public HeartbeatHandlerTest() {
         TlsContext context = new TlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.setProtocolVersion(ProtocolVersion.TLS12);
+        context.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
         heartbeatHandler = new HeartbeatHandler(context);
     }
 

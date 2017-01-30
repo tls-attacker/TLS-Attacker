@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -44,14 +45,17 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
     private static final int CURVE_FIELD_SIZE = 32;
 
     private static final int PROTOCOL_FLOWS = 15;
+    private TlsConfig tlsConfig;
 
     public InvalidCurveAttack(InvalidCurveAttackCommandConfig config) {
         super(config);
+        ConfigHandler configHandler = new ConfigHandler();
+        tlsConfig = configHandler.initialize(config);
+
     }
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-
         if (config.getPublicPointBaseX() == null || config.getPublicPointBaseY() == null
                 || config.getPremasterSecret() == null) {
 
@@ -82,8 +86,8 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
     }
 
     private WorkflowTrace executeProtocolFlow(ConfigHandler configHandler) {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
+        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
