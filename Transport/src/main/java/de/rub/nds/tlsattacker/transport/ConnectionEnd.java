@@ -15,6 +15,7 @@ package de.rub.nds.tlsattacker.transport;
  */
 public enum ConnectionEnd {
 
+    MITM,
     CLIENT,
     SERVER;
 
