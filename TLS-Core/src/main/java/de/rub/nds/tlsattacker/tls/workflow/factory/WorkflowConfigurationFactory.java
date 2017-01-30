@@ -56,8 +56,8 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
 
-        if (config.getBehaveLikeProtocolVersion() == ProtocolVersion.DTLS10
-                || config.getBehaveLikeProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (config.getProtocolVersion()== ProtocolVersion.DTLS10
+                || config.getProtocolVersion() == ProtocolVersion.DTLS12) {
             ClientHelloDtlsMessage clientHello = new ClientHelloDtlsMessage();
             messages.add(clientHello);
             clientHello.setIncludeInDigest(false);

@@ -36,7 +36,6 @@ public class ProtocolVersionDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         config.setProtocolVersion(protocolVersion);
-        config.setBehaveLikeProtocolVersion(protocolVersion);
     }
 
 }

@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
@@ -34,36 +33,36 @@ public class TlsConfig {
      * Default value for PtocolverionFields
      */
     private ProtocolVersion protocolVersion = ProtocolVersion.TLS12;
-    /**
-     * How we behave like
-     */
-    private ProtocolVersion behaveLikeProtocolVersion = ProtocolVersion.TLS12;
-    /**
-     * Indicates if we are executing a server or client
-     */
-    private ConnectionEnd myConnectionEnd = ConnectionEnd.CLIENT;
-    @HoldsModifiableVariable
-    private WorkflowTrace workflowTrace;
 
     /**
-     * keystore for storing client / server certificates
+     * Indicates which ConnectionEnd we are
      */
-    private KeyStore keyStore;
+    private ConnectionEnd myConnectionEnd = ConnectionEnd.CLIENT;
+
     /**
-     * alias for the used key in the keystore
+     * The Workflow Trace that should be executed
      */
-    private String alias;
+    @HoldsModifiableVariable
+    private WorkflowTrace workflowTrace = null;
+
     /**
-     * key store password
+     * Keystore for storing client / server certificates
      */
-    private String password;
+    private KeyStore keyStore = null;
+    /**
+     * Alias for the used key in the Keystore
+     */
+    private String alias = null;
+    /**
+     * keystore password
+     */
+    private String password = null;
     /**
      * host to connect
      */
-    private String host;
-
+    private String host = "127.0.0.1";
     /**
-     * Client Authentication YES or NO
+     * If default generated WorkflowTraces should contain client Authentication
      */
     private boolean clientAuthentication = false;
     /**
@@ -78,33 +77,100 @@ public class TlsConfig {
      * Man_in_the_Middle_Workflow
      */
     private boolean mitm = false;
+    /**
+     * Which Signature and Hash algorithms we support
+     */
     private List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
+    /**
+     * If we are in Fuzzing mode, eg ignore error and try to proceed as good as
+     * possible
+     */
     private boolean fuzzingMode = false;
+    /**
+     * Which Ciphersuites we support by default
+     */
     private List<CipherSuite> supportedCiphersuites;
+    /**
+     * Which compression methods we support by default
+     */
     private List<CompressionMethod> supportedCompressionMethods;
+    /**
+     * If we are a dynamic workflow //TODO
+     */
     private boolean dynamicWorkflow = false;
+    /**
+     * Supported ECPointFormats by default
+     */
     private List<ECPointFormat> pointFormats;
+    /**
+     * Supported namedCurves by default
+     */
     private List<NamedCurve> namedCurves;
+    /**
+     * Which heartBeat mode we are in
+     */
     private HeartbeatMode heartbeatMode;
+    /**
+     * Hostname in SNI Extension
+     */
     private String sniHostname;
+    /**
+     * Should we terminate the connection on a wrong SNI ?
+     */
     private boolean sniHostnameFatal;
+    /**
+     * Server port used
+     */
     private int serverPort;
+    /**
+     * MaxFragmentLength in MaxFragmentLengthExtension
+     */
     private MaxFragmentLength maxFragmentLength;
+    /**
+     * Default Timeout we wait for TLSMessages
+     */
     private int tlsTimeout = 400;
+    /**
+     * Default Timeout for the Connection
+     */
     private int timeout = 1000;
+    /**
+     * Transporthandler Type that shall be used
+     */
     private TransportHandlerType transportHandlerType;
+    /**
+     * If the workflow should be verified //TODO
+     */
     private boolean verifyWorkflow = false;
+    /**
+     * If we should use a workflow trace specified in File
+     */
     private String workflowInput;
+    /**
+     * If we should output an executed workflowtrace to a specified file
+     */
     private String workflowOutput;
+    /**
+     * The Type of workflow trace that should be generated
+     */
     private WorkflowTraceType workflowTraceType;
+    /**
+     * If the Default generated workflowtrace should contain Application data
+     * send by servers
+     */
     private boolean serverSendsApplicationData;
 
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedCompressionMethods = new LinkedList<>();
+        supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCiphersuites = new LinkedList<>();
-        supportedCiphersuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CCM);// TODO
-                                                                        // ugly
+        supportedCiphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        namedCurves = new LinkedList<>();
+        namedCurves.add(NamedCurve.SECP192R1);
+        namedCurves.add(NamedCurve.SECP256R1);
+        namedCurves.add(NamedCurve.SECP384R1);
+        namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
         namedCurves = new LinkedList<>();
     }
@@ -123,14 +189,6 @@ public class TlsConfig {
 
     public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
         this.workflowTraceType = workflowTraceType;
-    }
-
-    public ProtocolVersion getBehaveLikeProtocolVersion() {
-        return behaveLikeProtocolVersion;
-    }
-
-    public void setBehaveLikeProtocolVersion(ProtocolVersion behaveLikeProtocolVersion) {
-        this.behaveLikeProtocolVersion = behaveLikeProtocolVersion;
     }
 
     public String getWorkflowOutput() {
