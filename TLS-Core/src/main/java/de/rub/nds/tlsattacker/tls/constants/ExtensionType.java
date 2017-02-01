@@ -80,22 +80,22 @@ public enum ExtensionType {
         ExtensionHandler<? extends ExtensionMessage> eh = null;
         switch (this) {
             case SERVER_NAME_INDICATION:
-                eh = ServerNameIndicationExtensionHandler.getInstance();
+                eh = new ServerNameIndicationExtensionHandler();
                 break;
             case MAX_FRAGMENT_LENGTH:
-                eh = MaxFragmentLengthExtensionHandler.getInstance();
+                eh = new MaxFragmentLengthExtensionHandler();
                 break;
             case EC_POINT_FORMATS:
-                eh = ECPointFormatExtensionHandler.getInstance();
+                eh = new ECPointFormatExtensionHandler();
                 break;
             case ELLIPTIC_CURVES:
-                eh = EllipticCurvesExtensionHandler.getInstance();
+                eh = new EllipticCurvesExtensionHandler();
                 break;
             case SIGNATURE_AND_HASH_ALGORITHMS:
-                eh = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+                eh = new SignatureAndHashAlgorithmsExtensionHandler();
                 break;
             case HEARTBEAT:
-                eh = HeartbeatExtensionHandler.getInstance();
+                eh = new HeartbeatExtensionHandler();
                 break;
             default:
         }
