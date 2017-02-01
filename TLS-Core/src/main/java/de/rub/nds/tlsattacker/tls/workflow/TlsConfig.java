@@ -20,11 +20,19 @@ import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.IOException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
@@ -57,11 +65,11 @@ public class TlsConfig {
     /**
      * Alias for the used key in the Keystore
      */
-    private String alias = null;
+    private String alias = "default";
     /**
      * keystore password
      */
-    private String password = null;
+    private String password = "password";
     /**
      * host to connect
      */
@@ -248,6 +256,12 @@ public class TlsConfig {
         namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
         distinguishedNames = new byte[0];
+        try {
+            setKeyStore(KeystoreHandler.loadKeyStore("../resources/default.jks", "password"));
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
+            throw new ConfigurationException("Could not load deauflt JKS!");
+        }
+
     }
 
     public byte[] getFixedDHg() {
