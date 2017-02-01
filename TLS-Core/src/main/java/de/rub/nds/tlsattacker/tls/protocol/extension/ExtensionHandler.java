@@ -8,15 +8,17 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension;
 
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
-    Message extensionMessage;
+    ExtensionMessage extensionMessage;
 
-    public abstract void initializeClientHelloExtension(Message extension);
+    public abstract void prepareExtension(TlsContext context);
 
     public abstract int parseExtension(byte[] message, int pointer);
 

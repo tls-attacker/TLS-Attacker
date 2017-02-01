@@ -50,8 +50,8 @@ public class ChangeProtocolVersionAction extends TLSAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        oldValue = tlsContext.getConfig().getProtocolVersion();
-        tlsContext.getConfig().setProtocolVersion(newValue);
+        oldValue = tlsContext.getSelectedProtocolVersion();
+        tlsContext.setSelectedProtocolVersion(newValue);
         executed = true;
     }
 

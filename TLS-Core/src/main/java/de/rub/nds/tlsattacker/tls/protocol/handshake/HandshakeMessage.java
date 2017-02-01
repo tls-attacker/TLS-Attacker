@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -46,7 +47,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     private boolean includeInDigest = true;
 
-    public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
+    public HandshakeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+        super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
 

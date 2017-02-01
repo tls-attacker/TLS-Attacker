@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
@@ -94,7 +95,7 @@ public class DtlsPaddingOracleAttackCommandConfig extends TLSDelegateConfig {
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
         config.setTransportHandlerType(TransportHandlerType.UDP);
-        config.setProtocolVersion(ProtocolVersion.DTLS12);
+        config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
 
         // Until all dtls workflow factories are adapted, this is to make sure

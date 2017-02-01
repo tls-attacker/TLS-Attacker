@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 
@@ -25,21 +26,13 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
      */
     public static final int MAX_FRAGMENT_LENGTH = 1;
 
-    private MaxFragmentLengthExtensionHandler() {
-
-    }
-
-    public static MaxFragmentLengthExtensionHandler getInstance() {
-        if (instance == null) {
-            instance = new MaxFragmentLengthExtensionHandler();
-        }
-        return instance;
+    public MaxFragmentLengthExtensionHandler() {
     }
 
     @Override
-    public void initializeClientHelloExtension(MaxFragmentLengthExtensionMessage extension) {
-        byte[] maxFragmentLength = { extension.getMaxFragmentLengthConfig().getValue() };
-
+    public void prepareExtension(TlsContext context) {
+        byte[] maxFragmentLength = { context.getConfig().getMaxFragmentLength().getValue() };
+        MaxFragmentLengthExtensionMessage extension = (MaxFragmentLengthExtensionMessage) extensionMessage;
         extension.setExtensionType(ExtensionType.MAX_FRAGMENT_LENGTH.getValue());
         extension.setMaxFragmentLength(maxFragmentLength);
 

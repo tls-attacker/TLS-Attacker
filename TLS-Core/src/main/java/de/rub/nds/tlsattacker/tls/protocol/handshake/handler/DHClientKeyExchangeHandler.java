@@ -77,8 +77,8 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
         byte[] random = tlsContext.getClientServerRandom();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
-                tlsContext.getSelectedCipherSuite());
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig()
+                .getHighestProtocolVersion(), tlsContext.getSelectedCipherSuite());
         byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
                 .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
         protocolMessage.setMasterSecret(masterSecret);
@@ -173,7 +173,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
         byte[] random = tlsContext.getClientServerRandom();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
                 tlsContext.getSelectedCipherSuite());
         byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
                 .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);

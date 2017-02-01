@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -32,8 +33,8 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray plainPaddedPremasterSecret;
 
-    public RSAClientKeyExchangeMessage() {
-        super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+    public RSAClientKeyExchangeMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
     public ModifiableInteger getEncryptedPremasterSecretLength() {

@@ -44,36 +44,17 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
 
     @Override
     public byte[] prepareMessageAction() {
-        protocolMessage.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
-
-        // supporting Session Resumption with Session IDs
-        if (tlsContext.getConfig().isSessionResumption()) {
-            protocolMessage.setSessionId(tlsContext.getSessionID());
-        } else {
-            // by default we do not use a session id
-            protocolMessage.setSessionId(new byte[0]);
-        }
-
+        protocolMessage.setProtocolVersion(tlsContext.getConfig().getHighestProtocolVersion().getValue());
+        protocolMessage.setSessionId(tlsContext.getConfig().getSessionId());
         int length = protocolMessage.getSessionId().getValue().length;
         protocolMessage.setSessionIdLength(length);
-
-        if (tlsContext.getConfig().isMitm()) {
-            protocolMessage.setUnixTime(protocolMessage.getUnixTime());
-            protocolMessage.setRandom(protocolMessage.getRandom());
-        } else {
-            // random handling
-            final long unixTime = Time.getUnixTime();
-            protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
-
-            byte[] random = new byte[HandshakeByteLength.RANDOM];
-            RandomHelper.getRandom().nextBytes(random);
-            protocolMessage.setRandom(random);
-
-        }
-
+        final long unixTime = Time.getUnixTime();
+        protocolMessage.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+        byte[] random = new byte[HandshakeByteLength.RANDOM];
+        RandomHelper.getRandom().nextBytes(random);
+        protocolMessage.setRandom(random);
         tlsContext.setClientRandom(ArrayConverter.concatenate(protocolMessage.getUnixTime().getValue(), protocolMessage
                 .getRandom().getValue()));
-
         byte[] cookieArray = new byte[0];
         // Ugly but more secure
         if (protocolMessage instanceof ClientHelloDtlsMessage) {
@@ -85,7 +66,7 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
         }
 
         byte[] cipherSuites = new byte[0];
-        for (CipherSuite cs : protocolMessage.getSupportedCipherSuites()) {
+        for (CipherSuite cs : tlsContext.getConfig().getSupportedCiphersuites()) {
             cipherSuites = ArrayConverter.concatenate(cipherSuites, cs.getByteValue());
         }
         protocolMessage.setCipherSuites(cipherSuites);
@@ -118,7 +99,8 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
         } else {
             for (ExtensionMessage extension : protocolMessage.getExtensions()) {
                 ExtensionHandler handler = extension.getExtensionHandler();
-                handler.initializeClientHelloExtension(extension);
+                handler.setExtensionMessage(extension);
+                handler.prepareExtension(tlsContext);
                 extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
             }
 
@@ -183,9 +165,9 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
                 && !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
             throw new WorkflowExecutionException("Session ID is unknown to the Server");
         }
-
-        if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS12
-                || tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS10) {
+        // TODO !!!
+        if (tlsContext.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS12
+                || tlsContext.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS10) {
             de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage dtlsClientHello = (de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage) protocolMessage;
             currentPointer = nextPointer;
             nextPointer += HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH;

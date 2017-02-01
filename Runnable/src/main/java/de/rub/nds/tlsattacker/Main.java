@@ -93,7 +93,11 @@ public class Main {
         jc.parse(args);
 
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
-            jc.usage();
+            if (jc.getParsedCommand() == null) {
+                jc.usage();
+            } else {
+                jc.usage(jc.getParsedCommand());
+            }
             return;
         }
 

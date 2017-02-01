@@ -140,7 +140,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     private long[] executeAttackRound() throws IOException {
         byte[] roundMessageData = new byte[config.getTrainMessageSize()];
         RandomHelper.getRandom().nextBytes(roundMessageData);
-        HeartbeatMessage sentHbMessage = new HeartbeatMessage();
+        HeartbeatMessage sentHbMessage = new HeartbeatMessage(tlsConfig);
         sentHbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
 
         byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData,
@@ -167,7 +167,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
             }
 
             if (serverAnswer != null && serverAnswer.length > 1) {
-                HeartbeatMessage receivedHbMessage = new HeartbeatMessage();
+                HeartbeatMessage receivedHbMessage = new HeartbeatMessage(tlsConfig);
                 List<de.rub.nds.tlsattacker.tls.record.Record> parsedReceivedRecords = recordHandler
                         .parseRecords(serverAnswer);
                 if (parsedReceivedRecords.size() != 1) {
@@ -217,7 +217,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData, HeartbeatMessage heartbeatMessage) {
         byte[][] train = new byte[n + 1][];
         List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-        ApplicationMessage apMessage = new ApplicationMessage();
+        ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
         DtlsRecord record;
@@ -243,7 +243,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
             HeartbeatMessage heartbeatMessage) {
         byte[][] train = new byte[n + 1][];
         List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-        ApplicationMessage apMessage = new ApplicationMessage();
+        ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
         apMessage.setData(applicationMessageContent);
@@ -269,7 +269,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     }
 
     private void closeDtlsConnectionGracefully() {
-        AlertMessage closeNotify = new AlertMessage();
+        AlertMessage closeNotify = new AlertMessage(tlsConfig);
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
         records.add(new DtlsRecord());

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NameType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
  * Describes Server Name Indication extension from
@@ -40,7 +41,8 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty
     ModifiableByteArray serverName;
 
-    public ServerNameIndicationExtensionMessage() {
+    public ServerNameIndicationExtensionMessage(TlsConfig tlsConfig) {
+        super();
         this.extensionTypeConstant = ExtensionType.SERVER_NAME_INDICATION;
     }
 
@@ -110,7 +112,7 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        return ServerNameIndicationExtensionHandler.getInstance();
+        return new ServerNameIndicationExtensionHandler();
     }
 
 }

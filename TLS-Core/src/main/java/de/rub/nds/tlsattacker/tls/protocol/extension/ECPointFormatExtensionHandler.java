@@ -13,6 +13,7 @@ import java.util.Arrays;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -27,28 +28,21 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
      */
     public static final int EC_POINT_FORMATS_LENGTH = 1;
 
-    private ECPointFormatExtensionHandler() {
+    public ECPointFormatExtensionHandler() {
 
-    }
-
-    public static ECPointFormatExtensionHandler getInstance() {
-        if (instance == null) {
-            instance = new ECPointFormatExtensionHandler();
-        }
-        return instance;
     }
 
     @Override
-    public void initializeClientHelloExtension(ECPointFormatExtensionMessage extension) {
+    public void prepareExtension(TlsContext context) {
         byte[] pointFormats = new byte[0];
-        for (ECPointFormat format : extension.getPointFormatsConfig()) {
+        for (ECPointFormat format : context.getConfig().getPointFormats()) {
             pointFormats = ArrayConverter.concatenate(pointFormats, format.getArrayValue());
         }
-
-        extension.setExtensionType(ExtensionType.EC_POINT_FORMATS.getValue());
+        ECPointFormatExtensionMessage extension = (ECPointFormatExtensionMessage) extensionMessage;
+        extensionMessage.setExtensionType(ExtensionType.EC_POINT_FORMATS.getValue());
         extension.setPointFormats(pointFormats);
         extension.setPointFormatsLength(pointFormats != null ? pointFormats.length : 0);
-        extension.setExtensionLength(extension.getPointFormatsLength().getValue() + EC_POINT_FORMATS_LENGTH);
+        extensionMessage.setExtensionLength(extension.getPointFormatsLength().getValue() + EC_POINT_FORMATS_LENGTH);
 
         byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
                 ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),

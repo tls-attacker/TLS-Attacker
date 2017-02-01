@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
@@ -35,7 +36,7 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
         TlsConfig config = super.createConfig();
         config.setSupportedCiphersuites(new LinkedList<CipherSuite>()); // TODO
         // really?
-        config.setProtocolVersion(null); // TODO really?
+        config.setHighestProtocolVersion(null); // TODO really?
         return config;
     }
 }

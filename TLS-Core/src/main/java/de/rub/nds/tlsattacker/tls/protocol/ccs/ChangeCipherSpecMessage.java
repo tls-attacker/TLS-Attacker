@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -25,7 +26,8 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     ModifiableByte ccsProtocolType;
 
-    public ChangeCipherSpecMessage() {
+    public ChangeCipherSpecMessage(TlsConfig tlsConfig) {
+        super();
         this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
     }
 

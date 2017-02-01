@@ -104,10 +104,10 @@ public class DHEServerKeyExchangeHandlerTest {
 
     @Test
     public void testIsCorrectProtocolMessage() {
-        DHEServerKeyExchangeMessage sem = new DHEServerKeyExchangeMessage();
+        DHEServerKeyExchangeMessage sem = new DHEServerKeyExchangeMessage(new TlsConfig());
         assertTrue(handler.isCorrectProtocolMessage(sem));
 
-        CertificateMessage cm = new CertificateMessage();
+        CertificateMessage cm = new CertificateMessage(new TlsConfig());
         assertFalse(handler.isCorrectProtocolMessage(cm));
     }
 

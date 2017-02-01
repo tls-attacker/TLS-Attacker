@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.junit.Test;
@@ -108,10 +109,10 @@ public class ECDHEServerKeyExchangeHandlerTest {
 
     @Test
     public void testIsCorrectProtocolMessage() {
-        ECDHEServerKeyExchangeMessage sem = new ECDHEServerKeyExchangeMessage();
+        ECDHEServerKeyExchangeMessage sem = new ECDHEServerKeyExchangeMessage(new TlsConfig());
         assertTrue(handler.isCorrectProtocolMessage(sem));
 
-        CertificateMessage cm = new CertificateMessage();
+        CertificateMessage cm = new CertificateMessage(new TlsConfig());
         assertFalse(handler.isCorrectProtocolMessage(cm));
     }
 }

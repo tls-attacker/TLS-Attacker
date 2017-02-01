@@ -70,7 +70,7 @@ public class NamedCurvesTest extends HandshakeTest {
         for (NamedCurve nc : NamedCurve.values()) {
             TlsConfig tlsConfig = configHandler.initialize(serverConfig);
 
-            tlsConfig.setProtocolVersion(pv);
+            tlsConfig.setHighestProtocolVersion(pv);
             tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
             tlsConfig.setNamedCurves(Collections.singletonList(nc));
             boolean success = false;

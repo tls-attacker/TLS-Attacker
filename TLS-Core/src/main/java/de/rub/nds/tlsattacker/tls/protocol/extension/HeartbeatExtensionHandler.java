@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 
@@ -20,21 +21,14 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
     private static HeartbeatExtensionHandler instance;
 
-    private HeartbeatExtensionHandler() {
+    public HeartbeatExtensionHandler() {
 
-    }
-
-    public static HeartbeatExtensionHandler getInstance() {
-        if (instance == null) {
-            instance = new HeartbeatExtensionHandler();
-        }
-        return instance;
     }
 
     @Override
-    public void initializeClientHelloExtension(HeartbeatExtensionMessage extension) {
-        byte[] heartbeatMode = { extension.getHeartbeatModeConfig().getValue() };
-
+    public void prepareExtension(TlsContext context) {
+        byte[] heartbeatMode = { context.getConfig().getHeartbeatMode().getValue() };
+        HeartbeatExtensionMessage extension = (HeartbeatExtensionMessage) extensionMessage;
         extension.setExtensionType(ExtensionType.HEARTBEAT.getValue());
         extension.setHeartbeatMode(heartbeatMode);
 

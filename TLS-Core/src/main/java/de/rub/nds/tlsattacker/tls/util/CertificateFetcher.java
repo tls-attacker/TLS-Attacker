@@ -62,25 +62,21 @@ public class CertificateFetcher {
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
         TlsContext context = configHandler.initializeTlsContext(config);
 
-        context.getConfig().setProtocolVersion(config.getProtocolVersion());
+        context.setSelectedProtocolVersion(config.getHighestProtocolVersion());
         context.setSelectedCipherSuite(config.getSupportedCiphersuites().get(0));
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
-        ClientHelloMessage clientHello = new ClientHelloMessage();
+        ClientHelloMessage clientHello = new ClientHelloMessage(config);
         protocolMessages.add(clientHello);
         workflowTrace.add(new SendAction(protocolMessages));
         protocolMessages = new LinkedList<>();
-        protocolMessages.add(new ServerHelloMessage());
-        protocolMessages.add(new CertificateMessage());
+        protocolMessages.add(new ServerHelloMessage(config));
+        protocolMessages.add(new CertificateMessage(config));
         workflowTrace.add(new ReceiveAction(protocolMessages));
         context.setWorkflowTrace(workflowTrace);
-
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, context);
-
         workflowExecutor.executeWorkflow();
-
         transportHandler.closeConnection();
-
         return context.getX509ServerCertificateObject();
     }
 }

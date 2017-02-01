@@ -54,7 +54,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
         byte[] handshakeMessagesHash = digest.digest();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
                 tlsContext.getSelectedCipherSuite());
 
         byte[] verifyData;

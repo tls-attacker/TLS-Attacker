@@ -60,10 +60,10 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         ProtocolVersion[] versions;
         TlsConfig tlsConfig = configHandler.initialize(config);
 
-        if (tlsConfig.getProtocolVersion() == null) {
+        if (tlsConfig.getHighestProtocolVersion() == null) {
             versions = new ProtocolVersion[] { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
         } else {
-            versions = new ProtocolVersion[] { tlsConfig.getProtocolVersion() };// TODO
+            versions = new ProtocolVersion[] { tlsConfig.getHighestProtocolVersion() };// TODO
                                                                                 // Initialisation
                                                                                 // should
                                                                                 // be
@@ -84,7 +84,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
         for (ProtocolVersion pv : versions) {
             for (CipherSuite cs : ciphers) {
-                tlsConfig.setProtocolVersion(pv);
+                tlsConfig.setHighestProtocolVersion(pv);
                 tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs)); // TODO
                                                                                    // what
                 executeAttackRound(configHandler);
@@ -107,7 +107,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
     private void executeAttackRound(ConfigHandler configHandler) {
         TlsConfig tlsConfig = configHandler.initialize(config);
-        LOGGER.info("Testing {}, {}", tlsConfig.getProtocolVersion(), tlsConfig.getSupportedCiphersuites().get(0));
+        LOGGER.info("Testing {}, {}", tlsConfig.getHighestProtocolVersion(), tlsConfig.getSupportedCiphersuites().get(0));
 
         TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
         TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
@@ -122,7 +122,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.
-        AlertMessage alertMessage = new AlertMessage();
+        AlertMessage alertMessage = new AlertMessage(tlsConfig);
 
         ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
         List<ProtocolMessage> messages = new LinkedList<>();

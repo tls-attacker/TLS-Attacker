@@ -131,7 +131,7 @@ public class RecordHandler {
      */
     private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
         record.setContentType(contentType.getValue());
-        record.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
+        record.setProtocolVersion(tlsContext.getSelectedProtocolVersion().getValue());
         byte[] pmData;
         int returnPointer = data.length;
         pmData = Arrays.copyOfRange(data, dataPointer, data.length);
@@ -158,8 +158,8 @@ public class RecordHandler {
             }
             byte[] mac = null;
             try {
-                mac = recordCipher.calculateMac(tlsContext.getConfig().getProtocolVersion().getValue(), contentType,
-                        record.getProtocolMessageBytes().getValue());
+                mac = recordCipher.calculateMac(tlsContext.getSelectedProtocolVersion().getValue(), contentType, record
+                        .getProtocolMessageBytes().getValue());
             } catch (NullPointerException E) {
                 E.printStackTrace();
             }

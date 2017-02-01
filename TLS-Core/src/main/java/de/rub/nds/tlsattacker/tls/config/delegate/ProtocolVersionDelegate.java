@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  */
 public class ProtocolVersionDelegate extends Delegate {
 
-    @Parameter(names = "-version", description = "Protocol version to use", converter = ProtocolVersionConverter.class)
+    @Parameter(names = "-version", description = "Highest supported Protocolversion ", converter = ProtocolVersionConverter.class)
     private ProtocolVersion protocolVersion = ProtocolVersion.TLS12;
 
     public ProtocolVersionDelegate() {
@@ -35,7 +35,7 @@ public class ProtocolVersionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setProtocolVersion(protocolVersion);
+        config.setHighestProtocolVersion(protocolVersion);
     }
 
 }

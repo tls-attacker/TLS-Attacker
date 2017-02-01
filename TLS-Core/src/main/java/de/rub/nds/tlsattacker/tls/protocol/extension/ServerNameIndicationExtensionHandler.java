@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -29,19 +30,13 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
      */
     public static final int SERVER_NAME_LENGTH = 2;
 
-    private ServerNameIndicationExtensionHandler() {
+    public ServerNameIndicationExtensionHandler() {
 
-    }
-
-    public static ServerNameIndicationExtensionHandler getInstance() {
-        if (instance == null) {
-            instance = new ServerNameIndicationExtensionHandler();
-        }
-        return instance;
     }
 
     @Override
-    public void initializeClientHelloExtension(ServerNameIndicationExtensionMessage extension) {
+    public void prepareExtension(TlsContext context) {
+        ServerNameIndicationExtensionMessage extension = (ServerNameIndicationExtensionMessage) extensionMessage;
         byte serverNameType = extension.getNameTypeConfig().getValue();
         byte[] serverName = extension.getServerNameConfig().getBytes();
 

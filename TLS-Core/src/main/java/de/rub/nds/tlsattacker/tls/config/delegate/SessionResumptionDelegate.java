@@ -21,7 +21,6 @@ public class SessionResumptionDelegate extends Delegate {
     private boolean sessionResumption = false;
     @Parameter(names = "-session_id", description = "The sessionID to resume")
     private byte[] sessionID = new byte[0];
-    
 
     public SessionResumptionDelegate() {
     }

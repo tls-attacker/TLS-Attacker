@@ -15,9 +15,10 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
@@ -43,8 +44,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
-    public ServerKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
-        super(handshakeMessageType);
+    public ServerKeyExchangeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+        super(tlsConfig, handshakeMessageType);
     }
 
     public ModifiableVariable<Byte> getHashAlgorithm() {

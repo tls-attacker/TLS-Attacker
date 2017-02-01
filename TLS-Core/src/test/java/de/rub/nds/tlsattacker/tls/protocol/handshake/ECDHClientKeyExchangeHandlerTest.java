@@ -46,7 +46,7 @@ public class ECDHClientKeyExchangeHandlerTest {
     public ECDHClientKeyExchangeHandlerTest() {
         TlsContext context = new TlsContext(new TlsConfig());
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
-        context.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         handler = new ECDHClientKeyExchangeHandler(context);
 
         // initialize tls context with ec parameters

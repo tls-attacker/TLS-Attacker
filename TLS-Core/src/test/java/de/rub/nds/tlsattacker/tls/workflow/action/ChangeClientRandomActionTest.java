@@ -52,7 +52,7 @@ public class ChangeClientRandomActionTest {
         tlsContext.setRecordHandler(new RecordHandler(tlsContext));
         tlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(tlsContext));
         dtlsContext = new TlsContext();
-        dtlsContext.getConfig().setProtocolVersion(ProtocolVersion.DTLS12);
+        dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
         action = new ChangeClientRandomAction(new byte[] { 0, 1 });

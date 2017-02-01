@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.After;
@@ -41,14 +42,18 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
+        TlsConfig config = new TlsConfig();
         MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
-                new AlertMessage());
+                new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new AlertMessage());
+        action = MessageActionFactory
+                .createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(ConnectionEnd.SERVER, ConnectionEnd.CLIENT, new AlertMessage());
+        action = MessageActionFactory
+                .createAction(ConnectionEnd.SERVER, ConnectionEnd.CLIENT, new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(ConnectionEnd.SERVER, ConnectionEnd.SERVER, new AlertMessage());
+        action = MessageActionFactory
+                .createAction(ConnectionEnd.SERVER, ConnectionEnd.SERVER, new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.getConfiguredMessages().size() == 1);
     }
@@ -58,9 +63,10 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionMultiple() {
+        TlsConfig config = new TlsConfig();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ArbitraryMessage());
-        messages.add(new AlertMessage());
+        messages.add(new AlertMessage(config));
         MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, messages);
         assertEquals(action.getClass(), SendAction.class);
         action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, messages);

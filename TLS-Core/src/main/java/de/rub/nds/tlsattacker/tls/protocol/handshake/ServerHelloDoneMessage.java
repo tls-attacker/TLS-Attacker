@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloDoneHand
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -19,8 +20,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class ServerHelloDoneMessage extends HandshakeMessage {
 
-    public ServerHelloDoneMessage() {
-        super(HandshakeMessageType.SERVER_HELLO_DONE);
+    public ServerHelloDoneMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.SERVER_HELLO_DONE);
     }
 
     @Override

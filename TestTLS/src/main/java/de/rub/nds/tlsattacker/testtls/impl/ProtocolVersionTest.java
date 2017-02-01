@@ -46,7 +46,7 @@ public class ProtocolVersionTest extends HandshakeTest {
         for (CipherSuite cs : CipherSuite.values()) {
             TlsConfig tlsConfig = configHandler.initialize(serverConfig);
 
-            tlsConfig.setProtocolVersion(pv);
+            tlsConfig.setHighestProtocolVersion(pv);
             tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
             boolean success = false;
             try {

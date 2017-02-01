@@ -56,25 +56,25 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
 
-        if (config.getProtocolVersion()== ProtocolVersion.DTLS10
-                || config.getProtocolVersion() == ProtocolVersion.DTLS12) {
-            ClientHelloDtlsMessage clientHello = new ClientHelloDtlsMessage();
+        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
+            ClientHelloDtlsMessage clientHello = new ClientHelloDtlsMessage(config);
             messages.add(clientHello);
             clientHello.setIncludeInDigest(false);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
             messages = new LinkedList<>();
-            HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage();
+            HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
             helloVerifyRequestMessage.setIncludeInDigest(false);
             messages.add(helloVerifyRequestMessage);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
-            clientHello = new ClientHelloDtlsMessage();
+            clientHello = new ClientHelloDtlsMessage(config);
             messages.add(clientHello);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         } else {
-            ClientHelloMessage clientHello = new ClientHelloMessage();
+            ClientHelloMessage clientHello = new ClientHelloMessage(config);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         }
@@ -84,35 +84,35 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createHandshakeWorkflow() {
         WorkflowTrace workflowTrace = this.createClientHelloWorkflow();
         List<ProtocolMessage> messages = new LinkedList<>();
-        messages.add(new ServerHelloMessage());
-        messages.add(new CertificateMessage());
+        messages.add(new ServerHelloMessage(config));
+        messages.add(new CertificateMessage(config));
         if (config.getSupportedCiphersuites().get(0).isEphemeral() && !config.isSessionResumption()) {
             addServerKeyExchangeMessage(messages);
         }
         if (config.isClientAuthentication() && !config.isSessionResumption()) {
-            CertificateRequestMessage certRequest = new CertificateRequestMessage();
+            CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
             certRequest.setRequired(false);
             messages.add(certRequest);
         }
 
-        messages.add(new ServerHelloDoneMessage());
+        messages.add(new ServerHelloDoneMessage(config));
         workflowTrace
                 .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER, messages));
         messages = new LinkedList<>();
         if (config.isClientAuthentication() && !config.isSessionResumption()) {
-            messages.add(new CertificateMessage());
+            messages.add(new CertificateMessage(config));
             addClientKeyExchangeMessage(messages);
-            messages.add(new CertificateVerifyMessage());
+            messages.add(new CertificateVerifyMessage(config));
         } else {
             addClientKeyExchangeMessage(messages);
         }
-        messages.add(new ChangeCipherSpecMessage());
-        messages.add(new FinishedMessage());
+        messages.add(new ChangeCipherSpecMessage(config));
+        messages.add(new FinishedMessage(config));
         workflowTrace
                 .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT, messages));
         messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage());
-        messages.add(new FinishedMessage());
+        messages.add(new ChangeCipherSpecMessage(config));
+        messages.add(new FinishedMessage(config));
         workflowTrace
                 .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER, messages));
         return workflowTrace;
@@ -126,17 +126,17 @@ public class WorkflowConfigurationFactory {
         CipherSuite cs = config.getSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
-                messages.add(new RSAClientKeyExchangeMessage());
+                messages.add(new RSAClientKeyExchangeMessage(config));
                 break;
             case EC_DIFFIE_HELLMAN:
-                messages.add(new ECDHClientKeyExchangeMessage());
+                messages.add(new ECDHClientKeyExchangeMessage(config));
                 break;
             case DHE_DSS:
             case DHE_RSA:
             case DH_ANON:
             case DH_DSS:
             case DH_RSA:
-                messages.add(new DHClientKeyExchangeMessage());
+                messages.add(new DHClientKeyExchangeMessage(config));
                 break;
             default:
                 LOGGER.info("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
@@ -149,17 +149,17 @@ public class WorkflowConfigurationFactory {
         CipherSuite cs = config.getSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
-                messages.add(new ECDHEServerKeyExchangeMessage());
+                messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
             case EC_DIFFIE_HELLMAN:
-                messages.add(new ECDHEServerKeyExchangeMessage());
+                messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
             case DHE_DSS:
             case DHE_RSA:
             case DH_ANON:
             case DH_DSS:
             case DH_RSA:
-                messages.add(new DHEServerKeyExchangeMessage());
+                messages.add(new DHEServerKeyExchangeMessage(config));
                 break;
             default:
                 LOGGER.info("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
@@ -178,19 +178,19 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.isServerSendsApplicationData()) {
-            messages.add(new ApplicationMessage());
+            messages.add(new ApplicationMessage(config));
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
             messages = new LinkedList<>();
         }
-        messages.add(new ApplicationMessage());
+        messages.add(new ApplicationMessage(config));
 
         if (config.getHeartbeatMode() != null) {
-            messages.add(new HeartbeatMessage());
+            messages.add(new HeartbeatMessage(config));
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
             messages = new LinkedList<>();
-            messages.add(new HeartbeatMessage());
+            messages.add(new HeartbeatMessage(config));
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
         } else {

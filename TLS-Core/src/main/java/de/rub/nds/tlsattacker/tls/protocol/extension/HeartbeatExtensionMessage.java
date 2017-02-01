@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -24,7 +25,13 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray heartbeatMode;
 
+    public HeartbeatExtensionMessage(TlsConfig tlsConfig) {
+        super();
+        this.extensionTypeConstant = ExtensionType.HEARTBEAT;
+    }
+
     public HeartbeatExtensionMessage() {
+        super();
         this.extensionTypeConstant = ExtensionType.HEARTBEAT;
     }
 
@@ -50,7 +57,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        return HeartbeatExtensionHandler.getInstance();
+        return new HeartbeatExtensionHandler();
     }
 
 }

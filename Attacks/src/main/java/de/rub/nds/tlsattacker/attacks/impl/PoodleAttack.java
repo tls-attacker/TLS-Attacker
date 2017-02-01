@@ -59,12 +59,12 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
         padding.setModification(modifier);
 
-        ApplicationMessage applicationMessage = new ApplicationMessage();
+        ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();
         r.setPadding(padding);
         applicationMessage.addRecord(r);
 
-        AlertMessage alertMessage = new AlertMessage();
+        AlertMessage alertMessage = new AlertMessage(tlsConfig);
 
         trace.add(new SendAction(applicationMessage));
         trace.add(new ReceiveAction(alertMessage));

@@ -15,12 +15,10 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
@@ -96,7 +94,7 @@ public class WorkflowTraceSerializerTest {
     @Test
     public void testWriteReadDtls() throws Exception {
         TlsConfig config = new TlsConfig();
-        config.setProtocolVersion(ProtocolVersion.DTLS12);
+        config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createFullWorkflow();
 
@@ -135,7 +133,7 @@ public class WorkflowTraceSerializerTest {
     public void TestWrite() {
         try {
             WorkflowTrace trace = new WorkflowTrace();
-            trace.add(new SendAction(new ClientHelloMessage()));
+            trace.add(new SendAction(new ClientHelloMessage(new TlsConfig())));
             File f = new File("workflowtrace.unittest");
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());

@@ -118,7 +118,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         tlsContext.setSelectedCipherSuite(CipherSuite.getCipherSuite(protocolMessage.getSelectedCipherSuite()
                 .getValue()));
-        tlsContext.getConfig().setProtocolVersion(serverProtocolVersion);
+        tlsContext.setSelectedProtocolVersion(serverProtocolVersion);
         tlsContext.initiliazeTlsMessageDigest();
 
         currentPointer = nextPointer;
@@ -161,7 +161,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public byte[] prepareMessageAction() {
-        protocolMessage.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
+        // TODO Not highest client version
+        protocolMessage.setProtocolVersion(tlsContext.getHighestClientProtocolVersion().getValue());
 
         // supporting Session Resumption with Session IDs
         if (tlsContext.getConfig().isSessionResumption()) {
@@ -205,7 +206,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         byte[] extensionBytes = null;
         for (ExtensionMessage extension : protocolMessage.getExtensions()) {
             ExtensionHandler handler = extension.getExtensionHandler();
-            handler.initializeClientHelloExtension(extension);
+            handler.setExtensionMessage(extension);
+            handler.prepareExtension(tlsContext);
             extensionBytes = ArrayConverter.concatenate(extensionBytes, extension.getExtensionBytes().getValue());
         }
 

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.application;
 
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class ApplicationHandlerTest {
     @Test
     public void testParseMessageAction() {
         ApplicationHandler handler = new ApplicationHandler(new TlsContext());
-        handler.setProtocolMessage(new ApplicationMessage());
+        handler.setProtocolMessage(new ApplicationMessage(new TlsConfig()));
         byte[] message = { 1, 2, 3, 4 };
         int pointer = handler.parseMessageAction(message, 0);
         assertEquals(message.length, pointer);

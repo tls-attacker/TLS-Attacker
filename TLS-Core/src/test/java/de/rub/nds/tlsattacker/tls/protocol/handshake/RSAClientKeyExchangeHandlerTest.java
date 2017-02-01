@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
@@ -105,7 +106,7 @@ public class RSAClientKeyExchangeHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        handler.setProtocolMessage(new RSAClientKeyExchangeMessage());
+        handler.setProtocolMessage(new RSAClientKeyExchangeMessage(new TlsConfig()));
 
         RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
 

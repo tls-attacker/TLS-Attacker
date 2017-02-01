@@ -265,7 +265,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
 
     @Override
     public void init() throws NoSuchAlgorithmException, NoSuchPaddingException {
-        ProtocolVersion protocolVersion = tlsContext.getConfig().getProtocolVersion();
+        ProtocolVersion protocolVersion = tlsContext.getSelectedProtocolVersion();
         CipherSuite cipherSuite = tlsContext.getSelectedCipherSuite();
         if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12
                 || protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
@@ -290,7 +290,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
         byte[] masterSecret = tlsContext.getMasterSecret();
         byte[] seed = tlsContext.getServerClientRandom();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
                 tlsContext.getSelectedCipherSuite());
         byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                 PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);

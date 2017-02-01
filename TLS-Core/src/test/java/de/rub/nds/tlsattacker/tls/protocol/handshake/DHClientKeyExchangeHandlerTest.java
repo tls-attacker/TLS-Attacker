@@ -43,7 +43,7 @@ public class DHClientKeyExchangeHandlerTest {
     public DHClientKeyExchangeHandlerTest() {
         TlsContext context = new TlsContext(new TlsConfig());
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         handler = new DHClientKeyExchangeHandler(context);
 
         // initialize tls context with dh parameters

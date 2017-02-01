@@ -12,11 +12,9 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerAddModification;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
@@ -79,7 +77,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization() throws JAXBException {
-        ClientHelloMessage cl = new ClientHelloMessage();
+        ClientHelloMessage cl = new ClientHelloMessage(new TlsConfig());
         cl.setCipherSuiteLength(3);
         // cl.setCipherSuiteLength(new ModifiableInteger());
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));

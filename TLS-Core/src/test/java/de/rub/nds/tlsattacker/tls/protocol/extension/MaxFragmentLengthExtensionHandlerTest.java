@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +32,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testParseExtension() {
-        MaxFragmentLengthExtensionHandler extensionHandler = MaxFragmentLengthExtensionHandler.getInstance();
+        MaxFragmentLengthExtensionHandler extensionHandler = new MaxFragmentLengthExtensionHandler();
         int returnedPointer = extensionHandler.parseExtension(extensionMessage, 0);
         MaxFragmentLengthExtensionMessage parsedMessage = (MaxFragmentLengthExtensionMessage) extensionHandler
                 .getExtensionMessage();
@@ -47,17 +49,16 @@ public class MaxFragmentLengthExtensionHandlerTest {
     }
 
     /**
-     * Tests the initializeClientHelloExtension method of the
+     * Tests the prepareExtension method of the
      * MaxFragmentLengthExtensionHandler
      */
     @Test
     public void testInitializeClientHelloExtension() {
         MaxFragmentLengthExtensionMessage initializedMessage;
-        MaxFragmentLengthExtensionHandler maxFragmentHandlerInitialised = MaxFragmentLengthExtensionHandler
-                .getInstance();
+        MaxFragmentLengthExtensionHandler maxFragmentHandlerInitialised = new MaxFragmentLengthExtensionHandler();
         initializedMessage = new MaxFragmentLengthExtensionMessage();
         initializedMessage.setMaxFragmentLengthConfig(MaxFragmentLength.TWO_12);
-        maxFragmentHandlerInitialised.initializeClientHelloExtension(initializedMessage);
+        maxFragmentHandlerInitialised.prepareExtension(new TlsContext(new TlsConfig()));
 
         Assert.assertArrayEquals(
                 "Tests if the extension bytes are set correctly by the initializeClientHelloExtension method",

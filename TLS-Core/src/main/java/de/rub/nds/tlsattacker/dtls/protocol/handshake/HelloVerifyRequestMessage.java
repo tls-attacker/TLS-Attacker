@@ -12,12 +12,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -34,8 +33,8 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     ModifiableByteArray cookie = null;
 
-    public HelloVerifyRequestMessage() {
-        super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
+    public HelloVerifyRequestMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.HELLO_VERIFY_REQUEST);
         protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
         cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
         cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);

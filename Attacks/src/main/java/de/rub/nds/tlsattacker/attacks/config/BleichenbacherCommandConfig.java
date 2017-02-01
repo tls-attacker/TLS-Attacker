@@ -24,10 +24,10 @@ import java.util.List;
 public class BleichenbacherCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "bleichenbacher";
-    
+
     @ParametersDelegate
     private ClientDelegate clientDelegate;
-    
+
     public enum Type {
 
         FULL,

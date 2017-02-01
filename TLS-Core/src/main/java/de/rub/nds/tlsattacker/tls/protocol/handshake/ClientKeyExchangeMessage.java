@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -27,8 +28,8 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     protected ModifiableByteArray premasterSecret;
 
-    public ClientKeyExchangeMessage(HandshakeMessageType handshakeMessageType) {
-        super(handshakeMessageType);
+    public ClientKeyExchangeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+        super(tlsConfig, handshakeMessageType);
     }
 
     public ModifiableByteArray getMasterSecret() {

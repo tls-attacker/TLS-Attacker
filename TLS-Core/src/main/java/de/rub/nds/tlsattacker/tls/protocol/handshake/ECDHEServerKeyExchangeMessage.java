@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
@@ -40,8 +41,8 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;
 
-    public ECDHEServerKeyExchangeMessage() {
-        super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+    public ECDHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByte getCurveType() {

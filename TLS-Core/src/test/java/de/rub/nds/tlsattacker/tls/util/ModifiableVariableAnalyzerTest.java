@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.util;
 
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class ModifiableVariableAnalyzerTest {
      */
     @Test
     public void testGetAllModifiableVariableFields() {
-        ClientHelloMessage chm = new ClientHelloMessage();
+        ClientHelloMessage chm = new ClientHelloMessage(new TlsConfig());
         String[] fieldNames = { "compressionLength", "cipherSuiteLength", "cipherSuites", "compressions",
                 "protocolVersion", "unixTime", "random", "sessionIdLength", "sessionId", "type",
                 "completeResultingMessage" };

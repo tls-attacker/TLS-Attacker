@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
@@ -57,8 +58,8 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger publicKeyLength;
 
-    public ECDHClientKeyExchangeMessage() {
-        super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+    public ECDHClientKeyExchangeMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
     public ModifiableBigInteger getPublicKeyBaseX() {

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class HelloRequestHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        handler.setProtocolMessage(new HelloRequestMessage());
+        handler.setProtocolMessage(new HelloRequestMessage(new TlsConfig()));
 
         HelloRequestMessage message = (HelloRequestMessage) handler.getProtocolMessage();
 

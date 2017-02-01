@@ -35,7 +35,7 @@ public class HelloVerifyRequestHandler<Message extends HelloVerifyRequestMessage
     @Override
     public byte[] prepareMessageAction() {
         byte[] content;
-        protocolMessage.setProtocolVersion(tlsContext.getConfig().getProtocolVersion().getValue());
+        protocolMessage.setProtocolVersion(tlsContext.getSelectedProtocolVersion().getValue());
 
         // TODO: Calculate cookie via HMAC
         byte[] cookie = new byte[3];

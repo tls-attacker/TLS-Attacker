@@ -136,11 +136,11 @@ public class TlsClientTest {
         config.setTlsTimeout(TIMEOUT);
 
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
-        config.setProtocolVersion(ProtocolVersion.TLS10);
+        config.setHighestProtocolVersion(ProtocolVersion.TLS10);
         testProtocolCompatibility(serverList, config, algorithm);
-        config.setProtocolVersion(ProtocolVersion.TLS11);
+        config.setHighestProtocolVersion(ProtocolVersion.TLS11);
         testProtocolCompatibility(serverList, config, algorithm);
-        config.setProtocolVersion(ProtocolVersion.TLS12);
+        config.setHighestProtocolVersion(ProtocolVersion.TLS12);
         testProtocolCompatibility(serverList, config, algorithm);
 
         if (algorithm == PublicKeyAlgorithm.RSA) {
@@ -150,11 +150,11 @@ public class TlsClientTest {
     }
 
     private void testProtocolCompatibility(List<String> serverList, TlsConfig config, PublicKeyAlgorithm algorithm) {
-        LOGGER.info(config.getProtocolVersion());
+        LOGGER.info(config.getHighestProtocolVersion());
         for (CipherSuite cs : CipherSuite.getImplemented()) {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
-            if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getProtocolVersion())
+            if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getHighestProtocolVersion())
                     && requiredAlgorithms.isEmpty()) {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
@@ -259,12 +259,12 @@ public class TlsClientTest {
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
-                new ServerHelloMessage(), new CertificateMessage(), new ServerHelloDoneMessage()));
+                new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
-                new RSAClientKeyExchangeMessage(), new ChangeCipherSpecMessage(), new FinishedMessage()));
+                new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
-                new ChangeCipherSpecMessage(), new FinishedMessage()));
+                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         workflowExecutor.executeWorkflow();
 

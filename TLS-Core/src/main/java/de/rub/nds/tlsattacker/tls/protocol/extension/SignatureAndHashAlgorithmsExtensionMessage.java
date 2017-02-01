@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
 
 /**
@@ -23,17 +24,20 @@ import java.util.LinkedList;
  */
 public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
 
-    private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmsConfig;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableInteger signatureAndHashAlgorithmsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray signatureAndHashAlgorithms;
 
-    public SignatureAndHashAlgorithmsExtensionMessage() {
+    public SignatureAndHashAlgorithmsExtensionMessage(TlsConfig tlsConfig) {
+        super();
         this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
-        this.signatureAndHashAlgorithmsConfig = new LinkedList<>();
+    }
+
+    public SignatureAndHashAlgorithmsExtensionMessage() {
+        super();
+        this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
     }
 
     public ModifiableInteger getSignatureAndHashAlgorithmsLength() {
@@ -64,14 +68,6 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        return SignatureAndHashAlgorithmsExtensionHandler.getInstance();
-    }
-
-    public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithmsConfig() {
-        return signatureAndHashAlgorithmsConfig;
-    }
-
-    public void setSignatureAndHashAlgorithmsConfig(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithmsConfig) {
-        this.signatureAndHashAlgorithmsConfig = signatureAndHashAlgorithmsConfig;
+        return new SignatureAndHashAlgorithmsExtensionHandler();
     }
 }

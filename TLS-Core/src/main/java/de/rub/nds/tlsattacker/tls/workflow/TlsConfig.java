@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
@@ -12,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
@@ -19,9 +21,12 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.KeyStore;
 import java.util.LinkedList;
 import java.util.List;
+import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
@@ -185,9 +190,53 @@ public class TlsConfig {
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
 
     private byte[] sessionId = new byte[0];
-    
+    /**
+     * If set to true, timestamps will be updated upon execution of a
+     * workflowTrace
+     */
+    private boolean updateTimestamps = true;
+
+    /**
+     * The Certificate we initialize CertificateMessages with
+     */
+    private Certificate ourCertificate;
+    /**
+     * The Certificate we initialize CertificateMessages with
+     */
+    private X509CertificateObject ourX509Certificate;
+
+    private byte[] distinguishedNames;
+
+    /**
+     * Fixed DH modulus used in Server Key Exchange
+     */
+    private byte[] fixedDHModulus = ArrayConverter
+            .hexStringToByteArray("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc"
+                    + "74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d"
+                    + "51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24"
+                    + "117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83"
+                    + "655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca1821"
+                    + "7c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf695"
+                    + "5817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff");
+    /**
+     * Fixed DH g value used in Server Key Exchange
+     */
+    private byte[] fixedDHg = { 0x02 };
+
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA512));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA384));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA256));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA224));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA1));
+        supportedSignatureAndHashAlgorithms
+                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
         supportedCompressionMethods = new LinkedList<>();
         supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCiphersuites = new LinkedList<>();
@@ -198,6 +247,63 @@ public class TlsConfig {
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
+        distinguishedNames = new byte[0];
+    }
+
+    public byte[] getFixedDHg() {
+        return fixedDHg;
+    }
+
+    public void setFixedDHg(byte[] fixedDHg) {
+        this.fixedDHg = fixedDHg;
+    }
+
+    public byte[] getFixedDHModulus() {
+        return fixedDHModulus;
+    }
+
+    public void setFixedDHModulus(byte[] fixedDHModulus) {
+        this.fixedDHModulus = fixedDHModulus;
+    }
+
+    public byte[] getDistinguishedNames() {
+        return distinguishedNames;
+    }
+
+    public void setDistinguishedNames(byte[] distinguishedNames) {
+        this.distinguishedNames = distinguishedNames;
+    }
+
+    public Certificate getOurCertificate() {
+        return ourCertificate;
+    }
+
+    public void setOurCertificate(Certificate ourCertificate) {
+        this.ourCertificate = ourCertificate;
+    }
+
+    public X509CertificateObject getOurX509Certificate() {
+        return ourX509Certificate;
+    }
+
+    public void setOurX509Certificate(X509CertificateObject ourX509Certificate) {
+        this.ourX509Certificate = ourX509Certificate;
+    }
+
+    public ProtocolVersion getHighestProtocolVersion() {
+        return highestProtocolVersion;
+    }
+
+    public void setHighestProtocolVersion(ProtocolVersion highestProtocolVersion) {
+        this.highestProtocolVersion = highestProtocolVersion;
+    }
+
+    public boolean isUpdateTimestamps() {
+        return updateTimestamps;
+    }
+
+    public void setUpdateTimestamps(boolean updateTimestamps) {
+        this.updateTimestamps = updateTimestamps;
     }
 
     public byte[] getSessionId() {
@@ -207,7 +313,7 @@ public class TlsConfig {
     public void setSessionId(byte[] sessionId) {
         this.sessionId = sessionId;
     }
-    
+
     public boolean isServerSendsApplicationData() {
         return serverSendsApplicationData;
     }
@@ -326,14 +432,6 @@ public class TlsConfig {
 
     public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {
         this.supportedCompressionMethods = supportedCompressionMethods;
-    }
-
-    public ProtocolVersion getProtocolVersion() {
-        return highestProtocolVersion;
-    }
-
-    public void setProtocolVersion(ProtocolVersion protocolVersion) {
-        this.highestProtocolVersion = protocolVersion;
     }
 
     public ConnectionEnd getMyConnectionEnd() {

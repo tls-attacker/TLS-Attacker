@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -30,27 +31,20 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     // Message and
     // modifieable?
 
-    private EllipticCurvesExtensionHandler() {
+    public EllipticCurvesExtensionHandler() {
 
-    }
-
-    public static EllipticCurvesExtensionHandler getInstance() {
-        if (instance == null) {
-            instance = new EllipticCurvesExtensionHandler();
-        }
-        return instance;
     }
 
     /**
      * @param extension
      */
     @Override
-    public void initializeClientHelloExtension(EllipticCurvesExtensionMessage extension) {
+    public void prepareExtension(TlsContext context) {
         byte[] curves = new byte[0];
-        for (NamedCurve curve : extension.getSupportedCurvesConfig()) {
+        for (NamedCurve curve : context.getConfig().getNamedCurves()) {
             curves = ArrayConverter.concatenate(curves, curve.getValue());
         }
-
+        EllipticCurvesExtensionMessage extension = (EllipticCurvesExtensionMessage) extensionMessage;
         extension.setExtensionType(ExtensionType.ELLIPTIC_CURVES.getValue());
         extension.setSupportedCurves(curves);
         extension.setSupportedCurvesLength(curves != null ? curves.length : 0);

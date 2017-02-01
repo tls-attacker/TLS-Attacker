@@ -133,8 +133,8 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
             tlsContext.setServerDHParameters(publicKeyParameters);
 
-            if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS12
-                    || tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.TLS12) {
+            if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12
+                    || tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS12) {
                 currentPointer = nextPointer;
                 nextPointer++;
                 HashAlgorithm ha = HashAlgorithm.getHashAlgorithm(message[currentPointer]);
@@ -225,7 +225,8 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
                 ArrayConverter.intToBytes(protocolMessage.getSerializedPublicKeyLength().getValue(),
                         HandshakeByteLength.DH_PARAM_LENGTH), protocolMessage.getSerializedPublicKey().getValue());
         InputStream is = new ByteArrayInputStream(dhParams);
-
+        // TODO All this signature stuff should also have a modifieable variable
+        // field
         try {
             p = new BigInteger(1, serializedP);
             g = new BigInteger(1, serializedG);
@@ -247,7 +248,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
             RSAPrivateCrtKey rsaKey = null;
             if (!key.getAlgorithm().equals("RSA")) {
-                // Load static key
+                // Load static key //TODO Static file
                 ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
                 key = ks.getKey("alias", "password".toCharArray());
             }

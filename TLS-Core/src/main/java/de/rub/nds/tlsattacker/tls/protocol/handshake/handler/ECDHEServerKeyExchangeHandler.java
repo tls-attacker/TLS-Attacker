@@ -25,12 +25,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -103,8 +101,8 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
         }
         tlsContext.getEcContext().setServerPublicKeyParameters(publicKeyParameters);
 
-        if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS12
-                || tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.TLS12) {
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12
+                || tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS12) {
             currentPointer = nextPointer;
             nextPointer++;
             HashAlgorithm ha = HashAlgorithm.getHashAlgorithm(message[currentPointer]);

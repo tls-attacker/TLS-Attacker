@@ -55,7 +55,7 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         List<TLSAction> actions = trace.getTLSActions();
-        ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
+        ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage(tlsConfig);
         sni.setServerNameConfig(config.getServerName2());
         sni.setNameTypeConfig(NameType.HOST_NAME);
         ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
@@ -64,8 +64,8 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
         actions.add(new SendAction(ch2));
         List<ProtocolMessage> messageList = new LinkedList<>();
 
-        messageList.add(new ServerHelloMessage());
-        messageList.add(new CertificateMessage());
+        messageList.add(new ServerHelloMessage(tlsConfig));
+        messageList.add(new CertificateMessage(tlsConfig));
         actions.add(new ReceiveAction(messageList));
 
         workflowExecutor.executeWorkflow();

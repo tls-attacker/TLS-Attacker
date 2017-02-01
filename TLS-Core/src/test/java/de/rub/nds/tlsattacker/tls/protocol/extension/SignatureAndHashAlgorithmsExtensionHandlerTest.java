@@ -10,9 +10,12 @@ package de.rub.nds.tlsattacker.tls.protocol.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -32,22 +35,23 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
     private final byte[] originalAlgorithms = { (byte) 2, (byte) 2, (byte) 1, (byte) 1 };
 
     /**
-     * Tests the initializeClientHelloExtension method. The
-     * SignatureAndHashAlgorithmsConfig is provided, the method fills in the
-     * other values. The method works on the reference of the object.
+     * Tests the prepareExtension method. The SignatureAndHashAlgorithmsConfig
+     * is provided, the method fills in the other values. The method works on
+     * the reference of the object.
      */
     @Test
     public void testInitializeClientHelloMethod() {
         byte[] correctExtensionBytes = { (byte) 00, (byte) 13, (byte) 00, (byte) 4, (byte) 0, (byte) 2, (byte) 1,
                 (byte) 1 };
-        SignatureAndHashAlgorithmsExtensionMessage initializeMethodMessage = new SignatureAndHashAlgorithmsExtensionMessage();
-        ArrayList<SignatureAndHashAlgorithm> config = new ArrayList<>();
-        config.add(new SignatureAndHashAlgorithm(new byte[] { 01, 01 }));
-        initializeMethodMessage.setSignatureAndHashAlgorithmsConfig(config);
+        List<SignatureAndHashAlgorithm> signatureAndHashAlgrotims = new ArrayList<>();
+        signatureAndHashAlgrotims.add(new SignatureAndHashAlgorithm(new byte[] { 01, 01 }));
+        TlsConfig tlsConfig = new TlsConfig();
+        tlsConfig.setSupportedSignatureAndHashAlgorithms(signatureAndHashAlgrotims);
+        SignatureAndHashAlgorithmsExtensionMessage initializeMethodMessage = new SignatureAndHashAlgorithmsExtensionMessage(
+                tlsConfig);
 
-        SignatureAndHashAlgorithmsExtensionHandler clientHelloHandler = SignatureAndHashAlgorithmsExtensionHandler
-                .getInstance();
-        clientHelloHandler.initializeClientHelloExtension(initializeMethodMessage);
+        SignatureAndHashAlgorithmsExtensionHandler clientHelloHandler = new SignatureAndHashAlgorithmsExtensionHandler();
+        clientHelloHandler.prepareExtension(new TlsContext(tlsConfig));
 
         assertArrayEquals("Tests the complete extension bytes returned by the initializeClientHello method",
                 correctExtensionBytes, initializeMethodMessage.getExtensionBytes().getValue());
@@ -68,7 +72,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         SignatureAndHashAlgorithmsExtensionMessage parseMethodMessage;
         int gotPointer;
 
-        msgHandler = SignatureAndHashAlgorithmsExtensionHandler.getInstance();
+        msgHandler = new SignatureAndHashAlgorithmsExtensionHandler();
         gotPointer = msgHandler.parseExtension(createdExtension, 0);
         parseMethodMessage = (SignatureAndHashAlgorithmsExtensionMessage) msgHandler.getExtensionMessage();
 
@@ -79,19 +83,11 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
                 parseMethodMessage.getExtensionType().getValue());
         assertEquals("Tests the signature and hash algorithms length", new Integer(4), parseMethodMessage
                 .getSignatureAndHashAlgorithmsLength().getValue());
-
-        ByteArrayOutputStream parsedAlgorithms = new ByteArrayOutputStream();
-        for (SignatureAndHashAlgorithm alg : parseMethodMessage.getSignatureAndHashAlgorithmsConfig()) {
-            parsedAlgorithms.write(alg.getByteValue());
-        }
         /*
          * The ArrayList can't be compared directly due to the hashmap in the
          * datatype SignatureAndHashAlgorithm assertEquals detects different
          * ArrayLists, even if the values are identical.
          */
-        assertArrayEquals("Tests the set signature and hash algorithms config", originalAlgorithms,
-                parsedAlgorithms.toByteArray());
-
         assertArrayEquals("Tests the set signature and hash algorithms bytes", originalAlgorithms, parseMethodMessage
                 .getSignatureAndHashAlgorithms().getValue());
         assertEquals("Tests the extension length", (int) 6, (int) parseMethodMessage.getExtensionLength().getValue());

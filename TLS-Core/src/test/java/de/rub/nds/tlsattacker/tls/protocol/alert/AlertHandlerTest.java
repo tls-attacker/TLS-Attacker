@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.protocol.alert.AlertHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,7 +29,7 @@ public class AlertHandlerTest {
     @Test
     public void testPrepareMessageAction() {
         AlertHandler handler = new AlertHandler(new TlsContext());
-        AlertMessage message = new AlertMessage();
+        AlertMessage message = new AlertMessage(new TlsConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.UNKNOWN_CA);
         handler.setProtocolMessage(message);
         byte[] result = handler.prepareMessageAction();
@@ -42,7 +43,7 @@ public class AlertHandlerTest {
     @Test
     public void testParseMessageAction() {
         AlertHandler handler = new AlertHandler(new TlsContext());
-        handler.setProtocolMessage(new AlertMessage());
+        handler.setProtocolMessage(new AlertMessage(new TlsConfig()));
         byte[] message = { 3, 3 };
         int pointer = handler.parseMessageAction(message, 0);
         assertEquals(2, pointer);

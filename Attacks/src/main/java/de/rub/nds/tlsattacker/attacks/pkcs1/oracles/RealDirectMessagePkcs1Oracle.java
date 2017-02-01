@@ -67,18 +67,18 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
-        protocolMessages.add(new ServerHelloMessage());
-        protocolMessages.add(new CertificateMessage());
-        protocolMessages.add(new ServerHelloDoneMessage());
+        protocolMessages.add(new ServerHelloMessage(config));
+        protocolMessages.add(new CertificateMessage(config));
+        protocolMessages.add(new ServerHelloDoneMessage(config));
         tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
         protocolMessages = new LinkedList<>();
-        RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage();
+        RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(config);
         protocolMessages.add(cke);
-        protocolMessages.add(new ChangeCipherSpecMessage());
+        protocolMessages.add(new ChangeCipherSpecMessage(config));
         tlsContext.getWorkflowTrace().add(new SendAction(protocolMessages));
 
         protocolMessages = new LinkedList<>();
-        protocolMessages.add(new AlertMessage());
+        protocolMessages.add(new AlertMessage(config));
         tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
 
         ModifiableByteArray pms = new ModifiableByteArray();

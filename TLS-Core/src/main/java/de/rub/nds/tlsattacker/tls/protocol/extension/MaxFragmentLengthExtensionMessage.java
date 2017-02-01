@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
  * Maximum Fragment Length Extension described in rfc3546
@@ -29,7 +30,13 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByteArray maxFragmentLength;
 
+    public MaxFragmentLengthExtensionMessage(TlsConfig tlsConfig) {
+        super();
+        this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
+    }
+
     public MaxFragmentLengthExtensionMessage() {
+        super();
         this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
     }
 
@@ -55,7 +62,7 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 
     @Override
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        return MaxFragmentLengthExtensionHandler.getInstance();
+        return new MaxFragmentLengthExtensionHandler();
     }
 
 }

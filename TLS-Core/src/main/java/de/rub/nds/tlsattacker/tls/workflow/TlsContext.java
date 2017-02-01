@@ -47,7 +47,7 @@ public class TlsContext {
     /**
      * client random, including unix time
      */
-    
+
     private byte[] clientRandom = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
     /**
      * server random, including unix time
@@ -56,15 +56,18 @@ public class TlsContext {
     /**
      * selected cipher suite
      */
-    //Initially no ciphersuite is selected
+    // Initially no ciphersuite is selected
     private CipherSuite selectedCipherSuite = null;
+
+    private ProtocolVersion selectedProtocolVersion = null;
     /**
      * compression algorithm
      */
     private CompressionMethod compressionMethod;
     /**
      * session ID
-     *///TODO should this not be 0?
+     */
+    // TODO should this not be 0?
     private byte[] sessionID = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
     /**
      * server certificate parsed from the server certificate message
@@ -116,12 +119,12 @@ public class TlsContext {
      * DTLS Cookie
      */
     private byte[] dtlsHandshakeCookie = new byte[0];
-    
+
     private ProtocolVersion negotiatedProtocolVersion;
-    
+
     private ProtocolVersion highestClientProtocolVersion;
 
-    //TODO does this make sense?
+    // TODO does this make sense?
     public TlsContext() {
         digest = new TlsMessageDigest();
         ecContext = new TlsECContext();
@@ -132,6 +135,14 @@ public class TlsContext {
         digest = new TlsMessageDigest();
         ecContext = new TlsECContext();
         this.config = config;
+    }
+
+    public ProtocolVersion getSelectedProtocolVersion() {
+        return selectedProtocolVersion;
+    }
+
+    public void setSelectedProtocolVersion(ProtocolVersion selectedProtocolVersion) {
+        this.selectedProtocolVersion = selectedProtocolVersion;
     }
 
     public ProtocolVersion getHighestClientProtocolVersion() {
@@ -156,7 +167,7 @@ public class TlsContext {
 
     public void initiliazeTlsMessageDigest() {
         try {
-            DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(config.getProtocolVersion(),
+            DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(getSelectedProtocolVersion(),
                     selectedCipherSuite);
             digest.initializeDigestAlgorithm(algorithm);
         } catch (NoSuchAlgorithmException ex) {
@@ -171,7 +182,7 @@ public class TlsContext {
     public void setNegotiatedProtocolVersion(ProtocolVersion negotiatedProtocolVersion) {
         this.negotiatedProtocolVersion = negotiatedProtocolVersion;
     }
-    
+
     public byte[] getMasterSecret() {
         return masterSecret;
     }

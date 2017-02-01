@@ -31,7 +31,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
     @Override
     protected byte[] beforeParseMessageAction(byte[] message, int pointer) {
-        if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
             return prepareDtlsHandshakeMessageParse(message, pointer);
         }
         return message;
@@ -46,7 +46,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
      */
     @Override
     protected byte[] afterPrepareMessageAction(byte[] messageBytes) {
-        if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
             protocolMessage.setCompleteResultingMessage(finishDtlsHandshakeMessagePrepare(messageBytes));
         }
         byte[] pm = protocolMessage.getCompleteResultingMessage().getValue();
@@ -65,7 +65,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
      */
     @Override
     protected int afterParseMessageAction(int ret) {
-        if (tlsContext.getConfig().getProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
             protocolMessage.setCompleteResultingMessage(dtlsAllMessageBytes);
             ret += 8;
         }

@@ -19,7 +19,7 @@ public class WorkflowExecutorFactory {
 
     public static WorkflowExecutor createWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
         WorkflowExecutor we = null;
-        switch (tlsContext.getConfig().getProtocolVersion()) {
+        switch (tlsContext.getConfig().getHighestProtocolVersion()) {
             case TLS10:
             case TLS11:
             case TLS12:
@@ -29,7 +29,7 @@ public class WorkflowExecutorFactory {
                 we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
                 return we;
             default:
-                throw new UnsupportedOperationException(tlsContext.getConfig().getProtocolVersion().name()
+                throw new UnsupportedOperationException(tlsContext.getConfig().getHighestProtocolVersion().name()
                         + " not yet implemented");
         }
     }

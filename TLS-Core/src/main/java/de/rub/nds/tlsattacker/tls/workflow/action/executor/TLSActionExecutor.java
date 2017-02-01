@@ -228,7 +228,7 @@ public class TLSActionExecutor extends ActionExecutor {
          * and if isClientauthentication is true, we do not need to change the
          * WorkflowTrace
          */
-        //TODO ??!?!?!?
+        // TODO ??!?!?!?
         if (context.getConfig().getKeyStore() != null && !context.getConfig().isClientAuthentication()) {
             context.getConfig().setClientAuthentication(true);
             // RenegotiationWorkflowConfiguration reneWorkflowConfig = new

@@ -67,12 +67,11 @@ public class ClientHelloHandlerTest {
     TlsContext dtlsContext = new TlsContext();
 
     public ClientHelloHandlerTest() {
-        tlsContext.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);
         handler = new ClientHelloHandler<>(tlsContext);
         dtlsContext.setDtlsHandshakeCookie(cookie);
-        dtlsContext.getConfig().setProtocolVersion(ProtocolVersion.DTLS12);
+        dtlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         dtlshandler = new ClientHelloHandler<>(dtlsContext);
-
     }
 
     /**
@@ -80,7 +79,7 @@ public class ClientHelloHandlerTest {
      */
     @Test
     public void testPrepareMessage() {
-        dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage());
+        dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(new TlsConfig()));
 
         ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
 
@@ -105,7 +104,7 @@ public class ClientHelloHandlerTest {
 
     @Test
     public void testPrepareMessageWithExtensions() {
-        handler.setProtocolMessage(new ClientHelloMessage());
+        handler.setProtocolMessage(new ClientHelloMessage(new TlsConfig()));
 
         de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
                 .getProtocolMessage();
@@ -123,7 +122,7 @@ public class ClientHelloHandlerTest {
         heart.setHeartbeatModeConfig(HeartbeatMode.PEER_ALLOWED_TO_SEND);
 
         EllipticCurvesExtensionMessage ecc;
-        ecc = new EllipticCurvesExtensionMessage();
+        ecc = new EllipticCurvesExtensionMessage(new TlsConfig());
         List<NamedCurve> curve = new ArrayList<>();
         curve.add(NamedCurve.SECP160K1);
         curve.add(NamedCurve.SECT163K1);
@@ -152,7 +151,7 @@ public class ClientHelloHandlerTest {
 
     @Test
     public void testParseMessageAction() {
-        dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage());
+        dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(new TlsConfig()));
 
         int endPointer = dtlshandler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
         ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
@@ -206,8 +205,7 @@ public class ClientHelloHandlerTest {
         assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 48", new Integer(48), message.getLength().getValue());
-        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getConfig()
-                .getProtocolVersion());
+        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getSelectedProtocolVersion());
         assertEquals("Client Session ID Length", new Integer(0), message.getSessionIdLength().getValue());
         assertArrayEquals(
                 "Client Random",

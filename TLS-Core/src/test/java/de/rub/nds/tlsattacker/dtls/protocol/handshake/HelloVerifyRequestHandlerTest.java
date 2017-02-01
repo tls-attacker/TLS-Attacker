@@ -40,7 +40,7 @@ public class HelloVerifyRequestHandlerTest {
                     + "AC3E7C90194B802819AD2DB028231D259598E85CD260FA7D72BD3DDAB50703693A9196DD0628811F8705089B1CF469462EF83213");
 
     public HelloVerifyRequestHandlerTest() {
-        config.setProtocolVersion(ProtocolVersion.DTLS12);
+        config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
     }
 
     /**
@@ -49,7 +49,7 @@ public class HelloVerifyRequestHandlerTest {
     @Test
     public void testPrepareMessage() {
         handler = new HelloVerifyRequestHandler(new TlsContext(config));
-        handler.setProtocolMessage(new HelloVerifyRequestMessage());
+        handler.setProtocolMessage(new HelloVerifyRequestMessage(config));
         HelloVerifyRequestMessage message = (HelloVerifyRequestMessage) handler.getProtocolMessage();
 
         message.setCookie(ArrayConverter.hexStringToByteArray("112233"));
@@ -60,9 +60,9 @@ public class HelloVerifyRequestHandlerTest {
         byte[] returned = handler.prepareMessage();
         byte[] expected = ArrayConverter.concatenate(
                 new byte[] { HandshakeMessageType.HELLO_VERIFY_REQUEST.getValue() }, new byte[] { 0x00, 0x00, 0x06,
-                        0x01, (byte) 0xF4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06 },
-                config.getProtocolVersion().getValue(), new byte[] { message.getCookieLength().getValue() }, message
-                        .getCookie().getValue());
+                        0x01, (byte) 0xF4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06 }, config.getHighestProtocolVersion()
+                        .getValue(), new byte[] { message.getCookieLength().getValue() }, message.getCookie()
+                        .getValue());
 
         assertNotNull("Confirm function didn't return 'NULL'", returned);
         assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
@@ -72,7 +72,7 @@ public class HelloVerifyRequestHandlerTest {
     public void testParseMessageAction() {
         handler = new HelloVerifyRequestHandler<>(new TlsContext(config));
 
-        handler.setProtocolMessage(new HelloVerifyRequestMessage());
+        handler.setProtocolMessage(new HelloVerifyRequestMessage(config));
 
         int endPointer = 0;
         endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
@@ -93,7 +93,7 @@ public class HelloVerifyRequestHandlerTest {
         assertEquals("Check protocol message length pointer", 19, endPointer);
 
         handler = new HelloVerifyRequestHandler(new TlsContext(config));
-        handler.setProtocolMessage(new HelloVerifyRequestMessage());
+        handler.setProtocolMessage(new HelloVerifyRequestMessage(config));
 
         endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
 
@@ -113,7 +113,7 @@ public class HelloVerifyRequestHandlerTest {
         assertEquals("Check protocol message length pointer", 42, endPointer);
 
         handler = new HelloVerifyRequestHandler(new TlsContext(config));
-        handler.setProtocolMessage(new HelloVerifyRequestMessage());
+        handler.setProtocolMessage(new HelloVerifyRequestMessage(config));
 
         endPointer = handler.parseMessage(helloVerifyRequestMessageBytes, endPointer);
 

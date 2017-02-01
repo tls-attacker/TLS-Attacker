@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -36,6 +37,10 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
 
     @ModifiableVariableProperty
     ModifiableByteArray extensionBytes;
+
+    public ExtensionMessage() {
+
+    }
 
     public ModifiableByteArray getExtensionType() {
         return extensionType;

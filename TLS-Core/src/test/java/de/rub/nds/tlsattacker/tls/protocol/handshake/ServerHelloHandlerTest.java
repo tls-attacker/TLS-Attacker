@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import static org.junit.Assert.*;
@@ -53,7 +54,7 @@ public class ServerHelloHandlerTest {
 
     public ServerHelloHandlerTest() {
         tlsContext = new TlsContext();
-        tlsContext.getConfig().setProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         handler = new ServerHelloHandler(tlsContext);
     }
 
@@ -70,8 +71,7 @@ public class ServerHelloHandlerTest {
         assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 70", new Integer(70), message.getLength().getValue());
-        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getConfig()
-                .getProtocolVersion());
+        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getSelectedProtocolVersion());
         assertArrayEquals(
                 "Server Session ID",
                 ArrayConverter.hexStringToByteArray("68220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0"),
@@ -101,8 +101,7 @@ public class ServerHelloHandlerTest {
         assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 77", new Integer(77), message.getLength().getValue());
-        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getConfig()
-                .getProtocolVersion());
+        assertEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12, tlsContext.getSelectedProtocolVersion());
         assertArrayEquals(
                 "Server Session ID",
                 ArrayConverter.hexStringToByteArray("68220000ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0"),
@@ -125,7 +124,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testPrepareMessage() {
-        handler.setProtocolMessage(new ServerHelloMessage());
+        handler.setProtocolMessage(new ServerHelloMessage(new TlsConfig()));
 
         ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
 
@@ -151,7 +150,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testPrepareMessageWithExtensions() {
-        handler.setProtocolMessage(new ServerHelloMessage());
+        handler.setProtocolMessage(new ServerHelloMessage(new TlsConfig()));
 
         ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
 
@@ -163,7 +162,7 @@ public class ServerHelloHandlerTest {
         heart.setHeartbeatModeConfig(HeartbeatMode.PEER_ALLOWED_TO_SEND);
 
         EllipticCurvesExtensionMessage ecc;
-        ecc = new EllipticCurvesExtensionMessage();
+        ecc = new EllipticCurvesExtensionMessage(new TlsConfig());
         List<NamedCurve> curve = new ArrayList<>();
         curve.add(NamedCurve.SECP160K1);
         curve.add(NamedCurve.SECT163K1);

@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Date;
@@ -35,8 +36,8 @@ public class ServerHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
 
-    public ServerHelloMessage() {
-        super(HandshakeMessageType.SERVER_HELLO);
+    public ServerHelloMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {

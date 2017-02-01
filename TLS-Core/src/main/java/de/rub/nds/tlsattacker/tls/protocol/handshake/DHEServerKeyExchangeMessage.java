@@ -19,9 +19,19 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
+import java.security.SecureRandom;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.KeyGenerationParameters;
+import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
+import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
+import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.util.BigIntegers;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -95,8 +105,37 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray serializedPublicKey;
 
-    public DHEServerKeyExchangeMessage() {
-        super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+    public DHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
+        BigInteger p = new BigInteger(1, tlsConfig.getFixedDHModulus());
+        BigInteger g = new BigInteger(1, tlsConfig.getFixedDHg());
+        DHParameters params = new DHParameters(p, g);
+
+        KeyGenerationParameters kgp = new DHKeyGenerationParameters(new SecureRandom(), params);
+        DHKeyPairGenerator keyGen = new DHKeyPairGenerator();
+        keyGen.init(kgp);
+        AsymmetricCipherKeyPair serverKeyPair = keyGen.generateKeyPair();
+
+        DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
+        DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
+        this.setG(dhPublic.getParameters().getG());
+        this.setP(dhPublic.getParameters().getP());
+        this.setPublicKey(dhPublic.getY());
+        this.setPrivateKey(dhPrivate.getX());
+
+        byte[] serializedP = BigIntegers.asUnsignedByteArray(this.getP().getValue());
+        this.setSerializedP(serializedP);
+        this.setSerializedPLength(this.getSerializedP().getValue().length);
+
+        byte[] serializedG = BigIntegers.asUnsignedByteArray(this.getG().getValue());
+        this.setSerializedG(serializedG);
+        this.setSerializedGLength(this.getSerializedG().getValue().length);
+
+        byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(this.getPublicKey().getValue());
+        this.setSerializedPublicKey(serializedPublicKey);
+        this.setSerializedPublicKeyLength(this.getSerializedPublicKey().getValue().length);
+        // TODO i guess we cant initialize the rest since it depends on client
+        // information
     }
 
     public ModifiableInteger getpLength() {

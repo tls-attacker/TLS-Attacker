@@ -16,10 +16,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -41,8 +42,10 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
-    public CertificateVerifyMessage() {
-        super(HandshakeMessageType.CERTIFICATE_VERIFY);
+    public CertificateVerifyMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CERTIFICATE_VERIFY);
+        this.setSignatureHashAlgorithm(tlsConfig.getSupportedSignatureAndHashAlgorithms().get(0).getByteValue());
+        // TODO can we do signature yet?
     }
 
     public ModifiableByteArray getSignatureHashAlgorithm() {

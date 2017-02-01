@@ -50,7 +50,7 @@ public abstract class HandshakeTest extends TestTLS {
         TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         tlsContext.setSelectedCipherSuite(tlsConfig.getSupportedCiphersuites().get(0));
         WorkflowTrace workflowTrace = new WorkflowTrace();
-        ClientHelloMessage ch = new ClientHelloMessage();
+        ClientHelloMessage ch = new ClientHelloMessage(tlsConfig);
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
                 new ArbitraryMessage()));
@@ -59,7 +59,7 @@ public abstract class HandshakeTest extends TestTLS {
         // and the server does not wait for further messages (there are test
         // servers,
         // for example Botan, for which closing connection is not enough)
-        AlertMessage alert = new AlertMessage();
+        AlertMessage alert = new AlertMessage(tlsConfig);
         alert.setLevel(AlertLevel.FATAL.getValue());
         alert.setDescription(AlertDescription.HANDSHAKE_FAILURE.getValue());// TODO
                                                                             // why

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
@@ -23,6 +24,10 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionM
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.util.Time;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -66,8 +71,15 @@ abstract class HelloMessage extends HandshakeMessage {
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions = new LinkedList<>();
 
-    public HelloMessage(HandshakeMessageType handshakeMessageType) {
-        super(handshakeMessageType);
+    public HelloMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+        super(tlsConfig, handshakeMessageType);
+        this.setSessionId(tlsConfig.getSessionId());
+        this.setSessionIdLength(this.getSessionId().getValue().length);
+        final long unixTime = Time.getUnixTime();
+        this.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+        byte[] random = new byte[HandshakeByteLength.RANDOM];
+        RandomHelper.getRandom().nextBytes(random);
+        this.setRandom(random);
     }
 
     public ModifiableByteArray getRandom() {

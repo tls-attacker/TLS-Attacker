@@ -83,12 +83,13 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
         byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         // forward the PMS with the key of the target server during MitM
+        // TODO remove if
         if (tlsContext.getConfig().isMitm()) {
             premasterSecret = protocolMessage.getPremasterSecret().getValue();
         } else {
             RandomHelper.getRandom().nextBytes(premasterSecret);
-            premasterSecret[0] = tlsContext.getConfig().getProtocolVersion().getMajor();
-            premasterSecret[1] = tlsContext.getConfig().getProtocolVersion().getMinor();
+            premasterSecret[0] = tlsContext.getSelectedProtocolVersion().getMajor();
+            premasterSecret[1] = tlsContext.getSelectedProtocolVersion().getMinor();
         }
 
         protocolMessage.setPremasterSecret(premasterSecret);
@@ -103,7 +104,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
         byte[] random = tlsContext.getClientServerRandom();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
                 tlsContext.getSelectedCipherSuite());
         byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
                 .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
@@ -198,7 +199,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
         byte[] random = tlsContext.getClientServerRandom();
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
                 tlsContext.getSelectedCipherSuite());
         byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
                 .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);

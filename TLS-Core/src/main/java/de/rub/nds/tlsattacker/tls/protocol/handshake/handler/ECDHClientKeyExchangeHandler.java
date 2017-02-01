@@ -140,7 +140,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
                     ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
             LOGGER.debug("Client Server Random: {}", ArrayConverter.bytesToHexString(random));
 
-            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getConfig().getProtocolVersion(),
+            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
                     tlsContext.getSelectedCipherSuite());
             byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, protocolMessage.getPremasterSecret()
                     .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);

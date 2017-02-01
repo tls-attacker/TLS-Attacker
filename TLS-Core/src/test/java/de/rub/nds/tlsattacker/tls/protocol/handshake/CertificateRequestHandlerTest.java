@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import static org.junit.Assert.*;
@@ -44,7 +45,7 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testPrepareMessageAction() {
-        handler.setProtocolMessage(new CertificateRequestMessage());
+        handler.setProtocolMessage(new CertificateRequestMessage(new TlsConfig()));
 
         CertificateRequestMessage message = (CertificateRequestMessage) handler.getProtocolMessage();
 

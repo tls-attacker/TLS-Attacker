@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.unittest.ActionExecutorMock;
@@ -49,7 +50,7 @@ public class ReceiveActionTest {
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        AlertMessage alert = new AlertMessage();
+        AlertMessage alert = new AlertMessage(new TlsConfig());
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
@@ -59,7 +60,7 @@ public class ReceiveActionTest {
         tlsContext.setRecordHandler(new RecordHandler(tlsContext));
         tlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(tlsContext));
         dtlsContext = new TlsContext();
-        dtlsContext.getConfig().setProtocolVersion(ProtocolVersion.DTLS12);
+        dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
         action = new ReceiveAction(alert);

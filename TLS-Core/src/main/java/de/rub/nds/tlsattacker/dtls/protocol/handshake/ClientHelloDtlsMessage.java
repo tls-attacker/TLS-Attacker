@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -27,7 +28,8 @@ public class ClientHelloDtlsMessage extends ClientHelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableByte cookieLength = null;
 
-    public ClientHelloDtlsMessage() {
+    public ClientHelloDtlsMessage(TlsConfig tlsConfig) {
+        super(tlsConfig);
         cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
         cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
     }

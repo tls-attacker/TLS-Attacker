@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -18,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class ArbitraryMessage extends ProtocolMessage {
 
     public ArbitraryMessage() {
+        super();
         this.setRequired(false);
     }
 

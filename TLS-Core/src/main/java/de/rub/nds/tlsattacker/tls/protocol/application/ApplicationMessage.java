@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -24,7 +25,8 @@ public class ApplicationMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     ModifiableByteArray data;
 
-    public ApplicationMessage() {
+    public ApplicationMessage(TlsConfig tlsConfig) {
+        super();
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
 

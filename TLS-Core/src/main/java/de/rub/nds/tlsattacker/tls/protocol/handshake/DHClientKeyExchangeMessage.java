@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
@@ -56,8 +57,8 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray serializedPublicKey;
 
-    public DHClientKeyExchangeMessage() {
-        super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+    public DHClientKeyExchangeMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
     public ModifiableBigInteger getP() {

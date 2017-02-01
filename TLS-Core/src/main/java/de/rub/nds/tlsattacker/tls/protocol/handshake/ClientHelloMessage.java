@@ -16,11 +16,21 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.util.Time;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,8 +88,42 @@ public class ClientHelloMessage extends HelloMessage {
      */
     private byte[] extensionBytes;
 
-    public ClientHelloMessage() {
-        super(HandshakeMessageType.CLIENT_HELLO);
+    public ClientHelloMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
+        this.supportedCipherSuites = tlsConfig.getSupportedCiphersuites();
+        this.supportedCompressionMethods = tlsConfig.getSupportedCompressionMethods();
+        this.setProtocolVersion(tlsConfig.getHighestProtocolVersion().getValue());
+        byte[] tempCiphersuites = new byte[0];
+        for (CipherSuite cs : supportedCipherSuites) {
+            tempCiphersuites = ArrayConverter.concatenate(tempCiphersuites, cs.getByteValue());
+        }
+        this.setCipherSuites(tempCiphersuites);
+        this.setCipherSuiteLength(cipherSuites.getValue().length);
+
+        byte[] compressionMethods = null;
+        for (CompressionMethod cm : supportedCompressionMethods) {
+            compressionMethods = ArrayConverter.concatenate(compressionMethods, cm.getArrayValue());
+        }
+        this.setCompressions(compressionMethods);
+        this.setCompressionLength(compressions.getValue().length);
+        if (tlsConfig.isAddECPointFormatExtension()) {
+            addExtension(new ECPointFormatExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddEllipticCurveExtension()) {
+            addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddHeartbeatExtension()) {
+            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
+            addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddServerNameIndicationExtension()) {
+            addExtension(new ServerNameIndicationExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
+            addExtension(new SignatureAndHashAlgorithmsExtensionMessage(tlsConfig));
+        }
     }
 
     public ModifiableInteger getCompressionLength() {

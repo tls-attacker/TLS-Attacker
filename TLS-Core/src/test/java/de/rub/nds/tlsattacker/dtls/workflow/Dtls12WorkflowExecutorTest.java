@@ -44,7 +44,7 @@ public class Dtls12WorkflowExecutorTest {
         if (enableTest) {
             try {
                 TlsConfig config = new TlsConfig();
-                config.setProtocolVersion(ProtocolVersion.DTLS12);
+                config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
                 config.setHost("127.0.0.1:4444");
                 config.setTransportHandlerType(TransportHandlerType.UDP);
 

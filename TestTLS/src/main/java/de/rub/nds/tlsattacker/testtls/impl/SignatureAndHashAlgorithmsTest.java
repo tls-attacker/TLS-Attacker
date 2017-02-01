@@ -75,7 +75,7 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
         for (SignatureAndHashAlgorithm algorithm : SignatureAndHashAlgorithm.values()) {
             TlsConfig tlsConfig = configHandler.initialize(serverConfig);
 
-            tlsConfig.setProtocolVersion(pv);
+            tlsConfig.setHighestProtocolVersion(pv);
             tlsConfig.setSupportedCiphersuites(supportedCipherSuites.get(pv));
             tlsConfig.setSupportedSignatureAndHashAlgorithms(Collections.singletonList(algorithm));
             boolean success = false;

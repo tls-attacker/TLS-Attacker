@@ -18,8 +18,11 @@ import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -55,8 +58,23 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray distinguishedNames;
 
-    public CertificateRequestMessage() {
-        super(HandshakeMessageType.CERTIFICATE_REQUEST);
+    public CertificateRequestMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CERTIFICATE_REQUEST);
+        // TODO export to config
+        byte[] clientCertificateTypes = { ClientCertificateType.RSA_SIGN.getValue() };
+        this.setClientCertificateTypes(clientCertificateTypes);
+        int clientCertificateTypesCount = this.getClientCertificateTypes().getValue().length;
+        this.setClientCertificateTypesCount(clientCertificateTypesCount);
+        byte[] signatureAndHashAlgorithms = new byte[0];
+        for (SignatureAndHashAlgorithm sigHashAlg : tlsConfig.getSupportedSignatureAndHashAlgorithms()) {
+            signatureAndHashAlgorithms = ArrayConverter.concatenate(sigHashAlg.getByteValue(),
+                    signatureAndHashAlgorithms);
+        }
+        this.setSignatureHashAlgorithms(signatureAndHashAlgorithms);
+        this.setSignatureHashAlgorithmsLength(signatureAndHashAlgorithms.length);
+        this.setDistinguishedNames(tlsConfig.getDistinguishedNames());
+        this.setDistinguishedNamesLength(tlsConfig.getDistinguishedNames().length);
+
     }
 
     public ModifiableInteger getClientCertificateTypesCount() {

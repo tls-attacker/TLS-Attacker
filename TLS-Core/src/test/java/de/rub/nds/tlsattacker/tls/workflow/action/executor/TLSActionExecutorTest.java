@@ -47,7 +47,7 @@ public class TLSActionExecutorTest {
         context.setTransportHandler(new FakeTransportHandler());
         context.setRecordHandler(new RecordHandler(context));
         executor = new TLSActionExecutor(context, new WorkflowContext());
-        message = new AlertMessage();
+        message = new AlertMessage(context.getConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         message.setDescription(AlertDescription.DECODE_ERROR.getValue());
         message.setLevel(AlertLevel.FATAL.getValue());
