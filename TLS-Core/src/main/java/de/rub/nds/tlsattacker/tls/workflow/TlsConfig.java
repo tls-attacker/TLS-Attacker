@@ -32,7 +32,7 @@ public class TlsConfig {
     /**
      * Default value for PtocolverionFields
      */
-    private ProtocolVersion protocolVersion = ProtocolVersion.TLS12;
+    private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
     /**
      * Indicates which ConnectionEnd we are
@@ -329,11 +329,11 @@ public class TlsConfig {
     }
 
     public ProtocolVersion getProtocolVersion() {
-        return protocolVersion;
+        return highestProtocolVersion;
     }
 
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
-        this.protocolVersion = protocolVersion;
+        this.highestProtocolVersion = protocolVersion;
     }
 
     public ConnectionEnd getMyConnectionEnd() {
