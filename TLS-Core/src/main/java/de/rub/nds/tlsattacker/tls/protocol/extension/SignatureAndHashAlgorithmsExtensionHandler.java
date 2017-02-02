@@ -109,6 +109,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
             signatureAndHashBytes.write(message, i, 2);
         }
         extension.setSignatureAndHashAlgorithms(signatureAndHashBytes.toByteArray());
+        //TODO should be set in tlscontext
         // the extension bytes are exactly the same, than in the message. Thus
         // we copy them.
         newPointer += extension.getSignatureAndHashAlgorithmsLength().getValue();
