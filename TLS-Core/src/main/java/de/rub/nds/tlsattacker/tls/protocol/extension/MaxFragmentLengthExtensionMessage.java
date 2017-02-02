@@ -41,14 +41,6 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
         this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
     }
 
-    public MaxFragmentLength getMaxFragmentLengthConfig() {
-        return maxFragmentLengthConfig;
-    }
-
-    public void setMaxFragmentLengthConfig(MaxFragmentLength maxFragmentLengthConfig) {
-        this.maxFragmentLengthConfig = maxFragmentLengthConfig;
-    }
-
     public ModifiableByteArray getMaxFragmentLength() {
         return maxFragmentLength;
     }

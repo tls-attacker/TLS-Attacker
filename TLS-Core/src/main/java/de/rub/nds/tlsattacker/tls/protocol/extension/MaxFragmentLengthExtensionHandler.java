@@ -33,6 +33,9 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
     public void prepareExtension(TlsContext context) {
         byte[] maxFragmentLength = { context.getConfig().getMaxFragmentLength().getValue() };
         MaxFragmentLengthExtensionMessage extension = (MaxFragmentLengthExtensionMessage) extensionMessage;
+        if (extension == null) {
+            extension = new MaxFragmentLengthExtensionMessage(context.getConfig());
+        }
         extension.setExtensionType(ExtensionType.MAX_FRAGMENT_LENGTH.getValue());
         extension.setMaxFragmentLength(maxFragmentLength);
 
