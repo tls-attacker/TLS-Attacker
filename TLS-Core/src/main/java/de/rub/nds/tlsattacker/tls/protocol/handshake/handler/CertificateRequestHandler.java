@@ -43,7 +43,7 @@ public class CertificateRequestHandler<Message extends CertificateRequestMessage
     public byte[] prepareMessageAction() {
         // TODO parse Arguments from Console and set properties with
         // Confighandler to support more Certificate types
-
+        //TODO put in config
         byte[] clientCertificateTypes = { ClientCertificateType.RSA_SIGN.getValue() };
         protocolMessage.setClientCertificateTypes(clientCertificateTypes);
 
@@ -123,11 +123,12 @@ public class CertificateRequestHandler<Message extends CertificateRequestMessage
                     protocolMessage.getSignatureHashAlgorithms().getValue(), i * 2, i * 2 + 2));
             signatureAndHashAlgorithms.add(sha);
         }
-        tlsContext.getConfig().setSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
+        tlsContext.setServerSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
 
         nextPointer = currentPointer + HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH;
         int distinguishedNamesLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
                 nextPointer));
+        //TODO context should know about distinguished names
         protocolMessage.setDistinguishedNamesLength(distinguishedNamesLength);
         currentPointer = nextPointer;
 
