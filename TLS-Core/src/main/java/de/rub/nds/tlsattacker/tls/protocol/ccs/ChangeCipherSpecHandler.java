@@ -63,15 +63,15 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
                     | InvalidAlgorithmParameterException ex) {
                 if (tlsContext.getConfig().isFuzzingMode()) {
+                    LOGGER.debug("Changed Ciphersuite on the fly");
+                    tlsContext.setSelectedCipherSuite(CipherSuite.getRandom());
+                } else {
                     throw new UnsupportedOperationException(
                             "It was not possible to initialize an algorithm from "
                                     + tlsContext.getSelectedCipherSuite()
                                     + ". Most probably your platform does not support unlimited policy strength and you have to "
                                     + "install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files. Stupid, I know.",
                             ex);
-                } else {
-                    LOGGER.debug("Changed Ciphersuite on the fly");
-                    tlsContext.setSelectedCipherSuite(CipherSuite.getRandom());
                 }
             }
         } while (tlsRecordBlockCipher == null);
