@@ -43,7 +43,7 @@ public class CertificateRequestHandler<Message extends CertificateRequestMessage
     public byte[] prepareMessageAction() {
         // TODO parse Arguments from Console and set properties with
         // Confighandler to support more Certificate types
-        //TODO put in config
+        // TODO put in config
         byte[] clientCertificateTypes = { ClientCertificateType.RSA_SIGN.getValue() };
         protocolMessage.setClientCertificateTypes(clientCertificateTypes);
 
@@ -128,7 +128,7 @@ public class CertificateRequestHandler<Message extends CertificateRequestMessage
         nextPointer = currentPointer + HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH;
         int distinguishedNamesLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
                 nextPointer));
-        //TODO context should know about distinguished names
+        // TODO context should know about distinguished names
         protocolMessage.setDistinguishedNamesLength(distinguishedNamesLength);
         currentPointer = nextPointer;
 

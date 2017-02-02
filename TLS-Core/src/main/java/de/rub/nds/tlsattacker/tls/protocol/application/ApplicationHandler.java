@@ -24,7 +24,7 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public byte[] prepareMessageAction() {
-        //TODO can be set in config
+        // TODO can be set in config
         protocolMessage.setData("test".getBytes());
         byte[] result = protocolMessage.getData().getValue();
         return result;

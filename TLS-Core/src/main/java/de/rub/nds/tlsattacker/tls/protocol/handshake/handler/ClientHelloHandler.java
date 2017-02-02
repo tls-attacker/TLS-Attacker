@@ -74,8 +74,8 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
         cipherSuiteLength = protocolMessage.getCipherSuites().getValue().length;
         protocolMessage.setCipherSuiteLength(cipherSuiteLength);
 
-        byte[] compressionMethods = null;
-        for (CompressionMethod cm : protocolMessage.getSupportedCompressionMethods()) {
+        byte[] compressionMethods = new byte[0];
+        for (CompressionMethod cm : tlsContext.getConfig().getSupportedCompressionMethods()) {
             compressionMethods = ArrayConverter.concatenate(compressionMethods, cm.getArrayValue());
         }
         protocolMessage.setCompressions(compressionMethods);
@@ -139,7 +139,6 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
         ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
                 currentPointer, nextPointer));
         protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
-
         currentPointer = nextPointer;
         nextPointer = currentPointer + HandshakeByteLength.UNIX_TIME;
         protocolMessage.setUnixTime(Arrays.copyOfRange(message, currentPointer, nextPointer));

@@ -25,13 +25,15 @@ public class MaxFragmentLengthExtensionHandlerTest {
             ExtensionType.MAX_FRAGMENT_LENGTH.getValue()[1], // Extension type
             (byte) 00, (byte) 01, // Extension length
             MaxFragmentLength.TWO_12.getValue() }; // max_fragment_length is set
-                                                   // to 2^12
+
+    // to 2^12
 
     /**
      * Tests the parseExtension method of MaxFragmentLengthExtensionHandler
      */
     @Test
     public void testParseExtension() {
+
         MaxFragmentLengthExtensionHandler extensionHandler = new MaxFragmentLengthExtensionHandler();
         int returnedPointer = extensionHandler.parseExtension(extensionMessage, 0);
         MaxFragmentLengthExtensionMessage parsedMessage = (MaxFragmentLengthExtensionMessage) extensionHandler
@@ -54,11 +56,13 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testInitializeClientHelloExtension() {
+        TlsConfig config = new TlsConfig();
+        config.setMaxFragmentLength(MaxFragmentLength.TWO_12);
         MaxFragmentLengthExtensionMessage initializedMessage;
         MaxFragmentLengthExtensionHandler maxFragmentHandlerInitialised = new MaxFragmentLengthExtensionHandler();
         initializedMessage = new MaxFragmentLengthExtensionMessage();
-        initializedMessage.setMaxFragmentLengthConfig(MaxFragmentLength.TWO_12);
-        maxFragmentHandlerInitialised.prepareExtension(new TlsContext(new TlsConfig()));
+        maxFragmentHandlerInitialised.setExtensionMessage(initializedMessage);
+        maxFragmentHandlerInitialised.prepareExtension(new TlsContext(config));
 
         Assert.assertArrayEquals(
                 "Tests if the extension bytes are set correctly by the initializeClientHelloExtension method",

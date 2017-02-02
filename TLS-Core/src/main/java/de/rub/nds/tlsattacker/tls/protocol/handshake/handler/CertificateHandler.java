@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
@@ -48,7 +49,8 @@ public class CertificateHandler<Message extends CertificateMessage> extends Hand
     public byte[] prepareMessageAction() {
         ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
         try {
-            JKSLoader.loadTLSCertificate(tlsContext.getConfig().getKeyStore(), tlsContext.getConfig().getAlias()).encode(tlsCertBos);
+            JKSLoader.loadTLSCertificate(tlsContext.getConfig().getKeyStore(), tlsContext.getConfig().getAlias())
+                    .encode(tlsCertBos);
         } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
             throw new ConfigurationException("Could not load Certificate for CertificateMessage!", ex);
         }

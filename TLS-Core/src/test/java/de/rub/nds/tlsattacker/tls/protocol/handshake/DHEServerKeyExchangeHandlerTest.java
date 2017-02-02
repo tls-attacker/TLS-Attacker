@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -62,7 +63,7 @@ public class DHEServerKeyExchangeHandlerTest {
         tlsContext = new TlsContext(new TlsConfig());
         tlsContext.setClientRandom(clientRandom);
         tlsContext.setServerRandom(serverRandom);
-
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         try {
             KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
             tlsContext.getConfig().setKeyStore(ks);

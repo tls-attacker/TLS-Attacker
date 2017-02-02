@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -46,7 +47,9 @@ public class ECDHEServerKeyExchangeHandlerTest {
     ECDHEServerKeyExchangeHandler handler;
 
     public ECDHEServerKeyExchangeHandlerTest() {
-        handler = new ECDHEServerKeyExchangeHandler(new TlsContext());
+        TlsContext context = new TlsContext();
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        handler = new ECDHEServerKeyExchangeHandler(context);
     }
 
     /**
@@ -87,7 +90,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(testServerKeyExchangeRSA, 0);
-        ECDHEServerKeyExchangeMessage message = (ECDHEServerKeyExchangeMessage) handler.getProtocolMessage();
+        ECDHEServerKeyExchangeMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
                 message.getHandshakeMessageType());

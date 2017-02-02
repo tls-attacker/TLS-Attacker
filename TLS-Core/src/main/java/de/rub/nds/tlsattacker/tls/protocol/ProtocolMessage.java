@@ -32,7 +32,7 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 
 /**
  * TLS Protocol message is the message included in the Record message.
- * 
+ *
  * @author juraj
  * @author Philip Riese <philip.riese@rub.de>
  */

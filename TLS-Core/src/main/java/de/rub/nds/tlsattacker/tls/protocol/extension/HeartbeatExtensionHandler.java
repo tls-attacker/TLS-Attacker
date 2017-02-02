@@ -59,7 +59,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         pointer = nextPointer;
         byte[] mode = { message[pointer] };
         hem.setHeartbeatMode(mode);
-        //TODO set heartbeat mode in tlsContext
+        // TODO set heartbeat mode in tlsContext
         byte[] result = ArrayConverter.concatenate(hem.getExtensionType().getValue(), ArrayConverter.intToBytes(hem
                 .getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), hem.getHeartbeatMode().getValue());
         hem.setExtensionBytes(result);

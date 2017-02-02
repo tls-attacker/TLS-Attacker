@@ -64,7 +64,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         pointer = nextPointer;
         byte[] fragmentLength = { message[pointer] };
         mflExtension.setMaxFragmentLength(fragmentLength);
-        //TODO set in tlsContext
+        // TODO set in tlsContext
         byte[] result = ArrayConverter
                 .concatenate(mflExtension.getExtensionType().getValue(), ArrayConverter.intToBytes(mflExtension
                         .getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), mflExtension

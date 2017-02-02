@@ -50,8 +50,9 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         SignatureAndHashAlgorithmsExtensionMessage initializeMethodMessage = new SignatureAndHashAlgorithmsExtensionMessage(
                 tlsConfig);
 
-        SignatureAndHashAlgorithmsExtensionHandler clientHelloHandler = new SignatureAndHashAlgorithmsExtensionHandler();
-        clientHelloHandler.prepareExtension(new TlsContext(tlsConfig));
+        SignatureAndHashAlgorithmsExtensionHandler sigAndHashAlgoHandler = new SignatureAndHashAlgorithmsExtensionHandler();
+        sigAndHashAlgoHandler.setExtensionMessage(initializeMethodMessage);
+        sigAndHashAlgoHandler.prepareExtension(new TlsContext(tlsConfig));
 
         assertArrayEquals("Tests the complete extension bytes returned by the initializeClientHello method",
                 correctExtensionBytes, initializeMethodMessage.getExtensionBytes().getValue());

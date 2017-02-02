@@ -18,10 +18,12 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
@@ -124,6 +126,8 @@ public class TlsContext {
 
     private ProtocolVersion highestClientProtocolVersion;
 
+    private List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms;
+
     // TODO does this make sense?
     public TlsContext() {
         digest = new TlsMessageDigest();
@@ -135,6 +139,15 @@ public class TlsContext {
         digest = new TlsMessageDigest();
         ecContext = new TlsECContext();
         this.config = config;
+    }
+
+    public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
+        return serverSupportedSignatureAndHashAlgorithms;
+    }
+
+    public void setServerSupportedSignatureAndHashAlgorithms(
+            List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
+        this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {

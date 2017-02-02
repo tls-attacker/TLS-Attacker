@@ -81,7 +81,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
             pointFormats[i] = ECPointFormat.getECPointFormat(message[pointer]);
             pointer++;
         }
-        //TODO set received ECPointFormats in context
+        // TODO set received ECPointFormats in context
         return pointer;
     }
 
