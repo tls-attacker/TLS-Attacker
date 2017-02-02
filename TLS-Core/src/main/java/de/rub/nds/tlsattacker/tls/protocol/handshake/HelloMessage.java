@@ -77,13 +77,6 @@ abstract class HelloMessage extends HandshakeMessage {
 
     public HelloMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
         super(tlsConfig, handshakeMessageType);
-        this.setSessionId(tlsConfig.getSessionId());
-        this.setSessionIdLength(this.getSessionId().getValue().length);
-        final long unixTime = Time.getUnixTime();
-        this.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
-        byte[] random = new byte[HandshakeByteLength.RANDOM];
-        RandomHelper.getRandom().nextBytes(random);
-        this.setRandom(random);
     }
 
     public ModifiableByteArray getRandom() {

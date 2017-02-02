@@ -48,8 +48,6 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     public CertificateVerifyMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE_VERIFY);
-        this.setSignatureHashAlgorithm(tlsConfig.getSupportedSignatureAndHashAlgorithms().get(0).getByteValue());
-        // TODO can we do signature yet?
     }
 
     public ModifiableByteArray getSignatureHashAlgorithm() {
@@ -95,5 +93,4 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         handler.setProtocolMessage(this);
         return handler;
     }
-
 }

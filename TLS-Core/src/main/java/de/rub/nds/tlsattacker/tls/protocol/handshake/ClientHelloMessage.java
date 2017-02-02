@@ -94,22 +94,6 @@ public class ClientHelloMessage extends HelloMessage {
 
     public ClientHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
-        this.supportedCipherSuites = tlsConfig.getSupportedCiphersuites();
-        this.supportedCompressionMethods = tlsConfig.getSupportedCompressionMethods();
-        this.setProtocolVersion(tlsConfig.getHighestProtocolVersion().getValue());
-        byte[] tempCiphersuites = new byte[0];
-        for (CipherSuite cs : supportedCipherSuites) {
-            tempCiphersuites = ArrayConverter.concatenate(tempCiphersuites, cs.getByteValue());
-        }
-        this.setCipherSuites(tempCiphersuites);
-        this.setCipherSuiteLength(cipherSuites.getValue().length);
-
-        byte[] compressionMethods = null;
-        for (CompressionMethod cm : supportedCompressionMethods) {
-            compressionMethods = ArrayConverter.concatenate(compressionMethods, cm.getArrayValue());
-        }
-        this.setCompressions(compressionMethods);
-        this.setCompressionLength(compressions.getValue().length);
         if (tlsConfig.isAddECPointFormatExtension()) {
             addExtension(new ECPointFormatExtensionMessage(tlsConfig));
         }

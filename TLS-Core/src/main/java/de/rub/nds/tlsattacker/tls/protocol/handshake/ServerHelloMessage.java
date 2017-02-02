@@ -20,6 +20,12 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -38,10 +44,29 @@ public class ServerHelloMessage extends HelloMessage {
 
     public ServerHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
+        if (tlsConfig.isAddECPointFormatExtension()) {
+            addExtension(new ECPointFormatExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddEllipticCurveExtension()) {
+            addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddHeartbeatExtension()) {
+            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
+            addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddServerNameIndicationExtension()) {
+            addExtension(new ServerNameIndicationExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
+            addExtension(new SignatureAndHashAlgorithmsExtensionMessage(tlsConfig));
+        }
     }
 
     public ServerHelloMessage() {
         super(HandshakeMessageType.SERVER_HELLO);
+
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {

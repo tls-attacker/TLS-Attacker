@@ -32,7 +32,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     /**
      * List of supported Client Certificate Types
-     * 
+     *
      * @XmlElementWrapper
      * @XmlElements(value = {
      * @XmlElement(type = ClientCertificateType.class, name =
@@ -64,21 +64,6 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     public CertificateRequestMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE_REQUEST);
-        // TODO export to config
-        byte[] clientCertificateTypes = { ClientCertificateType.RSA_SIGN.getValue() };
-        this.setClientCertificateTypes(clientCertificateTypes);
-        int clientCertificateTypesCount = this.getClientCertificateTypes().getValue().length;
-        this.setClientCertificateTypesCount(clientCertificateTypesCount);
-        byte[] signatureAndHashAlgorithms = new byte[0];
-        for (SignatureAndHashAlgorithm sigHashAlg : tlsConfig.getSupportedSignatureAndHashAlgorithms()) {
-            signatureAndHashAlgorithms = ArrayConverter.concatenate(sigHashAlg.getByteValue(),
-                    signatureAndHashAlgorithms);
-        }
-        this.setSignatureHashAlgorithms(signatureAndHashAlgorithms);
-        this.setSignatureHashAlgorithmsLength(signatureAndHashAlgorithms.length);
-        this.setDistinguishedNames(tlsConfig.getDistinguishedNames());
-        this.setDistinguishedNamesLength(tlsConfig.getDistinguishedNames().length);
-
     }
 
     public ModifiableInteger getClientCertificateTypesCount() {
@@ -216,5 +201,4 @@ public class CertificateRequestMessage extends HandshakeMessage {
         handler.setProtocolMessage(this);
         return handler;
     }
-
 }

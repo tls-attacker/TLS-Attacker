@@ -111,35 +111,6 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public DHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
-        BigInteger p = new BigInteger(1, tlsConfig.getFixedDHModulus());
-        BigInteger g = new BigInteger(1, tlsConfig.getFixedDHg());
-        DHParameters params = new DHParameters(p, g);
-
-        KeyGenerationParameters kgp = new DHKeyGenerationParameters(new SecureRandom(), params);
-        DHKeyPairGenerator keyGen = new DHKeyPairGenerator();
-        keyGen.init(kgp);
-        AsymmetricCipherKeyPair serverKeyPair = keyGen.generateKeyPair();
-
-        DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
-        DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
-        this.setG(dhPublic.getParameters().getG());
-        this.setP(dhPublic.getParameters().getP());
-        this.setPublicKey(dhPublic.getY());
-        this.setPrivateKey(dhPrivate.getX());
-
-        byte[] serializedP = BigIntegers.asUnsignedByteArray(this.getP().getValue());
-        this.setSerializedP(serializedP);
-        this.setSerializedPLength(this.getSerializedP().getValue().length);
-
-        byte[] serializedG = BigIntegers.asUnsignedByteArray(this.getG().getValue());
-        this.setSerializedG(serializedG);
-        this.setSerializedGLength(this.getSerializedG().getValue().length);
-
-        byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(this.getPublicKey().getValue());
-        this.setSerializedPublicKey(serializedPublicKey);
-        this.setSerializedPublicKeyLength(this.getSerializedPublicKey().getValue().length);
-        // TODO i guess we cant initialize the rest since it depends on client
-        // information
     }
 
     public ModifiableInteger getpLength() {

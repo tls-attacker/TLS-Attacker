@@ -13,18 +13,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.util.JKSLoader;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.cert.CertificateEncodingException;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -49,18 +42,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
-        ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
-        try {
-            JKSLoader.loadTLSCertificate(tlsConfig.getKeyStore(), tlsConfig.getAlias()).encode(tlsCertBos);
-        } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
-            throw new ConfigurationException("Could not load Certificate for CertificateMessage!", ex);
-        }
-        this.setX509CertificateBytes(tlsCertBos.toByteArray());
-        this.setCertificatesLength(this.getX509CertificateBytes().getValue().length
-                - HandshakeByteLength.CERTIFICATES_LENGTH);
-        // BC implicitly includes the certificates length of all the
-        // certificates, so we only need to set the protocol message length
-        this.setLength(this.getX509CertificateBytes().getValue().length);
     }
 
     public ModifiableInteger getCertificatesLength() {
