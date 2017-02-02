@@ -34,7 +34,11 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     private ModifiableByteArray plainPaddedPremasterSecret;
 
     public RSAClientKeyExchangeMessage(TlsConfig tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        super(tlsConfig);
+    }
+
+    public RSAClientKeyExchangeMessage() {
+        super();
     }
 
     public ModifiableInteger getEncryptedPremasterSecretLength() {

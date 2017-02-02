@@ -28,8 +28,12 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     protected ModifiableByteArray premasterSecret;
 
-    public ClientKeyExchangeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
-        super(tlsConfig, handshakeMessageType);
+    public ClientKeyExchangeMessage() {
+        super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+    }
+
+    public ClientKeyExchangeMessage(TlsConfig tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
     public ModifiableByteArray getMasterSecret() {

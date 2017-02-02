@@ -44,6 +44,10 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
+    public ServerKeyExchangeMessage() {
+        super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
+    }
+
     public ServerKeyExchangeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
         super(tlsConfig, handshakeMessageType);
     }

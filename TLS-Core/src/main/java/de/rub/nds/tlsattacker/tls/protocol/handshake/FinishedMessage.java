@@ -31,6 +31,10 @@ public class FinishedMessage extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.FINISHED);
     }
 
+    public FinishedMessage() {
+        super(HandshakeMessageType.FINISHED);
+    }
+
     public ModifiableByteArray getVerifyData() {
         return verifyData;
     }

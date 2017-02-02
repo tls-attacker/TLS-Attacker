@@ -43,6 +43,10 @@ public class CertificateMessage extends HandshakeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.CERTIFICATE)
     private ModifiableByteArray x509CertificateBytes;
 
+    public CertificateMessage() {
+        super(HandshakeMessageType.CERTIFICATE);
+    }
+
     public CertificateMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
         ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();

@@ -88,6 +88,10 @@ public class ClientHelloMessage extends HelloMessage {
      */
     private byte[] extensionBytes;
 
+    public ClientHelloMessage() {
+        super(HandshakeMessageType.CLIENT_HELLO);
+    }
+
     public ClientHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
         this.supportedCipherSuites = tlsConfig.getSupportedCiphersuites();

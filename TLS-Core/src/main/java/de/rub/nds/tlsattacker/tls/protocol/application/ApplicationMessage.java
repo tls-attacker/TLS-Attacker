@@ -25,6 +25,11 @@ public class ApplicationMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     ModifiableByteArray data;
 
+    public ApplicationMessage() {
+        super();
+        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
+    }
+
     public ApplicationMessage(TlsConfig tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;

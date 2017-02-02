@@ -57,8 +57,12 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray serializedPublicKey;
 
+    public DHClientKeyExchangeMessage() {
+        super();
+    }
+
     public DHClientKeyExchangeMessage(TlsConfig tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        super(tlsConfig);
     }
 
     public ModifiableBigInteger getP() {

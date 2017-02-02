@@ -25,6 +25,11 @@ public class HelloRequestMessage extends HandshakeMessage {
         setIncludeInDigest(false);
     }
 
+    public HelloRequestMessage() {
+        super(HandshakeMessageType.HELLO_REQUEST);
+        setIncludeInDigest(false);
+    }
+
     @Override
     public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
         ProtocolMessageHandler handler = new HelloRequestHandler(tlsContext);

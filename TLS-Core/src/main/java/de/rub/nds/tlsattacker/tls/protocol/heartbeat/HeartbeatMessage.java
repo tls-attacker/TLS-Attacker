@@ -39,6 +39,11 @@ public class HeartbeatMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
     ModifiableByteArray padding;
 
+    public HeartbeatMessage() {
+        super();
+        this.protocolMessageType = ProtocolMessageType.HEARTBEAT;
+    }
+
     public HeartbeatMessage(TlsConfig tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.HEARTBEAT;

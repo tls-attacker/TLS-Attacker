@@ -105,6 +105,10 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray serializedPublicKey;
 
+    public DHEServerKeyExchangeMessage() {
+        super();
+    }
+
     public DHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
         BigInteger p = new BigInteger(1, tlsConfig.getFixedDHModulus());

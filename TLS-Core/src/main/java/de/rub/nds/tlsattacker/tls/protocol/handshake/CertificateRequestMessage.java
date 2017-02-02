@@ -58,6 +58,10 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray distinguishedNames;
 
+    public CertificateRequestMessage() {
+        super(HandshakeMessageType.CERTIFICATE_REQUEST);
+    }
+
     public CertificateRequestMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE_REQUEST);
         // TODO export to config

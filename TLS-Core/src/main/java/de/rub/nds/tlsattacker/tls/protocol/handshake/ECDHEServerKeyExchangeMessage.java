@@ -41,6 +41,10 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;
 
+    public ECDHEServerKeyExchangeMessage() {
+        super();
+    }
+
     public ECDHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }

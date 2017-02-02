@@ -28,6 +28,10 @@ public class ClientHelloDtlsMessage extends ClientHelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     ModifiableByte cookieLength = null;
 
+    public ClientHelloDtlsMessage() {
+        super();
+    }
+
     public ClientHelloDtlsMessage(TlsConfig tlsConfig) {
         super(tlsConfig);
         cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);

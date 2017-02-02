@@ -43,6 +43,11 @@ public final class AlertMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte description;
 
+    public AlertMessage() {
+        super();
+        this.protocolMessageType = ProtocolMessageType.ALERT;
+    }
+
     public AlertMessage(TlsConfig tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;

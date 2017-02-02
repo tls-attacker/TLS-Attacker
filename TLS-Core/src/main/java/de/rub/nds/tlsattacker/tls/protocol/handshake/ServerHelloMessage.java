@@ -40,6 +40,10 @@ public class ServerHelloMessage extends HelloMessage {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
     }
 
+    public ServerHelloMessage() {
+        super(HandshakeMessageType.SERVER_HELLO);
+    }
+
     public ModifiableByteArray getSelectedCipherSuite() {
         return selectedCipherSuite;
     }

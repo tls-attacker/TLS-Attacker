@@ -42,6 +42,10 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
+    public CertificateVerifyMessage() {
+        super(HandshakeMessageType.CERTIFICATE_VERIFY);
+    }
+
     public CertificateVerifyMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE_VERIFY);
         this.setSignatureHashAlgorithm(tlsConfig.getSupportedSignatureAndHashAlgorithms().get(0).getByteValue());

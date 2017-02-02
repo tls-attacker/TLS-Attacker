@@ -58,8 +58,12 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger publicKeyLength;
 
+    public ECDHClientKeyExchangeMessage() {
+        super();
+    }
+
     public ECDHClientKeyExchangeMessage(TlsConfig tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        super(tlsConfig);
     }
 
     public ModifiableBigInteger getPublicKeyBaseX() {

@@ -71,6 +71,10 @@ abstract class HelloMessage extends HandshakeMessage {
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions = new LinkedList<>();
 
+    public HelloMessage(HandshakeMessageType handshakeMessageType) {
+        super(handshakeMessageType);
+    }
+
     public HelloMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
         super(tlsConfig, handshakeMessageType);
         this.setSessionId(tlsConfig.getSessionId());
