@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -42,7 +41,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -55,13 +54,15 @@ public class ClientHelloMessage extends HelloMessage {
      * List of supported compression methods
      */
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = CompressionMethod.class, name = "CompressionMethod") })
+    @XmlElements(value = {
+        @XmlElement(type = CompressionMethod.class, name = "CompressionMethod")})
     private List<CompressionMethod> supportedCompressionMethods = new LinkedList<>();
     /**
      * List of supported ciphersuites
      */
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = CipherSuite.class, name = "CipherSuite") })
+    @XmlElements(value = {
+        @XmlElement(type = CipherSuite.class, name = "CipherSuite")})
     private List<CipherSuite> supportedCipherSuites = new LinkedList<>();
     /**
      * compression length
@@ -94,14 +95,14 @@ public class ClientHelloMessage extends HelloMessage {
 
     public ClientHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
+        if (tlsConfig.isAddHeartbeatExtension()) {
+            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+        }
         if (tlsConfig.isAddECPointFormatExtension()) {
             addExtension(new ECPointFormatExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddEllipticCurveExtension()) {
             addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
-        }
-        if (tlsConfig.isAddHeartbeatExtension()) {
-            addExtension(new HeartbeatExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
             addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));
