@@ -33,6 +33,7 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     public MaxFragmentLengthExtensionMessage(TlsConfig tlsConfig) {
         super();
         this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
+        this.setMaxFragmentLength(tlsConfig.getMaxFragmentLength().getArrayValue());
     }
 
     public MaxFragmentLengthExtensionMessage() {

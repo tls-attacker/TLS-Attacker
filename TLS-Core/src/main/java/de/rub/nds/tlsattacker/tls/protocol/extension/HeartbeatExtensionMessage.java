@@ -28,6 +28,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     public HeartbeatExtensionMessage(TlsConfig tlsConfig) {
         super();
         this.extensionTypeConstant = ExtensionType.HEARTBEAT;
+        setHeartbeatMode(tlsConfig.getHeartbeatMode().getArrayValue());
     }
 
     public HeartbeatExtensionMessage() {

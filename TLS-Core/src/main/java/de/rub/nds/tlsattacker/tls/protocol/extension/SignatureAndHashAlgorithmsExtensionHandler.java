@@ -38,6 +38,9 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     @Override
     public void prepareExtension(TlsContext context) {
         SignatureAndHashAlgorithmsExtensionMessage extension = (SignatureAndHashAlgorithmsExtensionMessage) extensionMessage;
+        if (extension == null) {
+            extension = new SignatureAndHashAlgorithmsExtensionMessage(context.getConfig());
+        }
         byte[] algorithms = new byte[0];
         for (SignatureAndHashAlgorithm algorithm : context.getConfig().getSupportedSignatureAndHashAlgorithms()) {
             algorithms = ArrayConverter.concatenate(algorithms, algorithm.getByteValue());

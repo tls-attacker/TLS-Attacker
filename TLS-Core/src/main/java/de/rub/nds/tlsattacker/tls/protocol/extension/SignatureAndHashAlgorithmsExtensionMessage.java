@@ -33,6 +33,7 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     public SignatureAndHashAlgorithmsExtensionMessage(TlsConfig tlsConfig) {
         super();
         this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
+
     }
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
