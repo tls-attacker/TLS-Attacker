@@ -87,38 +87,6 @@ public class CertificateMessage extends HandshakeMessage {
         this.x509CertificateBytes = ModifiableVariableFactory.safelySetValue(x509CertificateBytes, array);
     }
 
-    // public List<ModifiableInteger> getCertificateLengths() {
-    // return certificateLengths;
-    // }
-    //
-    // public void setCertificateLengths(List<ModifiableInteger>
-    // certificateLengths) {
-    // this.certificateLengths = certificateLengths;
-    // }
-    //
-    // public void addCertificateLength(int length) {
-    // if (this.certificateLengths == null) {
-    // this.certificateLengths = new LinkedList<>();
-    // }
-    // ModifiableInteger mv = new ModifiableVariable<>();
-    // mv.setOriginalValue(length);
-    // this.certificateLengths.add(mv);
-    // }
-    //
-    // public List<Certificate> getCertificates() {
-    // return certificates;
-    // }
-    //
-    // public void setCertificates(List<Certificate> certificates) {
-    // this.certificates = certificates;
-    // }
-    //
-    // public void addCertificate(Certificate cert) {
-    // if (this.certificates == null) {
-    // this.certificates = new LinkedList<>();
-    // }
-    // this.certificates.add(cert);
-    // }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
