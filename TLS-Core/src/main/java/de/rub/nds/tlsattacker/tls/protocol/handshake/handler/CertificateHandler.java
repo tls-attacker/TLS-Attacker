@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
@@ -29,6 +28,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.util.JKSLoader;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
@@ -46,64 +46,22 @@ public class CertificateHandler<Message extends CertificateMessage> extends Hand
 
     @Override
     public byte[] prepareMessageAction() {
+        ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
         try {
-            // todo try to find a better solution for converting sun -> bc
-            // certificates
-            String alias = tlsContext.getConfig().getAlias();
-            if (tlsContext.getConfig().getKeyStore() == null) {
-                throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + alias + ")");
-            }
-            KeyStore ks = tlsContext.getConfig().getKeyStore();
-            java.security.cert.Certificate sunCert = ks.getCertificate(alias);
-            if (alias == null || sunCert == null) {
-                throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
-                        + "certificate alias and key? (Current alias: " + alias + ")");
-            }
-            byte[] certBytes = sunCert.getEncoded();
-
-            ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
-            org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-
-            org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
-            certs[0] = cert;
-            Certificate tlsCerts = new Certificate(certs);
-
-            X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-
-            if (tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) {
-                tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
-                tlsContext.setX509ServerCertificateObject(x509CertObject);
-            } else {
-                tlsContext.setClientCertificate(tlsCerts.getCertificateAt(0));
-                tlsContext.setX509ClientCertificateObject(x509CertObject);
-            }
-
-            ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
-            tlsCerts.encode(tlsCertBos);
-            protocolMessage.setX509CertificateBytes(tlsCertBos.toByteArray());
-
-            // byte[] x509CertBytes = x509CertObject.getEncoded();
-            protocolMessage.setCertificatesLength(protocolMessage.getX509CertificateBytes().getValue().length
-                    - HandshakeByteLength.CERTIFICATES_LENGTH);
-            // protocolMessage.setLength(protocolMessage.getCertificatesLength().getValue()
-            // + HandshakeByteLength.CERTIFICATES_LENGTH);
-            // BC implicitly includes the certificates length of all the
-            // certificates, so we only need to set the protocol message length
-
-            protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
-            byte[] result = protocolMessage.getX509CertificateBytes().getValue();
-
-            long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-                    + protocolMessage.getLength().getValue();
-            protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-                    ArrayConverter.longToUint32Bytes(header), result));
-
-            return protocolMessage.getCompleteResultingMessage().getValue();
-
-        } catch (KeyStoreException | CertificateEncodingException | IOException | CertificateParsingException ex) {
-            throw new ConfigurationException("Certificate with the selected alias could not be found", ex);
+            JKSLoader.loadTLSCertificate(tlsContext.getConfig().getKeyStore(), tlsContext.getConfig().getAlias()).encode(tlsCertBos);
+        } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
+            throw new ConfigurationException("Could not load Certificate for CertificateMessage!", ex);
         }
+        protocolMessage.setX509CertificateBytes(tlsCertBos.toByteArray());
+        protocolMessage.setCertificatesLength(protocolMessage.getX509CertificateBytes().getValue().length
+                - HandshakeByteLength.CERTIFICATES_LENGTH);
+        protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
+        byte[] result = protocolMessage.getX509CertificateBytes().getValue();
+        long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
+                + protocolMessage.getLength().getValue();
+        protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+                ArrayConverter.longToUint32Bytes(header), result));
+        return protocolMessage.getCompleteResultingMessage().getValue();
     }
 
     @Override
