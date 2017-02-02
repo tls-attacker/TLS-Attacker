@@ -122,23 +122,23 @@ public class TlsConfig {
     /**
      * Which heartBeat mode we are in
      */
-    private HeartbeatMode heartbeatMode;
+    private HeartbeatMode heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
     /**
      * Hostname in SNI Extension
      */
-    private String sniHostname;
+    private String sniHostname = "localhost";
     /**
      * Should we terminate the connection on a wrong SNI ?
      */
-    private boolean sniHostnameFatal;
+    private boolean sniHostnameFatal = false;
     /**
      * Server port used
      */
-    private int serverPort;
+    private int serverPort = 4433;
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
-    private MaxFragmentLength maxFragmentLength;
+    private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
     /**
      * Default Timeout we wait for TLSMessages
      */
@@ -213,7 +213,7 @@ public class TlsConfig {
      */
     private X509CertificateObject ourX509Certificate;
 
-    private byte[] distinguishedNames;
+    private byte[] distinguishedNames = new byte[0];
 
     /**
      * Fixed DH modulus used in Server Key Exchange
@@ -255,7 +255,6 @@ public class TlsConfig {
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
-        distinguishedNames = new byte[0];
         try {
             setKeyStore(KeystoreHandler.loadKeyStore("../resources/default.jks", "password"));
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
