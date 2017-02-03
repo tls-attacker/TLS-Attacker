@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
@@ -32,6 +33,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +53,19 @@ public class WorkflowConfigurationFactory {
     public WorkflowConfigurationFactory(TlsConfig config) {
         this.config = config;
     }
-
+    public WorkflowTrace createWorkflowTrace(WorkflowTraceType type)
+    {
+        switch(type)
+        {
+            case CLIENT_HELLO:
+                return createClientHelloWorkflow();
+            case FULL:
+                return createFullWorkflow();
+            case HANDSHAKE:
+                return createHandshakeWorkflow();
+        }
+        throw new ConfigurationException("Unknown WorkflowTraceType "+type.name());
+    }
     public WorkflowTrace createClientHelloWorkflow() {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
@@ -75,6 +89,7 @@ public class WorkflowConfigurationFactory {
                     messages));
         } else {
             ClientHelloMessage clientHello = new ClientHelloMessage(config);
+            messages.add(clientHello);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         }
