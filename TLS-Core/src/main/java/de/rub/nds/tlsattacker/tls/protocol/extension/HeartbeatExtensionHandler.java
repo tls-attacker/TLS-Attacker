@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.extension;
 
@@ -19,15 +18,12 @@ import java.util.Arrays;
  */
 public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensionMessage> {
 
-    private static HeartbeatExtensionHandler instance;
-
     public HeartbeatExtensionHandler() {
-
     }
 
     @Override
     public void prepareExtension(TlsContext context) {
-        byte[] heartbeatMode = { context.getConfig().getHeartbeatMode().getValue() };
+        byte[] heartbeatMode = {context.getConfig().getHeartbeatMode().getValue()};
         HeartbeatExtensionMessage extension = (HeartbeatExtensionMessage) extensionMessage;
         extension.setExtensionType(ExtensionType.HEARTBEAT.getValue());
         extension.setHeartbeatMode(heartbeatMode);
@@ -57,7 +53,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         hem.setExtensionLength(extensionLength);
 
         pointer = nextPointer;
-        byte[] mode = { message[pointer] };
+        byte[] mode = {message[pointer]};
         hem.setHeartbeatMode(mode);
         // TODO set heartbeat mode in tlsContext
         byte[] result = ArrayConverter.concatenate(hem.getExtensionType().getValue(), ArrayConverter.intToBytes(hem
