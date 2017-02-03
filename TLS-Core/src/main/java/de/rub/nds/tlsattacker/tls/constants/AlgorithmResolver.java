@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -16,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Resolves crypto algorithms and their properties from a given cipehr suite
  * (and TLS version).
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class AlgorithmResolver {
@@ -33,7 +32,7 @@ public class AlgorithmResolver {
      * uses per default SHA256 PRF, but allows for definition of further PRFs in
      * specific cipher suites (the last part of a cipher suite string identifies
      * the PRF).
-     * 
+     *
      * @param protocolVersion
      * @param cipherSuite
      * @return
@@ -60,7 +59,7 @@ public class AlgorithmResolver {
      * SHA256 digest algorithm, but allows for definition of further digest
      * algorithms in specific cipher suites (the last part of a cipher suite
      * string identifies the digest).
-     * 
+     *
      * @param protocolVersion
      * @param cipherSuite
      * @return
@@ -122,10 +121,10 @@ public class AlgorithmResolver {
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
      * there are possibly more than one cipher suites needed.
-     * 
+     *
      * This function returns a list of public key algorithms needed when running
      * a server with a cipher suite.
-     * 
+     *
      * @param cipherSuite
      * @return
      */
@@ -178,8 +177,7 @@ public class AlgorithmResolver {
     }
 
     /**
-     * TODO handle aead ciphers
-     * 
+     *
      * @param cipherSuite
      * @return
      */
@@ -189,6 +187,8 @@ public class AlgorithmResolver {
             return CipherType.BLOCK;
         } else if (cipher.contains("RC4")) {
             return CipherType.STREAM;
+        } else if (cipherSuite.isAEAD()) {
+            return CipherType.AEAD;
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
