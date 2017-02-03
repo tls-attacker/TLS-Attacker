@@ -19,8 +19,6 @@ import java.util.Arrays;
  */
 public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragmentLengthExtensionMessage> {
 
-    private static MaxFragmentLengthExtensionHandler instance;
-
     /**
      * Max fragment length
      */
