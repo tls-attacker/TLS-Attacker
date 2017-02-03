@@ -99,7 +99,8 @@ public class TlsClientTest {
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | KeyManagementException ex) {
-            fail(); // TODO
+            ex.printStackTrace();
+            fail();
         }
     }
 
