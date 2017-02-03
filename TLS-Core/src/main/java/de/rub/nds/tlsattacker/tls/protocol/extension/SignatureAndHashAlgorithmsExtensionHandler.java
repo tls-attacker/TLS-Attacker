@@ -24,8 +24,6 @@ import java.util.Arrays;
 public class SignatureAndHashAlgorithmsExtensionHandler extends
         ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 
-    private static SignatureAndHashAlgorithmsExtensionHandler instance;
-
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
 
     public SignatureAndHashAlgorithmsExtensionHandler() {
