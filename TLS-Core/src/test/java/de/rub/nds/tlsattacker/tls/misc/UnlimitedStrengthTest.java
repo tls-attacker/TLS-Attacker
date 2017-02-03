@@ -34,7 +34,6 @@ public class UnlimitedStrengthTest {
 
     final Logger logger = LogManager.getLogger(UnlimitedStrengthTest.class);
 
-    @Test
     public void testAES256() throws Exception {
         try {
             Field isRestricted = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");

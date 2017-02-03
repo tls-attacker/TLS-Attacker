@@ -150,7 +150,7 @@ public class TlsConfig {
     /**
      * Transporthandler Type that shall be used
      */
-    private TransportHandlerType transportHandlerType;
+    private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
     /**
      * If the workflow should be verified //TODO
      */

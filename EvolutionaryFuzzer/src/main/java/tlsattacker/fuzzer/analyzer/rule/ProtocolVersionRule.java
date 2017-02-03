@@ -111,7 +111,7 @@ public class ProtocolVersionRule extends Rule {
                 return true;
             }
         }
-
+        //TODO use is DTLS
         int intRepresentationClientVersion = clientProtocolVersions[0] * 0x100 + clientProtocolVersions[1];
         int intRepresentationServerVersion = serverProtocolVersions[0] * 0x100 + serverProtocolVersions[1];
         if (clientProtocolVersions[0] == (byte) 0xFE && serverProtocolVersions[0] == (byte) 0xFE) {

@@ -64,12 +64,12 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
             versions = new ProtocolVersion[] { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
         } else {
             versions = new ProtocolVersion[] { tlsConfig.getHighestProtocolVersion() };// TODO
-                                                                                // Initialisation
-                                                                                // should
-                                                                                // be
-                                                                                // done
-                                                                                // in
-                                                                                // config
+            // Initialisation
+            // should
+            // be
+            // done
+            // in
+            // config
         }
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
@@ -107,7 +107,8 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
     private void executeAttackRound(ConfigHandler configHandler) {
         TlsConfig tlsConfig = configHandler.initialize(config);
-        LOGGER.info("Testing {}, {}", tlsConfig.getHighestProtocolVersion(), tlsConfig.getSupportedCiphersuites().get(0));
+        LOGGER.info("Testing {}, {}", tlsConfig.getHighestProtocolVersion(), tlsConfig.getSupportedCiphersuites()
+                .get(0));
 
         TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
         TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);

@@ -11,9 +11,11 @@ package de.rub.nds.tlsattacker.tls.config;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
@@ -63,6 +65,6 @@ public class ConfigHandler {
     }
 
     public WorkflowExecutor initializeWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-        return null;
+        return new GenericWorkflowExecutor(transportHandler, tlsContext, ExecutorType.TLS);
     }
 }
