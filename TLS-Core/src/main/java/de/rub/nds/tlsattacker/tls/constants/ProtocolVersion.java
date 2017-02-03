@@ -49,6 +49,10 @@ public enum ProtocolVersion {
         }
     }
 
+    public boolean isDTLS() {
+        return value[0] == 0xFE;
+    }
+
     public static ProtocolVersion getProtocolVersion(byte[] value) {
         Integer i = valueToInt(value);
         if (i == null) {
@@ -97,4 +101,5 @@ public enum ProtocolVersion {
         throw new IllegalArgumentException("Value " + protocolVersion + " cannot be converted to a protocol version. "
                 + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
     }
+
 }
