@@ -38,7 +38,6 @@ public enum AlertLevel {
     }
 
     public static AlertLevel getAlertLevel(byte value) {
-        // TODO kann probleme machen wenn byte value not defined ist
         AlertLevel level = MAP.get(value);
         if (level == null) {
             level = UNDEFINED;
