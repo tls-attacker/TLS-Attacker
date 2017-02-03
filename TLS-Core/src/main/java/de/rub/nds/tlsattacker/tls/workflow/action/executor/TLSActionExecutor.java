@@ -220,30 +220,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * Handles a renegotiation request.
      */
     private void handleRenegotiation() {
-        // workflowContext.setProtocolMessagePointer(0);
         context.getDigest().reset();
-
-        /*
-         * if there is no keystore file we can not authenticate per certificate
-         * and if isClientauthentication is true, we do not need to change the
-         * WorkflowTrace
-         */
-        // TODO ??!?!?!?
-        if (context.getConfig().getKeyStore() != null && !context.getConfig().isClientAuthentication()) {
-            context.getConfig().setClientAuthentication(true);
-            // RenegotiationWorkflowConfiguration reneWorkflowConfig = new
-            // RenegotiationWorkflowConfiguration(context);
-            // reneWorkflowConfig.createWorkflow();
-        } else if (context.getConfig().getKeyStore() == null && context.getConfig().isSessionResumption()) {
-            // RenegotiationWorkflowConfiguration reneWorkflowConfig = new
-            // RenegotiationWorkflowConfiguration(context);
-            // reneWorkflowConfig.createWorkflow();
-        }
-
-        context.getConfig().setSessionResumption(false);
-        context.getConfig().setRenegotiation(false);
-        // TODO We have to deal with renegotiation differently
-        // executeWorkflow();
     }
 
     /**
