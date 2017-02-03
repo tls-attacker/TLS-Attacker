@@ -83,8 +83,6 @@ public class TLSActionExecutor extends ActionExecutor {
         List<ProtocolMessage> receivedList = new LinkedList<>();
         try {
             receivedList = handleProtocolMessagesFromPeer(messages);
-        } catch (IOException ex) {
-            // TODO
         } catch (Exception ex) {
             LOGGER.info("Uncaught exception while parsing the received Messages", ex);
         }
