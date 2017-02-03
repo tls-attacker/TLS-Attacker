@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
@@ -131,6 +132,8 @@ public class TlsContext {
 
     private List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms;
 
+    private HeartbeatMode heartbeatMode;
+    
     // TODO does this make sense?
     public TlsContext() {
         digest = new TlsMessageDigest();
@@ -148,6 +151,14 @@ public class TlsContext {
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
+    public HeartbeatMode getHeartbeatMode() {
+        return heartbeatMode;
+    }
+
+    public void setHeartbeatMode(HeartbeatMode heartbeatMode) {
+        this.heartbeatMode = heartbeatMode;
+    }
+    
     public List<CompressionMethod> getClientSupportedCompressions() {
         return clientSupportedCompressions;
     }
