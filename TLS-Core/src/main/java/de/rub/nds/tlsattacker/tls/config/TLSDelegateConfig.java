@@ -26,7 +26,8 @@ public abstract class TLSDelegateConfig {
 
     public TLSDelegateConfig() {
         delegateList = new LinkedList<>();
-        delegateList.add(new GeneralDelegate());
+        generalDelegate = new GeneralDelegate();
+        delegateList.add(generalDelegate);
     }
 
     public void addDelegate(Delegate delegate) {
