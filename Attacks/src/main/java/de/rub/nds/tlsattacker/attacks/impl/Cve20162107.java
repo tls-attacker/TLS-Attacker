@@ -57,20 +57,8 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-        ProtocolVersion[] versions;
+        ProtocolVersion[] versions = (ProtocolVersion[]) config.getVersions().toArray();
         TlsConfig tlsConfig = configHandler.initialize(config);
-
-        if (tlsConfig.getHighestProtocolVersion() == null) {
-            versions = new ProtocolVersion[] { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
-        } else {
-            versions = new ProtocolVersion[] { tlsConfig.getHighestProtocolVersion() };// TODO
-            // Initialisation
-            // should
-            // be
-            // done
-            // in
-            // config
-        }
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {
@@ -85,8 +73,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         for (ProtocolVersion pv : versions) {
             for (CipherSuite cs : ciphers) {
                 tlsConfig.setHighestProtocolVersion(pv);
-                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs)); // TODO
-                                                                                   // what
+                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));                                                       // what
                 executeAttackRound(configHandler);
             }
         }
