@@ -232,6 +232,8 @@ public class TlsConfig {
      */
     private byte[] fixedDHg = { 0x02 };
 
+    private String defaultApplicationMessageData = "Test";
+
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -262,6 +264,14 @@ public class TlsConfig {
             throw new ConfigurationException("Could not load deauflt JKS!");
         }
 
+    }
+
+    public String getDefaultApplicationMessageData() {
+        return defaultApplicationMessageData;
+    }
+
+    public void setDefaultApplicationMessageData(String defaultApplicationMessageData) {
+        this.defaultApplicationMessageData = defaultApplicationMessageData;
     }
 
     public boolean isEnforceSettings() {

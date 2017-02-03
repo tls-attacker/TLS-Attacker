@@ -46,9 +46,9 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
         tlsContext.setRecordHandler(new RecordHandler(tlsContext));
         tlsContext.setTransportHandler(transportHandler);
         this.workflowContext = new WorkflowContext();
-        if(tlsContext.getWorkflowTrace() == null)
-        {
-            tlsContext.setWorkflowTrace(new WorkflowConfigurationFactory(tlsContext.getConfig()).createWorkflowTrace(tlsContext.getConfig().getWorkflowTraceType()));
+        if (tlsContext.getWorkflowTrace() == null) {
+            tlsContext.setWorkflowTrace(new WorkflowConfigurationFactory(tlsContext.getConfig())
+                    .createWorkflowTrace(tlsContext.getConfig().getWorkflowTraceType()));
         }
         this.type = type;
     }

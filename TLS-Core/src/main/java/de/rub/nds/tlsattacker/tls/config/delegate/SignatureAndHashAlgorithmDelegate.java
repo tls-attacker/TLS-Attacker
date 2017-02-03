@@ -22,7 +22,8 @@ import java.util.List;
  */
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
-    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms") //TODO validator
+    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms")
+    // TODO validator
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmDelegate() {

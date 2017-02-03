@@ -262,7 +262,8 @@ public class TlsClientTest {
         tlsContext.setWorkflowTrace(new WorkflowTrace());
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, new ClientHelloMessage(config)));
+        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, new ClientHelloMessage(
+                config)));
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new ServerHelloMessage(
                 config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 

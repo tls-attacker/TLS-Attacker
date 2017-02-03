@@ -24,8 +24,7 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public byte[] prepareMessageAction() {
-        // TODO can be set in config
-        protocolMessage.setData("test".getBytes());
+        protocolMessage.setData(tlsContext.getConfig().getDefaultApplicationMessageData().getBytes());
         byte[] result = protocolMessage.getData().getValue();
         return result;
     }

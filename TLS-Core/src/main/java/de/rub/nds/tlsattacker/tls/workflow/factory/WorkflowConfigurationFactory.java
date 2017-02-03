@@ -53,10 +53,9 @@ public class WorkflowConfigurationFactory {
     public WorkflowConfigurationFactory(TlsConfig config) {
         this.config = config;
     }
-    public WorkflowTrace createWorkflowTrace(WorkflowTraceType type)
-    {
-        switch(type)
-        {
+
+    public WorkflowTrace createWorkflowTrace(WorkflowTraceType type) {
+        switch (type) {
             case CLIENT_HELLO:
                 return createClientHelloWorkflow();
             case FULL:
@@ -64,8 +63,9 @@ public class WorkflowConfigurationFactory {
             case HANDSHAKE:
                 return createHandshakeWorkflow();
         }
-        throw new ConfigurationException("Unknown WorkflowTraceType "+type.name());
+        throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
+
     public WorkflowTrace createClientHelloWorkflow() {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
