@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
+import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
-    // todo define parameter
+    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms") //TODO validator
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmDelegate() {
