@@ -187,6 +187,8 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
         nextPointer += cipherSuitesLength;
         protocolMessage.setCipherSuites(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
+        tlsContext.setClientSupportedCiphersuites(CipherSuite.getCiphersuites(protocolMessage.getCipherSuites()
+                .getValue()));
         currentPointer = nextPointer;
         nextPointer += HandshakeByteLength.COMPRESSION;
         int compressionsLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));

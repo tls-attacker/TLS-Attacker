@@ -390,6 +390,23 @@ public enum CipherSuite {
         return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
+    public static List<CipherSuite> getCiphersuites(byte[] values) {
+        // TODO no stable enough, also add unit tests
+        List<CipherSuite> cipherSuites = new LinkedList<>();
+        int pointer = 0;
+        if (values.length % 2 != 0) {
+            // TODO not a ciphersuite field
+        }
+        while (pointer < values.length) {
+            byte[] suite = new byte[2];
+            suite[0] = values[pointer];
+            suite[1] = values[pointer + 1];
+            cipherSuites.add(getCipherSuite(suite));
+            pointer += 2;
+        }
+        return cipherSuites;
+    }
+
     public static CipherSuite getCipherSuite(byte[] value) {
         return getCipherSuite(valueToInt(value));
     }

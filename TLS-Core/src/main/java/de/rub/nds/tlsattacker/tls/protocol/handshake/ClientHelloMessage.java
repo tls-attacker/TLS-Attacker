@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
@@ -54,15 +55,13 @@ public class ClientHelloMessage extends HelloMessage {
      * List of supported compression methods
      */
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = CompressionMethod.class, name = "CompressionMethod")})
+    @XmlElements(value = { @XmlElement(type = CompressionMethod.class, name = "CompressionMethod") })
     private List<CompressionMethod> supportedCompressionMethods = new LinkedList<>();
     /**
      * List of supported ciphersuites
      */
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = CipherSuite.class, name = "CipherSuite")})
+    @XmlElements(value = { @XmlElement(type = CipherSuite.class, name = "CipherSuite") })
     private List<CipherSuite> supportedCipherSuites = new LinkedList<>();
     /**
      * compression length

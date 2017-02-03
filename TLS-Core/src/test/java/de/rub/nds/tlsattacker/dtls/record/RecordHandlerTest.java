@@ -31,6 +31,7 @@ public class RecordHandlerTest {
     TlsContext tlsContext = new TlsContext(new TlsConfig());
 
     public RecordHandlerTest() {
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
         rh = tlsContext.getRecordHandler();

@@ -44,14 +44,14 @@ public class ServerHelloMessage extends HelloMessage {
 
     public ServerHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
+        if (tlsConfig.isAddHeartbeatExtension()) {
+            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+        }
         if (tlsConfig.isAddECPointFormatExtension()) {
             addExtension(new ECPointFormatExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddEllipticCurveExtension()) {
             addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
-        }
-        if (tlsConfig.isAddHeartbeatExtension()) {
-            addExtension(new HeartbeatExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
             addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));

@@ -9,10 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +22,9 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.LinkedList;
 import static org.junit.Assert.*;
 
 /**
@@ -55,6 +48,12 @@ public class ServerHelloHandlerTest {
     public ServerHelloHandlerTest() {
         tlsContext = new TlsContext();
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
+        tlsContext.setClientSupportedCiphersuites(CipherSuite.getImplemented());
+        List<CompressionMethod> implementedCompressions = new LinkedList<>();
+        implementedCompressions.add(CompressionMethod.NULL);
+        tlsContext.setClientSupportedCompressions(implementedCompressions);
         handler = new ServerHelloHandler(tlsContext);
     }
 
@@ -114,7 +113,6 @@ public class ServerHelloHandlerTest {
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
         assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
         assertTrue("Extension must be Heartbeat", message.containsExtension(ExtensionType.HEARTBEAT));
-
         assertEquals("The pointer has to return the length of this message + starting position",
                 serverKeyExchangeWithHeartbeatBytes.length, endPointer);
     }
@@ -124,9 +122,10 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testPrepareMessage() {
-        handler.setProtocolMessage(new ServerHelloMessage(new TlsConfig()));
+        tlsContext.getConfig().setEnforceSettings(true);
+        handler.setProtocolMessage(new ServerHelloMessage(tlsContext.getConfig()));
 
-        ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
+        ServerHelloMessage message = handler.getProtocolMessage();
 
         tlsContext.setCompressionMethod(CompressionMethod.NULL);
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
@@ -139,8 +138,6 @@ public class ServerHelloHandlerTest {
                 new byte[] { CompressionMethod.NULL.getValue() });
 
         assertNotNull("Confirm function didn't return 'NULL'", returned);
-        System.out.println(ArrayConverter.bytesToHexString(returned));
-        System.out.println(ArrayConverter.bytesToHexString(expected));
         assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
@@ -150,29 +147,15 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testPrepareMessageWithExtensions() {
-        handler.setProtocolMessage(new ServerHelloMessage(new TlsConfig()));
-
-        ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
-
-        tlsContext.setCompressionMethod(CompressionMethod.NULL);
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-
-        HeartbeatExtensionMessage heart;
-        heart = new HeartbeatExtensionMessage();
-        heart.setHeartbeatModeConfig(HeartbeatMode.PEER_ALLOWED_TO_SEND);
-
-        EllipticCurvesExtensionMessage ecc;
-        ecc = new EllipticCurvesExtensionMessage(new TlsConfig());
+        tlsContext.getConfig().setAddHeartbeatExtension(true);
+        tlsContext.getConfig().setAddEllipticCurveExtension(true);
+        tlsContext.getConfig().setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
         List<NamedCurve> curve = new ArrayList<>();
         curve.add(NamedCurve.SECP160K1);
         curve.add(NamedCurve.SECT163K1);
-        ecc.setSupportedCurvesConfig(curve);
-
-        List<ExtensionMessage> extensions = new ArrayList<>();
-        extensions.add(heart);
-        extensions.add(ecc);
-        message.setExtensions(extensions);
-
+        tlsContext.getConfig().setNamedCurves(curve);
+        handler.setProtocolMessage(new ServerHelloMessage(tlsContext.getConfig()));
+        ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
         byte[] returned = handler.prepareMessageAction();
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO.getValue() },
                 new byte[] { 0x00, 0x00, 0x57 }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),
@@ -185,7 +168,8 @@ public class ServerHelloHandlerTest {
                 NamedCurve.SECP160K1.getValue(), NamedCurve.SECT163K1.getValue());
 
         assertNotNull("Confirm function didn't return 'NULL'", returned);
+        System.out.println("Expected: " + ArrayConverter.bytesToHexString(expected));
+        System.out.println("Returned: " + ArrayConverter.bytesToHexString(returned));
         assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
-
 }

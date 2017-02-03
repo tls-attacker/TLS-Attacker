@@ -215,6 +215,7 @@ public class TlsConfig {
 
     private byte[] distinguishedNames = new byte[0];
 
+    private boolean enforceSettings = false;
     /**
      * Fixed DH modulus used in Server Key Exchange
      */
@@ -261,6 +262,14 @@ public class TlsConfig {
             throw new ConfigurationException("Could not load deauflt JKS!");
         }
 
+    }
+
+    public boolean isEnforceSettings() {
+        return enforceSettings;
+    }
+
+    public void setEnforceSettings(boolean enforceSettings) {
+        this.enforceSettings = enforceSettings;
     }
 
     public byte[] getFixedDHg() {

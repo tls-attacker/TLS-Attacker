@@ -30,7 +30,7 @@ import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -61,7 +61,6 @@ public class TlsContext {
     // Initially no ciphersuite is selected
     private CipherSuite selectedCipherSuite = null;
 
-    private ProtocolVersion selectedProtocolVersion = null;
     /**
      * compression algorithm
      */
@@ -122,9 +121,13 @@ public class TlsContext {
      */
     private byte[] dtlsHandshakeCookie = new byte[0];
 
-    private ProtocolVersion negotiatedProtocolVersion;
+    private ProtocolVersion selectedProtocolVersion;
 
     private ProtocolVersion highestClientProtocolVersion;
+
+    private List<CipherSuite> clientSupportedCiphersuites;
+
+    private List<CompressionMethod> clientSupportedCompressions;
 
     private List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms;
 
@@ -133,12 +136,32 @@ public class TlsContext {
         digest = new TlsMessageDigest();
         ecContext = new TlsECContext();
         config = new TlsConfig();
+        // init protocolVersion for records
+        selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
     public TlsContext(TlsConfig config) {
         digest = new TlsMessageDigest();
         ecContext = new TlsECContext();
         this.config = config;
+        // init protocolVersion for records
+        selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public List<CompressionMethod> getClientSupportedCompressions() {
+        return clientSupportedCompressions;
+    }
+
+    public void setClientSupportedCompressions(List<CompressionMethod> clientSupportedCompressions) {
+        this.clientSupportedCompressions = clientSupportedCompressions;
+    }
+
+    public List<CipherSuite> getClientSupportedCiphersuites() {
+        return clientSupportedCiphersuites;
+    }
+
+    public void setClientSupportedCiphersuites(List<CipherSuite> clientSupportedCiphersuites) {
+        this.clientSupportedCiphersuites = clientSupportedCiphersuites;
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -186,14 +209,6 @@ public class TlsContext {
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }
-    }
-
-    public ProtocolVersion getNegotiatedProtocolVersion() {
-        return negotiatedProtocolVersion;
-    }
-
-    public void setNegotiatedProtocolVersion(ProtocolVersion negotiatedProtocolVersion) {
-        this.negotiatedProtocolVersion = negotiatedProtocolVersion;
     }
 
     public byte[] getMasterSecret() {

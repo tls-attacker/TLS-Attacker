@@ -191,7 +191,8 @@ public class ClientHelloHandlerTest {
         assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
                 message.getHandshakeMessageType());
         assertEquals("Message length must be 48", new Integer(48), message.getLength().getValue());
-        assertArrayEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12.getValue(), message.getProtocolVersion().getValue());
+        assertArrayEquals("Protocol version must be TLS 1.2", ProtocolVersion.TLS12.getValue(), message
+                .getProtocolVersion().getValue());
         assertEquals("Client Session ID Length", new Integer(0), message.getSessionIdLength().getValue());
         assertArrayEquals(
                 "Client Random",

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handshake;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -94,6 +95,7 @@ public class RSAClientKeyExchangeHandlerTest {
 
             tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
             tlsContext.setX509ServerCertificateObject(x509CertObject);
+            tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         } catch (KeyStoreException | CertificateEncodingException | IOException | CertificateParsingException ex) {
             throw new ConfigurationException("Certificate with the selected alias could not be found", ex);
         }
