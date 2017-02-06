@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.tls.config.converters.SignatureAndHashAlgorithmConverter;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
@@ -22,8 +23,7 @@ import java.util.List;
  */
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
-    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms")
-    // TODO validator
+    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms seperated by comma eg. RSA-SHA512,DSA-SHA512", converter = SignatureAndHashAlgorithmConverter.class)
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmDelegate() {

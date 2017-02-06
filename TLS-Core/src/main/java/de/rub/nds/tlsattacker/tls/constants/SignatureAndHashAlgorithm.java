@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Construction of a hash and signature algorithm.
@@ -96,4 +97,25 @@ public class SignatureAndHashAlgorithm implements Serializable {
     public String toString() {
         return signatureAlgorithm + "-" + hashAlgorithm;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.signatureAlgorithm);
+        hash = 47 * hash + Objects.hashCode(this.hashAlgorithm);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SignatureAndHashAlgorithm other = (SignatureAndHashAlgorithm) obj;
+        return this.hashAlgorithm == other.hashAlgorithm && this.signatureAlgorithm == other.signatureAlgorithm;
+    }
+
 }
