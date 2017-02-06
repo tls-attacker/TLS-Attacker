@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
@@ -28,7 +27,7 @@ import java.util.List;
 /**
  * This ActionExecutor tries to perform Actions in a way that imitates a TLS
  * Client/Server.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSActionExecutor extends ActionExecutor {
@@ -43,9 +42,8 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Sends a list of ProtocolMessage
-     * 
-     * @param messages
-     *            Protocolmessages to send
+     *
+     * @param messages Protocolmessages to send
      * @return List of actually send Messages
      */
     @Override
@@ -73,9 +71,8 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Receives messages, and tries to receive the messages specified in
      * messages
-     * 
-     * @param messages
-     *            Messages which should be received
+     *
+     * @param messages Messages which should be received
      * @return Actually received Messages
      */
     @Override
@@ -93,13 +90,10 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Sends all messageBytes in the MessageByteCollector with the specified
      * TransportHandler
-     * 
-     * @param handler
-     *            TransportHandler to send the Data with
-     * @param messageBytesCollector
-     *            MessageBytes to send
-     * @throws IOException
-     *             Thrown if something goes wrong while sending
+     *
+     * @param handler TransportHandler to send the Data with
+     * @param messageBytesCollector MessageBytes to send
+     * @throws IOException Thrown if something goes wrong while sending
      */
     private void sendData(TransportHandler handler, MessageBytesCollector messageBytesCollector) throws IOException {
         if (messageBytesCollector.getRecordBytes().length != 0) {
@@ -113,9 +107,8 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Chooses the correct handler for the ProtocolMessage and returns the
      * preparedMessage bytes
-     * 
-     * @param message
-     *            Message to prepare
+     *
+     * @param message Message to prepare
      * @return Prepared message bytes for the ProtocolMessage
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
@@ -127,11 +120,9 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Prepares records for a given protocol message
-     * 
-     * @param message
-     *            Message which contains the records
-     * @param messageBytesCollector
-     *            Messagebyte collector to use
+     *
+     * @param message Message which contains the records
+     * @param messageBytesCollector Messagebyte collector to use
      * @return Byte array containing the prepared Records
      */
     private byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector) {
@@ -143,9 +134,8 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Returns true if the List contains an ArbitraryMessage
-     * 
-     * @param protocolMessages
-     *            Protocol messages to search in
+     *
+     * @param protocolMessages Protocol messages to search in
      * @return True if it contains atleast one ArbitraryMessage
      */
     private boolean containsArbitaryMessage(List<ProtocolMessage> protocolMessages) {
@@ -159,12 +149,11 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Reads records in and parses them into protocol messages
-     * 
-     * @param protocolMessages
-     *            Protocol messages we are expecting to receive
+     *
+     * @param protocolMessages Protocol messages we are expecting to receive
      * @return ReceivedProtocolMessages
-     * @throws IOException
-     *             Thrown if something goes wrong while reading in records
+     * @throws IOException Thrown if something goes wrong while reading in
+     * records
      */
     private List<ProtocolMessage> handleProtocolMessagesFromPeer(List<ProtocolMessage> protocolMessages)
             throws IOException {
@@ -187,9 +176,8 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Parses a list of Records into a List of ProtocolMessage objects
-     * 
-     * @param records
-     *            Records to be parsed
+     *
+     * @param records Records to be parsed
      * @return List of ProtocolMessage objects
      */
     private List<ProtocolMessage> parseRecords(List<Record> records) {
@@ -201,35 +189,22 @@ public class TLSActionExecutor extends ActionExecutor {
                     .getContentType().getValue());
             receivedMessages
                     .addAll(parseRawProtocolMessageBytes(rawProtocolMessageBytes, protocolMessageType, context));
-            if (!context.getConfig().isRenegotiation()) {
-                for (ProtocolMessage pm : receivedMessages) {
-                    pm.setRecords(recordsOfSameContent);
+            for (ProtocolMessage pm : receivedMessages) {
+                pm.setRecords(recordsOfSameContent);
                     // If we received more than one message in the records
-                    // we set the records of all messages
-                }
-            } else {
-                handleRenegotiation();
+                // we set the records of all messages
             }
         }
         return receivedMessages;
     }
 
     /**
-     * Handles a renegotiation request.
-     */
-    private void handleRenegotiation() {
-        context.getDigest().reset();
-    }
-
-    /**
      * Tries to parse the raw protocol message bytes into
-     * 
-     * @param rawProtocolMessageBytes
-     *            raw protocol message bytes to parse
-     * @param protocolMessageType
-     *            The type of the protocol message that should be parsed
-     * @param context
-     *            The TLSContext to use
+     *
+     * @param rawProtocolMessageBytes raw protocol message bytes to parse
+     * @param protocolMessageType The type of the protocol message that should
+     * be parsed
+     * @param context The TLSContext to use
      * @return List of parsed ProtocolMessage
      */
     private List<ProtocolMessage> parseRawProtocolMessageBytes(byte[] rawProtocolMessageBytes,
@@ -240,7 +215,7 @@ public class TLSActionExecutor extends ActionExecutor {
             ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
                     rawProtocolMessageBytes[dataPointer], context);
             if (Arrays.equals(rawProtocolMessageBytes,
-                    new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
+                    new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00})) {
                 context.getConfig().setRenegotiation(true);
             } else {
                 pmh.initializeProtocolMessage();
@@ -260,9 +235,8 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Returns true if the protocolMessage in the protocolMessageHandler is a
      * fatal alert
-     * 
-     * @param protocolMessageHandler
-     *            ProtocolmessageHandler to analyze
+     *
+     * @param protocolMessageHandler ProtocolmessageHandler to analyze
      */
     private boolean receivedFatalAlert(ProtocolMessageHandler protocolMessageHandler) {
         if (protocolMessageHandler.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
@@ -278,9 +252,8 @@ public class TLSActionExecutor extends ActionExecutor {
     /**
      * Converts a List of Records into a byte array containing their
      * protocolmessage bytes
-     * 
-     * @param records
-     *            Records to convert
+     *
+     * @param records Records to convert
      * @return A byte array containing the raw protocol message bytes
      */
     private byte[] convertRecordsToProtocolMessageBytes(List<Record> records) {
@@ -293,7 +266,7 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Creates a list of records of the same content type
-     * 
+     *
      * @param records
      * @return
      */
@@ -328,11 +301,10 @@ public class TLSActionExecutor extends ActionExecutor {
 
     /**
      * Fetches a Data from the TransportHandler and parses it into Records
-     * 
+     *
      * @return A List of parsed Records
-     * @throws IOException
-     *             Thrown if something goes wrong while fetching the Data from
-     *             the Transporthandler
+     * @throws IOException Thrown if something goes wrong while fetching the
+     * Data from the Transporthandler
      */
     private List<Record> readRecords() throws IOException {
         List<Record> records = null;
