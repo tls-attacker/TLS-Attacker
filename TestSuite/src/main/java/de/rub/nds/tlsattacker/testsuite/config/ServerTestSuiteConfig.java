@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 
 /**
  *
@@ -26,10 +27,14 @@ public class ServerTestSuiteConfig extends TLSDelegateConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private final HostnameExtensionDelegate hostnameDelegate;
 
     public ServerTestSuiteConfig() {
         clientDelegate = new ClientDelegate();
+        hostnameDelegate = new HostnameExtensionDelegate();
         addDelegate(clientDelegate);
+        addDelegate(hostnameDelegate);
     }
 
     public String getFolder() {
