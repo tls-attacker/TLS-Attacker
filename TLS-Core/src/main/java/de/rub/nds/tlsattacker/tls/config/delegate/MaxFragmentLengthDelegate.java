@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  */
 public class MaxFragmentLengthDelegate extends Delegate {
 
-    //TODO Add validator, and extend unit test
+    // TODO Add validator, and extend unit test
     @Parameter(names = "-max_fragment_length", description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
     private int maxFragmentLength;
 
