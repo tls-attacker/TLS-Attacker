@@ -34,7 +34,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     public byte[] prepareMessageAction() {
         protocolMessage.setCcsProtocolType(CCS_PROTOCOL_TYPE);
-        //TODO isRenegotiation Cannot be right
+        // TODO isRenegotiation Cannot be right
         if ((tlsContext.getConfig().isRenegotiation() && tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT)
                 || tlsContext.getRecordHandler().getRecordCipher() == null) {
             setRecordCipher();
@@ -46,7 +46,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-        //TODO isRenegotiation Cannot be right
+        // TODO isRenegotiation Cannot be right
         if ((tlsContext.getConfig().isRenegotiation() && tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER)
                 || tlsContext.getRecordHandler().getRecordCipher() == null) {
             setRecordCipher();
