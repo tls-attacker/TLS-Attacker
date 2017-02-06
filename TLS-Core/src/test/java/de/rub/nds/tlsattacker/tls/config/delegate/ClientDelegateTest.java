@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -70,6 +71,7 @@ public class ClientDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.getHost().equals("123456"));
+        assertTrue(config.getMyConnectionEnd() == ConnectionEnd.CLIENT);
     }
 
 }
