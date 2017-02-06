@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 
 /**
  *
@@ -33,6 +34,7 @@ public class ClientDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         config.setHost(host);
+        config.setMyConnectionEnd(ConnectionEnd.CLIENT);
     }
 
 }
