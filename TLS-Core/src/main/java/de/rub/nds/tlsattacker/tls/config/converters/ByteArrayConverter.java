@@ -8,6 +8,7 @@
 package de.rub.nds.tlsattacker.tls.config.converters;
 
 import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -18,7 +19,14 @@ public class ByteArrayConverter implements IStringConverter<byte[]> {
 
     @Override
     public byte[] convert(String value) {
-        return ArrayConverter.hexStringToByteArray(value);
+
+        try {
+            return ArrayConverter.hexStringToByteArray(value);
+        }
+        catch(IllegalArgumentException ex)
+        {
+            throw new ParameterException("Could not parse "+ value + ". Not a hex String");
+        }
     }
-    
+
 }
