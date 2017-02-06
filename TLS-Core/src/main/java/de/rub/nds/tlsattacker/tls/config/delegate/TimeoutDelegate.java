@@ -21,7 +21,7 @@ public class TimeoutDelegate extends Delegate {
     private int timeout = 1000;
 
     @Parameter(names = "-tls_timeout", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
-    private int tlsTimeout = 400;
+    private int tlsTimeout = 800;
 
     public TimeoutDelegate() {
     }
