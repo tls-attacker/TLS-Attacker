@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
@@ -26,7 +25,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  */
 public class TransportHandlerDelegate extends Delegate {
 
-    @Parameter(names = "-transport_handler_type", description = "Transport Handler type", converter = TransportHandlerTypeConverter.class)
+    @Parameter(names = "-transport_handler_type", description = "Transport Handler type (TCP, EAP_TLS, UDP)", converter = TransportHandlerTypeConverter.class)
     private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
 
     public TransportHandlerDelegate() {
