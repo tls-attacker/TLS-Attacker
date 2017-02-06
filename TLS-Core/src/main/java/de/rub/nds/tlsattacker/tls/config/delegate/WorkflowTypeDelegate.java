@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.tls.config.converters.WorkflowTraceTypeConverter;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -22,7 +23,7 @@ import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
  */
 public class WorkflowTypeDelegate extends Delegate {
 
-    @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace (FULL or HANDSHAKE)")
+    @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace (CLIENT_HELLO, HANDSHAKE or FULL)", converter = WorkflowTraceTypeConverter.class)
     protected WorkflowTraceType workflowTraceType = WorkflowTraceType.FULL;
 
     public WorkflowTypeDelegate() {
