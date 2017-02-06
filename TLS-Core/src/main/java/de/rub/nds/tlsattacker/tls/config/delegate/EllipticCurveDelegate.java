@@ -22,10 +22,10 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class EllipticCurveDelegate extends Delegate {
-
+    //TODO Add example in description
     @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats", converter = PointFormatConverter.class)
     private List<ECPointFormat> pointFormats;
-
+    //TODO Add example in description
     @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma. ", converter = NamedCurveConverter.class)
     private List<NamedCurve> namedCurves;
 
