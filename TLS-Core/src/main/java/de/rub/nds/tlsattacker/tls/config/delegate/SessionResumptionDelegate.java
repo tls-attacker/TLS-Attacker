@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.tls.config.converters.ByteArrayConverter;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
@@ -19,7 +20,7 @@ public class SessionResumptionDelegate extends Delegate {
 
     @Parameter(names = "-session_resumption", description = "YES or NO")
     private boolean sessionResumption = false;
-    @Parameter(names = "-session_id", description = "The sessionID to resume")
+    @Parameter(names = "-session_id", description = "The sessionID to resume in hex",  converter = ByteArrayConverter.class)
     private byte[] sessionID = new byte[0];
 
     public SessionResumptionDelegate() {
