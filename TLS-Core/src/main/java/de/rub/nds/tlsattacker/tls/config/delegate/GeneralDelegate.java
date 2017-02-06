@@ -93,7 +93,7 @@ public class GeneralDelegate extends Delegate {
             loggerConfig.setLevel(getLogLevel());
             ctx.updateLoggers();
         }
-        //TODO this should probably not be here?
+        // TODO this should probably not be here?
         // ECC does not work properly in the NSS provider
         Security.removeProvider("SunPKCS11-NSS");
         Security.addProvider(new BouncyCastleProvider());
@@ -101,7 +101,7 @@ public class GeneralDelegate extends Delegate {
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
         }
-        
+
         // remove stupid Oracle JDK security restriction (otherwise, it is not
         // possible to use strong crypto with Oracle JDK)
         try {
