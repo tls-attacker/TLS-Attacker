@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
@@ -90,8 +91,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
         LOGGER.debug("Computed PreMaster Secret: {}",
                 ArrayConverter.bytesToHexString(protocolMessage.getPremasterSecret().getValue()));
 
-        protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[]{0x00, 0x02}, padding,
-                new byte[]{0x00}, protocolMessage.getPremasterSecret().getValue()));
+        protocolMessage.setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding,
+                new byte[] { 0x00 }, protocolMessage.getPremasterSecret().getValue()));
 
         byte[] paddedPremasterSecret = protocolMessage.getPlainPaddedPremasterSecret().getValue();
 
@@ -113,7 +114,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
                     ArrayConverter.bytesToHexString(paddedPremasterSecret));
             // TODO can throw a tooMuchData for RSA Block exception
             if (paddedPremasterSecret.length == 0) {
-                paddedPremasterSecret = new byte[]{0};
+                paddedPremasterSecret = new byte[] { 0 };
             }
             if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
                 if (tlsContext.getConfig().isFuzzingMode()) {
@@ -136,7 +137,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
                     .getEncryptedPremasterSecretLength().getValue(),
                     HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH), protocolMessage
                     .getEncryptedPremasterSecret().getValue());
-        } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+        } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException
+                | NoSuchAlgorithmException | NoSuchPaddingException ex) {
             LOGGER.info(ex);
             throw new WorkflowExecutionException(ex.getLocalizedMessage());
         }
@@ -169,7 +171,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
             protocolMessage.setPlainPaddedPremasterSecret(decrypted);
 
-        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException | NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
+                | NoSuchProviderException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
             throw new ConfigurationException(
                     "Something went wrong loading key from Keystore or decrypting Premastersecret", ex);
         }

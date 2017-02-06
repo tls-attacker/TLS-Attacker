@@ -134,9 +134,9 @@ public class TlsContext {
     private List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms;
 
     private HeartbeatMode heartbeatMode;
-    
+
     private MaxFragmentLength maxFragmentLength;
-    
+
     // TODO does this make sense?
     public TlsContext() {
         digest = new TlsMessageDigest();
@@ -161,7 +161,7 @@ public class TlsContext {
     public void setMaxFragmentLength(MaxFragmentLength maxFragmentLength) {
         this.maxFragmentLength = maxFragmentLength;
     }
-    
+
     public HeartbeatMode getHeartbeatMode() {
         return heartbeatMode;
     }
@@ -169,7 +169,7 @@ public class TlsContext {
     public void setHeartbeatMode(HeartbeatMode heartbeatMode) {
         this.heartbeatMode = heartbeatMode;
     }
-    
+
     public List<CompressionMethod> getClientSupportedCompressions() {
         return clientSupportedCompressions;
     }
