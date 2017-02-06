@@ -64,7 +64,7 @@ public class CertificateDelegate extends Delegate {
         config.setPassword(password);
         config.setAlias(alias);
         try {
-            if (keystore != null) {
+            if (this.getKeystore() != null) {
                 config.setKeyStore(KeystoreHandler.loadKeyStore(keystore, config.getPassword()));
                 config.setOurCertificate(JKSLoader.loadCertificate(config.getKeyStore(), alias));
                 config.setOurX509Certificate(JKSLoader.loadX509Certificate(config.getKeyStore(), alias));
