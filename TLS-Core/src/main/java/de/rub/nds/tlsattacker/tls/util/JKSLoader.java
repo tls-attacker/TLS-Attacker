@@ -35,9 +35,7 @@ public class JKSLoader {
 
         ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
         org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-
-        org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
-        return certs[0];
+        return cert;
     }
 
     public static org.bouncycastle.crypto.tls.Certificate loadTLSCertificate(KeyStore keyStore, String alias)
