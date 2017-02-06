@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 
 /**
  * Configuration for testing TLS server capabilities. By now, per default all
@@ -24,40 +25,18 @@ public class TestServerConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "testtls_server";
 
-    // @Parameter(names = "-all", description = "Performs all checks.")
-    // protected boolean all = true;
-    //
-    // @Parameter(names = "-crypto", description =
-    // "Checks supported cipher suites and other crypto properties.")
-    // protected boolean crypto;
-    //
-    // @Parameter(names = "-protocols", description =
-    // "Checks supported TLS protocol versions.")
-    // protected boolean supportedProtocols;
-    //
-    // @Parameter(names = "-cipher_suite_order", description =
-    // "Checks whether the server supports cipher suite ordering.")
-    // protected boolean cipherSuiteOrder;
-    //
-    // @Parameter(names = "-named_curves", description =
-    // "Checks supported elliptic curves.")
-    // protected boolean supportedNamedCurves;
-    //
-    // @Parameter(names = "-signature_hash_algorithms", description =
-    // "Checks supported signature and hash algorithms.")
-    // protected boolean supportedSignatureAndHashAlgorithms;
-    //
-    // @Parameter(names = "-attacks", description =
-    // "Checks for potential vulnerabilities.")
-    // protected boolean attacks;
     @Parameter(names = "-policy", description = "Checks the TLS configuration conformance against the provided (Botan-styled) policy.")
-    protected String policy;
+    private String policy;
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private final HostnameExtensionDelegate hostnameDelegate;
 
     public TestServerConfig() {
         clientDelegate = new ClientDelegate();
+        hostnameDelegate = new HostnameExtensionDelegate();
+        addDelegate(hostnameDelegate);
         addDelegate(clientDelegate);
     }
 
