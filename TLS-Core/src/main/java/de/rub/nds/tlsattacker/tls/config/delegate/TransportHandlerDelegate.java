@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
@@ -20,7 +21,9 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- *
+ * Note: This delegate should always be executed after the Protocolverion
+ * delegate
+ * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TransportHandlerDelegate extends Delegate {

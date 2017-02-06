@@ -12,6 +12,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -75,11 +76,13 @@ public class ProtocolVersionDelegateTest {
     public void testApplyDelegate() {
         TlsConfig config = new TlsConfig();
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
+        config.setTransportHandlerType(TransportHandlerType.EAP_TLS);
         args = new String[2];
         args[0] = "-version";
         args[1] = "TLS12";
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.getHighestProtocolVersion() == ProtocolVersion.TLS12);
+        assertTrue(config.getTransportHandlerType() == TransportHandlerType.TCP);
     }
 }
