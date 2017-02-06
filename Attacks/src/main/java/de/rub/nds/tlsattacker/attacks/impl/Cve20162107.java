@@ -73,7 +73,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         for (ProtocolVersion pv : versions) {
             for (CipherSuite cs : ciphers) {
                 tlsConfig.setHighestProtocolVersion(pv);
-                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));                                                       // what
+                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
                 executeAttackRound(configHandler);
             }
         }
