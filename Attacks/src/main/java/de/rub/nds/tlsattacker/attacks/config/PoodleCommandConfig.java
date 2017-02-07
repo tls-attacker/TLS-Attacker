@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -33,7 +35,6 @@ public class PoodleCommandConfig extends TLSDelegateConfig {
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
-    
 
     public PoodleCommandConfig() {
         clientDelegate = new ClientDelegate();
@@ -49,14 +50,20 @@ public class PoodleCommandConfig extends TLSDelegateConfig {
     @Override
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
-        for(CipherSuite suite : config.getSupportedCiphersuites())
-        {
-            if(!suite.isCBC())
-            {
+        if (ciphersuiteDelegate.getCipherSuites() == null) {
+            List<CipherSuite> cipherSuites = new LinkedList<>();
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
+            config.setSupportedCiphersuites(cipherSuites);
+        }
+        for (CipherSuite suite : config.getSupportedCiphersuites()) {
+            if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
         }
         return config;
     }
-    
+
 }

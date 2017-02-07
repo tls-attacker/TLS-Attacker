@@ -10,7 +10,11 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
  *
@@ -20,10 +24,27 @@ public class EarlyCCSCommandConfig extends TLSDelegateConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private CiphersuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     public EarlyCCSCommandConfig() {
         clientDelegate = new ClientDelegate();
+        hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        ciphersuiteDelegate = new CiphersuiteDelegate();
+        protocolVersionDelegate = new ProtocolVersionDelegate();
         addDelegate(clientDelegate);
+        addDelegate(hostnameExtensionDelegate);
+        addDelegate(ciphersuiteDelegate);
+        addDelegate(protocolVersionDelegate);
+    }
+
+    @Override
+    public TlsConfig createConfig() {
+        return super.createConfig();
     }
 
     public static final String ATTACK_COMMAND = "early_ccs";

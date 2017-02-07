@@ -11,7 +11,10 @@ package de.rub.nds.tlsattacker.attacks.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
@@ -27,6 +30,12 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private CiphersuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     public enum Type {
 
@@ -39,7 +48,13 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
 
     public BleichenbacherCommandConfig() {
         clientDelegate = new ClientDelegate();
+        hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        ciphersuiteDelegate = new CiphersuiteDelegate();
+        protocolVersionDelegate = new ProtocolVersionDelegate();
         addDelegate(clientDelegate);
+        addDelegate(hostnameExtensionDelegate);
+        addDelegate(ciphersuiteDelegate);
+        addDelegate(protocolVersionDelegate);
     }
 
     public Type getType() {
@@ -53,15 +68,17 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
     @Override
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
-        List<CipherSuite> cipherSuites = new LinkedList<>();
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-        config.setSupportedCiphersuites(null);
+        if (ciphersuiteDelegate.getCipherSuites() == null) {
+            List<CipherSuite> cipherSuites = new LinkedList<>();
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+            config.setSupportedCiphersuites(cipherSuites);
+        }
         return config;
     }
 }

@@ -50,7 +50,7 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
         addDelegate(clientDelegate);
         addDelegate(cipherSuiteDelegate);
         addDelegate(hostnameExtensionDelegate);
-        
+
     }
 
     public List<ProtocolVersion> getVersions() {
@@ -64,11 +64,19 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
     @Override
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
-        
-        for(CipherSuite suite : config.getSupportedCiphersuites())
-        {
-            if(!suite.isCBC())
-            {
+        if (cipherSuiteDelegate.getCipherSuites() == null) {
+            List<CipherSuite> cipherSuites = new LinkedList<>();
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+            config.setSupportedCiphersuites(cipherSuites);
+        }
+        for (CipherSuite suite : config.getSupportedCiphersuites()) {
+            if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
         }

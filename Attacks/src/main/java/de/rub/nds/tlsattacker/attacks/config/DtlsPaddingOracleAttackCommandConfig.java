@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
@@ -115,8 +116,10 @@ public class DtlsPaddingOracleAttackCommandConfig extends TLSDelegateConfig {
         // Until all dtls workflow factories are adapted, this is to make sure
         // the right workflow factory is used //TODO what?!
         List<CipherSuite> cs = new ArrayList<>();
-        cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        config.setSupportedCiphersuites(cs);
+        if (ciphersuiteDelegate.getCipherSuites() == null) {
+            cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            config.setSupportedCiphersuites(cs);
+        }
         return config;
     }
 }

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
@@ -89,9 +90,11 @@ public class InvalidCurveAttackCommandConfig extends TLSDelegateConfig {
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
         List<CipherSuite> cipherSuites = new LinkedList<>();
-        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-        config.setSupportedCiphersuites(cipherSuites);
+        if (ciphersuiteDelegate.getCipherSuites() == null) {
+            cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+            config.setSupportedCiphersuites(cipherSuites);
+        }
         List<NamedCurve> namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.SECP256R1);
         config.setNamedCurves(namedCurves);
