@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
  */
 public class ClientDelegate extends Delegate {
 
-    @Parameter(names = "-connect", description = "who to connect to")
+    @Parameter(names = "-connect", required = true, description = "who to connect to")
     private String host = null;
 
     public ClientDelegate() {
