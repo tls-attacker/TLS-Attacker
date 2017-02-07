@@ -13,6 +13,7 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -84,5 +85,14 @@ public class ProtocolVersionDelegateTest {
         delegate.applyDelegate(config);
         assertTrue(config.getHighestProtocolVersion() == ProtocolVersion.TLS12);
         assertTrue(config.getTransportHandlerType() == TransportHandlerType.TCP);
+    }
+
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
     }
 }

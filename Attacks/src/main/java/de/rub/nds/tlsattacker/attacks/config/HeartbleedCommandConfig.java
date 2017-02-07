@@ -3,15 +3,17 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
@@ -29,10 +31,22 @@ public class HeartbleedCommandConfig extends TLSDelegateConfig {
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private CiphersuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     public HeartbleedCommandConfig() {
         clientDelegate = new ClientDelegate();
+        hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        ciphersuiteDelegate = new CiphersuiteDelegate();
+        protocolVersionDelegate = new ProtocolVersionDelegate();
         addDelegate(clientDelegate);
+        addDelegate(hostnameExtensionDelegate);
+        addDelegate(ciphersuiteDelegate);
+        addDelegate(protocolVersionDelegate);
     }
 
     public Integer getPayloadLength() {

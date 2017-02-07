@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 public class ProtocolVersionDelegate extends Delegate {
 
     @Parameter(names = "-version", description = "Highest supported Protocolversion ", converter = ProtocolVersionConverter.class)
-    private ProtocolVersion protocolVersion = ProtocolVersion.TLS12;
+    private ProtocolVersion protocolVersion = null;
 
     public ProtocolVersionDelegate() {
     }
@@ -36,7 +36,9 @@ public class ProtocolVersionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setHighestProtocolVersion(protocolVersion);
+        if (protocolVersion != null) {
+            config.setHighestProtocolVersion(protocolVersion);
+        }
         if (config.getHighestProtocolVersion().isDTLS()) {
             config.setTransportHandlerType(TransportHandlerType.UDP);
         } else {

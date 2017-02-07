@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,4 +97,12 @@ public class CiphersuiteDelegateTest {
 
     }
 
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
+    }
 }

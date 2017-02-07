@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 public class WorkflowTypeDelegate extends Delegate {
 
     @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace (CLIENT_HELLO, HANDSHAKE or FULL)", converter = WorkflowTraceTypeConverter.class)
-    protected WorkflowTraceType workflowTraceType = WorkflowTraceType.FULL;
+    private WorkflowTraceType workflowTraceType = null;
 
     public WorkflowTypeDelegate() {
     }
@@ -39,23 +39,26 @@ public class WorkflowTypeDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setWorkflowTraceType(workflowTraceType);
+        if (workflowTraceType != null) {
+            config.setWorkflowTraceType(workflowTraceType);
+        }
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace;
-        switch (workflowTraceType) {
-            case FULL:
-                trace = factory.createFullWorkflow();
-                break;
-            case HANDSHAKE:
-                trace = factory.createHandshakeWorkflow();
-                break;
-            case CLIENT_HELLO:
-                trace = factory.createClientHelloWorkflow();
-                break;
-            default:
-                throw new ConfigurationException("not supported workflow type: " + config.getWorkflowTraceType());
+        if (config.getWorkflowTrace() == null && config.getWorkflowTraceType() != null) {
+            switch (config.getWorkflowTraceType()) {
+                case FULL:
+                    trace = factory.createFullWorkflow();
+                    break;
+                case HANDSHAKE:
+                    trace = factory.createHandshakeWorkflow();
+                    break;
+                case CLIENT_HELLO:
+                    trace = factory.createClientHelloWorkflow();
+                    break;
+                default:
+                    throw new ConfigurationException("not supported workflow type: " + config.getWorkflowTraceType());
+            }
+            config.setWorkflowTrace(trace);
         }
-        config.setWorkflowTrace(trace);
     }
-
 }

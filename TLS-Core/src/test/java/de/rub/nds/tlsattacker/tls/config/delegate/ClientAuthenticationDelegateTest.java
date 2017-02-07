@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class ClientAuthenticationDelegateTest {
     public void testIsClientAuthentication() {
         args = new String[1];
         args[0] = "-client_authentication";
-        assertFalse(delegate.isClientAuthentication());
+        assertTrue(delegate.isClientAuthentication() == null);
         jcommander.parse(args);
         assertTrue(delegate.isClientAuthentication());
     }
@@ -52,7 +53,7 @@ public class ClientAuthenticationDelegateTest {
      */
     @Test
     public void testSetClientAuthentication() {
-        assertFalse(delegate.isClientAuthentication());
+        assertTrue(delegate.isClientAuthentication() == null);
         delegate.setClientAuthentication(true);
         assertTrue(delegate.isClientAuthentication());
     }
@@ -70,6 +71,15 @@ public class ClientAuthenticationDelegateTest {
         delegate.applyDelegate(config);
         assertTrue(config.isClientAuthentication());
 
+    }
+
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
     }
 
 }

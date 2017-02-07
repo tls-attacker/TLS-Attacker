@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,7 +41,7 @@ public class VerifyDelegateTest {
     public void testIsVerifyWorkflowCorrectness() {
         args = new String[1];
         args[0] = "-verify_workflow_correctness";
-        assertFalse(delegate.isVerifyWorkflowCorrectness());
+        assertTrue(delegate.isVerifyWorkflowCorrectness() == null);
         jcommander.parse(args);
         assertTrue(delegate.isVerifyWorkflowCorrectness());
     }
@@ -50,7 +51,7 @@ public class VerifyDelegateTest {
      */
     @Test
     public void testSetVerifyWorkflowCorrectness() {
-        assertFalse(delegate.isVerifyWorkflowCorrectness());
+        assertTrue(delegate.isVerifyWorkflowCorrectness() == null);
         delegate.setVerifyWorkflowCorrectness(true);
         assertTrue(delegate.isVerifyWorkflowCorrectness());
     }
@@ -68,5 +69,14 @@ public class VerifyDelegateTest {
         assertFalse(config.isVerifyWorkflow());
         delegate.applyDelegate(config);
         assertTrue(config.isVerifyWorkflow());
+    }
+
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
     }
 }

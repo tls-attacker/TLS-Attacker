@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -42,7 +45,7 @@ public class ServerDelegateTest {
         args = new String[2];
         args[0] = "-port";
         args[1] = "1234";
-        assertFalse(delegate.getPort() == 1234);
+        assertTrue(delegate.getPort() == null);
         jcommander.parse(args);
         assertTrue(delegate.getPort() == 1234);
     }
@@ -52,7 +55,7 @@ public class ServerDelegateTest {
      */
     @Test
     public void testSetPort() {
-        assertFalse(delegate.getPort() == 1234);
+        assertTrue(delegate.getPort() == null);
         delegate.setPort(1234);
         assertTrue(delegate.getPort() == 1234);
     }
@@ -71,5 +74,18 @@ public class ServerDelegateTest {
         delegate.applyDelegate(config);
         assertTrue(config.getServerPort() == 1234);
         assertTrue(config.getMyConnectionEnd() == ConnectionEnd.SERVER);
+    }
+
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        List<String> excludeFields = new LinkedList<>();
+        excludeFields.add("keyStore");
+        excludeFields.add("myConnectionEnd"); // If the server delegate is chosen
+                                            // we change the conntection end
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));// little
+                                                                                   // ugly
     }
 }

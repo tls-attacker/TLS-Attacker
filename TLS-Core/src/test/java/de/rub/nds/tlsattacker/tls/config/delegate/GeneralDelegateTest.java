@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,4 +138,12 @@ public class GeneralDelegateTest {
         delegate.applyDelegate(new TlsConfig());
     }
 
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
+    }
 }

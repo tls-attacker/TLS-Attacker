@@ -23,13 +23,13 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 /**
  * Note: This delegate should always be executed after the Protocolverion
  * delegate
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TransportHandlerDelegate extends Delegate {
 
     @Parameter(names = "-transport_handler_type", description = "Transport Handler type (TCP, EAP_TLS, UDP)", converter = TransportHandlerTypeConverter.class)
-    private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
+    private TransportHandlerType transportHandlerType = null;
 
     public TransportHandlerDelegate() {
     }
@@ -44,6 +44,8 @@ public class TransportHandlerDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setTransportHandlerType(transportHandlerType);
+        if (transportHandlerType != null) {
+            config.setTransportHandlerType(transportHandlerType);
+        }
     }
 }

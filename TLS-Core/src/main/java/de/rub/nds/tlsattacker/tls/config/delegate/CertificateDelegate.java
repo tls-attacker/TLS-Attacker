@@ -23,14 +23,15 @@ import java.security.cert.CertificateException;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateDelegate extends Delegate {
+
     @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate. In case TLS Client is used, the client sends ClientCertificate in the TLS handshake. Use keyword empty to enforce an empty ClientCertificate message.")
     private String keystore = null;
 
     @Parameter(names = "-password", description = "Java Key Store (JKS) file password")
-    private String password = "";
+    private String password = null;
 
     @Parameter(names = "-alias", description = "Alias of the key to be used from Java Key Store (JKS)")
-    private String alias = "";
+    private String alias = null;
 
     public CertificateDelegate() {
     }
@@ -61,10 +62,14 @@ public class CertificateDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setPassword(password);
-        config.setAlias(alias);
+        if (password != null) {
+            config.setPassword(password);
+        }
+        if (alias != null) {
+            config.setAlias(alias);
+        }
         try {
-            if (this.getKeystore() != null) {
+            if (keystore != null) {
                 config.setKeyStore(KeystoreHandler.loadKeyStore(keystore, config.getPassword()));
                 config.setOurCertificate(JKSLoader.loadCertificate(config.getKeyStore(), alias));
                 config.setOurX509Certificate(JKSLoader.loadX509Certificate(config.getKeyStore(), alias));

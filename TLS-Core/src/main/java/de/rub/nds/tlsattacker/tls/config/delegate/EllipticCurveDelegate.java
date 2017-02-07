@@ -22,19 +22,13 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class EllipticCurveDelegate extends Delegate {
+
     @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma eg. UNCOMPRESSED,ANSIX962_COMPRESSED_PRIME", converter = PointFormatConverter.class)
-    private List<ECPointFormat> pointFormats;
+    private List<ECPointFormat> pointFormats = null;
     @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma eg. SECT163K1,SECT193R2 ", converter = NamedCurveConverter.class)
-    private List<NamedCurve> namedCurves;
+    private List<NamedCurve> namedCurves = null;
 
     public EllipticCurveDelegate() {
-        pointFormats = new LinkedList<>();
-        pointFormats.add(ECPointFormat.UNCOMPRESSED);
-        namedCurves = new LinkedList<>();
-        namedCurves.add(NamedCurve.SECP192R1);
-        namedCurves.add(NamedCurve.SECP256R1);
-        namedCurves.add(NamedCurve.SECP384R1);
-        namedCurves.add(NamedCurve.SECP521R1);
     }
 
     public List<ECPointFormat> getPointFormats() {
@@ -55,7 +49,11 @@ public class EllipticCurveDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setNamedCurves(namedCurves);
-        config.setPointFormats(pointFormats);
+        if (namedCurves != null) {
+            config.setNamedCurves(namedCurves);
+        }
+        if (pointFormats != null) {
+            config.setPointFormats(pointFormats);
+        }
     }
 }

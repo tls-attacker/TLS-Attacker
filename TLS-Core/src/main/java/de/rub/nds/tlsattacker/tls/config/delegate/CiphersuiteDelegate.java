@@ -23,11 +23,9 @@ public class CiphersuiteDelegate extends Delegate {
 
     @Parameter(names = "-cipher", description = "TLS Ciphersuites to use, divided by a comma, e.g. "
             + "TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA", converter = CipherSuiteConverter.class)
-    private List<CipherSuite> cipherSuites;
+    private List<CipherSuite> cipherSuites = null;
 
     public CiphersuiteDelegate() {
-        cipherSuites = new LinkedList<>();
-        cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
     }
 
     public List<CipherSuite> getCipherSuites() {
@@ -40,7 +38,9 @@ public class CiphersuiteDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setSupportedCiphersuites(cipherSuites);
+        if (cipherSuites != null) {
+            config.setSupportedCiphersuites(cipherSuites);
+        }
     }
 
 }

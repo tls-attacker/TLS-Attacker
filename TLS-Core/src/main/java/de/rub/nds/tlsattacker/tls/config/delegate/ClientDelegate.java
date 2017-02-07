@@ -17,8 +17,9 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientDelegate extends Delegate {
+
     @Parameter(names = "-connect", description = "who to connect to")
-    private String host = "localhost:4433";
+    private String host = null;
 
     public ClientDelegate() {
     }
@@ -33,7 +34,9 @@ public class ClientDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setHost(host);
+        if (host != null) {
+            config.setHost(host);
+        }
         config.setMyConnectionEnd(ConnectionEnd.CLIENT);
     }
 

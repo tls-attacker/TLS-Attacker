@@ -26,8 +26,6 @@ public class CompressionDelegate extends Delegate {
     private List<CompressionMethod> compressionMethods;
 
     public CompressionDelegate() {
-        compressionMethods = new LinkedList<>();
-        compressionMethods.add(CompressionMethod.NULL);
     }
 
     public List<CompressionMethod> getCompressionMethods() {
@@ -40,7 +38,9 @@ public class CompressionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setSupportedCompressionMethods(compressionMethods);
+        if (compressionMethods != null) {
+            config.setSupportedCompressionMethods(compressionMethods);
+        }
     }
 
 }

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import java.util.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -41,9 +43,9 @@ public class SessionResumptionDelegateTest {
     public void testIsSessionResumption() {
         args = new String[1];
         args[0] = "-session_resumption";
-        assertFalse(delegate.isSessionResumption());
+        assertFalse(Objects.equals(delegate.isSessionResumption(), Boolean.TRUE));
         jcommander.parse(args);
-        assertTrue(delegate.isSessionResumption());
+        assertTrue(delegate.isSessionResumption() == true);
     }
 
     /**
@@ -51,9 +53,9 @@ public class SessionResumptionDelegateTest {
      */
     @Test
     public void testSetSessionResumption() {
-        assertFalse(delegate.isSessionResumption());
+        assertFalse(Objects.equals(delegate.isSessionResumption(), Boolean.TRUE));
         delegate.setSessionResumption(true);
-        assertTrue(delegate.isSessionResumption());
+        assertTrue(delegate.isSessionResumption() == true);
     }
 
     /**
@@ -112,4 +114,12 @@ public class SessionResumptionDelegateTest {
         assertTrue(config.isSessionResumption());
     }
 
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
+    }
 }

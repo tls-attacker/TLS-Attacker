@@ -18,15 +18,15 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 public class TimeoutDelegate extends Delegate {
 
     @Parameter(names = "-timeout", description = "Timeout for socket connection")
-    private int timeout = 1000;
+    private Integer timeout = null;
 
     @Parameter(names = "-tls_timeout", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
-    private int tlsTimeout = 800;
+    private Integer tlsTimeout = null;
 
     public TimeoutDelegate() {
     }
 
-    public int getTimeout() {
+    public Integer getTimeout() {
         return timeout;
     }
 
@@ -34,7 +34,7 @@ public class TimeoutDelegate extends Delegate {
         this.timeout = timeout;
     }
 
-    public int getTlsTimeout() {
+    public Integer getTlsTimeout() {
         return tlsTimeout;
     }
 
@@ -44,8 +44,12 @@ public class TimeoutDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setTlsTimeout(tlsTimeout);
-        config.setTimeout(timeout);
+        if (tlsTimeout != null) {
+            config.setTlsTimeout(tlsTimeout);
+        }
+        if (timeout != null) {
+            config.setTimeout(timeout);
+        }
     }
 
 }

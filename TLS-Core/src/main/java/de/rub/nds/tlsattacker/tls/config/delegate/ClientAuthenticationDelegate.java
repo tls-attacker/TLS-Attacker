@@ -16,13 +16,14 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientAuthenticationDelegate extends Delegate {
+
     @Parameter(names = "-client_authentication", description = "YES or NO")
-    private boolean clientAuthentication = false;
+    private Boolean clientAuthentication;
 
     public ClientAuthenticationDelegate() {
     }
 
-    public boolean isClientAuthentication() {
+    public Boolean isClientAuthentication() {
         return clientAuthentication;
     }
 
@@ -32,7 +33,9 @@ public class ClientAuthenticationDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setClientAuthentication(clientAuthentication);
+        if (clientAuthentication != null) {
+            config.setClientAuthentication(clientAuthentication);
+        }
     }
 
 }

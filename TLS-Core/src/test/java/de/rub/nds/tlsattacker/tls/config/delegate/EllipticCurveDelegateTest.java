@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -132,4 +133,12 @@ public class EllipticCurveDelegateTest {
                 config.getPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
     }
 
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
+    }
 }

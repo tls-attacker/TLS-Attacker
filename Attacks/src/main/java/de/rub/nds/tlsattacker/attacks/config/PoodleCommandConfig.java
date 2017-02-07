@@ -10,7 +10,13 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
  *
@@ -21,10 +27,36 @@ public class PoodleCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "poodle";
     @ParametersDelegate
     private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private CiphersuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private ProtocolVersionDelegate protocolVersionDelegate;
+    
 
     public PoodleCommandConfig() {
         clientDelegate = new ClientDelegate();
+        hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        ciphersuiteDelegate = new CiphersuiteDelegate();
+        protocolVersionDelegate = new ProtocolVersionDelegate();
         addDelegate(clientDelegate);
+        addDelegate(hostnameExtensionDelegate);
+        addDelegate(ciphersuiteDelegate);
+        addDelegate(protocolVersionDelegate);
     }
 
+    @Override
+    public TlsConfig createConfig() {
+        TlsConfig config = super.createConfig();
+        for(CipherSuite suite : config.getSupportedCiphersuites())
+        {
+            if(!suite.isCBC())
+            {
+                throw new ConfigurationException("This attack only works with CBC Ciphersuites");
+            }
+        }
+        return config;
+    }
+    
 }

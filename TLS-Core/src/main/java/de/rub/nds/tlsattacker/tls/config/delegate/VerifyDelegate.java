@@ -19,12 +19,12 @@ public class VerifyDelegate extends Delegate {
 
     @Parameter(names = "-verify_workflow_correctness", description = "If this parameter is set, the workflow correctness is evaluated after the worklow stops. This involves"
             + "checks on the protocol message sequences.")
-    private boolean verifyWorkflowCorrectness;
+    private Boolean verifyWorkflowCorrectness = null;
 
     public VerifyDelegate() {
     }
 
-    public boolean isVerifyWorkflowCorrectness() {
+    public Boolean isVerifyWorkflowCorrectness() {
         return verifyWorkflowCorrectness;
     }
 
@@ -34,7 +34,9 @@ public class VerifyDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setVerifyWorkflow(verifyWorkflowCorrectness);
+        if (verifyWorkflowCorrectness != null) {
+            config.setVerifyWorkflow(verifyWorkflowCorrectness);
+        }
     }
 
 }

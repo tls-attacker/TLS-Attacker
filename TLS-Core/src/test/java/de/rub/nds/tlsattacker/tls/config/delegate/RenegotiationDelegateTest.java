@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,7 +41,7 @@ public class RenegotiationDelegateTest {
     public void testIsLegacyRenegotiation() {
         args = new String[1];
         args[0] = "-legacy_renegotiation";
-        assertFalse(delegate.isLegacyRenegotiation());
+        assertTrue(delegate.isLegacyRenegotiation() == null);
         jcommander.parse(args);
         assertTrue(delegate.isLegacyRenegotiation());
     }
@@ -50,7 +51,7 @@ public class RenegotiationDelegateTest {
      */
     @Test
     public void testSetLegacyRenegotiation() {
-        assertFalse(delegate.isLegacyRenegotiation());
+        assertTrue(delegate.isLegacyRenegotiation() == null);
         delegate.setLegacyRenegotiation(true);
         assertTrue(delegate.isLegacyRenegotiation());
     }
@@ -67,5 +68,14 @@ public class RenegotiationDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.isRenegotiation());
+    }
+
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
     }
 }

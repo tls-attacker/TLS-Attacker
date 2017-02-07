@@ -28,7 +28,7 @@ public class WorkflowInputDelegate extends Delegate {
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(WorkflowInputDelegate.class);
 
     @Parameter(names = "-workflow_input", description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
-    private String workflowInput;
+    private String workflowInput = null;
 
     public WorkflowInputDelegate() {
     }
@@ -44,8 +44,8 @@ public class WorkflowInputDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         FileInputStream fis = null;
-        config.setWorkflowInput(workflowInput);
         if (workflowInput != null) {
+            config.setWorkflowInput(workflowInput);
             try {
                 fis = new FileInputStream(workflowInput);
                 WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);

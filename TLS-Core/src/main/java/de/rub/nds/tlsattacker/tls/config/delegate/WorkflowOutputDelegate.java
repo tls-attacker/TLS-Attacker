@@ -16,8 +16,9 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class WorkflowOutputDelegate extends Delegate {
+
     @Parameter(names = "-workflow_output", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")
-    private String workflowOutput;
+    private String workflowOutput = null;
 
     public WorkflowOutputDelegate() {
     }
@@ -32,7 +33,9 @@ public class WorkflowOutputDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setWorkflowOutput(workflowOutput);
+        if (workflowOutput != null) {
+            config.setWorkflowOutput(workflowOutput);
+        }
     }
 
 }

@@ -18,12 +18,12 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 public class RenegotiationDelegate extends Delegate {
 
     @Parameter(names = "-legacy_renegotiation", description = "Enables use of legacy renegotiation")
-    private boolean legacyRenegotiation;
+    private Boolean legacyRenegotiation;
 
     public RenegotiationDelegate() {
     }
 
-    public boolean isLegacyRenegotiation() {
+    public Boolean isLegacyRenegotiation() {
         return legacyRenegotiation;
     }
 
@@ -33,7 +33,9 @@ public class RenegotiationDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setRenegotiation(legacyRenegotiation);
+        if (legacyRenegotiation != null) {
+            config.setRenegotiation(legacyRenegotiation);
+        }
     }
 
 }

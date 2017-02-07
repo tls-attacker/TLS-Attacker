@@ -18,12 +18,12 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 public class FuzzingModeDelegate extends Delegate {
 
     @Parameter(names = "-fuzzing", description = "If sets, supresses Value and generates invalid Data for Cryptographic operations on the FLY. Throws Exceptions otherwise.")
-    private boolean fuzzingMode = false;
+    private Boolean fuzzingMode = null;
 
     public FuzzingModeDelegate() {
     }
 
-    public boolean isFuzzingMode() {
+    public Boolean isFuzzingMode() {
         return fuzzingMode;
     }
 
@@ -33,7 +33,9 @@ public class FuzzingModeDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setFuzzingMode(fuzzingMode);
+        if (fuzzingMode != null) {
+            config.setFuzzingMode(fuzzingMode);
+        }
     }
 
 }

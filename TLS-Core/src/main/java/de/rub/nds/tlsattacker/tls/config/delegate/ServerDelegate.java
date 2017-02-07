@@ -20,12 +20,13 @@ import java.io.File;
 public class ServerDelegate extends Delegate {
 
     @Parameter(names = "-port", description = "ServerPort")
-    protected int port = 4433; // TODO Validator
+    // TODO validator
+    protected Integer port = null;
 
     public ServerDelegate() {
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
@@ -35,7 +36,9 @@ public class ServerDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setServerPort(port);
+        if (port != null) {
+            config.setServerPort(port);
+        }
         config.setMyConnectionEnd(ConnectionEnd.SERVER);
     }
 

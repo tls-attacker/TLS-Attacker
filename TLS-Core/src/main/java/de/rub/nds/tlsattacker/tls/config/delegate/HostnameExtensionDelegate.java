@@ -18,10 +18,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 public class HostnameExtensionDelegate extends Delegate {
 
     @Parameter(names = "-server_name", description = "Servername for HostName TLS extension.")
-    private String sniHostname;
+    private String sniHostname = null;
     @Parameter(names = "-servername_fatal", description = "On mismatch in the server name the server sends a fatal "
             + "alert")
-    private boolean serverNameFatal;
+    private Boolean serverNameFatal = null;
 
     public HostnameExtensionDelegate() {
     }
@@ -34,7 +34,7 @@ public class HostnameExtensionDelegate extends Delegate {
         this.sniHostname = sniHostname;
     }
 
-    public boolean isServerNameFatal() {
+    public Boolean isServerNameFatal() {
         return serverNameFatal;
     }
 
@@ -44,7 +44,11 @@ public class HostnameExtensionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setSniHostname(sniHostname);
-        config.setSniHostnameFatal(serverNameFatal);
+        if (sniHostname != null) {
+            config.setSniHostname(sniHostname);
+        }
+        if (serverNameFatal != null) {
+            config.setSniHostnameFatal(serverNameFatal);
+        }
     }
 }

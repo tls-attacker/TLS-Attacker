@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -93,6 +94,15 @@ public class SignatureAndHashAlgorithmDelegateTest {
                 new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512)));
         assertTrue(config.getSupportedSignatureAndHashAlgorithms().contains(
                 new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.SHA512)));
+    }
+
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = new TlsConfig();
+        TlsConfig config2 = new TlsConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
+                                                                                // ugly
     }
 
 }

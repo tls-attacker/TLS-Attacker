@@ -20,12 +20,12 @@ public class MaxFragmentLengthDelegate extends Delegate {
 
     // TODO Add validator, and extend unit test
     @Parameter(names = "-max_fragment_length", description = "Maximum fragment length definition for the max fragment length TLS extension (possible byte values 1,2,3, or 4)")
-    private int maxFragmentLength;
+    private Integer maxFragmentLength = null;
 
     public MaxFragmentLengthDelegate() {
     }
 
-    public int getMaxFragmentLength() {
+    public Integer getMaxFragmentLength() {
         return maxFragmentLength;
     }
 
@@ -35,7 +35,8 @@ public class MaxFragmentLengthDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength((byte) maxFragmentLength)); // TODO
-                                                                                                       // Converter
+        if (maxFragmentLength != null) {
+            config.setMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue())); // TODO
+        } // Converter
     }
 }

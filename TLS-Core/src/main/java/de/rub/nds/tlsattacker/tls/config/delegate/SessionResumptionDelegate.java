@@ -19,14 +19,14 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 public class SessionResumptionDelegate extends Delegate {
 
     @Parameter(names = "-session_resumption", description = "YES or NO")
-    private boolean sessionResumption = false;
+    private Boolean sessionResumption = null;
     @Parameter(names = "-session_id", description = "The sessionID to resume in hex", converter = ByteArrayConverter.class)
-    private byte[] sessionID = new byte[0];
+    private byte[] sessionID = null;
 
     public SessionResumptionDelegate() {
     }
 
-    public boolean isSessionResumption() {
+    public Boolean isSessionResumption() {
         return sessionResumption;
     }
 
@@ -44,7 +44,11 @@ public class SessionResumptionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
-        config.setSessionResumption(sessionResumption);
-        config.setSessionId(sessionID);
+        if (sessionResumption != null) {
+            config.setSessionResumption(sessionResumption);
+        }
+        if (sessionID != null) {
+            config.setSessionId(sessionID);
+        }
     }
 }
