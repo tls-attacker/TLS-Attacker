@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls;
 
@@ -96,9 +95,7 @@ public class TlsClientTest {
             LOGGER.log(Level.INFO, "Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
             tlsServer.shutdown();
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
             ex.printStackTrace();
             fail();
         }
@@ -117,9 +114,7 @@ public class TlsClientTest {
             LOGGER.log(Level.INFO, "Testing EC");
             testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
             tlsServer.shutdown();
-        } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
-                | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
-                | SignatureException ex) {
+        } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException | SignatureException ex) {
             fail(); // Todo
         }
     }
@@ -137,7 +132,6 @@ public class TlsClientTest {
         TlsConfig config = configHandler.initialize(clientCommandConfig);
         config.setHost("localhost:" + port);
         config.setTlsTimeout(TIMEOUT);
-
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
         testProtocolCompatibility(serverList, config, algorithm);
@@ -176,7 +170,7 @@ public class TlsClientTest {
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
 
         TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        config.setWorkflowTraceType(WorkflowTraceType.FULL);
+        config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         try {
             workflowExecutor.executeWorkflow();
