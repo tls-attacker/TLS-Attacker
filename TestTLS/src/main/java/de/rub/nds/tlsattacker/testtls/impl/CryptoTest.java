@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.testtls.impl;
 
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class CryptoTest extends HandshakeTest {
@@ -97,12 +96,27 @@ public class CryptoTest extends HandshakeTest {
         }
         supportedCipherSuites.get(pv).add(cs);
         allSupportedCipherSuites.add(cs);
-        supportedCipherAlgorithms.add(AlgorithmResolver.getCipher(cs));
-        supportedKeyExchangeAlgorithms.add(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
-        supportedMacAlgorithms.add(AlgorithmResolver.getMacAlgorithm(cs));
-        supportedPRFAlgorithms.add(AlgorithmResolver.getPRFAlgorithm(pv, cs));
+        try {
+            supportedCipherAlgorithms.add(AlgorithmResolver.getCipher(cs));
+        } catch (UnsupportedOperationException ex) {
+            LOGGER.info("Could not determine Cipher algorithm of:"+cs.name());
+        }
+        try {
+            supportedKeyExchangeAlgorithms.add(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        } catch (UnsupportedOperationException ex) {
+            LOGGER.info("Could not determine KeyExchange algorithm of:"+cs.name());
+        }
+        try {
+            supportedMacAlgorithms.add(AlgorithmResolver.getMacAlgorithm(cs));
+        } catch (UnsupportedOperationException ex) {
+            LOGGER.info("Could not determine Mac algorithm of:"+cs.name());
+        }try {
+            supportedPRFAlgorithms.add(AlgorithmResolver.getPRFAlgorithm(pv, cs));
+        } catch (UnsupportedOperationException ex) {
+            LOGGER.info("Could not determine PRF algorithm of:"+cs.name());
+        }
         if (lastTlsContext.getServerDHParameters() != null) {
-            LOGGER.info("DH parameter public key size: {}", lastTlsContext.getServerDHParameters().getPublicKey()
+            LOGGER.debug("DH parameter public key size: {}", lastTlsContext.getServerDHParameters().getPublicKey()
                     .getY().bitLength());
             int groupSize = lastTlsContext.getServerDHParameters().getPublicKey().getParameters().getP().bitLength();
             if (minimumDHGroupSize == 0 || groupSize < minimumDHGroupSize) {
@@ -115,7 +129,7 @@ public class CryptoTest extends HandshakeTest {
                 case "RSA":
                     RSAPublicKey rsaPK = (RSAPublicKey) lastTlsContext.getX509ServerCertificateObject().getPublicKey();
                     int rsaSize = rsaPK.getModulus().bitLength();
-                    LOGGER.info("RSA certificate public key size: {}", rsaSize);
+                    LOGGER.debug("RSA certificate public key size: {}", rsaSize);
                     if (minimumRSAKeySize == 0 || rsaSize < minimumRSAKeySize) {
                         minimumRSAKeySize = rsaSize;
                     }
@@ -123,7 +137,7 @@ public class CryptoTest extends HandshakeTest {
                 case "EC":
                     ECPublicKey ecPK = (ECPublicKey) lastTlsContext.getX509ServerCertificateObject().getPublicKey();
                     int ecSize = ecPK.getParams().getCurve().getField().getFieldSize();
-                    LOGGER.info("ECDSA certificate public key size: {}" + ecSize);
+                    LOGGER.debug("ECDSA certificate public key size: {}" + ecSize);
                     if (minimumECKeySize == 0 || ecSize < minimumECKeySize) {
                         minimumECKeySize = ecSize;
                     }
@@ -131,7 +145,7 @@ public class CryptoTest extends HandshakeTest {
                 case "DSA":
                     DSAPublicKey dhPK = (DSAPublicKey) lastTlsContext.getX509ServerCertificateObject().getPublicKey();
                     int dhSize = dhPK.getParams().getP().bitLength();
-                    LOGGER.info("DSA certificate public key size: " + dhSize);
+                    LOGGER.debug("DSA certificate public key size: " + dhSize);
                     if (minimumDHGroupSize == 0 || dhSize < minimumDHGroupSize) {
                         minimumDHGroupSize = dhSize;
                     }
