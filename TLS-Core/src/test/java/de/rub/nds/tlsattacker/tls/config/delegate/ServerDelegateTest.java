@@ -83,8 +83,9 @@ public class ServerDelegateTest {
         delegate.applyDelegate(config);
         List<String> excludeFields = new LinkedList<>();
         excludeFields.add("keyStore");
-        excludeFields.add("myConnectionEnd"); // If the server delegate is chosen
-                                            // we change the conntection end
+        excludeFields.add("myConnectionEnd"); // If the server delegate is
+                                              // chosen
+                                              // we change the conntection end
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));// little
                                                                                    // ugly
     }

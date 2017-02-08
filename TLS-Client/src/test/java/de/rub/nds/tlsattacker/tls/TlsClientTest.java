@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls;
 
@@ -95,7 +96,9 @@ public class TlsClientTest {
             LOGGER.log(Level.INFO, "Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
             tlsServer.shutdown();
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
+                | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
+                | KeyManagementException ex) {
             ex.printStackTrace();
             fail();
         }
@@ -114,7 +117,9 @@ public class TlsClientTest {
             LOGGER.log(Level.INFO, "Testing EC");
             testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
             tlsServer.shutdown();
-        } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException | SignatureException ex) {
+        } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
+                | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
+                | SignatureException ex) {
             fail(); // Todo
         }
     }

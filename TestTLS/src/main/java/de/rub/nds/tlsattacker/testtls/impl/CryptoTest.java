@@ -84,12 +84,10 @@ public class CryptoTest extends HandshakeTest {
                         analyzeHandshake(pv, cs);
                     }
                 } catch (Exception ex) {
-                    LOGGER.error(ex.getLocalizedMessage());
-                    LOGGER.debug(ex.getLocalizedMessage(), ex);
+                    ex.printStackTrace();
                 }
             }
         }
-
         buildResultString();
     }
 
