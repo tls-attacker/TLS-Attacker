@@ -173,6 +173,8 @@ public class AlgorithmResolver {
             return CipherAlgorithm.CAMELLIA_256_CBC;
         } else if (cipher.contains("SEED_CBC")) {
             return CipherAlgorithm.SEED_CBC;
+        } else if (cipher.contains("DES40_CBC")) {
+            return CipherAlgorithm.DES40_CBC;
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }

@@ -30,7 +30,8 @@ public enum CipherAlgorithm {
     SEED_CBC(16, 16, 0, "SEED/CBC/NoPadding"), // TODO this is not verified
     AES_128_CCM(16, 4, 8, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, "AES/CCM/NoPadding"),
-    ChaCha20Poly1305(32, 12, 0, "ChaCha");
+    ChaCha20Poly1305(32, 12, 0, "ChaCha"),
+    DES40_CBC(5,5,0,"DES/CBC/NoPadding"); //TODO THIS IS NOT VERIFIED
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, String javaName) {
         this.keySize = keySize;
