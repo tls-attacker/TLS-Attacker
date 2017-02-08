@@ -48,7 +48,6 @@ public abstract class HandshakeTest extends TestTLS {
         TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
 
         TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        tlsContext.setSelectedCipherSuite(tlsConfig.getSupportedCiphersuites().get(0));
         WorkflowTrace workflowTrace = new WorkflowTrace();
         ClientHelloMessage ch = new ClientHelloMessage(tlsConfig);
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
@@ -60,17 +59,8 @@ public abstract class HandshakeTest extends TestTLS {
         // servers,
         // for example Botan, for which closing connection is not enough)
         AlertMessage alert = new AlertMessage(tlsConfig);
-        alert.setLevel(AlertLevel.FATAL.getValue());
-        alert.setDescription(AlertDescription.HANDSHAKE_FAILURE.getValue());// TODO
-                                                                            // why
-                                                                            // not
-                                                                            // send
-                                                                            // close
-                                                                            // notify?
+        alert.setConfig(AlertLevel.FATAL,AlertDescription.HANDSHAKE_FAILURE);
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, alert));
-
-        ch.setSupportedCipherSuites(tlsConfig.getSupportedCiphersuites());
-        ch.setSupportedCompressionMethods(tlsConfig.getSupportedCompressionMethods());
         tlsContext.setWorkflowTrace(workflowTrace);
         // TODO
         // WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
@@ -79,11 +69,10 @@ public abstract class HandshakeTest extends TestTLS {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info(ex.getLocalizedMessage());
-            LOGGER.debug(ex.getLocalizedMessage(), ex);
+            ex.printStackTrace();
         }
         transportHandler.closeConnection();
-        return workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO) != null;
+        return !workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty();
     }
 
 }
