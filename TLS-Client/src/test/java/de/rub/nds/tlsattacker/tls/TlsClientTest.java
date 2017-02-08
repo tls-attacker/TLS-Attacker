@@ -275,7 +275,7 @@ public class TlsClientTest {
         workflowExecutor.executeWorkflow();
 
         transportHandler.closeConnection();
-        assertTrue(!tlsContext.getWorkflowTrace()
+        assertFalse(tlsContext.getWorkflowTrace()
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
