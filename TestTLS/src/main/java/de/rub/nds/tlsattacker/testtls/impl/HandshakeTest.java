@@ -71,9 +71,6 @@ public abstract class HandshakeTest extends TestTLS {
 
         ch.setSupportedCipherSuites(tlsConfig.getSupportedCiphersuites());
         ch.setSupportedCompressionMethods(tlsConfig.getSupportedCompressionMethods());
-        // TODO
-        // WorkflowConfigurationFactory.initializeClientHelloExtensions(serverConfig,
-        // ch);
         tlsContext.setWorkflowTrace(workflowTrace);
         // TODO
         // WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
