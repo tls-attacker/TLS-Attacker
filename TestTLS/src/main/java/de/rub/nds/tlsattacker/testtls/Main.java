@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.testtls;
 
@@ -16,7 +15,7 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class Main {
@@ -31,20 +30,11 @@ public class Main {
 
         jc.parse(args);
 
-        if (config.getGeneralDelegate().isHelp() || jc.getParsedCommand() == null) {
+        if (config.getGeneralDelegate().isHelp()) {
             jc.usage();
             return;
         }
-
-        switch (jc.getParsedCommand()) {
-            case TestServerConfig.COMMAND:
-                TestTLSServer st = new TestTLSServer(config);
-                st.startTests();
-                return;
-
-            default:
-                throw new ConfigurationException("No command found");
-        }
-
+        TestTLSServer st = new TestTLSServer(config);
+        st.startTests();
     }
 }
