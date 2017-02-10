@@ -47,7 +47,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             if (tlsContext.getConfig().isFuzzingMode()) {
                 tlsContext.setSelectedCipherSuite(CipherSuite.getRandom());
             } else {
-                throw new NoCiphersuiteSelectedException("Could not get PRFAlgorithm while sending FinishedMessage because no Ciphersuite was selected yet");
+                throw new NoCiphersuiteSelectedException(
+                        "Could not get PRFAlgorithm while sending FinishedMessage because no Ciphersuite was selected yet");
             }
         }
         TlsMessageDigest digest = tlsContext.getDigest();

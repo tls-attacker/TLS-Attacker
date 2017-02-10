@@ -12,10 +12,10 @@ package de.rub.nds.tlsattacker.tls.exceptions;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class NoCiphersuiteSelectedException extends WorkflowExecutionException{
+public class NoCiphersuiteSelectedException extends WorkflowExecutionException {
 
     public NoCiphersuiteSelectedException(String message) {
         super(message);
     }
-    
+
 }
