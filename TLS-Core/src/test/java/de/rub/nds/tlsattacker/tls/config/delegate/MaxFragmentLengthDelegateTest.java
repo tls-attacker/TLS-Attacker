@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.sun.org.apache.bcel.internal.util.Objects;
+import java.util.Objects;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
