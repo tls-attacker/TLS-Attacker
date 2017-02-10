@@ -37,12 +37,11 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <HandshakeMessage>
  */
-public class CertificateHandler<Message extends CertificateMessage> extends HandshakeMessageHandler<Message> {
+public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
-    @SuppressWarnings("unchecked")
     public CertificateHandler(TlsContext tlsContext) {
         super(tlsContext);
-        this.correctProtocolMessageClass = (Class<? extends Message>) CertificateMessage.class;
+        this.correctProtocolMessageClass = CertificateMessage.class;
     }
 
     @Override
