@@ -26,11 +26,16 @@ public class JKSLoader {
 
     public static org.bouncycastle.asn1.x509.Certificate loadCertificate(KeyStore keyStore, String alias)
             throws KeyStoreException, CertificateEncodingException, IOException {
-        java.security.cert.Certificate sunCert = keyStore.getCertificate(alias);
-        if (alias == null || sunCert == null) {
+        if (alias == null|| keyStore == null) {
             throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
                     + "certificate alias and key? (Current alias: " + alias + ")");
         }
+        java.security.cert.Certificate sunCert = keyStore.getCertificate(alias);
+        if (sunCert == null) {
+            throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
+                    + "certificate alias and key? (Current alias: " + alias + ")");
+        }
+
         byte[] certBytes = sunCert.getEncoded();
 
         ASN1Primitive asn1Cert = TlsUtils.readDERObject(certBytes);
@@ -40,8 +45,12 @@ public class JKSLoader {
 
     public static org.bouncycastle.crypto.tls.Certificate loadTLSCertificate(KeyStore keyStore, String alias)
             throws KeyStoreException, CertificateEncodingException, IOException {
+        if (alias == null || keyStore == null) {
+            throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
+                    + "certificate alias and key? (Current alias: " + alias + ")");
+        }
         java.security.cert.Certificate sunCert = keyStore.getCertificate(alias);
-        if (alias == null || sunCert == null) {
+        if (sunCert == null) {
             throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
                     + "certificate alias and key? (Current alias: " + alias + ")");
         }
