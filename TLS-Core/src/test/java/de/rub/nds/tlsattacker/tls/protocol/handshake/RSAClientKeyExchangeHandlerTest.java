@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -70,14 +71,9 @@ public class RSAClientKeyExchangeHandlerTest {
         tlsContext.setServerRandom(serverRandom);
 
         try {
-            ClassLoader loader = TlsConfig.class.getClassLoader();
-            File f;
-            try {
-                f = new File(loader.getResource("rsa1024.jks").toURI());
-            } catch (URISyntaxException ex) {
-                throw new WorkflowExecutionException("Could not load resource", ex);
-            }
-            KeyStore ks = KeystoreHandler.loadKeyStore(f, "password");
+            ClassLoader loader = RSAClientKeyExchangeHandlerTest.class.getClassLoader();
+            InputStream stream = loader.getResourceAsStream("rsa1024.jks");
+            KeyStore ks = KeystoreHandler.loadKeyStore(stream, "password");
             tlsContext.getConfig().setKeyStore(ks);
             tlsContext.getConfig().setAlias("alias");
             tlsContext.getConfig().setPassword("password");

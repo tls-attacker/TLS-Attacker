@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -265,9 +266,9 @@ public class TlsConfig {
         pointFormats = new LinkedList<>();
         try {
             ClassLoader loader = TlsConfig.class.getClassLoader();
-            File f = new File(loader.getResource("default.jks").toURI());
-            setKeyStore(KeystoreHandler.loadKeyStore(f, "password"));
-        } catch (URISyntaxException | KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
+            InputStream stream = loader.getResourceAsStream("/default.jks");
+            setKeyStore(KeystoreHandler.loadKeyStore(stream, "password"));
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load deauflt JKS!");
         }
 

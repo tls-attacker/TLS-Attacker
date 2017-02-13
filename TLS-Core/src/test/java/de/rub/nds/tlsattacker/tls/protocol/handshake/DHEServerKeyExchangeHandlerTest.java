@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.security.KeyStore;
@@ -31,6 +32,7 @@ import java.security.cert.CertificateException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  * Tests for ECDHE key exchange handler, with values from wireshark
@@ -58,6 +60,10 @@ public class DHEServerKeyExchangeHandlerTest {
     TlsContext tlsContext;
 
     public DHEServerKeyExchangeHandlerTest() {
+    }
+
+    @Before
+    public void init() {
 
         // ECC does not work properly in the NSS provider
         Security.removeProvider("SunPKCS11-NSS");
@@ -68,14 +74,9 @@ public class DHEServerKeyExchangeHandlerTest {
         tlsContext.setServerRandom(serverRandom);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         try {
-            ClassLoader loader = TlsConfig.class.getClassLoader();
-            File f;
-            try {
-                f = new File(loader.getResource("rsa1024.jks").toURI());
-            } catch (URISyntaxException ex) {
-                throw new WorkflowExecutionException("Could not load resource", ex);
-            }
-            KeyStore ks = KeystoreHandler.loadKeyStore(f, "password");
+            ClassLoader loader = DHEServerKeyExchangeHandlerTest.class.getClassLoader();
+            InputStream stream = loader.getResourceAsStream("rsa1024.jks");
+            KeyStore ks = KeystoreHandler.loadKeyStore(stream, "password");
             tlsContext.getConfig().setKeyStore(ks);
             tlsContext.getConfig().setAlias("alias");
             tlsContext.getConfig().setPassword("password");
@@ -83,6 +84,7 @@ public class DHEServerKeyExchangeHandlerTest {
             throw new ConfigurationException("Something went wrong loading key from Keystore", ex);
         }
         handler = new DHEServerKeyExchangeHandler(tlsContext);
+
     }
 
     /**

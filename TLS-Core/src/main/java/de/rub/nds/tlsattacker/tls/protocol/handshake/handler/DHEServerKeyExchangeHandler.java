@@ -253,15 +253,10 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             RSAPrivateCrtKey rsaKey = null;
             if (!key.getAlgorithm().equals("RSA")) {
                 // Load static key //todo no fuzzing mode
-                ClassLoader loader = TlsConfig.class.getClassLoader();
-                File f;
-                try {
-                    f = new File(loader.getResource("rsa1024.jks").toURI());
-                } catch (URISyntaxException ex) {
-                    throw new WorkflowExecutionException("Could not load resource", ex);
-                }
-                ks = KeystoreHandler.loadKeyStore(f, "password");
-
+                ClassLoader loader = DHEServerKeyExchangeHandler.class.getClassLoader();
+                InputStream stream = loader.getResourceAsStream("/rsa1024.jks");
+                ks = KeystoreHandler.loadKeyStore(stream, "password");
+                tlsContext.getConfig().setKeyStore(ks);
                 key = ks.getKey("alias", "password".toCharArray());
             }
             rsaKey = (RSAPrivateCrtKey) key;

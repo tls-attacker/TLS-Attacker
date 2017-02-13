@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -30,10 +31,10 @@ public class KeystoreHandler {
         return ks;
     }
 
-    public static KeyStore loadKeyStore(File keyStoreFile, final String keyStorePassword) throws KeyStoreException,
+    public static KeyStore loadKeyStore(InputStream stream, final String keyStorePassword) throws KeyStoreException,
             IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(new FileInputStream(keyStoreFile), keyStorePassword.toCharArray());
+        ks.load(stream, keyStorePassword.toCharArray());
 
         return ks;
     }
