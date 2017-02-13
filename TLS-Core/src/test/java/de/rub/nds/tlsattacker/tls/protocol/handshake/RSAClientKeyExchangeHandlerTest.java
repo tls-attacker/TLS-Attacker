@@ -13,12 +13,15 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -35,7 +38,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -67,7 +70,14 @@ public class RSAClientKeyExchangeHandlerTest {
         tlsContext.setServerRandom(serverRandom);
 
         try {
-            KeyStore ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+            ClassLoader loader = TlsConfig.class.getClassLoader();
+            File f;
+            try {
+                f = new File(loader.getResource("rsa1024.jks").toURI());
+            } catch (URISyntaxException ex) {
+                throw new WorkflowExecutionException("Could not load resource", ex);
+            }
+            KeyStore ks = KeystoreHandler.loadKeyStore(f, "password");
             tlsContext.getConfig().setKeyStore(ks);
             tlsContext.getConfig().setAlias("alias");
             tlsContext.getConfig().setPassword("password");

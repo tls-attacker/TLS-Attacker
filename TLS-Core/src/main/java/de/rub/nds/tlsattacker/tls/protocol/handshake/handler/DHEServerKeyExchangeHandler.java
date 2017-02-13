@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
@@ -123,12 +124,12 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
         byte[] dhParams = ArrayConverter
                 .concatenate(ArrayConverter.intToBytes(protocolMessage.getpLength().getValue(),
-                                HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getP()
-                                .getValue()), ArrayConverter.intToBytes(protocolMessage.getgLength().getValue(),
-                                HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getG()
-                                .getValue()), ArrayConverter.intToBytes(protocolMessage.getPublicKeyLength().getValue(),
-                                HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage
-                                .getPublicKey().getValue()));
+                        HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getP()
+                        .getValue()), ArrayConverter.intToBytes(protocolMessage.getgLength().getValue(),
+                        HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getG()
+                        .getValue()), ArrayConverter.intToBytes(protocolMessage.getPublicKeyLength().getValue(),
+                        HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage
+                        .getPublicKey().getValue()));
         InputStream is = new ByteArrayInputStream(dhParams);
 
         try {
@@ -190,7 +191,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
                         + "655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca1821"
                         + "7c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf695"
                         + "5817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff");
-        byte[] gArray = {0x02};
+        byte[] gArray = { 0x02 };
         BigInteger p = new BigInteger(1, pArray);
         BigInteger g = new BigInteger(1, gArray);
         DHParameters params = new DHParameters(p, g);
@@ -257,7 +258,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
                 try {
                     f = new File(loader.getResource("rsa1024.jks").toURI());
                 } catch (URISyntaxException ex) {
-                    throw new WorkflowExecutionException("Could not load resource",ex);
+                    throw new WorkflowExecutionException("Could not load resource", ex);
                 }
                 ks = KeystoreHandler.loadKeyStore(f, "password");
 
@@ -278,8 +279,8 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             protocolMessage.setSignatureLength(signature.length);
 
             byte[] result = ArrayConverter.concatenate(dhParams,
-                    new byte[]{protocolMessage.getHashAlgorithm().getValue(),
-                        protocolMessage.getSignatureAlgorithm().getValue()}, ArrayConverter.intToBytes(
+                    new byte[] { protocolMessage.getHashAlgorithm().getValue(),
+                            protocolMessage.getSignatureAlgorithm().getValue() }, ArrayConverter.intToBytes(
                             protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
                     protocolMessage.getSignature().getValue());
 
@@ -291,7 +292,8 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
                     ArrayConverter.longToUint32Bytes(header), result));
 
-        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException | SignatureException ex) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
+                | SignatureException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
         } catch (IOException | CertificateException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
