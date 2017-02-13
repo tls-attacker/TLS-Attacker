@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.crypto;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import java.util.Random;
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
+import mockit.Expectations;
 import org.bouncycastle.crypto.tls.ProtocolVersion;
 import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.bouncycastle.crypto.tls.TlsContext;
@@ -37,7 +37,7 @@ public class PseudoRandomFunctionTest {
     public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
             @Mocked final SecurityParameters mockedParameters) {
         // Record expectations if/as needed:
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 mockedTlsContext.getServerVersion();
                 result = ProtocolVersion.TLSv12;
@@ -64,7 +64,7 @@ public class PseudoRandomFunctionTest {
 
         assertArrayEquals(result1, result2);
 
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 mockedParameters.getPrfAlgorithm();
                 result = 2;
