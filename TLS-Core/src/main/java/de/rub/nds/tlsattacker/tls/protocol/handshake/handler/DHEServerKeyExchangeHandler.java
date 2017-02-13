@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
@@ -18,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -38,6 +39,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -121,12 +123,12 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
         byte[] dhParams = ArrayConverter
                 .concatenate(ArrayConverter.intToBytes(protocolMessage.getpLength().getValue(),
-                        HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getP()
-                        .getValue()), ArrayConverter.intToBytes(protocolMessage.getgLength().getValue(),
-                        HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getG()
-                        .getValue()), ArrayConverter.intToBytes(protocolMessage.getPublicKeyLength().getValue(),
-                        HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage
-                        .getPublicKey().getValue()));
+                                HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getP()
+                                .getValue()), ArrayConverter.intToBytes(protocolMessage.getgLength().getValue(),
+                                HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage.getG()
+                                .getValue()), ArrayConverter.intToBytes(protocolMessage.getPublicKeyLength().getValue(),
+                                HandshakeByteLength.DH_PARAM_LENGTH), BigIntegers.asUnsignedByteArray(protocolMessage
+                                .getPublicKey().getValue()));
         InputStream is = new ByteArrayInputStream(dhParams);
 
         try {
@@ -169,7 +171,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
         // modulus)
         /**
          * int defaultPrimeProbability = 30;
-         * 
+         *
          * DHParametersGenerator generator = new DHParametersGenerator();
          * //Genration of a higher bit prime number takes too long (512 bits
          * takes 2 seconds) generator.init(512, defaultPrimeProbability, new
@@ -188,7 +190,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
                         + "655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca1821"
                         + "7c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf695"
                         + "5817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff");
-        byte[] gArray = { 0x02 };
+        byte[] gArray = {0x02};
         BigInteger p = new BigInteger(1, pArray);
         BigInteger g = new BigInteger(1, gArray);
         DHParameters params = new DHParameters(p, g);
@@ -249,10 +251,16 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
             RSAPrivateCrtKey rsaKey = null;
             if (!key.getAlgorithm().equals("RSA")) {
-                // Load static key //TODO Static file
-                ClassLoader loader = DHEServerKeyExchangeHandler.class.getClassLoader();
-                ks = KeystoreHandler.loadKeyStore(new File(loader.getResource("rsa1024.jks").getFile()).getPath(),
-                        "password");
+                // Load static key //todo no fuzzing mode
+                ClassLoader loader = TlsConfig.class.getClassLoader();
+                File f;
+                try {
+                    f = new File(loader.getResource("rsa1024.jks").toURI());
+                } catch (URISyntaxException ex) {
+                    throw new WorkflowExecutionException("Could not load resource",ex);
+                }
+                ks = KeystoreHandler.loadKeyStore(f, "password");
+
                 key = ks.getKey("alias", "password".toCharArray());
             }
             rsaKey = (RSAPrivateCrtKey) key;
@@ -270,8 +278,8 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             protocolMessage.setSignatureLength(signature.length);
 
             byte[] result = ArrayConverter.concatenate(dhParams,
-                    new byte[] { protocolMessage.getHashAlgorithm().getValue(),
-                            protocolMessage.getSignatureAlgorithm().getValue() }, ArrayConverter.intToBytes(
+                    new byte[]{protocolMessage.getHashAlgorithm().getValue(),
+                        protocolMessage.getSignatureAlgorithm().getValue()}, ArrayConverter.intToBytes(
                             protocolMessage.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH),
                     protocolMessage.getSignature().getValue());
 
@@ -283,8 +291,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
                     ArrayConverter.longToUint32Bytes(header), result));
 
-        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException
-                | SignatureException ex) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | InvalidKeyException | SignatureException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
         } catch (IOException | CertificateException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
