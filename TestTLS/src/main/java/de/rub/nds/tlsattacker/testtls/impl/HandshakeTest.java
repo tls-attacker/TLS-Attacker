@@ -59,7 +59,7 @@ public abstract class HandshakeTest extends TestTLS {
         // servers,
         // for example Botan, for which closing connection is not enough)
         AlertMessage alert = new AlertMessage(tlsConfig);
-        alert.setConfig(AlertLevel.FATAL,AlertDescription.HANDSHAKE_FAILURE);
+        alert.setConfig(AlertLevel.FATAL, AlertDescription.HANDSHAKE_FAILURE);
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, alert));
         tlsContext.setWorkflowTrace(workflowTrace);
         // TODO

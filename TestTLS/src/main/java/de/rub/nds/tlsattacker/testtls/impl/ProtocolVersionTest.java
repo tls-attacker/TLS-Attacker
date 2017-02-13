@@ -52,8 +52,7 @@ public class ProtocolVersionTest extends HandshakeTest {
             try {
                 success = executeHandshake(tlsConfig);
             } catch (Exception ex) {
-                LOGGER.info(ex.getLocalizedMessage());
-                LOGGER.debug(ex.getLocalizedMessage(), ex);
+                ex.printStackTrace();
             }
             if (success) {
                 supportedProtocols.add(pv);

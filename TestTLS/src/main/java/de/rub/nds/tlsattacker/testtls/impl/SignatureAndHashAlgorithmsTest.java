@@ -87,8 +87,8 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
             }
             if (success) {
                 signatureAndHashAlgorithms.add(algorithm);
-                if (lastTlsContext.getWorkflowTrace()
-                        .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_KEY_EXCHANGE).get(0) != null) {
+                if (!lastTlsContext.getWorkflowTrace()
+                        .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_KEY_EXCHANGE).isEmpty()) {
                     ServerKeyExchangeMessage skm = (ServerKeyExchangeMessage) lastTlsContext.getWorkflowTrace()
                             .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_KEY_EXCHANGE)
                             .get(0);
