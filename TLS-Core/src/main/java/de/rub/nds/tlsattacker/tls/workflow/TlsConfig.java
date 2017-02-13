@@ -21,10 +21,13 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -261,8 +264,10 @@ public class TlsConfig {
         namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
         try {
-            setKeyStore(KeystoreHandler.loadKeyStore("../resources/default.jks", "password"));
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
+            ClassLoader loader = TlsConfig.class.getClassLoader();
+            File f = new File(loader.getResource("default.jks").toURI());
+            setKeyStore(KeystoreHandler.loadKeyStore(f, "password"));
+        } catch (URISyntaxException | KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load deauflt JKS!");
         }
 

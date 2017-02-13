@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -249,7 +250,9 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
             RSAPrivateCrtKey rsaKey = null;
             if (!key.getAlgorithm().equals("RSA")) {
                 // Load static key //TODO Static file
-                ks = KeystoreHandler.loadKeyStore("../resources/rsa1024.jks", "password");
+                ClassLoader loader = DHEServerKeyExchangeHandler.class.getClassLoader();
+                ks = KeystoreHandler.loadKeyStore(new File(loader.getResource("rsa1024.jks").getFile()).getPath(),
+                        "password");
                 key = ks.getKey("alias", "password".toCharArray());
             }
             rsaKey = (RSAPrivateCrtKey) key;
