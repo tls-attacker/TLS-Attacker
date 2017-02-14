@@ -54,6 +54,7 @@ public class AlertState implements EapState {
         return null;
     }
 
+    @Override
     public String getState() {
         return "AlertState";
     }

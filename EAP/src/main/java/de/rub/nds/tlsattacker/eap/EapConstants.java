@@ -13,7 +13,7 @@ package de.rub.nds.tlsattacker.eap;
  * 
  * @author Felix Lange <flx.lange@gmail.com>
  */
-public final class EapConstants {
+public class EapConstants {
 
     /** Broadcast address of EAP packet */
     public static final byte[] BROADCAST_ADDRESS = { (byte) 0x01, (byte) 0x80, (byte) 0xc2, (byte) 0x00, (byte) 0x00,

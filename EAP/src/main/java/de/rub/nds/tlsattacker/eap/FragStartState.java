@@ -54,7 +54,7 @@ public class FragStartState implements EapState {
     @Override
     public byte[] receive() {
         data = nic.receiveFrame();
-        id = (int) data[19]; // Get ID
+        id = data[19]; // Get ID
 
         if (data[23] == (byte) 0xc0 || data[23] == (byte) 0x40) {
             eapolMachine.setState(new FragStartState(eapolMachine, id));

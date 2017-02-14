@@ -50,7 +50,7 @@ public class EapTlsStartState implements EapState {
     public byte[] receive() {
 
         data = nic.receiveFrame();
-        int id = (int) data[19]; // Get ID
+        int id = data[19]; // Get ID
 
         if (data[22] == 0x0d) {
             eapolMachine.setState(new HelloState(eapolMachine, id));
@@ -68,7 +68,7 @@ public class EapTlsStartState implements EapState {
     @Override
     public int getID() {
 
-        return (int) data[19];
+        return data[19];
 
     }
 

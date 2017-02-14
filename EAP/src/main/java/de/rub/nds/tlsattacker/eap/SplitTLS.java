@@ -16,18 +16,18 @@ import java.nio.ByteBuffer;
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public class SplitTLS {
+    private static SplitTLS splittls = new SplitTLS();
+
+    public static SplitTLS getInstance() {
+        return splittls;
+    }
 
     byte[] sslraw;
 
     byte[][] clientresponse;
 
-    private static SplitTLS splittls = new SplitTLS();
 
     private SplitTLS() {
-    }
-
-    public static SplitTLS getInstance() {
-        return splittls;
     }
 
     public byte[][] split(byte[] sslraw) {
@@ -57,9 +57,9 @@ public class SplitTLS {
         return clientresponse;
 
     }
-
+    
     public byte[] getFragment(int count) {
-
+        
         return clientresponse[count];
 
     }
@@ -99,5 +99,6 @@ public class SplitTLS {
         bb.putInt(i);
         return bb.array();
     }
+
 
 }

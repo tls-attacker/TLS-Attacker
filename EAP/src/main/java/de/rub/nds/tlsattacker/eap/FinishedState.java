@@ -64,7 +64,7 @@ public class FinishedState implements EapState {
     public byte[] receive() {
 
         data = nic.receiveFrame();
-        id = (int) data[19]; // Get ID
+        id = data[19]; // Get ID
 
         if (data[18] == (byte) 0x03) {
             eapolMachine.setState(new SuccessState(eapolMachine, id));

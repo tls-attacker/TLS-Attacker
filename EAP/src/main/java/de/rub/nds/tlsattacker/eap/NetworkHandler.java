@@ -8,19 +8,17 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
-
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
-
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * Networkhandler to open Interface, send/receive Frames on Data Link Layer,
@@ -30,6 +28,10 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class NetworkHandler {
     private static NetworkHandler networkhandler = new NetworkHandler();
+
+    public static NetworkHandler getInstance() {
+        return networkhandler;
+    }
 
     Pcap pcap;
 
@@ -41,25 +43,19 @@ public class NetworkHandler {
 
     public byte[] rcvframe;
 
-    Queue<PcapPacket> queue = new ArrayBlockingQueue<PcapPacket>(20);
+    Queue<PcapPacket> queue = new ArrayBlockingQueue<>(20);
 
     String username;
 
     private NetworkHandler() {
     }
 
-    public static NetworkHandler getInstance() {
-        return networkhandler;
-    }
-
     public void init() {
-
-        List<PcapIf> alldevs = new ArrayList<PcapIf>(); // Will be filled with
+        List<PcapIf> alldevs = new ArrayList<>(); // Will be filled with
+        // Will be filled with
         // NICs
         StringBuilder errbuf = new StringBuilder(); // For any error msgs
-
         int index; // Device Index
-
         /***************************************************************************
          * First get a list of devices on this system
          **************************************************************************/
@@ -68,7 +64,6 @@ public class NetworkHandler {
             System.err.printf("Can't read list of devices, error is %s", errbuf.toString());
             return;
         }
-
         /*****************************************
          * Show all network interfaces
          *****************************************/
@@ -79,11 +74,10 @@ public class NetworkHandler {
                     : "No description available";
             System.out.printf("#%d: %s [%s]\n", i++, device.getName(), description);
         }
-
         /*****************************************
          * Select network interfaces
          *****************************************/
-        try (Scanner scanner = new Scanner(System.in)) {
+        try (final Scanner scanner = new Scanner(System.in)) {
             while (true) {
                 try {
                     System.out.print("Which [number] of Network-Adapter to use: ");
@@ -92,20 +86,15 @@ public class NetworkHandler {
                         break;
                     } else {
                         System.out.println("Incorrect, retry...");
-                        continue;
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("Incorrect, retry...");
-                    continue;
                 }
             }
         }
-
         PcapIf device = alldevs.get(index); // We know we have atleast 1 device
-
         System.out.printf("\nChoosing '%s' on your behalf:\n",
                 (device.getDescription() != null) ? device.getDescription() : device.getName());
-
         // Username Request
 
         try (Scanner sc = new Scanner(System.in)) {
@@ -118,7 +107,6 @@ public class NetworkHandler {
                 }
             }
         }
-
         // Initialize Network-Interface
 
         int snaplen = 64 * 1024; // Capture all packets, no trucation
@@ -131,7 +119,6 @@ public class NetworkHandler {
             System.out.println("Can't get Source-MAC!");
             e.printStackTrace();
         }
-
     }
 
     public void sendFrame(byte[] frame) {
@@ -148,11 +135,9 @@ public class NetworkHandler {
     public byte[] receiveFrame() {
 
         // Initialize PacketHandler for listening
-
         PcapPacketHandler<Queue<PcapPacket>> handler = new PcapPacketHandler<Queue<PcapPacket>>() {
-
+            @Override
             public void nextPacket(PcapPacket packet, Queue<PcapPacket> queue) {
-
                 // Byte-Array for Frames
                 rcvframe = packet.getByteArray(0, packet.size());
 
@@ -168,9 +153,7 @@ public class NetworkHandler {
                 }
             }
         };
-
         pcap.loop(100, handler, queue);
-
         return rcvframe;
     }
 
@@ -179,5 +162,6 @@ public class NetworkHandler {
         pcap.close();
 
     }
+
 
 }

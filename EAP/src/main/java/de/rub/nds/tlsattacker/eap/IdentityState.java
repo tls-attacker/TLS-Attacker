@@ -49,7 +49,7 @@ public class IdentityState implements EapState {
     public byte[] receive() {
 
         data = nic.receiveFrame();
-        id = (int) data[19]; // Get ID
+        id = data[19]; // Get ID
 
         if (data[22] == 0x0d) {
             eapolMachine.setState(new HelloState(eapolMachine, id));

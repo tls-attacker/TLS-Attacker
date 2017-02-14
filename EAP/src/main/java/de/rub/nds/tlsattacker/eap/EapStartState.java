@@ -46,7 +46,7 @@ public class EapStartState implements EapState {
     public byte[] receive() {
 
         data = nic.receiveFrame();
-        int id = (int) data[19]; // Get ID
+        int id = data[19]; // Get ID
 
         // Identity Frame?
         if (data[22] == 0x01) {
@@ -67,7 +67,7 @@ public class EapStartState implements EapState {
     @Override
     public int getID() {
 
-        return (int) data[19];
+        return data[19];
 
     }
 

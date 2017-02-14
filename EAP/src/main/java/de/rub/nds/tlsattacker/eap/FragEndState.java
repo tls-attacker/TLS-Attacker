@@ -59,7 +59,7 @@ public class FragEndState implements EapState {
     public byte[] receive() {
 
         data = nic.receiveFrame();
-        id = (int) data[19]; // Get ID
+        id = data[19]; // Get ID
 
         LOGGER.debug("receive() TLS-FLAG: {}", Byte.toString(data[23]));
 
