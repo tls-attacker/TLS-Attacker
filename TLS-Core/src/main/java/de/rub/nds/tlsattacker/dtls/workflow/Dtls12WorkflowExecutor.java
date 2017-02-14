@@ -61,6 +61,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
             while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
                 TLSAction action = actions.get(workflowContext.getActionPointer());
                 action.execute(tlsContext, actionExecutor);
+                workflowContext.incrementActionPointer();
 
             }
         } catch (WorkflowExecutionException | IOException e) {
