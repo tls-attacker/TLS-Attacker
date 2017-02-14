@@ -29,6 +29,13 @@ public abstract class TransportHandler {
 
     protected int port;
 
+    public TransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+        this.end = end;
+        this.tlsTimeout = timeout;
+        this.hostname = hostname;
+        this.port = port;
+    }
+
     public abstract void closeConnection();
 
     public abstract byte[] fetchData() throws IOException;
@@ -36,13 +43,6 @@ public abstract class TransportHandler {
     public abstract void initialize() throws IOException;
 
     public abstract void sendData(byte[] data) throws IOException;
-
-    public TransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
-        this.end = end;
-        this.tlsTimeout = timeout;
-        this.hostname = hostname;
-        this.port = port;
-    }
 
     public String getHostname() {
         return hostname;

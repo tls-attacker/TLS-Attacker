@@ -13,10 +13,6 @@ package de.rub.nds.tlsattacker.transport;
  */
 public class TransportHandlerFactory {
 
-    private TransportHandlerFactory() {
-
-    }
-
     public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEnd end, int timeout,
             TransportHandlerType type) {
         switch (type) {
@@ -29,5 +25,9 @@ public class TransportHandlerFactory {
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
         }
+    }
+
+    private TransportHandlerFactory() {
+
     }
 }

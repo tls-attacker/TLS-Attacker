@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.transport;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.DatagramPacket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
