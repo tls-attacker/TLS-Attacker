@@ -135,9 +135,10 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
 
         currentPointer = nextPointer;
         nextPointer = currentPointer + RecordByteLength.PROTOCOL_VERSION;
-        ProtocolVersion serverProtocolVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
+        ProtocolVersion highestClientVersion = ProtocolVersion.getProtocolVersion(Arrays.copyOfRange(message,
                 currentPointer, nextPointer));
-        protocolMessage.setProtocolVersion(serverProtocolVersion.getValue());
+        protocolMessage.setProtocolVersion(highestClientVersion.getValue());
+        tlsContext.setHighestClientProtocolVersion(highestClientVersion);
         currentPointer = nextPointer;
         nextPointer = currentPointer + HandshakeByteLength.UNIX_TIME;
         protocolMessage.setUnixTime(Arrays.copyOfRange(message, currentPointer, nextPointer));
