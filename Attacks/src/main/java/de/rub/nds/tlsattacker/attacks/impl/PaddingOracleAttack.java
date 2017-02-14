@@ -114,7 +114,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        lastMessages.add(trace.getLastConfiguredSendMesssage());
+        lastMessages.add(trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1));
         tlsContexts.add(tlsContext);
 
         transportHandler.closeConnection();
