@@ -74,9 +74,9 @@ public class TlsServer {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info(ex.getLocalizedMessage(), ex);
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
 
         transportHandler.closeConnection();
