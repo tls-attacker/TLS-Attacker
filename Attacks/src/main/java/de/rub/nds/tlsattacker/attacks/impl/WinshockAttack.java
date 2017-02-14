@@ -43,6 +43,7 @@ public class WinshockAttack extends Attacker<WinshockCommandConfig> {
     @Override
     public void executeAttack(ConfigHandler configHandler) {
         TlsConfig tlsConfig = configHandler.initialize(config);
+        tlsConfig.setClientAuthentication(true);
         TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
         TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
