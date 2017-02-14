@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public abstract class TransportHandler {
 
-    protected int tlsTimeout;
+    protected int socketTimeout;
 
     protected long lastSystemNano;
 
@@ -29,9 +29,9 @@ public abstract class TransportHandler {
 
     protected int port;
 
-    public TransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+    public TransportHandler(String hostname, int port, ConnectionEnd end, int socketTimeout) {
         this.end = end;
-        this.tlsTimeout = timeout;
+        this.socketTimeout = socketTimeout;
         this.hostname = hostname;
         this.port = port;
     }

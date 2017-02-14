@@ -40,9 +40,12 @@ public class SimpleTransportHandler extends TransportHandler {
     private BufferedInputStream bis;
 
     private byte[] readTimingData;
+    
+    private int tlsTimeout;
 
-    public SimpleTransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
-        super(hostname, port, end, timeout);
+    public SimpleTransportHandler(String hostname, int port, ConnectionEnd end, int socketTimeout, int tlsTimeout) {
+        super(hostname, port, end, socketTimeout);
+        this.tlsTimeout = tlsTimeout;
     }
 
     @Override
@@ -97,7 +100,7 @@ public class SimpleTransportHandler extends TransportHandler {
             measuringTiming = false;
             response = readTimingData;
         }
-        long minTimeMillies = System.currentTimeMillis() + tlsTimeout;
+        long minTimeMillies = System.currentTimeMillis() + socketTimeout;
         // long maxTimeMillies = System.currentTimeMillis() + timeout;
         while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0)) {
             // while ((System.currentTimeMillis() < maxTimeMillies) &&
@@ -164,7 +167,7 @@ public class SimpleTransportHandler extends TransportHandler {
         }
     }
 
-    public int getTlsTimeout() {
+    public long getTlsTimeout() {
         return tlsTimeout;
     }
 

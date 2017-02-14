@@ -39,7 +39,7 @@ public class UDPTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         datagramSocket = new DatagramSocket();
-        datagramSocket.setSoTimeout(tlsTimeout);
+        datagramSocket.setSoTimeout(socketTimeout);
         datagramSocket.connect(InetAddress.getByName(hostname), port);
 
         sentPacket = new DatagramPacket(new byte[0], 0, datagramSocket.getInetAddress(), datagramSocket.getPort());
@@ -80,14 +80,14 @@ public class UDPTransportHandler extends TransportHandler {
     }
 
     public int getTlsTimeout() {
-        return tlsTimeout;
+        return socketTimeout;
     }
 
     public void setTlsTimeout(int tlsTimeout) {
-        this.tlsTimeout = tlsTimeout;
+        this.socketTimeout = tlsTimeout;
         if (datagramSocket != null) {
             try {
-                datagramSocket.setSoTimeout(this.tlsTimeout);
+                datagramSocket.setSoTimeout(this.socketTimeout);
             } catch (SocketException e) {
                 LOGGER.debug("Failed to set socket timeout. Exception:\n{}", e.getMessage());
             }

@@ -54,7 +54,7 @@ public class ConfigHandler {
             port = Integer.parseInt(hp[1]);
         }
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, config.getMyConnectionEnd(),
-                config.getTlsTimeout(), config.getTransportHandlerType());
+                config.getTlsTimeout(),config.getTimeout(), config.getTransportHandlerType());
         try {
 
             th.initialize();

@@ -13,15 +13,15 @@ package de.rub.nds.tlsattacker.transport;
  */
 public class TransportHandlerFactory {
 
-    public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEnd end, int timeout,
+    public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEnd end, int tlsTimeout, int socketTimeout,
             TransportHandlerType type) {
         switch (type) {
             case TCP:
-                return new SimpleTransportHandler(hostname, port, end, timeout);
+                return new SimpleTransportHandler(hostname, port, end, socketTimeout,tlsTimeout);
             case EAP_TLS:
-                return new EAPTLSTransportHandler(hostname, port, end, timeout);
+                return new EAPTLSTransportHandler(hostname, port, end, tlsTimeout);
             case UDP:
-                return new UDPTransportHandler(hostname, port, end, timeout);
+                return new UDPTransportHandler(hostname, port, end, tlsTimeout);
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
         }
