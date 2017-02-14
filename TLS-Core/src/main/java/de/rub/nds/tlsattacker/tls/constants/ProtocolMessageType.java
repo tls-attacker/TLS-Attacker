@@ -8,12 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertHandler;
@@ -21,6 +15,10 @@ import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

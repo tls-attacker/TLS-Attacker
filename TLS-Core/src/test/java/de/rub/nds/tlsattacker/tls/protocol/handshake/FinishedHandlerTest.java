@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 

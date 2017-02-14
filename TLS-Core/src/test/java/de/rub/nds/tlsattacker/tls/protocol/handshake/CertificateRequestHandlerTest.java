@@ -9,10 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateRequestHandler;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -34,7 +30,7 @@ import static org.junit.Assert.*;
  */
 public class CertificateRequestHandlerTest {
 
-    private CertificateRequestHandler<CertificateRequestMessage> handler;
+    private final CertificateRequestHandler<CertificateRequestMessage> handler;
 
     public CertificateRequestHandlerTest() {
         handler = new CertificateRequestHandler<>(new TlsContext());
@@ -47,7 +43,7 @@ public class CertificateRequestHandlerTest {
     public void testPrepareMessageAction() {
         handler.setProtocolMessage(new CertificateRequestMessage(new TlsConfig()));
 
-        CertificateRequestMessage message = (CertificateRequestMessage) handler.getProtocolMessage();
+        CertificateRequestMessage message = handler.getProtocolMessage();
 
         byte[] returned = handler.prepareMessageAction();
         byte[] expected = ArrayConverter.concatenate(
@@ -72,7 +68,7 @@ public class CertificateRequestHandlerTest {
         byte[] sigHashAlg = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512).getByteValue();
         inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x00 });
         int endPointer = handler.parseMessageAction(inputBytes, 0);
-        CertificateRequestMessage message = (CertificateRequestMessage) handler.getProtocolMessage();
+        CertificateRequestMessage message = handler.getProtocolMessage();
 
         assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
         assertEquals("Confirm actual message length", endPointer, 12);

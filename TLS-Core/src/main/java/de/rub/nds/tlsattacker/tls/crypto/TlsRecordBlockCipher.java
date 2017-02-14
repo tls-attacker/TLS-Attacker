@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.tls.crypto;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.security.InvalidAlgorithmParameterException;
@@ -339,7 +339,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
                 decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);
                 readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
                 writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
-            } catch (Exception E) {
+            } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
                 throw new UnsupportedOperationException(E);
             }
         } else {
@@ -354,7 +354,7 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
 
                 readMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
                 writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
-            } catch (Exception E) {
+            } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
                 throw new UnsupportedOperationException(E);
             }
         }

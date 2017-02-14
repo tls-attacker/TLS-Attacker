@@ -8,24 +8,22 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.alert;
 
-import java.util.Objects;
-
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Objects;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public final class AlertMessage extends ProtocolMessage {
+public class AlertMessage extends ProtocolMessage {
 
     /**
      * config array used to configure alert message

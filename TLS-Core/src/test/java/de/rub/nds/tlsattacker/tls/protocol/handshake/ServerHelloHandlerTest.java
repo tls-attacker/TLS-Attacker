@@ -8,13 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
@@ -22,10 +15,17 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import static org.junit.Assert.*;
+import java.util.List;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -65,7 +65,7 @@ public class ServerHelloHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(serverKeyExchangeWithoutExtensionBytes, 0);
-        ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
+        ServerHelloMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
                 message.getHandshakeMessageType());
@@ -95,7 +95,7 @@ public class ServerHelloHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(serverKeyExchangeWithHeartbeatBytes, 0);
-        ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
+        ServerHelloMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ServerHello", HandshakeMessageType.SERVER_HELLO,
                 message.getHandshakeMessageType());
@@ -155,7 +155,7 @@ public class ServerHelloHandlerTest {
         curve.add(NamedCurve.SECT163K1);
         tlsContext.getConfig().setNamedCurves(curve);
         handler.setProtocolMessage(new ServerHelloMessage(tlsContext.getConfig()));
-        ServerHelloMessage message = (ServerHelloMessage) handler.getProtocolMessage();
+        ServerHelloMessage message = handler.getProtocolMessage();
         byte[] returned = handler.prepareMessageAction();
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO.getValue() },
                 new byte[] { 0x00, 0x00, 0x57 }, ProtocolVersion.TLS12.getValue(), message.getUnixTime().getValue(),

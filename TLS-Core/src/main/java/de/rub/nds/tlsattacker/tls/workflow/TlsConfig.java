@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
@@ -21,24 +20,19 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
@@ -46,7 +40,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class TlsConfig {
+public final class TlsConfig {
 
     /**
      * Default value for PtocolverionFields
@@ -459,7 +453,7 @@ public class TlsConfig {
     }
 
     public List<CipherSuite> getSupportedCiphersuites() {
-        return supportedCiphersuites;
+        return Collections.unmodifiableList(supportedCiphersuites);
     }
 
     public void setSupportedCiphersuites(List<CipherSuite> supportedCiphersuites) {
@@ -467,7 +461,7 @@ public class TlsConfig {
     }
 
     public List<CompressionMethod> getSupportedCompressionMethods() {
-        return supportedCompressionMethods;
+        return Collections.unmodifiableList(supportedCompressionMethods);
     }
 
     public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {
@@ -559,7 +553,7 @@ public class TlsConfig {
     }
 
     public List<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
-        return supportedSignatureAndHashAlgorithms;
+        return Collections.unmodifiableList(supportedSignatureAndHashAlgorithms);
     }
 
     public void setSupportedSignatureAndHashAlgorithms(
@@ -576,7 +570,7 @@ public class TlsConfig {
     }
 
     public List<ECPointFormat> getPointFormats() {
-        return pointFormats;
+        return Collections.unmodifiableList(pointFormats);
     }
 
     public void setPointFormats(List<ECPointFormat> pointFormats) {
@@ -584,7 +578,7 @@ public class TlsConfig {
     }
 
     public List<NamedCurve> getNamedCurves() {
-        return namedCurves;
+        return Collections.unmodifiableList(namedCurves);
     }
 
     public void setNamedCurves(List<NamedCurve> namedCurves) {

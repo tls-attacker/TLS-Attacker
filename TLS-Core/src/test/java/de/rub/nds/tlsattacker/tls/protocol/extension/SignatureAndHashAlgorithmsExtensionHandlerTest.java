@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         gotPointer = msgHandler.parseExtension(createdExtension, 0);
         parseMethodMessage = (SignatureAndHashAlgorithmsExtensionMessage) msgHandler.getExtensionMessage();
 
-        assertEquals("Tests the returned pointer", (int) 10, gotPointer);
+        assertEquals("Tests the returned pointer", 10, gotPointer);
         assertArrayEquals("Tests the extension bytes", createdExtension, parseMethodMessage.getExtensionBytes()
                 .getValue());
         assertArrayEquals("Tests the extension type", ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS.getValue(),
@@ -91,6 +90,6 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
          */
         assertArrayEquals("Tests the set signature and hash algorithms bytes", originalAlgorithms, parseMethodMessage
                 .getSignatureAndHashAlgorithms().getValue());
-        assertEquals("Tests the extension length", (int) 6, (int) parseMethodMessage.getExtensionLength().getValue());
+        assertEquals("Tests the extension length", 6, parseMethodMessage.getExtensionLength().getValue().byteValue());
     }
 }

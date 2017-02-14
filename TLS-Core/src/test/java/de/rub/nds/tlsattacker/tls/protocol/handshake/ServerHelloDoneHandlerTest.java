@@ -8,13 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 
@@ -24,7 +26,7 @@ import static org.junit.Assert.*;
  */
 public class ServerHelloDoneHandlerTest {
 
-    private ServerHelloDoneHandler handler;
+    private final ServerHelloDoneHandler handler;
 
     public ServerHelloDoneHandlerTest() {
         handler = new ServerHelloDoneHandler(new TlsContext());
@@ -37,7 +39,7 @@ public class ServerHelloDoneHandlerTest {
     public void testPrepareMessageAction() {
         handler.setProtocolMessage(new ServerHelloDoneMessage(new TlsConfig()));
 
-        ServerHelloDoneMessage message = (ServerHelloDoneMessage) handler.getProtocolMessage();
+        ServerHelloDoneMessage message = handler.getProtocolMessage();
 
         byte[] returned = handler.prepareMessageAction();
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO_DONE.getValue() },

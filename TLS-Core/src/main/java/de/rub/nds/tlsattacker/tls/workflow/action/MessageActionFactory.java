@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,9 +22,7 @@ public class MessageActionFactory {
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEnd sendingConnectionEnd,
             ProtocolMessage... protocolMessages) {
         List<ProtocolMessage> messages = new LinkedList<>();
-        for (ProtocolMessage tempMessage : protocolMessages) {
-            messages.add(tempMessage);
-        }
+        messages.addAll(Arrays.asList(protocolMessages));
         if (myConnectionEnd == sendingConnectionEnd) {
             return new SendAction(messages);
         } else {
@@ -40,5 +39,8 @@ public class MessageActionFactory {
             return new ReceiveAction(protocolMessages);
         }
 
+    }
+
+    private MessageActionFactory() {
     }
 }

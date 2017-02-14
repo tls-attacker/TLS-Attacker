@@ -8,21 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateParsingException;
-import java.util.Arrays;
-
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.jce.provider.X509CertificateObject;
-
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -31,10 +16,21 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.util.JKSLoader;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateParsingException;
+import java.util.Arrays;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @param <Message>
  * @param <HandshakeMessage>
  */
 public class CertificateHandler<Message extends CertificateMessage> extends HandshakeMessageHandler<Message> {
@@ -97,7 +93,7 @@ public class CertificateHandler<Message extends CertificateMessage> extends Hand
         } catch (IOException | CertificateParsingException ex) {
             throw new WorkflowExecutionException(ex.getLocalizedMessage(), ex);
         }
-        nextPointer = nextPointer + protocolMessage.getCertificatesLength().getValue();
+        nextPointer += protocolMessage.getCertificatesLength().getValue();
 
         protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
 

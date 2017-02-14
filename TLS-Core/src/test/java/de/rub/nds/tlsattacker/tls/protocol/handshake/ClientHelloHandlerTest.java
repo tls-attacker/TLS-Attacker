@@ -8,17 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ClientHelloHandler;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
@@ -27,13 +16,17 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * 
@@ -92,7 +85,7 @@ public class ClientHelloHandlerTest {
     public void testPrepareMessage() {
         dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(dtlsContext.getConfig()));
 
-        ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
+        ClientHelloDtlsMessage message = dtlshandler.getProtocolMessage();
 
         byte[] returned = dtlshandler.prepareMessageAction();
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
@@ -115,8 +108,7 @@ public class ClientHelloHandlerTest {
         tlsContext.getConfig().setNamedCurves(curve);
         handler.setProtocolMessage(new ClientHelloMessage(tlsContext.getConfig()));
 
-        de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
-                .getProtocolMessage();
+        de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = handler.getProtocolMessage();
         byte[] returned = handler.prepareMessageAction();
 
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
@@ -140,7 +132,7 @@ public class ClientHelloHandlerTest {
         dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(new TlsConfig()));
 
         int endPointer = dtlshandler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
-        ClientHelloDtlsMessage message = (ClientHelloDtlsMessage) dtlshandler.getProtocolMessage();
+        ClientHelloDtlsMessage message = dtlshandler.getProtocolMessage();
 
         byte[] expectedRandom = ArrayConverter
                 .hexStringToByteArray("36cce3e132a0c5b5de2c0560b4ff7f6cdf7ae226120e4a99c07e2d9b68b275bb");
@@ -185,8 +177,7 @@ public class ClientHelloHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(clientHelloWithHeartbeatBytes, 0);
-        de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = (de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage) handler
-                .getProtocolMessage();
+        de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
                 message.getHandshakeMessageType());

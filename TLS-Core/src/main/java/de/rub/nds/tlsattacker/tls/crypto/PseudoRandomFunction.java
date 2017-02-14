@@ -43,10 +43,6 @@ public final class PseudoRandomFunction {
     /** key expansion label */
     public static final String KEY_EXPANSION_LABEL = "key expansion";
 
-    private PseudoRandomFunction() {
-
-    }
-
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      * 
@@ -129,5 +125,9 @@ public final class PseudoRandomFunction {
         } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
+    }
+
+    private PseudoRandomFunction() {
+
     }
 }

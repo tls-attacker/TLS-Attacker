@@ -84,11 +84,7 @@ public class Curve {
             return false;
         }
         final Curve other = (Curve) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-
-        return true;
+        return !((this.name == null) ? (other.name != null) : !this.name.equals(other.name));
     }
 
     @Override

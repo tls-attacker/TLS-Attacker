@@ -14,16 +14,13 @@ import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -95,7 +92,7 @@ public class DHEServerKeyExchangeHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(testServerKeyExchangeDSA, 0);
-        DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
+        DHEServerKeyExchangeMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
                 message.getHandshakeMessageType());
@@ -131,7 +128,7 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testPrepareMessageRSA() {
         handler.initializeProtocolMessage();
-        DHEServerKeyExchangeMessage message = (DHEServerKeyExchangeMessage) handler.getProtocolMessage();
+        DHEServerKeyExchangeMessage message = handler.getProtocolMessage();
 
         byte[] result = handler.prepareMessageAction();
 

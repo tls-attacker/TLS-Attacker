@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.crypto;
 
+import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
-import static org.junit.Assert.*;
+import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de

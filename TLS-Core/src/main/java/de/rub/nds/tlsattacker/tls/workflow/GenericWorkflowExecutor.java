@@ -15,11 +15,9 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.transport.SimpleTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.List;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +37,7 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
     protected final TlsContext tlsContext;
 
     protected WorkflowContext workflowContext;
-    private ExecutorType type;
+    private final ExecutorType type;
 
     public GenericWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext, ExecutorType type) {
         this.tlsContext = tlsContext;

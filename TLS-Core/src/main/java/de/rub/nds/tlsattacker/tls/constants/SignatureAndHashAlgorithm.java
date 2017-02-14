@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -23,6 +22,27 @@ import java.util.Objects;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class SignatureAndHashAlgorithm implements Serializable {
+
+    public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(byte[] value) {
+        return new SignatureAndHashAlgorithm(value);
+    }
+
+    public static SignatureAndHashAlgorithm getRandom() {
+        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(), HashAlgorithm.getRandom());
+    }
+
+    public static SignatureAndHashAlgorithm[] values() {
+        int size = SignatureAlgorithm.values().length * HashAlgorithm.values().length;
+        SignatureAndHashAlgorithm[] result = new SignatureAndHashAlgorithm[size];
+        int pos = 0;
+        for (SignatureAlgorithm sa : SignatureAlgorithm.values()) {
+            for (HashAlgorithm ha : HashAlgorithm.values()) {
+                result[pos] = new SignatureAndHashAlgorithm(sa, ha);
+                pos++;
+            }
+        }
+        return result;
+    }
 
     private SignatureAlgorithm signatureAlgorithm;
 
@@ -46,10 +66,6 @@ public class SignatureAndHashAlgorithm implements Serializable {
         this.hashAlgorithm = hashAlgorithm;
     }
 
-    public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(byte[] value) {
-        return new SignatureAndHashAlgorithm(value);
-    }
-
     public byte[] getByteValue() {
         return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
     }
@@ -70,27 +86,10 @@ public class SignatureAndHashAlgorithm implements Serializable {
         this.hashAlgorithm = hashAlgorithm;
     }
 
-    public static SignatureAndHashAlgorithm getRandom() {
-        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(), HashAlgorithm.getRandom());
-    }
-
     public String getJavaName() {
         String hashAlgorithmName = hashAlgorithm.getJavaName().replace("-", "");
         String signatureAlgorithmName = signatureAlgorithm.getJavaName();
         return hashAlgorithmName + "with" + signatureAlgorithmName;
-    }
-
-    public static SignatureAndHashAlgorithm[] values() {
-        int size = SignatureAlgorithm.values().length * HashAlgorithm.values().length;
-        SignatureAndHashAlgorithm[] result = new SignatureAndHashAlgorithm[size];
-        int pos = 0;
-        for (SignatureAlgorithm sa : SignatureAlgorithm.values()) {
-            for (HashAlgorithm ha : HashAlgorithm.values()) {
-                result[pos] = new SignatureAndHashAlgorithm(sa, ha);
-                pos++;
-            }
-        }
-        return result;
     }
 
     @Override

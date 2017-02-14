@@ -36,7 +36,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     }
 
     /**
-     * @param extension
+     * @param context
      */
     @Override
     public void prepareExtension(TlsContext context) {

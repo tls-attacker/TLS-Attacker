@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-
 import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -21,6 +18,8 @@ import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -28,6 +27,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 
 /**
+ * @param <Message>
  * @param <HandshakeMessage>
  */
 public class CertificateRequestHandler<Message extends CertificateRequestMessage> extends

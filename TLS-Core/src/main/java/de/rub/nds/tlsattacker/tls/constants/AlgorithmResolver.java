@@ -23,10 +23,6 @@ public class AlgorithmResolver {
 
     private static final Logger LOGGER = LogManager.getLogger(AlgorithmResolver.class);
 
-    private AlgorithmResolver() {
-
-    }
-
     /**
      * Returns a PRF algorithm based on the protocol version and the cipher
      * suite. TLS 1.0 and 1.1 used a legacy PRF based on MD5 and SHA-1. TLS 1.2
@@ -223,5 +219,9 @@ public class AlgorithmResolver {
             throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
                     + " is not supported yet");
         }
+    }
+
+    private AlgorithmResolver() {
+
     }
 }

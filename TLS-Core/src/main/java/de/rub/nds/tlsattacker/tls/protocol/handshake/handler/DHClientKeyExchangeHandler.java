@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

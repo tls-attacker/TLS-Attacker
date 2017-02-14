@@ -9,15 +9,15 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ModificationException;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageTypeHolder;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -27,20 +27,9 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public final class TlsContextAnalyzer {
+public class TlsContextAnalyzer {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsContextAnalyzer.class);
-
-    public enum AnalyzerResponse {
-
-        ALERT,
-        NO_ALERT,
-        NO_MODIFICATION
-    };
-
-    private TlsContextAnalyzer() {
-
-    }
 
     /**
      * Searches for the next protocol message sent by our peer.
@@ -119,6 +108,7 @@ public final class TlsContextAnalyzer {
     }
 
     //
+
     // /**
     // * //TODO Deprecated
     // * Returns true in case the workflow contains a message, which has not
@@ -182,7 +172,6 @@ public final class TlsContextAnalyzer {
     // }
     // }
     // }
-
     public static boolean containsFullWorkflowWithModifiedMessage(TlsContext tlsContext) {
         return containsFullWorkflow(tlsContext) && containsModifiedMessage(tlsContext);
     }
@@ -376,6 +365,17 @@ public final class TlsContextAnalyzer {
         } catch (IllegalAccessException | IllegalArgumentException ex) {
             throw new ModificationException(ex.getLocalizedMessage(), ex);
         }
+    }
+
+    private TlsContextAnalyzer() {
+
+    }
+
+    public enum AnalyzerResponse {
+
+        ALERT,
+        NO_ALERT,
+        NO_MODIFICATION
     }
 
 }

@@ -10,14 +10,14 @@ package de.rub.nds.tlsattacker.tls.crypto;
 
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import java.util.Random;
-import mockit.Mocked;
 import mockit.Expectations;
+import mockit.Mocked;
 import org.bouncycastle.crypto.tls.ProtocolVersion;
 import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.bouncycastle.crypto.tls.TlsContext;
 import org.bouncycastle.crypto.tls.TlsUtils;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

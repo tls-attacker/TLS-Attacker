@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  *

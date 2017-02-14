@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
-import java.util.Arrays;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
@@ -32,6 +27,9 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.Time;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -91,7 +89,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         currentPointer = nextPointer;
         int sessionIdLength = message[currentPointer] & 0xFF;
-        currentPointer = currentPointer + HandshakeByteLength.SESSION_ID_LENGTH;
+        currentPointer += HandshakeByteLength.SESSION_ID_LENGTH;
         nextPointer = currentPointer + sessionIdLength;
         byte[] sessionId = Arrays.copyOfRange(message, currentPointer, nextPointer);
         protocolMessage.setSessionId(sessionId);

@@ -8,15 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
-import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.FileOutputStream;
-
 /**
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  * @author Philip Riese <philip.riese@rub.de>

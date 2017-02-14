@@ -8,20 +8,22 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class HelloRequestHandlerTest {
 
-    private HelloRequestHandler handler;
+    private final HelloRequestHandler handler;
 
     public HelloRequestHandlerTest() {
         handler = new HelloRequestHandler(new TlsContext());
@@ -34,7 +36,7 @@ public class HelloRequestHandlerTest {
     public void testPrepareMessageAction() {
         handler.setProtocolMessage(new HelloRequestMessage(new TlsConfig()));
 
-        HelloRequestMessage message = (HelloRequestMessage) handler.getProtocolMessage();
+        HelloRequestMessage message = handler.getProtocolMessage();
 
         byte[] returned = handler.prepareMessageAction();
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.HELLO_REQUEST.getValue() },

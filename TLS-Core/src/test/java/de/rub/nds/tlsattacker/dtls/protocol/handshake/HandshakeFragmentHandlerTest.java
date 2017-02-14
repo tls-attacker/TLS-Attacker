@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.dtls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HandshakeFragmentHandler;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.ArrayList;
@@ -54,8 +53,6 @@ public class HandshakeFragmentHandlerTest {
             message2Variant2Record3, message2Variant3Record1, message2Variant3Record2, message2Variant3Record3,
             message2Variant3Record4, message2Variant3Record5, message2Variant3Record6, message2Variant3Record7,
             message3Record;
-
-    HandshakeFragmentHandler hfh = new HandshakeFragmentHandler();
 
     @BeforeClass
     public static void prepareRecords() {
@@ -133,6 +130,8 @@ public class HandshakeFragmentHandlerTest {
 
         message3Record.setProtocolMessageBytes(serverDoneMessageHeader);
     }
+
+    HandshakeFragmentHandler hfh = new HandshakeFragmentHandler();
 
     @Test
     public void testProcessHandshakeRecord() {

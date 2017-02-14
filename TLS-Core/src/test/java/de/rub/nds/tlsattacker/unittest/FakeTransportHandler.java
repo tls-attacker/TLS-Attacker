@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.unittest;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.SimpleTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 

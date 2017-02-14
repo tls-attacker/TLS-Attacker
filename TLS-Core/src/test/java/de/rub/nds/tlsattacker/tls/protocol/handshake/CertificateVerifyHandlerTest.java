@@ -9,10 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateVerifyHandler;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -62,7 +58,7 @@ public class CertificateVerifyHandlerTest {
         inputBytes = ArrayConverter.concatenate(inputBytes, sigHashAlg, new byte[] { 0x00, 0x05 }, new byte[] { 0x25,
                 0x26, 0x27, 0x28, 0x29 });
         int endPointer = handler.parseMessageAction(inputBytes, 0);
-        CertificateVerifyMessage message = (CertificateVerifyMessage) handler.getProtocolMessage();
+        CertificateVerifyMessage message = handler.getProtocolMessage();
 
         assertNotNull("Confirm endPointer is not 'NULL'", endPointer);
         assertEquals("Confirm actual message length", endPointer, 13);

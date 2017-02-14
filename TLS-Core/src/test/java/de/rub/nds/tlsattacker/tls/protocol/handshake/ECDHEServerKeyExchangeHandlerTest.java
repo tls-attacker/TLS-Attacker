@@ -8,18 +8,20 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Tests for ECDHE key exchange handler, with values from wireshark
@@ -61,7 +63,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(testServerKeyExchangeECDSA, 0);
-        ECDHEServerKeyExchangeMessage message = (ECDHEServerKeyExchangeMessage) handler.getProtocolMessage();
+        ECDHEServerKeyExchangeMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ServerKeyExchange", HandshakeMessageType.SERVER_KEY_EXCHANGE,
                 message.getHandshakeMessageType());

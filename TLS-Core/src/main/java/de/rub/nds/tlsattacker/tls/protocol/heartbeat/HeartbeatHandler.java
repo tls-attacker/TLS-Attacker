@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.heartbeat;
 
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
@@ -83,7 +83,7 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
         protocolMessage.setPayloadLength(payloadLength);
 
         currentPointer = nextPointer;
-        nextPointer = nextPointer + payloadLength;
+        nextPointer += payloadLength;
         protocolMessage.setPayload(Arrays.copyOfRange(message, currentPointer, nextPointer));
 
         currentPointer = nextPointer;

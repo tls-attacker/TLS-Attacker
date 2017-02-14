@@ -23,14 +23,10 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class ECCUtilsBCWrapper {
 
-    private ECCUtilsBCWrapper() {
-
-    }
-
     /**
      * Reads ECC domain parameters from an inputstream, based on given named
      * curves and point formats. It uses the BC functionality.
-     * 
+     *
      * 
      * @param namedCurves
      * @param pointFormats
@@ -127,5 +123,9 @@ public class ECCUtilsBCWrapper {
     public static byte[] serializeECPoint(ECPointFormat[] ecPointFormats, ECPoint point) throws IOException {
         short[] pf = convertPointFormats(ecPointFormats);
         return TlsECCUtils.serializeECPoint(pf, point);
+    }
+
+    private ECCUtilsBCWrapper() {
+
     }
 }

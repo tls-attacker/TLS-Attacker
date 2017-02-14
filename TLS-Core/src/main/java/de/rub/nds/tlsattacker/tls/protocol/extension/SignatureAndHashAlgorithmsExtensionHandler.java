@@ -31,7 +31,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     }
 
     /**
-     * @param extension
+     * @param context
      */
     @Override
     public void prepareExtension(TlsContext context) {

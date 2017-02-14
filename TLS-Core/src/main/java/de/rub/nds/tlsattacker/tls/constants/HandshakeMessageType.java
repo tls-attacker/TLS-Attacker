@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import java.util.HashMap;
-import java.util.Map;
-
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -30,6 +26,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.RSAClientKeyExchang
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Also called Handshake Type

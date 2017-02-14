@@ -8,22 +8,21 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import org.bouncycastle.util.BigIntegers;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 
@@ -61,7 +60,7 @@ public class DHClientKeyExchangeHandlerTest {
     public void testPrepareMessage() {
         handler.initializeProtocolMessage();
 
-        DHClientKeyExchangeMessage message = (DHClientKeyExchangeMessage) handler.getProtocolMessage();
+        DHClientKeyExchangeMessage message = handler.getProtocolMessage();
         ModifiableBigInteger y = new ModifiableBigInteger();
         y.setModification(BigIntegerModificationFactory.explicitValue(publicKey));
         message.setY(y);

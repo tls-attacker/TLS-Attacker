@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -109,6 +109,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * after the prepareMessageAction is executed
+     * 
+     * @return
      */
     protected byte[] afterPrepareMessageAction(byte[] ret) {
         return ret;

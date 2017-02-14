@@ -12,9 +12,10 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.Level;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

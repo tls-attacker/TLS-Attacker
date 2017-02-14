@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.dtls.protocol.handshake;
 
-import java.util.Arrays;
-
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -18,9 +16,11 @@ import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
+ * @param <Message>
  * @param <HandshakeMessage>
  */
 public class HelloVerifyRequestHandler<Message extends HelloVerifyRequestMessage> extends

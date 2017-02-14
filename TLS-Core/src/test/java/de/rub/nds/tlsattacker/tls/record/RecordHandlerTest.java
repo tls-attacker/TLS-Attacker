@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;

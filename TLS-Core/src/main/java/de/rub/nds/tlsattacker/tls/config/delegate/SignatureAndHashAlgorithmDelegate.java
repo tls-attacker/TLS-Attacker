@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.converters.SignatureAndHashAlgorithmConverter;
-import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +28,7 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
     }
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
-        return signatureAndHashAlgorithms;
+        return Collections.unmodifiableList(signatureAndHashAlgorithms);
     }
 
     public void setSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {

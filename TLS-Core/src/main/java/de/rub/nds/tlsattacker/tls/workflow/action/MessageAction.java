@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -140,10 +141,7 @@ public abstract class MessageAction extends TLSAction {
         if (!Objects.equals(this.configuredMessages, other.configuredMessages)) {
             return false;
         }
-        if (!Objects.equals(this.actualMessages, other.actualMessages)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.actualMessages, other.actualMessages);
     }
 
 }

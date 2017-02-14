@@ -8,6 +8,16 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStore;
@@ -19,21 +29,9 @@ import java.security.UnrecoverableKeyException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.Arrays;
-
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Random;
 
 /**
  * Handling of the CertificateVerify protocol message:
@@ -155,7 +153,7 @@ public class CertificateVerifyHandler<Message extends CertificateVerifyMessage> 
             byte[] signature = null;
             try {
                 signature = instance.sign();
-            } catch (Exception E) {
+            } catch (SignatureException E) {
                 throw new UnsupportedOperationException(E);
             }
             protocolMessage.setSignature(signature);

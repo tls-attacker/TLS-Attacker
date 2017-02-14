@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
-import java.io.IOException;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -85,10 +82,7 @@ public class ChangeCompressionAction extends TLSAction {
         if (this.newValue != other.newValue) {
             return false;
         }
-        if (this.oldValue != other.oldValue) {
-            return false;
-        }
-        return true;
+        return this.oldValue == other.oldValue;
     }
 
 }

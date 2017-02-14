@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.exceptions;
 
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 
 /**
  * Invalid message type exception (thrown when unexpected TLS message appears

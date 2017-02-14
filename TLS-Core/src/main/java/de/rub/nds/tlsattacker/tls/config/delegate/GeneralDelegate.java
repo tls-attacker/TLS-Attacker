@@ -8,10 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
-import de.rub.nds.tlsattacker.tls.config.converters.LogLevelConverter;
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
+import de.rub.nds.tlsattacker.tls.config.converters.LogLevelConverter;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.lang.reflect.Field;

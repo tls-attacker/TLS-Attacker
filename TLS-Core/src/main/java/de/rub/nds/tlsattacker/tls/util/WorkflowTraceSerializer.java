@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public final class WorkflowTraceSerializer {
+public class WorkflowTraceSerializer {
 
     static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializer.class);
 
@@ -48,10 +48,6 @@ public final class WorkflowTraceSerializer {
      * context initialization is expensive, we need to do that only once
      */
     private static JAXBContext context;
-
-    private WorkflowTraceSerializer() {
-
-    }
 
     /**
      * Returns an initialized JaxbContext
@@ -150,6 +146,10 @@ public final class WorkflowTraceSerializer {
         } else {
             throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
         }
+
+    }
+
+    private WorkflowTraceSerializer() {
 
     }
 

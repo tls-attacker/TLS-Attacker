@@ -115,10 +115,7 @@ public class ChangeServerCertificateAction extends TLSAction {
         if (!Objects.equals(this.oldValue, other.oldValue)) {
             return false;
         }
-        if (!Objects.equals(this.x509oldValue, other.x509oldValue)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.x509oldValue, other.x509oldValue);
     }
 
 }

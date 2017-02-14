@@ -74,10 +74,7 @@ public class Point {
         if (p.isInfinity() == true && this.isInfinity() == true) {
             return true;
         }
-        if (p.getX().equals(this.getX()) && p.getY().equals(this.getY())) {
-            return true;
-        }
-        return false;
+        return p.getX().equals(this.getX()) && p.getY().equals(this.getY());
     }
 
     @Override

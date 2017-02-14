@@ -8,21 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -152,6 +149,8 @@ public class CertificateRequestMessage extends HandshakeMessage {
     /**
      * public List<ClientCertificateType> getSupportedClientCertificateTypes() {
      * return supportedClientCertificateTypes; }
+     * 
+     * @return
      */
     @Override
     public String toString() {
@@ -179,7 +178,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
         // TODO Das hier kann fÃ¼r kaputte nachrichten nicht funktionieren
         sb.append("\n  Signature Hash Algorithms: ");
         if (signatureHashAlgorithms != null) {
-            for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i = i + 2) {
+            for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i += 2) {
                 sb.append(HashAlgorithm.getHashAlgorithm(signatureHashAlgorithms.getValue()[i])).append("-");
                 sb.append(SignatureAlgorithm.getSignatureAlgorithm(signatureHashAlgorithms.getValue()[i + 1])).append(
                         ", ");

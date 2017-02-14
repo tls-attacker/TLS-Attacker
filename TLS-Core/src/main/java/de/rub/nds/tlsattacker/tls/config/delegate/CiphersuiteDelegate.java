@@ -12,7 +12,7 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.converters.CipherSuiteConverter;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ public class CiphersuiteDelegate extends Delegate {
     }
 
     public List<CipherSuite> getCipherSuites() {
-        return cipherSuites;
+        return Collections.unmodifiableList(cipherSuites);
     }
 
     public void setCipherSuites(List<CipherSuite> cipherSuites) {

@@ -16,12 +16,12 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -39,6 +39,14 @@ import org.junit.Test;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ClientHelloTest {
+
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
 
     private final StringWriter writer;
 
@@ -59,14 +67,6 @@ public class ClientHelloTest {
         m.setAdapter(new ByteArrayAdapter());
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
     }
@@ -82,17 +82,13 @@ public class ClientHelloTest {
         // cl.setCipherSuiteLength(new ModifiableInteger());
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
         m.marshal(cl, writer);
-
         String xmlString = writer.toString();
         System.out.println(xmlString);
-
         um = context.createUnmarshaller();
         ClientHelloMessage clu = (ClientHelloMessage) um.unmarshal(new StringReader(xmlString));
-
         writer.append("abcd");
         m.marshal(clu, writer);
         xmlString = writer.toString();
-        System.out.println(xmlString);
     }
 
     @Test
@@ -100,10 +96,8 @@ public class ClientHelloTest {
         TlsConfig config = new TlsConfig();
         WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = cf.createFullWorkflow();
-
         m.marshal(trace, writer);
-
         String xmlString = writer.toString();
-        System.out.println(xmlString);
     }
+
 }

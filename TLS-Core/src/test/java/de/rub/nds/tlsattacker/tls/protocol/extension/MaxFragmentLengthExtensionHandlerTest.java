@@ -39,11 +39,11 @@ public class MaxFragmentLengthExtensionHandlerTest {
         MaxFragmentLengthExtensionMessage parsedMessage = (MaxFragmentLengthExtensionMessage) extensionHandler
                 .getExtensionMessage();
 
-        Assert.assertEquals("Tests the returned pointer of the parseExtension method", (int) 5, returnedPointer);
+        Assert.assertEquals("Tests the returned pointer of the parseExtension method", 5, returnedPointer);
         Assert.assertArrayEquals("Tests if the parseExtension method creates the correct extension bytes",
                 extensionMessage, parsedMessage.getExtensionBytes().getValue());
-        Assert.assertEquals("Tests the extensionLength of the parseExtension method", new Integer(1), parsedMessage
-                .getExtensionLength().getValue());
+        Assert.assertEquals("Tests the extensionLength of the parseExtension method", 1, parsedMessage
+                .getExtensionLength().getValue().byteValue());
         Assert.assertArrayEquals("Tests if the extensionType is set correctly",
                 ExtensionType.MAX_FRAGMENT_LENGTH.getValue(), parsedMessage.getExtensionType().getValue());
         Assert.assertArrayEquals("Tests if the MaxFragmentLength is set correctly",
@@ -68,8 +68,8 @@ public class MaxFragmentLengthExtensionHandlerTest {
                 "Tests if the extension bytes are set correctly by the initializeClientHelloExtension method",
                 extensionMessage, initializedMessage.getExtensionBytes().getValue());
         Assert.assertEquals(
-                "Tests if the extension length is set correctly by the initializeClientHelloExtension method",
-                new Integer(1), initializedMessage.getExtensionLength().getValue());
+                "Tests if the extension length is set correctly by the initializeClientHelloExtension method", 1,
+                initializedMessage.getExtensionLength().getValue().byteValue());
         Assert.assertArrayEquals(
                 "Tests if the extension type method is set correctly by the initializeClientHelloExtension method",
                 ExtensionType.MAX_FRAGMENT_LENGTH.getValue(), initializedMessage.getExtensionType().getValue());

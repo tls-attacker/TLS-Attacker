@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.config;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;

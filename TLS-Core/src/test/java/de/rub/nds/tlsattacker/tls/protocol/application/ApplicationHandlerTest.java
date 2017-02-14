@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.tls.protocol.application;
 
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.assertArrayEquals;
 
 /**
  * 

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public abstract class Attacker<Config extends TLSDelegateConfig> {
     }
 
     public List<TlsContext> getTlsContexts() {
-        return tlsContexts;
+        return Collections.unmodifiableList(tlsContexts);
     }
 
     public void setTlsContexts(List<TlsContext> tlsContexts) {

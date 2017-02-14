@@ -21,8 +21,8 @@ import java.util.List;
  */
 public abstract class TLSDelegateConfig {
 
-    private List<Delegate> delegateList;
-    private GeneralDelegate generalDelegate;
+    private final List<Delegate> delegateList;
+    private final GeneralDelegate generalDelegate;
 
     public TLSDelegateConfig() {
         delegateList = new LinkedList<>();

@@ -51,7 +51,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     private final DtlsRecordHandler recordHandler;
     private final TransportHandler transportHandler;
     private final TlsContext tlsContext;
-    private int counter = 0;
+    private final int counter = 0;
     private ProtocolMessage previousMessage = null;
 
     public DTLSActionExecutor(TlsContext tlsContext) {
@@ -274,11 +274,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     private boolean isIncomingAlertFatal(ProtocolMessageHandler pmh) {
         AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
-        if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-            return false;
-        }
-
-        return true;
+        return AlertLevel.getAlertLevel(am.getLevel().getValue()) != AlertLevel.FATAL;
     }
 
     private ProtocolMessage wrongMessageFound(ProtocolMessageHandler pmh) {
@@ -361,7 +357,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         while (!changeCipherSpecReceived() && (System.currentTimeMillis() <= endTimeMillies)) {
             try {
                 rcvRecord = receiveNextValidRecord();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 continue;
             }
             rcvRecordProtocolMessageType = ProtocolMessageType.getContentType(rcvRecord.getContentType().getValue());

@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -32,10 +31,6 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class CertificateFetcher {
-
-    private CertificateFetcher() {
-
-    }
 
     public static PublicKey fetchServerPublicKey(String connect, List<CipherSuite> cipherSuites) {
         TlsConfig config = new TlsConfig();
@@ -78,5 +73,9 @@ public class CertificateFetcher {
         workflowExecutor.executeWorkflow();
         transportHandler.closeConnection();
         return context.getX509ServerCertificateObject();
+    }
+
+    private CertificateFetcher() {
+
     }
 }

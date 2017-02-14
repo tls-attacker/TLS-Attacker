@@ -13,16 +13,13 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -116,14 +113,14 @@ public class RSAClientKeyExchangeHandlerTest {
     public void testPrepareMessageAction() {
         handler.setProtocolMessage(new RSAClientKeyExchangeMessage(new TlsConfig()));
 
-        RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
+        RSAClientKeyExchangeMessage message = handler.getProtocolMessage();
 
         byte[] returned = handler.prepareMessageAction();
 
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(returned, 0);
-        RSAClientKeyExchangeMessage messageparse = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
+        RSAClientKeyExchangeMessage messageparse = handler.getProtocolMessage();
 
         assertNotNull("Confirm function didn't return 'NULL'", returned);
         assertArrayEquals("Confirm returned message equals the expected message", message.getPremasterSecret()
@@ -138,7 +135,7 @@ public class RSAClientKeyExchangeHandlerTest {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(rsaClientKeyExchange, 0);
-        RSAClientKeyExchangeMessage message = (RSAClientKeyExchangeMessage) handler.getProtocolMessage();
+        RSAClientKeyExchangeMessage message = handler.getProtocolMessage();
 
         byte[] exceptedPremastersecret = ArrayConverter
                 .hexStringToByteArray("0303803ad3b1644b2c01c7d48be9bcf0b4cd2c7340c647594c7e3295c16cd958182143bee87a0907ff32486078fbe9ea");

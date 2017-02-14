@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class EllipticCurveDelegate extends Delegate {
     }
 
     public List<ECPointFormat> getPointFormats() {
-        return pointFormats;
+        return Collections.unmodifiableList(pointFormats);
     }
 
     public void setPointFormats(List<ECPointFormat> pointFormats) {
@@ -40,7 +40,7 @@ public class EllipticCurveDelegate extends Delegate {
     }
 
     public List<NamedCurve> getNamedCurves() {
-        return namedCurves;
+        return Collections.unmodifiableList(namedCurves);
     }
 
     public void setNamedCurves(List<NamedCurve> namedCurves) {

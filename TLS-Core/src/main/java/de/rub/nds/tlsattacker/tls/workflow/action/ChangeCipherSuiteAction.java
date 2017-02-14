@@ -92,10 +92,7 @@ public class ChangeCipherSuiteAction extends TLSAction {
         if (this.newValue != other.newValue) {
             return false;
         }
-        if (this.oldValue != other.oldValue) {
-            return false;
-        }
-        return true;
+        return this.oldValue == other.oldValue;
     }
 
 }

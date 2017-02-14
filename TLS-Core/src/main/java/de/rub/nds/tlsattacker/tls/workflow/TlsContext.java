@@ -10,9 +10,6 @@ package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
-import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
@@ -21,14 +18,18 @@ import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
+import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.List;
 import org.bouncycastle.asn1.x509.Certificate;
-import org.bouncycastle.crypto.tls.ServerDHParams;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
+import org.bouncycastle.crypto.tls.ServerDHParams;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -49,7 +50,7 @@ public class TlsContext {
      */
     private byte[] preMasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
     /**
-     * client random, including unix time
+     * client random, including unix time /** client random, including unix time
      */
 
     private byte[] clientRandom = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
@@ -171,7 +172,7 @@ public class TlsContext {
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {
-        return clientSupportedCompressions;
+        return Collections.unmodifiableList(clientSupportedCompressions);
     }
 
     public void setClientSupportedCompressions(List<CompressionMethod> clientSupportedCompressions) {
@@ -179,7 +180,7 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
-        return clientSupportedCiphersuites;
+        return Collections.unmodifiableList(clientSupportedCiphersuites);
     }
 
     public void setClientSupportedCiphersuites(List<CipherSuite> clientSupportedCiphersuites) {
@@ -187,7 +188,7 @@ public class TlsContext {
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
-        return serverSupportedSignatureAndHashAlgorithms;
+        return Collections.unmodifiableList(serverSupportedSignatureAndHashAlgorithms);
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(

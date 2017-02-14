@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol;
 
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**

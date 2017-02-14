@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientRandomAction;
@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ToggleEncryptionAction;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -107,6 +108,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Adds protocol message to the list
      * 
+     * @param action
      * @param pm
      * @return Returns true if the list was changed
      */
@@ -283,7 +285,7 @@ public class WorkflowTrace implements Serializable {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof ReceiveAction) {
-                for (ProtocolMessage pm : ((ReceiveAction) action).getActualMessages()) {
+                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
 
                     messages.add(pm);
 
@@ -297,7 +299,7 @@ public class WorkflowTrace implements Serializable {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((SendAction) action).getActualMessages()) {
+                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
 
                     messages.add(pm);
 
@@ -311,7 +313,7 @@ public class WorkflowTrace implements Serializable {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((SendAction) action).getConfiguredMessages()) {
+                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
                     messages.add(pm);
                 }
             }
@@ -449,10 +451,7 @@ public class WorkflowTrace implements Serializable {
         if (!Objects.equals(this.tlsActions, other.tlsActions)) {
             return false;
         }
-        if (this.protocolVersion != other.protocolVersion) {
-            return false;
-        }
-        return true;
+        return this.protocolVersion == other.protocolVersion;
     }
 
 }

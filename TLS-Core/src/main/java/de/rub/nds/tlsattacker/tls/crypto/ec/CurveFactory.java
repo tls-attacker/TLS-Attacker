@@ -16,10 +16,6 @@ import java.math.BigInteger;
  */
 public class CurveFactory {
 
-    private CurveFactory() {
-
-    }
-
     public static Curve getNamedCurve(String namedCurve) {
         BigInteger p, a, b;
         int bits;
@@ -43,6 +39,10 @@ public class CurveFactory {
                 throw new UnsupportedOperationException("The provided curve " + namedCurve + " not supported yet");
         }
         return new Curve(namedCurveLow, p, a, b, bits);
+    }
+
+    private CurveFactory() {
+
     }
 
 }

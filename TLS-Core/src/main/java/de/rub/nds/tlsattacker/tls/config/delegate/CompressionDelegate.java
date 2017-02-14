@@ -12,7 +12,7 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.converters.CompressionMethodConverter;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ public class CompressionDelegate extends Delegate {
     }
 
     public List<CompressionMethod> getCompressionMethods() {
-        return compressionMethods;
+        return Collections.unmodifiableList(compressionMethods);
     }
 
     public void setCompressionMethods(List<CompressionMethod> compressionMethods) {

@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
+import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -84,7 +84,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public int parseMessageAction(byte[] message, int pointer) {
-        FinishedMessage finishedMessage = (FinishedMessage) protocolMessage;
+        FinishedMessage finishedMessage = protocolMessage;
         if (message[pointer] != HandshakeMessageType.FINISHED.getValue()) {
             throw new InvalidMessageTypeException("This is not a server finished message");
         }

@@ -18,7 +18,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Test;
 
 /**
  * If you run on an Oracle Java platform, it is possible that strong algorithms

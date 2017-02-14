@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -82,10 +81,7 @@ public class ChangeClientRandomAction extends TLSAction {
         if (!Arrays.equals(this.newValue, other.newValue)) {
             return false;
         }
-        if (!Arrays.equals(this.oldValue, other.oldValue)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.oldValue, other.oldValue);
     }
 
 }

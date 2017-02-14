@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +62,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
                 action.execute(tlsContext, null);
 
             }
-        } catch (Exception e) {
+        } catch (WorkflowExecutionException | IOException e) {
             e.printStackTrace();
             throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
         } finally {
