@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
@@ -21,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.util.BigIntegers;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class RealDirectMessageECOracle extends ECOracle {
@@ -151,13 +152,20 @@ public class RealDirectMessageECOracle extends ECOracle {
         workflowExecutor.executeWorkflow();
         transportHandler.closeConnection();
 
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-
-        // get public point base X and Y coordinates
-        BigInteger x = message.getPublicKeyBaseX().getValue();
-        BigInteger y = message.getPublicKeyBaseY().getValue();
-        checkPoint = new Point(x, y);
-        checkPMS = message.getPremasterSecret().getValue();
+        List<HandshakeMessage> clientKeyExchangeList = trace
+                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        if (clientKeyExchangeList.isEmpty()) {
+            //TODO
+            throw new WorkflowExecutionException("Could not retrieve ECDH PublicKey");
+        } else {
+            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
+                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
+        
+            // get public point base X and Y coordinates
+            BigInteger x = message.getPublicKeyBaseX().getValue();
+            BigInteger y = message.getPublicKeyBaseY().getValue();
+            checkPoint = new Point(x, y);
+            checkPMS = message.getPremasterSecret().getValue();
+        }
     }
 }
