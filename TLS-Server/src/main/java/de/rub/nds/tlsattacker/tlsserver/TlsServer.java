@@ -55,6 +55,7 @@ public class TlsServer {
             try {
                 tlsConfig = config.createConfig();
                 TlsServer server = new TlsServer();
+                LOGGER.info("TLS-Server starting on port " + tlsConfig.getServerPort());
                 server.startTlsServer(tlsConfig);
             } catch (ConfigurationException E) {
                 LOGGER.info("Could not initialize Configuration", E);
