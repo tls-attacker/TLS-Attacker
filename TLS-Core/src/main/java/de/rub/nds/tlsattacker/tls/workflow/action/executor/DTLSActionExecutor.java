@@ -68,7 +68,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     @Override
     public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
         try {
-            if (retransmitCounter < maxRetransmits) {
+            if (retransmitCounter > maxRetransmits) {
                 throw new WorkflowExecutionException("Retransmit Counter reached Max Retransmits!");
             }
 
