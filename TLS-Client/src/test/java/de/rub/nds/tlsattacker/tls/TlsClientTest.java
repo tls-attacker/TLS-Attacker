@@ -13,10 +13,10 @@ import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.PublicKeyAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
@@ -33,7 +33,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -50,16 +50,17 @@ import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import java.util.Set;
 import org.bouncycastle.operator.OperatorCreationException;
 import static org.hamcrest.Matchers.is;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
@@ -69,15 +70,14 @@ import org.junit.rules.ErrorCollector;
  */
 public class TlsClientTest {
 
-    @Rule
-    public ErrorCollector collector = new ErrorCollector();
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
-
-    private TLSServer tlsServer;
 
     private static final int PORT = 56789;
 
     private static final int TIMEOUT = 2000;
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
+    private TLSServer tlsServer;
 
     public TlsClientTest() {
         Security.addProvider(new BouncyCastleProvider());
@@ -179,7 +179,7 @@ public class TlsClientTest {
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
         transportHandler.closeConnection();
@@ -196,7 +196,7 @@ public class TlsClientTest {
         workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
         transportHandler.closeConnection();
@@ -214,7 +214,7 @@ public class TlsClientTest {
         workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
         transportHandler.closeConnection();

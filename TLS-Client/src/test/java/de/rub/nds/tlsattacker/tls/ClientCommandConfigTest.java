@@ -13,7 +13,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 /**
  * 

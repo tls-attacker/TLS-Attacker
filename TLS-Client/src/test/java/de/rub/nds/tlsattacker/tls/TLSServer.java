@@ -13,9 +13,20 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -35,6 +46,53 @@ public class TLSServer extends Thread {
     private static final String PROTOCOL = "TLS";
 
     private static final int PORT = 55443;
+
+    public static KeyStore readKeyStore(String keystorePath, String password) throws KeyStoreException, IOException,
+            NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        try (FileInputStream fis = new FileInputStream(keystorePath)) {
+            keyStore.load(fis, password.toCharArray());
+        }
+        return keyStore;
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args.length == 5 && args[4].equalsIgnoreCase("BC")) {
+            Security.removeProvider("SunPKCS11-NSS");
+            Security.removeProvider("SunEC");
+            Security.insertProviderAt(new BouncyCastleProvider(), 1);
+            System.out.println("Using BC provider");
+        }
+        for (Provider p : Security.getProviders()) {
+            System.out.println(p);
+        }
+        System.setProperty("java.security.debug", "ssl");
+        String path;
+        String password;
+        String protocol;
+        int port;
+
+        if (args.length == 4 || args.length == 5) {
+            path = args[0];
+            password = args[1];
+            protocol = args[2];
+            port = Integer.parseInt(args[3]);
+        } else if (args.length == 0) {
+            path = PATH_TO_JKS;
+            password = JKS_PASSWORD;
+            protocol = PROTOCOL;
+            port = PORT;
+        } else {
+            System.out.println("Usage (run with): java -jar [name].jar [jks-path] "
+                    + "[password] [protocol] [port] \n (set [protocol] to TLS)");
+            return;
+        }
+
+        KeyStore keyStore = readKeyStore(path, password);
+        TLSServer server = new TLSServer(keyStore, password, protocol, port);
+        Thread t = new Thread(server);
+        t.start();
+    }
 
     private String[] cipherSuites = null;
 
@@ -80,21 +138,6 @@ public class TLSServer extends Thread {
         LOGGER.info("SSL Server successfully initialized!");
     }
 
-    public static KeyStore readKeyStore(String keystorePath, String password) throws KeyStoreException, IOException,
-            NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
-        KeyStore keyStore = KeyStore.getInstance("JKS");
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(keystorePath);
-            keyStore.load(fis, password.toCharArray());
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
-        }
-        return keyStore;
-    }
-
     @Override
     public void run() {
         try {
@@ -107,7 +150,7 @@ public class TLSServer extends Thread {
                     ConnectionHandler ch = new ConnectionHandler(socket);
                     Thread t = new Thread(ch);
                     t.start();
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
             }
@@ -143,45 +186,6 @@ public class TLSServer extends Thread {
         LOGGER.info("shutdown signal received");
     }
 
-    public static void main(String[] args) throws Exception {
-
-        if (args.length == 5 && args[4].equalsIgnoreCase("BC")) {
-            Security.removeProvider("SunPKCS11-NSS");
-            Security.removeProvider("SunEC");
-            Security.insertProviderAt(new BouncyCastleProvider(), 1);
-            System.out.println("Using BC provider");
-        }
-        for (Provider p : Security.getProviders()) {
-            System.out.println(p);
-        }
-        System.setProperty("java.security.debug", "ssl");
-        String path;
-        String password;
-        String protocol;
-        int port;
-
-        if (args.length == 4 || args.length == 5) {
-            path = args[0];
-            password = args[1];
-            protocol = args[2];
-            port = Integer.parseInt(args[3]);
-        } else if (args.length == 0) {
-            path = PATH_TO_JKS;
-            password = JKS_PASSWORD;
-            protocol = PROTOCOL;
-            port = PORT;
-        } else {
-            System.out.println("Usage (run with): java -jar [name].jar [jks-path] "
-                    + "[password] [protocol] [port] \n (set [protocol] to TLS)");
-            return;
-        }
-
-        KeyStore keyStore = readKeyStore(path, password);
-        TLSServer server = new TLSServer(keyStore, password, protocol, port);
-        Thread t = new Thread(server);
-        t.start();
-    }
-
     public String[] getCipherSuites() {
         return cipherSuites;
     }
@@ -189,4 +193,5 @@ public class TLSServer extends Thread {
     public boolean isInitialized() {
         return initialized;
     }
+
 }
