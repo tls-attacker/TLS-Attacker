@@ -283,7 +283,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 
     private void initExecuteAttack(ConfigHandler configHandler) {
         transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(tlsConfig);
-        transportHandler.setTlsTimeout(tlsConfig.getTimeout());
+        transportHandler.setTlsTimeout(tlsConfig.getTlsTimeout());
         tlsContext = configHandler.initializeTlsContext(tlsConfig);
         workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
         recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
