@@ -32,6 +32,9 @@ public class EllipticCurveDelegate extends Delegate {
     }
 
     public List<ECPointFormat> getPointFormats() {
+        if (pointFormats == null) {
+            return null;
+        }
         return Collections.unmodifiableList(pointFormats);
     }
 
@@ -40,6 +43,9 @@ public class EllipticCurveDelegate extends Delegate {
     }
 
     public List<NamedCurve> getNamedCurves() {
+        if (namedCurves == null) {
+            return null;
+        }
         return Collections.unmodifiableList(namedCurves);
     }
 

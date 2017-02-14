@@ -29,6 +29,9 @@ public class CiphersuiteDelegate extends Delegate {
     }
 
     public List<CipherSuite> getCipherSuites() {
+        if (cipherSuites == null) {
+            return null;
+        }
         return Collections.unmodifiableList(cipherSuites);
     }
 

@@ -28,6 +28,9 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
     }
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
+        if (signatureAndHashAlgorithms == null) {
+            return null;
+        }
         return Collections.unmodifiableList(signatureAndHashAlgorithms);
     }
 

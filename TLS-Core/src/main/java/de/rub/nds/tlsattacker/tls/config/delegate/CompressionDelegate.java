@@ -29,6 +29,9 @@ public class CompressionDelegate extends Delegate {
     }
 
     public List<CompressionMethod> getCompressionMethods() {
+        if (compressionMethods == null) {
+            return null;
+        }
         return Collections.unmodifiableList(compressionMethods);
     }
 
