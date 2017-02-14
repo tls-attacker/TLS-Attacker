@@ -58,7 +58,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
     private final CertificateDelegate certificateDelegate;
-    
+
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
