@@ -76,7 +76,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
         @Override
         ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new CertificateHandler<>(tlsContext);
+            return new CertificateHandler(tlsContext);
         }
     },
     SERVER_KEY_EXCHANGE((byte) 12) {

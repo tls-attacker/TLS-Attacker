@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;

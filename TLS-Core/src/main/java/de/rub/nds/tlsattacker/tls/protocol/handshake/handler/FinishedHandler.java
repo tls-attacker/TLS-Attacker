@@ -9,18 +9,18 @@
 package de.rub.nds.tlsattacker.tls.protocol.handshake.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
+import de.rub.nds.tlsattacker.tls.exceptions.NoCiphersuiteSelectedException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,17 +41,20 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     @Override
     public byte[] prepareMessageAction() {
         // protocolMessage.setType(HandshakeMessageType.FINISHED.getValue());
-
-        byte[] masterSecret = tlsContext.getMasterSecret();
-        TlsMessageDigest digest = tlsContext.getDigest();
-        if (!digest.isInitialised()) {
-            try {
-                // TODO in Config auslagern und exception handling Ã¼bernehmen
-                digest.initializeDigestAlgorithm(DigestAlgorithm.LEGACY);
-            } catch (NoSuchAlgorithmException ex) {
-                LOGGER.error(ex.getLocalizedMessage(), ex);
+        if (tlsContext.getSelectedCipherSuite() == null) {
+            if (tlsContext.getConfig().isFuzzingMode()) {
+                tlsContext.setSelectedCipherSuite(CipherSuite.getRandom());
+            } else {
+                throw new NoCiphersuiteSelectedException(
+                        "Could not get PRFAlgorithm while sending FinishedMessage because no Ciphersuite was selected yet");
             }
         }
+        TlsMessageDigest digest = tlsContext.getDigest();
+        if (!digest.isInitialised()) {
+            tlsContext.initiliazeTlsMessageDigest();
+            digest = tlsContext.getDigest();
+        }
+        byte[] masterSecret = tlsContext.getMasterSecret();
         byte[] handshakeMessagesHash = digest.digest();
 
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),

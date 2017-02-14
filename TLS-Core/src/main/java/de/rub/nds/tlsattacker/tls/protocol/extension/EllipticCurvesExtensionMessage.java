@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Collections;
 import java.util.List;
 
 /**

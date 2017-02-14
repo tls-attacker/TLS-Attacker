@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ToggleEncryptionAction;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;

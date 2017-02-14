@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionM
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;

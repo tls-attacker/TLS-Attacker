@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateParsingException;
 import java.util.Arrays;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -30,15 +28,12 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @param <Message>
- * @param <HandshakeMessage>
  */
-public class CertificateHandler<Message extends CertificateMessage> extends HandshakeMessageHandler<Message> {
+public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
-    @SuppressWarnings("unchecked")
     public CertificateHandler(TlsContext tlsContext) {
         super(tlsContext);
-        this.correctProtocolMessageClass = (Class<? extends Message>) CertificateMessage.class;
+        this.correctProtocolMessageClass = CertificateMessage.class;
     }
 
     @Override
@@ -47,7 +42,7 @@ public class CertificateHandler<Message extends CertificateMessage> extends Hand
         try {
             JKSLoader.loadTLSCertificate(tlsContext.getConfig().getKeyStore(), tlsContext.getConfig().getAlias())
                     .encode(tlsCertBos);
-        } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
+        } catch (IOException ex) {
             throw new ConfigurationException("Could not load Certificate for CertificateMessage!", ex);
         }
         protocolMessage.setX509CertificateBytes(tlsCertBos.toByteArray());
