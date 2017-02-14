@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import java.util.List;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 

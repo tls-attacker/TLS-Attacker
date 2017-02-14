@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
-import de.rub.nds.tlsattacker.attacks.ec.oracles.ECOracle;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
@@ -56,10 +55,6 @@ public class TestECOracle extends ECOracle {
 
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
-        if (guessedSecret.equals(computer.getSecret())) {
-            return true;
-        } else {
-            return false;
-        }
+        return guessedSecret.equals(computer.getSecret());
     }
 }

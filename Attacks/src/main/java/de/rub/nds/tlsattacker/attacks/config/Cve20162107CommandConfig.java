@@ -14,11 +14,11 @@ import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
-import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,11 +33,11 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
     private List<ProtocolVersion> versions;
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate cipherSuiteDelegate;
+    private final CiphersuiteDelegate cipherSuiteDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
 
     public Cve20162107CommandConfig() {
         versions = new LinkedList<>();
@@ -54,7 +54,7 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
     }
 
     public List<ProtocolVersion> getVersions() {
-        return versions;
+        return Collections.unmodifiableList(versions);
     }
 
     public void setVersions(List<ProtocolVersion> versions) {

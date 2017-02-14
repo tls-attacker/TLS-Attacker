@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import java.math.BigInteger;
 
 /**
@@ -27,13 +26,13 @@ public class WinshockCommandConfig extends TLSDelegateConfig {
 
     public static final String ATTACK_COMMAND = "winshock";
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
+    private final ProtocolVersionDelegate protocolVersionDelegate;
 
     @Parameter(names = "-signature_length", description = "Length of the signature in the CertificateVerify protocol message")
     Integer signatureLength;

@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -45,7 +45,7 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
     private static final int CURVE_FIELD_SIZE = 32;
 
     private static final int PROTOCOL_FLOWS = 15;
-    private TlsConfig tlsConfig;
+    private final TlsConfig tlsConfig;
 
     public InvalidCurveAttack(InvalidCurveAttackCommandConfig config) {
         super(config);

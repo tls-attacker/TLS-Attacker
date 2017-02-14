@@ -31,13 +31,13 @@ public class HeartbleedCommandConfig extends TLSDelegateConfig {
     Integer payloadLength = 20000;
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
+    private final ProtocolVersionDelegate protocolVersionDelegate;
 
     public HeartbleedCommandConfig() {
         clientDelegate = new ClientDelegate();

@@ -29,12 +29,6 @@ public class ICEAttacker {
 
     Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
 
-    public enum ServerType {
-
-        NORMAL,
-        ORACLE
-    };
-
     private final ServerType server;
 
     /**
@@ -277,5 +271,11 @@ public class ICEAttacker {
             prodModuli = prodModuli.multiply(mod);
         }
         return prodModuli;
+    }
+
+    public enum ServerType {
+
+        NORMAL,
+        ORACLE
     }
 }

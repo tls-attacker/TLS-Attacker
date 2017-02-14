@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
-
 /**
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
@@ -204,10 +202,7 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
             return false;
         }
 
-        if (hasCorrectKeySize(16, msg) || hasCorrectKeySize(24, msg) || hasCorrectKeySize(32, msg)) {
-            return true;
-        }
-        return false;
+        return hasCorrectKeySize(16, msg) || hasCorrectKeySize(24, msg) || hasCorrectKeySize(32, msg);
     }
 
     /**

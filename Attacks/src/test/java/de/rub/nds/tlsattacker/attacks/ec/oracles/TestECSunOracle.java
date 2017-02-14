@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
-import de.rub.nds.tlsattacker.attacks.ec.oracles.ECOracle;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
 import java.math.BigInteger;
@@ -57,7 +57,8 @@ public class TestECSunOracle extends ECOracle {
             result = computeSecretWithSunAlgorithm(computer.getCurve().getName(), ecPoint.getX(), ecPoint.getY(),
                     computer.getSecret());
             BigInteger test = computer.mul(ecPoint).getX();
-        } catch (Exception ex) {
+        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | InvalidKeySpecException
+                | InvalidKeyException | DivisionException ex) {
             result = null;
 
         }
@@ -75,11 +76,7 @@ public class TestECSunOracle extends ECOracle {
 
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
-        if (guessedSecret.equals(computer.getSecret())) {
-            return true;
-        } else {
-            return false;
-        }
+        return guessedSecret.equals(computer.getSecret());
     }
 
     private BigInteger computeSecretWithSunAlgorithm(String namedCurve, BigInteger badX, BigInteger badY,

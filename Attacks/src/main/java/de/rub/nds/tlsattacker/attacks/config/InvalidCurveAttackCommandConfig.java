@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
@@ -43,13 +42,13 @@ public class InvalidCurveAttackCommandConfig extends TLSDelegateConfig {
     BigInteger publicPointBaseY;
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
+    private final ProtocolVersionDelegate protocolVersionDelegate;
 
     public InvalidCurveAttackCommandConfig() {
         clientDelegate = new ClientDelegate();

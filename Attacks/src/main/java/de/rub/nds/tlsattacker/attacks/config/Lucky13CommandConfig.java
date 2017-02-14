@@ -16,10 +16,8 @@ import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,13 +45,13 @@ public class Lucky13CommandConfig extends TLSDelegateConfig {
     Integer blocks = 18;
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
+    private final ProtocolVersionDelegate protocolVersionDelegate;
 
     public Lucky13CommandConfig() {
         clientDelegate = new ClientDelegate();

@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -28,17 +28,11 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @version 0.1
  */
-public final class PKCS1VectorGenerator {
+public class PKCS1VectorGenerator {
 
     private static final int STATIC_VECTOR_SIZE = 11;
 
     private static final Logger LOG = LogManager.getLogger(PKCS1VectorGenerator.class);
-
-    /**
-     * No instantiation needed, only one static method used
-     */
-    private PKCS1VectorGenerator() {
-    }
 
     /**
      * Generates different encrypted PKCS1 vectors
@@ -200,5 +194,11 @@ public final class PKCS1VectorGenerator {
         LOG.info("Generated PKCS1 vectors with different invalid 0x00 positions");
 
         return result;
+    }
+
+    /**
+     * No instantiation needed, only one static method used
+     */
+    private PKCS1VectorGenerator() {
     }
 }

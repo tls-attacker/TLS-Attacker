@@ -9,10 +9,19 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import java.math.BigInteger;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
-import java.security.spec.*;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.ECPoint;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.ECPublicKeySpec;
 import javax.crypto.KeyAgreement;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
@@ -95,7 +104,7 @@ public class ECTestJDK {
         ECPublicKey ecPubKeyU = (ECPublicKey) kpU.getPublic();
         BigInteger x = new BigInteger("5708409594436356196045493209041238753517241791310830494910");
         // BigInteger x = new BigInteger("0");
-        for (int i = 1; i < 1000; i++) {
+        for (int i = 1; i < 1_000; i++) {
 
             x = x.add(BigInteger.ONE);
             ECPublicKeySpec bpubs = new ECPublicKeySpec(new ECPoint(new BigInteger(BAD_X, 16),
@@ -115,7 +124,7 @@ public class ECTestJDK {
                 ecdhV.doPhase(bpub, true);
                 System.out.println("Secret " + x + ": 0x"
                         + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
-            } catch (Exception e) {
+            } catch (IllegalStateException | InvalidKeyException e) {
                 System.out.println("Secret: null");
             }
         }
@@ -159,7 +168,7 @@ public class ECTestJDK {
                 ecdhV.doPhase(bpub, true);
                 System.out.println("Secret " + x + ": 0x"
                         + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
-            } catch (Exception e) {
+            } catch (InvalidKeyException | IllegalStateException e) {
                 System.out.println("Secret: null");
             }
         }

@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
+import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import org.junit.Assert;
@@ -24,7 +24,7 @@ import org.junit.Test;
 public class BleichenbacherOracleTest {
 
     @Test
-    public final void testJSSEOracle() throws Exception {
+    public void testJSSEOracle() throws Exception {
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024);
@@ -50,7 +50,7 @@ public class BleichenbacherOracleTest {
     }
 
     @Test
-    public final void testXMLENCOracle() throws Exception {
+    public void testXMLENCOracle() throws Exception {
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024);

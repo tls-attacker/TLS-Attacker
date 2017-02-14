@@ -8,13 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
@@ -35,6 +28,11 @@ import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
@@ -47,7 +45,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttack.class);
 
     private final List<ProtocolMessage> lastMessages;
-    private TlsConfig tlsConfig;
+    private final TlsConfig tlsConfig;
 
     public PaddingOracleAttack(PaddingOracleCommandConfig config) {
         super(config);

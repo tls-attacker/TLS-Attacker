@@ -36,6 +36,7 @@ public class ICEPoint extends Point {
         this.order = order;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Point order: ").append(order).append("\nX: ").append(x).append("\nY: ").append(y);

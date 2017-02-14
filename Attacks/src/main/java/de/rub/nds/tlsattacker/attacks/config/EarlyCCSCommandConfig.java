@@ -21,15 +21,16 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class EarlyCCSCommandConfig extends TLSDelegateConfig {
+    public static final String ATTACK_COMMAND = "early_ccs";
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
+    private final ProtocolVersionDelegate protocolVersionDelegate;
 
     public EarlyCCSCommandConfig() {
         clientDelegate = new ClientDelegate();
@@ -47,5 +48,4 @@ public class EarlyCCSCommandConfig extends TLSDelegateConfig {
         return super.createConfig();
     }
 
-    public static final String ATTACK_COMMAND = "early_ccs";
 }

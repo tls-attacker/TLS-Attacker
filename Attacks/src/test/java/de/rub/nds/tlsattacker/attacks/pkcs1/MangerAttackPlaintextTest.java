@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
+import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -35,7 +35,7 @@ public class MangerAttackPlaintextTest {
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
     @Test
-    public final void testMangerAttack() throws Exception {
+    public void testMangerAttack() throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -79,7 +79,7 @@ public class MangerAttackPlaintextTest {
 
     @Test
     @Ignore
-    public final void testMangerAttackPerformance() throws Exception {
+    public void testMangerAttackPerformance() throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");

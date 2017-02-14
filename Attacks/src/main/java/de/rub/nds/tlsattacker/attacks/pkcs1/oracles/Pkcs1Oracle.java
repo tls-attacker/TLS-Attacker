@@ -52,35 +52,6 @@ public abstract class Pkcs1Oracle {
     protected OracleType oracleType = null;
 
     /**
-     * Oracle types defined in the Crypto'12 paper + specific oracles found
-     * during our research
-     * 
-     * TTT checks only 0x00 0x02 ...
-     * 
-     * FFF checks 0x00 0x02 on the beginning, the first 8 bytes cannot include
-     * 0x00 and the 0x00 byte has to be set on a correct position
-     * 
-     * XMLENC checks if the key has a correct length (16, 24, or 32 bytes)
-     * 
-     * BigIP checks only the second byte 0x02 (the first 0x00 byte is not
-     * checked at all)
-     * 
-     * MANGER_0x00 checks only the first byte is equal to 0x00
-     */
-    public enum OracleType {
-
-        TTT,
-        TFT,
-        FTT,
-        FFT,
-        FFF,
-        JSSE,
-        XMLENC,
-        BigIP,
-        MANGER_0x00
-    }
-
-    /**
      * Gets the blocksize of the encryption algorithm.
      * 
      * @return Blocksize
@@ -137,5 +108,34 @@ public abstract class Pkcs1Oracle {
 
     public void resetNumberOfQueries() {
         this.numberOfQueries = 0;
+    }
+
+    /**
+     * Oracle types defined in the Crypto'12 paper + specific oracles found
+     * during our research
+     *
+     * TTT checks only 0x00 0x02 ...
+     *
+     * FFF checks 0x00 0x02 on the beginning, the first 8 bytes cannot include
+     * 0x00 and the 0x00 byte has to be set on a correct position
+     *
+     * XMLENC checks if the key has a correct length (16, 24, or 32 bytes)
+     *
+     * BigIP checks only the second byte 0x02 (the first 0x00 byte is not
+     * checked at all)
+     *
+     * MANGER_0x00 checks only the first byte is equal to 0x00
+     */
+    public enum OracleType {
+
+        TTT,
+        TFT,
+        FTT,
+        FFT,
+        FFF,
+        JSSE,
+        XMLENC,
+        BigIP,
+        MANGER_0x00
     }
 }

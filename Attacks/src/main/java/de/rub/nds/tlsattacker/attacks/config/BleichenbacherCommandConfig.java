@@ -29,19 +29,13 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "bleichenbacher";
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private final HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private CiphersuiteDelegate ciphersuiteDelegate;
+    private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
-
-    public enum Type {
-
-        FULL,
-        FAST
-    }
+    private final ProtocolVersionDelegate protocolVersionDelegate;
 
     @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
     Type type = Type.FAST;
@@ -80,5 +74,11 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
             config.setSupportedCiphersuites(cipherSuites);
         }
         return config;
+    }
+
+    public enum Type {
+
+        FULL,
+        FAST
     }
 }

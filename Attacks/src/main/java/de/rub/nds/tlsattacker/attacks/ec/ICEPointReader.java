@@ -27,10 +27,6 @@ public class ICEPointReader {
 
     static Logger LOGGER = LogManager.getLogger(ICEPointReader.class);
 
-    private ICEPointReader() {
-
-    }
-
     /**
      * Reads points for the attack on elliptic curves from a file specific for
      * this named curve
@@ -67,5 +63,9 @@ public class ICEPointReader {
         } catch (IOException | NumberFormatException ex) {
             throw new ConfigurationException(ex.getLocalizedMessage(), ex);
         }
+    }
+
+    private ICEPointReader() {
+
     }
 }

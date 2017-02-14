@@ -37,7 +37,7 @@ public class MangerAttackServerTest {
 
     @Test
     @Ignore
-    public final void testMangerAttack() throws Exception {
+    public void testMangerAttack() throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
 

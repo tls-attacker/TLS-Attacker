@@ -35,7 +35,7 @@ public class InvalidCurveAttackFullCommandConfig extends TLSDelegateConfig {
     protected ICEAttacker.ServerType serverType = ICEAttacker.ServerType.NORMAL;
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
 
     public InvalidCurveAttackFullCommandConfig() {
         clientDelegate = new ClientDelegate();

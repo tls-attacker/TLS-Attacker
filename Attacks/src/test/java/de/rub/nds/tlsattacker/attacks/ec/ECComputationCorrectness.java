@@ -114,7 +114,7 @@ public class ECComputationCorrectness {
                 ecdhV.doPhase(bpub, true);
                 sunSecret = new BigInteger(1, ecdhV.generateSecret());
                 System.out.println("[SUN] Secret " + x + ": 0x" + (sunSecret).toString(16).toUpperCase());
-            } catch (Exception e) {
+            } catch (IllegalStateException | InvalidKeyException e) {
                 System.out.println("[SUN] Secret: null");
             }
 
@@ -125,7 +125,7 @@ public class ECComputationCorrectness {
                 System.out.println("[CUS] Secret " + x + ": 0x" + cusSecret.toString(16).toUpperCase());
 
                 System.out.println();
-            } catch (Exception e) {
+            } catch (DivisionException e) {
                 System.out.println("[CUS] Secret: null");
             }
 
@@ -183,13 +183,13 @@ public class ECComputationCorrectness {
 
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
-            double percentage = (double) correctResults[j] / (double) iterations;
+            double percentage = correctResults[j] / iterations;
             System.out.println("Curve with order " + p.getOrder()
                     + " has success probability of valid computation [%]: " + (percentage * 100.0));
         }
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
-            double percentage = (double) correctResults[j] / (double) iterations;
+            double percentage = correctResults[j] / iterations;
             System.out.println(p.getOrder() + " " + (percentage * 100.0));
         }
     }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecMessage;
@@ -92,7 +92,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         boolean valid = true;
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception e) {
+        } catch (WorkflowExecutionException e) {
             // TODO Das padding oracle über eine gecatchted "Exception" zu
             // implementoieren ist nicht clever
             valid = false;
