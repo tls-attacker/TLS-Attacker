@@ -70,7 +70,7 @@ public class ProtocolVersionTest extends HandshakeTest {
     }
 
     public Set<ProtocolVersion> getSupportedProtocols() {
-        return supportedProtocols;
+        return Collections.unmodifiableSet(supportedProtocols);
     }
 
     @Override

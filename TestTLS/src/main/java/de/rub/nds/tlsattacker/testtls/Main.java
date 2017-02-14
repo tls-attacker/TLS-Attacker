@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.testtls;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

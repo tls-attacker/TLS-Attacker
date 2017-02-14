@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
-import static de.rub.nds.tlsattacker.testtls.impl.CryptoTest.LOGGER;
+import static de.rub.nds.tlsattacker.testtls.impl.HandshakeTest.LOGGER;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;

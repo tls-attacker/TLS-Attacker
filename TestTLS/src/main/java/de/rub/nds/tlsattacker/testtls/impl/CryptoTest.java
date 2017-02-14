@@ -212,23 +212,23 @@ public class CryptoTest extends HandshakeTest {
     }
 
     public Set<CipherSuite> getAllSupportedCipherSuites() {
-        return allSupportedCipherSuites;
+        return Collections.unmodifiableSet(allSupportedCipherSuites);
     }
 
     public Set<KeyExchangeAlgorithm> getSupportedKeyExchangeAlgorithms() {
-        return supportedKeyExchangeAlgorithms;
+        return Collections.unmodifiableSet(supportedKeyExchangeAlgorithms);
     }
 
     public Set<PRFAlgorithm> getSupportedPRFAlgorithms() {
-        return supportedPRFAlgorithms;
+        return Collections.unmodifiableSet(supportedPRFAlgorithms);
     }
 
     public Set<CipherAlgorithm> getSupportedCipherAlgorithms() {
-        return supportedCipherAlgorithms;
+        return Collections.unmodifiableSet(supportedCipherAlgorithms);
     }
 
     public Set<MacAlgorithm> getSupportedMacAlgorithms() {
-        return supportedMacAlgorithms;
+        return Collections.unmodifiableSet(supportedMacAlgorithms);
     }
 
     @Override

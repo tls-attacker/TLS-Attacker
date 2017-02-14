@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -59,7 +60,7 @@ public class TlsPeerProperties {
     }
 
     public Set<ProtocolVersion> getProtocolVersions() {
-        return protocolVersions;
+        return Collections.unmodifiableSet(protocolVersions);
     }
 
     public void setProtocolVersions(Set<ProtocolVersion> protocolVersions) {
@@ -67,7 +68,7 @@ public class TlsPeerProperties {
     }
 
     public Set<CipherAlgorithm> getCiphers() {
-        return ciphers;
+        return Collections.unmodifiableSet(ciphers);
     }
 
     public void setCiphers(Set<CipherAlgorithm> ciphers) {
@@ -75,7 +76,7 @@ public class TlsPeerProperties {
     }
 
     public Set<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
-        return signatureAndHashAlgorithms;
+        return Collections.unmodifiableSet(signatureAndHashAlgorithms);
     }
 
     public void setSignatureAndHashAlgorithms(Set<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
@@ -83,7 +84,7 @@ public class TlsPeerProperties {
     }
 
     public Set<SignatureAlgorithm> getSignatureAlgorithms() {
-        return signatureAlgorithms;
+        return Collections.unmodifiableSet(signatureAlgorithms);
     }
 
     public void setSignatureAlgorithms(Set<SignatureAlgorithm> signatureAlgorithms) {
@@ -94,7 +95,7 @@ public class TlsPeerProperties {
     }
 
     public Set<HashAlgorithm> getHashAlgorithms() {
-        return hashAlgorithms;
+        return Collections.unmodifiableSet(hashAlgorithms);
     }
 
     public void setHashAlgorithms(Set<HashAlgorithm> hashAlgorithms) {
@@ -105,7 +106,7 @@ public class TlsPeerProperties {
     }
 
     public Set<NamedCurve> getNamedCurves() {
-        return namedCurves;
+        return Collections.unmodifiableSet(namedCurves);
     }
 
     public void setNamedCurves(Set<NamedCurve> namedCurves) {
@@ -151,7 +152,7 @@ public class TlsPeerProperties {
     }
 
     public Set<MacAlgorithm> getMacAlgorithms() {
-        return macAlgorithms;
+        return Collections.unmodifiableSet(macAlgorithms);
     }
 
     public void setMacAlgorithms(Set<MacAlgorithm> macAlgorithms) {
