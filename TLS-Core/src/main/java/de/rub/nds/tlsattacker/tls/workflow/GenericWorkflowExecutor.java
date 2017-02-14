@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
@@ -45,8 +44,16 @@ public class GenericWorkflowExecutor implements WorkflowExecutor {
         tlsContext.setTransportHandler(transportHandler);
         this.workflowContext = new WorkflowContext();
         if (tlsContext.getWorkflowTrace() == null) {
-            tlsContext.setWorkflowTrace(new WorkflowConfigurationFactory(tlsContext.getConfig())
-                    .createWorkflowTrace(tlsContext.getConfig().getWorkflowTraceType()));
+            tlsContext.setWorkflowTrace(tlsContext.getConfig().getWorkflowTrace());
+        }
+        if (tlsContext.getWorkflowTrace() == null) {
+            if (tlsContext.getConfig().getWorkflowTraceType() == null) {
+                tlsContext.setWorkflowTrace(new WorkflowConfigurationFactory(tlsContext.getConfig())
+                        .createWorkflowTrace(WorkflowTraceType.HANDSHAKE));
+            } else {
+                tlsContext.setWorkflowTrace(new WorkflowConfigurationFactory(tlsContext.getConfig())
+                        .createWorkflowTrace(tlsContext.getConfig().getWorkflowTraceType()));
+            }
         }
         this.type = type;
     }
