@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tlsserver;
 import de.rub.nds.tlsattacker.tlsserver.ServerCommandConfig;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import org.junit.Test;
 
 /**
@@ -59,7 +60,7 @@ public class ServerCommandConfigTest {
     public void testInvalidCommandLineParsing() {
         JCommander jc = new JCommander();
 
-        ServerCommandConfig server = new ServerCommandConfig();
+        ServerCommandConfig server = new ServerCommandConfig(new GeneralDelegate());
         jc.addCommand(ServerCommandConfig.COMMAND, server);
 
         jc.parse("server", "-cipher", "invalid,TLS_RSA_WITH_AES_256_CBC_SHA", "-version", "TLSv1.2");

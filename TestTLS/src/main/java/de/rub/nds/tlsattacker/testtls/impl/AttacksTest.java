@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 
 /**
  * 
@@ -44,7 +45,7 @@ public class AttacksTest extends TestTLS {
         Attacker attacker;
         String attack;
         result = "\n ";
-        BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
+        BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(serverConfig.getGeneralDelegate());
         setHost(bb);
         attacker = new BleichenbacherAttack(bb);
         attacker.executeAttack(configHandler);
@@ -55,7 +56,7 @@ public class AttacksTest extends TestTLS {
             result = result + attack + ": Not vulnerable\n ";
         }
 
-        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
+        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig(serverConfig.getGeneralDelegate());
         setHost(icea);
         attacker = new InvalidCurveAttack(icea);
         attacker.executeAttack(configHandler);
@@ -66,7 +67,7 @@ public class AttacksTest extends TestTLS {
             result = result + attack + ": Not vulnerable\n ";
         }
 
-        HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
+        HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(serverConfig.getGeneralDelegate());
         setHost(heartbleed);
         attacker = new HeartbleedAttack(heartbleed);
         attacker.executeAttack(configHandler);
@@ -77,7 +78,7 @@ public class AttacksTest extends TestTLS {
             result = result + attack + ": Not vulnerable\n ";
         }
 
-        PoodleCommandConfig poodle = new PoodleCommandConfig();
+        PoodleCommandConfig poodle = new PoodleCommandConfig(serverConfig.getGeneralDelegate());
         setHost(poodle);
         attacker = new PoodleAttack(poodle);
         attacker.executeAttack(configHandler);
@@ -88,7 +89,7 @@ public class AttacksTest extends TestTLS {
             result = result + attack + ": Not vulnerable\n ";
         }
 
-        PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
+        PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(serverConfig.getGeneralDelegate());
         setHost(po);
         attacker = new PaddingOracleAttack(po);
         attacker.executeAttack(configHandler);

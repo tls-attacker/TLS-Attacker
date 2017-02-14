@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.testtls;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -24,7 +25,7 @@ public class Main {
 
         Security.addProvider(new BouncyCastleProvider());
 
-        TestServerConfig config = new TestServerConfig();
+        TestServerConfig config = new TestServerConfig(new GeneralDelegate());
 
         JCommander jc = new JCommander(config);
 

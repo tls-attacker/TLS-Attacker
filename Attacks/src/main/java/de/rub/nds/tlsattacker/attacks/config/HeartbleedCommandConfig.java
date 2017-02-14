@@ -13,6 +13,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
@@ -39,7 +40,8 @@ public class HeartbleedCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final ProtocolVersionDelegate protocolVersionDelegate;
 
-    public HeartbleedCommandConfig() {
+    public HeartbleedCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();

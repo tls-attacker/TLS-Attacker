@@ -13,6 +13,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -39,7 +40,8 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final HostnameExtensionDelegate hostnameExtensionDelegate;
 
-    public Cve20162107CommandConfig() {
+    public Cve20162107CommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         versions = new LinkedList<>();
         versions.add(ProtocolVersion.TLS10);
         versions.add(ProtocolVersion.TLS11);

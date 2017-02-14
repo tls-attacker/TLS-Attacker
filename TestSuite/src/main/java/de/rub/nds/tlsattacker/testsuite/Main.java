@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.testsuite;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -24,7 +25,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
-        ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig();
+        ServerTestSuiteConfig stconfig = new ServerTestSuiteConfig(new GeneralDelegate());
         JCommander jc = new JCommander(stconfig);
         jc.parse(args);
 

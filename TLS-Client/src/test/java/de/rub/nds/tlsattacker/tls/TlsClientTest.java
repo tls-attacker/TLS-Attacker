@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls;
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -131,7 +132,7 @@ public class TlsClientTest {
      * @param port
      */
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
-        ClientCommandConfig clientCommandConfig = new ClientCommandConfig();
+        ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         ConfigHandler configHandler = new ConfigHandler();
         TlsConfig config = configHandler.initialize(clientCommandConfig);
@@ -247,7 +248,7 @@ public class TlsClientTest {
     }
 
     private void testCustomWorkflow(int port) {
-        ClientCommandConfig clientCommandConfig = new ClientCommandConfig();
+        ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         ConfigHandler configHandler = new ConfigHandler();
         configHandler.initialize(clientCommandConfig);
 

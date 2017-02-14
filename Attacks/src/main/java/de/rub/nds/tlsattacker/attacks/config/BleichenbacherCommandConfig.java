@@ -13,6 +13,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
@@ -40,7 +41,8 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
     private Type type = Type.FAST;
 
-    public BleichenbacherCommandConfig() {
+    public BleichenbacherCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();

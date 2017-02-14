@@ -50,7 +50,7 @@ public class ClientCommandConfigTest {
     public void testInvalidCommandLineParsing() {
         JCommander jc = new JCommander();
 
-        ClientCommandConfig client = new ClientCommandConfig();
+        ClientCommandConfig client = new ClientCommandConfig(new GeneralDelegate());
         jc.addCommand(ClientCommandConfig.COMMAND, client);
 
         jc.parse("client", "-connect");

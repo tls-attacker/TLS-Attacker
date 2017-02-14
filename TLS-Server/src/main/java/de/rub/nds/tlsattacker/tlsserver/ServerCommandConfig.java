@@ -12,6 +12,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HeartbeatDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
@@ -55,8 +56,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
 
-    public ServerCommandConfig() {
-        super();
+    public ServerCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new EllipticCurveDelegate();

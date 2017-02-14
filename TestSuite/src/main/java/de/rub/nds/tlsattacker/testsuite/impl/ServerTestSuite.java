@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
@@ -68,7 +69,7 @@ public class ServerTestSuite extends TestSuite {
 
     private void startAttackTests() {
         Attacker<? extends TLSDelegateConfig> attacker;
-        BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig();
+        BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(testConfig.getGeneralDelegate());
         setHost(bb);
         attacker = new BleichenbacherAttack(bb);
         attacker.executeAttack(configHandler);
@@ -78,7 +79,7 @@ public class ServerTestSuite extends TestSuite {
             successfulTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
         }
 
-        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig();
+        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig(testConfig.getGeneralDelegate());
         setHost(icea);
         attacker = new InvalidCurveAttack(icea);
         attacker.executeAttack(configHandler);
@@ -88,7 +89,7 @@ public class ServerTestSuite extends TestSuite {
             successfulTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
         }
 
-        HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig();
+        HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(testConfig.getGeneralDelegate());
         setHost(heartbleed);
         attacker = new HeartbleedAttack(heartbleed);
         attacker.executeAttack(configHandler);
@@ -98,7 +99,7 @@ public class ServerTestSuite extends TestSuite {
             successfulTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
         }
 
-        PoodleCommandConfig poodle = new PoodleCommandConfig();
+        PoodleCommandConfig poodle = new PoodleCommandConfig(testConfig.getGeneralDelegate());
         setHost(poodle);
         attacker = new PoodleAttack(poodle);
         attacker.executeAttack(configHandler);
@@ -108,7 +109,7 @@ public class ServerTestSuite extends TestSuite {
             successfulTests.add(PoodleCommandConfig.ATTACK_COMMAND);
         }
 
-        PaddingOracleCommandConfig po = new PaddingOracleCommandConfig();
+        PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(testConfig.getGeneralDelegate());
         setHost(po);
         attacker = new PaddingOracleAttack(po);
         attacker.executeAttack(configHandler);

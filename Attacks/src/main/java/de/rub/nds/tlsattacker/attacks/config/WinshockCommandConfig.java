@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ProtocolVersionDelegate;
 import java.math.BigInteger;
@@ -40,7 +41,8 @@ public class WinshockCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-signature", description = "Signature value in the CertificateVerify protocol message", converter = BigIntegerConverter.class, required = true)
     private BigInteger signature;
 
-    public WinshockCommandConfig() {
+    public WinshockCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();

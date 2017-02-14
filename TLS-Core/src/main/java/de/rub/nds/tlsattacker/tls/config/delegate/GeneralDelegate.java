@@ -44,6 +44,9 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-loglevel", description = "Set Log4j log level.", converter = LogLevelConverter.class)
     private Level logLevel = Level.INFO;
 
+    public GeneralDelegate() {
+    }
+
     public boolean isHelp() {
         return help;
     }

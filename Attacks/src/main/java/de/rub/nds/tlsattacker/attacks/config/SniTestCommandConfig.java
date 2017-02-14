@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.LinkedList;
@@ -30,7 +31,8 @@ public class SniTestCommandConfig extends TLSDelegateConfig {
     @Parameter(names = "-server_name2", description = "Servername for HostName TLS extension, used in the second ClientHello message.")
     private String serverName2;
 
-    public SniTestCommandConfig() {
+    public SniTestCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         clientDelegate = new ClientDelegate();
         addDelegate(clientDelegate);
     }

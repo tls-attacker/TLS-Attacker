@@ -15,6 +15,7 @@ package de.rub.nds.tlsattacker.tlsserver;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
@@ -39,7 +40,7 @@ public class TlsServer {
     private static final Logger LOGGER = LogManager.getLogger(TlsServer.class);
 
     public static void main(String args[]) {
-        ServerCommandConfig config = new ServerCommandConfig();
+        ServerCommandConfig config = new ServerCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(config);
         Exception ex = null;
         try {

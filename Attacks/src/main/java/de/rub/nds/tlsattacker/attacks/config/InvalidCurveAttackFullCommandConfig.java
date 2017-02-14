@@ -13,6 +13,7 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -37,7 +38,8 @@ public class InvalidCurveAttackFullCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final ClientDelegate clientDelegate;
 
-    public InvalidCurveAttackFullCommandConfig() {
+    public InvalidCurveAttackFullCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
         clientDelegate = new ClientDelegate();
         addDelegate(clientDelegate);
     }
