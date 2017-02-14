@@ -56,7 +56,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
 
     @Override
     public void executeAttack(ConfigHandler configHandler) {
-        ProtocolVersion[] versions = (ProtocolVersion[]) config.getVersions().toArray();
+        List<ProtocolVersion> versions = config.getVersions();
         TlsConfig tlsConfig = configHandler.initialize(config);
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
