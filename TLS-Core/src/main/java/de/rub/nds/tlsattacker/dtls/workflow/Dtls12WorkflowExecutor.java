@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.DTLSActionExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
@@ -31,14 +32,14 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
     private static final Logger LOGGER = LogManager.getLogger(Dtls12WorkflowExecutor.class);
 
     private final WorkflowTrace workflowTrace;
-
+    private final DTLSActionExecutor actionExecutor;
     private List<TLSAction> actionList;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
         super(transportHandler, tlsContext, ExecutorType.DTLS);
         tlsContext.setTransportHandler(transportHandler);
         tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
-
+        actionExecutor = new DTLSActionExecutor(tlsContext);
         workflowTrace = this.tlsContext.getWorkflowTrace();
 
         if (tlsContext.getTransportHandler() == null || tlsContext.getRecordHandler() == null) {
@@ -59,7 +60,7 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
             while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
                 TLSAction action = actions.get(workflowContext.getActionPointer());
-                action.execute(tlsContext, null);
+                action.execute(tlsContext, actionExecutor);
 
             }
         } catch (WorkflowExecutionException | IOException e) {
