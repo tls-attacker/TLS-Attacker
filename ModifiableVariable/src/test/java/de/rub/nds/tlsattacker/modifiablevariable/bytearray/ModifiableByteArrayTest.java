@@ -34,7 +34,6 @@ public class ModifiableByteArrayTest {
 
     private byte[] modification2;
 
-
     @Before
     public void setUp() {
         originalValue = new byte[] { (byte) 0, (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6 };

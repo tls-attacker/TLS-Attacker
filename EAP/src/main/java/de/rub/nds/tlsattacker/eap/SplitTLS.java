@@ -26,7 +26,6 @@ public class SplitTLS {
 
     byte[][] clientresponse;
 
-
     private SplitTLS() {
     }
 
@@ -57,9 +56,9 @@ public class SplitTLS {
         return clientresponse;
 
     }
-    
+
     public byte[] getFragment(int count) {
-        
+
         return clientresponse[count];
 
     }
@@ -99,6 +98,5 @@ public class SplitTLS {
         bb.putInt(i);
         return bb.array();
     }
-
 
 }

@@ -81,6 +81,6 @@ public class ModifiableVariableFactory {
     }
 
     private ModifiableVariableFactory() {
-        
+
     }
 }
