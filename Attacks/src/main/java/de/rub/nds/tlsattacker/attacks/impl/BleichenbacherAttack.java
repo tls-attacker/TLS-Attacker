@@ -128,7 +128,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
         tlsContexts.add(tlsContext);
 
         transportHandler.closeConnection();
-        return trace.getAllConfiguredMessages().get(trace.getAllConfiguredMessages().size() - 1);
+        return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);
     }
 
 }
