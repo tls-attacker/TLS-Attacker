@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -54,7 +55,7 @@ public class ConfigHandler {
             port = Integer.parseInt(hp[1]);
         }
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, config.getMyConnectionEnd(),
-                config.getTlsTimeout(),config.getTimeout(), config.getTransportHandlerType());
+                config.getTlsTimeout(), config.getTimeout(), config.getTransportHandlerType());
         try {
 
             th.initialize();
@@ -72,6 +73,6 @@ public class ConfigHandler {
     }
 
     public WorkflowExecutor initializeWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-        return new GenericWorkflowExecutor(transportHandler, tlsContext, ExecutorType.TLS);
+        return WorkflowExecutorFactory.createWorkflowExecutor(transportHandler, tlsContext);
     }
 }
