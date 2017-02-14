@@ -26,7 +26,7 @@ public class ServerTestSuiteConfig extends TLSDelegateConfig {
     String folder = "../resources/testsuite";
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
     private final HostnameExtensionDelegate hostnameDelegate;
 
