@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.math.BigInteger;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -63,7 +63,6 @@ public class ByteSerializationTest {
         m.marshal(start, writer);
 
         String xmlString = writer.toString();
-        System.out.println(xmlString);
 
         um = context.createUnmarshaller();
         ModifiableByte mv = (ModifiableByte) um.unmarshal(new StringReader(xmlString));

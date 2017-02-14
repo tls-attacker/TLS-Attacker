@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.filter;
 
-final public class ModificationFilterFactory {
-
-    private ModificationFilterFactory() {
-    }
+public class ModificationFilterFactory {
 
     public static AccessModificationFilter access(final int[] accessNumbers) {
         return new AccessModificationFilter(accessNumbers);
+    }
+
+    private ModificationFilterFactory() {
     }
 }

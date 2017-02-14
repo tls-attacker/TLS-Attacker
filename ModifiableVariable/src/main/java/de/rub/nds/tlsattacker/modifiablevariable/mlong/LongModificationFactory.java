@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.mlong;
 
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,24 +20,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-
 /**
  * @author
  */
-final public class LongModificationFactory {
+public class LongModificationFactory {
 
     private static final int MODIFICATION_COUNT = 5;
 
     private static final int MAX_MODIFICATION_VALUE = 32000;
 
     private static List<VariableModification<Long>> modificationsFromFile;
-
-    private LongModificationFactory() {
-    }
 
     public static LongAddModification add(final String summand) {
         return add(new Long(summand));
@@ -116,6 +112,9 @@ final public class LongModificationFactory {
                 return vm;
         }
         return vm;
+    }
+
+    private LongModificationFactory() {
     }
 
 }

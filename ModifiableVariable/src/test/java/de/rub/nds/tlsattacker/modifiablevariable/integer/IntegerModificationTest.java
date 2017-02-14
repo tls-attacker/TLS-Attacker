@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 

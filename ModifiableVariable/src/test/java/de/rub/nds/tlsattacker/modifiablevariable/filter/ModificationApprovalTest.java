@@ -9,11 +9,12 @@
 package de.rub.nds.tlsattacker.modifiablevariable.filter;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModificationFilter;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import java.math.BigInteger;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Before;
 import org.junit.Test;
 

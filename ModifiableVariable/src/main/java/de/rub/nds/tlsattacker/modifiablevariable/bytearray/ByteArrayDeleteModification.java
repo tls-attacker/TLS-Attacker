@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import static de.rub.nds.tlsattacker.util.ArrayConverter.bytesToHexString;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;

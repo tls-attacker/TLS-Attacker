@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.modifiablevariable.serialization;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.mlong.LongAddModification;
-import de.rub.nds.tlsattacker.modifiablevariable.mlong.LongModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.AccessModificationFilter;
 import de.rub.nds.tlsattacker.modifiablevariable.filter.ModificationFilterFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.mlong.LongAddModification;
+import de.rub.nds.tlsattacker.modifiablevariable.mlong.LongModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.mlong.ModifiableLong;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;

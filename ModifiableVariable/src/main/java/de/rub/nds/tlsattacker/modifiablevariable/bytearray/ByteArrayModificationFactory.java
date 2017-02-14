@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,12 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-
-final public class ByteArrayModificationFactory {
+public class ByteArrayModificationFactory {
 
     private static final int BYTE_ARRAY_SHUFFLE_MODIFICATION = 6;
 
@@ -48,9 +47,6 @@ final public class ByteArrayModificationFactory {
     private static List<VariableModification<byte[]>> modificationsFromFile;
 
     public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/array.vec";
-
-    private ByteArrayModificationFactory() {
-    }
 
     /**
      * *
@@ -196,6 +192,9 @@ final public class ByteArrayModificationFactory {
                 return vm;
         }
         return vm;
+    }
+
+    private ByteArrayModificationFactory() {
     }
 
 }

@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.assertion;
 
-import de.rub.nds.tlsattacker.modifiablevariable.integer.*;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import static org.junit.Assert.*;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 

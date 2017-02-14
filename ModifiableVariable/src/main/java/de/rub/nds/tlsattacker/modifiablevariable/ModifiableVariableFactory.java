@@ -11,18 +11,14 @@ package de.rub.nds.tlsattacker.modifiablevariable;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.modifiablevariable.mlong.ModifiableLong;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import java.math.BigInteger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModifiableVariableFactory {
-
-    private ModifiableVariableFactory() {
-
-    }
 
     public static ModifiableBigInteger createBigIntegerModifiableVariable() {
         return new ModifiableBigInteger();
@@ -82,5 +78,9 @@ public class ModifiableVariableFactory {
         }
         mv.setOriginalValue(value);
         return mv;
+    }
+
+    private ModifiableVariableFactory() {
+        
     }
 }

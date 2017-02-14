@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 

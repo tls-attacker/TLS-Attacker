@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.integer;
 
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,14 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-
 /**
  * @author
  */
-final public class IntegerModificationFactory {
+public class IntegerModificationFactory {
 
     private static final int MODIFICATION_COUNT = 7;
 
@@ -34,9 +33,6 @@ final public class IntegerModificationFactory {
     private static List<VariableModification<Integer>> modificationsFromFile;
 
     public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/integer.vec";
-
-    private IntegerModificationFactory() {
-    }
 
     public static IntegerAddModification add(final String summand) {
         return add(new Integer(summand));
@@ -141,6 +137,9 @@ final public class IntegerModificationFactory {
                 return vm;
         }
         return vm;
+    }
+
+    private IntegerModificationFactory() {
     }
 
 }

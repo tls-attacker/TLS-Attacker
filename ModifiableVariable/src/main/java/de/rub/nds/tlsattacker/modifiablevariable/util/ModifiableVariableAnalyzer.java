@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.util;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.ReflectionHelper;
 import java.lang.reflect.Field;

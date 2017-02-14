@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.singlebyte;
 
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,14 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-
 /**
  * @author
  */
-final public class ByteModificationFactory {
+public class ByteModificationFactory {
 
     private static final int BYTE_EXPLICIT_VALUE_MODIFICATION = 3;
 
@@ -38,9 +37,6 @@ final public class ByteModificationFactory {
     private static List<VariableModification<Byte>> modificationsFromFile;
 
     public static final String FILE_NAME = "de/rub/nds/tlsattacker/explicit/byte.vec";
-
-    private ByteModificationFactory() {
-    }
 
     public static ByteAddModification add(final String summand) {
         return add(new Byte(summand));
@@ -122,6 +118,9 @@ final public class ByteModificationFactory {
                 return vm;
         }
         return vm;
+    }
+
+    private ByteModificationFactory() {
     }
 
 }

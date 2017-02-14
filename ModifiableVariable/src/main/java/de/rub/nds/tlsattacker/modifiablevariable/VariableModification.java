@@ -78,7 +78,7 @@ public abstract class VariableModification<E> {
      */
     // http://stackoverflow.com/questions/5122296/jaxb-not-unmarshalling-xml-any-element-to-jaxbelement
     @XmlAnyElement(lax = true)
-    final public VariableModification<E> getPostModification() {
+    public VariableModification<E> getPostModification() {
         return postModification;
     }
 
@@ -88,7 +88,7 @@ public abstract class VariableModification<E> {
      * @param postModification
      *            new value of postModification
      */
-    final public void setPostModification(VariableModification<E> postModification) {
+    public void setPostModification(VariableModification<E> postModification) {
         this.postModification = postModification;
     }
 

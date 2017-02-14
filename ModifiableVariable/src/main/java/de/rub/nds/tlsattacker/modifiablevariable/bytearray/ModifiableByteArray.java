@@ -30,7 +30,7 @@ public class ModifiableByteArray extends ModifiableVariable<byte[]> implements S
 
     @Override
     protected void createRandomModification() {
-        VariableModification<byte[]> vm = ByteArrayModificationFactory.createRandomModification((byte[]) originalValue);
+        VariableModification<byte[]> vm = ByteArrayModificationFactory.createRandomModification(originalValue);
         setModification(vm);
     }
 

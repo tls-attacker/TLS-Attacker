@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.modifiablevariable.biginteger;
 
+import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
+import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,15 +21,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import de.rub.nds.tlsattacker.modifiablevariable.FileConfigurationException;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-
 /**
  * @author
  */
-final public class BigIntegerModificationFactory {
+public class BigIntegerModificationFactory {
 
     private static final int MODIFICATION_COUNT = 7;
 
@@ -34,9 +33,6 @@ final public class BigIntegerModificationFactory {
     private static final int MAX_MODIFICATION_SHIFT_VALUE = 50;
 
     private static List<VariableModification<BigInteger>> modificationsFromFile;
-
-    private BigIntegerModificationFactory() {
-    }
 
     public static BigIntegerAddModification add(final String summand) {
         return add(new BigInteger(summand));
@@ -143,5 +139,8 @@ final public class BigIntegerModificationFactory {
                 return vm;
         }
         return vm;
+    }
+
+    private BigIntegerModificationFactory() {
     }
 }

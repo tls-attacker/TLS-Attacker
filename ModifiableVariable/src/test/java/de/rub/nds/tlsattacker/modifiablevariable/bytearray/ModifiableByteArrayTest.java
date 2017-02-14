@@ -12,15 +12,19 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Before;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModifiableByteArrayTest {
+    private static final Logger LOGGER = LogManager.getLogger(ModifiableByteArray.class);
 
     private ModifiableByteArray start;
 
@@ -30,7 +34,6 @@ public class ModifiableByteArrayTest {
 
     private byte[] modification2;
 
-    private static final Logger LOGGER = LogManager.getLogger(ModifiableByteArray.class);
 
     @Before
     public void setUp() {
@@ -186,10 +189,7 @@ public class ModifiableByteArrayTest {
         Assume.assumeTrue(modification1.length < originalValue.length);
         int len = originalValue.length - modification1.length;
         byte[] expResult = new byte[len];
-        for (int i = 0; i < len; i++) {
-            expResult[i] = originalValue[i];
-
-        }
+        System.arraycopy(originalValue, 0, expResult, 0, len);
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.delete(len, modification1.length);
         start.setModification(modifier);
 
