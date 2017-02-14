@@ -67,11 +67,11 @@ public class WorkflowTypeDelegateTest {
         TlsConfig config = new TlsConfig();
         args = new String[2];
         args[0] = "-workflow_trace_type";
-        args[1] = "HANDSHAKE";
+        args[1] = "FULL";
         jcommander.parse(args);
-        assertFalse(WorkflowTraceType.HANDSHAKE.equals(config.getWorkflowTraceType()));
+        assertFalse(WorkflowTraceType.FULL.equals(config.getWorkflowTraceType()));
         delegate.applyDelegate(config);
-        assertTrue(WorkflowTraceType.HANDSHAKE.equals(config.getWorkflowTraceType()));
+        assertTrue(WorkflowTraceType.FULL.equals(config.getWorkflowTraceType()));
     }
 
     @Test

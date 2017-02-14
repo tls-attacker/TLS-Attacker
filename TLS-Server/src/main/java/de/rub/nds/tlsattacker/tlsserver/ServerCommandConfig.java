@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tlsserver;
 
@@ -25,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.WorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
+import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 
 /**
  *
@@ -92,8 +92,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         TlsConfig config = super.createConfig();
         if (config.getWorkflowTraceType() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.FULL);
+            config.setWorkflowTrace(new WorkflowConfigurationFactory(config).createHandshakeWorkflow());
         }
         return config;
     }
-
 }
