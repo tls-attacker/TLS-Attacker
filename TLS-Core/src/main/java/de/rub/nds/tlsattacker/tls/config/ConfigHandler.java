@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.config;
 
@@ -45,11 +46,9 @@ public class ConfigHandler {
         String[] hp = config.getHost().split(":");
         String host = hp[0];
         int port;
-        if(config.getMyConnectionEnd() == ConnectionEnd.SERVER)
-        {
+        if (config.getMyConnectionEnd() == ConnectionEnd.SERVER) {
             port = config.getServerPort();
-        }
-        else if (hp.length == 1) {
+        } else if (hp.length == 1) {
             port = 443;
         } else {
             port = Integer.parseInt(hp[1]);
