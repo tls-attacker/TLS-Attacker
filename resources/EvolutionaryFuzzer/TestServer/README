@@ -1,2 +1,0 @@
-This folder needs 3 Server configuration Files: afl.config and normal.config and server.config
-All files should be server config Files which show the Fuzzer where to find an Instrumented TLS Server compiled using AFL and two normal TLS Server compiled in any binary Language. These Servers are exclusivly used for unit testings. Each Server should use a different Portnumber.
