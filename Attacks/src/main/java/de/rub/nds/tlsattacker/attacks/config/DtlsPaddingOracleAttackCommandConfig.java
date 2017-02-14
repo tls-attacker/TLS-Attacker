@@ -31,19 +31,19 @@ public class DtlsPaddingOracleAttackCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "dtls_potest";
 
     @Parameter(names = "-messagespertrain", description = "Number of messages per train")
-    int messagesPerTrain = 10;
+    private int messagesPerTrain = 10;
 
     @Parameter(names = "-trainmessagesize", description = "Message size of each trains messages")
-    int trainMessageSize = 1450;
+    private int trainMessageSize = 1450;
 
     @Parameter(names = "-rounds", description = "Number of attack rounds")
-    int nrOfRounds = 20;
+    private int nrOfRounds = 20;
 
     @Parameter(names = "-resultfile", description = "Save the response times in the specified file")
-    String resultFilePath = null;
+    private String resultFilePath = null;
 
     @Parameter(names = "-messagewaitnanos", description = "Wait for this amount of nanoseconds between sending two messages of any given train (rate limiting)")
-    long messageWaitNanos = 0;
+    private long messageWaitNanos = 0;
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;

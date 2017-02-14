@@ -28,7 +28,7 @@ public class SniTestCommandConfig extends TLSDelegateConfig {
     private final ClientDelegate clientDelegate;
 
     @Parameter(names = "-server_name2", description = "Servername for HostName TLS extension, used in the second ClientHello message.")
-    protected String serverName2;
+    private String serverName2;
 
     public SniTestCommandConfig() {
         clientDelegate = new ClientDelegate();

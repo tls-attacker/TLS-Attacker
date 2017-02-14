@@ -35,10 +35,10 @@ public class WinshockCommandConfig extends TLSDelegateConfig {
     private final ProtocolVersionDelegate protocolVersionDelegate;
 
     @Parameter(names = "-signature_length", description = "Length of the signature in the CertificateVerify protocol message")
-    Integer signatureLength;
+    private Integer signatureLength;
 
     @Parameter(names = "-signature", description = "Signature value in the CertificateVerify protocol message", converter = BigIntegerConverter.class, required = true)
-    BigInteger signature;
+    private BigInteger signature;
 
     public WinshockCommandConfig() {
         clientDelegate = new ClientDelegate();

@@ -28,7 +28,7 @@ public class HeartbleedCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "heartbleed";
 
     @Parameter(names = "-payload_length", description = "Payload length sent in the client heartbeat message")
-    Integer payloadLength = 20000;
+    private Integer payloadLength = 20000;
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;

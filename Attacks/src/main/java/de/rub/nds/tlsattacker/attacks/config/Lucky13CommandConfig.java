@@ -30,19 +30,19 @@ public class Lucky13CommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "lucky13";
 
     @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
-    Integer blockSize = 16;
+    private Integer blockSize = 16;
 
     @Parameter(names = "-measurements", description = "Number of timing measurement iterations")
-    Integer measurements = 100;
+    private Integer measurements = 100;
 
     @Parameter(names = "-mona_file", description = "File output for Mona timing lib. If set, the output is generated and written.")
-    String monaFile;
+    private String monaFile;
 
     @Parameter(names = "-paddings", description = "Paddings to check for differences, column separated.")
-    String paddings = "0,255";
+    private String paddings = "0,255";
 
     @Parameter(names = "-blocks", description = "Number of blocks to encrypt (default is set to the value from the Lucky 13 paper, Section 3)")
-    Integer blocks = 18;
+    private Integer blocks = 18;
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;

@@ -30,7 +30,7 @@ public class PaddingOracleCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "padding_oracle";
 
     @Parameter(names = "-block_size", description = "Block size of the to be used block cipher")
-    Integer blockSize = 16;
+    private Integer blockSize = 16;
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;

@@ -33,13 +33,13 @@ public class InvalidCurveAttackCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "invalid_curve";
 
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
-    BigInteger premasterSecret;
+    private BigInteger premasterSecret;
 
     @Parameter(names = "-public_point_base_x", description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
-    BigInteger publicPointBaseX;
+    private BigInteger publicPointBaseX;
 
     @Parameter(names = "-public_point_base_y", description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
-    BigInteger publicPointBaseY;
+    private BigInteger publicPointBaseY;
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;

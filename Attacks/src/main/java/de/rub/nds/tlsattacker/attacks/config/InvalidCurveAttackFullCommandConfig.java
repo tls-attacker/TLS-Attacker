@@ -29,10 +29,10 @@ public class InvalidCurveAttackFullCommandConfig extends TLSDelegateConfig {
     public static final String ATTACK_COMMAND = "invalid_curve_full";
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
-    protected int additionalEquations = 3;
+    private  int additionalEquations = 3;
 
     @Parameter(names = "-server_type", description = "Allows to switch between a normal vulnerable server type and an Oracle server type (for oracle a slightly different algorithm is needed).")
-    protected ICEAttacker.ServerType serverType = ICEAttacker.ServerType.NORMAL;
+    private  ICEAttacker.ServerType serverType = ICEAttacker.ServerType.NORMAL;
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;
