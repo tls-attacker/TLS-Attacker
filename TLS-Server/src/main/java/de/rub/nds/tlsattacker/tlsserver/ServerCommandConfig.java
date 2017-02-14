@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tlsserver;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.EllipticCurveDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
@@ -55,7 +56,9 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     private final HeartbeatDelegate heartbeatDelegate;
     @ParametersDelegate
     private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
-
+    @ParametersDelegate
+    private final CertificateDelegate certificateDelegate;
+    
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
@@ -69,6 +72,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
+        this.certificateDelegate = new CertificateDelegate();
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(ellipticCurveDelegate);
@@ -80,6 +84,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
+        addDelegate(certificateDelegate);
     }
 
     @Override

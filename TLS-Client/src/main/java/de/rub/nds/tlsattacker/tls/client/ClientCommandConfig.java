@@ -3,13 +3,13 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.client;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.EllipticCurveDelegate;
@@ -56,6 +56,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     private final WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
     private final HeartbeatDelegate heartbeatDelegate;
+    @ParametersDelegate
+    private final CertificateDelegate certificateDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -71,6 +73,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
+        this.certificateDelegate = new CertificateDelegate();
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(maxFragmentLengthDelegate);
@@ -83,5 +86,6 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
+        addDelegate(certificateDelegate);
     }
 }
