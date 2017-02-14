@@ -73,8 +73,6 @@ public class Cve20162107CommandConfig extends TLSDelegateConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
             config.setSupportedCiphersuites(cipherSuites);
         }
         for (CipherSuite suite : config.getSupportedCiphersuites()) {
