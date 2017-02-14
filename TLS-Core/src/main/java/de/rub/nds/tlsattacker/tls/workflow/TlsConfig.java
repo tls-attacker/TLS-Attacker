@@ -260,7 +260,7 @@ public final class TlsConfig {
         pointFormats = new LinkedList<>();
         try {
             ClassLoader loader = TlsConfig.class.getClassLoader();
-            InputStream stream = loader.getResourceAsStream("/default.jks");
+            InputStream stream = loader.getResourceAsStream("default.jks");
             setKeyStore(KeystoreHandler.loadKeyStore(stream, "password"));
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load deauflt JKS!");

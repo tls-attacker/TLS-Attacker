@@ -14,6 +14,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateParsingException;
+import java.util.Enumeration;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
@@ -53,6 +54,7 @@ public class JKSLoader {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
                         + "certificate alias and key? (Current alias: " + alias + ")");
             }
+            Enumeration<String> aliases = keyStore.aliases();
             java.security.cert.Certificate sunCert = keyStore.getCertificate(alias);
             if (sunCert == null) {
                 throw new ConfigurationException("The certificate cannot be fetched. Have you provided correct "
