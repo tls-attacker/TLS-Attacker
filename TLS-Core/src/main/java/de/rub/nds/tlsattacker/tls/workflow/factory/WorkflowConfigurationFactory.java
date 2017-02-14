@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow.factory;
 
@@ -69,14 +68,14 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createClientHelloWorkflow() {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
-
+        ClientHelloMessage clientHello = new ClientHelloMessage(config);
+        messages.add(clientHello);
+        
+        workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+                messages));
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
-            ClientHelloDtlsMessage clientHello = new ClientHelloDtlsMessage(config);
-            messages.add(clientHello);
             clientHello.setIncludeInDigest(false);
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
-                    messages));
             messages = new LinkedList<>();
             HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
             helloVerifyRequestMessage.setIncludeInDigest(false);
@@ -84,11 +83,6 @@ public class WorkflowConfigurationFactory {
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
             clientHello = new ClientHelloDtlsMessage(config);
-            messages.add(clientHello);
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
-                    messages));
-        } else {
-            ClientHelloMessage clientHello = new ClientHelloMessage(config);
             messages.add(clientHello);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
