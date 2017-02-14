@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import static de.rub.nds.tlsattacker.tls.constants.CipherSuite.getCipherSuite;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +41,15 @@ public enum CompressionMethod {
 
     public static CompressionMethod getCompressionMethod(byte value) {
         return MAP.get(value);
+    }
+
+    public static List<CompressionMethod> getCompressionMethods(byte[] values) {
+        // TODO no stable enough, also add unit tests
+        List<CompressionMethod> compressionMethods = new LinkedList<>();
+        for (int i = 0; i < values.length; i++) {
+            compressionMethods.add(getCompressionMethod(values[i]));
+        }
+        return compressionMethods;
     }
 
     public byte getValue() {
