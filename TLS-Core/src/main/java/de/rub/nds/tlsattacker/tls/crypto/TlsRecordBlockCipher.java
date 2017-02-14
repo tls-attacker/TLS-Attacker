@@ -345,7 +345,8 @@ public final class TlsRecordBlockCipher extends TlsRecordCipher {
         } else {
             decryptIv = new IvParameterSpec(clientWriteIv);
             encryptIv = new IvParameterSpec(serverWriteIv);
-            // todo check if this correct???
+            decryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
+            encryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
             try {
                 encryptCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
                         encryptIv);
