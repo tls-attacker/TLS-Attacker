@@ -17,10 +17,6 @@ import java.util.List;
  */
 public class MathHelper {
 
-    private MathHelper() {
-
-    }
-
     public static BigInteger intfloordiv(BigInteger c, BigInteger d) {
         return (c.subtract(c.mod(d))).divide(d);
     }
@@ -187,6 +183,10 @@ public class MathHelper {
         } else {
             return y.add(BigInteger.ONE);
         }
+    }
+
+    private MathHelper() {
+
     }
 
     public static class BigIntegerTripple {

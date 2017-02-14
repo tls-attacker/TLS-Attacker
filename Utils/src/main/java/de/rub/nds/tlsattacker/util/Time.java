@@ -20,7 +20,7 @@ public class Time {
      * 
      * @return unix time
      */
-    public static final long getUnixTime() {
+    public static long getUnixTime() {
 
         // long millis = new Date().getTime();
         long sec = System.currentTimeMillis() / 1000;

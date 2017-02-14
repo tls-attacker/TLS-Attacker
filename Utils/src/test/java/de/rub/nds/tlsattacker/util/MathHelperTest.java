@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.util;
 
 import java.math.BigInteger;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 

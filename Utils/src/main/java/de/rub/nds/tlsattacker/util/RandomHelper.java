@@ -17,13 +17,13 @@ public class RandomHelper {
 
     private static Random random;
 
-    private RandomHelper() {
-    }
-
     public static Random getRandom() {
         if (random == null) {
             random = new Random();
         }
         return random;
+    }
+
+    private RandomHelper() {
     }
 }

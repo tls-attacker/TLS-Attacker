@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -21,9 +22,10 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @version 0.1
  */
-public final class ServerStartCommandExecutor {
+public class ServerStartCommandExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger(ServerStartCommandExecutor.class);
+    static final int MAX_OUTPUT_LINES = 1000;
 
     /**
      * Command.
@@ -38,8 +40,6 @@ public final class ServerStartCommandExecutor {
     List<String> serverOutput;
 
     List<String> serverErrorOutput;
-
-    static final int MAX_OUTPUT_LINES = 1000;
 
     /**
      * Instance of this executor.
@@ -74,11 +74,11 @@ public final class ServerStartCommandExecutor {
     }
 
     public List<String> getServerOutput() {
-        return serverOutput;
+        return Collections.unmodifiableList(serverOutput);
     }
 
     public List<String> getServerErrorOutput() {
-        return serverErrorOutput;
+        return Collections.unmodifiableList(serverErrorOutput);
     }
 
     private String getOutputString(List<String> list) {

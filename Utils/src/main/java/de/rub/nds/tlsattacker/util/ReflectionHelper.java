@@ -45,7 +45,7 @@ public class ReflectionHelper {
         Class<?> parentClass = startClass.getSuperclass();
 
         if ((parentClass != null) && ((exclusiveParent == null) || !(parentClass.equals(exclusiveParent)))) {
-            List<Field> parentClassFields = (List<Field>) getFieldsUpTo(parentClass, exclusiveParent, filterClass);
+            List<Field> parentClassFields = getFieldsUpTo(parentClass, exclusiveParent, filterClass);
 
             currentClassFields.addAll(parentClassFields);
         }

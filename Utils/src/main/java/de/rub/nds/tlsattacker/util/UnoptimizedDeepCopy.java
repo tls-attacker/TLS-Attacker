@@ -29,6 +29,8 @@ public class UnoptimizedDeepCopy {
 
     /**
      * Returns a copy of the object, or null if the object cannot be serialized.
+     * 
+     * @return
      */
     public static Object copy(Object orig) {
         Object obj = null;
@@ -37,11 +39,10 @@ public class UnoptimizedDeepCopy {
 
             // Write the object out to a byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-
-            out.writeObject(orig);
-            out.flush();
-            out.close();
+            try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
+                out.writeObject(orig);
+                out.flush();
+            }
 
             // Make an input stream from the byte array and read
             // a copy of the object back in.

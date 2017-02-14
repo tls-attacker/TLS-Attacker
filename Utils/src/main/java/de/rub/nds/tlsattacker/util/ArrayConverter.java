@@ -24,7 +24,7 @@ public class ArrayConverter {
      * @param l
      * @return
      */
-    public static final byte[] longToUint64Bytes(long l) {
+    public static byte[] longToUint64Bytes(long l) {
         byte[] result = new byte[8];
         result[0] = (byte) (l >>> 56);
         result[1] = (byte) (l >>> 48);
@@ -43,7 +43,7 @@ public class ArrayConverter {
      * @param l
      * @return
      */
-    public static final byte[] longToUint32Bytes(long l) {
+    public static byte[] longToUint32Bytes(long l) {
         byte[] result = new byte[4];
         result[0] = (byte) (l >>> 24);
         result[1] = (byte) (l >>> 16);
@@ -61,7 +61,7 @@ public class ArrayConverter {
      *            byte size of the new integer byte array
      * @return
      */
-    public static final byte[] intToBytes(int value, int size) {
+    public static byte[] intToBytes(int value, int size) {
         if (size < 1) {
             throw new IllegalArgumentException("The array must be at least of size 1");
         }
@@ -84,7 +84,7 @@ public class ArrayConverter {
      *            byte size of the new integer byte array
      * @return
      */
-    public static final byte[] longToBytes(long value, int size) {
+    public static byte[] longToBytes(long value, int size) {
         if (size < 1) {
             throw new IllegalArgumentException("The array must be at least of size 1");
         }
@@ -104,7 +104,7 @@ public class ArrayConverter {
      * @param value
      * @return
      */
-    public static final int bytesToInt(byte[] value) {
+    public static int bytesToInt(byte[] value) {
         int result = 0;
         int shift = 0;
         for (int i = value.length - 1; i >= 0; i--) {
@@ -120,7 +120,7 @@ public class ArrayConverter {
      * @param value
      * @return
      */
-    public static final long bytesToLong(byte[] value) {
+    public static long bytesToLong(byte[] value) {
         int result = 0;
         int shift = 0;
         for (int i = value.length - 1; i >= 0; i--) {
