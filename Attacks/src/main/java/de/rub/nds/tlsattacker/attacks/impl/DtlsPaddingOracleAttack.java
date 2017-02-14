@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
+import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
@@ -284,7 +285,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
         transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(tlsConfig);
         transportHandler.setTlsTimeout(tlsConfig.getTimeout());
         tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
         recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
         trace = tlsContext.getWorkflowTrace();
         actionList = trace.getTLSActions();
@@ -301,7 +302,7 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTlsTimeout(tlsConfig.getTimeout());
+            transportHandler.setTlsTimeout(tlsConfig.getTlsTimeout());
         }
     }
 }
