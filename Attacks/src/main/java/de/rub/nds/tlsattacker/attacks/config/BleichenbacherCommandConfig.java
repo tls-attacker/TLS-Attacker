@@ -38,7 +38,7 @@ public class BleichenbacherCommandConfig extends TLSDelegateConfig {
     private final ProtocolVersionDelegate protocolVersionDelegate;
 
     @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
-    Type type = Type.FAST;
+    private Type type = Type.FAST;
 
     public BleichenbacherCommandConfig() {
         clientDelegate = new ClientDelegate();
