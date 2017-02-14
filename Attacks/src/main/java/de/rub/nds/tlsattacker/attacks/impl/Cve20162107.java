@@ -114,14 +114,14 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
-        action.setConfiguredMessages(lastMessages);
+        action.setConfiguredMessages(messages);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        ProtocolMessage lm = trace.getLastConfiguredReceiveMesssage();
+        ProtocolMessage lm = trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size()-1);
         lastMessages.add(lm);
         tlsContexts.add(tlsContext);
 
