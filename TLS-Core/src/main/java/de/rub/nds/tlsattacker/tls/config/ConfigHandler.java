@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.config;
 
@@ -15,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
@@ -44,14 +44,23 @@ public class ConfigHandler {
     public TransportHandler initializeTransportHandler(TlsConfig config) throws ConfigurationException {
         String[] hp = config.getHost().split(":");
         String host = hp[0];
-        int port = Integer.parseInt(hp[1]);
+        int port;
+        if(config.getMyConnectionEnd() == ConnectionEnd.SERVER)
+        {
+            port = config.getServerPort();
+        }
+        else if (hp.length == 1) {
+            port = 443;
+        } else {
+            port = Integer.parseInt(hp[1]);
+        }
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, config.getMyConnectionEnd(),
                 config.getTlsTimeout(), config.getTransportHandlerType());
         try {
 
             th.initialize();
             return th;
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | NumberFormatException ex) {
+        } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException(config.getHost() + " is an invalid string for host:port configuration", ex);
         } catch (IOException ex) {
             throw new ConfigurationException("Unable to initialize the transport handler with: " + config.getHost(), ex);
