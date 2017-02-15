@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.workflow.factory;
 
@@ -73,9 +74,7 @@ public class WorkflowConfigurationFactory {
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
             clientHello = new ClientHelloDtlsMessage(config);
             clientHello.setIncludeInDigest(false);
-        }
-        else
-        {
+        } else {
             clientHello = new ClientHelloMessage(config);
         }
         messages.add(clientHello);
@@ -84,9 +83,11 @@ public class WorkflowConfigurationFactory {
                 .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT, messages));
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
-            
+
             HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
             helloVerifyRequestMessage.setIncludeInDigest(false);
+            messages = new LinkedList<>();
+                
             messages.add(helloVerifyRequestMessage);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
