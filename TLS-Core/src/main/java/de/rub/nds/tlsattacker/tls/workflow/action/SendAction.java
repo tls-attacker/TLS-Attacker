@@ -8,11 +8,13 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
+import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class SendAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionEnd());
-        ensureMyLastProtocolMessagesHaveRecords(configuredMessages); // I dont
+        ensureMyLastProtocolMessagesHaveRecords(configuredMessages,tlsContext); // I dont
         // think we
         // want the
         // workflowExecutor
@@ -59,12 +61,19 @@ public class SendAction extends MessageAction {
 
     }
 
-    private void ensureMyLastProtocolMessagesHaveRecords(List<ProtocolMessage> protocolMessages) {
+    private void ensureMyLastProtocolMessagesHaveRecords(List<ProtocolMessage> protocolMessages, TlsContext context) {
         for (int pmPointer = 0; pmPointer < protocolMessages.size(); pmPointer++) {
             ProtocolMessage pm = protocolMessages.get(pmPointer);
             if (handlingMyLastProtocolMessageWithContentType(protocolMessages, pmPointer)) {
                 if (pm.getRecords() == null || pm.getRecords().isEmpty()) {
-                    pm.addRecord(new Record());
+                    if(context.getConfig().getTransportHandlerType() == TransportHandlerType.UDP)
+                    {
+                        pm.addRecord(new DtlsRecord());
+                    }
+                    else
+                    {
+                        pm.addRecord(new Record());
+                    }
                 }
             }
         }
