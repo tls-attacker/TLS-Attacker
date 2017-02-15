@@ -68,21 +68,30 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createClientHelloWorkflow() {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
-        ClientHelloMessage clientHello = new ClientHelloMessage(config);
-        messages.add(clientHello);
-        
-        workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
-                messages));
+        ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
+            clientHello = new ClientHelloDtlsMessage(config);
             clientHello.setIncludeInDigest(false);
-            messages = new LinkedList<>();
+        }
+        else
+        {
+            clientHello = new ClientHelloMessage(config);
+        }
+        messages.add(clientHello);
+
+        workflowTrace
+                .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT, messages));
+        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
+            
             HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
             helloVerifyRequestMessage.setIncludeInDigest(false);
             messages.add(helloVerifyRequestMessage);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
             clientHello = new ClientHelloDtlsMessage(config);
+            messages = new LinkedList<>();
             messages.add(clientHello);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
