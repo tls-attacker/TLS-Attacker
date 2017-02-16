@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -49,10 +48,10 @@ public enum CipherSuite {
     TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA(0x19),
     TLS_DH_anon_WITH_DES_CBC_SHA(0x1A),
     TLS_DH_anon_WITH_3DES_EDE_CBC_SHA(0x1B),
-    SSL_FORTEZZA_KEA_WITH_NULL_SHA (0x1C),
-    SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA (0x1D),
-    TLS_KRB5_WITH_DES_CBC_SHA(0x1E),
-    TLS_KRB5_WITH_3DES_EDE_CBC_SHA(0x1F),//TODO this cipher suite clashes with SSL_FORTEZZA_KEA_WITH_RC4_128_SHA
+    SSL_FORTEZZA_KEA_WITH_NULL_SHA(0x1C),
+    SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA(0x1D),
+    TLS_KRB5_WITH_DES_CBC_SHA(0x1E),//TODO this cipher suite clashes with SSL_FORTEZZA_KEA_WITH_RC4_128_SHA
+    TLS_KRB5_WITH_3DES_EDE_CBC_SHA(0x1F),
     TLS_KRB5_WITH_RC4_128_SHA(0x20),
     TLS_KRB5_WITH_IDEA_CBC_SHA(0x21),
     TLS_KRB5_WITH_DES_CBC_MD5(0x22),
@@ -92,6 +91,28 @@ public enum CipherSuite {
     TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA(0x44),
     TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA(0x45),
     TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA(0x46),
+    UNOFFICIAL_TLS_ECDH_ECDSA_WITH_NULL_SHA(0x47),
+    UNOFFICIAL_TLS_ECDH_ECDSA_WITH_RC4_128_SHA(0x48),
+    UNOFFICIAL_TLS_ECDH_ECDSA_WITH_DES_CBC_SHA(0X49),
+    UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA(0X4A),
+    UNOFFICIAL_TLS_ECDH_ECNRA_NULL_SHA(0x4B),
+    UNOFFICIAL_TLS_ECDH_ECNRA_WITH_RC4_128_SHA(0x4C),
+    UNOFFICIAL_TLS_ECDH_ECNRA_WITH_DES_CBC_SHA(0x4D),
+    UNOFFICIAL_TLS_ECDH_ECNRA_WITH_3DES_EDE_CBC_SHA(0x4E),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_NULL_SHA(0x4F),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_RC4_128_SHA(0x50),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_DES_CBC_SHA(0x51 ),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_3DES_EDE_CBC_SHA(0x52),
+    UNOFFICIAL_TLS_ECMQV_ECNRA_NULL_SHA(0x53),
+    UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_RC4_128_SHA(0x54),
+    UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_DES_CBC_SHA(0x55),
+    UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_3DES_EDE_CBC_SHA(0x56),
+    UNOFFICIAL_TLS_ECDH_anon_NULL_WITH_SHA(0x57),
+    UNOFFICIAL_TLS_ECDH_anon_WITH_RC4_128_SHA(0x58),
+    UNOFFICIAL_TLS_ECDH_anon_WITH_DES_CBC_SHA(0x59),
+    UNOFFICIAL_TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA(0x5A),
+    UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_DES40_CBC_SHA(0x5B),
+    UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA(0x5C),
     TLS_RSA_EXPORT1024_WITH_RC4_56_MD5(0x60),
     TLS_RSA_EXPORT1024_WITH_RC2_56_MD5(0x61),
     TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA(0x62),
@@ -431,7 +452,7 @@ public enum CipherSuite {
     /**
      * Returns true in case the cipher suite enforces ephemeral keys. This is
      * the case for ECDHE and DHE cipher suites.
-     * 
+     *
      * @return
      */
     public boolean isEphemeral() {
@@ -440,7 +461,7 @@ public enum CipherSuite {
 
     /**
      * Returns true in case the cipher suite is an AEAD cipher suite.
-     * 
+     *
      * @return
      */
     public boolean isAEAD() {
@@ -449,7 +470,7 @@ public enum CipherSuite {
 
     /**
      * Returns true in case the cipher suite is a CBC cipher suite.
-     * 
+     *
      * @return
      */
     public boolean isCBC() {
@@ -459,9 +480,9 @@ public enum CipherSuite {
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version.
-     * 
+     *
      * TODO: this is still very imprecise and must be improved with new ciphers.
-     * 
+     *
      * @param version
      * @return
      */
