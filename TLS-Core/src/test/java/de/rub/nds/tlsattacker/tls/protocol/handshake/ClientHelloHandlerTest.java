@@ -48,8 +48,8 @@ public class ClientHelloHandlerTest {
     // DTLS clientHello with the dtls handshake fields (messageSeq,
     // fragmentOffset and fragmentLength) already stripped out.
     // Thus, only the cookie remains.
-    static byte[] dtlsClientHelloWithoutExtensionBytes = ArrayConverter
-            .hexStringToByteArray("0100005eFEFD36CCE3E132A0C5B5DE2C0560B4FF7F6CDF7AE226120E4A99C07E2D9B68B275BB20FA6F8E9770106ACE8ACAB73E18B5D867CAF8AF7E206EF496F23A206A379FC711061122334455660012C02BC02FC00AC009C013C014002F0035000A0100");
+    static byte[] clientHelloDTLS10withExtensions = ArrayConverter
+            .hexStringToByteArray("010000bc00010000000000bcfefdd471fd117e9b65caf6e4ffc649511d33dc3843da212084d82963644915cb16c10014ec6c096cc8fff20f674c7fcc34afb84d4d89cafc0038c02cc030009fcca9cca8ccaac02bc02f009ec024c028006bc023c0270067c00ac0140039c009c0130033009d009c003d003c0035002f00ff01000046000b000403000102000a000a0008001d00170019001800230000000d0020001e0403050306030804080508060401050106010203020102020402050206020016000000170000");
 
     static byte[] cookie = ArrayConverter.hexStringToByteArray("1122334455667788");
 
@@ -75,7 +75,6 @@ public class ClientHelloHandlerTest {
         compressionMethods.add(CompressionMethod.NULL);
         tlsContext.getConfig().setSupportedCompressionMethods(compressionMethods);
         dtlsContext.getConfig().setSupportedCompressionMethods(compressionMethods);
-
     }
 
     /**
@@ -128,44 +127,44 @@ public class ClientHelloHandlerTest {
     }
 
     @Test
-    public void testParseMessageAction() {
+    public void testParseDTLSMessage() {
         dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(new TlsConfig()));
 
-        int endPointer = dtlshandler.parseMessageAction(dtlsClientHelloWithoutExtensionBytes, 0);
+        int endPointer = dtlshandler.parseMessage(clientHelloDTLS10withExtensions, 0);
         ClientHelloDtlsMessage message = dtlshandler.getProtocolMessage();
 
         byte[] expectedRandom = ArrayConverter
-                .hexStringToByteArray("36cce3e132a0c5b5de2c0560b4ff7f6cdf7ae226120e4a99c07e2d9b68b275bb");
+                .hexStringToByteArray("d471fd117e9b65caf6e4ffc649511d33dc3843da212084d82963644915cb16c1");
         byte[] actualRandom = ArrayConverter.concatenate(message.getUnixTime().getValue(), message.getRandom()
                 .getValue());
-        byte[] expectedSessionID = ArrayConverter
-                .hexStringToByteArray("fa6f8e9770106ace8acab73e18b5d867caf8af7e206ef496f23a206a379fc711");
+        byte[] expectedSessionID = new byte[0];
         byte[] actualSessionID = message.getSessionId().getValue();
 
-        byte expectedCookieLength = 6;
+        byte expectedCookieLength = 20;
         byte actualCookieLength = message.getCookieLength().getValue();
-        byte[] expectedCookie = ArrayConverter.hexStringToByteArray("112233445566");
+        byte[] expectedCookie = ArrayConverter.hexStringToByteArray("ec6c096cc8fff20f674c7fcc34afb84d4d89cafc");
         byte[] actualCookie = message.getCookie().getValue();
 
-        byte[] expectedCipherSuites = ArrayConverter.hexStringToByteArray("c02bc02fc00ac009c013c014002f0035000a");
+        byte[] expectedCipherSuites = ArrayConverter
+                .hexStringToByteArray("c02cc030009fcca9cca8ccaac02bc02f009ec024c028006bc023c0270067c00ac0140039c009c0130033009d009c003d003c0035002f00ff");
         byte[] actualCipherSuites = message.getCipherSuites().getValue();
 
         assertEquals("Check message type", HandshakeMessageType.CLIENT_HELLO, message.getHandshakeMessageType());
-        assertEquals("Message length should be 94 bytes", new Integer(94), message.getLength().getValue());
+        assertEquals("Message length should be 188 bytes", new Integer(188), message.getLength().getValue());
         assertArrayEquals("Check Protocol Version", ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion()
                 .getValue());
         assertArrayEquals("Check random", expectedRandom, actualRandom);
-        assertEquals("Check session_id length", new Integer(32), message.getSessionIdLength().getValue());
+        assertEquals("Check session_id length", new Integer(0), message.getSessionIdLength().getValue());
         assertArrayEquals("Check session_id", expectedSessionID, actualSessionID);
 
         assertEquals("Check cookie length", expectedCookieLength, actualCookieLength);
         assertArrayEquals("Check cookie", expectedCookie, actualCookie);
 
-        assertEquals("Check cipher_suites length", new Integer(18), message.getCipherSuiteLength().getValue());
+        assertEquals("Check cipher_suites length", new Integer(56), message.getCipherSuiteLength().getValue());
         assertArrayEquals("Check cipher_suites", expectedCipherSuites, actualCipherSuites);
         assertEquals("Check compressions length", new Integer(1), message.getCompressionLength().getValue());
         assertArrayEquals("Check compressions", new byte[] { 0x00 }, message.getCompressions().getValue());
-        assertEquals("Check protocol message length pointer", dtlsClientHelloWithoutExtensionBytes.length, endPointer);
+        assertEquals("Check protocol message length pointer", clientHelloDTLS10withExtensions.length, endPointer);
     }
 
     /**

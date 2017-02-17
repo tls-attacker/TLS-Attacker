@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -88,19 +89,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 .getRandom().getValue()));
 
         currentPointer = nextPointer;
-        int sessionIdLength = message[currentPointer] & 0xFF;
+        int sessionIdLength = message[currentPointer];
         currentPointer += HandshakeByteLength.SESSION_ID_LENGTH;
+        protocolMessage.setSessionIdLength(sessionIdLength);
         nextPointer = currentPointer + sessionIdLength;
         byte[] sessionId = Arrays.copyOfRange(message, currentPointer, nextPointer);
         protocolMessage.setSessionId(sessionId);
-
-        // handle unknown SessionID during Session resumption
+        tlsContext.setSessionID(sessionId);
+        // handle unknown SessionID during Session resumption //TODO
         if (tlsContext.getConfig().isSessionResumption()
                 && !(Arrays.equals(tlsContext.getSessionID(), protocolMessage.getSessionId().getValue()))) {
             throw new WorkflowExecutionException("Session ID is unknown to the Client");
         }
-
-        tlsContext.setSessionID(sessionId);
 
         currentPointer = nextPointer;
         nextPointer = currentPointer + HandshakeByteLength.CIPHER_SUITE;
@@ -127,34 +127,37 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
         tlsContext.setCompressionMethod(CompressionMethod.getCompressionMethod(protocolMessage
                 .getSelectedCompressionMethod().getValue()));
-
-        if ((currentPointer - pointer) < length) {
+        nextPointer = currentPointer + ExtensionByteLength.EXTENSIONS;
+        protocolMessage.setExtensionsLength(ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
+                nextPointer)));
+        // In these versions we have to check whether extensions are present
+        boolean extensionPresent = true;
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS10
+                || tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
+            extensionPresent = (currentPointer - pointer) < length;
+        }
+        if (extensionPresent) {
             currentPointer += ExtensionByteLength.EXTENSIONS;
-            while ((currentPointer - pointer) < length) {
-                nextPointer = currentPointer + ExtensionByteLength.TYPE;
-                byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
-                // Not implemented/unknown extensions will generate an Exception
-                // ...
-                try {
-                    ExtensionHandler<? extends ExtensionMessage> eh = ExtensionType.getExtensionType(extensionType)
-                            .getExtensionHandler();
-                    currentPointer = eh.parseExtension(message, currentPointer);
-                    protocolMessage.addExtension(eh.getExtensionMessage());
-                } // ... which we catch, then disregard that extension and carry
-                  // on.
-                catch (Exception ex) {
-                    currentPointer = nextPointer;
-                    nextPointer += 2;
-                    currentPointer += ArrayConverter.bytesToInt(Arrays
-                            .copyOfRange(message, currentPointer, nextPointer));
-                    nextPointer += 2;
-                    currentPointer += 2;
-                }
-            }
         }
 
-        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
+        while ((currentPointer - pointer) <= length) {
+            nextPointer = currentPointer + ExtensionByteLength.TYPE;
+            byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
+            try {
+                ExtensionType type = ExtensionType.getExtensionType(extensionType);
+                ExtensionHandler<? extends ExtensionMessage> eh = type.getExtensionHandler();
+                currentPointer = eh.parseExtension(message, currentPointer);
+                protocolMessage.addExtension(eh.getExtensionMessage());
+                LOGGER.debug(eh.getExtensionMessage().toString());
+            } catch (UnsupportedOperationException ex) {
+                ExtensionHandler<? extends ExtensionMessage> eh = new UnknownExtensionHandler();
+                currentPointer = eh.parseExtension(message, currentPointer);
+                protocolMessage.addExtension(eh.getExtensionMessage());
+                LOGGER.debug(eh.getExtensionMessage().toString());
+            }
 
+        }
+        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
         return currentPointer;
     }
 
@@ -246,7 +249,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             tlsContext.setCompressionMethod(selectedCompressionMethod);
             // TODO fuzzing mode
             if (selectedCompressionMethod == null) {
-                throw new ConfigurationException("No Compression in common");
+                throw new WorkflowExecutionException("No Compression in common");
             }
         }
         protocolMessage.setSelectedCompressionMethod(tlsContext.getCompressionMethod().getValue());
@@ -272,7 +275,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
             result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
         }
-
+        if (extensionBytes != null) {
+            protocolMessage.setExtensionsLength(extensionBytes.length);
+        } else {
+            protocolMessage.setExtensionsLength(0);
+        }
         protocolMessage.setLength(result.length);
 
         long header = (HandshakeMessageType.SERVER_HELLO.getValue() << 24) + protocolMessage.getLength().getValue();

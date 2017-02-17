@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -106,8 +107,10 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
             if (extensionBytes != null && extensionBytes.length != 0) {
                 byte[] extensionLength = ArrayConverter.intToBytes(extensionBytes.length,
                         ExtensionByteLength.EXTENSIONS);
-
+                protocolMessage.setExtensionsLength(extensionBytes.length);
                 result = ArrayConverter.concatenate(result, extensionLength, extensionBytes);
+            } else {
+                protocolMessage.setExtensionsLength(0);
             }
         }
 
@@ -203,31 +206,33 @@ public class ClientHelloHandler<Message extends ClientHelloMessage> extends Hand
         tlsContext.setClientSupportedCompressions(CompressionMethod.getCompressionMethods(protocolMessage
                 .getCompressions().getValue()));
         currentPointer = nextPointer;
-        if ((currentPointer - pointer) < length) {
+        nextPointer = currentPointer + ExtensionByteLength.EXTENSIONS;
+        protocolMessage.setExtensionsLength(ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
+                nextPointer)));
+        boolean extensionPresent = true;
+        if (tlsContext.getHighestClientProtocolVersion() == ProtocolVersion.TLS10
+                || tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
+            extensionPresent = (currentPointer - pointer) < length;
+        }
+        if (extensionPresent) {
             currentPointer += ExtensionByteLength.EXTENSIONS;
-
-            while ((currentPointer - pointer) < length) {
-                nextPointer = currentPointer + ExtensionByteLength.TYPE;
-                byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
-                // Not implemented/unknown extensions will generate an Exception
-                // ...
-                try {
-                    ExtensionHandler<? extends ExtensionMessage> eh = ExtensionType.getExtensionType(extensionType)
-                            .getExtensionHandler();
-                    currentPointer = eh.parseExtension(message, currentPointer);
-                    protocolMessage.addExtension(eh.getExtensionMessage());
-                }
-                // ... which we catch, then disregard that extension and carry
-                // on.
-                catch (Exception ex) {
-                    currentPointer = nextPointer;
-                    nextPointer += 2;
-                    currentPointer += ArrayConverter.bytesToInt(Arrays
-                            .copyOfRange(message, currentPointer, nextPointer));
-                    nextPointer += 2;
-                    currentPointer += 2;
-                }
+        }
+        while ((currentPointer - pointer) <= length) {
+            nextPointer = currentPointer + ExtensionByteLength.TYPE;
+            byte[] extensionType = Arrays.copyOfRange(message, currentPointer, nextPointer);
+            try {
+                ExtensionType type = ExtensionType.getExtensionType(extensionType);
+                ExtensionHandler<? extends ExtensionMessage> eh = type.getExtensionHandler();
+                currentPointer = eh.parseExtension(message, currentPointer);
+                protocolMessage.addExtension(eh.getExtensionMessage());
+                LOGGER.debug(eh.getExtensionMessage().toString());
+            } catch (UnsupportedOperationException ex) {
+                ExtensionHandler<? extends ExtensionMessage> eh = new UnknownExtensionHandler();
+                currentPointer = eh.parseExtension(message, currentPointer);
+                protocolMessage.addExtension(eh.getExtensionMessage());
+                LOGGER.debug(eh.getExtensionMessage().toString());
             }
+
         }
 
         protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
