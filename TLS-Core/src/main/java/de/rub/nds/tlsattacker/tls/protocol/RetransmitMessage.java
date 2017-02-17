@@ -1,0 +1,42 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.tls.protocol;
+
+import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+
+/**
+ *
+ * @author Robert Merget - robert.merget@rub.de
+ * 
+ *         Raw bytes of a previos send message retransmitted
+ */
+public class RetransmitMessage extends ProtocolMessage {
+
+    public RetransmitMessage(byte[] bytesToTransmit) {
+        super();
+        this.setRequired(false);
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
+        setCompleteResultingMessage(bytesToTransmit);
+    }
+
+    @Override
+    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
+        RetransmitMessageHandler retransmitHandler = new RetransmitMessageHandler(tlsContext);
+        retransmitHandler.setProtocolMessage(this);
+        return retransmitHandler;
+    }
+
+    @Override
+    public String toCompactString() {
+        return "Retransmitted Message";
+    }
+}
