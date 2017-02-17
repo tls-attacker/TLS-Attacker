@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
@@ -155,12 +156,12 @@ public class RealDirectMessageECOracle extends ECOracle {
         List<HandshakeMessage> clientKeyExchangeList = trace
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
         if (clientKeyExchangeList.isEmpty()) {
-            //TODO
+            // TODO
             throw new WorkflowExecutionException("Could not retrieve ECDH PublicKey");
         } else {
             ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
-        
+                    .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
+
             // get public point base X and Y coordinates
             BigInteger x = message.getPublicKeyBaseX().getValue();
             BigInteger y = message.getPublicKeyBaseY().getValue();

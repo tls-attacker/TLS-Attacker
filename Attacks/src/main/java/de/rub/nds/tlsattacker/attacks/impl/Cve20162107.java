@@ -121,7 +121,8 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        ProtocolMessage lm = trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size()-1);
+        ProtocolMessage lm = trace.getAllActuallyReceivedMessages().get(
+                trace.getAllActuallyReceivedMessages().size() - 1);
         lastMessages.add(lm);
         tlsContexts.add(tlsContext);
 
