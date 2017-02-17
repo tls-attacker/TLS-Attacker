@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -50,7 +51,8 @@ public enum CipherSuite {
     TLS_DH_anon_WITH_3DES_EDE_CBC_SHA(0x1B),
     SSL_FORTEZZA_KEA_WITH_NULL_SHA(0x1C),
     SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA(0x1D),
-    TLS_KRB5_WITH_DES_CBC_SHA(0x1E),//TODO this cipher suite clashes with SSL_FORTEZZA_KEA_WITH_RC4_128_SHA
+    TLS_KRB5_WITH_DES_CBC_SHA(0x1E), // TODO this cipher suite clashes with
+                                     // SSL_FORTEZZA_KEA_WITH_RC4_128_SHA
     TLS_KRB5_WITH_3DES_EDE_CBC_SHA(0x1F),
     TLS_KRB5_WITH_RC4_128_SHA(0x20),
     TLS_KRB5_WITH_IDEA_CBC_SHA(0x21),
@@ -101,7 +103,7 @@ public enum CipherSuite {
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_3DES_EDE_CBC_SHA(0x4E),
     UNOFFICIAL_TLS_ECMQV_ECDSA_NULL_SHA(0x4F),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_RC4_128_SHA(0x50),
-    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_DES_CBC_SHA(0x51 ),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_DES_CBC_SHA(0x51),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_3DES_EDE_CBC_SHA(0x52),
     UNOFFICIAL_TLS_ECMQV_ECNRA_NULL_SHA(0x53),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_RC4_128_SHA(0x54),
@@ -436,7 +438,7 @@ public enum CipherSuite {
     public static CipherSuite getCipherSuite(int value) {
         CipherSuite cs = MAP.get(value);
         if (cs == null) {
-            throw new UnknownCiphersuiteException("Cipher suite " + value + " is not known.");
+            return TLS_UNKNOWN_CIPHER;
         }
         return cs;
     }
