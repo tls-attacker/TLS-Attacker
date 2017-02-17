@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.NoCiphersuiteSelectedException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -25,7 +24,6 @@ import java.util.Arrays;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
- * @param <HandshakeMessage>
  */
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
@@ -40,8 +38,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     public byte[] prepareMessageAction() {
         protocolMessage.setType(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue());
         CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-        if(selectedCipherSuite == null)
-        {
+        if (selectedCipherSuite == null) {
             throw new NoCiphersuiteSelectedException("Cannot prepare KeyExchange Message");
         }
         KeyExchangeAlgorithm keyExchange = AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite);

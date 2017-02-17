@@ -87,7 +87,7 @@ public class WorkflowConfigurationFactory {
             HelloVerifyRequestMessage helloVerifyRequestMessage = new HelloVerifyRequestMessage(config);
             helloVerifyRequestMessage.setIncludeInDigest(false);
             messages = new LinkedList<>();
-                
+
             messages.add(helloVerifyRequestMessage);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));

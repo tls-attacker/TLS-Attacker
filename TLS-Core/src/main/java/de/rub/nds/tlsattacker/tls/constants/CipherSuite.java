@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -379,7 +380,7 @@ public enum CipherSuite {
     TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC13),
     TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCC14),
     TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC15),
-    //Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
+    // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
     UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
     UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
     UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
@@ -388,7 +389,7 @@ public enum CipherSuite {
     UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
     UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
     UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
-    //Chacha poly ciphersuites, some are double specified, added RFC_ infront
+    // Chacha poly ciphersuites, some are double specified, added RFC_ infront
     RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
     RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
     RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA),

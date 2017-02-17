@@ -16,26 +16,32 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.util.Arrays;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DTLSActionExecutor extends ActionExecutor {
 
     private byte[] handshakeMessageSendBuffer, recordSendBuffer;
-
-    private int messageParseBufferOffset, sendHandshakeMessageSeq, maxWaitForExpectedRecord = 3000, maxRetransmits = 4,
+    // TODO put this in config
+    private int messageParseBufferOffset, sendHandshakeMessageSeq, maxWaitForExpectedRecord = 3000, maxRetransmits = 0,
             serverEpochCounter, maxPacketSize = 1400, maxHandshakeReorderBufferSize = 100, retransmitCounter,
             retransmitEpoch;
 
@@ -43,20 +49,20 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     private final List<byte[]> retransmitList;
 
-    private List<de.rub.nds.tlsattacker.tls.record.Record> recordBuffer;
-    private List<de.rub.nds.tlsattacker.tls.record.Record> handshakeMessageSendRecordList = null;
+    private List<Record> recordBuffer;
+    private List<Record> handshakeMessageSendRecordList = null;
 
     private final HandshakeFragmentHandler handshakeFragmentHandler;
 
-    private final DtlsRecordHandler recordHandler;
+    private final RecordHandler recordHandler;
     private final TransportHandler transportHandler;
     private final TlsContext tlsContext;
-    private final int counter = 0;
-    private ProtocolMessage previousMessage = null;
+    private List<ProtocolMessage> lastActualSendList;
+    private ProtocolMessage previousMessage;
 
     public DTLSActionExecutor(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
+        recordHandler = tlsContext.getRecordHandler();
         transportHandler = tlsContext.getTransportHandler();
         handshakeFragmentHandler = new HandshakeFragmentHandler();
         recordBuffer = new LinkedList<>();
@@ -67,6 +73,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     @Override
     public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
+        lastActualSendList = new LinkedList<>();
         try {
             if (retransmitCounter > maxRetransmits) {
                 throw new WorkflowExecutionException("Retransmit Counter reached Max Retransmits!");
@@ -76,33 +83,46 @@ public class DTLSActionExecutor extends ActionExecutor {
                 updateFlight(message, previousMessage);
                 handleMyProtocolMessage(message);
                 previousMessage = message;
+                lastActualSendList.add(message);
             }
             sendBufferedData();
         } catch (IOException E) {
+            E.printStackTrace();
             // TODO
         }
         previousMessage = null;
         handshakeMessageSendRecordList = null;
         handshakeMessageSendBuffer = new byte[0];
-        return messages;
+
+        return lastActualSendList;
     }
 
     @Override
     public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
-        for (ProtocolMessage message : messages) {
-            ProtocolMessage receivedMessage = receiveAndParseNextProtocolMessage(message);
+        ProtocolMessage receivedMessage = null;
+        do {
+            receivedMessage = receiveAndParseNextProtocolMessage();
             if (receivedMessage == null) {
-                // receivedMessage = handleRetransmit();//TODO
+                if (receivedMessages.isEmpty()) {
+                    if (retransmitCounter < maxRetransmits) {
+                        try {
+                            retransmit();
+                        } catch (IOException ex) {
+                            throw new WorkflowExecutionException("Could not retransmit Message", ex);
+                        }
+                    }
+                    // TODO do we have to do more?
+                }
+            } else {
+                receivedMessages.add(receivedMessage);
             }
-            receivedMessages.add(receivedMessage);
-        }
+        } while (receivedMessage != null);
         return receivedMessages;
     }
 
     private void handleMyProtocolMessage(ProtocolMessage pm) throws IOException {
         LOGGER.debug("Preparing the following protocol message to send: {}", pm.getClass());
-
         if (pm.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             handleMyHandshakeMessage((HandshakeMessage) pm);
         } else if (pm.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
@@ -116,7 +136,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     /**
      * We simply send the protocol Message, and add Records if the protocol
      * message has no records
-     * 
+     *
      * @param protocolMessage
      * @throws IOException
      */
@@ -135,7 +155,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     /**
-     * 
+     *
      * @param protocolMessage
      * @throws IOException
      */
@@ -208,22 +228,49 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     }
 
-    private DtlsRecord getNextProtocolMessageRecord(ProtocolMessage pm) {
-        switch (pm.getProtocolMessageType()) {
-            case HANDSHAKE:
-                return getHandshakeMessage();
-            case CHANGE_CIPHER_SPEC:
-                return getChangeCipherSpecMessage();
-            default:
-                return getNonHandshakeNonCcsMessages();
+    private DtlsRecord getNextProtocolMessageRecord() {
+        byte[] rawMessageBytes;
+        DtlsRecord rcvRecord = new DtlsRecord();
+        ProtocolMessageType rcvRecordContentType;
+        long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
+        while (System.currentTimeMillis() <= endTimeMillies) {
+            rawMessageBytes = handshakeFragmentHandler.getHandshakeMessage();
+            if (rawMessageBytes != null) {
+                rcvRecord.setProtocolMessageBytes(rawMessageBytes);
+                rcvRecord.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
+                return rcvRecord;
+            }
+            try {
+                rcvRecord = receiveNextValidRecord();
+            } catch (IOException e) {
+                rcvRecord = new DtlsRecord();
+                continue;
+            }
+            rcvRecordContentType = ProtocolMessageType.getContentType(rcvRecord.getContentType().getValue());
+            switch (rcvRecordContentType) {
+                case ALERT:
+                    return rcvRecord;
+                case HANDSHAKE:
+                    handshakeFragmentHandler.processHandshakeRecord(rcvRecord);
+                    break;
+                case CHANGE_CIPHER_SPEC:
+                    processChangeCipherSpecRecord(rcvRecord);
+                    break;
+                default:
+                    break;
+            }
+            if (changeCipherSpecReceived()) {
+                return getReceivedChangeCipherSepc();
+            }
         }
+        return null;
     }
 
-    private ProtocolMessage receiveAndParseNextProtocolMessage(ProtocolMessage protocolMessage) {
+    private ProtocolMessage receiveAndParseNextProtocolMessage() {
         DtlsRecord rcvRecord = parseRecordBuffer;
 
         if (rcvRecord == null) {
-            rcvRecord = getNextProtocolMessageRecord(protocolMessage);
+            rcvRecord = getNextProtocolMessageRecord();
             if (rcvRecord == null) {
                 return null;
             }
@@ -234,13 +281,8 @@ public class DTLSActionExecutor extends ActionExecutor {
                 .getValue());
         ProtocolMessageHandler pmh = rcvRecordContentType.getProtocolMessageHandler(
                 rawMessageBytes[messageParseBufferOffset], tlsContext);
-
-        if (!pmh.isCorrectProtocolMessage(protocolMessage)) {
-            protocolMessage = wrongMessageFound(pmh);
-        } else {
-            pmh.setProtocolMessage(protocolMessage);
-        }
-
+        pmh.initializeProtocolMessage();
+        ProtocolMessage protocolMessage = pmh.getProtocolMessage();
         messageParseBufferOffset = pmh.parseMessage(rawMessageBytes, messageParseBufferOffset);
 
         LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
@@ -272,16 +314,36 @@ public class DTLSActionExecutor extends ActionExecutor {
         return protocolMessage;
     }
 
+    public void retransmit() throws IOException {
+        retransmitCounter++;
+        List<ProtocolMessage> newRetransmitList = new LinkedList<>();
+        LinkedList<Record> recordList = new LinkedList<>();
+        for (byte[] retransmitByte : retransmitList) {
+            // TODO Very hacky, needs to be verified and tested
+            RetransmitMessage message = new RetransmitMessage(retransmitByte);
+            lastActualSendList.add(message);
+            newRetransmitList.add(message);
+            recordList.add(new DtlsRecord());
+            byte[] retransmittedMessage = retransmitByte;
+
+            if (retransmittedMessage.length == 1) {
+                transportHandler.sendData(recordHandler.wrapData(retransmittedMessage,
+                        ProtocolMessageType.CHANGE_CIPHER_SPEC, recordList));
+            } else if (retransmittedMessage.length > 2) {
+                transportHandler.sendData(recordHandler.wrapData(retransmittedMessage, ProtocolMessageType.HANDSHAKE,
+                        recordList));
+            } else {
+                LOGGER.error("Empty retransmit message bytes");
+            }
+            recordList.removeFirst();
+        }
+        sendMessages(newRetransmitList);
+
+    }
+
     private boolean isIncomingAlertFatal(ProtocolMessageHandler pmh) {
         AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
         return AlertLevel.getAlertLevel(am.getLevel().getValue()) != AlertLevel.FATAL;
-    }
-
-    private ProtocolMessage wrongMessageFound(ProtocolMessageHandler pmh) {
-        LOGGER.debug("The configured protocol message is not equal to the message being parsed or the message was not found.");
-        pmh.initializeProtocolMessage();
-        ProtocolMessage pm = pmh.getProtocolMessage();
-        return pm;
     }
 
     protected DtlsRecord getHandshakeMessage() {
@@ -289,10 +351,9 @@ public class DTLSActionExecutor extends ActionExecutor {
         DtlsRecord outRecord = new DtlsRecord();
         ProtocolMessageType rcvRecordProtocolMessageType;
         long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
-        boolean messageAvailable = false;
         byte[] rawMessageBytes;
 
-        while (!messageAvailable && System.currentTimeMillis() <= endTimeMillies) {
+        while (System.currentTimeMillis() <= endTimeMillies) {
             rawMessageBytes = handshakeFragmentHandler.getHandshakeMessage();
             if (rawMessageBytes != null) {
                 outRecord.setProtocolMessageBytes(rawMessageBytes);
@@ -322,64 +383,6 @@ public class DTLSActionExecutor extends ActionExecutor {
         return null;
     }
 
-    protected DtlsRecord getNonHandshakeNonCcsMessages() {
-        DtlsRecord rcvRecord;
-        ProtocolMessageType rcvRecordProtocolMessageType = null;
-        long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
-
-        while ((rcvRecordProtocolMessageType == ProtocolMessageType.HANDSHAKE || rcvRecordProtocolMessageType == ProtocolMessageType.CHANGE_CIPHER_SPEC)
-                && (System.currentTimeMillis() <= endTimeMillies)) {
-            try {
-                rcvRecord = receiveNextValidRecord();
-            } catch (IOException e) {
-                continue;
-            }
-            rcvRecordProtocolMessageType = ProtocolMessageType.getContentType(rcvRecord.getContentType().getValue());
-            switch (rcvRecordProtocolMessageType) {
-                case HANDSHAKE:
-                    handshakeFragmentHandler.processHandshakeRecord(rcvRecord);
-                    break;
-                case CHANGE_CIPHER_SPEC:
-                    processChangeCipherSpecRecord(rcvRecord);
-                    break;
-                default:
-                    return rcvRecord;
-            }
-        }
-        return null;
-    }
-
-    protected DtlsRecord getChangeCipherSpecMessage() {
-        DtlsRecord rcvRecord;
-        ProtocolMessageType rcvRecordProtocolMessageType;
-        long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
-
-        while (!changeCipherSpecReceived() && (System.currentTimeMillis() <= endTimeMillies)) {
-            try {
-                rcvRecord = receiveNextValidRecord();
-            } catch (IOException e) {
-                continue;
-            }
-            rcvRecordProtocolMessageType = ProtocolMessageType.getContentType(rcvRecord.getContentType().getValue());
-            switch (rcvRecordProtocolMessageType) {
-                case CHANGE_CIPHER_SPEC:
-                    processChangeCipherSpecRecord(rcvRecord);
-                    break;
-                case HANDSHAKE:
-                    handshakeFragmentHandler.processHandshakeRecord(rcvRecord);
-                    break;
-                case ALERT:
-                    return rcvRecord;
-                default:
-                    break;
-            }
-        }
-        if (changeCipherSpecReceived()) {
-            return getReceivedChangeCipherSepc();
-        }
-        return null;
-    }
-
     private boolean changeCipherSpecReceived() {
         return changeCipherSpecRecordBuffer != null;
     }
@@ -396,8 +399,14 @@ public class DTLSActionExecutor extends ActionExecutor {
         }
     }
 
+    /**
+     * Tries to receive a new Valid record
+     *
+     * @return
+     * @throws IOException
+     */
     private DtlsRecord receiveNextValidRecord() throws IOException {
-        de.rub.nds.tlsattacker.dtls.record.DtlsRecord nextRecord = receiveNextRecord();
+        DtlsRecord nextRecord = receiveNextRecord();
         while (!checkRecordValidity(nextRecord)) {
             nextRecord = receiveNextRecord();
         }
@@ -413,12 +422,12 @@ public class DTLSActionExecutor extends ActionExecutor {
         return out;
     }
 
-    private boolean checkRecordValidity(DtlsRecord record) {
-        return record.getEpoch().getValue() == serverEpochCounter;
-    }
-
     private void processNextPacket() throws IOException {
         recordBuffer = recordHandler.parseRecords(receiveNextPacket());
+    }
+
+    private boolean checkRecordValidity(DtlsRecord record) {
+        return record.getEpoch().getValue() == serverEpochCounter;
     }
 
     private byte[] receiveNextPacket() throws IOException {
@@ -433,55 +442,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         return pmt == ProtocolMessageType.HANDSHAKE || pmt == ProtocolMessageType.CHANGE_CIPHER_SPEC;
     }
 
-    // private void handleRetransmit() throws IOException
-    // {
-    // int currentPointer;
-    // byte[] retransmittedMessage;
-    // LinkedList<de.rub.nds.tlsattacker.tls.record.Record> recordList = new
-    // LinkedList<>();
-    //
-    // if (retransmitEpoch < recordHandler.getEpoch())
-    // {
-    // recordHandler.revertEpoch();
-    // }
-    //
-    // for (int i = 0; i < retransmitList.size(); i++)
-    // {
-    // recordList.add(new DtlsRecord());
-    // retransmittedMessage = retransmitList.get(i);
-    // currentPointer = retransmitPointer - (retransmitList.size() - i);
-    //
-    // if (retransmittedMessage.length == 1)
-    // {
-    // bufferSendData(recordHandler.wrapData(retransmittedMessage,
-    // ProtocolMessageType.CHANGE_CIPHER_SPEC,
-    // recordList));
-    // if (handlingMyLastProtocolMessage(protocolMessages,
-    // currentMessagePointer))
-    // {
-    // sendBufferedData();
-    // }
-    // }
-    // else if (retransmittedMessage.length > 2)
-    // {
-    // bufferSendData(recordHandler.wrapData(retransmittedMessage,
-    // ProtocolMessageType.HANDSHAKE, recordList));
-    // if (handlingMyLastProtocolMessage(protocolMessages,
-    // currentMessagePointer))
-    // {
-    // sendBufferedData();
-    // }
-    // }
-    // else
-    // {
-    // LOG.log(Level.SEVERE,"Empty retransmit message bytes");
-    // }
-    // recordList.removeFirst();
-    // }
-    // retransmitCounter++;
-    // }
     private void updateFlight(ProtocolMessage protocolMessage, ProtocolMessage previousMessage) {
-
         if (previousMessage != null) {
             if (isHandshakeOrCCS(protocolMessage.getProtocolMessageType())) {
                 if (!isHandshakeOrCCS(previousMessage.getProtocolMessageType())) {
@@ -491,13 +452,15 @@ public class DTLSActionExecutor extends ActionExecutor {
         } else {
             flightTransition();
         }
-
     }
 
     private void flightTransition() {
         retransmitCounter = 0;
-        retransmitEpoch = recordHandler.getEpoch();
         retransmitList.clear();
+    }
+
+    public HandshakeFragmentHandler getHandshakeFragmentHandler() {
+        return handshakeFragmentHandler;
     }
 
 }

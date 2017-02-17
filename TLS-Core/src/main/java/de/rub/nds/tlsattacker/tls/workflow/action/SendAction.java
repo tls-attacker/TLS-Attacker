@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class SendAction extends MessageAction {
@@ -43,20 +43,11 @@ public class SendAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionEnd());
-        ensureMyLastProtocolMessagesHaveRecords(configuredMessages,tlsContext); // I dont
-        // think we
-        // want the
-        // workflowExecutor
-        // to
-        // modify
-        // the
-        // workflowtrace,
-        // it
-        // should
-        // simply
-        // execute
-        // it
-        actualMessages = executor.sendMessages(configuredMessages);
+        ensureMyLastProtocolMessagesHaveRecords(configuredMessages, tlsContext);
+        // I dont think we want the workflowExecutor to modify the
+        // workflowtrace, it should
+        // simply execute it TODO
+        actualMessages.addAll(executor.sendMessages(configuredMessages));
         executed = true;
 
     }
@@ -66,12 +57,9 @@ public class SendAction extends MessageAction {
             ProtocolMessage pm = protocolMessages.get(pmPointer);
             if (handlingMyLastProtocolMessageWithContentType(protocolMessages, pmPointer)) {
                 if (pm.getRecords() == null || pm.getRecords().isEmpty()) {
-                    if(context.getConfig().getTransportHandlerType() == TransportHandlerType.UDP)
-                    {
+                    if (context.getConfig().getTransportHandlerType() == TransportHandlerType.UDP) {
                         pm.addRecord(new DtlsRecord());
-                    }
-                    else
-                    {
+                    } else {
                         pm.addRecord(new Record());
                     }
                 }
@@ -85,7 +73,7 @@ public class SendAction extends MessageAction {
      * following: 1) it is the last protocol message 2) the next protocol
      * message should come from the different peer 3) the next protocol message
      * has a different content type
-     * 
+     *
      * @param protocolMessages
      * @param pointer
      * @return

@@ -67,6 +67,9 @@ abstract class HelloMessage extends HandshakeMessage {
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions = new LinkedList<>();
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger extensionsLength;
+
     public HelloMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
     }
@@ -91,10 +94,6 @@ abstract class HelloMessage extends HandshakeMessage {
         return protocolVersion;
     }
 
-    public ModifiableInteger getSessionIdLength() {
-        return sessionIdLength;
-    }
-
     public void setProtocolVersion(ModifiableByteArray protocolVersion) {
         this.protocolVersion = protocolVersion;
     }
@@ -105,6 +104,22 @@ abstract class HelloMessage extends HandshakeMessage {
 
     public void setRandom(ModifiableByteArray random) {
         this.random = random;
+    }
+
+    public ModifiableInteger getExtensionsLength() {
+        return extensionsLength;
+    }
+
+    public void setExtensionsLength(ModifiableInteger extensionsLength) {
+        this.extensionsLength = extensionsLength;
+    }
+
+    public void setExtensionsLength(int extensionsLength) {
+        this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
+    }
+
+    public ModifiableInteger getSessionIdLength() {
+        return sessionIdLength;
     }
 
     public void setSessionIdLength(ModifiableInteger sessionIdLength) {

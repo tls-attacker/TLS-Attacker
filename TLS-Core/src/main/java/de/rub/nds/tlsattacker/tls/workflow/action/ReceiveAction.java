@@ -12,14 +12,19 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ReceiveAction extends MessageAction {
+
+    private static final Logger LOGGER = LogManager.getLogger(ReceiveAction.class);
 
     public ReceiveAction() {
         super(new LinkedList<ProtocolMessage>());
@@ -42,7 +47,23 @@ public class ReceiveAction extends MessageAction {
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionPeer());
         actualMessages = executor.receiveMessages(configuredMessages);
         executed = true;
+        // TODO can imrove performance while not debugging
+        String expected = getReadableString(configuredMessages);
+        String received = getReadableString(actualMessages);
+        LOGGER.debug("Expected:" + expected);
+        LOGGER.debug("Actual:" + received);
+    }
 
+    public String getReadableString(List<ProtocolMessage> messages) {
+        StringBuilder builder = new StringBuilder();
+        for (ProtocolMessage message : messages) {
+            builder.append(message.toCompactString());
+            if (!message.isRequired()) {
+                builder.append("*");
+            }
+            builder.append(", ");
+        }
+        return builder.toString();
     }
 
 }

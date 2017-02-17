@@ -53,7 +53,7 @@ public class DtlsRecordHandler extends RecordHandler {
 
         // if there are no records defined, we throw an exception
         if (records == null || records.isEmpty()) {
-            throw new WorkflowExecutionException("No records to be write in");
+            throw new WorkflowExecutionException("No records to be written in");
         }
 
         int dataPointer = 0;
@@ -61,6 +61,8 @@ public class DtlsRecordHandler extends RecordHandler {
         while (dataPointer != data.length) {
             // we check if there are enough records to be written in
             if (records.size() == currentRecord) {
+                // TODO The RecordHandler should not add records without beeing
+                // asked to
                 records.add(new de.rub.nds.tlsattacker.dtls.record.DtlsRecord());
             }
             Record record = records.get(currentRecord);

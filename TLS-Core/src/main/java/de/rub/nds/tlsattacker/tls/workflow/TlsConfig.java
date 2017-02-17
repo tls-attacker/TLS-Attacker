@@ -216,6 +216,8 @@ public final class TlsConfig {
     private byte[] distinguishedNames = new byte[0];
 
     private boolean enforceSettings = false;
+
+    private boolean doDTLSRetransmits = true;
     /**
      * Fixed DH modulus used in Server Key Exchange
      */
@@ -270,6 +272,14 @@ public final class TlsConfig {
 
     public String getDefaultApplicationMessageData() {
         return defaultApplicationMessageData;
+    }
+
+    public boolean isDoDTLSRetransmits() {
+        return doDTLSRetransmits;
+    }
+
+    public void setDoDTLSRetransmits(boolean doDTLSRetransmits) {
+        this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
     public void setDefaultApplicationMessageData(String defaultApplicationMessageData) {

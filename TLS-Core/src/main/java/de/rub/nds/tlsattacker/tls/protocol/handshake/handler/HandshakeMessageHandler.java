@@ -31,7 +31,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
     @Override
     protected byte[] beforeParseMessageAction(byte[] message, int pointer) {
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
+        if (tlsContext.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
             return prepareDtlsHandshakeMessageParse(message, pointer);
         }
         return message;
@@ -79,7 +79,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
     private byte[] prepareDtlsHandshakeMessageParse(byte[] message, int pointer) {
         dtlsAllMessageBytes = message;
         byte[] parsePmBytes;
-
+        System.out.println(ArrayConverter.bytesToHexString(message));
         protocolMessage.setMessageSeq((message[pointer + 4] << 8) + (message[pointer + 5] & 0xFF));
         protocolMessage.setFragmentOffset((message[pointer + 6] << 16) + (message[pointer + 7] << 8)
                 + (message[pointer + 8] & 0xFF));

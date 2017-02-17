@@ -33,7 +33,6 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     private final WorkflowTrace workflowTrace;
     private final DTLSActionExecutor actionExecutor;
-    private List<TLSAction> actionList;
 
     public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
         super(transportHandler, tlsContext, ExecutorType.DTLS);
@@ -57,22 +56,19 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
         List<TLSAction> actions = workflowTrace.getTLSActions();
         try {
             ProtocolMessage pm = null;
-
             while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
                 TLSAction action = actions.get(workflowContext.getActionPointer());
                 action.execute(tlsContext, actionExecutor);
                 workflowContext.incrementActionPointer();
-
             }
         } catch (WorkflowExecutionException | IOException e) {
             e.printStackTrace();
             throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
-        } finally {
-            // remove all unused protocol messages
-            // We dont need to remove unused messages anymore, since they are
-            // just not marked as executed
-            // this.removeNextProtocolMessages(protocolMessages,
-            // workflowContext.getActionPointer());
         }
     }
+
+    public DTLSActionExecutor getActionExecutor() {
+        return actionExecutor;
+    }
+
 }
