@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionHandler;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -55,7 +56,11 @@ public enum ExtensionType {
     }
 
     private static int valueToInt(byte[] value) {
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        if (value.length == 2) {
+            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        } else {
+            return -1;
+        }
     }
 
     public static ExtensionType getExtensionType(byte[] value) {
@@ -79,31 +84,21 @@ public enum ExtensionType {
     }
 
     public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        ExtensionHandler<? extends ExtensionMessage> eh = null;
         switch (this) {
             case SERVER_NAME_INDICATION:
-                eh = new ServerNameIndicationExtensionHandler();
-                break;
+                return new ServerNameIndicationExtensionHandler();
             case MAX_FRAGMENT_LENGTH:
-                eh = new MaxFragmentLengthExtensionHandler();
-                break;
+                return new MaxFragmentLengthExtensionHandler();
             case EC_POINT_FORMATS:
-                eh = new ECPointFormatExtensionHandler();
-                break;
+                return new ECPointFormatExtensionHandler();
             case ELLIPTIC_CURVES:
-                eh = new EllipticCurvesExtensionHandler();
-                break;
+                return new EllipticCurvesExtensionHandler();
             case SIGNATURE_AND_HASH_ALGORITHMS:
-                eh = new SignatureAndHashAlgorithmsExtensionHandler();
-                break;
+                return new SignatureAndHashAlgorithmsExtensionHandler();
             case HEARTBEAT:
-                eh = new HeartbeatExtensionHandler();
-                break;
+                return new HeartbeatExtensionHandler();
             default:
+                return new UnknownExtensionHandler();
         }
-        if (eh == null) {
-            throw new UnsupportedOperationException("Extension not supported yet");
-        }
-        return eh;
     }
 }
