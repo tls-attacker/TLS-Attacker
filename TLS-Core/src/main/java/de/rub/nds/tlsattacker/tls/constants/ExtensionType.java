@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
@@ -35,7 +34,8 @@ public enum ExtensionType {
     ELLIPTIC_CURVES(new byte[] { (byte) 0, (byte) 10 }),
     EC_POINT_FORMATS(new byte[] { (byte) 0, (byte) 11 }),
     SIGNATURE_AND_HASH_ALGORITHMS(new byte[] { (byte) 0, (byte) 13 }),
-    HEARTBEAT(new byte[] { (byte) 0, (byte) 15 });
+    HEARTBEAT(new byte[] { (byte) 0, (byte) 15 }),
+    UNKNOWN(new byte[0]);
 
     private static final Logger LOGGER = LogManager.getLogger(ExtensionType.class);
 
@@ -59,7 +59,11 @@ public enum ExtensionType {
     }
 
     public static ExtensionType getExtensionType(byte[] value) {
-        return MAP.get(valueToInt(value));
+        ExtensionType type = MAP.get(valueToInt(value));
+        if (type == null) {
+            return UNKNOWN;
+        }
+        return type;
     }
 
     public byte[] getValue() {
