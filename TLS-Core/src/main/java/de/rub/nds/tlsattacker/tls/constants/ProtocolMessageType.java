@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum ProtocolMessageType {
-
+    UNKNOWN((byte) 99),
     CHANGE_CIPHER_SPEC((byte) 20),
     ALERT((byte) 21),
     HANDSHAKE((byte) 22),
