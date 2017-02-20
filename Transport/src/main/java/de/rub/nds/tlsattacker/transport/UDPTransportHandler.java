@@ -34,6 +34,7 @@ public class UDPTransportHandler extends TransportHandler {
 
     public UDPTransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
         super(hostname, port, end, timeout);
+        this.socketTimeout = timeout;
     }
 
     @Override

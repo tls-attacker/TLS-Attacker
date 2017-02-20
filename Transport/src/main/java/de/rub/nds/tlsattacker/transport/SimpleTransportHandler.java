@@ -40,7 +40,7 @@ public class SimpleTransportHandler extends TransportHandler {
     private BufferedInputStream bis;
 
     private byte[] readTimingData;
-    
+
     private int tlsTimeout;
 
     public SimpleTransportHandler(String hostname, int port, ConnectionEnd end, int socketTimeout, int tlsTimeout) {
