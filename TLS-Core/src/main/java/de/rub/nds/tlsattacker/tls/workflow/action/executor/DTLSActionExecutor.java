@@ -117,8 +117,41 @@ public class DTLSActionExecutor extends ActionExecutor {
             } else {
                 receivedMessages.add(receivedMessage);
             }
-        } while (receivedMessage != null);
+        } while (continueReceiving(receivedMessage != null, messages, receivedMessages));
         return receivedMessages;
+    }
+
+    private boolean continueReceiving(boolean receivedMessage, List<ProtocolMessage> expectedMessages,
+            List<ProtocolMessage> received) {
+        if (!receivedMessage) {
+            return false;
+        }
+        if (tlsContext.getConfig().isWaitOnlyForExpectedDTLS()) {
+            return !receivedExpected(expectedMessages, received);
+        } else {
+            return true;
+        }
+    }
+
+    private boolean receivedExpected(List<ProtocolMessage> expectedMessages, List<ProtocolMessage> received) {
+        int min = 0;
+        for (ProtocolMessage message : expectedMessages) {
+            if (message.isRequired()) {
+                boolean found = false;
+                for (int i = min; i < received.size(); i++) {
+                    if (received.get(i).getClass().equals(message.getClass())) {
+                        found = true;
+                        min = i;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
     }
 
     private void handleMyProtocolMessage(ProtocolMessage pm) throws IOException {

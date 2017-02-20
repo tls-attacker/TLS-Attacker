@@ -236,6 +236,13 @@ public final class TlsConfig {
 
     private String defaultApplicationMessageData = "Test";
 
+    /**
+     * If this is set TLS-Attacker only waits for the expected messages in the
+     * ReceiveActions This is interesting for DTLS since this prevents the
+     * server from retransmitting
+     */
+    private boolean waitOnlyForExpectedDTLS = true;
+
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -268,6 +275,14 @@ public final class TlsConfig {
             throw new ConfigurationException("Could not load deauflt JKS!");
         }
 
+    }
+
+    public boolean isWaitOnlyForExpectedDTLS() {
+        return waitOnlyForExpectedDTLS;
+    }
+
+    public void setWaitOnlyForExpectedDTLS(boolean waitOnlyForExpectedDTLS) {
+        this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
     }
 
     public String getDefaultApplicationMessageData() {
