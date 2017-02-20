@@ -38,6 +38,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
         cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
         cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+        this.setIncludeInDigest(false);
     }
 
     public HelloVerifyRequestMessage(TlsConfig tlsConfig) {
@@ -45,6 +46,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
         cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
         cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
+        this.setIncludeInDigest(false);
     }
 
     public ModifiableByteArray getProtocolVersion() {
