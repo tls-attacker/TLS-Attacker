@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.testtls.impl;
 
-import de.rub.nds.tlsattacker.main.TlsClient;
+import de.rub.nds.tlsattacker.main.TLSClient;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
@@ -102,7 +102,7 @@ public class CipherSuiteOrderTest extends HandshakeTest {
     CipherSuite getSelectedCipherSuite(TlsConfig tlsConfig) {
         WorkflowTrace workflowTrace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
         tlsConfig.setWorkflowTrace(workflowTrace);
-        TlsClient client = new TlsClient();
+        TLSClient client = new TLSClient();
         client.startTlsClient(tlsConfig);
         if (workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO) != null) {
             ServerHelloMessage shm = (ServerHelloMessage) workflowTrace

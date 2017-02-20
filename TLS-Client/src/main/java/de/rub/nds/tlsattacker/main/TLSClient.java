@@ -34,13 +34,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A TLS-TlsClient implementation that supports custom Workflows
+ * A TLS-TLSClient implementation that supports custom Workflows
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class TlsClient {
+public class TLSClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsClient.class);
+    private static final Logger LOGGER = LogManager.getLogger(TLSClient.class);
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
@@ -58,7 +58,7 @@ public class TlsClient {
             TlsConfig tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
-                TlsClient client = new TlsClient();
+                TLSClient client = new TLSClient();
                 client.startTlsClient(tlsConfig);
             } catch (ConfigurationException E) {
                 LOGGER.info("Could not initialize Configuration", E);
@@ -89,14 +89,14 @@ public class TlsClient {
                 fos = new FileOutputStream(config.getWorkflowOutput());
                 WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
             } catch (FileNotFoundException ex) {
-                java.util.logging.Logger.getLogger(TlsClient.class.getName()).log(Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(TLSClient.class.getName()).log(Level.SEVERE, null, ex);
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.", ex);
             } finally {
                 try {
                     fos.close();
                 } catch (IOException ex) {
-                    java.util.logging.Logger.getLogger(TlsClient.class.getName()).log(Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(TLSClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attack;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
-import de.rub.nds.tlsattacker.main.TlsClient;
+import de.rub.nds.tlsattacker.main.TLSClient;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
@@ -179,7 +179,7 @@ public class Main {
 
     private static void startSimpleTlsClient(TLSDelegateConfig config) throws JAXBException, IOException {
         TlsConfig tlsConfig = config.createConfig();
-        TlsClient client = new TlsClient();
+        TLSClient client = new TLSClient();
         client.startTlsClient(tlsConfig);
     }
 
