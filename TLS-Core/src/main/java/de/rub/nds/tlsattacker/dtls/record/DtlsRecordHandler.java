@@ -202,7 +202,7 @@ public class DtlsRecordHandler extends RecordHandler {
                     ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
             if (decryptReceiving && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
-                    && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
+                    && (recordCipher != null && recordCipher.getMinimalEncryptedRecordLength() <= length)) {
                 record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
                 byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);
                 LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(paddedData));
@@ -225,7 +225,7 @@ public class DtlsRecordHandler extends RecordHandler {
 
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                 decryptReceiving = true;
-             }
+            }
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
 
