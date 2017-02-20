@@ -90,7 +90,7 @@ public class DtlsRecordHandler extends RecordHandler {
             byte[] sn = ArrayConverter.bigIntegerToNullPaddedByteArray(dtlsRecord.getSequenceNumber().getValue(),
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
-            if (recordCipher == null || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || epochCounter < 1) {
+            if (!encryptSending || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || epochCounter < 1) {
                 byte[] pm = record.getProtocolMessageBytes().getValue();
                 result = ArrayConverter.concatenate(result, ctArray, pv, en, sn, rl, pm);
             } else {
@@ -201,7 +201,7 @@ public class DtlsRecordHandler extends RecordHandler {
             LOGGER.debug("Raw protocol bytes from the current parsed record:  {}",
                     ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
 
-            if ((recordCipher != null) && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
+            if (decryptReceiving && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
                     && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
                 record.setEncryptedProtocolMessageBytes(rawBytesFromCurrentRecord);
                 byte[] paddedData = recordCipher.decrypt(rawBytesFromCurrentRecord);
@@ -223,10 +223,9 @@ public class DtlsRecordHandler extends RecordHandler {
             records.add(record);
             dataPointer = lastByte;
 
-            // if (contentType == ProtocolMessageType.HANDSHAKE) {
-            // // update digest over hansdhake data
-            // digest.update(plainMessageBytes);
-            // }
+            if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                decryptReceiving = true;
+             }
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
 
