@@ -128,15 +128,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.setCompressionMethod(CompressionMethod.getCompressionMethod(protocolMessage
                 .getSelectedCompressionMethod().getValue()));
         nextPointer = currentPointer + ExtensionByteLength.EXTENSIONS;
-        protocolMessage.setExtensionsLength(ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
-                nextPointer)));
+
         // In these versions we have to check whether extensions are present
-        boolean extensionPresent = true;
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS10
-                || tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS10) {
-            extensionPresent = (currentPointer - pointer) < length;
-        }
+        boolean extensionPresent = (currentPointer - pointer) < length;
+
         if (extensionPresent) {
+            protocolMessage.setExtensionsLength(ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
+                    nextPointer)));
             currentPointer += ExtensionByteLength.EXTENSIONS;
         }
 

@@ -36,7 +36,7 @@ public class ServerHelloHandlerTest {
 
     static byte[] serverHelloWithoutExtensionBytes = ArrayConverter
             .hexStringToByteArray("02000046030354cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d5720682200"
-                    + "00ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0c013000000");
+                    + "00ba8c0f774ba7de9f5cdbfdf364d81e28f6f68502cd596792769be4c0c01300");
 
     static byte[] serverHelloWithHeartbeatBytes = ArrayConverter
             .hexStringToByteArray("0200004D030354cf6dcf922b63e8cb6af7527c6520f727d526b178ecf3218027ccf8bb125d5720682200"
