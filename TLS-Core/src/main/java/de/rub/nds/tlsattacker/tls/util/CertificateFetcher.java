@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.PublicKey;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -31,6 +33,8 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class CertificateFetcher {
+
+    private static final Logger LOGGER = LogManager.getLogger(CertificateFetcher.class);
 
     public static PublicKey fetchServerPublicKey(String connect, List<CipherSuite> cipherSuites) {
         TlsConfig config = new TlsConfig();
@@ -70,7 +74,14 @@ public class CertificateFetcher {
         workflowTrace.add(new ReceiveAction(protocolMessages));
         context.setWorkflowTrace(workflowTrace);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, context);
-        workflowExecutor.executeWorkflow();
+        try
+        {
+            workflowExecutor.executeWorkflow();
+        }
+        catch(Exception E)
+        {
+            LOGGER.warn("Error while Fetching Certificate",E);
+        }
         transportHandler.closeConnection();
         return context.getX509ServerCertificateObject();
     }
