@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     protected Class<? extends Message> correctProtocolMessageClass;
 
     /**
-     * 
+     *
      * @param tlsContext
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
@@ -54,7 +55,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Prepare message for sending. This method invokes before and after method
      * hooks.
-     * 
+     *
      * @return message in bytes
      */
     public byte[] prepareMessage() {
@@ -68,13 +69,14 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * Parse incoming message bytes and return a pointer to the last processed
      * byte + 1. This pointer is then used by further protocol message handler.
      * This method invokes before and after method hooks.
-     * 
+     *
      * @param message
      * @param pointer
      * @return pointer to the next protocol message in the byte array, if any
      *         message following, i.e. lastProcessedBytePointer + 1
      */
     public int parseMessage(byte[] message, int pointer) {
+        LOGGER.debug("Parsing message from " + pointer + " :" + ArrayConverter.bytesToHexString(message));
         byte[] hookedMessage;
         hookedMessage = beforeParseMessageAction(message, pointer);
         int ret = parseMessageAction(hookedMessage, pointer);
@@ -84,7 +86,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
 
     /**
      * Prepare message for sending
-     * 
+     *
      * @return message in bytes
      */
     protected abstract byte[] prepareMessageAction();
@@ -92,7 +94,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Parse incoming message bytes and return a pointer to the last processed
      * byte. This pointer is then used by further protocol message handler.
-     * 
+     *
      * @param message
      * @param pointer
      * @return
@@ -109,7 +111,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * after the prepareMessageAction is executed
-     * 
+     *
      * @return
      */
     protected byte[] afterPrepareMessageAction(byte[] ret) {
@@ -119,7 +121,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * before the parseMessageAction is executed
-     * 
+     *
      * @param message
      * @param pointer
      * @return
@@ -131,7 +133,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
      * after the parseMessageAction is executed
-     * 
+     *
      * @param ret
      * @return
      */
@@ -141,7 +143,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
 
     /**
      * Checks the protocol message
-     * 
+     *
      * @param protocolMessage
      * @return
      */
