@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
-import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 import org.bouncycastle.jce.provider.X509CertificateObject;
@@ -81,16 +81,6 @@ public class TlsContext {
      * client certificate parsed from the client certificate message
      */
     private Certificate clientCertificate;
-    /**
-     * server certificate from the server certificate message, in a nice x509
-     * form
-     */
-    private X509CertificateObject x509ServerCertificateObject;
-    /**
-     * client certificate from the client certificate message, in a nice x509
-     * form
-     */
-    private X509CertificateObject x509ClientCertificateObject;
     /**
      * EC context containing information about public/private key agreements,
      * curves, and point formats
@@ -328,22 +318,6 @@ public class TlsContext {
 
     public void setClientCertificate(Certificate clientCertificate) {
         this.clientCertificate = clientCertificate;
-    }
-
-    public X509CertificateObject getX509ServerCertificateObject() {
-        return x509ServerCertificateObject;
-    }
-
-    public void setX509ServerCertificateObject(X509CertificateObject x509ServerCertificateObject) {
-        this.x509ServerCertificateObject = x509ServerCertificateObject;
-    }
-
-    public X509CertificateObject getX509ClientCertificateObject() {
-        return x509ClientCertificateObject;
-    }
-
-    public void setX509ClientCertificateObject(X509CertificateObject x509ClientCertificateObject) {
-        this.x509ClientCertificateObject = x509ClientCertificateObject;
     }
 
     public ServerDHParams getServerDHParameters() {

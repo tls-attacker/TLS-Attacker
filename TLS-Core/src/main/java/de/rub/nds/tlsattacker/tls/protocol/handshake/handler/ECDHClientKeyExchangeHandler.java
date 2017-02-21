@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -65,7 +65,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
             // certificate message
             Certificate x509Cert = tlsContext.getServerCertificate();
 
-            SubjectPublicKeyInfo keyInfo = x509Cert.getSubjectPublicKeyInfo();
+            SubjectPublicKeyInfo keyInfo = x509Cert.getCertificateAt(0).getSubjectPublicKeyInfo();
 
             if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey)) {
                 if (tlsContext.getConfig().isFuzzingMode()) {

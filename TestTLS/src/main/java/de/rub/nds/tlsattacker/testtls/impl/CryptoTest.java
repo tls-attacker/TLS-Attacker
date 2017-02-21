@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import java.security.cert.CertificateParsingException;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -28,6 +29,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
@@ -125,11 +129,17 @@ public class CryptoTest extends HandshakeTest {
                 minimumDHGroupSize = groupSize;
             }
         }
-        if (lastTlsContext.getX509ServerCertificateObject() != null) {
-            String algorithm = lastTlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm();
+        if (lastTlsContext.getServerCertificate() != null) {
+            X509CertificateObject cert;
+            try {
+                cert = new X509CertificateObject(lastTlsContext.getServerCertificate().getCertificateAt(0));
+            } catch (CertificateParsingException ex) {
+                throw new RuntimeException("Could not parse certificate into X509 CertificateObject", ex);
+            }
+            String algorithm = cert.getPublicKey().getAlgorithm();
             switch (algorithm) {
                 case "RSA":
-                    RSAPublicKey rsaPK = (RSAPublicKey) lastTlsContext.getX509ServerCertificateObject().getPublicKey();
+                    RSAPublicKey rsaPK = (RSAPublicKey) cert.getPublicKey();
                     int rsaSize = rsaPK.getModulus().bitLength();
                     LOGGER.debug("RSA certificate public key size: {}", rsaSize);
                     if (minimumRSAKeySize == 0 || rsaSize < minimumRSAKeySize) {
@@ -137,7 +147,7 @@ public class CryptoTest extends HandshakeTest {
                     }
                     break;
                 case "EC":
-                    ECPublicKey ecPK = (ECPublicKey) lastTlsContext.getX509ServerCertificateObject().getPublicKey();
+                    ECPublicKey ecPK = (ECPublicKey) cert.getPublicKey();
                     int ecSize = ecPK.getParams().getCurve().getField().getFieldSize();
                     LOGGER.debug("ECDSA certificate public key size: {}" + ecSize);
                     if (minimumECKeySize == 0 || ecSize < minimumECKeySize) {
@@ -145,7 +155,7 @@ public class CryptoTest extends HandshakeTest {
                     }
                     break;
                 case "DSA":
-                    DSAPublicKey dhPK = (DSAPublicKey) lastTlsContext.getX509ServerCertificateObject().getPublicKey();
+                    DSAPublicKey dhPK = (DSAPublicKey) cert.getPublicKey();
                     int dhSize = dhPK.getParams().getP().bitLength();
                     LOGGER.debug("DSA certificate public key size: " + dhSize);
                     if (minimumDHGroupSize == 0 || dhSize < minimumDHGroupSize) {

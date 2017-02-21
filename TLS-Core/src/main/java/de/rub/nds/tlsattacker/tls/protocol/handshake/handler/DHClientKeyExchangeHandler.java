@@ -23,7 +23,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -101,7 +101,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
             // certificate message
             Certificate x509Cert = tlsContext.getServerCertificate();
 
-            SubjectPublicKeyInfo keyInfo = x509Cert.getSubjectPublicKeyInfo();
+            SubjectPublicKeyInfo keyInfo = x509Cert.getCertificateAt(0).getSubjectPublicKeyInfo();
             DHPublicKeyParameters parameters;
             if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.dhpublicnumber)) {
                 if (tlsContext.getConfig().isFuzzingMode()) {

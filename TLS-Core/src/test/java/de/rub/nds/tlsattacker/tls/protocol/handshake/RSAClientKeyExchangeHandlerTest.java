@@ -93,13 +93,10 @@ public class RSAClientKeyExchangeHandlerTest {
             org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
             certs[0] = cert;
             Certificate tlsCerts = new Certificate(certs);
-
-            X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-
-            tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
-            tlsContext.setX509ServerCertificateObject(x509CertObject);
+            tlsContext.setServerCertificate(tlsCerts);
+            tlsContext.setServerCertificate(tlsCerts);
             tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        } catch (KeyStoreException | CertificateEncodingException | IOException | CertificateParsingException ex) {
+        } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
             throw new ConfigurationException("Certificate with the selected alias could not be found", ex);
         }
         handler = new RSAClientKeyExchangeHandler(tlsContext);

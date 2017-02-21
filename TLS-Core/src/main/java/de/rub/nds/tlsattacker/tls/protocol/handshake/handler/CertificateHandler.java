@@ -79,11 +79,9 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                     .getCertificatesLength().getValue() + HandshakeByteLength.CERTIFICATES_LENGTH));
             X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
             if (tlsContext.getConfig().getMyConnectionPeer() == ConnectionEnd.SERVER) {
-                tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
-                tlsContext.setX509ServerCertificateObject(x509CertObject);
+                tlsContext.setServerCertificate(tlsCerts);
             } else {
-                tlsContext.setClientCertificate(tlsCerts.getCertificateAt(0));
-                tlsContext.setX509ClientCertificateObject(x509CertObject);
+                tlsContext.setClientCertificate(tlsCerts);
             }
         } catch (IOException | CertificateParsingException ex) {
             throw new WorkflowExecutionException(ex.getLocalizedMessage(), ex);

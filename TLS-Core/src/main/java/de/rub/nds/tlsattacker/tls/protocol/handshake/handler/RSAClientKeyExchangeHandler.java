@@ -28,15 +28,19 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateParsingException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -56,7 +60,14 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     @Override
     byte[] prepareKeyExchangeMessage() {
         RSAPublicKey publicKey = null;
-        if (!tlsContext.getX509ServerCertificateObject().getPublicKey().getAlgorithm().equals("RSA")) {
+        Certificate cert = tlsContext.getServerCertificate();
+        X509CertificateObject certObject;
+        try {
+            certObject = new X509CertificateObject(cert.getCertificateAt(0));
+        } catch (CertificateParsingException ex) {
+            throw new WorkflowExecutionException("Could not parse server certificate", ex);
+        }
+        if (!certObject.getPublicKey().getAlgorithm().equals("RSA")) {
 
             if (tlsContext.getConfig().isFuzzingMode()) {
                 if (bufferedKey == null) {
@@ -69,9 +80,11 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
                     bufferedKey = (RSAPublicKey) keyGen.genKeyPair().getPublic();
                 }
                 publicKey = bufferedKey;// TODO not multithreadable
+            } else {
+                throw new WorkflowExecutionException("Cannot use non-RSA public Key in RSA-ClientKeyExchangeHandler");
             }
         } else {
-            publicKey = (RSAPublicKey) tlsContext.getX509ServerCertificateObject().getPublicKey();
+            publicKey = (RSAPublicKey) certObject.getPublicKey();
 
         }
         int keyByteLength = publicKey.getModulus().bitLength() / 8;

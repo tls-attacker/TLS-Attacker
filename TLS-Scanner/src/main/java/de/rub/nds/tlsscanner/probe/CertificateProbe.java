@@ -19,10 +19,11 @@ import de.rub.nds.tlsscanner.report.ProbeResult;
 import de.rub.nds.tlsscanner.flaw.ConfigurationFlaw;
 import de.rub.nds.tlsscanner.report.ResultValue;
 import de.rub.nds.tlsscanner.probe.certificate.CertificateJudger;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.X509CertificateObject;
+import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -41,10 +42,14 @@ public class CertificateProbe extends TLSProbe {
 
         TlsConfig config = new TlsConfig();
         config.setHost(this.getServerHost());
-        X509CertificateObject serverCert = CertificateFetcher.fetchServerCertificate(config);
+        Certificate serverCert = CertificateFetcher.fetchServerCertificate(config);
         CertificateJudger judger = new CertificateJudger();
-        List<ConfigurationFlaw> flawList = judger.getFlaws(serverCert, getServerHost());
-        List<ResultValue> resultList = judger.getResults(serverCert, getServerHost());
+        List<ConfigurationFlaw> flawList = new LinkedList<>();
+        List<ResultValue> resultList = new LinkedList<>();
+        for (org.bouncycastle.asn1.x509.Certificate cert : serverCert.getCertificateList()) {
+            flawList.addAll(judger.getFlaws(cert, getServerHost()));
+            resultList.addAll(judger.getResults(cert, getServerHost()));
+        }
         return new ProbeResult(getProbeName(), resultList, flawList);
 
     }
