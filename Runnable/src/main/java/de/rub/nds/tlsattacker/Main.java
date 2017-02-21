@@ -43,6 +43,9 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tlsserver.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tlsserver.TlsServer;
+import de.rub.nds.tlsscanner.report.SiteReport;
+import de.rub.nds.tlsscanner.ScannerConfig;
+import de.rub.nds.tlsscanner.TLSScanner;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
@@ -90,7 +93,8 @@ public class Main {
         jc.addCommand(ServerTestSuiteConfig.COMMAND, stconfig);
         TestServerConfig testServerConfig = new TestServerConfig(generalDelegate);
         jc.addCommand(TestServerConfig.COMMAND, testServerConfig);
-
+        ScannerConfig scannerConfig = new ScannerConfig(generalDelegate);
+        jc.addCommand(ScannerConfig.COMMAND, scannerConfig);
         jc.parse(args);
 
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
@@ -127,6 +131,11 @@ public class Main {
                 } else {
                     System.exit(1);
                 }
+                return;
+            case ScannerConfig.COMMAND:
+                TLSScanner scanner = new TLSScanner(scannerConfig);
+                SiteReport report = scanner.scan();
+                LOGGER.info("Scan Results:" + report.toString());
                 return;
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
                 attacker = new BleichenbacherAttack(bleichenbacherTest);

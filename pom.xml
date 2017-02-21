@@ -44,6 +44,7 @@
         <module>TestSuite</module>
         <module>Runnable</module>
         <module>TestTLS</module>
+        <module>TLS-Scanner</module>
     </modules>
 
     <dependencies>

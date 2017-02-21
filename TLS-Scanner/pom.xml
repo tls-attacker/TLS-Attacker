@@ -6,40 +6,8 @@
         <artifactId>TLS-Attacker</artifactId>
         <version>1.2</version>
     </parent>
-    <artifactId>Runnable</artifactId>
+    <artifactId>TLS-Scanner</artifactId>
     <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TestSuite</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TestTLS</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TLS-Server</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TLS-Client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ModifiableVariable</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>TLS-Scanner</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
     
     <build>
         <plugins>
@@ -49,12 +17,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <finalName>TLS-Attacker-${project.version}</finalName> 
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.Main</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.tlsscanner.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -71,11 +38,47 @@
                             <!--Ensures only runnable dependencies are included-->
                             <includeScope>compile</includeScope> 
                         </configuration> 
-                    </execution>
+                    </execution> 
                 </executions> 
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.54</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.54</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>TLS-Core</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.rub.nds.tlsattacker</groupId>
+                    <artifactId>EAP</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.rub.nds.tlsattacker</groupId>
+                    <artifactId>ModifiableVariable</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.rub.nds.tlsattacker</groupId>
+                    <artifactId>Utils</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
