@@ -74,13 +74,10 @@ public class CertificateFetcher {
         workflowTrace.add(new ReceiveAction(protocolMessages));
         context.setWorkflowTrace(workflowTrace);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, context);
-        try
-        {
+        try {
             workflowExecutor.executeWorkflow();
-        }
-        catch(Exception E)
-        {
-            LOGGER.warn("Error while Fetching Certificate",E);
+        } catch (Exception E) {
+            LOGGER.warn("Error while Fetching Certificate", E);
         }
         transportHandler.closeConnection();
         return context.getX509ServerCertificateObject();
