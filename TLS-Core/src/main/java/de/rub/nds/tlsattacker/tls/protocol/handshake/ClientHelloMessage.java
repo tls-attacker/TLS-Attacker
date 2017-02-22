@@ -79,10 +79,6 @@ public class ClientHelloMessage extends HelloMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
-    /**
-     * array of all extension bytes to forward them as MitM
-     */
-    private byte[] extensionBytes;
 
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
@@ -168,14 +164,6 @@ public class ClientHelloMessage extends HelloMessage {
 
     public List<CompressionMethod> getSupportedCompressionMethods() {
         return supportedCompressionMethods;
-    }
-
-    public byte[] getExtensionBytes() {
-        return extensionBytes;
-    }
-
-    public void setExtensionBytes(byte[] extensionBytes) {
-        this.extensionBytes = extensionBytes;
     }
 
     public List<CipherSuite> getSupportedCipherSuites() {
