@@ -92,7 +92,7 @@ public abstract class Parser<T> {
      */
     protected byte parseByteField(int length)
     {
-        if(length > 0)
+        if(length > 1)
         {
             LOGGER.warn("Parsing byte[] field into a byte of size >1");
         }
