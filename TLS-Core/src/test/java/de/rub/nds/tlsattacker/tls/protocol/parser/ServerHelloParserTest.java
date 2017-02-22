@@ -7,18 +7,22 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.experimental.categories.Category;
 
 /**
  *
@@ -27,7 +31,7 @@ import static org.junit.Assert.*;
 public class ServerHelloParserTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserTest.class);
-    
+
     //The _CUSTOM is used to indicate that message is hand crafted
     private static byte[] TLS12serverHelloWithEmptyExtensionLength = ArrayConverter
             .hexStringToByteArray("020000480303378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01200919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10002f000000");
@@ -53,17 +57,17 @@ public class ServerHelloParserTest {
         assertTrue(message.getLength().getValue() == 72);
         assertArrayEquals(message.getProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
         assertArrayEquals(message.getUnixTime().getValue(), new byte[]{(byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb});
-        assertArrayEquals(message.getRandom().getValue(),ArrayConverter.hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"));
+        assertArrayEquals(message.getRandom().getValue(), ArrayConverter.hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"));
         assertTrue(message.getSessionIdLength().getValue() == 32);
-        assertArrayEquals(message.getSessionId().getValue(),ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"));
-        assertArrayEquals(message.getSelectedCipherSuite().getValue(),CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue());
+        assertArrayEquals(message.getSessionId().getValue(), ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"));
+        assertArrayEquals(message.getSelectedCipherSuite().getValue(), CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue());
         assertTrue(message.getSelectedCompressionMethod().getValue() == CompressionMethod.NULL.getValue());
         //assertTrue(message.getExtensionsLength().getValue() == 0);
-        LOGGER.debug("Complete should be:"+ArrayConverter.bytesToHexString(TLS12serverHelloWithEmptyExtensionLength));
-        LOGGER.debug("Complete was:"+ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("Complete should be:" + ArrayConverter.bytesToHexString(TLS12serverHelloWithEmptyExtensionLength));
+        LOGGER.debug("Complete was:" + ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
         assertArrayEquals(message.getCompleteResultingMessage().getValue(), TLS12serverHelloWithEmptyExtensionLength);
         assertTrue(parser.getPointer() == TLS12serverHelloWithEmptyExtensionLength.length);
-        
+
     }
 
     /**
@@ -78,15 +82,42 @@ public class ServerHelloParserTest {
         assertTrue(message.getLength().getValue() == 70);
         assertArrayEquals(message.getProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
         assertArrayEquals(message.getUnixTime().getValue(), new byte[]{(byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb});
-        assertArrayEquals(message.getRandom().getValue(),ArrayConverter.hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"));
+        assertArrayEquals(message.getRandom().getValue(), ArrayConverter.hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"));
         assertTrue(message.getSessionIdLength().getValue() == 32);
-        assertArrayEquals(message.getSessionId().getValue(),ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"));
-        assertArrayEquals(message.getSelectedCipherSuite().getValue(),CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue());
+        assertArrayEquals(message.getSessionId().getValue(), ArrayConverter.hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"));
+        assertArrayEquals(message.getSelectedCipherSuite().getValue(), CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA.getByteValue());
         assertTrue(message.getSelectedCompressionMethod().getValue() == CompressionMethod.NULL.getValue());
-        LOGGER.debug("Complete should be:"+ArrayConverter.bytesToHexString(TLS12serverHelloWithOutExtensionLength_CUSTOM));
-        LOGGER.debug("Complete was:"+ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("Complete should be:" + ArrayConverter.bytesToHexString(TLS12serverHelloWithOutExtensionLength_CUSTOM));
+        LOGGER.debug("Complete was:" + ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
         assertArrayEquals(message.getCompleteResultingMessage().getValue(), TLS12serverHelloWithOutExtensionLength_CUSTOM);
         assertTrue(parser.getPointer() == TLS12serverHelloWithOutExtensionLength_CUSTOM.length);
+    }
+
+    /**
+     * Try to parse alot of byte arrays into ServerHelloMessages and check that
+     * nothing else but ParserExceptions are thrown
+     */
+    @Test
+    @Category(IntegrationTest.class)
+    public void testParser() {
+        int counter = 0;
+        Random r = new Random(0);
+        for (int i = 0; i < 10000; i++) {
+
+            try {
+                int length = r.nextInt(10000);
+                byte[] bytesToParse = new byte[length];
+                r.nextBytes(bytesToParse);
+                ServerHelloParser parser = new ServerHelloParser(r.nextInt(100), bytesToParse);
+                ServerHelloMessage message = parser.parse();
+                if (message != null) {
+                    counter++;
+                }
+            } catch (ParserException E) {
+            }
+        }
+        LOGGER.debug("Could parse "+ counter + " random bytes into ServerHelloMessages");
+
     }
 
 }
