@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlElements;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-abstract class HelloMessage extends HandshakeMessage {
+public abstract class HelloMessage extends HandshakeMessage {
 
     /**
      * protocol version in the client and server hello
