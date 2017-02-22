@@ -19,6 +19,11 @@ public class HandshakeByteLength {
     public static final int CERTIFICATE_LENGTH = 3;
 
     /**
+     * version field length
+     */
+    public static final int VERSION = 2;
+
+    /**
      * certificates length field (certificate array can include several
      * certificates)
      */
