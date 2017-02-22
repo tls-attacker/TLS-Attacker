@@ -18,13 +18,13 @@ import org.junit.Test;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Christian Mainka <christian.mainka@rub.de>
  */
-public class OperationConcartenationTest {
+public class BigIntegerOperationConcartenationTest {
 
     private ModifiableBigInteger start;
 
     private BigInteger expectedResult, result;
 
-    public OperationConcartenationTest() {
+    public BigIntegerOperationConcartenationTest() {
     }
 
     @Before
