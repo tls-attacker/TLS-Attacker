@@ -42,7 +42,7 @@ public class HandshakeByteLength {
     /**
      * length of the length field included in this message type
      */
-    public static final int MESSAGE_TYPE_LENGTH = 3;
+    public static final int MESSAGE_LENGTH_FIELD = 3;
 
     /**
      * random length
