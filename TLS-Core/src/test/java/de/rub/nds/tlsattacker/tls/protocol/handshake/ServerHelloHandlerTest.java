@@ -89,7 +89,7 @@ public class ServerHelloHandlerTest {
         assertEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
         assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
-
+        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions,message.getCompleteResultingMessage().getOriginalValue());
         assertEquals("The pointer has to return the length of this message + starting position",
                 serverHelloWithoutExtensionBytes.length, endPointer);
     }
@@ -122,6 +122,8 @@ public class ServerHelloHandlerTest {
                         .getOriginalValue());
         assertEquals("Compression must be null", CompressionMethod.NULL,
                 CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod().getOriginalValue()));
+        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions,message.getCompleteResultingMessage().getOriginalValue());
+        
     }
 
     /**
@@ -153,9 +155,11 @@ public class ServerHelloHandlerTest {
         assertEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
         assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
+        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions,message.getCompleteResultingMessage().getOriginalValue());
         assertTrue("Extension must be Heartbeat", message.containsExtension(ExtensionType.HEARTBEAT));
         assertEquals("The pointer has to return the length of this message + starting position",
                 serverHelloWithHeartbeatBytes.length, endPointer);
+        
     }
 
     /**
