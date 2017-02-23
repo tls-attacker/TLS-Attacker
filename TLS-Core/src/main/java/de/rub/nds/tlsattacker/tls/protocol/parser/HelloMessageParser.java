@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for Hello Messages
@@ -18,7 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
  * @param <T> Type of the HelloMessage to parse
  */
 public abstract class HelloMessageParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
-
+    
+    private static final Logger LOGGER = LogManager.getLogger(HelloMessageParser.class);
     /**
      * Constructor for the Parser class
      * @param pointer Position in the array where the HelloMessageParser is supposed to start parsing
@@ -54,6 +58,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseProtocolVersion(HelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
+        LOGGER.debug("ProtocolVersion:"+Arrays.toString(message.getProtocolVersion().getValue()));
     }
 
     /**
@@ -62,6 +67,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseUnixtime(HelloMessage message) {
         message.setUnixTime(parseByteArrayField(HandshakeByteLength.UNIX_TIME));
+        LOGGER.debug("UnixTime:"+Arrays.toString(message.getUnixTime().getValue()));
     }
 
     /**
@@ -70,6 +76,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
+        LOGGER.debug("Random:"+Arrays.toString(message.getRandom().getValue()));
     }
 
     /**
@@ -78,6 +85,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseSessionIDLength(HelloMessage message) {
         message.setSessionIdLength(parseIntField(HandshakeByteLength.SESSION_ID_LENGTH));
+        LOGGER.debug("SessionIDLength:"+message.getSessionIdLength().getValue());
     }
 
     /**
@@ -86,6 +94,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseSessionID(HelloMessage message) {
         message.setSessionId(parseByteArrayField(message.getSessionIdLength().getOriginalValue()));
+        LOGGER.debug("SessionID:"+Arrays.toString(message.getSessionId().getValue()));
     }
     
     /**
@@ -94,6 +103,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseExtensionLength(HelloMessage message) {
         message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
+        LOGGER.debug("ExtensionLength:"+message.getExtensionsLength().getValue());
     }
 
     /**
@@ -101,6 +111,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * @param message Message to write in
      */
     protected void parseExtensionBytes(HelloMessage message) {
-        message.setExtensionsLength(parseIntField(message.getExtensionsLength().getValue()));
+        message.setExtensionBytes(parseByteArrayField(message.getExtensionsLength().getValue()));
+        LOGGER.debug("ExtensionBytes:"+message.getExtensionBytes().getValue());
     }
 }
