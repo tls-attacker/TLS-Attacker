@@ -48,6 +48,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         {
             LOGGER.warn("Parsed wrong message type. Parsed:"+message.getType().getValue() + " but expected:" + expectedType.getValue());
         }
+        LOGGER.debug("Type:"+message.getType().getValue());
     }
 
     /**
@@ -56,5 +57,6 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     protected void parseLength(HandshakeMessage message) {
         message.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+        LOGGER.debug("Length:"+message.getLength().getValue());
     }
 }

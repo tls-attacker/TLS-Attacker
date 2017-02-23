@@ -53,7 +53,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions() {
-        return message.getExtensions().size() > 0;
+        return message.getExtensionBytes() != null;
     }
 
     /**

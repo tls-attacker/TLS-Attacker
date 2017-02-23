@@ -49,7 +49,12 @@ public class ServerHelloMessageParserITest {
                 int length = r.nextInt(10000);
                 byte[] bytesToParse = new byte[length];
                 r.nextBytes(bytesToParse);
-                ServerHelloMessageParser parser = new ServerHelloMessageParser(r.nextInt(100), bytesToParse);
+                int start =r.nextInt(100);
+                if(bytesToParse.length> start)
+                {
+                    bytesToParse[start] = 0x02;
+                }
+                ServerHelloMessageParser parser = new ServerHelloMessageParser(start, bytesToParse);
                 ServerHelloMessage helloMessage = parser.parse();
                 if (helloMessage != null) {
                     counter++;
