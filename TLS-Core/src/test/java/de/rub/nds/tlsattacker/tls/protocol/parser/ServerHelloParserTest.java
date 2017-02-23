@@ -7,24 +7,19 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
-import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
