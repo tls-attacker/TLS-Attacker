@@ -8,6 +8,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
 
 /**
@@ -16,15 +17,16 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
  * @author Robert Merget - robert.merget@rub.de
  * @param <T> Type of the HelloMessage to parse
  */
-public abstract class HelloParser<T extends HelloMessage> extends HandshakeParser<T> {
+public abstract class HelloMessageParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
     /**
      * Constructor for the Parser class
-     * @param pointer Position in the array where the HelloParser is supposed to start parsing
-     * @param array The byte[] which the HelloParser is supposed to parse
+     * @param pointer Position in the array where the HelloMessageParser is supposed to start parsing
+     * @param array The byte[] which the HelloMessageParser is supposed to parse
+     * @param type Expected Type value for the Message
      */
-    public HelloParser(int pointer, byte[] array) {
-        super(pointer, array);
+    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type) {
+        super(pointer, array, type);
     }
     
     /**
@@ -39,7 +41,7 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeParse
 
     /**
      * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if there are Extensions present.
-     * @param message Message to Check
+     * @param message Message to check
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions(HelloMessage message) {

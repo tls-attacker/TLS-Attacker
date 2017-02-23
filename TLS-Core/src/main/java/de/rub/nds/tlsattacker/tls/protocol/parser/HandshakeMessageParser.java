@@ -8,22 +8,34 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for HandshakeMessages
  * @author Robert Merget - robert.merget@rub.de
  * @param <T> Type of the HandshakeMessages to parse
  */
-public abstract class HandshakeParser<T extends HandshakeMessage> extends Parser<T> {
+public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends Parser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger(HandshakeMessageParser.class);
 
     /**
-     * Constructor for the Parser class
-     * @param pointer Position in the array where the HandshakeParser is supposed to start parsing
-     * @param array The byte[] which the HandshakeParser is supposed to parse
+     * The expected value for the Type field of the Message
      */
-    public HandshakeParser(int pointer, byte[] array) {
+    private final HandshakeMessageType expectedType;
+    
+    /**
+     * Constructor for the Parser class
+     * @param pointer Position in the array where the HandshakeMessageParser is supposed to start parsing
+     * @param array The byte[] which the HandshakeMessageParser is supposed to parse
+     * @param expectedType The expected type of the parsed HandshakeMessage
+     */
+    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
         super(pointer, array);
+        this.expectedType = expectedType;
     }
     
     /**
@@ -32,6 +44,10 @@ public abstract class HandshakeParser<T extends HandshakeMessage> extends Parser
      */
     protected void parseType(HandshakeMessage message) {
         message.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
+        if(message.getType().getValue() != expectedType.getValue())
+        {
+            LOGGER.warn("Parsed wrong message type. Parsed:"+message.getType().getValue() + " but expected:" + expectedType.getValue());
+        }
     }
 
     /**

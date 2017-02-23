@@ -8,6 +8,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,26 +19,26 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
+public class ServerHelloMessageParser extends HelloMessageParser<ServerHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParser.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessageParser.class);
 
     /**
-     * Constructor for the ServerHellorParser
+     * Constructor for the ServerHelloMessageParser
      *
      * @param pointer Position in the array where the ServerHellorParser is
      * supposed to start parsing
      * @param array The byte[] which the ServerHellorParser is supposed to parse
      */
-    public ServerHelloParser(int pointer, byte[] array) {
-        super(pointer, array);
+    public ServerHelloMessageParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.SERVER_HELLO);
     }
 
     /**
      * Parses the byte[] specified in the Constructor into a ServerHelloMessage
      * starting from the provided start position.
      *
-     * @return
+     * @return Returns the parsed ServerHelloMessage
      */
     @Override
     public ServerHelloMessage parse() {
