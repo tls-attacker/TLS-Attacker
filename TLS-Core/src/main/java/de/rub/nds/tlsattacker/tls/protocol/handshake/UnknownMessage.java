@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -17,18 +18,18 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownMessage extends ProtocolMessage{
+public class UnknownMessage extends ProtocolMessage {
 
     private byte[] dataConfig;
 
-    public UnknownMessage()
-    {
+    public UnknownMessage() {
         super();
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
-    
-    public UnknownMessage(TlsConfig config)
-    {
+
+    public UnknownMessage(TlsConfig config) {
         super();
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
     public byte[] getDataConfig() {
@@ -40,13 +41,17 @@ public class UnknownMessage extends ProtocolMessage{
     }
 
     @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String toCompactString() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
-    @Override
-    public String toCompactString() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }
