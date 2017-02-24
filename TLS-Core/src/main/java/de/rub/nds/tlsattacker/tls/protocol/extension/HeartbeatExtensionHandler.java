@@ -31,8 +31,8 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
         extension.setExtensionLength(extension.getHeartbeatMode().getValue().length);
 
-        byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
-                ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
+        byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
                 extension.getHeartbeatMode().getValue());
 
         extension.setExtensionBytes(pfExtension);
@@ -49,7 +49,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         hem.setExtensionType(extensionType);
 
         pointer = nextPointer;
-        nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
+        nextPointer = pointer + ExtensionByteLength.EXTENSIONS_LENGTH;
         int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
         hem.setExtensionLength(extensionLength);
 
@@ -57,8 +57,9 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         byte[] mode = { message[pointer] };
         hem.setHeartbeatMode(mode);
         // TODO set heartbeat mode in tlsContext
-        byte[] result = ArrayConverter.concatenate(hem.getExtensionType().getValue(), ArrayConverter.intToBytes(hem
-                .getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), hem.getHeartbeatMode().getValue());
+        byte[] result = ArrayConverter.concatenate(hem.getExtensionType().getValue(),
+                ArrayConverter.intToBytes(hem.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
+                hem.getHeartbeatMode().getValue());
         hem.setExtensionBytes(result);
 
         return pointer + 1;

@@ -41,7 +41,7 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
         byte[] extensionType = Arrays.copyOfRange(message, pointer, nextPointer);
         unknownExtension.setExtensionType(extensionType);
         pointer = nextPointer;
-        nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
+        nextPointer = pointer + ExtensionByteLength.EXTENSIONS_LENGTH;
         int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
         unknownExtension.setExtensionLength(extensionLength);
 
@@ -50,7 +50,7 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
         pointer = pointer + extensionLength;
         unknownExtension.setExtensionData(extensionData);
         byte[] result = ArrayConverter.concatenate(unknownExtension.getExtensionType().getValue(), ArrayConverter
-                .intToBytes(unknownExtension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
+                .intToBytes(unknownExtension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
                 unknownExtension.getExtensionData().getValue());
         unknownExtension.setExtensionBytes(result);
 

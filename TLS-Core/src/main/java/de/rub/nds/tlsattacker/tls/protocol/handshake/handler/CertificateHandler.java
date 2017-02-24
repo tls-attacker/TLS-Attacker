@@ -14,6 +14,9 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.util.JKSLoader;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
@@ -33,63 +36,133 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     public CertificateHandler(TlsContext tlsContext) {
         super(tlsContext);
-        this.correctProtocolMessageClass = CertificateMessage.class;
+    }
+
+    //
+    // @Override
+    // public byte[] prepareMessageAction() {
+    // ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
+    // try {
+    // JKSLoader.loadTLSCertificate(tlsContext.getConfig().getKeyStore(),
+    // tlsContext.getConfig().getAlias())
+    // .encode(tlsCertBos);
+    // } catch (IOException ex) {
+    // throw new
+    // ConfigurationException("Could not load Certificate for CertificateMessage!",
+    // ex);
+    // }
+    // protocolMessage.setX509CertificateBytes(tlsCertBos.toByteArray());
+    // protocolMessage.setCertificatesLength(protocolMessage.getX509CertificateBytes().getValue().length
+    // - HandshakeByteLength.CERTIFICATES_LENGTH);
+    // protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
+    // byte[] result = protocolMessage.getX509CertificateBytes().getValue();
+    // long header = (protocolMessage.getHandshakeMessageType().getValue() <<
+    // 24)
+    // + protocolMessage.getLength().getValue();
+    // protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+    // ArrayConverter.longToUint32Bytes(header), result));
+    // return protocolMessage.getCompleteResultingMessage().getValue();
+    // }
+    //
+    // @Override
+    // public int parseMessageAction(byte[] message, int pointer) {
+    // if (message[pointer] != HandshakeMessageType.CERTIFICATE.getValue()) {
+    // throw new
+    // InvalidMessageTypeException("This is not a certificate message");
+    // }
+    // protocolMessage.setType(message[pointer]);
+    //
+    // int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+    // int nextPointer = currentPointer +
+    // HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+    // int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message,
+    // currentPointer, nextPointer));
+    // protocolMessage.setLength(length);
+    //
+    // currentPointer = nextPointer;
+    // nextPointer = currentPointer + HandshakeByteLength.CERTIFICATES_LENGTH;
+    // int certificatesLength =
+    // ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
+    // nextPointer));
+    // protocolMessage.setCertificatesLength(certificatesLength);
+    //
+    // try {
+    // Certificate tlsCerts = Certificate.parse(new
+    // ByteArrayInputStream(message, currentPointer, protocolMessage
+    // .getCertificatesLength().getValue() +
+    // HandshakeByteLength.CERTIFICATES_LENGTH));
+    // X509CertificateObject x509CertObject = new
+    // X509CertificateObject(tlsCerts.getCertificateAt(0));
+    // if (tlsContext.getConfig().getMyConnectionPeer() == ConnectionEnd.SERVER)
+    // {
+    // tlsContext.setServerCertificate(tlsCerts);
+    // } else {
+    // tlsContext.setClientCertificate(tlsCerts);
+    // }
+    // } catch (IOException | CertificateParsingException ex) {
+    // throw new WorkflowExecutionException(ex.getLocalizedMessage(), ex);
+    // }
+    // nextPointer += protocolMessage.getCertificatesLength().getValue();
+    //
+    // protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message,
+    // pointer, nextPointer));
+    //
+    // return nextPointer;
+    // }
+
+    @Override
+    protected Parser getParser(byte[] message, int pointer) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
-    public byte[] prepareMessageAction() {
-        ByteArrayOutputStream tlsCertBos = new ByteArrayOutputStream();
-        try {
-            JKSLoader.loadTLSCertificate(tlsContext.getConfig().getKeyStore(), tlsContext.getConfig().getAlias())
-                    .encode(tlsCertBos);
-        } catch (IOException ex) {
-            throw new ConfigurationException("Could not load Certificate for CertificateMessage!", ex);
-        }
-        protocolMessage.setX509CertificateBytes(tlsCertBos.toByteArray());
-        protocolMessage.setCertificatesLength(protocolMessage.getX509CertificateBytes().getValue().length
-                - HandshakeByteLength.CERTIFICATES_LENGTH);
-        protocolMessage.setLength(protocolMessage.getX509CertificateBytes().getValue().length);
-        byte[] result = protocolMessage.getX509CertificateBytes().getValue();
-        long header = (protocolMessage.getHandshakeMessageType().getValue() << 24)
-                + protocolMessage.getLength().getValue();
-        protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-                ArrayConverter.longToUint32Bytes(header), result));
-        return protocolMessage.getCompleteResultingMessage().getValue();
+    protected Preparator getPreparator(CertificateMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
-    public int parseMessageAction(byte[] message, int pointer) {
-        if (message[pointer] != HandshakeMessageType.CERTIFICATE.getValue()) {
-            throw new InvalidMessageTypeException("This is not a certificate message");
-        }
-        protocolMessage.setType(message[pointer]);
+    protected Serializer getSerializer(CertificateMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
 
-        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-        int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
-        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setLength(length);
-
-        currentPointer = nextPointer;
-        nextPointer = currentPointer + HandshakeByteLength.CERTIFICATES_LENGTH;
-        int certificatesLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setCertificatesLength(certificatesLength);
-
-        try {
-            Certificate tlsCerts = Certificate.parse(new ByteArrayInputStream(message, currentPointer, protocolMessage
-                    .getCertificatesLength().getValue() + HandshakeByteLength.CERTIFICATES_LENGTH));
-            X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-            if (tlsContext.getConfig().getMyConnectionPeer() == ConnectionEnd.SERVER) {
-                tlsContext.setServerCertificate(tlsCerts);
-            } else {
-                tlsContext.setClientCertificate(tlsCerts);
-            }
-        } catch (IOException | CertificateParsingException ex) {
-            throw new WorkflowExecutionException(ex.getLocalizedMessage(), ex);
-        }
-        nextPointer += protocolMessage.getCertificatesLength().getValue();
-
-        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
-
-        return nextPointer;
+    @Override
+    protected void adjustTLSContext(CertificateMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 }

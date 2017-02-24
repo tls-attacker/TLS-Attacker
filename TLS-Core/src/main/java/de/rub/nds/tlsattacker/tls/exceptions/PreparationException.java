@@ -12,13 +12,16 @@ package de.rub.nds.tlsattacker.tls.exceptions;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ParserException extends RuntimeException {
+public class PreparationException extends RuntimeException {
 
-    public ParserException() {
+    public PreparationException() {
     }
 
-    public ParserException(String message) {
+    public PreparationException(String message) {
         super(message);
     }
 
+    public PreparationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

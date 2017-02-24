@@ -51,8 +51,8 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
         extension.setExtensionLength(SERVER_NAME_LIST_LENGTH + extension.getServerNameListLength().getValue());
 
         byte[] sniExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
-                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
-                .intToBytes(extension.getServerNameListLength().getValue(), SERVER_NAME_LIST_LENGTH),
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
+                ArrayConverter.intToBytes(extension.getServerNameListLength().getValue(), SERVER_NAME_LIST_LENGTH),
                 new byte[] { extension.getServerNameType().getValue() }, ArrayConverter.intToBytes(extension
                         .getServerNameLength().getValue(), SERVER_NAME_LENGTH), extension.getServerName().getValue());
 

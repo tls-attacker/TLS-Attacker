@@ -38,6 +38,5 @@ public class ParserResult {
     public void setParserPosition(int parserPosition) {
         this.parserPosition = parserPosition;
     }
-    
-    
+
 }

@@ -37,9 +37,9 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         extension.setExtensionType(ExtensionType.MAX_FRAGMENT_LENGTH.getValue());
         extension.setMaxFragmentLength(maxFragmentLength);
         extension.setExtensionLength(extension.getMaxFragmentLength().getValue().length);
-        byte[] result = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
-                ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
-                extension.getMaxFragmentLength().getValue());
+        byte[] result = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter.intToBytes(
+                extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH), extension
+                .getMaxFragmentLength().getValue());
 
         extension.setExtensionBytes(result);
     }
@@ -55,7 +55,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         mflExtension.setExtensionType(extensionType);
 
         pointer = nextPointer;
-        nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
+        nextPointer = pointer + ExtensionByteLength.EXTENSIONS_LENGTH;
         int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
         mflExtension.setExtensionLength(extensionLength);
 
@@ -63,10 +63,9 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         byte[] fragmentLength = { message[pointer] };
         mflExtension.setMaxFragmentLength(fragmentLength);
         // TODO set in tlsContext
-        byte[] result = ArrayConverter
-                .concatenate(mflExtension.getExtensionType().getValue(), ArrayConverter.intToBytes(mflExtension
-                        .getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), mflExtension
-                        .getMaxFragmentLength().getValue());
+        byte[] result = ArrayConverter.concatenate(mflExtension.getExtensionType().getValue(), ArrayConverter
+                .intToBytes(mflExtension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
+                mflExtension.getMaxFragmentLength().getValue());
         mflExtension.setExtensionBytes(result);
 
         return pointer + 1;

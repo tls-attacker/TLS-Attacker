@@ -24,6 +24,7 @@ import java.util.Arrays;
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @param <Message>
  */
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
@@ -33,52 +34,59 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     public ClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
-
-    @Override
-    public byte[] prepareMessageAction() {
-        protocolMessage.setType(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue());
-        CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
-        if (selectedCipherSuite == null) {
-            throw new NoCiphersuiteSelectedException("Cannot prepare KeyExchange Message");
-        }
-        KeyExchangeAlgorithm keyExchange = AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite);
-        if (keyExchange != keyExchangeAlgorithm) {
-            throw new UnsupportedOperationException("The selected key exchange algorithm (" + keyExchange
-                    + ") is not supported yet");
-        }
-
-        byte[] result = this.prepareKeyExchangeMessage();
-        protocolMessage.setLength(result.length);
-        long header = (protocolMessage.getType().getValue() << 24) + protocolMessage.getLength().getValue();
-        protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
-                ArrayConverter.longToUint32Bytes(header), result));
-
-        return protocolMessage.getCompleteResultingMessage().getValue();
-    }
-
-    @Override
-    public int parseMessageAction(byte[] message, int pointer) {
-        if (message[pointer] != HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue()) {
-            throw new InvalidMessageTypeException("This is not a Client key exchange message");
-        }
-        protocolMessage.setType(message[pointer]);
-
-        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-        int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
-        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setLength(length);
-        currentPointer = nextPointer;
-
-        int resultPointer = this.parseKeyExchangeMessage(message, currentPointer);
-
-        currentPointer = resultPointer;
-
-        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, currentPointer));
-
-        return currentPointer;
-    }
-
-    abstract byte[] prepareKeyExchangeMessage();
-
-    abstract int parseKeyExchangeMessage(byte[] message, int pointer);
+    //
+    // @Override
+    // public byte[] prepareMessageAction() {
+    // protocolMessage.setType(HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue());
+    // CipherSuite selectedCipherSuite = tlsContext.getSelectedCipherSuite();
+    // if (selectedCipherSuite == null) {
+    // throw new
+    // NoCiphersuiteSelectedException("Cannot prepare KeyExchange Message");
+    // }
+    // KeyExchangeAlgorithm keyExchange =
+    // AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite);
+    // if (keyExchange != keyExchangeAlgorithm) {
+    // throw new
+    // UnsupportedOperationException("The selected key exchange algorithm (" +
+    // keyExchange
+    // + ") is not supported yet");
+    // }
+    //
+    // byte[] result = this.prepareKeyExchangeMessage();
+    // protocolMessage.setLength(result.length);
+    // long header = (protocolMessage.getType().getValue() << 24) +
+    // protocolMessage.getLength().getValue();
+    // protocolMessage.setCompleteResultingMessage(ArrayConverter.concatenate(
+    // ArrayConverter.longToUint32Bytes(header), result));
+    //
+    // return protocolMessage.getCompleteResultingMessage().getValue();
+    // }
+    //
+    // @Override
+    // public int parseMessageAction(byte[] message, int pointer) {
+    // if (message[pointer] !=
+    // HandshakeMessageType.CLIENT_KEY_EXCHANGE.getValue()) {
+    // throw new
+    // InvalidMessageTypeException("This is not a Client key exchange message");
+    // }
+    // protocolMessage.setType(message[pointer]);
+    //
+    // int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+    // int nextPointer = currentPointer +
+    // HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+    // int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message,
+    // currentPointer, nextPointer));
+    // protocolMessage.setLength(length);
+    // currentPointer = nextPointer;
+    //
+    // int resultPointer = this.parseKeyExchangeMessage(message,
+    // currentPointer);
+    //
+    // currentPointer = resultPointer;
+    //
+    // protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message,
+    // pointer, currentPointer));
+    //
+    // return currentPointer;
+    // }
 }

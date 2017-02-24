@@ -9,6 +9,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.application;
 
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Arrays;
 
@@ -19,20 +22,76 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     public ApplicationHandler(TlsContext tlsContext) {
         super(tlsContext);
-        this.correctProtocolMessageClass = ApplicationMessage.class;
+    }
+
+    // @Override
+    // public byte[] prepareMessageAction() {
+    // protocolMessage.setData(tlsContext.getConfig().getDefaultApplicationMessageData().getBytes());
+    // byte[] result = protocolMessage.getData().getValue();
+    // return result;
+    // }
+    //
+    // @Override
+    // public int parseMessageAction(byte[] message, int pointer) {
+    // protocolMessage.setData(Arrays.copyOfRange(message, pointer,
+    // message.length));
+    // return pointer + message.length;
+    // }
+
+    @Override
+    protected Parser getParser(byte[] message, int pointer) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
-    public byte[] prepareMessageAction() {
-        protocolMessage.setData(tlsContext.getConfig().getDefaultApplicationMessageData().getBytes());
-        byte[] result = protocolMessage.getData().getValue();
-        return result;
+    protected Preparator getPreparator(ApplicationMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
-    public int parseMessageAction(byte[] message, int pointer) {
-        protocolMessage.setData(Arrays.copyOfRange(message, pointer, message.length));
-        return pointer + message.length;
+    protected Serializer getSerializer(ApplicationMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    protected void adjustTLSContext(ApplicationMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }

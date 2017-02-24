@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.tls.protocol.ccs;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.security.InvalidAlgorithmParameterException;
@@ -28,33 +31,35 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     public ChangeCipherSpecHandler(TlsContext tlsContext) {
         super(tlsContext);
-        correctProtocolMessageClass = ChangeCipherSpecMessage.class;
     }
 
-    @Override
-    public byte[] prepareMessageAction() {
-        protocolMessage.setCcsProtocolType(CCS_PROTOCOL_TYPE);
-        // TODO isRenegotiation Cannot be right
-        if ((tlsContext.getConfig().isRenegotiation() && tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT)
-                || tlsContext.getRecordHandler().getRecordCipher() == null) {
-            setRecordCipher();
-        }
-        tlsContext.getRecordHandler().setEncryptSending(true);
-        byte[] result = { protocolMessage.getCcsProtocolType().getValue() };
-        return result;
-    }
-
-    @Override
-    public int parseMessageAction(byte[] message, int pointer) {
-        // TODO isRenegotiation Cannot be right
-        if ((tlsContext.getConfig().isRenegotiation() && tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER)
-                || tlsContext.getRecordHandler().getRecordCipher() == null) {
-            setRecordCipher();
-        }
-        protocolMessage.setCcsProtocolType(message[pointer]);
-        tlsContext.getRecordHandler().setDecryptReceiving(true);
-        return pointer + 1;
-    }
+    //
+    // @Override
+    // public byte[] prepareMessageAction() {
+    // protocolMessage.setCcsProtocolType(CCS_PROTOCOL_TYPE);
+    // // TODO isRenegotiation Cannot be right
+    // if ((tlsContext.getConfig().isRenegotiation() &&
+    // tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT)
+    // || tlsContext.getRecordHandler().getRecordCipher() == null) {
+    // setRecordCipher();
+    // }
+    // tlsContext.getRecordHandler().setEncryptSending(true);
+    // byte[] result = { protocolMessage.getCcsProtocolType().getValue() };
+    // return result;
+    // }
+    //
+    // @Override
+    // public int parseMessageAction(byte[] message, int pointer) {
+    // // TODO isRenegotiation Cannot be right
+    // if ((tlsContext.getConfig().isRenegotiation() &&
+    // tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER)
+    // || tlsContext.getRecordHandler().getRecordCipher() == null) {
+    // setRecordCipher();
+    // }
+    // protocolMessage.setCcsProtocolType(message[pointer]);
+    // tlsContext.getRecordHandler().setDecryptReceiving(true);
+    // return pointer + 1;
+    // }
 
     public void setRecordCipher() {
         TlsRecordBlockCipher tlsRecordBlockCipher = null;
@@ -77,5 +82,61 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
                 }
             }
         } while (tlsRecordBlockCipher == null);
+    }
+
+    @Override
+    protected Parser getParser(byte[] message, int pointer) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    protected Preparator getPreparator(ChangeCipherSpecMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    protected Serializer getSerializer(ChangeCipherSpecMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    protected void adjustTLSContext(ChangeCipherSpecMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 }

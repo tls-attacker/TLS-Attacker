@@ -12,6 +12,9 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -24,39 +27,100 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
     public ServerHelloDoneHandler(TlsContext tlsContext) {
         super(tlsContext);
-        this.correctProtocolMessageClass = ServerHelloDoneMessage.class;
+    }
+
+    //
+    // @Override
+    // public byte[] prepareMessageAction() {
+    //
+    // protocolMessage.setLength(0);
+    //
+    // long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
+    // + protocolMessage.getLength().getValue();
+    //
+    // protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
+    //
+    // return protocolMessage.getCompleteResultingMessage().getValue();
+    // }
+    //
+    // @Override
+    // public int parseMessageAction(byte[] message, int pointer) {
+    // if (message[pointer] !=
+    // HandshakeMessageType.SERVER_HELLO_DONE.getValue()) {
+    // throw new
+    // InvalidMessageTypeException("This is not a Server Hello Done message");
+    // }
+    // protocolMessage.setType(message[pointer]);
+    //
+    // int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
+    // int nextPointer = currentPointer +
+    // HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+    // int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message,
+    // currentPointer, nextPointer));
+    // protocolMessage.setLength(length);
+    // // should always be null
+    //
+    // currentPointer = nextPointer;
+    //
+    // protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message,
+    // pointer, nextPointer));
+    //
+    // return currentPointer;
+    // }
+
+    @Override
+    protected Parser getParser(byte[] message, int pointer) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
-    public byte[] prepareMessageAction() {
-
-        protocolMessage.setLength(0);
-
-        long header = (HandshakeMessageType.SERVER_HELLO_DONE.getValue() << 24)
-                + protocolMessage.getLength().getValue();
-
-        protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
-
-        return protocolMessage.getCompleteResultingMessage().getValue();
+    protected Preparator getPreparator(ServerHelloDoneMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
-    public int parseMessageAction(byte[] message, int pointer) {
-        if (message[pointer] != HandshakeMessageType.SERVER_HELLO_DONE.getValue()) {
-            throw new InvalidMessageTypeException("This is not a Server Hello Done message");
-        }
-        protocolMessage.setType(message[pointer]);
+    protected Serializer getSerializer(ServerHelloDoneMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
 
-        int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-        int nextPointer = currentPointer + HandshakeByteLength.MESSAGE_TYPE_LENGTH;
-        int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer, nextPointer));
-        protocolMessage.setLength(length);
-        // should always be null
-
-        currentPointer = nextPointer;
-
-        protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message, pointer, nextPointer));
-
-        return currentPointer;
+    @Override
+    protected void adjustTLSContext(ServerHelloDoneMessage message) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 }
