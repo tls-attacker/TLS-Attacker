@@ -134,11 +134,4 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new ECDHEServerKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

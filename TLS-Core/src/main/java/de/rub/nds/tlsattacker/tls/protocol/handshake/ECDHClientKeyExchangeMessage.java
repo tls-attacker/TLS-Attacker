@@ -142,11 +142,4 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         String sb = super.toString();
         return sb;
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new ECDHClientKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

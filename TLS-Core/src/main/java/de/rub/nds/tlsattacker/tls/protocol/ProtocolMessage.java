@@ -33,8 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Philip Riese <philip.riese@rub.de>
  */
 @XmlRootElement
-public abstract class ProtocolMessage extends ModifiableVariableHolder implements ProtocolMessageHandlerBearer,
-        Serializable {
+public abstract class ProtocolMessage extends ModifiableVariableHolder implements Serializable {
 
     /**
      * content type
@@ -57,11 +56,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      */
     private boolean goingToBeSent = true;
     /**
-     * Defines if the message should not be parsed and only forwarded during the
-     * MitMworkflow.
-     */
-    private boolean goingToBeParsed = true;
-    /**
      * Defines if the message should be modified during a workflow execution
      * with MitMworkflowExecutor
      */
@@ -75,9 +69,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     public ProtocolMessage() {
         records = new LinkedList<>();
     }
-
-    @Override
-    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext);
 
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
@@ -112,14 +103,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public void setGoingToBeSent(boolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    public boolean isGoingToBeParsed() {
-        return goingToBeParsed;
-    }
-
-    public void setGoingToBeParsed(boolean goingToBeParsed) {
-        this.goingToBeParsed = goingToBeParsed;
     }
 
     public boolean isGoingToBeModified() {

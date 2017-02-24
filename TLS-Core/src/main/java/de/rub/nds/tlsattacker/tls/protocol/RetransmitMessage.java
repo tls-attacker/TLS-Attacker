@@ -29,13 +29,6 @@ public class RetransmitMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        RetransmitMessageHandler retransmitHandler = new RetransmitMessageHandler(tlsContext);
-        retransmitHandler.setProtocolMessage(this);
-        return retransmitHandler;
-    }
-
-    @Override
     public String toCompactString() {
         return "Retransmitted Message";
     }

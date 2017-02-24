@@ -57,11 +57,4 @@ public class FinishedMessage extends HandshakeMessage {
         }
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new FinishedHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

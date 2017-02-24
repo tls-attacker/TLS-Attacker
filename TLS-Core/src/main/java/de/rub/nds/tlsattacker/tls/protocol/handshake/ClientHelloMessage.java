@@ -190,11 +190,4 @@ public class ClientHelloMessage extends HelloMessage {
          */
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new ClientHelloHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

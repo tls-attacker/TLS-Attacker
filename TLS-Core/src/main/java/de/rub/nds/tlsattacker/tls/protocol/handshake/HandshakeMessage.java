@@ -152,12 +152,4 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public String toCompactString() {
         return handshakeMessageType.getName();
     }
-
-    @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler<? extends ProtocolMessage> pmh = handshakeMessageType
-                .getProtocolMessageHandler(tlsContext);
-        pmh.setProtocolMessage(this);
-        return pmh;
-    }
 }

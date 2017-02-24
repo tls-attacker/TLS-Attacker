@@ -193,11 +193,4 @@ public class CertificateRequestMessage extends HandshakeMessage {
         // sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new CertificateRequestHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

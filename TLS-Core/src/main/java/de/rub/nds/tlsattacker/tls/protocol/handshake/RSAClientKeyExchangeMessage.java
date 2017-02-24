@@ -88,11 +88,4 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         sb.append("\nClient Key Exchange message:");
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new RSAClientKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

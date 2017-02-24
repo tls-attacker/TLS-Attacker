@@ -84,11 +84,4 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new HelloVerifyRequestHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

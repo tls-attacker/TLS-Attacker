@@ -50,13 +50,6 @@ public class ApplicationMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        ApplicationHandler ah = new ApplicationHandler(tlsContext);
-        ah.setProtocolMessage(this);
-        return ah;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nApplication Data:");

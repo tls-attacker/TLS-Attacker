@@ -48,13 +48,6 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        ChangeCipherSpecHandler ccsh = new ChangeCipherSpecHandler(tlsContext);
-        ccsh.setProtocolMessage(this);
-        return ccsh;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nChangeCipherSpec message:").append("\n  CCS Protocol Message: ")

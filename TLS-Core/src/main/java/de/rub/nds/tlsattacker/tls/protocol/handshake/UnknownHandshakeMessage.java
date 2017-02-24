@@ -18,19 +18,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownHandshakeMessage extends HandshakeMessage{
+public class UnknownHandshakeMessage extends HandshakeMessage {
 
     private byte[] typeConfig;
     private int lengthConfig;
     private byte[] dataConfig;
 
-    public UnknownHandshakeMessage()
-    {
+    public UnknownHandshakeMessage() {
         super(HandshakeMessageType.UNKNOWN);
     }
-    
-    public UnknownHandshakeMessage(TlsConfig config)
-    {
+
+    public UnknownHandshakeMessage(TlsConfig config) {
         super(HandshakeMessageType.UNKNOWN);
     }
 
@@ -43,13 +41,17 @@ public class UnknownHandshakeMessage extends HandshakeMessage{
     }
 
     @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String toCompactString() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
-    @Override
-    public String toCompactString() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

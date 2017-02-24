@@ -128,13 +128,6 @@ public class AlertMessage extends ProtocolMessage {
     }
 
     @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        AlertHandler ah = new AlertHandler(tlsContext);
-        ah.setProtocolMessage(this);
-        return ah;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof AlertMessage)) {
             return false;

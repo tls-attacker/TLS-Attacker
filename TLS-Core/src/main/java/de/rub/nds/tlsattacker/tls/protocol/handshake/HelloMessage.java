@@ -66,10 +66,10 @@ public abstract class HelloMessage extends HandshakeMessage {
      */
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions = new LinkedList<>();
-    
+
     @ModifiableVariableProperty
     private ModifiableByteArray extensionBytes;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionsLength;
 
@@ -152,7 +152,7 @@ public abstract class HelloMessage extends HandshakeMessage {
     public void setExtensionBytes(ModifiableByteArray extensionBytes) {
         this.extensionBytes = extensionBytes;
     }
-    
+
     public void setUnixTime(byte[] unixTime) {
         this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
     }

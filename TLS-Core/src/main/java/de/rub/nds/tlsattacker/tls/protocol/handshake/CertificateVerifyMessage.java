@@ -85,11 +85,4 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     public void setSignature(byte[] signature) {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new CertificateVerifyHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

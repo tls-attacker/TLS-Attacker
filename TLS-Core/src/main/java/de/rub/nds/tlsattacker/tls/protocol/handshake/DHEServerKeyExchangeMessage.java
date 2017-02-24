@@ -299,11 +299,4 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new DHEServerKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

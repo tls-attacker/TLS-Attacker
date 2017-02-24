@@ -60,12 +60,4 @@ public class ClientHelloDtlsMessage extends ClientHelloMessage {
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append("\n DTLS cookie length: ").append(cookieLength.getValue())
-                .append("\n DTLS cookie: ").append(ArrayConverter.bytesToHexString(cookie.getValue()));
-        return sb.toString();
-    }
 }

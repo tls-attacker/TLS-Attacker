@@ -148,11 +148,4 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         }
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new DHClientKeyExchangeHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

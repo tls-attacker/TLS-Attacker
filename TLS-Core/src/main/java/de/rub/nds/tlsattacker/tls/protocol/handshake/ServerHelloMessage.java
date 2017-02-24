@@ -112,11 +112,4 @@ public class ServerHelloMessage extends HelloMessage {
         }
         return sb.toString();
     }
-
-    @Override
-    public ProtocolMessageHandler getProtocolMessageHandler(TlsContext tlsContext) {
-        ProtocolMessageHandler handler = new ServerHelloHandler(tlsContext);
-        handler.setProtocolMessage(this);
-        return handler;
-    }
 }

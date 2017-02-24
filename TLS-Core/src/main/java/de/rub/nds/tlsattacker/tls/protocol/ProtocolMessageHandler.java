@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,16 +27,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * tls context
      */
     protected final TlsContext tlsContext;
-
-    /**
-     * handled protocol message
-     */
-    protected Message protocolMessage;
-
-    /**
-     * type of the protocol message class
-     */
-    protected Class<? extends Message> correctProtocolMessageClass;
 
     /**
      *
@@ -75,13 +64,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @return pointer to the next protocol message in the byte array, if any
      *         message following, i.e. lastProcessedBytePointer + 1
      */
-    public int parseMessage(byte[] message, int pointer) {
+    public ParserResult parseMessage(byte[] message, int pointer) {
         LOGGER.debug("Parsing message from " + pointer + " :" + ArrayConverter.bytesToHexString(message));
-        byte[] hookedMessage;
-        hookedMessage = beforeParseMessageAction(message, pointer);
-        int ret = parseMessageAction(hookedMessage, pointer);
-        ret = afterParseMessageAction(ret);
-        return ret;
+        byte[] hookedMessage = beforeParseMessageAction(message, pointer);
+        ParserResult result = parseMessageAction(hookedMessage, pointer);
+        result.setParserPosition(afterParseMessageAction(result.getParserPosition()));
+        return result;
     }
 
     /**
@@ -90,6 +78,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @return message in bytes
      */
     protected abstract byte[] prepareMessageAction();
+    
+    /**
+     * Adjusts the TLS Context according to the received or sending ProtocolMessage
+     * @param message 
+     */
+    protected abstract void adjustTLSContext(Message message);
 
     /**
      * Parse incoming message bytes and return a pointer to the last processed
@@ -99,7 +93,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @param pointer
      * @return
      */
-    protected abstract int parseMessageAction(byte[] message, int pointer);
+    protected abstract ParserResult parseMessageAction(byte[] message, int pointer);
 
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
@@ -139,52 +133,5 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      */
     protected int afterParseMessageAction(int ret) {
         return ret;
-    }
-
-    /**
-     * Checks the protocol message
-     *
-     * @param protocolMessage
-     * @return
-     */
-    public boolean isCorrectProtocolMessage(ProtocolMessage protocolMessage) {
-        if (protocolMessage == null) {
-            return false;
-        } else {
-            return protocolMessage.getClass().equals(correctProtocolMessageClass);
-        }
-
-    }
-
-    /**
-     * This method is used to initialize new protocol message in a case we are
-     * handling a dynamic message exchange or an unexpected message is received
-     * and we have to initialize it.
-     */
-    public void initializeProtocolMessage() {
-
-        try {
-            Constructor<? extends Message> c = correctProtocolMessageClass.getConstructor();
-            Message pm = c.newInstance();
-            this.protocolMessage = pm;
-        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InstantiationException
-                | InvocationTargetException | NoSuchMethodException ex) {
-            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
-        }
-    }
-
-    /**
-     * @return newly initialized protocol message used by this handler
-     */
-    public Message getProtocolMessage() {
-        return this.protocolMessage;
-    }
-
-    /**
-     * @param protocolMessage
-     */
-    @SuppressWarnings("unchecked")
-    public void setProtocolMessage(ProtocolMessage protocolMessage) {
-        this.protocolMessage = (Message) protocolMessage;
     }
 }
