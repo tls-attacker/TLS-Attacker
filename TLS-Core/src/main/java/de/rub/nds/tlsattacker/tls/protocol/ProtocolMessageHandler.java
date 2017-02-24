@@ -9,7 +9,15 @@
 package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ParserResult;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.ServerHelloMessagePreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
@@ -47,9 +55,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      *
      * @return message in bytes
      */
-    public byte[] prepareMessage() {
+    public byte[] prepareMessage(Message message) {
         beforePrepareMessageAction();
-        byte[] ret = prepareMessageAction();
+        byte[] ret = prepareMessageAction(message);
         ret = afterPrepareMessageAction(ret);
         return ret;
     }
@@ -62,7 +70,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @param message
      * @param pointer
      * @return pointer to the next protocol message in the byte array, if any
-     *         message following, i.e. lastProcessedBytePointer + 1
+     * message following, i.e. lastProcessedBytePointer + 1
      */
     public ParserResult parseMessage(byte[] message, int pointer) {
         LOGGER.debug("Parsing message from " + pointer + " :" + ArrayConverter.bytesToHexString(message));
@@ -75,13 +83,29 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Prepare message for sending
      *
+     * @param message
      * @return message in bytes
      */
-    protected abstract byte[] prepareMessageAction();
-    
+    protected final byte[] prepareMessageAction(Message message) {
+        Preparator preparator = getPreparator(message);
+        preparator.prepare();
+        adjustTLSContext(message);
+        Serializer serializer = getSerializer(message);
+        message.setCompleteResultingMessage(serializer.serialize());
+        return message.getCompleteResultingMessage().getValue();
+    }
+
+    protected abstract Parser getParser(byte[] message, int pointer);
+
+    protected abstract Preparator getPreparator(Message message);
+
+    protected abstract Serializer getSerializer(Message message);
+
     /**
-     * Adjusts the TLS Context according to the received or sending ProtocolMessage
-     * @param message 
+     * Adjusts the TLS Context according to the received or sending
+     * ProtocolMessage
+     *
+     * @param message
      */
     protected abstract void adjustTLSContext(Message message);
 
@@ -93,7 +117,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @param pointer
      * @return
      */
-    protected abstract ParserResult parseMessageAction(byte[] message, int pointer);
+    protected final ParserResult parseMessageAction(byte[] message, int pointer) {
+        Parser<Message> parser = getParser(message,pointer);
+        Message parsedMessage = parser.parse();
+        adjustTLSContext(parsedMessage);
+        return new ParserResult(parsedMessage, parser.getPointer());
+    }
 
     /**
      * Implementation hook, which allows the handlers to invoke specific methods
