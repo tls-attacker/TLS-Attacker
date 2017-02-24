@@ -27,17 +27,14 @@ public class UnknownMessageParser extends Parser<UnknownMessage> {
         parseCompleteMessage(message);
         return message;
     }
-    
+
     /**
-     * Since we dont know what this is, we cannot make assumptions about
-     * length fields or the such, so we assume that all data we received in the 
-     * array is part of this unknown message
+     * Since we dont know what this is, we cannot make assumptions about length
+     * fields or the such, so we assume that all data we received in the array
+     * is part of this unknown message
      */
-    private void parseCompleteMessage(UnknownMessage message)
-    {
+    private void parseCompleteMessage(UnknownMessage message) {
         message.setCompleteResultingMessage(parseByteArrayField(getBytesLeft()));
     }
-    
-    
 
 }

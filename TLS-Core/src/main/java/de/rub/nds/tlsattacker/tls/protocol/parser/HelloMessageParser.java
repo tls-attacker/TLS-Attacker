@@ -143,6 +143,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     /**
      * Reads the next bytes as the ExtensionBytes and writes them in the message
      * and adds parsed Extensions to the message
+     * 
      * @param message
      *            Message to write in
      */
@@ -152,11 +153,10 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
         ExtensionParser<ExtensionMessage> parser = ExtensionParserFactory.getExtensionParser(0, extensionBytes);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
-        do
-        {
+        do {
             extensionMessages.add(parser.parse());
             parser = ExtensionParserFactory.getExtensionParser(parser.getPointer(), extensionBytes);
-        }while(parser.getBytesLeft() > 0);
+        } while (parser.getBytesLeft() > 0);
         message.setExtensions(extensionMessages);
     }
 }

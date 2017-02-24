@@ -33,12 +33,12 @@ public class UnknownMessageParserTest {
      */
     @Test
     public void testParse() {
-        parser = new UnknownMessageParser(0, new byte[]{0,1,2,3});
+        parser = new UnknownMessageParser(0, new byte[] { 0, 1, 2, 3 });
         UnknownMessage message = parser.parse();
-        assertArrayEquals(new byte[]{0,1,2,3}, message.getCompleteResultingMessage().getValue());
-        parser = new UnknownMessageParser(1, new byte[]{0,1,2,3});
+        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, message.getCompleteResultingMessage().getValue());
+        parser = new UnknownMessageParser(1, new byte[] { 0, 1, 2, 3 });
         message = parser.parse();
-        assertArrayEquals(new byte[]{1,2,3}, message.getCompleteResultingMessage().getValue());
+        assertArrayEquals(new byte[] { 1, 2, 3 }, message.getCompleteResultingMessage().getValue());
     }
 
 }

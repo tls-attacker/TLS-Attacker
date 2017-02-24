@@ -56,9 +56,8 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
     protected boolean hasExtensionData(UnknownExtensionMessage message) {
         return message.getExtensionLength().getValue() > 0;
     }
-    
-    protected void setExtensionBytes(UnknownExtensionMessage message)
-    {
+
+    protected void setExtensionBytes(UnknownExtensionMessage message) {
         message.setExtensionBytes(getAlreadyParsed());
     }
 

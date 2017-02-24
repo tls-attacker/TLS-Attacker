@@ -128,8 +128,7 @@ public class ParserTest {
     }
 
     @Test
-    public void testEnoughBytesLeft()
-    {
+    public void testEnoughBytesLeft() {
         assertTrue(parser.enoughBytesLeft(9));
         assertFalse(parser.enoughBytesLeft(10));
         assertTrue(parser.enoughBytesLeft(1));
@@ -137,19 +136,18 @@ public class ParserTest {
         assertFalse(parser.enoughBytesLeft(9));
         assertTrue(parser.enoughBytesLeft(2));
         assertTrue(parser.enoughBytesLeft(1));
-        
+
     }
-    
+
     @Test
-    public void testBytesLeft()
-    {
+    public void testBytesLeft() {
         assertTrue(parser.getBytesLeft() == 9);
         parser.parseByteArrayField(2);
         assertTrue(parser.getBytesLeft() == 7);
         parser.parseByteArrayField(7);
         assertTrue(parser.getBytesLeft() == 0);
     }
-    
+
     public class ParserImpl extends Parser {
 
         public ParserImpl(int i, byte[] a) {

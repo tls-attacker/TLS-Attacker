@@ -17,10 +17,10 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 public class ExtensionParserFactory {
 
     public static ExtensionParser getExtensionParser(int startPosition, byte[] array) {
-        //Try to read the type, else just return unknown
+        // Try to read the type, else just return unknown
         ExtensionType type = ExtensionType.UNKNOWN;
         if (array.length - startPosition >= 2) {
-            byte[] byteType = new byte[2]; 
+            byte[] byteType = new byte[2];
             byteType[0] = array[startPosition];
             byteType[1] = array[startPosition + 1];
             type = ExtensionType.getExtensionType(byteType);

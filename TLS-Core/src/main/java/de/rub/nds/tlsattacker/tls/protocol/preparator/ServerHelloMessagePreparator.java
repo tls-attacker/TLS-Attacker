@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -36,8 +37,16 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     @Override
     public void prepare() {
         prepareProtocolVersion();
+        prepareUnixTime();
+        prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
+        prepareCipherSuite();
+        prepareCompressionMethod();
+        prepareExtensions();
+        prepareExtensionLength();
+        prepareMessageLength(0);
+
     }
 
     private void prepareCipherSuite() {
@@ -134,6 +143,25 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
                 }
             }
         }
+    }
+
+    private void prepareExtensions() {
+        for (ExtensionMessage extensionMessage : message.getExtensions()) {
+
+        }
+    }
+
+    private void prepareExtensionLength() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }

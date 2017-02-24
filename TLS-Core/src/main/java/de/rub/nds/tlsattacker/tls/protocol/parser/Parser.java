@@ -18,12 +18,13 @@ import org.apache.logging.log4j.Logger;
 /**
  *
  * Abstract Parser class which can be used to read a byte array.
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  *            Type of the Object that should be parsed
  */
 public abstract class Parser<T> {
+
     /**
      * Current position in the byte array
      */
@@ -39,7 +40,7 @@ public abstract class Parser<T> {
 
     /**
      * Constructor for the Parser
-     * 
+     *
      * @param startposition
      *            Position in the array from which the Parser should start
      *            working
@@ -51,7 +52,8 @@ public abstract class Parser<T> {
         this.pointer = startposition;
         this.array = array;
         if (startposition >= array.length) {
-            throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:" + array.length);
+            throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
+                    + array.length);
         }
     }
 
@@ -59,7 +61,7 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a byte[].
      * Throws a ParserException if the number of bytes cannot be parsed. Moves
      * the pointer accordingly.
-     * 
+     *
      * @param length
      *            Number of bytes to be parsed
      * @return A subbyteArray of according size from the Array
@@ -70,7 +72,8 @@ public abstract class Parser<T> {
         }
         int nextPointer = pointer + length;
         if (!enoughBytesLeft(length)) {
-            throw new ParserException("Parsing over the end of the array");
+            throw new ParserException("Parsing over the end of the array. Current Pointer:" + pointer
+                    + " ToParse Length:" + length + " ArrayLength:" + array.length);
         }
         byte[] result = Arrays.copyOfRange(array, pointer, nextPointer);
         pointer = nextPointer;
@@ -81,7 +84,7 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a int. Throws
      * a ParserException if the number of bytes cannot be parsed. Moves the
      * pointer accordingly.
-     * 
+     *
      * @param length
      *            Number of bytes to be parsed
      * @return An integer representation of the subbyteArray
@@ -94,7 +97,7 @@ public abstract class Parser<T> {
      * Parses a number of bytes from the Array and returns them as a byte.
      * Throws a ParserException if the number of bytes cannot be parsed. Moves
      * the pointer accordingly.
-     * 
+     *
      * @param length
      *            Number of bytes to be parsed
      * @return An integer representation of the subbyteArray
@@ -108,7 +111,7 @@ public abstract class Parser<T> {
 
     /**
      * Returns the current position of the pointer in the array
-     * 
+     *
      * @return Current position of the pointer in the array
      */
     public int getPointer() {
@@ -117,7 +120,7 @@ public abstract class Parser<T> {
 
     /**
      * Returns the position at which the Parser started parsing
-     * 
+     *
      * @return
      */
     public int getStartPoint() {
@@ -126,7 +129,7 @@ public abstract class Parser<T> {
 
     /**
      * Returns a byte[] of the already parsed bytes.
-     * 
+     *
      * @return Array of the already parsed bytes.
      */
     protected byte[] getAlreadyParsed() {
@@ -135,7 +138,7 @@ public abstract class Parser<T> {
 
     /**
      * Checks if there are atleast count bytes left to read
-     * 
+     *
      * @param count
      *            Number of bytes to check for
      * @return True if there are atleast count bytes left to read
@@ -150,7 +153,7 @@ public abstract class Parser<T> {
 
     /**
      * Returns the parsed object.
-     * 
+     *
      * @return The parsed object
      */
     public abstract T parse();

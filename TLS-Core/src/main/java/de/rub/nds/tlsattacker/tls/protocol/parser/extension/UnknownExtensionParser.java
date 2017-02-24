@@ -34,7 +34,6 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
             if (hasExtensionData(message)) {
                 parseExtensionData(message);
             }
-            
 
         } else {
             parseByteArrayField(getBytesLeft());
@@ -53,11 +52,9 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
      *            Message to write in
      */
     protected void parseExtensionData(UnknownExtensionMessage message) {
-        if(getBytesLeft() == 0)
-        {
-            //No bytes left for extension data
-        }
-        else if (getBytesLeft() < message.getExtensionLength().getValue()) {
+        if (getBytesLeft() == 0) {
+            // No bytes left for extension data
+        } else if (getBytesLeft() < message.getExtensionLength().getValue()) {
             message.setExtensionData(parseByteArrayField(getBytesLeft()));
         } else {
             message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));

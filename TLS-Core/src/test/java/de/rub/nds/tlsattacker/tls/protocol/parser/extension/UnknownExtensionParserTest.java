@@ -37,59 +37,22 @@ public class UnknownExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][]{
-            {
-                ArrayConverter
-                .hexStringToByteArray("00230000"),
-                ArrayConverter
-                .hexStringToByteArray("00230000"),
-                ArrayConverter
-                .hexStringToByteArray("0023"),
-                0,
-                null,}, {
-                ArrayConverter
-                .hexStringToByteArray("000f000101"),
-                ArrayConverter
-                .hexStringToByteArray("000f000101"),
-                ArrayConverter
-                .hexStringToByteArray("000f"),
-                1,
-                ArrayConverter
-                .hexStringToByteArray("01"),}, {
-                ArrayConverter
-                .hexStringToByteArray("000f00010100"),
-                ArrayConverter
-                .hexStringToByteArray("000f000101"),
-                ArrayConverter
-                .hexStringToByteArray("000f"),
-                1,
-                ArrayConverter
-                .hexStringToByteArray("01"),}, {
-                ArrayConverter
-                .hexStringToByteArray("0000"),
-                ArrayConverter
-                .hexStringToByteArray("0000"),
-                null,
-                null,
-                null,}, {
-                ArrayConverter
-                .hexStringToByteArray("00000000"),
-                ArrayConverter
-                .hexStringToByteArray("00000000"),
-                ArrayConverter
-                .hexStringToByteArray("0000"),
-                0,
-                null,}, {
-                ArrayConverter
-                .hexStringToByteArray("0000FFFF"),
-                ArrayConverter
-                .hexStringToByteArray("0000FFFF"),
-                ArrayConverter
-                .hexStringToByteArray("0000"),
-                0xFFFF,
-                null,}});
+        return Arrays.asList(new Object[][] {
+                { ArrayConverter.hexStringToByteArray("00230000"), ArrayConverter.hexStringToByteArray("00230000"),
+                        ArrayConverter.hexStringToByteArray("0023"), 0, null, },
+                { ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f000101"),
+                        ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
+                { ArrayConverter.hexStringToByteArray("000f00010100"),
+                        ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f"),
+                        1, ArrayConverter.hexStringToByteArray("01"), },
+                { ArrayConverter.hexStringToByteArray("0000"), ArrayConverter.hexStringToByteArray("0000"), null, null,
+                        null, },
+                { ArrayConverter.hexStringToByteArray("00000000"), ArrayConverter.hexStringToByteArray("00000000"),
+                        ArrayConverter.hexStringToByteArray("0000"), 0, null, },
+                { ArrayConverter.hexStringToByteArray("0000FFFF"), ArrayConverter.hexStringToByteArray("0000FFFF"),
+                        ArrayConverter.hexStringToByteArray("0000"), 0xFFFF, null, } });
     }
+
     private final byte[] array;
     private final byte[] message;
     private final byte[] type;
