@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.UnknownHandshakeMessageHandler;
 import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
@@ -38,6 +39,13 @@ import java.util.Map;
  */
 public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
 
+    UNKNOWN {
+
+        @Override
+        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
+            return new UnknownHandshakeMessageHandler(tlsContext);
+        }
+    },
     HELLO_REQUEST((byte) 0) {
 
         @Override
@@ -148,7 +156,7 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
         }
     };
 
-    private byte value;
+    private int value;
 
     private ConnectionEnd messageSender;
 
@@ -157,11 +165,13 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
     private HandshakeMessageType(byte value) {
         this.value = value;
     }
-
+    private HandshakeMessageType() {
+        this.value = -1;
+    }
     static {
         MAP = new HashMap<>();
         for (HandshakeMessageType cm : HandshakeMessageType.values()) {
-            MAP.put(cm.value, cm);
+            MAP.put((byte)cm.value, cm);
         }
     }
 
@@ -176,11 +186,11 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
     }
 
     public byte getValue() {
-        return value;
+        return (byte)value;
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] { (byte)value };
     }
 
     public final String getName() {
