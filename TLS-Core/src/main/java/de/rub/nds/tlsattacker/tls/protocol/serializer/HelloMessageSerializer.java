@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 
 /**
  * Abstract Serializer class for HelloMessages

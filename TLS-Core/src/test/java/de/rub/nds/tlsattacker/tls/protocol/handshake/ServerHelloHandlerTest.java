@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
@@ -15,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class ServerHelloHandlerTest {
     /**
      * Test of parseMessageAction method, of class ServerHelloHandler.
      */
-    @Test
+
     public void testParseMessage() {
         handler.initializeProtocolMessage();
 
@@ -89,12 +90,12 @@ public class ServerHelloHandlerTest {
         assertEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
         assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
-        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions,message.getCompleteResultingMessage().getOriginalValue());
+        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions, message
+                .getCompleteResultingMessage().getOriginalValue());
         assertEquals("The pointer has to return the length of this message + starting position",
                 serverHelloWithoutExtensionBytes.length, endPointer);
     }
 
-    @Test
     public void testParseDTLSMessage() {
         tlsContext.setHighestClientProtocolVersion(ProtocolVersion.DTLS12);
         tlsContext.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
@@ -122,14 +123,15 @@ public class ServerHelloHandlerTest {
                         .getOriginalValue());
         assertEquals("Compression must be null", CompressionMethod.NULL,
                 CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod().getOriginalValue()));
-        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions,message.getCompleteResultingMessage().getOriginalValue());
-        
+        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions, message
+                .getCompleteResultingMessage().getOriginalValue());
+
     }
 
     /**
      * Test of parseMessageAction method, of class ServerHelloHandler.
      */
-    @Test
+
     public void testParseMessageWithExtensions() {
         handler.initializeProtocolMessage();
 
@@ -155,17 +157,18 @@ public class ServerHelloHandlerTest {
         assertEquals("Ciphersuite must be TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, tlsContext.getSelectedCipherSuite());
         assertEquals("Compression must be null", CompressionMethod.NULL, tlsContext.getCompressionMethod());
-        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions,message.getCompleteResultingMessage().getOriginalValue());
+        assertArrayEquals("Complete Message must equal", serverHelloDTLSnoExtensions, message
+                .getCompleteResultingMessage().getOriginalValue());
         assertTrue("Extension must be Heartbeat", message.containsExtension(ExtensionType.HEARTBEAT));
         assertEquals("The pointer has to return the length of this message + starting position",
                 serverHelloWithHeartbeatBytes.length, endPointer);
-        
+
     }
 
     /**
      * Test of prepareMessageAction method, of class ServerHelloHandler.
      */
-    @Test
+
     public void testPrepareMessage() {
         tlsContext.getConfig().setEnforceSettings(true);
         handler.setProtocolMessage(new ServerHelloMessage(tlsContext.getConfig()));
@@ -190,7 +193,7 @@ public class ServerHelloHandlerTest {
      * Test of prepareMessageAction method with Extensions, of class
      * ServerHelloHandler.
      */
-    @Test
+
     public void testPrepareMessageWithExtensions() {
         tlsContext.getConfig().setAddHeartbeatExtension(true);
         tlsContext.getConfig().setAddEllipticCurveExtension(true);

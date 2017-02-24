@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.List;
@@ -66,16 +68,39 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
         this.supportedCurves = supportedCurves;
     }
 
-    @Override
-    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        return new EllipticCurvesExtensionHandler();
-    }
-
     public List<NamedCurve> getSupportedCurvesConfig() {
         return supportedCurvesConfig;
     }
 
     public void setSupportedCurvesConfig(List<NamedCurve> supportedCurvesConfig) {
         this.supportedCurvesConfig = supportedCurvesConfig;
+    }
+
+    @Override
+    public ExtensionPreparator<? extends ExtensionMessage> getExtensionPreparator() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    public ExtensionSerializer<? extends ExtensionMessage> getExtensionSerializer() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 }

@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateRequestHandler;
 
 import org.junit.Test;
 

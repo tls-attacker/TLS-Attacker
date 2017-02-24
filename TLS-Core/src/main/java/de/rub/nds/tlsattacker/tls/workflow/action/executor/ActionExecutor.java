@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

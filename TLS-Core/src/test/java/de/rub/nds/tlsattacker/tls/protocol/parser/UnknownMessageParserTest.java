@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.UnknownMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

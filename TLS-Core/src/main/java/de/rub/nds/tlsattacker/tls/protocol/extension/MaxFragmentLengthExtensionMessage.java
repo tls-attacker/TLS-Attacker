@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
@@ -54,8 +56,31 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        return new MaxFragmentLengthExtensionHandler();
+    public ExtensionPreparator<? extends ExtensionMessage> getExtensionPreparator() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    public ExtensionSerializer<? extends ExtensionMessage> getExtensionSerializer() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }

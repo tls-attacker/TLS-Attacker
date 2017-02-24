@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 
 /**
  * SerializerClass for ServerHelloMessages

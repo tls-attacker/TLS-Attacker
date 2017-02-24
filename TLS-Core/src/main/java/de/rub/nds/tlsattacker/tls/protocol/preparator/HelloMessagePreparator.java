@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**

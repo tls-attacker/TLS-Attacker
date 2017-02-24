@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParserITest;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

@@ -15,7 +15,7 @@ public class ExtensionByteLength {
     /**
      * extensions byte length
      */
-    public static final int EXTENSIONS = 2;
+    public static final int EXTENSIONS_LENGTH = 2;
 
     /**
      * extension type

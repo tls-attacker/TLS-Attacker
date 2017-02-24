@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.alert;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
