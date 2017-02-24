@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
@@ -54,9 +55,9 @@ public class ServerHelloMessageSerializerITest {
                 ServerHelloMessageParser parser = new ServerHelloMessageParser(start, bytesToParse);
                 helloMessage = parser.parse();
             } catch (ParserException E) {
-                 continue;
+                continue;
             }
-            
+
             byte[] expected = helloMessage.getCompleteResultingMessage().getValue();
             ServerHelloMessageSerializer serializer = new ServerHelloMessageSerializer(helloMessage);
             byte[] result = serializer.serialize();
@@ -68,7 +69,7 @@ public class ServerHelloMessageSerializerITest {
             ServerHelloMessage serialized = parser2.parse();
             LOGGER.debug(serialized.toString());
             assertArrayEquals(result, expected);
-            assertArrayEquals(serialized.getCompleteResultingMessage().getValue(),result);
+            assertArrayEquals(serialized.getCompleteResultingMessage().getValue(), result);
         }
     }
 }
