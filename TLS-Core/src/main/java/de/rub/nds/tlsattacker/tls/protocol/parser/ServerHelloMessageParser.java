@@ -61,7 +61,7 @@ public class ServerHelloMessageParser extends HelloMessageParser<ServerHelloMess
                 parseExtensionBytes(message);
             }
         }
-        message.setCompleteResultingMessage(getAlreadyParsed());
+        setCompleteResultingMessage(message);
         return message;
     }
 

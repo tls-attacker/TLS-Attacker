@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public abstract class Parser<T> {
             throw new ParserException("Cannot parse field of size " + length);
         }
         int nextPointer = pointer + length;
-        if (nextPointer > array.length) {
+        if (!enoughBytesLeft(length)) {
             throw new ParserException("Parsing over the end of the array");
         }
         byte[] result = Arrays.copyOfRange(array, pointer, nextPointer);
@@ -130,6 +131,21 @@ public abstract class Parser<T> {
      */
     protected byte[] getAlreadyParsed() {
         return Arrays.copyOfRange(array, startPoint, pointer);
+    }
+
+    /**
+     * Checks if there are atleast count bytes left to read
+     * 
+     * @param count
+     *            Number of bytes to check for
+     * @return True if there are atleast count bytes left to read
+     */
+    protected boolean enoughBytesLeft(int count) {
+        return getBytesLeft() >= count;
+    }
+
+    protected int getBytesLeft() {
+        return array.length - pointer;
     }
 
     /**

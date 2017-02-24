@@ -10,8 +10,14 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParserFactory;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -136,12 +142,21 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
 
     /**
      * Reads the next bytes as the ExtensionBytes and writes them in the message
-     * 
+     * and adds parsed Extensions to the message
      * @param message
      *            Message to write in
      */
     protected void parseExtensionBytes(HelloMessage message) {
-        message.setExtensionBytes(parseByteArrayField(message.getExtensionsLength().getValue()));
-        LOGGER.debug("ExtensionBytes:" + message.getExtensionBytes().getValue());
+        byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
+        message.setExtensionBytes(extensionBytes);
+        LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
+        ExtensionParser<ExtensionMessage> parser = ExtensionParserFactory.getExtensionParser(0, extensionBytes);
+        List<ExtensionMessage> extensionMessages = new LinkedList<>();
+        do
+        {
+            extensionMessages.add(parser.parse());
+            parser = ExtensionParserFactory.getExtensionParser(parser.getPointer(), extensionBytes);
+        }while(parser.getBytesLeft() > 0);
+        message.setExtensions(extensionMessages);
     }
 }

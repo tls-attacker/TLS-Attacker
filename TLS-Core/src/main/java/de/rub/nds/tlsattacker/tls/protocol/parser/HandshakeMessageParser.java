@@ -73,4 +73,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         message.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
         LOGGER.debug("Length:" + message.getLength().getValue());
     }
+
+    protected void setCompleteResultingMessage(HandshakeMessage message) {
+        message.setCompleteResultingMessage(getAlreadyParsed());
+    }
 }
