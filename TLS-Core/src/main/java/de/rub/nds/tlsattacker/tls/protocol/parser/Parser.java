@@ -51,7 +51,7 @@ public abstract class Parser<T> {
         this.pointer = startposition;
         this.array = array;
         if (startposition >= array.length) {
-            throw new ParserException("Cannot creater parser beyond pointer");
+            throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:" + array.length);
         }
     }
 
