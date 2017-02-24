@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -26,9 +27,11 @@ public class ServerHelloMessageParser extends HelloMessageParser<ServerHelloMess
     /**
      * Constructor for the ServerHelloMessageParser
      *
-     * @param pointer Position in the array where the ServerHellorParser is
-     * supposed to start parsing
-     * @param array The byte[] which the ServerHellorParser is supposed to parse
+     * @param pointer
+     *            Position in the array where the ServerHellorParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the ServerHellorParser is supposed to parse
      */
     public ServerHelloMessageParser(int pointer, byte[] array) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO);
@@ -65,16 +68,19 @@ public class ServerHelloMessageParser extends HelloMessageParser<ServerHelloMess
     /**
      * Reads the next bytes as a CipherSuite and writes them in the message
      *
-     * @param message Message to write in
+     * @param message
+     *            Message to write in
      */
     protected void parseSelectedCiphersuite(ServerHelloMessage message) {
         message.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
     }
 
     /**
-     * Reads the next bytes as a CompressionMethod and writes them in the message
+     * Reads the next bytes as a CompressionMethod and writes them in the
+     * message
      *
-     * @param message Message to write in
+     * @param message
+     *            Message to write in
      */
     protected void parseSelectedComressionMethod(ServerHelloMessage message) {
         message.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));

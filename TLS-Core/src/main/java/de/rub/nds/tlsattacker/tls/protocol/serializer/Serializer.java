@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
@@ -17,7 +18,8 @@ import org.apache.logging.log4j.LogManager;
  * is comparable to byte[] serialization.
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T> Type of the Object to write
+ * @param <T>
+ *            Type of the Object to write
  */
 public abstract class Serializer<T> {
 
@@ -44,21 +46,26 @@ public abstract class Serializer<T> {
      * Integer is greater than the specified length only the lower length bytes
      * are serialized.
      *
-     * @param i The Integer that should be appended
-     * @param length The number of bytes which should be reserved for this Integer
+     * @param i
+     *            The Integer that should be appended
+     * @param length
+     *            The number of bytes which should be reserved for this Integer
      */
     protected final void appendInt(int i, int length) {
         byte[] bytes = ArrayConverter.intToBytes(i, length);
         int reconvertedInt = ArrayConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
-            LOGGER.warn("Int \"" + i + "\" is too long to write in field of size " + length + ". Only using last " + length + " bytes.");
+            LOGGER.warn("Int \"" + i + "\" is too long to write in field of size " + length + ". Only using last "
+                    + length + " bytes.");
         }
         appendBytes(ArrayConverter.intToBytes(i, length));
     }
 
     /**
      * Adds a byte to the final byte[].
-     * @param b Byte which should be added
+     * 
+     * @param b
+     *            Byte which should be added
      */
     protected final void appendByte(byte b) {
         outputStream.write(b);
@@ -66,7 +73,9 @@ public abstract class Serializer<T> {
 
     /**
      * Adds a byte[] to the final byte[].
-     * @param bytes bytes that should be added
+     * 
+     * @param bytes
+     *            bytes that should be added
      */
     protected final void appendBytes(byte[] bytes) {
         try {
@@ -78,6 +87,7 @@ public abstract class Serializer<T> {
 
     /**
      * Creates the final byte[]
+     * 
      * @return The final byte[]
      */
     public final byte[] serialize() {

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
@@ -14,7 +15,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.HelloMessage;
  * Abstract Serializer class for HelloMessages
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T> Type of the HelloMessage that should be serialized
+ * @param <T>
+ *            Type of the HelloMessage that should be serialized
  */
 public abstract class HelloMessageSerializer<T extends HelloMessage> extends HandshakeMessageSerializer<T> {
 
@@ -26,7 +28,8 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
     /**
      * Constructor for the HelloMessageSerializer
      *
-     * @param message Message that should be serialized
+     * @param message
+     *            Message that should be serialized
      */
     public HelloMessageSerializer(T message) {
         super(message);
@@ -35,6 +38,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
 
     /**
      * Checks if the message has an ExtensionsLength field
+     * 
      * @return True if the message has an ExtensionLength field
      */
     protected boolean hasExtensionLengthField() {
@@ -50,6 +54,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
 
     /**
      * Checks if the message has Extensions
+     * 
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions() {

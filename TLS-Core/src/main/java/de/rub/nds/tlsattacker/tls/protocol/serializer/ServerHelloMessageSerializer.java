@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
@@ -14,16 +15,18 @@ import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage>{
+public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 
     /**
      * The message that should be serialized
      */
     private final ServerHelloMessage message;
-    
+
     /**
      * Constructor for the ServerHelloMessageSerializer
-     * @param message Message that should be serialized
+     * 
+     * @param message
+     *            Message that should be serialized
      */
     public ServerHelloMessageSerializer(ServerHelloMessage message) {
         super(message);
@@ -51,7 +54,7 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
             }
         }
     }
-    
+
     /**
      * Writes the SelectedCiphersuite of the message into the final byte[]
      */
@@ -66,5 +69,4 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
         appendByte(message.getSelectedCompressionMethod().getValue());
     }
 
-    
 }
