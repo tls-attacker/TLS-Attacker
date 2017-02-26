@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;

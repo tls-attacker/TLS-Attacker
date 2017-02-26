@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -217,7 +217,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     protected Parser getParser(byte[] message, int pointer) {
-        return new ServerHelloMessageParser(pointer, message);
+        return new ServerHelloParser(pointer, message);
     }
 
     @Override

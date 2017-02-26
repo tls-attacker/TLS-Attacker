@@ -20,9 +20,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerHelloMessageParser extends HelloMessageParser<ServerHelloMessage> {
+public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessageParser.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParser.class);
 
     /**
      * Constructor for the ServerHelloMessageParser
@@ -33,7 +33,7 @@ public class ServerHelloMessageParser extends HelloMessageParser<ServerHelloMess
      * @param array
      *            The byte[] which the ServerHellorParser is supposed to parse
      */
-    public ServerHelloMessageParser(int pointer, byte[] array) {
+    public ServerHelloParser(int pointer, byte[] array) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO);
     }
 

@@ -28,9 +28,9 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HelloMessage to parse
  */
-public abstract class HelloMessageParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
+public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger(HelloMessageParser.class);
+    private static final Logger LOGGER = LogManager.getLogger(HelloParser.class);
 
     /**
      * Constructor for the Parser class
@@ -43,7 +43,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      * @param type
      *            Expected Type value for the Message
      */
-    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type) {
+    public HelloParser(int pointer, byte[] array, HandshakeMessageType type) {
         super(pointer, array, type);
     }
 
