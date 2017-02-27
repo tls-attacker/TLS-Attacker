@@ -27,9 +27,6 @@ public class CertificateMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificatesLength;
 
-    // List<ModifiableInteger> certificateLengths;
-    //
-    // List<Certificate> certificates;
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.CERTIFICATE)
     private ModifiableByteArray x509CertificateBytes;
 
