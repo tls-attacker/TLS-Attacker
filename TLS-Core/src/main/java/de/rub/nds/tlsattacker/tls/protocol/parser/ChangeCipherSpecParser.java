@@ -8,10 +8,25 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.ChangeCipherSpecByteLength;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
+
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCipherSpecParser {
+public class ChangeCipherSpecParser extends Parser<ChangeCipherSpecMessage> {
+
+    public ChangeCipherSpecParser(int startposition, byte[] array) {
+        super(startposition, array);
+    }
+
+    @Override
+    public ChangeCipherSpecMessage parse() {
+        ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
+        message.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        return message;
+    }
     
 }

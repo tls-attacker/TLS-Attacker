@@ -8,10 +8,24 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
+
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ApplicationMessageParser {
+public class ApplicationMessageParser extends Parser<ApplicationMessage>{
+
+    public ApplicationMessageParser(int startposition, byte[] array) {
+        super(startposition, array);
+    }
+
+    @Override
+    public ApplicationMessage parse() {
+        ApplicationMessage message = new ApplicationMessage();
+        message.setData(parseByteArrayField(getBytesLeft()));
+        message.setCompleteResultingMessage(getAlreadyParsed());
+        return message;
+    }
     
 }

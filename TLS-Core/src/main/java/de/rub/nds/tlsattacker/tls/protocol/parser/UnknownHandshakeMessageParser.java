@@ -8,10 +8,25 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
+
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownHandshakeMessageParser {
-    
+public class UnknownHandshakeMessageParser extends HandshakeMessageParser<UnknownHandshakeMessage> {
+
+    public UnknownHandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
+        super(pointer, array, expectedType);
+    }
+
+    @Override
+    public UnknownHandshakeMessage parse() {
+        UnknownHandshakeMessage message = new UnknownHandshakeMessage();
+        parseType(message);
+        parseLength(message);
+        message.setData(parseByteArrayField(message.getLength().getValue()));
+        return message;
+    }
 }

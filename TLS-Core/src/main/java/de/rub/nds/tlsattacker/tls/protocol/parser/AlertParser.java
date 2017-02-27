@@ -8,10 +8,25 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.AlertByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AlertParser {
-    
+public class AlertParser extends Parser<AlertMessage>{
+
+    public AlertParser(int startposition, byte[] array) {
+        super(startposition, array);
+    }
+
+    @Override
+    public AlertMessage parse() {
+        AlertMessage message = new AlertMessage();
+        message.setLevel(parseByteField(AlertByteLength.LEVEL_LENGTH));
+        message.setDescription(parseByteField(AlertByteLength.DESCRIPTION_LENGTH));
+        message.setCompleteResultingMessage(getAlreadyParsed());
+        return message;
+    }
 }
