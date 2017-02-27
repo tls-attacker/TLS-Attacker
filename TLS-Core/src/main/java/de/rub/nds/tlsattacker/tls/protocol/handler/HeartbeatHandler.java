@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -104,16 +105,7 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
     @Override
     protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new HeartbeatMessageParser(pointer, message);
     }
 
     @Override

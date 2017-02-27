@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.CertificateRequestMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -176,17 +177,8 @@ public class CertificateRequestHandler<Message extends CertificateRequestMessage
     // }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    protected CertificateRequestMessageParser getParser(byte[] message, int pointer) {
+        return new CertificateRequestMessageParser(pointer, message);
     }
 
     @Override

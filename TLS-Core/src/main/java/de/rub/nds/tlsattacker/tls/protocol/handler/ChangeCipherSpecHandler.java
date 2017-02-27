@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -85,17 +86,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    protected ChangeCipherSpecParser getParser(byte[] message, int pointer) {
+        return new ChangeCipherSpecParser(pointer, message);
     }
 
     @Override

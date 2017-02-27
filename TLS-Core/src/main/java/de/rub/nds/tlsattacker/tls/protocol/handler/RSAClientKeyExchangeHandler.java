@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -256,17 +257,8 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     // }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    protected RSAClientKeyExchangeParser getParser(byte[] message, int pointer) {
+        return new RSAClientKeyExchangeParser(pointer, message);
     }
 
     @Override

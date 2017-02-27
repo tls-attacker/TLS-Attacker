@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -69,17 +70,8 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
     // }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    protected ServerHelloDoneParser getParser(byte[] message, int pointer) {
+        return new ServerHelloDoneParser(pointer, message);
     }
 
     @Override

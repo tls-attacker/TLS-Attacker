@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -159,17 +160,8 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
     // }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    protected ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
+        return new ECDHEServerKeyExchangeParser(pointer, message);
     }
 
     @Override
