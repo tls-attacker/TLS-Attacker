@@ -35,12 +35,6 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray namedCurve;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger publicKeyLength;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray publicKey;
-
     public ECDHEServerKeyExchangeMessage() {
         super();
     }
@@ -72,31 +66,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public void setNamedCurve(byte[] namedCurve) {
         this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
     }
-
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
-    }
-
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
-    }
-
-    public void setPublicKeyLength(int length) {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
-    }
-
-    public ModifiableByteArray getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(ModifiableByteArray publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public void setPublicKey(byte[] pubKey) {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, pubKey);
-    }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -110,11 +80,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if (this.publicKey != null) {
-            sb.append(ArrayConverter.bytesToHexString(this.publicKey.getValue()));
-        } else {
-            sb.append("null");
-        }
+        //TODO
         sb.append("\n  Signature Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2

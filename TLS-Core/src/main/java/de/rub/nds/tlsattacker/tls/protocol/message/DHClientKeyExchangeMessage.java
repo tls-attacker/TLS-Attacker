@@ -44,17 +44,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
     private ModifiableBigInteger x;
-    /**
-     * Length of the serialized public key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedPublicKeyLength;
-    /**
-     * serialized public key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedPublicKey;
-
+    
     public DHClientKeyExchangeMessage() {
         super();
     }
@@ -109,32 +99,6 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public void setX(BigInteger x) {
         this.x = ModifiableVariableFactory.safelySetValue(this.x, x);
-    }
-
-    public ModifiableInteger getSerializedPublicKeyLength() {
-        return serializedPublicKeyLength;
-    }
-
-    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
-        this.serializedPublicKeyLength = serializedPublicKeyLength;
-    }
-
-    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
-        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-                publicKeyLength);
-    }
-
-    public ModifiableByteArray getSerializedPublicKey() {
-        return serializedPublicKey;
-    }
-
-    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
-        this.serializedPublicKey = serializedPublicKey;
-    }
-
-    public void setSerializedPublicKey(byte[] serializedPublicKey) {
-        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-                serializedPublicKey);
     }
 
     @Override

@@ -84,16 +84,6 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray serializedG;
-    /**
-     * Length of the serialized public key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedPublicKeyLength;
-    /**
-     * serialized public key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedPublicKey;
 
     public DHEServerKeyExchangeMessage() {
         super();
@@ -234,33 +224,7 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public void setSerializedG(byte[] serializedG) {
         this.serializedG = ModifiableVariableFactory.safelySetValue(this.serializedG, serializedG);
     }
-
-    public ModifiableInteger getSerializedPublicKeyLength() {
-        return serializedPublicKeyLength;
-    }
-
-    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
-        this.serializedPublicKeyLength = serializedPublicKeyLength;
-    }
-
-    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
-        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-                publicKeyLength);
-    }
-
-    public ModifiableByteArray getSerializedPublicKey() {
-        return serializedPublicKey;
-    }
-
-    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
-        this.serializedPublicKey = serializedPublicKey;
-    }
-
-    public void setSerializedPublicKey(byte[] serializedPublicKey) {
-        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-                serializedPublicKey);
-    }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

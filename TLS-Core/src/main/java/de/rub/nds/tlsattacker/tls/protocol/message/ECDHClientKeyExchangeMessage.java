@@ -50,12 +50,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray supportedPointFormats;
-    /**
-     * Length of the serialized public key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger publicKeyLength;
-
+    
     public ECDHClientKeyExchangeMessage() {
         super();
     }
@@ -123,18 +118,6 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public void setSupportedPointFormats(byte[] supportedPointFormats) {
         this.supportedPointFormats = ModifiableVariableFactory.safelySetValue(this.supportedPointFormats,
                 supportedPointFormats);
-    }
-
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
-    }
-
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
-    }
-
-    public void setPublicKeyLength(Integer publicKeyLength) {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
     @Override

@@ -3,8 +3,7 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
@@ -43,6 +42,17 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
+
+    /**
+     * Length of the serialized public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger serializedPublicKeyLength;
+    /**
+     * serialized public key
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    private ModifiableByteArray serializedPublicKey;
 
     public ServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
@@ -100,4 +110,29 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
+    public ModifiableInteger getSerializedPublicKeyLength() {
+        return serializedPublicKeyLength;
+    }
+
+    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
+        this.serializedPublicKeyLength = serializedPublicKeyLength;
+    }
+
+    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
+        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
+                publicKeyLength);
+    }
+
+    public ModifiableByteArray getSerializedPublicKey() {
+        return serializedPublicKey;
+    }
+
+    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
+        this.serializedPublicKey = serializedPublicKey;
+    }
+
+    public void setSerializedPublicKey(byte[] serializedPublicKey) {
+        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
+                serializedPublicKey);
+    }
 }
