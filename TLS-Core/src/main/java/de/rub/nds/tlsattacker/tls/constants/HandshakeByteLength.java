@@ -98,11 +98,18 @@ public class HandshakeByteLength {
      * DH param length
      */
     public static final int DH_PARAM_LENGTH = 2;
-
+    /**
+     * Certificate Types Count in CertRequest
+     */
+    public static final int CERTIFICATES_TYPES_COUNT = 1;
     /**
      * Length of the signature hash algorithms length field
      */
     public static final int SIGNATURE_HASH_ALGORITHMS_LENGTH = 2;
+    /**
+     * Length of the signature hash algorithms field in the certificateVerify message
+     */
+    public static final int SIGNATURE_HASH_ALGORITHM = 2;
 
     /**
      * Length of the distinguished names length field
