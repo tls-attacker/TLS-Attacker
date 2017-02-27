@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
  */
 public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerifyRequestMessage> {
 
-    public HelloVerifyRequestParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public HelloVerifyRequestParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.HELLO_VERIFY_REQUEST);
     }
 
     @Override

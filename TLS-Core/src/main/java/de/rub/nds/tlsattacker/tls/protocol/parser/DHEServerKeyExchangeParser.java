@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
  */
 public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServerKeyExchangeMessage> {
 
-    public DHEServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public DHEServerKeyExchangeParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     @Override

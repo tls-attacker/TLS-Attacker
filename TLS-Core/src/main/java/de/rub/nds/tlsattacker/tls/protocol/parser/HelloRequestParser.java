@@ -21,8 +21,8 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
 
     private static final Logger LOGGER = LogManager.getLogger(HelloRequestParser.class);
 
-    public HelloRequestParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public HelloRequestParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.HELLO_REQUEST);
     }
 
     @Override

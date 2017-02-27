@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
  */
 public class CertificateVerifyMessageParser extends HandshakeMessageParser<CertificateVerifyMessage> {
 
-    public CertificateVerifyMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public CertificateVerifyMessageParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.CERTIFICATE_VERIFY);
     }
 
     @Override

@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
  */
 public class UnknownHandshakeMessageParser extends HandshakeMessageParser<UnknownHandshakeMessage> {
 
-    public UnknownHandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public UnknownHandshakeMessageParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.UNKNOWN);
     }
 
     @Override

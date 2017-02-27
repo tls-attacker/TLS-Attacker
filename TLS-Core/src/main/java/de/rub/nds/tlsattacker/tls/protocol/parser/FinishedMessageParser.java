@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
  */
 public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessage> {
 
-    public FinishedMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public FinishedMessageParser(int pointer, byte[] array) {
+        super(pointer, array, HandshakeMessageType.FINISHED);
     }
 
     @Override

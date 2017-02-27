@@ -26,6 +26,7 @@ public class ChangeCipherSpecParser extends Parser<ChangeCipherSpecMessage> {
     public ChangeCipherSpecMessage parse() {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
         message.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
 
