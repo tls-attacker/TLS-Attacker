@@ -36,17 +36,14 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
         message.setCipherSuites(parseByteArrayField(message.getCipherSuiteLength().getValue()));
         message.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
         message.setCompressions(parseByteArrayField(message.getCompressionLength().getValue()));
-        if(hasExtensionLengthField(message))
-        {
+        if (hasExtensionLengthField(message)) {
             parseExtensionLength(message);
-            if(hasExtensions(message))
-            {
+            if (hasExtensions(message)) {
                 parseExtensionBytes(message);
             }
         }
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
-    
+
 }

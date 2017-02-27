@@ -1,4 +1,4 @@
-    /**
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
@@ -15,5 +15,5 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientKeyExchangePreparator {
-    
+
 }

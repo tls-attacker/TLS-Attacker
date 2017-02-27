@@ -21,7 +21,7 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
     public DHClientKeyExchangeParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
+
     @Override
     public DHClientKeyExchangeMessage parse() {
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();

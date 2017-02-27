@@ -15,5 +15,5 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class HeartbeatMessagePreparator {
-    
+
 }

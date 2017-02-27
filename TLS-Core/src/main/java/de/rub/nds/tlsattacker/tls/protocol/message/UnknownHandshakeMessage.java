@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
@@ -22,7 +23,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class UnknownHandshakeMessage extends HandshakeMessage {
 
     private byte[] dataConfig;
-    
+
     @ModifiableVariableProperty
     private ModifiableByteArray data;
 
@@ -49,12 +50,10 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     public void setData(ModifiableByteArray data) {
         this.data = data;
     }
-    
+
     public void setData(byte[] data) {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
-    
-    
 
     @Override
     public String toCompactString() {

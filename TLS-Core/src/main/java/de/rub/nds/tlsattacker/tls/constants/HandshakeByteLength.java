@@ -116,7 +116,7 @@ public class HandshakeByteLength {
      * ECDHE param length
      */
     public static final int ECDHE_PARAM_LENGTH = 1;
-    
+
     /**
      * Certificate Types Count in CertRequest
      */
@@ -126,7 +126,8 @@ public class HandshakeByteLength {
      */
     public static final int SIGNATURE_HASH_ALGORITHMS_LENGTH = 2;
     /**
-     * Length of the signature hash algorithms field in the certificateVerify message
+     * Length of the signature hash algorithms field in the certificateVerify
+     * message
      */
     public static final int SIGNATURE_HASH_ALGORITHM = 2;
 
@@ -138,7 +139,7 @@ public class HandshakeByteLength {
      * Length of an elliptic curve field
      */
     public static final int ELLIPTIC_CURVE = 1;
-    
+
     /**
      * Length of the cookie field in DTLS ClientHello and ClientHelloVerify
      * messages.

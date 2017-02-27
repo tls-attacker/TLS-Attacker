@@ -44,7 +44,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
     private ModifiableBigInteger x;
-    
+
     public DHClientKeyExchangeMessage() {
         super();
     }

@@ -31,5 +31,5 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

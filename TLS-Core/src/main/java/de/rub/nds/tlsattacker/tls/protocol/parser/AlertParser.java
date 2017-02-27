@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AlertParser extends Parser<AlertMessage>{
+public class AlertParser extends Parser<AlertMessage> {
 
     public AlertParser(int startposition, byte[] array) {
         super(startposition, array);

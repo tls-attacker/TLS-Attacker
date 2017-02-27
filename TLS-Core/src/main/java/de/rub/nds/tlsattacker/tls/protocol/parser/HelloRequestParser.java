@@ -17,9 +17,8 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessage>{
+public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessage> {
 
-    
     private static final Logger LOGGER = LogManager.getLogger(HelloRequestParser.class);
 
     public HelloRequestParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
@@ -31,12 +30,11 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
         HelloRequestMessage message = new HelloRequestMessage();
         parseType(message);
         parseLength(message);
-        if(message.getLength().getValue() != 0)
-        {
+        if (message.getLength().getValue() != 0) {
             LOGGER.warn("Parsed HelloRequest with non-zero length! Not parsing payload.");
         }
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

@@ -224,7 +224,7 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public void setSerializedG(byte[] serializedG) {
         this.serializedG = ModifiableVariableFactory.safelySetValue(this.serializedG, serializedG);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

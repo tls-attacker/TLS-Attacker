@@ -66,7 +66,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public void setNamedCurve(byte[] namedCurve) {
         this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -80,7 +80,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        //TODO
+        // TODO
         sb.append("\n  Signature Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2

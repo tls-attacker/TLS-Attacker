@@ -50,7 +50,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray supportedPointFormats;
-    
+
     public ECDHClientKeyExchangeMessage() {
         super();
     }

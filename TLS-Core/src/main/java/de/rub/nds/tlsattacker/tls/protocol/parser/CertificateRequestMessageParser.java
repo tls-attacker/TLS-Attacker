@@ -36,5 +36,5 @@ public class CertificateRequestMessageParser extends HandshakeMessageParser<Cert
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

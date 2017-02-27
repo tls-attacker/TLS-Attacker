@@ -33,5 +33,5 @@ public class CertificateVerifyMessageParser extends HandshakeMessageParser<Certi
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

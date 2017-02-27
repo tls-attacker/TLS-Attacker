@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
     public CertificateMessageParser(int startposition, byte[] array) {
-        super(startposition, array,HandshakeMessageType.CERTIFICATE);
+        super(startposition, array, HandshakeMessageType.CERTIFICATE);
     }
 
     @Override
@@ -32,5 +32,5 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

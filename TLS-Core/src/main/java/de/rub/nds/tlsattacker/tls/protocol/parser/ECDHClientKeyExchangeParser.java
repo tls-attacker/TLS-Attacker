@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHClientKeyExchangeMessage>{
+public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHClientKeyExchangeMessage> {
 
     public ECDHClientKeyExchangeParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -32,5 +32,5 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

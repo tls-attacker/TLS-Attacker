@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDoneMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger(ServerHelloDoneParser.class);
-    
+
     public ServerHelloDoneParser(int pointer, byte[] array) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE);
     }
@@ -31,12 +31,11 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
         ServerHelloDoneMessage message = new ServerHelloDoneMessage();
         parseType(message);
         parseLength(message);
-        if(message.getLength().getValue() != 0)
-        {
+        if (message.getLength().getValue() != 0) {
             LOGGER.warn("Parsed ServerHelloDone with non-zero length! Not parsing payload.");
         }
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

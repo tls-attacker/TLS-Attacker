@@ -28,5 +28,5 @@ public class ChangeCipherSpecParser extends Parser<ChangeCipherSpecMessage> {
         message.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
         return message;
     }
-    
+
 }

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerifyRequestMessage>{
+public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerifyRequestMessage> {
 
     public HelloVerifyRequestParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
         super(pointer, array, expectedType);
@@ -33,5 +33,5 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }

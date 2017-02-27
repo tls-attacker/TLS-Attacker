@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HeartbeatMessageParser extends Parser<HeartbeatMessage>{
+public class HeartbeatMessageParser extends Parser<HeartbeatMessage> {
 
     public HeartbeatMessageParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -31,5 +31,5 @@ public class HeartbeatMessageParser extends Parser<HeartbeatMessage>{
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
-    
+
 }
