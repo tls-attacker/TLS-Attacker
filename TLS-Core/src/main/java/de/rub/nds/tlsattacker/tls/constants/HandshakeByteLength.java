@@ -33,7 +33,10 @@ public class HandshakeByteLength {
      * certificates)
      */
     public static final int CERTIFICATES_LENGTH = 3;
-
+    /**
+     * cipher suite length field length
+     */
+    public static final int CIPHER_SUITES_LENGTH = 2;
     /**
      * cipher suite byte length
      */
@@ -43,7 +46,10 @@ public class HandshakeByteLength {
      * compression length
      */
     public static final int COMPRESSION = 1;
-
+    /**
+     * compression length field length
+     */
+    public static final int COMPRESSION_LENGTH = 1;
     /**
      * message type length
      */
@@ -99,6 +105,19 @@ public class HandshakeByteLength {
      */
     public static final int DH_PARAM_LENGTH = 2;
     /**
+     * DHE param length
+     */
+    public static final int DHE_PARAM_LENGTH = 2;
+    /**
+     * ECDH param length
+     */
+    public static final int ECDH_PARAM_LENGTH = 1;
+    /**
+     * ECDHE param length
+     */
+    public static final int ECDHE_PARAM_LENGTH = 1;
+    
+    /**
      * Certificate Types Count in CertRequest
      */
     public static final int CERTIFICATES_TYPES_COUNT = 1;
@@ -115,7 +134,11 @@ public class HandshakeByteLength {
      * Length of the distinguished names length field
      */
     public static final int DISTINGUISHED_NAMES_LENGTH = 2;
-
+    /**
+     * Length of an elliptic curve field
+     */
+    public static final int ELLIPTIC_CURVE = 1;
+    
     /**
      * Length of the cookie field in DTLS ClientHello and ClientHelloVerify
      * messages.
