@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -79,7 +80,13 @@ public class ClientHelloMessage extends HelloMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
+    
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
+    private ModifiableByteArray cookie = null;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableByte cookieLength = null;
+    
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
     }
@@ -170,6 +177,30 @@ public class ClientHelloMessage extends HelloMessage {
         return supportedCipherSuites;
     }
 
+    public ModifiableByteArray getCookie() {
+        return cookie;
+    }
+
+    public ModifiableByte getCookieLength() {
+        return cookieLength;
+    }
+
+    public void setCookie(byte[] cookie) {
+        this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
+    }
+
+    public void setCookie(ModifiableByteArray cookie) {
+        this.cookie = cookie;
+    }
+
+    public void setCookieLength(byte cookieLength) {
+        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+    }
+
+    public void setCookieLength(ModifiableByte cookieLength) {
+        this.cookieLength = cookieLength;
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
