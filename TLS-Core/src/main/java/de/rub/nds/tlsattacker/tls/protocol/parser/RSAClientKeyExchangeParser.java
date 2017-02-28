@@ -23,7 +23,7 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
     }
 
     @Override
-    public ClientKeyExchangeMessage parse() {
+    public RSAClientKeyExchangeMessage parse() {
         RSAClientKeyExchangeMessage message = new RSAClientKeyExchangeMessage();
         parseType(message);
         parseLength(message);
