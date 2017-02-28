@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParserTest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParserTest;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class UnknownExtensionParserTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessageParserTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserTest.class);
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {

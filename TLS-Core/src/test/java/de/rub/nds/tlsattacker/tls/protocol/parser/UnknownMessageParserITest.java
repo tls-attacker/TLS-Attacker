@@ -15,22 +15,21 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class UnknownMessageParserITest {
 
     private UnknownMessageParser parser;
 
     public UnknownMessageParserITest() {
     }
-
-    @Before
-    public void setUp() {
-    }
-
+    
     /**
      * Test of parse method, of class UnknownMessageParser.
      */

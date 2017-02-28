@@ -9,23 +9,24 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class UnknownMessageParserTest {
 
     private UnknownMessageParser parser;
 
     public UnknownMessageParserTest() {
-    }
-
-    @Before
-    public void setUp() {
     }
 
     /**

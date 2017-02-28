@@ -23,15 +23,11 @@ import org.junit.experimental.categories.Category;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerHelloMessageParserITest {
+public class ServerHelloParserITest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessageParserITest.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserITest.class);
 
-    public ServerHelloMessageParserITest() {
-    }
-
-    @Before
-    public void setUp() {
+    public ServerHelloParserITest() {
     }
 
     /**
@@ -53,7 +49,7 @@ public class ServerHelloMessageParserITest {
                 if (bytesToParse.length > start) {
                     bytesToParse[start] = 0x02;
                 }
-                ServerHelloMessageParser parser = new ServerHelloMessageParser(start, bytesToParse);
+                ServerHelloParser parser = new ServerHelloParser(start, bytesToParse);
                 ServerHelloMessage helloMessage = parser.parse();
                 if (helloMessage != null) {
                     counter++;

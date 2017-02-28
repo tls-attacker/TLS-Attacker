@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloMessageParserITest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParserITest;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ import org.junit.experimental.categories.Category;
  */
 public class ServerHelloMessageSerializerITest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessageParserITest.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserITest.class);
 
     public ServerHelloMessageSerializerITest() {
     }
@@ -52,7 +52,7 @@ public class ServerHelloMessageSerializerITest {
                 if (bytesToParse.length > start) {
                     bytesToParse[start] = 0x02;
                 }
-                ServerHelloMessageParser parser = new ServerHelloMessageParser(start, bytesToParse);
+                ServerHelloParser parser = new ServerHelloParser(start, bytesToParse);
                 helloMessage = parser.parse();
             } catch (ParserException E) {
                 continue;
@@ -65,7 +65,7 @@ public class ServerHelloMessageSerializerITest {
             LOGGER.debug("Bytes to parse:\t" + ArrayConverter.bytesToHexString(bytesToParse, false));
             LOGGER.debug("Expected:\t" + ArrayConverter.bytesToHexString(expected, false));
             LOGGER.debug("Result:\t" + ArrayConverter.bytesToHexString(result, false));
-            ServerHelloMessageParser parser2 = new ServerHelloMessageParser(0, result);
+            ServerHelloParser parser2 = new ServerHelloParser(0, result);
             ServerHelloMessage serialized = parser2.parse();
             LOGGER.debug(serialized.toString());
             assertArrayEquals(result, expected);

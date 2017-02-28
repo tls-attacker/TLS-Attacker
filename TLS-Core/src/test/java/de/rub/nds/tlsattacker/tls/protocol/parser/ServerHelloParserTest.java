@@ -30,9 +30,9 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Robert Merget - robert.merget@rub.de
  */
 @RunWith(Parameterized.class)
-public class ServerHelloMessageParserTest {
+public class ServerHelloParserTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessageParserTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParserTest.class);
 
     @Parameters
     public static Collection<Object[]> generateData() {
@@ -80,7 +80,7 @@ public class ServerHelloMessageParserTest {
     private final byte selectedCompression;
     private final Integer extensionLength;
 
-    public ServerHelloMessageParserTest(byte[] message, byte messageType, int messageLength, byte[] protocolVersion,
+    public ServerHelloParserTest(byte[] message, byte messageType, int messageLength, byte[] protocolVersion,
             byte[] unixTime, byte[] random, int sessionIdLength, byte[] sessionID, byte[] selectedCiphersuite,
             byte selectedCompression, Integer extensionLength) {
         this.message = message;
@@ -96,16 +96,12 @@ public class ServerHelloMessageParserTest {
         this.extensionLength = extensionLength;
     }
 
-    @Before
-    public void setUp() {
-    }
-
     /**
      * Test of parse method, of class ServerHelloMessageParser.
      */
     @Test
     public void verify() {
-        ServerHelloMessageParser parser = new ServerHelloMessageParser(0, message);
+        ServerHelloParser parser = new ServerHelloParser(0, message);
         ServerHelloMessage helloMessage = parser.parse();
         assertTrue(helloMessage.getType().getValue() == messageType);
         assertTrue(helloMessage.getLength().getValue() == messageLength);
