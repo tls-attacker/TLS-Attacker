@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;

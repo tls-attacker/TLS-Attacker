@@ -8,23 +8,23 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandlerBearer;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.DHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.FinishedHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.HelloRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.RSAClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloDoneHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownHandshakeMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateVerifyHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HelloRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloDoneHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.HashMap;
@@ -36,51 +36,16 @@ import java.util.Map;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
+public enum HandshakeMessageType {
 
-    HELLO_REQUEST((byte) 0) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new HelloRequestHandler(tlsContext);
-        }
-    },
-    CLIENT_HELLO((byte) 1) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new ClientHelloHandler<>(tlsContext);
-        }
-    },
-    SERVER_HELLO((byte) 2) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new ServerHelloHandler(tlsContext);
-        }
-    },
-    HELLO_VERIFY_REQUEST((byte) 3) {
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new HelloVerifyRequestHandler<>(tlsContext);
-        }
-    },
-    NEW_SESSION_TICKET((byte) 4) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            throw new UnsupportedOperationException("Message " + NEW_SESSION_TICKET + " NOT supported yet.");
-        }
-    },
-    CERTIFICATE((byte) 11) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new CertificateHandler(tlsContext);
-        }
-    },
+    UNKNOWN,
+    HELLO_REQUEST((byte) 0),
+    CLIENT_HELLO((byte) 1),
+    SERVER_HELLO((byte) 2),
+    HELLO_VERIFY_REQUEST((byte) 3),
+    NEW_SESSION_TICKET((byte) 4),
+    CERTIFICATE((byte) 11),
     SERVER_KEY_EXCHANGE((byte) 12) {
-        @Override
         ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
             CipherSuite cs = tlsContext.getSelectedCipherSuite();
             KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
@@ -98,29 +63,11 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
             }
         }
     },
-    CERTIFICATE_REQUEST((byte) 13) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new CertificateRequestHandler<>(tlsContext);
-        }
-    },
-    SERVER_HELLO_DONE((byte) 14) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new ServerHelloDoneHandler(tlsContext);
-        }
-    },
-    CERTIFICATE_VERIFY((byte) 15) {
-
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new CertificateVerifyHandler<>(tlsContext);
-        }
-    },
+    CERTIFICATE_REQUEST((byte) 13),
+    SERVER_HELLO_DONE((byte) 14),
+    CERTIFICATE_VERIFY((byte) 15),
     CLIENT_KEY_EXCHANGE((byte) 16) {
-        @Override
+
         ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
             CipherSuite cs = tlsContext.getSelectedCipherSuite();
             KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
@@ -140,15 +87,9 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
             }
         }
     },
-    FINISHED((byte) 20) {
+    FINISHED((byte) 20);
 
-        @Override
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            return new FinishedHandler(tlsContext);
-        }
-    };
-
-    private byte value;
+    private int value;
 
     private ConnectionEnd messageSender;
 
@@ -158,10 +99,14 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
         this.value = value;
     }
 
+    private HandshakeMessageType() {
+        this.value = -1;
+    }
+
     static {
         MAP = new HashMap<>();
         for (HandshakeMessageType cm : HandshakeMessageType.values()) {
-            MAP.put(cm.value, cm);
+            MAP.put((byte) cm.value, cm);
         }
     }
 
@@ -176,21 +121,14 @@ public enum HandshakeMessageType implements ProtocolMessageHandlerBearer {
     }
 
     public byte getValue() {
-        return value;
+        return (byte) value;
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] { (byte) value };
     }
 
     public final String getName() {
         return this.name();
-    }
-
-    abstract ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext);
-
-    @Override
-    public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(TlsContext tlsContext) {
-        return getMessageHandler(tlsContext);
     }
 }

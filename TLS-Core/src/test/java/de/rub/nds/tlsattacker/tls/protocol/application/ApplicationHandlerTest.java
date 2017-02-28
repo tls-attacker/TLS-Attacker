@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.application;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ApplicationHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import static org.junit.Assert.assertArrayEquals;

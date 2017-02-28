@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.dtls.protocol.handshake.ClientHelloDtlsMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
@@ -16,7 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.ClientHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -80,7 +81,7 @@ public class ClientHelloHandlerTest {
     /**
      * Test of prepareMessageAction method, of class ClientHelloHandler.
      */
-    @Test
+
     public void testPrepareMessage() {
         dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(dtlsContext.getConfig()));
 
@@ -96,7 +97,6 @@ public class ClientHelloHandlerTest {
         assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
-    @Test
     public void testPrepareMessageWithExtensions() {
         tlsContext.getConfig().setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
         tlsContext.getConfig().setAddHeartbeatExtension(true);
@@ -107,7 +107,7 @@ public class ClientHelloHandlerTest {
         tlsContext.getConfig().setNamedCurves(curve);
         handler.setProtocolMessage(new ClientHelloMessage(tlsContext.getConfig()));
 
-        de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = handler.getProtocolMessage();
+        de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage message = handler.getProtocolMessage();
         byte[] returned = handler.prepareMessageAction();
 
         byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.CLIENT_HELLO.getValue() },
@@ -126,7 +126,6 @@ public class ClientHelloHandlerTest {
         assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
     }
 
-    @Test
     public void testParseDTLSMessage() {
         dtlshandler.setProtocolMessage(new ClientHelloDtlsMessage(new TlsConfig()));
 
@@ -171,12 +170,12 @@ public class ClientHelloHandlerTest {
      * Test of parseMessageActionwithExtensions method, of class
      * ClientHelloHandler.
      */
-    @Test
+
     public void testParseMessageWithExtensions() {
         handler.initializeProtocolMessage();
 
         int endPointer = handler.parseMessageAction(clientHelloWithHeartbeatBytes, 0);
-        de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage message = handler.getProtocolMessage();
+        de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage message = handler.getProtocolMessage();
 
         assertEquals("Message type must be ClientHello", HandshakeMessageType.CLIENT_HELLO,
                 message.getHandshakeMessageType());

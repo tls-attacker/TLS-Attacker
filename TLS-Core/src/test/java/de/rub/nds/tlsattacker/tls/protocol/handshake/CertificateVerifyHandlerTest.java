@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.CertificateVerifyHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateVerifyHandler;
 
 import java.util.Arrays;
 

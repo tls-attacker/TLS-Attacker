@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.alert.AlertHandler;
-import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationHandler;
-import de.rub.nds.tlsattacker.tls.protocol.ccs.ChangeCipherSpecHandler;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.AlertHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ApplicationHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ChangeCipherSpecHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +67,7 @@ public enum ProtocolMessageType {
             case HANDSHAKE:
                 HandshakeMessageType hmt = HandshakeMessageType.getMessageType(value);
                 LOGGER.debug("Trying to get a protocol message handler for the following handshake message: {}", hmt);
-                pmh = hmt.getProtocolMessageHandler(tlsContext);
+                // TODO pmh = hmt.getProtocolMessageHandler(tlsContext);
                 break;
             case CHANGE_CIPHER_SPEC:
                 pmh = new ChangeCipherSpecHandler(tlsContext);

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.security.cert.CertificateParsingException;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.util.encoders.Base64;
 
@@ -46,8 +46,7 @@ public class TestCertificates {
         try {
             ByteArrayInputStream bin = new ByteArrayInputStream(cert1);
             ASN1InputStream ain = new ASN1InputStream(bin);
-            ASN1Sequence seq = (ASN1Sequence) ain.readObject();
-            Certificate obj = Certificate.getInstance(seq);
+            Certificate obj = Certificate.parse(ain);
             return obj;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -57,7 +56,7 @@ public class TestCertificates {
 
     public static X509CertificateObject getTestCertificateObject() {
         try {
-            X509CertificateObject obj = new X509CertificateObject(getTestCertificate());
+            X509CertificateObject obj = new X509CertificateObject(getTestCertificate().getCertificateAt(0));
             return obj;
         } catch (CertificateParsingException ex) {
             ex.printStackTrace();

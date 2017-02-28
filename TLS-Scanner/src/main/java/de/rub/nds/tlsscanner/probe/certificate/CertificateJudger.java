@@ -20,6 +20,8 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.util.LinkedList;
 import java.util.List;
+import org.bouncycastle.asn1.x509.Certificate;
+
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -28,11 +30,11 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateJudger {
 
-    public List<ConfigurationFlaw> getFlaws(X509CertificateObject certificate, String domainName) {
+    public List<ConfigurationFlaw> getFlaws(Certificate certificate, String domainName) {
         List<ConfigurationFlaw> configurationFlaws = new LinkedList<>();
-        if(certificate == null)
-        {
-            configurationFlaws.add(new ConfigurationFlaw("Could not retrieve Certificate", FlawLevel.FATAL, domainName, ""));
+        if (certificate == null) {
+            configurationFlaws.add(new ConfigurationFlaw("Could not retrieve Certificate", FlawLevel.FATAL, domainName,
+                    ""));
             return configurationFlaws;
         }
         if (isCertificateExpired(certificate)) {
@@ -97,80 +99,80 @@ public class CertificateJudger {
         return configurationFlaws;
     }
 
-    public boolean isWeakKey(X509CertificateObject certificate) {
+    public boolean isWeakKey(Certificate certificate) {
         // TODO
         return false;
     }
 
-    public ConfigurationFlaw getWeakKeyFlaw(X509CertificateObject certificate) {
+    public ConfigurationFlaw getWeakKeyFlaw(Certificate certificate) {
         // TODO
         return new ConfigurationFlaw(null, FlawLevel.FATAL, null, null);
     }
 
-    public boolean isCertificateExpired(X509CertificateObject certificate) {
-        try {
-            certificate.checkValidity();
-        } catch (CertificateExpiredException E) {
-            return true;
-        } catch (CertificateNotYetValidException E) {
-            return false;
-        }
+    public boolean isCertificateExpired(Certificate certificate) {
+        // try {
+        // certificate.checkValidity();
+        // } catch (CertificateExpiredException E) {
+        // return true;
+        // } catch (CertificateNotYetValidException E) {
+        // return false;
+        // }//TODO
         return false;
     }
 
-    public boolean isCertificateValidYet(X509CertificateObject certificate) {
-        try {
-            certificate.checkValidity();
-        } catch (CertificateNotYetValidException E) {
-            return true;
-        } catch (CertificateExpiredException E) {
-            return false;
-        }
+    public boolean isCertificateValidYet(Certificate certificate) {
+        // try {
+        // certificate.checkValidity();
+        // } catch (CertificateNotYetValidException E) {
+        // return true;
+        // } catch (CertificateExpiredException E) {
+        // return false;
+        // }//TODO
         return false;
     }
 
-    public boolean isRevoked(X509CertificateObject certificate) {
+    public boolean isRevoked(Certificate certificate) {
         // TODO
         return false;
     }
 
-    public boolean usesMD2signature(X509CertificateObject certificate) {
+    public boolean usesMD2signature(Certificate certificate) {
         // TODO
         // if(certificate.)
         return false;
     }
 
-    public boolean usesMD5signature(X509CertificateObject certificate) {
+    public boolean usesMD5signature(Certificate certificate) {
         // TODO
         return false;
     }
 
-    public boolean domainNameDoesNotMatch(X509CertificateObject certificate, String domainName) {
+    public boolean domainNameDoesNotMatch(Certificate certificate, String domainName) {
         // TODO
         return false;
     }
 
-    private boolean isNotTrusted(X509CertificateObject certificate) {
+    private boolean isNotTrusted(Certificate certificate) {
         // TODO
         return false;
     }
 
-    private boolean isSelfSigned(X509CertificateObject certificate) {
+    private boolean isSelfSigned(Certificate certificate) {
         return false;
-        //TODO
-        //throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // TODO
+        // throw new UnsupportedOperationException("Not supported yet."); // To
+        // change
+        // body
+        // of
+        // generated
+        // methods,
+        // choose
+        // Tools
+        // |
+        // Templates.
     }
 
-    public List<ResultValue> getResults(X509CertificateObject serverCert, String serverHost) {
+    public List<ResultValue> getResults(Certificate serverCert, String serverHost) {
         return new LinkedList<>();
         // TODO
     }

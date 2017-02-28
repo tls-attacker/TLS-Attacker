@@ -43,8 +43,8 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         extension.setPointFormatsLength(pointFormats != null ? pointFormats.length : 0);
         extensionMessage.setExtensionLength(extension.getPointFormatsLength().getValue() + EC_POINT_FORMATS_LENGTH);
 
-        byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(),
-                ArrayConverter.intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS),
+        byte[] pfExtension = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
                 ArrayConverter.intToBytes(extension.getPointFormatsLength().getValue(), EC_POINT_FORMATS_LENGTH),
                 extension.getPointFormats().getValue());
 
@@ -66,7 +66,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         extensionMessage.setExtensionType(extensionType);
 
         pointer = nextPointer;
-        nextPointer = pointer + ExtensionByteLength.EXTENSIONS;
+        nextPointer = pointer + ExtensionByteLength.EXTENSIONS_LENGTH;
         int extensionLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(message, pointer, nextPointer));
         extensionMessage.setExtensionLength(extensionLength);
 

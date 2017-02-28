@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.heartbeat;
 
+import de.rub.nds.tlsattacker.tls.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;

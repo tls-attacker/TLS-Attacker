@@ -48,11 +48,11 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
         extension.setSignatureAndHashAlgorithms(algorithms);
         extension.setSignatureAndHashAlgorithmsLength(algorithms != null ? algorithms.length : 0);
         extension.setExtensionLength(extension.getSignatureAndHashAlgorithmsLength().getValue()
-                + ExtensionByteLength.EXTENSIONS);
+                + ExtensionByteLength.EXTENSIONS_LENGTH);
 
         byte[] extensionBytes = ArrayConverter.concatenate(extension.getExtensionType().getValue(), ArrayConverter
-                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS), ArrayConverter
-                .intToBytes(extension.getSignatureAndHashAlgorithmsLength().getValue(),
+                .intToBytes(extension.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH),
+                ArrayConverter.intToBytes(extension.getSignatureAndHashAlgorithmsLength().getValue(),
                         SIGNATURE_AND_HASH_ALGORITHMS_LENGTH), extension.getSignatureAndHashAlgorithms().getValue());
 
         extension.setExtensionBytes(extensionBytes);
@@ -90,7 +90,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
         // set extension and signature and hash algorithm extension length
         extension.setExtensionLength(ArrayConverter.bytesToInt(new byte[] { message[newPointer],
                 message[newPointer + 1] }));
-        newPointer += ExtensionByteLength.EXTENSIONS;
+        newPointer += ExtensionByteLength.EXTENSIONS_LENGTH;
 
         extension.setSignatureAndHashAlgorithmsLength(ArrayConverter.bytesToInt(new byte[] { message[newPointer],
                 message[newPointer + 1] }));

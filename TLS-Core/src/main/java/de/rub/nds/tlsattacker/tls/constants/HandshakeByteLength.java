@@ -19,11 +19,24 @@ public class HandshakeByteLength {
     public static final int CERTIFICATE_LENGTH = 3;
 
     /**
+     * version field length
+     */
+    public static final int VERSION = 2;
+
+    /**
+     * extension length field length
+     */
+    public static final int EXTENSION_LENGTH = 2;
+
+    /**
      * certificates length field (certificate array can include several
      * certificates)
      */
     public static final int CERTIFICATES_LENGTH = 3;
-
+    /**
+     * cipher suite length field length
+     */
+    public static final int CIPHER_SUITES_LENGTH = 2;
     /**
      * cipher suite byte length
      */
@@ -33,7 +46,10 @@ public class HandshakeByteLength {
      * compression length
      */
     public static final int COMPRESSION = 1;
-
+    /**
+     * compression length field length
+     */
+    public static final int COMPRESSION_LENGTH = 1;
     /**
      * message type length
      */
@@ -42,7 +58,7 @@ public class HandshakeByteLength {
     /**
      * length of the length field included in this message type
      */
-    public static final int MESSAGE_TYPE_LENGTH = 3;
+    public static final int MESSAGE_LENGTH_FIELD = 3;
 
     /**
      * random length
@@ -88,16 +104,41 @@ public class HandshakeByteLength {
      * DH param length
      */
     public static final int DH_PARAM_LENGTH = 2;
+    /**
+     * DHE param length
+     */
+    public static final int DHE_PARAM_LENGTH = 2;
+    /**
+     * ECDH param length
+     */
+    public static final int ECDH_PARAM_LENGTH = 1;
+    /**
+     * ECDHE param length
+     */
+    public static final int ECDHE_PARAM_LENGTH = 1;
 
+    /**
+     * Certificate Types Count in CertRequest
+     */
+    public static final int CERTIFICATES_TYPES_COUNT = 1;
     /**
      * Length of the signature hash algorithms length field
      */
     public static final int SIGNATURE_HASH_ALGORITHMS_LENGTH = 2;
+    /**
+     * Length of the signature hash algorithms field in the certificateVerify
+     * message
+     */
+    public static final int SIGNATURE_HASH_ALGORITHM = 2;
 
     /**
      * Length of the distinguished names length field
      */
     public static final int DISTINGUISHED_NAMES_LENGTH = 2;
+    /**
+     * Length of an elliptic curve field
+     */
+    public static final int ELLIPTIC_CURVE = 1;
 
     /**
      * Length of the cookie field in DTLS ClientHello and ClientHelloVerify

@@ -9,11 +9,12 @@
 package de.rub.nds.tlsattacker.tls.util;
 
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
-import de.rub.nds.tlsattacker.tls.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -22,10 +23,13 @@ import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.PublicKey;
+import java.security.cert.CertificateParsingException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
@@ -36,27 +40,17 @@ public class CertificateFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateFetcher.class);
 
-    public static PublicKey fetchServerPublicKey(String connect, List<CipherSuite> cipherSuites) {
-        TlsConfig config = new TlsConfig();
-        config.setHost(connect);
-        config.setSupportedCiphersuites(cipherSuites);
-        X509CertificateObject cert = fetchServerCertificate(config);
-        return cert.getPublicKey();
-    }
-
-    public static X509CertificateObject fetchServerCertificate(String connect, List<CipherSuite> cipherSuites) {
-        TlsConfig config = new TlsConfig();
-        config.setHost(connect);
-        config.setSupportedCiphersuites(cipherSuites);
-        return fetchServerCertificate(config);
-    }
-
     public static PublicKey fetchServerPublicKey(TlsConfig config) {
-        X509CertificateObject cert = fetchServerCertificate(config);
+        X509CertificateObject cert;
+        try {
+            cert = new X509CertificateObject(fetchServerCertificate(config).getCertificateAt(0));
+        } catch (CertificateParsingException ex) {
+            throw new WorkflowExecutionException("Could not get public key from server certificate", ex);
+        }
         return cert.getPublicKey();
     }
 
-    public static X509CertificateObject fetchServerCertificate(TlsConfig config) {
+    public static Certificate fetchServerCertificate(TlsConfig config) {
         ConfigHandler configHandler = new ConfigHandler();
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
         TlsContext context = configHandler.initializeTlsContext(config);
@@ -80,7 +74,7 @@ public class CertificateFetcher {
             LOGGER.warn("Error while Fetching Certificate", E);
         }
         transportHandler.closeConnection();
-        return context.getX509ServerCertificateObject();
+        return context.getServerCertificate();
     }
 
     private CertificateFetcher() {

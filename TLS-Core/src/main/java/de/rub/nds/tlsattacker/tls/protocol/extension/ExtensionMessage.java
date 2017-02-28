@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -79,8 +81,6 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
         return extensionTypeConstant;
     }
 
-    public abstract ExtensionHandler<? extends ExtensionMessage> getExtensionHandler();
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -97,4 +97,8 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder implemen
         }
         return sb.toString();
     }
+
+    public abstract ExtensionPreparator<? extends ExtensionMessage> getExtensionPreparator();
+
+    public abstract ExtensionSerializer<? extends ExtensionMessage> getExtensionSerializer();
 }

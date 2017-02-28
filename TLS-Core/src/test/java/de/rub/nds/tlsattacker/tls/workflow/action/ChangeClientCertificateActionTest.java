@@ -57,8 +57,7 @@ public class ChangeClientCertificateActionTest {
         dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
-        action = new ChangeClientCertificateAction(TestCertificates.getTestCertificate(),
-                TestCertificates.getTestCertificateObject());
+        action = new ChangeClientCertificateAction(TestCertificates.getTestCertificate());
         dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
 
@@ -81,28 +80,8 @@ public class ChangeClientCertificateActionTest {
     @Test
     public void testGetOldValue() {
         tlsContext.setClientCertificate(TestCertificates.getTestCertificate());
-        tlsContext.setX509ClientCertificateObject(TestCertificates.getTestCertificateObject());
         action.execute(tlsContext, executor);
         assertEquals(action.getOldValue(), TestCertificates.getTestCertificate());
-    }
-
-    /**
-     * Test of getX509newValue method, of class ChangeClientCertificateAction.
-     */
-    @Test
-    public void testGetX509newValue() {
-        assertEquals(action.getX509newValue(), TestCertificates.getTestCertificateObject());
-    }
-
-    /**
-     * Test of getX509oldValue method, of class ChangeClientCertificateAction.
-     */
-    @Test
-    public void testGetX509oldValue() {
-        tlsContext.setClientCertificate(TestCertificates.getTestCertificate());
-        tlsContext.setX509ClientCertificateObject(TestCertificates.getTestCertificateObject());
-        action.execute(tlsContext, executor);
-        assertEquals(action.getX509oldValue(), TestCertificates.getTestCertificateObject());
     }
 
     /**
@@ -111,7 +90,6 @@ public class ChangeClientCertificateActionTest {
     @Test
     public void testExecute() {
         action.execute(tlsContext, executor);
-        assertEquals(action.getX509newValue(), TestCertificates.getTestCertificateObject());
         assertEquals(action.getNewValue(), TestCertificates.getTestCertificate());
     }
 

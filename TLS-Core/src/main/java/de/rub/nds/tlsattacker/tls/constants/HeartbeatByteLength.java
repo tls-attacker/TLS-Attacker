@@ -16,6 +16,10 @@ public class HeartbeatByteLength {
     /**
      * payload length field
      */
+    public static final int TYPE = 1;
+    /**
+     * payload length field
+     */
     public static final int PAYLOAD_LENGTH = 2;
 
 }

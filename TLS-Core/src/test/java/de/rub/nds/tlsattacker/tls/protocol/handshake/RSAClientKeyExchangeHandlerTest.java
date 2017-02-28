@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handshake;
 
-import de.rub.nds.tlsattacker.tls.protocol.handshake.handler.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -93,13 +93,10 @@ public class RSAClientKeyExchangeHandlerTest {
             org.bouncycastle.asn1.x509.Certificate[] certs = new org.bouncycastle.asn1.x509.Certificate[1];
             certs[0] = cert;
             Certificate tlsCerts = new Certificate(certs);
-
-            X509CertificateObject x509CertObject = new X509CertificateObject(tlsCerts.getCertificateAt(0));
-
-            tlsContext.setServerCertificate(tlsCerts.getCertificateAt(0));
-            tlsContext.setX509ServerCertificateObject(x509CertObject);
+            tlsContext.setServerCertificate(tlsCerts);
+            tlsContext.setServerCertificate(tlsCerts);
             tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        } catch (KeyStoreException | CertificateEncodingException | IOException | CertificateParsingException ex) {
+        } catch (KeyStoreException | CertificateEncodingException | IOException ex) {
             throw new ConfigurationException("Certificate with the selected alias could not be found", ex);
         }
         handler = new RSAClientKeyExchangeHandler(tlsContext);
