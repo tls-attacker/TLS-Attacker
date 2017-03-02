@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Before;
@@ -30,9 +31,9 @@ public class ECDHEServerKeyExchangeParserTest {
         return Arrays
                 .asList(new Object[][] {
                         {
+                            ArrayConverter.hexStringToByteArray(""),
                         },
-                        {
-                        }});
+                        });
     }
     private byte[] message;
     private int start;
