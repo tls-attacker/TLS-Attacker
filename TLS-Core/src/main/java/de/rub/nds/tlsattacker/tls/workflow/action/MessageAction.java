@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
@@ -53,7 +52,6 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
             @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-            @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
             @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
             @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
@@ -77,7 +75,6 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
             @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-            @XmlElement(type = ClientHelloDtlsMessage.class, name = "DtlsClientHello"),
             @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
             @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
@@ -120,8 +121,8 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
         LOGGER.debug("Preparing the following protocol message to send: {}", message.getClass());
-        ProtocolMessageHandler handler = message.getProtocolMessageHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage();
+        ProtocolMessageHandler handler = null;//TODO// message.getProtocolMessageHandler(context);
+        byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;
     }
 
@@ -232,11 +233,11 @@ public class TLSActionExecutor extends ActionExecutor {
                     new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
                 context.getConfig().setRenegotiation(true);
             } else {
-
-                dataPointer = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
-                LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
-                receivedMessages.add(pmh.getProtocolMessage());
-                if (receivedFatalAlert(pmh)) {
+                ParserResult result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
+                dataPointer = result.getParserPosition();
+                LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
+                receivedMessages.add(result.getMessage());
+                if (receivedFatalAlert(result.getMessage())) {
                     if (!context.getConfig().isFuzzingMode()) {
                         workflowContext.setProceedWorkflow(false);
                     }
@@ -253,9 +254,9 @@ public class TLSActionExecutor extends ActionExecutor {
      * @param protocolMessageHandler
      *            ProtocolmessageHandler to analyze
      */
-    private boolean receivedFatalAlert(ProtocolMessageHandler protocolMessageHandler) {
-        if (protocolMessageHandler.getProtocolMessage().getProtocolMessageType() == ProtocolMessageType.ALERT) {
-            AlertMessage am = (AlertMessage) protocolMessageHandler.getProtocolMessage();
+    private boolean receivedFatalAlert(ProtocolMessage msg) {
+        if (msg instanceof AlertMessage) {
+            AlertMessage am = (AlertMessage) msg;
             if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
                 LOGGER.debug("The workflow received a FATAL error");
                 return true;

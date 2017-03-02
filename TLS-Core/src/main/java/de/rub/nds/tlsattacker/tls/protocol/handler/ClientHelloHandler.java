@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloDtlsMessage;
+
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;

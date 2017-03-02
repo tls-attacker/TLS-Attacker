@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.factory;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloDtlsMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
@@ -72,7 +71,7 @@ public class WorkflowConfigurationFactory {
         ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
-            clientHello = new ClientHelloDtlsMessage(config);
+            clientHello = new ClientHelloMessage(config);
             clientHello.setIncludeInDigest(false);
         } else {
             clientHello = new ClientHelloMessage(config);
@@ -91,7 +90,7 @@ public class WorkflowConfigurationFactory {
             messages.add(helloVerifyRequestMessage);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
-            clientHello = new ClientHelloDtlsMessage(config);
+            clientHello = new ClientHelloMessage(config);
             messages = new LinkedList<>();
             messages.add(clientHello);
             workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,

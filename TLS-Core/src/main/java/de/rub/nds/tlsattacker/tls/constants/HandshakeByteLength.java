@@ -101,9 +101,20 @@ public class HandshakeByteLength {
     public static final int SIGNATURE_LENGTH = 2;
 
     /**
-     * DH param length
+     * DH p length
      */
-    public static final int DH_PARAM_LENGTH = 2;
+
+    public static final int DH_P_LENGTH = 2;
+    /**
+     * DH g length
+     */
+
+    public static final int DH_G_LENGTH = 2;
+    /**
+     * DH public key length
+     */
+
+    public static final int DH_PUBLICKEY_LENGTH = 2;
     /**
      * DHE param length
      */
@@ -125,6 +136,14 @@ public class HandshakeByteLength {
      * Length of the signature hash algorithms length field
      */
     public static final int SIGNATURE_HASH_ALGORITHMS_LENGTH = 2;
+    /**
+     * Length of the signature algorithm field
+     */
+    public static final int SIGNATURE = 1;
+    /**
+     * Length of the hash algorithm field
+     */
+    public static final int HASH = 1;
     /**
      * Length of the signature hash algorithms field in the certificateVerify
      * message

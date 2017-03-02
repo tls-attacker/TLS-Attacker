@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
@@ -170,9 +171,9 @@ public class DTLSActionExecutor extends ActionExecutor {
      * @throws IOException
      */
     private void handleMyNonHandshakeMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler pmh = null;//TODO//protocolMessage.getProtocolMessageHandler(tlsContext);
 
-        byte[] messageBytes = pmh.prepareMessage();
+        byte[] messageBytes = pmh.prepareMessage(protocolMessage);
         if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
             protocolMessage.addRecord(new DtlsRecord());
         }
@@ -189,8 +190,8 @@ public class DTLSActionExecutor extends ActionExecutor {
      * @throws IOException
      */
     private void handleMyChangeCipherSpecMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = protocolMessage.getProtocolMessageHandler(tlsContext);
-        byte[] messageBytes = pmh.prepareMessage();
+        ProtocolMessageHandler pmh = null; //TODO//protocolMessage.getProtocolMessageHandler(tlsContext);
+        byte[] messageBytes = pmh.prepareMessage(protocolMessage);
 
         retransmitList.add(messageBytes);
 
@@ -204,9 +205,9 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
-        ProtocolMessageHandler pmh = handshakeMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler pmh = null;//TODO//handshakeMessage.getProtocolMessageHandler(tlsContext);
         handshakeMessage.setMessageSeq(sendHandshakeMessageSeq);
-        byte[] handshakeMessageBytes = pmh.prepareMessage();
+        byte[] handshakeMessageBytes = pmh.prepareMessage(previousMessage);
 
         handshakeMessageSendBuffer = ArrayConverter.concatenate(handshakeMessageSendBuffer,
                 handshakeFragmentHandler.fragmentHandshakeMessage(handshakeMessageBytes, maxPacketSize - 25));
@@ -310,15 +311,15 @@ public class DTLSActionExecutor extends ActionExecutor {
                 .getValue());
         ProtocolMessageHandler pmh = rcvRecordContentType.getProtocolMessageHandler(
                 rawMessageBytes[messageParseBufferOffset], tlsContext);
-        pmh.initializeProtocolMessage();
-        ProtocolMessage protocolMessage = pmh.getProtocolMessage();
-        messageParseBufferOffset = pmh.parseMessage(rawMessageBytes, messageParseBufferOffset);
+        ParserResult result = pmh.parseMessage(rawMessageBytes, messageParseBufferOffset);
+        ProtocolMessage protocolMessage = result.getMessage();
+        messageParseBufferOffset = result.getParserPosition();
 
-        LOGGER.debug("The following message was parsed: {}", pmh.getProtocolMessage().toString());
+        LOGGER.debug("The following message was parsed: {}", protocolMessage.toString());
 
         switch (protocolMessage.getProtocolMessageType()) {
             case ALERT:
-                if (isIncomingAlertFatal(pmh) && !tlsContext.getConfig().isFuzzingMode()) {
+                if (isIncomingAlertFatal(protocolMessage) && !tlsContext.getConfig().isFuzzingMode()) {
                     throw new WorkflowExecutionException("Received a fatal Alert, aborting!");
                 }
                 break;
@@ -370,8 +371,8 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     }
 
-    private boolean isIncomingAlertFatal(ProtocolMessageHandler pmh) {
-        AlertMessage am = (AlertMessage) pmh.getProtocolMessage();
+    private boolean isIncomingAlertFatal(ProtocolMessage message) {
+        AlertMessage am = (AlertMessage)message;
         return AlertLevel.getAlertLevel(am.getLevel().getValue()) != AlertLevel.FATAL;
     }
 
