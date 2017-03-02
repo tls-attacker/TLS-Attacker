@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  * @param <T> Type of the HandshakeMessages to parse
  */
-public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<ProtocolMessage> {
+public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger(ProtocolMessageParser.class);
 
@@ -39,8 +39,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     }
 
     @Override
-    public final ProtocolMessage parse() {
-        ProtocolMessage msg = parseMessageContent();
+    public final T parse() {
+        T msg = parseMessageContent();
         setCompleteResultingMessage(msg);
         return msg;
     }
