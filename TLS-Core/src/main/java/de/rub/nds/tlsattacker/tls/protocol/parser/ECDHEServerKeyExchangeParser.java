@@ -33,6 +33,10 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
         message.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
         message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH) & 0xFF);
         message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
+        message.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
+        message.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        message.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
+        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
