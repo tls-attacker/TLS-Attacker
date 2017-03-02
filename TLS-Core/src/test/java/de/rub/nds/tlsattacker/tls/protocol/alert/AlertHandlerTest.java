@@ -31,7 +31,7 @@ public class AlertHandlerTest {
         AlertHandler handler = new AlertHandler(new TlsContext());
         AlertMessage message = new AlertMessage(new TlsConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.UNKNOWN_CA);
-        
+
         byte[] result = handler.prepareMessage(message);
         assertEquals(AlertLevel.FATAL.getValue(), result[0]);
         assertEquals(AlertDescription.UNKNOWN_CA.getValue(), result[1]);

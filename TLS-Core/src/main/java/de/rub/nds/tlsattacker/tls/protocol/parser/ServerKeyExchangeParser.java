@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
  * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  */
-public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends
-        HandshakeMessageParser<T> {
+public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
     public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
         super(pointer, array, expectedType);

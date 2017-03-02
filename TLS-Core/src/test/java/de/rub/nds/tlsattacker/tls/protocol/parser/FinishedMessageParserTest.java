@@ -27,9 +27,10 @@ public class FinishedMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {},  });
+        return Arrays.asList(new Object[][] { {}, });
     }
-    //TODO get a real finished message
+
+    // TODO get a real finished message
     private byte[] message;
     private int start;
     private byte[] expectedPart;

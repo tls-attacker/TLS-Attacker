@@ -82,8 +82,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         parseHandshakeMessageContent(msg);
         return msg;
     }
-    
+
     protected abstract void parseHandshakeMessageContent(T msg);
-    
+
     protected abstract T createHandshakeMessage();
 }

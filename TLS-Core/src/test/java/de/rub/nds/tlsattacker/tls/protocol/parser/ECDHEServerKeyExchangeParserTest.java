@@ -94,12 +94,12 @@ public class ECDHEServerKeyExchangeParserTest {
         assertTrue(length == msg.getLength().getValue());
         assertTrue(type.getValue() == msg.getType().getValue());
         assertTrue(curveType == msg.getCurveType().getValue());
-        assertArrayEquals(namedCurve,msg.getNamedCurve().getValue());
+        assertArrayEquals(namedCurve, msg.getNamedCurve().getValue());
         assertTrue(pubKeyLength == msg.getSerializedPublicKeyLength().getValue());
         assertArrayEquals(pubKey, msg.getSerializedPublicKey().getValue());
         assertTrue(signatureAlgorithm == msg.getSignatureAlgorithm().getValue());
         assertTrue(hashAlgorithm == msg.getHashAlgorithm().getValue());
         assertTrue(sigLength == msg.getSignatureLength().getValue());
-        assertArrayEquals(signature,msg.getSignature().getValue());
+        assertArrayEquals(signature, msg.getSignature().getValue());
     }
 }

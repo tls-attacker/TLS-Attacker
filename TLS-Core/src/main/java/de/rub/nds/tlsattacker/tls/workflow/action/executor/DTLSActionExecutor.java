@@ -171,7 +171,7 @@ public class DTLSActionExecutor extends ActionExecutor {
      * @throws IOException
      */
     private void handleMyNonHandshakeMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = null;//TODO//protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler pmh = null;// TODO//protocolMessage.getProtocolMessageHandler(tlsContext);
 
         byte[] messageBytes = pmh.prepareMessage(protocolMessage);
         if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
@@ -190,7 +190,7 @@ public class DTLSActionExecutor extends ActionExecutor {
      * @throws IOException
      */
     private void handleMyChangeCipherSpecMessage(ProtocolMessage protocolMessage) throws IOException {
-        ProtocolMessageHandler pmh = null; //TODO//protocolMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler pmh = null; // TODO//protocolMessage.getProtocolMessageHandler(tlsContext);
         byte[] messageBytes = pmh.prepareMessage(protocolMessage);
 
         retransmitList.add(messageBytes);
@@ -205,7 +205,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
-        ProtocolMessageHandler pmh = null;//TODO//handshakeMessage.getProtocolMessageHandler(tlsContext);
+        ProtocolMessageHandler pmh = null;// TODO//handshakeMessage.getProtocolMessageHandler(tlsContext);
         handshakeMessage.setMessageSeq(sendHandshakeMessageSeq);
         byte[] handshakeMessageBytes = pmh.prepareMessage(previousMessage);
 
@@ -372,7 +372,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private boolean isIncomingAlertFatal(ProtocolMessage message) {
-        AlertMessage am = (AlertMessage)message;
+        AlertMessage am = (AlertMessage) message;
         return AlertLevel.getAlertLevel(am.getLevel().getValue()) != AlertLevel.FATAL;
     }
 

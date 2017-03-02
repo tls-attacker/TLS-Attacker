@@ -21,7 +21,7 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
     public ECDHClientKeyExchangeParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
+
     @Override
     protected void parseHandshakeMessageContent(ECDHClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDH_PARAM_LENGTH));

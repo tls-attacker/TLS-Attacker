@@ -21,7 +21,7 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
     public ChangeCipherSpecParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
+
     @Override
     protected ChangeCipherSpecMessage parseMessageContent() {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();

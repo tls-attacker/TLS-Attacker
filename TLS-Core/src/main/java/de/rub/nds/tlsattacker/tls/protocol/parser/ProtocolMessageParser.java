@@ -19,7 +19,8 @@ import org.apache.logging.log4j.Logger;
  * An abstract Parser class for ProtocolMessages
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T> Type of the HandshakeMessages to parse
+ * @param <T>
+ *            Type of the HandshakeMessages to parse
  */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
 
@@ -28,10 +29,12 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     /**
      * Constructor for the Parser class
      *
-     * @param pointer Position in the array where the ProtocolMessageParser is
-     * supposed to start parsing
-     * @param array The byte[] which the ProtocolMessageParser is supposed to
-     * parse
+     * @param pointer
+     *            Position in the array where the ProtocolMessageParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the ProtocolMessageParser is supposed to
+     *            parse
      *
      */
     public ProtocolMessageParser(int pointer, byte[] array) {
@@ -44,7 +47,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
         setCompleteResultingMessage(msg);
         return msg;
     }
-    
+
     protected abstract T parseMessageContent();
 
     private void setCompleteResultingMessage(ProtocolMessage message) {

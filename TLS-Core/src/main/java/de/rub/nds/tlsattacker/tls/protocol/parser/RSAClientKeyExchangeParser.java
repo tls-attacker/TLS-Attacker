@@ -22,7 +22,6 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
         super(startposition, array);
     }
 
-
     @Override
     protected void parseHandshakeMessageContent(RSAClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));

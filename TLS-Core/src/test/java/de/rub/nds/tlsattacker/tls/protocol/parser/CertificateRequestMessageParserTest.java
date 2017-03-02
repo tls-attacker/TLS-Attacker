@@ -32,8 +32,20 @@ public class CertificateRequestMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{{
-            ArrayConverter.hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"), 0, ArrayConverter.hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"), HandshakeMessageType.CERTIFICATE_REQUEST, 3, ArrayConverter.hexStringToByteArray("010240"), 30, ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"), 0,},});
+        return Arrays
+                .asList(new Object[][] { {
+                        ArrayConverter
+                                .hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
+                        0,
+                        ArrayConverter
+                                .hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"),
+                        HandshakeMessageType.CERTIFICATE_REQUEST,
+                        3,
+                        ArrayConverter.hexStringToByteArray("010240"),
+                        30,
+                        ArrayConverter
+                                .hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"),
+                        0, }, });
     }
 
     private byte[] message;
