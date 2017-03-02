@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
@@ -44,7 +45,8 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
     // }
     @Override
     protected Parser getParser(byte[] message, int pointer) {
-        throw new UnsupportedOperationException("Receiving a retransmitted message is impossible, it would appear the correct message in the WorkflowTrace");
+        throw new UnsupportedOperationException(
+                "Receiving a retransmitted message is impossible, it would appear the correct message in the WorkflowTrace");
     }
 
     @Override

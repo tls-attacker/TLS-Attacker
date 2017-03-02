@@ -28,17 +28,11 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class AlertParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                            new byte[]{1,2},0,new byte[]{1,2},(byte)3,(byte)4
-                        },
-                        {
-                            new byte[]{4,3,1,2},0,new byte[]{4,3},(byte)2,(byte)1
-                        }});
+        return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, 0, new byte[] { 1, 2 }, (byte) 3, (byte) 4 },
+                { new byte[] { 4, 3, 1, 2 }, 0, new byte[] { 4, 3 }, (byte) 2, (byte) 1 } });
     }
 
     private byte[] message;
@@ -47,8 +41,7 @@ public class AlertParserTest {
     private byte level;
     private byte description;
 
-    
-    public AlertParserTest(byte[] message,int start, byte[] expectedPart, byte level, byte description) {
+    public AlertParserTest(byte[] message, int start, byte[] expectedPart, byte level, byte description) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;

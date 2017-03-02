@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -23,26 +24,23 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class HeartbeatMessageParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                        },
-                        {
-                        }});
+        return Arrays.asList(new Object[][] { {}, {} });
     }
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
-    
+
     private byte heartBeatType;
     private int payloadLength;
     private byte[] payload;
     private byte[] padding;
 
-    public HeartbeatMessageParserTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType, int payloadLength, byte[] payload, byte[] padding) {
+    public HeartbeatMessageParserTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType,
+            int payloadLength, byte[] payload, byte[] padding) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -64,5 +62,5 @@ public class HeartbeatMessageParserTest {
         assertArrayEquals(payload, msg.getPayload().getValue());
         assertArrayEquals(padding, msg.getPadding().getValue());
     }
-    
+
 }

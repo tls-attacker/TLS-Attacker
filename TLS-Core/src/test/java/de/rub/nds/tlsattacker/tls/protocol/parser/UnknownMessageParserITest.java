@@ -29,7 +29,7 @@ public class UnknownMessageParserITest {
 
     public UnknownMessageParserITest() {
     }
-    
+
     /**
      * Test of parse method, of class UnknownMessageParser.
      */

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -22,19 +23,17 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ApplicationMessageParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
                 .asList(new Object[][] {
-                        {
-                            new byte[]{0,1,2,3,4,5,6},0,new byte[]{0,1,2,3,4,5,6},new byte[]{0,1,2,3,4,5,6}
-                        },
-                        {
-                            new byte[]{0,1,2,3,4,5,6},2,new byte[]{2,3,4,5,6},new byte[]{2,3,4,5,6}
-                        }});
+                        { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, 0, new byte[] { 0, 1, 2, 3, 4, 5, 6 },
+                                new byte[] { 0, 1, 2, 3, 4, 5, 6 } },
+                        { new byte[] { 0, 1, 2, 3, 4, 5, 6 }, 2, new byte[] { 2, 3, 4, 5, 6 },
+                                new byte[] { 2, 3, 4, 5, 6 } } });
     }
-    
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
@@ -55,7 +54,7 @@ public class ApplicationMessageParserTest {
         ApplicationMessageParser parser = new ApplicationMessageParser(start, message);
         ApplicationMessage applcationMessage = parser.parse();
         assertArrayEquals(applcationMessage.getCompleteResultingMessage().getValue(), expectedPart);
-        assertArrayEquals(applcationMessage.getData().getValue(),data);
+        assertArrayEquals(applcationMessage.getData().getValue(), data);
     }
-    
+
 }

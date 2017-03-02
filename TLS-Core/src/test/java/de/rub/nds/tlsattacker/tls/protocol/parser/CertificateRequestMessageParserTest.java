@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -27,24 +28,21 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class CertificateRequestMessageParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                            //TODO
-                        },
-                        {
-                        }});
+        return Arrays.asList(new Object[][] { {
+                // TODO
+                }, {} });
     }
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
-        
+
     private HandshakeMessageType type;
     private int length;
-    
+
     private int certTypesCount;
     private byte[] certTypes;
     private int sigHashAlgsLength;
@@ -52,7 +50,9 @@ public class CertificateRequestMessageParserTest {
     private int distinguishedNamesLength;
     private byte[] disitinguishedNames;
 
-    public CertificateRequestMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength, byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames) {
+    public CertificateRequestMessageParserTest(byte[] message, int start, byte[] expectedPart,
+            HandshakeMessageType type, int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength,
+            byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -64,7 +64,7 @@ public class CertificateRequestMessageParserTest {
         this.sigHashAlgs = sigHashAlgs;
         this.distinguishedNamesLength = distinguishedNamesLength;
         this.disitinguishedNames = disitinguishedNames;
-        
+
     }
 
     /**
@@ -75,8 +75,8 @@ public class CertificateRequestMessageParserTest {
         CertificateRequestMessageParser parser = new CertificateRequestMessageParser(start, message);
         CertificateRequestMessage certRequestMessage = parser.parse();
         assertArrayEquals(expectedPart, certRequestMessage.getCompleteResultingMessage().getValue());
-        assertTrue(certRequestMessage.getLength().getValue() == length );
-        assertTrue(certRequestMessage.getType().getValue() == type.getValue() );
+        assertTrue(certRequestMessage.getLength().getValue() == length);
+        assertTrue(certRequestMessage.getType().getValue() == type.getValue());
         assertTrue(certRequestMessage.getClientCertificateTypesCount().getValue() == certTypesCount);
         assertArrayEquals(certTypes, certRequestMessage.getClientCertificateTypes().getValue());
         assertTrue(certRequestMessage.getDistinguishedNamesLength().getValue() == distinguishedNamesLength);
@@ -84,5 +84,5 @@ public class CertificateRequestMessageParserTest {
         assertTrue(certRequestMessage.getSignatureHashAlgorithmsLength().getValue() == sigHashAlgsLength);
         assertArrayEquals(sigHashAlgs, certRequestMessage.getSignatureHashAlgorithms().getValue());
     }
-    
+
 }

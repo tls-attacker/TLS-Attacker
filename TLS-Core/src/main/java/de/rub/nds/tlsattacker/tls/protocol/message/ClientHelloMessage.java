@@ -80,13 +80,13 @@ public class ClientHelloMessage extends HelloMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     private ModifiableByteArray cookie = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableByte cookieLength = null;
-    
+
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
     }
@@ -200,7 +200,7 @@ public class ClientHelloMessage extends HelloMessage {
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

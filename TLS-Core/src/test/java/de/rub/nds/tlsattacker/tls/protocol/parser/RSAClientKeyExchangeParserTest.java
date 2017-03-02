@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -24,27 +25,24 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class RSAClientKeyExchangeParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                        },
-                        {
-                        }});
+        return Arrays.asList(new Object[][] { {}, {} });
     }
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
-    
+
     private HandshakeMessageType type;
     private int length;
-    
+
     private int serializedKeyLength;
     private byte[] serializedKey;
 
-    public RSAClientKeyExchangeParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length, int serializedKeyLength, byte[] serializedKey) {
+    public RSAClientKeyExchangeParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
+            int length, int serializedKeyLength, byte[] serializedKey) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -53,7 +51,7 @@ public class RSAClientKeyExchangeParserTest {
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
     }
-    
+
     /**
      * Test of parse method, of class RSAClientKeyExchangeParser.
      */
@@ -67,5 +65,5 @@ public class RSAClientKeyExchangeParserTest {
         assertTrue(serializedKeyLength == msg.getSerializedPublicKeyLength().getValue());
         assertArrayEquals(serializedKey, msg.getSerializedPublicKey().getValue());
     }
-    
+
 }

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -23,26 +24,23 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class FinishedMessageParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                        },
-                        {
-                        }});
+        return Arrays.asList(new Object[][] { {}, {} });
     }
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
-    
+
     private HandshakeMessageType type;
     private int length;
-    
+
     private byte[] verifyData;
 
-    public FinishedMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length, byte[] verifyData) {
+    public FinishedMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
+            int length, byte[] verifyData) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -50,7 +48,7 @@ public class FinishedMessageParserTest {
         this.length = length;
         this.verifyData = verifyData;
     }
- 
+
     /**
      * Test of parse method, of class FinishedMessageParser.
      */
@@ -58,9 +56,9 @@ public class FinishedMessageParserTest {
     public void testParse() {
         FinishedMessageParser parser = new FinishedMessageParser(start, message);
         FinishedMessage msg = parser.parse();
-        assertArrayEquals(expectedPart,msg.getCompleteResultingMessage().getValue());
-        assertTrue(msg.getLength().getValue() == length );
-        assertTrue(msg.getType().getValue() == type.getValue() );
-        assertArrayEquals(verifyData,msg.getVerifyData().getValue());
+        assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
+        assertTrue(msg.getLength().getValue() == length);
+        assertTrue(msg.getType().getValue() == type.getValue());
+        assertArrayEquals(verifyData, msg.getVerifyData().getValue());
     }
 }

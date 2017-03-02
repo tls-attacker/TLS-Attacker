@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -25,27 +26,24 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ECDHEServerKeyExchangeParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                            ArrayConverter.hexStringToByteArray(""),
-                        },
-                        });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray(""), }, });
     }
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
-    
+
     private HandshakeMessageType type;
     private int length;
-    
+
     private int serializedKeyLength;
     private byte[] serializedKey;
 
-    public ECDHEServerKeyExchangeParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length, int serializedKeyLength, byte[] serializedKey) {
+    public ECDHEServerKeyExchangeParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
+            int length, int serializedKeyLength, byte[] serializedKey) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;

@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
@@ -23,24 +24,19 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ChangeCipherSpecParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] {
-                        {
-                            new byte[]{0x01},0,new byte[]{0x01},(byte)1
-                        },
-                        {
-                            new byte[]{0x05},0,new byte[]{0x05},(byte)5
-                        }});
+        return Arrays.asList(new Object[][] { { new byte[] { 0x01 }, 0, new byte[] { 0x01 }, (byte) 1 },
+                { new byte[] { 0x05 }, 0, new byte[] { 0x05 }, (byte) 5 } });
     }
+
     private byte[] message;
     private int start;
     private byte[] expectedPart;
 
     private byte ccsType;
-    
+
     public ChangeCipherSpecParserTest() {
     }
 
@@ -54,5 +50,5 @@ public class ChangeCipherSpecParserTest {
         assertArrayEquals(expectedPart, ccsMessagee.getCompleteResultingMessage().getValue());
         assertTrue(ccsType == ccsMessagee.getCcsProtocolType().getValue());
     }
-    
+
 }
