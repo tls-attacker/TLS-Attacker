@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Before;
@@ -31,9 +32,8 @@ public class CertificateRequestMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-                // TODO
-                }, {} });
+        return Arrays.asList(new Object[][]{{
+            ArrayConverter.hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"), 0, ArrayConverter.hexStringToByteArray("0d00002603010240001e0601060206030501050205030401040204030301030203030201020202030000"), HandshakeMessageType.CERTIFICATE_REQUEST, 3, ArrayConverter.hexStringToByteArray("010240"), 30, ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"), 0,},});
     }
 
     private byte[] message;
@@ -73,16 +73,20 @@ public class CertificateRequestMessageParserTest {
     @Test
     public void testParse() {
         CertificateRequestMessageParser parser = new CertificateRequestMessageParser(start, message);
-        CertificateRequestMessage certRequestMessage = parser.parse();
-        assertArrayEquals(expectedPart, certRequestMessage.getCompleteResultingMessage().getValue());
-        assertTrue(certRequestMessage.getLength().getValue() == length);
-        assertTrue(certRequestMessage.getType().getValue() == type.getValue());
-        assertTrue(certRequestMessage.getClientCertificateTypesCount().getValue() == certTypesCount);
-        assertArrayEquals(certTypes, certRequestMessage.getClientCertificateTypes().getValue());
-        assertTrue(certRequestMessage.getDistinguishedNamesLength().getValue() == distinguishedNamesLength);
-        assertArrayEquals(disitinguishedNames, certRequestMessage.getDistinguishedNames().getValue());
-        assertTrue(certRequestMessage.getSignatureHashAlgorithmsLength().getValue() == sigHashAlgsLength);
-        assertArrayEquals(sigHashAlgs, certRequestMessage.getSignatureHashAlgorithms().getValue());
+        CertificateRequestMessage msg = parser.parse();
+        assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
+        assertTrue(msg.getLength().getValue() == length);
+        assertTrue(msg.getType().getValue() == type.getValue());
+        assertTrue(msg.getClientCertificateTypesCount().getValue() == certTypesCount);
+        assertArrayEquals(certTypes, msg.getClientCertificateTypes().getValue());
+        assertTrue(msg.getSignatureHashAlgorithmsLength().getValue() == sigHashAlgsLength);
+        assertArrayEquals(sigHashAlgs, msg.getSignatureHashAlgorithms().getValue());
+        assertTrue(msg.getDistinguishedNamesLength().getValue() == distinguishedNamesLength);
+        if (distinguishedNamesLength == 0) {
+            assertNull(msg.getDistinguishedNames());
+        } else {
+            assertArrayEquals(disitinguishedNames, msg.getDistinguishedNames().getValue());
+        }
     }
 
 }

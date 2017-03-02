@@ -73,7 +73,7 @@ public class ParserTest {
         result = middleParser.parseIntField(2);
         assertTrue(result == 0x0405);
     }
-    
+
     /**
      * Test of parseIntField method, of class Parser.
      */

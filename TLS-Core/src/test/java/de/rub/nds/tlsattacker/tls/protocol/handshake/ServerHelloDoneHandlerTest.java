@@ -27,46 +27,46 @@ import org.junit.Test;
  */
 public class ServerHelloDoneHandlerTest {
 
-    private final ServerHelloDoneHandler handler;
-
-    public ServerHelloDoneHandlerTest() {
-        handler = new ServerHelloDoneHandler(new TlsContext());
-    }
-
-    /**
-     * Test of prepareMessageAction method, of class ServerHelloDoneHandler.
-     */
-    @Test
-    public void testPrepareMessageAction() {
-        handler.setProtocolMessage(new ServerHelloDoneMessage(new TlsConfig()));
-
-        ServerHelloDoneMessage message = handler.getProtocolMessage();
-
-        byte[] returned = handler.prepareMessageAction();
-        byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO_DONE.getValue() },
-                new byte[] { 0x00, 0x00, 0x00 });
-
-        assertNotNull("Confirm function didn't return 'NULL'", returned);
-        assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
-    }
-
-    /**
-     * Test of parseMessageAction method, of class ServerHelloDoneHandler.
-     */
-    @Test
-    public void testParseMessageAction() {
-        byte[] serverHelloDoneMsg = { 0x0e, 0x00, 0x00, 0x00 };
-        handler.initializeProtocolMessage();
-
-        int endPointer = handler.parseMessage(serverHelloDoneMsg, 0);
-        ServerHelloDoneMessage message = handler.getProtocolMessage();
-
-        assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
-        assertEquals("Confirm expected message type: \"ServerHelloDone\"", HandshakeMessageType.SERVER_HELLO_DONE,
-                message.getHandshakeMessageType());
-        assertEquals("Confirm expected message length of \"0\"", new Integer(0), message.getLength().getValue());
-        assertEquals("Confirm the correct value of endPointer representing the " + "actual number of message bytes",
-                serverHelloDoneMsg.length, endPointer);
-    }
+//    private final ServerHelloDoneHandler handler;
+//
+//    public ServerHelloDoneHandlerTest() {
+//        handler = new ServerHelloDoneHandler(new TlsContext());
+//    }
+//
+//    /**
+//     * Test of prepareMessageAction method, of class ServerHelloDoneHandler.
+//     */
+//    @Test
+//    public void testPrepareMessageAction() {
+//        handler.setProtocolMessage(new ServerHelloDoneMessage(new TlsConfig()));
+//
+//        ServerHelloDoneMessage message = handler.getProtocolMessage();
+//
+//        byte[] returned = handler.prepareMessageAction();
+//        byte[] expected = ArrayConverter.concatenate(new byte[] { HandshakeMessageType.SERVER_HELLO_DONE.getValue() },
+//                new byte[] { 0x00, 0x00, 0x00 });
+//
+//        assertNotNull("Confirm function didn't return 'NULL'", returned);
+//        assertArrayEquals("Confirm returned message equals the expected message", expected, returned);
+//    }
+//
+//    /**
+//     * Test of parseMessageAction method, of class ServerHelloDoneHandler.
+//     */
+//    @Test
+//    public void testParseMessageAction() {
+//        byte[] serverHelloDoneMsg = { 0x0e, 0x00, 0x00, 0x00 };
+//        handler.initializeProtocolMessage();
+//
+//        int endPointer = handler.parseMessage(serverHelloDoneMsg, 0);
+//        ServerHelloDoneMessage message = handler.getProtocolMessage();
+//
+//        assertNotNull("Confirm that parseMessage didn't return 'NULL'", endPointer);
+//        assertEquals("Confirm expected message type: \"ServerHelloDone\"", HandshakeMessageType.SERVER_HELLO_DONE,
+//                message.getHandshakeMessageType());
+//        assertEquals("Confirm expected message length of \"0\"", new Integer(0), message.getLength().getValue());
+//        assertEquals("Confirm the correct value of endPointer representing the " + "actual number of message bytes",
+//                serverHelloDoneMsg.length, endPointer);
+//    }
 
 }

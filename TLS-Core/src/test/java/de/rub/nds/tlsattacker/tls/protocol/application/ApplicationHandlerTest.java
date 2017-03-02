@@ -24,14 +24,4 @@ public class ApplicationHandlerTest {
     /**
      * Test of parseMessageAction method, of class ApplicationHandler.
      */
-    @Test
-    public void testParseMessageAction() {
-        ApplicationHandler handler = new ApplicationHandler(new TlsContext());
-        handler.setProtocolMessage(new ApplicationMessage(new TlsConfig()));
-        byte[] message = { 1, 2, 3, 4 };
-        int pointer = handler.parseMessageAction(message, 0);
-        assertEquals(message.length, pointer);
-        assertArrayEquals(message, handler.getProtocolMessage().getData().getOriginalValue());
-
-    }
 }

@@ -42,104 +42,104 @@ public class FinishedHandlerTest {
         finishedMessage = new FinishedMessage(context.getConfig());
     }
 
-    /**
-     * Test of prepareMessageAction method, of class FinishedHandler.
-     */
-    @Test
-    public void testPrepareMessageActionClient() {
-        finishedHandler.setProtocolMessage(finishedMessage);
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CCM);
-        finishedHandler.prepareMessageAction();
-        assertTrue(finishedMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED);
-        assertTrue(finishedMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE);
-        System.out.println(finishedMessage.toString());
-        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("C50EA95C9DFEBEBACF12C353"));
-        System.out.println(ArrayConverter.bytesToHexString(finishedMessage.getCompleteResultingMessage()
-                .getOriginalValue()));
-
-    }
-
-    @Test(expected = InvalidMessageTypeException.class)
-    public void testParseInvalidType() {
-        finishedHandler.setProtocolMessage(finishedMessage);
-        finishedHandler.parseMessageAction(ArrayConverter.hexStringToByteArray("1300000CC50EA95C9DFEBEBACF12C353"), 0);
-
-    }
-
-    @Test
-    public void testPrepareFuzzingMode() {
-        context.getConfig().setFuzzingMode(true);
-        finishedHandler.setProtocolMessage(finishedMessage);
-        finishedHandler.prepareMessageAction();
-        // We cannot assert anything since the algorithms are selected randomly
-    }
-
-    @Test
-    public void testPrepareMessageActionServer() {
-        context.getConfig().setMyConnectionEnd(ConnectionEnd.SERVER);
-        finishedHandler.setProtocolMessage(finishedMessage);
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CCM);
-        finishedHandler.prepareMessageAction();
-        assertTrue(finishedMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED);
-        assertTrue(finishedMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE);
-        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("A33B9CC92745BCF6C796AF7F"));
-        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"));
-    }
-
-    // TODO throw better exception
-    @Test(expected = Exception.class)
-    public void testPrepareMessageActionWithoutMessage() {
-        finishedHandler.prepareMessageAction();
-    }
-
-    // TODO throw better exception
-    @Test(expected = Exception.class)
-    public void testParseMessageActionWithoutMessage() {
-        finishedHandler.parseMessage(ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"), 0);
-    }
-
-    @Test(expected = NoCiphersuiteSelectedException.class)
-    public void testPrepareMessageActionWithoutCiphersuiteSelected() {
-        finishedHandler.setProtocolMessage(finishedMessage);
-        finishedHandler.prepareMessageAction();
-    }
-
-    /**
-     * Test of parseMessageAction method, of class FinishedHandler.
-     */
-    @Test
-    public void testParseMessageActionFromServer() {
-        finishedHandler.setProtocolMessage(finishedMessage);
-        finishedHandler.parseMessageAction(ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"), 0);
-        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("A33B9CC92745BCF6C796AF7F"));
-        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"));
-
-    }
-
-    @Test
-    public void testParseMessageActionFromClient() {
-        finishedHandler.setProtocolMessage(finishedMessage);
-        finishedHandler.parseMessageAction(ArrayConverter.hexStringToByteArray("1400000CC50EA95C9DFEBEBACF12C353"), 0);
-        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("C50EA95C9DFEBEBACF12C353"));
-        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("1400000CC50EA95C9DFEBEBACF12C353"));
-    }
-
-    @Test
-    public void testParseActionNotFromStart() {
-        finishedHandler.setProtocolMessage(finishedMessage);
-        finishedHandler.parseMessageAction(
-                ArrayConverter.hexStringToByteArray("00000000000000001400000CC50EA95C9DFEBEBACF12C353"), 8);
-        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("C50EA95C9DFEBEBACF12C353"));
-        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
-                ArrayConverter.hexStringToByteArray("1400000CC50EA95C9DFEBEBACF12C353"));
-    }
+//    /**
+//     * Test of prepareMessageAction method, of class FinishedHandler.
+//     */
+//    @Test
+//    public void testPrepareMessageActionClient() {
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CCM);
+//        finishedHandler.prepareMessageAction();
+//        assertTrue(finishedMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED);
+//        assertTrue(finishedMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE);
+//        System.out.println(finishedMessage.toString());
+//        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("C50EA95C9DFEBEBACF12C353"));
+//        System.out.println(ArrayConverter.bytesToHexString(finishedMessage.getCompleteResultingMessage()
+//                .getOriginalValue()));
+//
+//    }
+//
+//    @Test(expected = InvalidMessageTypeException.class)
+//    public void testParseInvalidType() {
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        finishedHandler.parseMessageAction(ArrayConverter.hexStringToByteArray("1300000CC50EA95C9DFEBEBACF12C353"), 0);
+//
+//    }
+//
+//    @Test
+//    public void testPrepareFuzzingMode() {
+//        context.getConfig().setFuzzingMode(true);
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        finishedHandler.prepareMessageAction();
+//        // We cannot assert anything since the algorithms are selected randomly
+//    }
+//
+//    @Test
+//    public void testPrepareMessageActionServer() {
+//        context.getConfig().setMyConnectionEnd(ConnectionEnd.SERVER);
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CCM);
+//        finishedHandler.prepareMessageAction();
+//        assertTrue(finishedMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED);
+//        assertTrue(finishedMessage.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE);
+//        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("A33B9CC92745BCF6C796AF7F"));
+//        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"));
+//    }
+//
+//    // TODO throw better exception
+//    @Test(expected = Exception.class)
+//    public void testPrepareMessageActionWithoutMessage() {
+//        finishedHandler.prepareMessageAction();
+//    }
+//
+//    // TODO throw better exception
+//    @Test(expected = Exception.class)
+//    public void testParseMessageActionWithoutMessage() {
+//        finishedHandler.parseMessage(ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"), 0);
+//    }
+//
+//    @Test(expected = NoCiphersuiteSelectedException.class)
+//    public void testPrepareMessageActionWithoutCiphersuiteSelected() {
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        finishedHandler.prepareMessageAction();
+//    }
+//
+//    /**
+//     * Test of parseMessageAction method, of class FinishedHandler.
+//     */
+//    @Test
+//    public void testParseMessageActionFromServer() {
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        finishedHandler.parseMessageAction(ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"), 0);
+//        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("A33B9CC92745BCF6C796AF7F"));
+//        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("1400000CA33B9CC92745BCF6C796AF7F"));
+//
+//    }
+//
+//    @Test
+//    public void testParseMessageActionFromClient() {
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        finishedHandler.parseMessageAction(ArrayConverter.hexStringToByteArray("1400000CC50EA95C9DFEBEBACF12C353"), 0);
+//        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("C50EA95C9DFEBEBACF12C353"));
+//        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("1400000CC50EA95C9DFEBEBACF12C353"));
+//    }
+//
+//    @Test
+//    public void testParseActionNotFromStart() {
+//        finishedHandler.setProtocolMessage(finishedMessage);
+//        finishedHandler.parseMessageAction(
+//                ArrayConverter.hexStringToByteArray("00000000000000001400000CC50EA95C9DFEBEBACF12C353"), 8);
+//        assertArrayEquals(finishedMessage.getVerifyData().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("C50EA95C9DFEBEBACF12C353"));
+//        assertArrayEquals(finishedMessage.getCompleteResultingMessage().getOriginalValue(),
+//                ArrayConverter.hexStringToByteArray("1400000CC50EA95C9DFEBEBACF12C353"));
+//    }
 
 }

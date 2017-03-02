@@ -28,7 +28,7 @@ public class RSAClientKeyExchangeParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {}, {} });
+        return Arrays.asList(new Object[][] { {}, });
     }
 
     private byte[] message;

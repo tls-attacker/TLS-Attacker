@@ -29,7 +29,7 @@ public class HelloRequestParserTest {
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { {}, {} });
     }
-
+    //TODO get a true message
     private byte[] message;
     private int start;
     private byte[] expectedPart;
