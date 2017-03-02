@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,7 @@ import org.apache.logging.log4j.Logger;
  * Abstract Parser class which can be used to read a byte array.
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T>
- *            Type of the Object that should be parsed
+ * @param <T> Type of the Object that should be parsed
  */
 public abstract class Parser<T> {
 
@@ -41,11 +41,9 @@ public abstract class Parser<T> {
     /**
      * Constructor for the Parser
      *
-     * @param startposition
-     *            Position in the array from which the Parser should start
-     *            working
-     * @param array
-     *            Array that should be parsed
+     * @param startposition Position in the array from which the Parser should
+     * start working
+     * @param array Array that should be parsed
      */
     public Parser(int startposition, byte[] array) {
         this.startPoint = startposition;
@@ -62,8 +60,7 @@ public abstract class Parser<T> {
      * Throws a ParserException if the number of bytes cannot be parsed. Moves
      * the pointer accordingly.
      *
-     * @param length
-     *            Number of bytes to be parsed
+     * @param length Number of bytes to be parsed
      * @return A subbyteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
@@ -85,8 +82,7 @@ public abstract class Parser<T> {
      * a ParserException if the number of bytes cannot be parsed. Moves the
      * pointer accordingly.
      *
-     * @param length
-     *            Number of bytes to be parsed
+     * @param length Number of bytes to be parsed
      * @return An integer representation of the subbyteArray
      */
     protected int parseIntField(int length) {
@@ -94,12 +90,23 @@ public abstract class Parser<T> {
     }
 
     /**
+     * Parses a number of bytes from the Array and returns them as a positive
+     * BigInteger. Throws a ParserException if the number of bytes cannot be
+     * parsed. Moves the pointer accordingly.
+     *
+     * @param length Number of bytes to be parsed
+     * @return A BigInteger representation of the subbyteArray
+     */
+    protected BigInteger parseBigIntField(int length) {
+        return new BigInteger(1, parseByteArrayField(length));
+    }
+
+    /**
      * Parses a number of bytes from the Array and returns them as a byte.
      * Throws a ParserException if the number of bytes cannot be parsed. Moves
      * the pointer accordingly.
      *
-     * @param length
-     *            Number of bytes to be parsed
+     * @param length Number of bytes to be parsed
      * @return An integer representation of the subbyteArray
      */
     protected byte parseByteField(int length) {
@@ -139,8 +146,7 @@ public abstract class Parser<T> {
     /**
      * Checks if there are atleast count bytes left to read
      *
-     * @param count
-     *            Number of bytes to check for
+     * @param count Number of bytes to check for
      * @return True if there are atleast count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {
