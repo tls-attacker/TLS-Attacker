@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
 
 /**
  *
@@ -25,20 +24,20 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
     }
 
     @Override
-    public ECDHEServerKeyExchangeMessage parse() {
-        ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
-        parseType(message);
-        parseLength(message);
-        message.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
-        message.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH) & 0xFF);
-        message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        message.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
-        message.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
-        message.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
+        msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
+        msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH) & 0xFF);
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
+        msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
+        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
+    }
+
+    @Override
+    protected ECDHEServerKeyExchangeMessage createHandshakeMessage() {
+        return new ECDHEServerKeyExchangeMessage();
     }
 
 }

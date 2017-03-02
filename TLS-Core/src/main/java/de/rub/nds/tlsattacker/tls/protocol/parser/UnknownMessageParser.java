@@ -14,17 +14,10 @@ import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownMessageParser extends Parser<UnknownMessage> {
+public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> {
 
     public UnknownMessageParser(int startposition, byte[] array) {
         super(startposition, array);
-    }
-
-    @Override
-    public UnknownMessage parse() {
-        UnknownMessage message = new UnknownMessage();
-        parseCompleteMessage(message);
-        return message;
     }
 
     /**
@@ -33,7 +26,14 @@ public class UnknownMessageParser extends Parser<UnknownMessage> {
      * is part of this unknown message
      */
     private void parseCompleteMessage(UnknownMessage message) {
-        message.setCompleteResultingMessage(parseByteArrayField(getBytesLeft()));
+        parseByteArrayField(getBytesLeft());
+    }
+
+    @Override
+    protected UnknownMessage parseMessageContent() {
+        UnknownMessage message = new UnknownMessage();
+        parseCompleteMessage(message);
+        return message;
     }
 
 }

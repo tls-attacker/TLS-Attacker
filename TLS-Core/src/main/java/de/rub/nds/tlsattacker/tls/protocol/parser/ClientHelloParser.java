@@ -23,27 +23,26 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     }
 
     @Override
-    public ClientHelloMessage parse() {
-        ClientHelloMessage message = new ClientHelloMessage();
-        parseType(message);
-        parseLength(message);
-        parseProtocolVersion(message);
-        parseUnixtime(message);
-        parseRandom(message);
-        parseSessionIDLength(message);
-        parseSessionID(message);
-        message.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
-        message.setCipherSuites(parseByteArrayField(message.getCipherSuiteLength().getValue()));
-        message.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
-        message.setCompressions(parseByteArrayField(message.getCompressionLength().getValue()));
-        if (hasExtensionLengthField(message)) {
-            parseExtensionLength(message);
-            if (hasExtensions(message)) {
-                parseExtensionBytes(message);
+    protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
+        parseProtocolVersion(msg);
+        parseUnixtime(msg);
+        parseRandom(msg);
+        parseSessionIDLength(msg);
+        parseSessionID(msg);
+        msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
+        msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
+        msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
+        msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));
+        if (hasExtensionLengthField(msg)) {
+            parseExtensionLength(msg);
+            if (hasExtensions(msg)) {
+                parseExtensionBytes(msg);
             }
         }
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
     }
 
+    @Override
+    protected ClientHelloMessage createHandshakeMessage() {
+        return new ClientHelloMessage();
+    }
 }

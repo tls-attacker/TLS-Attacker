@@ -22,11 +22,12 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
     }
 
     @Override
-    public UnknownHandshakeMessage parse() {
-        UnknownHandshakeMessage message = new UnknownHandshakeMessage();
-        parseType(message);
-        parseLength(message);
-        message.setData(parseByteArrayField(message.getLength().getValue()));
-        return message;
+    protected void parseHandshakeMessageContent(UnknownHandshakeMessage msg) {
+        msg.setData(parseByteArrayField(msg.getLength().getValue()));
+    }
+
+    @Override
+    protected UnknownHandshakeMessage createHandshakeMessage() {
+        return new UnknownHandshakeMessage();
     }
 }

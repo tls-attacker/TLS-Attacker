@@ -22,16 +22,16 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
         super(startposition, array);
     }
 
+
     @Override
-    public RSAClientKeyExchangeMessage parse() {
-        RSAClientKeyExchangeMessage message = new RSAClientKeyExchangeMessage();
-        parseType(message);
-        parseLength(message);
-        // TODO rename keyexchange message field
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
-        message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(RSAClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+    }
+
+    @Override
+    protected RSAClientKeyExchangeMessage createHandshakeMessage() {
+        return new RSAClientKeyExchangeMessage();
     }
 
 }

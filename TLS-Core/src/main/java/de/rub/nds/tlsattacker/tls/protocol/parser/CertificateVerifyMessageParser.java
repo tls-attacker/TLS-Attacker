@@ -23,15 +23,15 @@ public class CertificateVerifyMessageParser extends HandshakeMessageParser<Certi
     }
 
     @Override
-    public CertificateVerifyMessage parse() {
-        CertificateVerifyMessage message = new CertificateVerifyMessage();
-        parseType(message);
-        parseLength(message);
-        message.setSignatureHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
-        message.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(CertificateVerifyMessage msg) {
+        msg.setSignatureHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
+        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
+        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
+    }
+
+    @Override
+    protected CertificateVerifyMessage createHandshakeMessage() {
+        return new CertificateVerifyMessage();
     }
 
 }

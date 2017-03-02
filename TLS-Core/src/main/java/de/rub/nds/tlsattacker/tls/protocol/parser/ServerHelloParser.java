@@ -38,34 +38,6 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
     }
 
     /**
-     * Parses the byte[] specified in the Constructor into a ServerHelloMessage
-     * starting from the provided start position.
-     *
-     * @return Returns the parsed ServerHelloMessage
-     */
-    @Override
-    public ServerHelloMessage parse() {
-        ServerHelloMessage message = new ServerHelloMessage();
-        parseType(message);
-        parseLength(message);
-        parseProtocolVersion(message);
-        parseUnixtime(message);
-        parseRandom(message);
-        parseSessionIDLength(message);
-        parseSessionID(message);
-        parseSelectedCiphersuite(message);
-        parseSelectedComressionMethod(message);
-        if (hasExtensionLengthField(message)) {
-            parseExtensionLength(message);
-            if (hasExtensions(message)) {
-                parseExtensionBytes(message);
-            }
-        }
-        setCompleteResultingMessage(message);
-        return message;
-    }
-
-    /**
      * Reads the next bytes as a CipherSuite and writes them in the message
      *
      * @param message
@@ -84,5 +56,27 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
      */
     protected void parseSelectedComressionMethod(ServerHelloMessage message) {
         message.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));
+    }
+
+    @Override
+    protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
+        parseProtocolVersion(msg);
+        parseUnixtime(msg);
+        parseRandom(msg);
+        parseSessionIDLength(msg);
+        parseSessionID(msg);
+        parseSelectedCiphersuite(msg);
+        parseSelectedComressionMethod(msg);
+        if (hasExtensionLengthField(msg)) {
+            parseExtensionLength(msg);
+            if (hasExtensions(msg)) {
+                parseExtensionBytes(msg);
+            }
+        }
+    }
+
+    @Override
+    protected ServerHelloMessage createHandshakeMessage() {
+        return new ServerHelloMessage();
     }
 }

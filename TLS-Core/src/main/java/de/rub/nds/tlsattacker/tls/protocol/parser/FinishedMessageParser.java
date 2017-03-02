@@ -23,13 +23,13 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
     }
 
     @Override
-    public FinishedMessage parse() {
-        FinishedMessage message = new FinishedMessage();
-        parseType(message);
-        parseLength(message);
-        message.setVerifyData(parseByteArrayField(message.getLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(FinishedMessage msg) {
+        msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
+    }
+
+    @Override
+    protected FinishedMessage createHandshakeMessage() {
+        return new FinishedMessage();
     }
 
 }

@@ -27,15 +27,15 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
     }
 
     @Override
-    public ServerHelloDoneMessage parse() {
-        ServerHelloDoneMessage message = new ServerHelloDoneMessage();
-        parseType(message);
-        parseLength(message);
-        if (message.getLength().getValue() != 0) {
+    protected void parseHandshakeMessageContent(ServerHelloDoneMessage msg) {
+        if (msg.getLength().getValue() != 0) {
             LOGGER.warn("Parsed ServerHelloDone with non-zero length! Not parsing payload.");
         }
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    }
+
+    @Override
+    protected ServerHelloDoneMessage createHandshakeMessage() {
+        return new ServerHelloDoneMessage();
     }
 
 }

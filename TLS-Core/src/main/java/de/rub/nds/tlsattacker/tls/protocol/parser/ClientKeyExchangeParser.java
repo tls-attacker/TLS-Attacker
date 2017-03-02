@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
  * @param <T>
  */
 public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage> extends
-        HandshakeMessageParser<ClientKeyExchangeMessage> {
+        HandshakeMessageParser<T> {
 
     public ClientKeyExchangeParser(int startposition, byte[] array) {
         super(startposition, array, HandshakeMessageType.CLIENT_KEY_EXCHANGE);

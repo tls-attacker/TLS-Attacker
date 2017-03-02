@@ -23,17 +23,17 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     @Override
-    public DHEServerKeyExchangeMessage parse() {
-        DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        parseType(message);
-        parseLength(message);
-        message.setpLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
-        message.setP(parseBigIntField(message.getpLength().getValue()));
-        message.setgLength(parseIntField(HandshakeByteLength.DH_G_LENGTH));
-        message.setG(parseBigIntField(message.getgLength().getValue()));
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(DHEServerKeyExchangeMessage msg) {
+        msg.setpLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
+        msg.setP(parseBigIntField(msg.getpLength().getValue()));
+        msg.setgLength(parseIntField(HandshakeByteLength.DH_G_LENGTH));
+        msg.setG(parseBigIntField(msg.getgLength().getValue()));
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+    }
+
+    @Override
+    protected DHEServerKeyExchangeMessage createHandshakeMessage() {
+        return new DHEServerKeyExchangeMessage();
     }
 }

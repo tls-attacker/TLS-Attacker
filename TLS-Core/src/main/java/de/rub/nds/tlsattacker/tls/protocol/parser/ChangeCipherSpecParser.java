@@ -16,18 +16,17 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCipherSpecParser extends Parser<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSpecMessage> {
 
     public ChangeCipherSpecParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-
+    
     @Override
-    public ChangeCipherSpecMessage parse() {
-        ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        message.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected ChangeCipherSpecMessage parseMessageContent() {
+        ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
+        msg.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        return msg;
     }
 
 }

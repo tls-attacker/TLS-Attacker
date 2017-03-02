@@ -23,15 +23,15 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
     }
 
     @Override
-    public HelloVerifyRequestMessage parse() {
-        HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
-        parseType(message);
-        parseLength(message);
-        message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
-        message.setCookieLength(parseByteField(HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH));
-        message.setCookie(parseByteArrayField(message.getCookieLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(HelloVerifyRequestMessage msg) {
+        msg.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
+        msg.setCookieLength(parseByteField(HandshakeByteLength.DTLS_HANDSHAKE_COOKIE_LENGTH));
+        msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
+    }
+
+    @Override
+    protected HelloVerifyRequestMessage createHandshakeMessage() {
+        return new HelloVerifyRequestMessage();
     }
 
 }

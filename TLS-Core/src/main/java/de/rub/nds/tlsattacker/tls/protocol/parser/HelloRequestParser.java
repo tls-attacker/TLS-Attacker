@@ -26,15 +26,15 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
     }
 
     @Override
-    public HelloRequestMessage parse() {
-        HelloRequestMessage message = new HelloRequestMessage();
-        parseType(message);
-        parseLength(message);
-        if (message.getLength().getValue() != 0) {
+    protected void parseHandshakeMessageContent(HelloRequestMessage msg) {
+        if (msg.getLength().getValue() != 0) {
             LOGGER.warn("Parsed HelloRequest with non-zero length! Not parsing payload.");
         }
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    }
+
+    @Override
+    protected HelloRequestMessage createHandshakeMessage() {
+        return new HelloRequestMessage();
     }
 
 }

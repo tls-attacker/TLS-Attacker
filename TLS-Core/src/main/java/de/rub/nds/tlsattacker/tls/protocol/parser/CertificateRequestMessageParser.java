@@ -23,18 +23,18 @@ public class CertificateRequestMessageParser extends HandshakeMessageParser<Cert
     }
 
     @Override
-    public CertificateRequestMessage parse() {
-        CertificateRequestMessage message = new CertificateRequestMessage();
-        parseType(message);
-        parseLength(message);
-        message.setClientCertificateTypesCount(parseIntField(HandshakeByteLength.CERTIFICATES_TYPES_COUNT));
-        message.setClientCertificateTypes(parseByteArrayField(message.getClientCertificateTypesCount().getValue()));
-        message.setSignatureHashAlgorithmsLength(parseIntField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH));
-        message.setSignatureHashAlgorithms(parseByteArrayField(message.getSignatureHashAlgorithmsLength().getValue()));
-        message.setDistinguishedNamesLength(parseIntField(HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH));
-        message.setDistinguishedNames(parseByteArrayField(message.getDistinguishedNamesLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(CertificateRequestMessage msg) {
+        msg.setClientCertificateTypesCount(parseIntField(HandshakeByteLength.CERTIFICATES_TYPES_COUNT));
+        msg.setClientCertificateTypes(parseByteArrayField(msg.getClientCertificateTypesCount().getValue()));
+        msg.setSignatureHashAlgorithmsLength(parseIntField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH));
+        msg.setSignatureHashAlgorithms(parseByteArrayField(msg.getSignatureHashAlgorithmsLength().getValue()));
+        msg.setDistinguishedNamesLength(parseIntField(HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH));
+        msg.setDistinguishedNames(parseByteArrayField(msg.getDistinguishedNamesLength().getValue()));
+    }
+
+    @Override
+    protected CertificateRequestMessage createHandshakeMessage() {
+        return new CertificateRequestMessage();
     }
 
 }

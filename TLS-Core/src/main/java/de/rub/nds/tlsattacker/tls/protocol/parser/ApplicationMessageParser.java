@@ -14,17 +14,16 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ApplicationMessageParser extends Parser<ApplicationMessage> {
+public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationMessage> {
 
     public ApplicationMessageParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
-    public ApplicationMessage parse() {
+    protected ApplicationMessage parseMessageContent() {
         ApplicationMessage message = new ApplicationMessage();
         message.setData(parseByteArrayField(getBytesLeft()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
     }
 

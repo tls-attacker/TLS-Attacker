@@ -23,14 +23,14 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     @Override
-    public CertificateMessage parse() {
-        CertificateMessage message = new CertificateMessage();
-        parseType(message);
-        parseLength(message);
-        message.setCertificatesLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
-        message.setX509CertificateBytes(parseByteArrayField(message.getCertificatesLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(CertificateMessage msg) {
+        msg.setCertificatesLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
+        msg.setX509CertificateBytes(parseByteArrayField(msg.getCertificatesLength().getValue()));
+    }
+
+    @Override
+    protected CertificateMessage createHandshakeMessage() {
+        return new CertificateMessage();
     }
 
 }

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import java.math.BigInteger;
 
@@ -23,13 +24,13 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
     }
 
     @Override
-    public DHClientKeyExchangeMessage parse() {
-        DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
-        parseType(message);
-        parseLength(message);
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
-        message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected void parseHandshakeMessageContent(DHClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+    }
+
+    @Override
+    protected DHClientKeyExchangeMessage createHandshakeMessage() {
+        return new DHClientKeyExchangeMessage();
     }
 }

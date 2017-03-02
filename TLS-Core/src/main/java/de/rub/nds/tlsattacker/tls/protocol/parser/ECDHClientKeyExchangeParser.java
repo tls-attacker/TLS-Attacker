@@ -21,16 +21,16 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
     public ECDHClientKeyExchangeParser(int startposition, byte[] array) {
         super(startposition, array);
     }
+    
+    @Override
+    protected void parseHandshakeMessageContent(ECDHClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDH_PARAM_LENGTH));
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+    }
 
     @Override
-    public ECDHClientKeyExchangeMessage parse() {
-        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
-        parseType(message);
-        parseLength(message);
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDH_PARAM_LENGTH));
-        message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        message.setCompleteResultingMessage(getAlreadyParsed());
-        return message;
+    protected ECDHClientKeyExchangeMessage createHandshakeMessage() {
+        return new ECDHClientKeyExchangeMessage();
     }
 
 }

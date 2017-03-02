@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */
-public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends Parser<T> {
+public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger(HandshakeMessageParser.class);
 
@@ -54,7 +54,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param message
      *            Message to write in
      */
-    protected void parseType(HandshakeMessage message) {
+    private void parseType(HandshakeMessage message) {
         message.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
         if (message.getType().getValue() != expectedType.getValue()) {
             LOGGER.warn("Parsed wrong message type. Parsed:" + message.getType().getValue() + " but expected:"
@@ -69,12 +69,21 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param message
      *            Message to write in
      */
-    protected void parseLength(HandshakeMessage message) {
+    private void parseLength(HandshakeMessage message) {
         message.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
         LOGGER.debug("Length:" + message.getLength().getValue());
     }
 
-    protected void setCompleteResultingMessage(HandshakeMessage message) {
-        message.setCompleteResultingMessage(getAlreadyParsed());
+    @Override
+    protected T parseMessageContent() {
+        T msg = createHandshakeMessage();
+        parseType(msg);
+        parseLength(msg);
+        parseHandshakeMessageContent(msg);
+        return msg;
     }
+    
+    protected abstract void parseHandshakeMessageContent(T msg);
+    
+    protected abstract T createHandshakeMessage();
 }
