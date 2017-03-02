@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
+import java.math.BigInteger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -71,6 +72,21 @@ public class ParserTest {
         assertSame(result, 3);
         result = middleParser.parseIntField(2);
         assertTrue(result == 0x0405);
+    }
+    
+    /**
+     * Test of parseIntField method, of class Parser.
+     */
+    @Test
+    public void testParseBigIntField() {
+        BigInteger result = parser.parseBigIntField(1);
+        assertSame(result.intValue(), 0);
+        result = parser.parseBigIntField(2);
+        assertTrue(result.intValue() == 0x0102);
+        result = middleParser.parseBigIntField(1);
+        assertSame(result.intValue(), 3);
+        result = middleParser.parseBigIntField(2);
+        assertTrue(result.intValue() == 0x0405);
     }
 
     @Test(expected = ParserException.class)
