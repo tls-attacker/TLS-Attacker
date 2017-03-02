@@ -31,8 +31,8 @@ public class AlertParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, 0, new byte[] { 1, 2 }, (byte) 3, (byte) 4 },
-                { new byte[] { 4, 3, 1, 2 }, 0, new byte[] { 4, 3 }, (byte) 2, (byte) 1 } });
+        return Arrays.asList(new Object[][] { { new byte[] { 1, 2 }, 0, new byte[] { 1, 2 }, (byte) 1, (byte) 2 },
+                { new byte[] { 4, 3, 1, 2 }, 0, new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
     }
 
     private byte[] message;
@@ -56,7 +56,7 @@ public class AlertParserTest {
     public void testParse() {
         AlertParser parser = new AlertParser(0, message);
         AlertMessage alert = parser.parse();
-        assertArrayEquals(message, alert.getCompleteResultingMessage().getValue());
+        assertArrayEquals(expectedPart, alert.getCompleteResultingMessage().getValue());
         assertTrue(level == alert.getLevel().getValue());
         assertTrue(description == alert.getDescription().getValue());
     }
