@@ -27,7 +27,11 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
         parseType(message);
         parseLength(message);
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DHE_PARAM_LENGTH));
+        message.setpLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
+        message.setP(parseBigIntField(message.getpLength().getValue()));
+        message.setgLength(parseIntField(HandshakeByteLength.DH_G_LENGTH));
+        message.setG(parseBigIntField(message.getgLength().getValue()));
+        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
         message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;

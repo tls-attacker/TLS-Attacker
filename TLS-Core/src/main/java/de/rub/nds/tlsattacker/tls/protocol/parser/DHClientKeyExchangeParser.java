@@ -27,7 +27,7 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
         parseType(message);
         parseLength(message);
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PARAM_LENGTH));
+        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
         message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
         message.setCompleteResultingMessage(getAlreadyParsed());
         return message;
