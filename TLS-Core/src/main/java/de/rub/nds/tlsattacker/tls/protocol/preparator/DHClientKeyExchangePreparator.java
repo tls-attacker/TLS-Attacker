@@ -40,12 +40,12 @@ import org.bouncycastle.util.BigIntegers;
 public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<DHClientKeyExchangeMessage> {
 
     private final DHClientKeyExchangeMessage message;
-    
+
     public DHClientKeyExchangePreparator(TlsContext context, DHClientKeyExchangeMessage message) {
         super(context, message);
         this.message = message;
     }
-    
+
     @Override
     public void prepare() {
         AsymmetricCipherKeyPair kp = null;
@@ -69,21 +69,19 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
                     // the
                     // server's public parameters
                     parameters = (DHPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
-                    kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(),
-                            context.getServerDHParameters()
-                                    .getPublicKey().getParameters());
+                    kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(), context.getServerDHParameters()
+                            .getPublicKey().getParameters());
                 } catch (IOException e) {
-                    throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate",
-                            e);
+                    throw new WorkflowExecutionException("Problem in parsing public key parameters from certificate", e);
                 }
             }
             context.setServerDHParameters(new ServerDHParams(parameters));
 
         } else {
             try {
-                kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(),//TODO use badrandom
-                        context.getServerDHParameters().getPublicKey()
-                                .getParameters());
+                kp = TlsDHUtils.generateDHKeyPair(new SecureRandom(),// TODO use
+                                                                     // badrandom
+                        context.getServerDHParameters().getPublicKey().getParameters());
 
             } catch (IllegalArgumentException E) {
                 throw new UnsupportedOperationException(E);
@@ -99,19 +97,16 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         message.setX(dhPrivate.getX());
 
         // set the modified values of client's private and public parameters
-        DHParameters newParams = new DHParameters(message.getP().getValue(),
-                message.getG().getValue());
+        DHParameters newParams = new DHParameters(message.getP().getValue(), message.getG().getValue());
         // DHPublicKeyParameters newDhPublic = new
         // DHPublicKeyParameters(dhMessage.getY().getValue(), newParams);
         DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(message.getX().getValue(), newParams);
         try {
-            premasterSecret
-                    = TlsDHUtils.calculateDHBasicAgreement(context.getServerDHParameters().getPublicKey(),
-                            newDhPrivate);
+            premasterSecret = TlsDHUtils.calculateDHBasicAgreement(context.getServerDHParameters().getPublicKey(),
+                    newDhPrivate);
         } catch (IllegalArgumentException e) {
             if (context.getConfig().isFuzzingMode()) {
-                premasterSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublic,
-                        dhPrivate);
+                premasterSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublic, dhPrivate);
             } else {
                 throw new IllegalArgumentException(e);
             }
@@ -121,16 +116,12 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         message.setSerializedPublicKey(serializedPublicKey);
         message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
 
-
         byte[] random = context.getClientServerRandom();
 
-        PRFAlgorithm prfAlgorithm
-                = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                        context.getSelectedCipherSuite());
-        byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm,
-                message.getPremasterSecret()
-                        .getValue(), PseudoRandomFunction.MASTER_SECRET_LABEL, random,
-                HandshakeByteLength.MASTER_SECRET);
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
+                context.getSelectedCipherSuite());
+        byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, message.getPremasterSecret().getValue(),
+                PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
         message.setMasterSecret(masterSecret);
         context.setMasterSecret(message.getMasterSecret().getValue());
     }

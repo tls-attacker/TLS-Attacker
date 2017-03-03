@@ -16,10 +16,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerHelloDonePreparator extends HandshakeMessagePreparator<ServerHelloDoneMessage>{
+public class ServerHelloDonePreparator extends HandshakeMessagePreparator<ServerHelloDoneMessage> {
 
     private final ServerHelloDoneMessage message;
-    
+
     public ServerHelloDonePreparator(TlsContext context, ServerHelloDoneMessage message) {
         super(context, message);
         this.message = message;
@@ -27,7 +27,7 @@ public class ServerHelloDonePreparator extends HandshakeMessagePreparator<Server
 
     @Override
     public void prepare() {
-        
+
     }
 
 }

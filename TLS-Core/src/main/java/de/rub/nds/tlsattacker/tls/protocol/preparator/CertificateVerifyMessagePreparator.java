@@ -41,7 +41,6 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
         message.setSignatureHashAlgorithm(algorithm.getByteValue());
     }
 
-    
     private SignatureAndHashAlgorithm selectSigHashAlgorithm() {
         PrivateKey key = context.getConfig().getPrivateKey();
         List<SignatureAndHashAlgorithm> possibleList = null;
@@ -54,7 +53,8 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
                 break;
         }
         if (possibleList == null || possibleList.isEmpty()) {
-            throw new PreparationException("No SignatureAlgorithm supported for the configured private Key:" + key.getAlgorithm());
+            throw new PreparationException("No SignatureAlgorithm supported for the configured private Key:"
+                    + key.getAlgorithm());
         }
         return possibleList.get(0);
     }
@@ -68,7 +68,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
             signature.update(rawHandshakeBytes);
             return signature.sign();
         } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException ex) {
-            throw new PreparationException("Could not create Signature!",ex);
+            throw new PreparationException("Could not create Signature!", ex);
         }
     }
 }

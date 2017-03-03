@@ -17,17 +17,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ApplicationMessagePreparator extends ProtocolMessagePreparator<ApplicationMessage> {
-    
+
     private final ApplicationMessage message;
-    
+
     public ApplicationMessagePreparator(TlsContext context, ApplicationMessage message) {
         super(context, message);
         this.message = message;
     }
-    
+
     @Override
     public void prepare() {
         message.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
     }
-    
+
 }

@@ -235,7 +235,7 @@ public final class TlsConfig {
     /**
      * Fixed DH g value used in Server Key Exchange
      */
-    private byte[] fixedDHg = {0x02};
+    private byte[] fixedDHg = { 0x02 };
 
     private String defaultApplicationMessageData = "Test";
 
@@ -266,7 +266,7 @@ public final class TlsConfig {
     private int heartbeatMaxPaddingLength = 256;
 
     private int DTLSCookieLength = 6;
-    
+
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -327,8 +327,6 @@ public final class TlsConfig {
         this.heartbeatMaxPaddingLength = heartbeatMaxPaddingLength;
     }
 
-    
-    
     public List<ClientCertificateType> getClientCertificateTypes() {
         return clientCertificateTypes;
     }

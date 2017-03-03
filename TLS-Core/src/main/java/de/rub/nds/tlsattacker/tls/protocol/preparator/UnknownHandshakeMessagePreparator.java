@@ -16,10 +16,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparator<UnknownHandshakeMessage>{
+public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparator<UnknownHandshakeMessage> {
 
     private final UnknownHandshakeMessage message;
-    
+
     public UnknownHandshakeMessagePreparator(TlsContext context, UnknownHandshakeMessage message) {
         super(context, message);
         this.message = message;

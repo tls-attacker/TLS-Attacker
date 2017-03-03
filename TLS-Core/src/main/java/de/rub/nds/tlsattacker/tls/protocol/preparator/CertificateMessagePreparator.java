@@ -49,7 +49,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             cert = context.getServerCertificate();
         }
         if (cert == null) {
-            throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for " + context.getTalkingConnectionEnd().name());
+            throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for "
+                    + context.getTalkingConnectionEnd().name());
         } else {
             return cert;
         }
@@ -61,7 +62,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             cert.encode(certByteStream);
             return certByteStream.toByteArray();
         } catch (IOException ex) {
-            throw new PreparationException("Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);
+            throw new PreparationException(
+                    "Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);
         }
 
     }

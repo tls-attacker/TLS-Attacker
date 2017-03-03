@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
 
     private final HelloVerifyRequestMessage message;
-    
+
     public HelloVerifyRequestPreparator(TlsContext context, HelloVerifyRequestMessage message) {
         super(context, message);
         this.message = message;
@@ -29,16 +29,15 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     @Override
     public void prepare() {
         message.setCookie(generateCookie());
-        message.setCookieLength((byte) message.getCookie().getValue().length);//TODO WARN
+        message.setCookieLength((byte) message.getCookie().getValue().length);// TODO
+                                                                              // WARN
         message.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
     }
-    
-    private byte[] generateCookie()
-    {
+
+    private byte[] generateCookie() {
         byte[] cookie = new byte[context.getConfig().getDTLSCookieLength()];
         RandomHelper.getRandom().nextBytes(cookie);
         return cookie;
     }
-    
 
 }

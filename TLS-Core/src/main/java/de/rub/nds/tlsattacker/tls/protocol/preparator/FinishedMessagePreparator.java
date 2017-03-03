@@ -50,14 +50,18 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         byte[] masterSecret = context.getMasterSecret();
         byte[] handshakeMessageHash = getDigest().digest();
 
-        if (context.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) { //TODO put this in seperate config option
-            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                    PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,
-                    HandshakeByteLength.VERIFY_DATA);
+        if (context.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) { // TODO
+                                                                                // put
+                                                                                // this
+                                                                                // in
+                                                                                // seperate
+                                                                                // config
+                                                                                // option
+            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
+                    handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
         } else {
-            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                    PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash,
-                    HandshakeByteLength.VERIFY_DATA);
+            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.CLIENT_FINISHED_LABEL,
+                    handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
         }
     }
 

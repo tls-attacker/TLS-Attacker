@@ -27,7 +27,7 @@ import java.util.List;
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
     private final ClientHelloMessage message;
-    
+
     public ClientHelloPreparator(TlsContext context, ClientHelloMessage message) {
         super(context, message);
         this.message = message;
@@ -40,28 +40,31 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         message.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
         message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
         message.setCookie(context.getDtlsHandshakeCookie());
-        message.setCookieLength((byte) message.getCookie().getValue().length);//TODO warn
+        message.setCookieLength((byte) message.getCookie().getValue().length);// TODO
+                                                                              // warn
     }
-    
+
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (CompressionMethod compression : compressionList) {
             try {
                 stream.write(compression.getArrayValue());
             } catch (IOException ex) {
-                throw new PreparationException("Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
+                throw new PreparationException(
+                        "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
             }
         }
         return stream.toByteArray();
     }
-    
+
     private byte[] convertCipherSuites(List<CipherSuite> suiteList) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (CipherSuite suite : suiteList) {
             try {
                 stream.write(suite.getByteValue());
             } catch (IOException ex) {
-                throw new PreparationException("Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
+                throw new PreparationException(
+                        "Could not prepare ClientHelloMessage. Failed to write Ciphersuites into message", ex);
             }
         }
         return stream.toByteArray();

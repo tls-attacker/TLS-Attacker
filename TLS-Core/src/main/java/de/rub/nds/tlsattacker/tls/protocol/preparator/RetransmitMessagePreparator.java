@@ -16,10 +16,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class RetransmitMessagePreparator extends ProtocolMessagePreparator<RetransmitMessage>{
+public class RetransmitMessagePreparator extends ProtocolMessagePreparator<RetransmitMessage> {
 
     private RetransmitMessage message;
-    
+
     public RetransmitMessagePreparator(TlsContext context, RetransmitMessage message) {
         super(context, message);
         this.message = message;

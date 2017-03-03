@@ -15,11 +15,11 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage>{
+public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage> {
 
     private final ChangeCipherSpecMessage message;
     private final byte CCS_PROTOCOL_TYPE = 1;
-    
+
     public ChangeCipherSpecPreparator(TlsContext context, ChangeCipherSpecMessage message) {
         super(context, message);
         this.message = message;

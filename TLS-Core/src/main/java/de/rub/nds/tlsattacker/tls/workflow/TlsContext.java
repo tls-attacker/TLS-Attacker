@@ -397,6 +397,6 @@ public class TlsContext {
     }
 
     public PRFAlgorithm getPRFAlgorithm() {
-        return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion,selectedCipherSuite);
+        return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
 }

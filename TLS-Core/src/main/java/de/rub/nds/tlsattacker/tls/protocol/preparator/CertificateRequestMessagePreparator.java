@@ -51,7 +51,9 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
             try {
                 stream.write(type.getArrayValue());
             } catch (IOException ex) {
-                throw new PreparationException("Could not prepare CertificateRequestMessage. Failed to write ClientCertificateType into message", ex);
+                throw new PreparationException(
+                        "Could not prepare CertificateRequestMessage. Failed to write ClientCertificateType into message",
+                        ex);
             }
         }
         return stream.toByteArray();
@@ -63,7 +65,9 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
             try {
                 stream.write(algo.getByteValue());
             } catch (IOException ex) {
-                throw new PreparationException("Could not prepare CertificateRequestMessage. Failed to write SignatureAndHash Algorithm into message", ex);
+                throw new PreparationException(
+                        "Could not prepare CertificateRequestMessage. Failed to write SignatureAndHash Algorithm into message",
+                        ex);
             }
         }
         return stream.toByteArray();
