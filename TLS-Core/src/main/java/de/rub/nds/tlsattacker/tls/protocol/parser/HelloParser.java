@@ -23,10 +23,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for Hello Messages
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T>
- *            Type of the HelloMessage to parse
+ * @param <T> Type of the HelloMessage to parse
  */
 public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
@@ -34,14 +33,11 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
 
     /**
      * Constructor for the Parser class
-     * 
-     * @param pointer
-     *            Position in the array where the HelloMessageParser is supposed
-     *            to start parsing
-     * @param array
-     *            The byte[] which the HelloMessageParser is supposed to parse
-     * @param type
-     *            Expected Type value for the Message
+     *
+     * @param pointer Position in the array where the HelloMessageParser is
+     * supposed to start parsing
+     * @param array The byte[] which the HelloMessageParser is supposed to parse
+     * @param type Expected Type value for the Message
      */
     public HelloParser(int pointer, byte[] array, HandshakeMessageType type) {
         super(pointer, array, type);
@@ -50,9 +46,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     /**
      * Checks if the message has an ExtensionLength field, by checking if the
      * value specified in the length field is big enough to allow it.
-     * 
-     * @param message
-     *            Message to check
+     *
+     * @param message Message to check
      * @return True if the message has an Extension field
      */
     protected boolean hasExtensionLengthField(HelloMessage message) {
@@ -63,9 +58,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     /**
      * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if
      * there are Extensions present.
-     * 
-     * @param message
-     *            Message to check
+     *
+     * @param message Message to check
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions(HelloMessage message) {
@@ -75,12 +69,11 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     protected boolean hasSessionID(HelloMessage message) {
         return message.getSessionIdLength().getValue() > 0;
     }
-    
+
     /**
      * Reads the next bytes as a ProtocolVersion and writes them in the message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseProtocolVersion(HelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
@@ -89,9 +82,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
 
     /**
      * Reads the next bytes as a Unixtime and writes them in the message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseUnixtime(HelloMessage message) {
         message.setUnixTime(parseByteArrayField(HandshakeByteLength.UNIX_TIME));
@@ -100,9 +92,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
 
     /**
      * Reads the next bytes as a the Random and writes them in the message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
@@ -112,9 +103,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     /**
      * Reads the next bytes as the SessionID length and writes them in the
      * message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseSessionIDLength(HelloMessage message) {
         message.setSessionIdLength(parseIntField(HandshakeByteLength.SESSION_ID_LENGTH));
@@ -123,9 +113,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
 
     /**
      * Reads the next bytes as the SessionID and writes them in the message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseSessionID(HelloMessage message) {
         message.setSessionId(parseByteArrayField(message.getSessionIdLength().getOriginalValue()));
@@ -135,9 +124,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     /**
      * Reads the next bytes as the ExtensionLength and writes them in the
      * message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseExtensionLength(HelloMessage message) {
         message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
@@ -147,20 +135,20 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     /**
      * Reads the next bytes as the ExtensionBytes and writes them in the message
      * and adds parsed Extensions to the message
-     * 
-     * @param message
-     *            Message to write in
+     *
+     * @param message Message to write in
      */
     protected void parseExtensionBytes(HelloMessage message) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
         message.setExtensionBytes(extensionBytes);
         LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
-        ExtensionParser<ExtensionMessage> parser = ExtensionParserFactory.getExtensionParser(0, extensionBytes);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
-        do {
+        int pointer = 0;
+        while (pointer < extensionBytes.length) {
+            ExtensionParser<ExtensionMessage> parser = ExtensionParserFactory.getExtensionParser(pointer, extensionBytes);
             extensionMessages.add(parser.parse());
-            parser = ExtensionParserFactory.getExtensionParser(parser.getPointer(), extensionBytes);
-        } while (parser.getBytesLeft() > 0);
+            pointer = parser.getPointer();
+        }
         message.setExtensions(extensionMessages);
     }
 }
