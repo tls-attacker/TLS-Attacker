@@ -8,12 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ClientKeyExchangePreparator {
+public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage> extends HandshakeMessagePreparator<ClientKeyExchangeMessage> {
+
+    public ClientKeyExchangePreparator(TlsContext context, ClientKeyExchangeMessage message) {
+        super(context, message);
+    }
 
 }

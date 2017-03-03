@@ -8,12 +8,37 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HelloVerifyRequestPreparator {
+public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
+
+    private final HelloVerifyRequestMessage message;
+    
+    public HelloVerifyRequestPreparator(TlsContext context, HelloVerifyRequestMessage message) {
+        super(context, message);
+        this.message = message;
+    }
+
+    @Override
+    public void prepare() {
+        message.setCookie(generateCookie());
+        message.setCookieLength((byte) message.getCookie().getValue().length);//TODO WARN
+        message.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+    }
+    
+    private byte[] generateCookie()
+    {
+        byte[] cookie = new byte[context.getConfig().getDTLSCookieLength()];
+        RandomHelper.getRandom().nextBytes(cookie);
+        return cookie;
+    }
+    
 
 }

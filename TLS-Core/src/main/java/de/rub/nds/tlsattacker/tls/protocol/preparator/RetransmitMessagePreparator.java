@@ -8,12 +8,25 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class RetransmitMessagePreparator {
+public class RetransmitMessagePreparator extends ProtocolMessagePreparator<RetransmitMessage>{
+
+    private RetransmitMessage message;
+    
+    public RetransmitMessagePreparator(TlsContext context, RetransmitMessage message) {
+        super(context, message);
+        this.message = message;
+    }
+
+    @Override
+    public void prepare() {
+    }
 
 }

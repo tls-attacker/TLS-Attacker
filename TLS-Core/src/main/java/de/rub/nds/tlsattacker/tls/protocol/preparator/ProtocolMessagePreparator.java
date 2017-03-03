@@ -8,26 +8,20 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequestMessage>{
+public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 
-    private final HelloRequestMessage message;
-    
-    public HelloRequestPreparator(TlsContext context, HelloRequestMessage message) {
+    private final ProtocolMessage message;
+
+    public ProtocolMessagePreparator(TlsContext context, T message) {
         super(context, message);
         this.message = message;
     }
-
-    @Override
-    public void prepare() {
-        
-    }
-
 }
