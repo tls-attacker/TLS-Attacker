@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -17,15 +17,11 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage>{
+public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMessage> extends
+        HandshakeMessagePreparator<ServerKeyExchangeMessage> {
 
-    public ECDHEServerKeyExchangePreparator(TlsContext context, ServerKeyExchangeMessage message) {
+    public ServerKeyExchangePreparator(TlsContext context, ServerKeyExchangeMessage message) {
         super(context, message);
-    }
-
-    @Override
-    public void prepare() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

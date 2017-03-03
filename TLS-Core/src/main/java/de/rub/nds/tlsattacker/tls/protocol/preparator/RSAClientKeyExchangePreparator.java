@@ -8,12 +8,24 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class RSAClientKeyExchangePreparator {
+public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<RSAClientKeyExchangeMessage>{
+
+    public RSAClientKeyExchangePreparator(TlsContext context, ClientKeyExchangeMessage message) {
+        super(context, message);
+    }
+
+    @Override
+    public void prepare() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
