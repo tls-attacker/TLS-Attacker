@@ -98,10 +98,9 @@ public class ParserTest {
     public void testParseIntFieldZero() {
         parser.parseIntField(0);
     }
-
-    @Test(expected = ParserException.class)
+    
     public void testParseByteFieldZero() {
-        parser.parseByteArrayField(0);
+        assertTrue(parser.parseByteArrayField(0).length == 0);
     }
 
     @Test(expected = ParserException.class)
@@ -111,12 +110,12 @@ public class ParserTest {
 
     @Test(expected = ParserException.class)
     public void testParseSingleByteFieldNegative() {
-        parser.parseByteArrayField(-123);
+        parser.parseByteField(-123);
     }
-
+    
     @Test(expected = ParserException.class)
     public void testParseSingleByteFieldZero() {
-        parser.parseByteArrayField(0);
+        assertNull(parser.parseByteField(0));
     }
 
     @Test

@@ -72,6 +72,10 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
         return message.getExtensionsLength().getValue() > 0;
     }
 
+    protected boolean hasSessionID(HelloMessage message) {
+        return message.getSessionIdLength().getValue() > 0;
+    }
+    
     /**
      * Reads the next bytes as a ProtocolVersion and writes them in the message
      * 

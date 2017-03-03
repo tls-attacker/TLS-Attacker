@@ -68,7 +68,11 @@ public abstract class Parser<T> {
      * @return A subbyteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
-        if (length < 1) {
+        if(length == 0)
+        {
+            return new byte[0];
+        }
+        if (length < 0) {
             throw new ParserException("Cannot parse field of size " + length);
         }
         int nextPointer = pointer + length;
@@ -91,6 +95,10 @@ public abstract class Parser<T> {
      * @return An integer representation of the subbyteArray
      */
     protected int parseIntField(int length) {
+        if(length == 0)
+        {
+            throw new ParserException("Cannot parse int of size 0");
+        }
         return ArrayConverter.bytesToInt(parseByteArrayField(length));
     }
 
@@ -104,6 +112,10 @@ public abstract class Parser<T> {
      * @return A BigInteger representation of the subbyteArray
      */
     protected BigInteger parseBigIntField(int length) {
+        if(length == 0)
+        {
+            throw new ParserException("Cannot parse BigInt of size 0");
+        }
         return new BigInteger(1, parseByteArrayField(length));
     }
 
@@ -117,6 +129,10 @@ public abstract class Parser<T> {
      * @return An integer representation of the subbyteArray
      */
     protected byte parseByteField(int length) {
+        if(length == 0)
+        {
+            throw new ParserException("Cannot parse byte of size 0");
+        }
         if (length > 1) {
             LOGGER.warn("Parsing byte[] field into a byte of size >1");
         }
