@@ -37,7 +37,11 @@ public class ChangeCipherSpecParserTest {
 
     private byte ccsType;
 
-    public ChangeCipherSpecParserTest() {
+    public ChangeCipherSpecParserTest(byte[] message, int start, byte[] expectedPart, byte ccsType) {
+        this.message = message;
+        this.start = start;
+        this.expectedPart = expectedPart;
+        this.ccsType = ccsType;
     }
 
     /**
