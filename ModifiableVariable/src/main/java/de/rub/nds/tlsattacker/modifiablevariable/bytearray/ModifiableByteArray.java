@@ -35,12 +35,13 @@ public class ModifiableByteArray extends ModifiableVariable<byte[]> implements S
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    @Override
     public byte[] getOriginalValue() {
         return originalValue;
     }
 
-    public void setOriginalValue(byte[] value) {
-        this.originalValue = value;
+    public void setOriginalValue(byte[] originalValue) {
+        this.originalValue = originalValue;
     }
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)

@@ -33,14 +33,6 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
         setModification(vm);
     }
 
-    public BigInteger getOriginalValue() {
-        return originalValue;
-    }
-
-    public void setOriginalValue(BigInteger value) {
-        this.originalValue = value;
-    }
-
     public BigInteger getAssertEquals() {
         return assertEquals;
     }
@@ -51,7 +43,7 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
 
     @Override
     public boolean isOriginalValueModified() {
-        return originalValue != null && (originalValue.compareTo(getValue()) != 0);
+        return getOriginalValue() != null && (getOriginalValue().compareTo(getValue()) != 0);
     }
 
     public byte[] getByteArray() {

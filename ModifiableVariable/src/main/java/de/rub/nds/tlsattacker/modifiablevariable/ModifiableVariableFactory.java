@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.modifiablevariable;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.length.ModifiableLengthField;
 import de.rub.nds.tlsattacker.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import java.math.BigInteger;
@@ -55,7 +56,7 @@ public class ModifiableVariableFactory {
         mv.setOriginalValue(value);
         return mv;
     }
-
+    
     public static ModifiableByte safelySetValue(ModifiableByte mv, Byte value) {
         if (mv == null) {
             mv = new ModifiableByte();

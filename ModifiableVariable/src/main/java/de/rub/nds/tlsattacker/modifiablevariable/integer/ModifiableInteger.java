@@ -32,14 +32,6 @@ public class ModifiableInteger extends ModifiableVariable<Integer> implements Se
         setModification(vm);
     }
 
-    public Integer getOriginalValue() {
-        return originalValue;
-    }
-
-    public void setOriginalValue(Integer originalValue) {
-        this.originalValue = originalValue;
-    }
-
     public Integer getAssertEquals() {
         return assertEquals;
     }
@@ -50,7 +42,7 @@ public class ModifiableInteger extends ModifiableVariable<Integer> implements Se
 
     @Override
     public boolean isOriginalValueModified() {
-        return originalValue != null && originalValue.compareTo(getValue()) != 0;
+        return getOriginalValue() != null && getOriginalValue().compareTo(getValue()) != 0;
     }
 
     public byte[] getByteArray(int size) {

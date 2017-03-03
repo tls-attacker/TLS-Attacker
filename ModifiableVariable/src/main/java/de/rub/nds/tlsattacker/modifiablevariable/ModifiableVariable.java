@@ -60,6 +60,14 @@ public abstract class ModifiableVariable<E> {
         return originalValue;
     }
 
+    public E getOriginalValue() {
+        return originalValue;
+    }
+
+    public void setOriginalValue(E originalValue) {
+        this.originalValue = originalValue;
+    }
+
     protected abstract void createRandomModification();
 
     public void createRandomModificationAtRuntime() {

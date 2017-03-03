@@ -32,14 +32,6 @@ public class ModifiableLong extends ModifiableVariable<Long> implements Serializ
         setModification(vm);
     }
 
-    public Long getOriginalValue() {
-        return originalValue;
-    }
-
-    public void setOriginalValue(Long originalValue) {
-        this.originalValue = originalValue;
-    }
-
     public Long getAssertEquals() {
         return assertEquals;
     }

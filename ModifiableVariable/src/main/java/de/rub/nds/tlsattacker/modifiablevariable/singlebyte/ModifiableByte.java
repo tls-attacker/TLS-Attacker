@@ -31,14 +31,6 @@ public class ModifiableByte extends ModifiableVariable<Byte> implements Serializ
         setModification(vm);
     }
 
-    public Byte getOriginalValue() {
-        return originalValue;
-    }
-
-    public void setOriginalValue(Byte originalValue) {
-        this.originalValue = originalValue;
-    }
-
     public Byte getAssertEquals() {
         return assertEquals;
     }
