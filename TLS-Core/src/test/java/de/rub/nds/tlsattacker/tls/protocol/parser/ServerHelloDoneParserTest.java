@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Before;
@@ -27,7 +28,7 @@ public class ServerHelloDoneParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {}, {} });
+        return Arrays.asList(new Object[][] { {ArrayConverter.hexStringToByteArray("0e000000"),0,ArrayConverter.hexStringToByteArray("0e000000"),HandshakeMessageType.SERVER_HELLO_DONE,0}, });
     }
 
     private byte[] message;
