@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
@@ -26,9 +27,11 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -232,9 +235,11 @@ public final class TlsConfig {
     /**
      * Fixed DH g value used in Server Key Exchange
      */
-    private byte[] fixedDHg = { 0x02 };
+    private byte[] fixedDHg = {0x02};
 
     private String defaultApplicationMessageData = "Test";
+
+    private PrivateKey privateKey;
 
     /**
      * If this is set TLS-Attacker only waits for the expected messages in the
@@ -243,6 +248,25 @@ public final class TlsConfig {
      */
     private boolean waitOnlyForExpectedDTLS = true;
 
+    private List<ClientCertificateType> clientCertificateTypes;
+
+    /**
+     * max payload length used in our application (not set by the spec)
+     */
+    private int heartbeatMaxPayloadLength = 256;
+
+    /**
+     * according to the specification, the min padding length is 16
+     */
+    private int heartbeatMinPaddingLength = 16;
+
+    /**
+     * max padding length used in our application (not set by the spec)
+     */
+    private int heartbeatMaxPaddingLength = 256;
+
+    private int DTLSCookieLength = 6;
+    
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -274,7 +298,43 @@ public final class TlsConfig {
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load deauflt JKS!");
         }
+        clientCertificateTypes = new LinkedList<>();
+        clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
 
+    }
+
+    public int getHeartbeatMaxPayloadLength() {
+        return heartbeatMaxPayloadLength;
+    }
+
+    public void setHeartbeatMaxPayloadLength(int heartbeatMaxPayloadLength) {
+        this.heartbeatMaxPayloadLength = heartbeatMaxPayloadLength;
+    }
+
+    public int getHeartbeatMinPaddingLength() {
+        return heartbeatMinPaddingLength;
+    }
+
+    public void setHeartbeatMinPaddingLength(int heartbeatMinPaddingLength) {
+        this.heartbeatMinPaddingLength = heartbeatMinPaddingLength;
+    }
+
+    public int getHeartbeatMaxPaddingLength() {
+        return heartbeatMaxPaddingLength;
+    }
+
+    public void setHeartbeatMaxPaddingLength(int heartbeatMaxPaddingLength) {
+        this.heartbeatMaxPaddingLength = heartbeatMaxPaddingLength;
+    }
+
+    
+    
+    public List<ClientCertificateType> getClientCertificateTypes() {
+        return clientCertificateTypes;
+    }
+
+    public void setClientCertificateTypes(List<ClientCertificateType> clientCertificateTypes) {
+        this.clientCertificateTypes = clientCertificateTypes;
     }
 
     public boolean isWaitOnlyForExpectedDTLS() {
@@ -684,5 +744,21 @@ public final class TlsConfig {
 
     public void setAddSignatureAndHashAlgrorithmsExtension(boolean addSignatureAndHashAlgrorithmsExtension) {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public int getDTLSCookieLength() {
+        return DTLSCookieLength;
+    }
+
+    public void setDTLSCookieLength(int DTLSCookieLength) {
+        this.DTLSCookieLength = DTLSCookieLength;
     }
 }
