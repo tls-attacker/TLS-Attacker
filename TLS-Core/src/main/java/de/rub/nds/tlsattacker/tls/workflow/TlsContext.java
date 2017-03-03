@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
@@ -25,6 +26,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.Collections;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -128,6 +130,12 @@ public class TlsContext {
 
     private MaxFragmentLength maxFragmentLength;
 
+    private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
+
+    private PublicKey clientPublicKey;
+
+    private PublicKey serverPublicKey;
+
     // TODO does this make sense?
     public TlsContext() {
         digest = new TlsMessageDigest();
@@ -143,6 +151,30 @@ public class TlsContext {
         this.config = config;
         // init protocolVersion for records
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public PublicKey getClientPublicKey() {
+        return clientPublicKey;
+    }
+
+    public void setClientPublicKey(PublicKey clientPublicKey) {
+        this.clientPublicKey = clientPublicKey;
+    }
+
+    public PublicKey getServerPublicKey() {
+        return serverPublicKey;
+    }
+
+    public void setServerPublicKey(PublicKey serverPublicKey) {
+        this.serverPublicKey = serverPublicKey;
+    }
+
+    public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
+        return selectedSigHashAlgorithm;
+    }
+
+    public void setSelectedSigHashAlgorithm(SignatureAndHashAlgorithm selectedSigHashAlgorithm) {
+        this.selectedSigHashAlgorithm = selectedSigHashAlgorithm;
     }
 
     public MaxFragmentLength getMaxFragmentLength() {
@@ -362,5 +394,9 @@ public class TlsContext {
 
     public void setRecordHandler(RecordHandler recordHandler) {
         this.recordHandler = recordHandler;
+    }
+
+    public PRFAlgorithm getPRFAlgorithm() {
+        return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion,selectedCipherSuite);
     }
 }
