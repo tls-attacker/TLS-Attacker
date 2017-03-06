@@ -16,7 +16,7 @@ import java.util.Random;
 public class RandomHelper {
 
     private static Random random;
-
+    
     public static Random getRandom() {
         if (random == null) {
             random = new Random();
@@ -24,6 +24,11 @@ public class RandomHelper {
         return random;
     }
 
+    public static BadRandom getBadSecureRandom()
+    {
+        return new BadRandom(getRandom(), null);
+    }
+    
     private RandomHelper() {
     }
 }

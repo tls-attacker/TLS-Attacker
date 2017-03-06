@@ -24,13 +24,13 @@ public class BadRandom extends SecureRandom {
     public BadRandom() {
         r = new Random();
     }
-
+    
     public BadRandom(Random r, byte[] seed) {
-        this.r = new Random();
+        this.r = r;
     }
 
     public BadRandom(Random r, SecureRandomSpi secureRandomSpi, Provider provider) {
-        this.r = new Random();
+        this.r = r;
     }
 
     @Override
