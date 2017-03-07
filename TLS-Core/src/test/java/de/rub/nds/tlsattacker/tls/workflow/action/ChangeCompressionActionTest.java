@@ -86,7 +86,7 @@ public class ChangeCompressionActionTest {
      */
     @Test
     public void testGetOldValue() {
-        tlsContext.setCompressionMethod(CompressionMethod.NULL);
+        tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
         action.execute(tlsContext, executor);
         assertEquals(action.getOldValue(), CompressionMethod.NULL);
     }
@@ -96,11 +96,11 @@ public class ChangeCompressionActionTest {
      */
     @Test
     public void testExecute() {
-        tlsContext.setCompressionMethod(CompressionMethod.NULL);
+        tlsContext.setSelectedCompressionMethod(CompressionMethod.NULL);
         action.execute(tlsContext, executor);
         assertEquals(action.getOldValue(), CompressionMethod.NULL);
         assertEquals(action.getNewValue(), CompressionMethod.LZS);
-        assertEquals(tlsContext.getCompressionMethod(), CompressionMethod.LZS);
+        assertEquals(tlsContext.getSelectedCompressionMethod(), CompressionMethod.LZS);
         assertTrue(action.isExecuted());
     }
 

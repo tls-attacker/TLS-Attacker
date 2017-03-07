@@ -88,8 +88,10 @@ public class SerializerTest {
             super();
         }
 
-        public void serializeBytes() {
+        @Override
+        public byte[] serializeBytes() {
             appendBytes(new byte[] { 0, 1, 2, 3 });
+            return getAlreadySerialized();
         }
     }
 

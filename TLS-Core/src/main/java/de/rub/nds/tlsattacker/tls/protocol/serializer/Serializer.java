@@ -26,7 +26,7 @@ public abstract class Serializer<T> {
     /**
      * The ByteArrayOutputStream with which the byte[] is constructed.
      */
-    private final ByteArrayOutputStream outputStream;
+    private ByteArrayOutputStream outputStream;
 
     /**
      * Constructor for the Serializer
@@ -38,8 +38,10 @@ public abstract class Serializer<T> {
     /**
      * This method is responsible to write the appropriate bytes to the output
      * Stream This should be done by calling the different append methods.
+     * 
+     * @return
      */
-    protected abstract void serializeBytes();
+    protected abstract byte[] serializeBytes();
 
     /**
      * Adds a byte[] representation of an int to the final byte[]. If the
@@ -85,14 +87,19 @@ public abstract class Serializer<T> {
         }
     }
 
+    protected final byte[] getAlreadySerialized() {
+        return outputStream.toByteArray();
+    }
+
     /**
      * Creates the final byte[]
      * 
      * @return The final byte[]
      */
     public final byte[] serialize() {
+        outputStream = new ByteArrayOutputStream();
         serializeBytes();
-        return outputStream.toByteArray();
+        return getAlreadySerialized();
     }
 
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Serializer.class);

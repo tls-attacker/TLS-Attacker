@@ -27,7 +27,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     @Override
-    public void prepare() {
+    public void prepareHandshakeMessageContents() {
         message.setCookie(generateCookie());
         message.setCookieLength((byte) message.getCookie().getValue().length);// TODO
                                                                               // WARN

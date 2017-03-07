@@ -57,11 +57,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      */
     private boolean goingToBeSent = true;
     /**
-     * Defines if the message should be modified during a workflow execution
-     * with MitMworkflowExecutor
-     */
-    private boolean goingToBeModified = false;
-    /**
      * resulting message
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
@@ -104,14 +99,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public void setGoingToBeSent(boolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    public boolean isGoingToBeModified() {
-        return goingToBeModified;
-    }
-
-    public void setGoingToBeModified(boolean goingToBeModified) {
-        this.goingToBeModified = goingToBeModified;
     }
 
     @Override

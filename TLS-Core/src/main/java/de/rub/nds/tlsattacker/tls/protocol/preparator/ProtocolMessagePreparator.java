@@ -24,4 +24,12 @@ public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> exten
         super(context, message);
         this.message = message;
     }
+
+    @Override
+    public final void prepare() {
+        prepareProtocolMessageContents();
+    }
+
+    protected abstract void prepareProtocolMessageContents();
+
 }

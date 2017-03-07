@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -26,5 +27,4 @@ public class ArbitraryMessage extends ProtocolMessage {
     public String toCompactString() {
         return "Arbitrary Protocol Message";
     }
-
 }

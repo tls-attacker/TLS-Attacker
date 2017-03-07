@@ -26,7 +26,7 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
     }
 
     @Override
-    public void prepare() {
+    protected void prepareProtocolMessageContents() {
         message.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
     }
 

@@ -8,15 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -27,33 +26,6 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
         super(tlsContext);
     }
 
-    // @Override
-    // public byte[] prepareMessageAction() {
-    // if (protocolMessage.getConfig() != null &&
-    // protocolMessage.getConfig().length > 0) {
-    // protocolMessage.setLevel(protocolMessage.getConfig()[0]);
-    // } else {
-    // if (tlsContext.getConfig().isFuzzingMode()) {
-    // Random r = new Random();
-    // protocolMessage.setConfig(AlertLevel.values()[r.nextInt(AlertLevel.values().length)],
-    // AlertDescription.values()[r.nextInt(AlertDescription.values().length)]);
-    // protocolMessage.setLevel(protocolMessage.getConfig()[0]);
-    // }
-    // }
-    // protocolMessage.setDescription(protocolMessage.getConfig()[1]);
-    // byte[] result = { protocolMessage.getLevel().getValue(),
-    // protocolMessage.getDescription().getValue() };
-    // protocolMessage.setCompleteResultingMessage(result);
-    // return result;
-    // }
-    //
-    // @Override
-    // public int parseMessageAction(byte[] message, int pointer) {
-    // protocolMessage.setLevel(message[pointer]);
-    // protocolMessage.setDescription(message[pointer + 1]);
-    // return (pointer + 2);
-    // }
-
     @Override
     protected AlertParser getParser(byte[] message, int pointer) {
         return new AlertParser(pointer, message);
@@ -61,43 +33,19 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     @Override
     protected Preparator getPreparator(AlertMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new AlertPreparator(tlsContext, message);
     }
 
     @Override
     protected Serializer getSerializer(AlertMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new AlertSerializer(message);
     }
 
     @Override
     protected void adjustTLSContext(AlertMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        if (tlsContext.getTalkingConnectionEnd() == tlsContext.getConfig().getMyConnectionEnd()
+                && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
+            tlsContext.setReceivedFatalAlert(true);
+        }
     }
 }

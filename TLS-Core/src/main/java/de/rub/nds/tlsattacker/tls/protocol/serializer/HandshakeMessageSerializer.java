@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
  * @param <T>
  *            Type of the HandshakeMessages to serialize
  */
-public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends Serializer<T> {
+public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
 
     /**
      * The message that should be serialized
@@ -32,22 +32,32 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      *            Message that should be serialized
      */
     public HandshakeMessageSerializer(T message) {
-        super();
+        super(message);
         this.message = message;
     }
 
     /**
      * Writes the Type of the HandshakeMessage into the final byte[]
      */
-    protected void writeType() {
+    private void writeType() {
         appendByte(message.getType().getValue());
     }
 
     /**
      * Writes the message length of the HandshakeMessage into the final byte[]
      */
-    protected void writeLength() {
+    private void writeLength() {
         appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
     }
+
+    @Override
+    public final byte[] serializeProtocolMessageContent() {
+        writeType();
+        writeLength();
+        serializeHandshakeMessageContent();
+        return getAlreadySerialized();
+    }
+
+    public abstract byte[] serializeHandshakeMessageContent();
 
 }

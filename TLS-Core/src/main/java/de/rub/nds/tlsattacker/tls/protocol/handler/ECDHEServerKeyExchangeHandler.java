@@ -21,7 +21,9 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -45,164 +47,28 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
         super(tlsContext);
     }
 
-    //
-    // /**
-    // * @param message
-    // * @param pointer
-    // * @return
-    // */
-    // @Override
-    // public int parseMessageAction(byte[] message, int pointer) {
-    // if (message[pointer] !=
-    // HandshakeMessageType.SERVER_KEY_EXCHANGE.getValue()) {
-    // throw new
-    // InvalidMessageTypeException(HandshakeMessageType.SERVER_KEY_EXCHANGE);
-    // }
-    // protocolMessage.setType(message[pointer]);
-    //
-    // int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-    // int nextPointer = currentPointer +
-    // HandshakeByteLength.MESSAGE_LENGTH_FIELD;
-    // int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message,
-    // currentPointer, nextPointer));
-    // protocolMessage.setLength(length);
-    //
-    // currentPointer = nextPointer;
-    // nextPointer++;
-    // EllipticCurveType ct =
-    // EllipticCurveType.getCurveType(message[currentPointer]);
-    // if (ct != EllipticCurveType.NAMED_CURVE) {
-    // throw new
-    // UnsupportedOperationException("Currently only named curves are supported");
-    // }
-    // protocolMessage.setCurveType(ct.getValue());
-    //
-    // currentPointer = nextPointer;
-    // nextPointer = currentPointer + NamedCurve.LENGTH;
-    // NamedCurve nc = NamedCurve.getNamedCurve(Arrays.copyOfRange(message,
-    // currentPointer, nextPointer));
-    // protocolMessage.setNamedCurve(nc.getValue());
-    //
-    // currentPointer = nextPointer;
-    // nextPointer++;
-    // int publicKeyLength = message[currentPointer] & 0xFF;
-    // protocolMessage.setPublicKeyLength(publicKeyLength);
-    //
-    // currentPointer = nextPointer;
-    // nextPointer = currentPointer + publicKeyLength;
-    // protocolMessage.setPublicKey(Arrays.copyOfRange(message, currentPointer,
-    // nextPointer));
-    //
-    // byte[] ecParams = ArrayConverter.concatenate(new byte[] {
-    // protocolMessage.getCurveType().getValue() },
-    // protocolMessage.getNamedCurve().getValue(),
-    // ArrayConverter.intToBytes(protocolMessage
-    // .getPublicKeyLength().getValue(), 1),
-    // protocolMessage.getPublicKey().getValue());
-    // InputStream is = new ByteArrayInputStream(ecParams);
-    // ECPublicKeyParameters publicKeyParameters = null;
-    // try {
-    // publicKeyParameters =
-    // ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
-    // LOGGER.debug("Parsed the following EC domain parameters: ");
-    // LOGGER.debug("  Curve order: {}",
-    // publicKeyParameters.getParameters().getCurve().getOrder());
-    // LOGGER.debug("  Parameter A: {}",
-    // publicKeyParameters.getParameters().getCurve().getA());
-    // LOGGER.debug("  Parameter B: {}",
-    // publicKeyParameters.getParameters().getCurve().getB());
-    // LOGGER.debug("  Base point: {} ",
-    // publicKeyParameters.getParameters().getG());
-    // LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
-    // } catch (TlsFatalAlert alert) {
-    // throw new
-    // UnsupportedOperationException("Problematic EC parameters, we dont support these yet",
-    // alert);
-    // } catch (IOException ex) {
-    // throw new WorkflowExecutionException("EC public key parsing failed", ex);
-    // }
-    // tlsContext.getEcContext().setServerPublicKeyParameters(publicKeyParameters);
-    //
-    // if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.DTLS12
-    // || tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS12) {
-    // currentPointer = nextPointer;
-    // nextPointer++;
-    // HashAlgorithm ha =
-    // HashAlgorithm.getHashAlgorithm(message[currentPointer]);
-    // protocolMessage.setHashAlgorithm(ha.getValue());
-    //
-    // currentPointer = nextPointer;
-    // nextPointer++;
-    // SignatureAlgorithm sa =
-    // SignatureAlgorithm.getSignatureAlgorithm(message[currentPointer]);
-    // protocolMessage.setSignatureAlgorithm(sa.getValue());
-    // }
-    // currentPointer = nextPointer;
-    // nextPointer = currentPointer + HandshakeByteLength.SIGNATURE_LENGTH;
-    // int signatureLength =
-    // ArrayConverter.bytesToInt(Arrays.copyOfRange(message, currentPointer,
-    // nextPointer));
-    // protocolMessage.setSignatureLength(signatureLength);
-    // currentPointer = nextPointer;
-    // nextPointer = currentPointer + signatureLength;
-    // protocolMessage.setSignature(Arrays.copyOfRange(message, currentPointer,
-    // nextPointer));
-    // protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message,
-    // pointer, nextPointer));
-    // return nextPointer;
-    //
-    // }
-    //
-    // @Override
-    // public byte[] prepareMessageAction() {
-    // throw new
-    // UnsupportedOperationException("ECDHE message preparation not supported yet.");
-    // }
-
     @Override
     protected ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
         return new ECDHEServerKeyExchangeParser(pointer, message);
     }
 
     @Override
-    protected Preparator getPreparator(ECDHEServerKeyExchangeMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    protected ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
+        return new ECDHEServerKeyExchangePreparator(tlsContext, message);
     }
 
     @Override
     protected Serializer getSerializer(ECDHEServerKeyExchangeMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new ECDHEServerKeyExchangeSerializer(message);
     }
 
     @Override
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        if (message.getComputations().getPremasterSecret() != null) {
+            tlsContext.setPreMasterSecret(message.getComputations().getPremasterSecret().getValue());
+        }
+        if (message.getComputations().getMasterSecret() != null) {
+            tlsContext.setMasterSecret(message.getComputations().getMasterSecret().getValue());
+        }
     }
 }

@@ -8,12 +8,17 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHClientComputations;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.RSAClientComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
@@ -28,15 +33,17 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     private ModifiableByteArray encryptedPremasterSecret;
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray plainPaddedPremasterSecret;
+    @HoldsModifiableVariable
+    protected RSAClientComputations computations;
 
     public RSAClientKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig);
+        computations = new RSAClientComputations();
     }
 
     public RSAClientKeyExchangeMessage() {
         super();
+        computations = new RSAClientComputations();
     }
 
     public ModifiableInteger getEncryptedPremasterSecretLength() {
@@ -64,28 +71,16 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         this.encryptedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.encryptedPremasterSecret, value);
     }
 
-    public ModifiableByteArray getPlainPaddedPremasterSecret() {
-        return plainPaddedPremasterSecret;
-    }
-
-    public void setPlainPaddedPremasterSecret(ModifiableByteArray plainPaddedPremasterSecret) {
-        this.plainPaddedPremasterSecret = plainPaddedPremasterSecret;
-    }
-
-    public void setPlainPaddedPremasterSecret(byte[] value) {
-        this.plainPaddedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret,
-                value);
-    }
-
-    @Override
-    public void setMasterSecret(ModifiableByteArray masterSecret) {
-        this.masterSecret = masterSecret;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nClient Key Exchange message:");
         return sb.toString();
     }
+
+    @Override
+    public RSAClientComputations getComputations() {
+        return computations;
+    }
+
 }

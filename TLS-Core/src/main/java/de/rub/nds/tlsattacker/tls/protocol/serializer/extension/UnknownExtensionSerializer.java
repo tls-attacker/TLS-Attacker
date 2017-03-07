@@ -21,7 +21,7 @@ public class UnknownExtensionSerializer<T extends UnknownExtensionMessage> exten
     }
 
     @Override
-    protected void serializeBytes() {
+    protected byte[] serializeBytes() {
         throw new UnsupportedOperationException("Not supported yet."); // To
                                                                        // change
                                                                        // body

@@ -48,8 +48,8 @@ public class ChangeCompressionAction extends TLSAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        oldValue = tlsContext.getCompressionMethod();
-        tlsContext.setCompressionMethod(newValue);
+        oldValue = tlsContext.getSelectedCompressionMethod();
+        tlsContext.setSelectedCompressionMethod(newValue);
         executed = true;
     }
 

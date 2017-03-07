@@ -33,7 +33,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     @Override
-    public void prepare() {
+    public void prepareHandshakeMessageContents() {
         Certificate cert = chooseCert();
         byte[] encodedCert = encodeCert(cert);
         message.setX509CertificateBytes(encodedCert);

@@ -8,12 +8,26 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class AlertSerializer {
+public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
+
+    private final AlertMessage message;
+
+    public AlertSerializer(AlertMessage message) {
+        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public byte[] serializeProtocolMessageContent() {
+        appendByte(message.getLevel().getValue());
+        appendByte(message.getDescription().getValue());
+        return getAlreadySerialized();
+    }
 
 }

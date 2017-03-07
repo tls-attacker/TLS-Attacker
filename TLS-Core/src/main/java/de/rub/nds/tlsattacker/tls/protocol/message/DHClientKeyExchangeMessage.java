@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
@@ -15,6 +16,9 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.DHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHClientComputations;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
@@ -39,18 +43,18 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger y;
-    /**
-     * client's private key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger x;
+
+    @HoldsModifiableVariable
+    protected DHClientComputations computations;
 
     public DHClientKeyExchangeMessage() {
         super();
+        computations = new DHClientComputations();
     }
 
     public DHClientKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig);
+        computations = new DHClientComputations();
     }
 
     public ModifiableBigInteger getP() {
@@ -89,18 +93,6 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         this.y = ModifiableVariableFactory.safelySetValue(this.y, y);
     }
 
-    public ModifiableBigInteger getX() {
-        return x;
-    }
-
-    public void setX(ModifiableBigInteger x) {
-        this.x = x;
-    }
-
-    public void setX(BigInteger x) {
-        this.x = ModifiableVariableFactory.safelySetValue(this.x, x);
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -111,5 +103,10 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public DHClientComputations getComputations() {
+        return computations;
     }
 }

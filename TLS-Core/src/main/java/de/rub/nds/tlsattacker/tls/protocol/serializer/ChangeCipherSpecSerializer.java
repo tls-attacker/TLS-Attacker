@@ -8,12 +8,27 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCipherSpecSerializer {
+public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<ChangeCipherSpecMessage> {
+
+    private ChangeCipherSpecMessage message;
+
+    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message) {
+        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public byte[] serializeProtocolMessageContent() {
+        appendByte(message.getCcsProtocolType().getValue());
+        return getAlreadySerialized();
+    }
 
 }

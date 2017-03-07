@@ -8,17 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
 
 /**
  * @author Philip Riese <philip.riese@rub.de>
@@ -29,44 +26,6 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
         super(tlsContext);
     }
 
-    //
-    // @Override
-    // public byte[] prepareMessageAction() {
-    //
-    // protocolMessage.setLength(0);
-    //
-    // long header = (HandshakeMessageType.HELLO_REQUEST.getValue() << 24) +
-    // protocolMessage.getLength().getValue();
-    //
-    // protocolMessage.setCompleteResultingMessage(ArrayConverter.longToUint32Bytes(header));
-    //
-    // return protocolMessage.getCompleteResultingMessage().getValue();
-    // }
-    //
-    // @Override
-    // public int parseMessageAction(byte[] message, int pointer) {
-    // if (message[pointer] != HandshakeMessageType.HELLO_REQUEST.getValue()) {
-    // throw new
-    // InvalidMessageTypeException("This is not a Hello Request message");
-    // }
-    // protocolMessage.setType(message[pointer]);
-    //
-    // int currentPointer = pointer + HandshakeByteLength.MESSAGE_TYPE;
-    // int nextPointer = currentPointer +
-    // HandshakeByteLength.MESSAGE_LENGTH_FIELD;
-    // int length = ArrayConverter.bytesToInt(Arrays.copyOfRange(message,
-    // currentPointer, nextPointer));
-    // protocolMessage.setLength(length);
-    // // should always be null
-    //
-    // currentPointer = nextPointer;
-    //
-    // protocolMessage.setCompleteResultingMessage(Arrays.copyOfRange(message,
-    // pointer, nextPointer));
-    //
-    // return currentPointer;
-    // }
-
     @Override
     protected Parser getParser(byte[] message, int pointer) {
         return new HelloRequestParser(pointer, message);
@@ -74,43 +33,16 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
 
     @Override
     protected Preparator getPreparator(HelloRequestMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new HelloRequestPreparator(tlsContext, message);
     }
 
     @Override
     protected Serializer getSerializer(HelloRequestMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new HelloRequestSerializer(message);
     }
 
     @Override
     protected void adjustTLSContext(HelloRequestMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // we adjust nothing
     }
 }

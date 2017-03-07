@@ -28,7 +28,8 @@ public class ServerHelloDoneParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {ArrayConverter.hexStringToByteArray("0e000000"),0,ArrayConverter.hexStringToByteArray("0e000000"),HandshakeMessageType.SERVER_HELLO_DONE,0}, });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0e000000"), 0,
+                ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0 }, });
     }
 
     private byte[] message;

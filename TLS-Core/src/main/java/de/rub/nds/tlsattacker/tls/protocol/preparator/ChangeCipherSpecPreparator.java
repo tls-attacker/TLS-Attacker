@@ -26,7 +26,7 @@ public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<Change
     }
 
     @Override
-    public void prepare() {
+    protected void prepareProtocolMessageContents() {
         message.setCcsProtocolType(CCS_PROTOCOL_TYPE);
     }
 

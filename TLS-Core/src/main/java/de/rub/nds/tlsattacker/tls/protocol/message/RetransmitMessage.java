@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -21,15 +22,18 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class RetransmitMessage extends ProtocolMessage {
 
+    private byte[] bytesToTransmit;
+
     public RetransmitMessage(byte[] bytesToTransmit) {
         super();
         this.setRequired(false);
         protocolMessageType = ProtocolMessageType.UNKNOWN;
-        setCompleteResultingMessage(bytesToTransmit);
+        this.bytesToTransmit = bytesToTransmit;
     }
 
     @Override
     public String toCompactString() {
         return "Retransmitted Message";
     }
+
 }

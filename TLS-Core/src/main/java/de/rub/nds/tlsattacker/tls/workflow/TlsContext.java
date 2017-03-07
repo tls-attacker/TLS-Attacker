@@ -11,11 +11,14 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
+import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
@@ -28,11 +31,13 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
@@ -46,20 +51,19 @@ public class TlsContext {
     /**
      * master secret established during the handshake
      */
-    private byte[] masterSecret = new byte[HandshakeByteLength.MASTER_SECRET];
+    private byte[] masterSecret = new byte[0];
     /**
      * premaster secret established during the handshake
      */
-    private byte[] preMasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+    private byte[] preMasterSecret = new byte[0];
     /**
      * client random, including unix time /** client random, including unix time
      */
-
-    private byte[] clientRandom = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
+    private byte[] clientRandom = new byte[0];
     /**
      * server random, including unix time
      */
-    private byte[] serverRandom = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
+    private byte[] serverRandom = new byte[0];
     /**
      * selected cipher suite
      */
@@ -69,12 +73,11 @@ public class TlsContext {
     /**
      * compression algorithm
      */
-    private CompressionMethod compressionMethod;
+    private CompressionMethod selectedCompressionMethod;
     /**
      * session ID
      */
-    // TODO should this not be 0?
-    private byte[] sessionID = new byte[HandshakeByteLength.RANDOM + HandshakeByteLength.UNIX_TIME];
+    private byte[] sessionID = new byte[0];
     /**
      * server certificate parsed from the server certificate message
      */
@@ -83,11 +86,7 @@ public class TlsContext {
      * client certificate parsed from the client certificate message
      */
     private Certificate clientCertificate;
-    /**
-     * EC context containing information about public/private key agreements,
-     * curves, and point formats
-     */
-    private TlsECContext ecContext;
+
     /**
      * Server DH parameters
      */
@@ -136,21 +135,123 @@ public class TlsContext {
 
     private PublicKey serverPublicKey;
 
+    /**
+     * EC public key parameters for EC handshakes
+     */
+    private ECPublicKeyParameters clientPublicKeyParameters;
+    /**
+     * EC private key parameters
+     */
+    private ECPrivateKeyParameters clientPrivateKeyParameters;
+    /**
+     * EC public key parameters of the server
+     */
+    private ECPublicKeyParameters serverPublicKeyParameters;
+    /**
+     * supported named curves
+     */
+    private NamedCurve[] clientNamedCurves;
+    /**
+     * supported server point formats
+     */
+    private ECPointFormat[] serverPointFormats;
+    /**
+     * supported client point formats
+     */
+    private ECPointFormat[] clientPointFormats;
+
+    private boolean receivedFatalAlert = false;
+
+    private List<ClientCertificateType> clientCertificateTypes;
+
+    private byte[] distinguishedNames;
+
     // TODO does this make sense?
     public TlsContext() {
         digest = new TlsMessageDigest();
-        ecContext = new TlsECContext();
         config = new TlsConfig();
+        clientCertificateTypes = new LinkedList<>();
         // init protocolVersion for records
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
     public TlsContext(TlsConfig config) {
         digest = new TlsMessageDigest();
-        ecContext = new TlsECContext();
         this.config = config;
         // init protocolVersion for records
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public byte[] getDistinguishedNames() {
+        return distinguishedNames;
+    }
+
+    public void setDistinguishedNames(byte[] distinguishedNames) {
+        this.distinguishedNames = distinguishedNames;
+    }
+
+    public List<ClientCertificateType> getClientCertificateTypes() {
+        return clientCertificateTypes;
+    }
+
+    public void setClientCertificateTypes(List<ClientCertificateType> clientCertificateTypes) {
+        this.clientCertificateTypes = clientCertificateTypes;
+    }
+
+    public boolean isReceivedFatalAlert() {
+        return receivedFatalAlert;
+    }
+
+    public void setReceivedFatalAlert(boolean receivedFatalAlert) {
+        this.receivedFatalAlert = receivedFatalAlert;
+    }
+
+    public ECPublicKeyParameters getClientPublicKeyParameters() {
+        return clientPublicKeyParameters;
+    }
+
+    public void setClientPublicKeyParameters(ECPublicKeyParameters clientPublicKeyParameters) {
+        this.clientPublicKeyParameters = clientPublicKeyParameters;
+    }
+
+    public ECPrivateKeyParameters getClientPrivateKeyParameters() {
+        return clientPrivateKeyParameters;
+    }
+
+    public void setClientPrivateKeyParameters(ECPrivateKeyParameters clientPrivateKeyParameters) {
+        this.clientPrivateKeyParameters = clientPrivateKeyParameters;
+    }
+
+    public ECPublicKeyParameters getServerPublicKeyParameters() {
+        return serverPublicKeyParameters;
+    }
+
+    public void setServerPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
+        this.serverPublicKeyParameters = serverPublicKeyParameters;
+    }
+
+    public NamedCurve[] getClientNamedCurves() {
+        return clientNamedCurves;
+    }
+
+    public void setClientNamedCurves(NamedCurve[] clientNamedCurves) {
+        this.clientNamedCurves = clientNamedCurves;
+    }
+
+    public ECPointFormat[] getServerPointFormats() {
+        return serverPointFormats;
+    }
+
+    public void setServerPointFormats(ECPointFormat[] serverPointFormats) {
+        this.serverPointFormats = serverPointFormats;
+    }
+
+    public ECPointFormat[] getClientPointFormats() {
+        return clientPointFormats;
+    }
+
+    public void setClientPointFormats(ECPointFormat[] clientPointFormats) {
+        this.clientPointFormats = clientPointFormats;
     }
 
     public PublicKey getClientPublicKey() {
@@ -194,6 +295,9 @@ public class TlsContext {
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {
+        if (clientSupportedCompressions == null) {
+            return null;
+        }
         return Collections.unmodifiableList(clientSupportedCompressions);
     }
 
@@ -202,6 +306,9 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
+        if (clientSupportedCompressions == null) {
+            return null;
+        }
         return Collections.unmodifiableList(clientSupportedCiphersuites);
     }
 
@@ -304,12 +411,12 @@ public class TlsContext {
         this.serverRandom = serverRandom;
     }
 
-    public CompressionMethod getCompressionMethod() {
-        return compressionMethod;
+    public CompressionMethod getSelectedCompressionMethod() {
+        return selectedCompressionMethod;
     }
 
-    public void setCompressionMethod(CompressionMethod compressionMethod) {
-        this.compressionMethod = compressionMethod;
+    public void setSelectedCompressionMethod(CompressionMethod selectedCompressionMethod) {
+        this.selectedCompressionMethod = selectedCompressionMethod;
     }
 
     public byte[] getSessionID() {
@@ -326,14 +433,6 @@ public class TlsContext {
 
     public void setWorkflowTrace(WorkflowTrace workflowTrace) {
         this.workflowTrace = workflowTrace;
-    }
-
-    public TlsECContext getEcContext() {
-        return ecContext;
-    }
-
-    public void setEcContext(TlsECContext ecContext) {
-        this.ecContext = ecContext;
     }
 
     public Certificate getServerCertificate() {

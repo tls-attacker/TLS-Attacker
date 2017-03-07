@@ -8,12 +8,28 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class CertificateMessageSerializer {
+public class CertificateMessageSerializer extends HandshakeMessageSerializer<CertificateMessage> {
+
+    private final CertificateMessage message;
+
+    public CertificateMessageSerializer(CertificateMessage message) {
+        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public byte[] serializeHandshakeMessageContent() {
+        appendInt(message.getCertificatesLength().getValue(), HandshakeByteLength.CERTIFICATES_LENGTH);
+        appendBytes(message.getX509CertificateBytes().getValue());
+        return getAlreadySerialized();
+    }
 
 }

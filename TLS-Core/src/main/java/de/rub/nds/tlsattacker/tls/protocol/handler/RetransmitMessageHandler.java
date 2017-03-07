@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.handler;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.RetransmitMessagePreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.RetransmitMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -27,22 +29,6 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
         super(tlsContext);
     }
 
-    // /**
-    // * @param message
-    // * @param pointer
-    // * @return
-    // */
-    // @Override
-    // public int parseMessageAction(byte[] message, int pointer) {
-    // throw new
-    // UnsupportedOperationException("Retransmit messages cannot be received");
-    //
-    // }
-    //
-    // @Override
-    // public byte[] prepareMessageAction() {
-    // return protocolMessage.getCompleteResultingMessage().getValue();
-    // }
     @Override
     protected Parser getParser(byte[] message, int pointer) {
         throw new UnsupportedOperationException(
@@ -51,43 +37,16 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
 
     @Override
     protected Preparator getPreparator(RetransmitMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
+        return new RetransmitMessagePreparator(tlsContext, message);
     }
 
     @Override
     protected Serializer getSerializer(RetransmitMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
+        return new RetransmitMessageSerializer(message);
     }
 
     @Override
     protected void adjustTLSContext(RetransmitMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
+        // nothing to adjust
     }
 }

@@ -20,8 +20,10 @@ import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.ECDHEServerComputations;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -35,12 +37,16 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray namedCurve;
 
+    private ECDHEServerComputations computations;
+
     public ECDHEServerKeyExchangeMessage() {
         super();
+        computations = new ECDHEServerComputations();
     }
 
     public ECDHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
+        computations = new ECDHEServerComputations();
     }
 
     public ModifiableByte getCurveType() {
@@ -99,5 +105,10 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public KeyExchangeComputations getComputations() {
+        return computations;
     }
 }

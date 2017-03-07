@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHClientComputations;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 
 /**
@@ -21,11 +24,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  */
 public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray masterSecret;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray premasterSecret;
     /**
      * Length of the serialized public key
      */
@@ -45,29 +43,7 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
-    public ModifiableByteArray getMasterSecret() {
-        return masterSecret;
-    }
-
-    public void setMasterSecret(ModifiableByteArray masterSecret) {
-        this.masterSecret = masterSecret;
-    }
-
-    public void setMasterSecret(byte[] value) {
-        this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, value);
-    }
-
-    public ModifiableByteArray getPremasterSecret() {
-        return premasterSecret;
-    }
-
-    public void setPremasterSecret(ModifiableByteArray premasterSecret) {
-        this.premasterSecret = premasterSecret;
-    }
-
-    public void setPremasterSecret(byte[] premasterSecret) {
-        this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, premasterSecret);
-    }
+    public abstract KeyExchangeComputations getComputations();
 
     public ModifiableInteger getSerializedPublicKeyLength() {
         return serializedPublicKeyLength;

@@ -27,8 +27,9 @@ public class HeartbeatMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {  });
+        return Arrays.asList(new Object[][] {});
     }
+
     // TODO get a real heartbeat message
 
     private byte[] message;

@@ -26,7 +26,7 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
     }
 
     @Override
-    public void prepare() {
+    public void prepareHandshakeMessageContents() {
         message.setData(message.getDataConfig());
     }
 

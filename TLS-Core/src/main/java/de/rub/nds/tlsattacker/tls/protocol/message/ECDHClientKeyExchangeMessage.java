@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.ECDHClientComputations;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
 /**
@@ -51,12 +50,17 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray supportedPointFormats;
 
+    @HoldsModifiableVariable
+    protected ECDHClientComputations computations;
+
     public ECDHClientKeyExchangeMessage() {
         super();
+        computations = new ECDHClientComputations();
     }
 
     public ECDHClientKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig);
+        computations = new ECDHClientComputations();
     }
 
     public ModifiableBigInteger getPublicKeyBaseX() {
@@ -124,5 +128,10 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public String toString() {
         String sb = super.toString();
         return sb;
+    }
+
+    @Override
+    public KeyExchangeComputations getComputations() {
+        return computations;
     }
 }

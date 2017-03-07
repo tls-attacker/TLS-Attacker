@@ -8,12 +8,30 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HeartbeatMessageSerializer {
+public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
+
+    private final HeartbeatMessage message;
+
+    public HeartbeatMessageSerializer(HeartbeatMessage message) {
+        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public byte[] serializeProtocolMessageContent() {
+        appendByte(message.getHeartbeatMessageType().getValue());
+        appendInt(message.getPayloadLength().getValue(), HeartbeatByteLength.PAYLOAD_LENGTH);
+        appendBytes(message.getPayload().getValue());
+        appendBytes(message.getPadding().getValue());
+        return getAlreadySerialized();
+    }
 
 }

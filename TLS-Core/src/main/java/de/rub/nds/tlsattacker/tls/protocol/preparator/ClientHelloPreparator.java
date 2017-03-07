@@ -34,7 +34,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     @Override
-    public void prepare() {
+    public void prepareHandshakeMessageContents() {
         message.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
         message.setCompressionLength(message.getCompressions().getValue().length);
         message.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));

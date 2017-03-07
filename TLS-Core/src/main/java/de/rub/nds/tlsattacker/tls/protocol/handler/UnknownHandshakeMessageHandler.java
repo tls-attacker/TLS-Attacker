@@ -13,7 +13,9 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.UnknownHandshakeMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.UnknownHandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownHandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -24,21 +26,11 @@ public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<Unkn
 
     public UnknownHandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
-        throw new UnsupportedOperationException("Unsupported yet");
     }
 
     @Override
     protected void adjustTLSContext(UnknownHandshakeMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // nothing to adjust here
     }
 
     @Override
@@ -48,29 +40,11 @@ public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<Unkn
 
     @Override
     protected Preparator getPreparator(UnknownHandshakeMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new UnknownHandshakeMessagePreparator(tlsContext, message);
     }
 
     @Override
     protected Serializer getSerializer(UnknownHandshakeMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return new UnknownHandshakeMessageSerializer(message);
     }
 }

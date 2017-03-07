@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 
 /**
  * SerializerClass for ServerHelloMessages
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
@@ -24,35 +24,13 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
 
     /**
      * Constructor for the ServerHelloMessageSerializer
-     * 
+     *
      * @param message
      *            Message that should be serialized
      */
     public ServerHelloMessageSerializer(ServerHelloMessage message) {
         super(message);
         this.message = message;
-    }
-
-    /**
-     * Writes the fields in the correct order into the Message
-     */
-    @Override
-    protected void serializeBytes() {
-        writeType();
-        writeLength();
-        writeProtocolVersion();
-        writeUnixtime();
-        writeRandom();
-        writeSessionIDLength();
-        writeSessionID();
-        writeSelectedCiphersuite();
-        writeSelectedComressionMethod();
-        if (hasExtensionLengthField()) {
-            writeExtensionLength();
-            if (hasExtensions()) {
-                writeExtensionBytes();
-            }
-        }
     }
 
     /**
@@ -67,6 +45,24 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
      */
     protected void writeSelectedComressionMethod() {
         appendByte(message.getSelectedCompressionMethod().getValue());
+    }
+
+    @Override
+    public byte[] serializeHandshakeMessageContent() {
+        writeProtocolVersion();
+        writeUnixtime();
+        writeRandom();
+        writeSessionIDLength();
+        writeSessionID();
+        writeSelectedCiphersuite();
+        writeSelectedComressionMethod();
+        if (hasExtensionLengthField()) {
+            writeExtensionLength();
+            if (hasExtensions()) {
+                writeExtensionBytes();
+            }
+        }
+        return getAlreadySerialized();
     }
 
 }

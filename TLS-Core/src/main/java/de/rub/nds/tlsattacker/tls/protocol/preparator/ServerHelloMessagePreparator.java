@@ -35,7 +35,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     }
 
     @Override
-    public void prepare() {
+    public void prepareHandshakeMessageContents() {
         prepareProtocolVersion();
         prepareUnixTime();
         prepareRandom();

@@ -8,12 +8,25 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerHelloDoneSerializer {
+public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<ServerHelloDoneMessage> {
+
+    private final ServerHelloDoneMessage message;
+
+    public ServerHelloDoneSerializer(ServerHelloDoneMessage message) {
+        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public byte[] serializeHandshakeMessageContent() {
+        return getAlreadySerialized();
+    }
 
 }

@@ -14,8 +14,9 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @param <T>
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends Preparator<T> {
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
 
     private final HandshakeMessage message;
 
@@ -28,4 +29,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         message.setLength(length);
     }
 
+    @Override
+    protected final void prepareProtocolMessageContents() {
+        prepareHandshakeMessageContents();
+        prepareMessageLength(0);// TODO
+    }
+
+    protected abstract void prepareHandshakeMessageContents();
 }

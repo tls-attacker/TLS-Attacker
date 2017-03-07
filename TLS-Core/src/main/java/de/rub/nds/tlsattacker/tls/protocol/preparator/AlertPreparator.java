@@ -25,7 +25,7 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
     }
 
     @Override
-    public void prepare() {
+    protected void prepareProtocolMessageContents() {
         message.setLevel(message.getConfig()[0]);
         message.setDescription(message.getConfig()[1]);
     }

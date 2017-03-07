@@ -26,7 +26,6 @@ public class RetransmitMessagePreparator extends ProtocolMessagePreparator<Retra
     }
 
     @Override
-    public void prepare() {
+    protected void prepareProtocolMessageContents() {
     }
-
 }

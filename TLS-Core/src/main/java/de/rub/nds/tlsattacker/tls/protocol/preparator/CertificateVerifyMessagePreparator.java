@@ -33,7 +33,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     }
 
     @Override
-    public void prepare() {
+    public void prepareHandshakeMessageContents() {
         SignatureAndHashAlgorithm algorithm = selectSigHashAlgorithm();
         byte[] signature = createSignature();
         message.setSignature(signature);

@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionM
 import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
