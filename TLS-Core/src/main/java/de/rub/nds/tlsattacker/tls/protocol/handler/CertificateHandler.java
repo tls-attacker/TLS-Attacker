@@ -27,12 +27,15 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
+import sun.security.rsa.RSAPublicKeyImpl;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -62,12 +65,25 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     protected void adjustTLSContext(CertificateMessage message) {
+        Certificate cert = parseCertificate(message.getCertificatesLength().getValue(), message
+                .getX509CertificateBytes().getValue());
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
-            tlsContext.setClientCertificate(parseCertificate(message.getCertificatesLength().getValue(), message
-                    .getX509CertificateBytes().getValue()));
+            tlsContext.setClientCertificate(cert);
+            tlsContext.setClientPublicKey(parsePublicKey(cert));
         } else {
-            tlsContext.setServerCertificate(parseCertificate(message.getCertificatesLength().getValue(), message
-                    .getX509CertificateBytes().getValue()));
+            tlsContext.setServerCertificate(cert);
+            tlsContext.setServerPublicKey(parsePublicKey(cert));
+
+        }
+    }
+
+    private PublicKey parsePublicKey(Certificate cert) {
+        try {
+            X509CertificateObject certObj = new X509CertificateObject(cert.getCertificateAt(0));
+            return certObj.getPublicKey();
+        } catch (CertificateParsingException ex) {
+            LOGGER.warn("Could extract public Key from Certificate!",ex);
+            return null;
         }
     }
 

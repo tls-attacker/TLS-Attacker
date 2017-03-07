@@ -53,7 +53,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     @Override
     public void prepareHandshakeMessageContents() {
         AsymmetricCipherKeyPair kp = null;
-        if (context.getServerPublicKeyParameters() == null) {
+        if (context.getServerPublicKey() == null) {
             kp = generateKeyPairFromCertificate();
         } else {
             kp = generateFreshKeyPair();

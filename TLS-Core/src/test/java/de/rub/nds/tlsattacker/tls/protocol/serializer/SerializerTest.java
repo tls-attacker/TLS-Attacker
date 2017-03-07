@@ -34,8 +34,8 @@ public class SerializerTest {
     @Test
     public void testSerializeBytes() {
         serializer.serializeBytes();
-        byte[] result = serializer.serialize();
-        assertArrayEquals(result, new byte[] { 0, 1, 2, 3, 0, 1, 2, 3 });
+        byte[] result = serializer.getAlreadySerialized();
+        assertArrayEquals(result, new byte[] { 0, 1, 2, 3, });
     }
 
     /**
@@ -44,12 +44,12 @@ public class SerializerTest {
     @Test
     public void testAppendInt() {
         serializer.appendInt(257, 2);
-        byte[] result = serializer.serialize();
-        assertArrayEquals(result, new byte[] { 1, 1, 0, 1, 2, 3 });
+        byte[] result = serializer.getAlreadySerialized();
+        assertArrayEquals(result, new byte[] { 1, 1, });
         serializer = new SerializerImpl();
         serializer.appendInt(257, 1);
-        result = serializer.serialize();
-        assertArrayEquals(result, new byte[] { 1, 0, 1, 2, 3 });
+        result = serializer.getAlreadySerialized();
+        assertArrayEquals(result, new byte[] { 1, });
     }
 
     /**
@@ -59,8 +59,8 @@ public class SerializerTest {
     public void testAppendByte() {
         serializer.appendByte((byte) 0x0);
         serializer.appendByte((byte) 0x1);
-        byte[] result = serializer.serialize();
-        assertArrayEquals(result, new byte[] { 0, 1, 0, 1, 2, 3 });
+        byte[] result = serializer.getAlreadySerialized();
+        assertArrayEquals(result, new byte[] { 0, 1, });
     }
 
     /**
@@ -69,8 +69,8 @@ public class SerializerTest {
     @Test
     public void testAppendBytes() {
         serializer.appendBytes(new byte[] { 0, 1, 2, 3, 4, 5, 6 });
-        byte[] result = serializer.serialize();
-        assertArrayEquals(result, new byte[] { 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3 });
+        byte[] result = serializer.getAlreadySerialized();
+        assertArrayEquals(result, new byte[] { 0, 1, 2, 3, 4, 5, 6, });
     }
 
     /**

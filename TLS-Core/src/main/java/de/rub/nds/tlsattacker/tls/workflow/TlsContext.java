@@ -206,22 +206,6 @@ public class TlsContext {
         this.receivedFatalAlert = receivedFatalAlert;
     }
 
-    public ECPublicKeyParameters getClientPublicKeyParameters() {
-        return clientPublicKeyParameters;
-    }
-
-    public void setClientPublicKeyParameters(ECPublicKeyParameters clientPublicKeyParameters) {
-        this.clientPublicKeyParameters = clientPublicKeyParameters;
-    }
-
-    public ECPrivateKeyParameters getClientPrivateKeyParameters() {
-        return clientPrivateKeyParameters;
-    }
-
-    public void setClientPrivateKeyParameters(ECPrivateKeyParameters clientPrivateKeyParameters) {
-        this.clientPrivateKeyParameters = clientPrivateKeyParameters;
-    }
-
     public ECPublicKeyParameters getServerPublicKeyParameters() {
         return serverPublicKeyParameters;
     }
