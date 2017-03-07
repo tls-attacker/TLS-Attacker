@@ -24,7 +24,7 @@ public class BadRandom extends SecureRandom {
     public BadRandom() {
         r = new Random();
     }
-    
+
     public BadRandom(Random r, byte[] seed) {
         this.r = r;
     }
