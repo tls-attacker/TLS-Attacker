@@ -22,11 +22,11 @@ import org.junit.runners.Parameterized;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownMessageParserITest {
+public class UnknownMessageParserStressTest {
 
     private UnknownMessageParser parser;
 
-    public UnknownMessageParserITest() {
+    public UnknownMessageParserStressTest() {
     }
 
     /**
