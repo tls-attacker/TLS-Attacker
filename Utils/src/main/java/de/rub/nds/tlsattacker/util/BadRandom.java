@@ -22,7 +22,7 @@ public class BadRandom extends SecureRandom {
     private Random r;
 
     public BadRandom() {
-        r = new Random();
+        r = new Random(0);
     }
 
     public BadRandom(Random r, byte[] seed) {
