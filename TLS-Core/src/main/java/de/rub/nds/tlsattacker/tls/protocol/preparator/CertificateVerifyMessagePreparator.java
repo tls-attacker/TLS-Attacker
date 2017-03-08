@@ -45,7 +45,6 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
         PrivateKey key = context.getConfig().getPrivateKey();
         for (SignatureAndHashAlgorithm algo : context.getConfig().getSupportedSignatureAndHashAlgorithms()) {
             if (algo.getSignatureAlgorithm().getJavaName().equals(key.getAlgorithm())) {
-                context.setSelectedSigHashAlgorithm(algo);
                 return algo;
             }
         }
@@ -56,8 +55,8 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     private byte[] createSignature() {
         try {
             byte[] rawHandshakeBytes = context.getDigest().getRawBytes();
-            selectSigHashAlgorithm();
-            Signature signature = Signature.getInstance(context.getSelectedSigHashAlgorithm().getJavaName());
+            SignatureAndHashAlgorithm algorithm = selectSigHashAlgorithm();
+            Signature signature = Signature.getInstance(algorithm.getJavaName());
             signature.initSign(context.getConfig().getPrivateKey());
             signature.update(rawHandshakeBytes);
             return signature.sign();
