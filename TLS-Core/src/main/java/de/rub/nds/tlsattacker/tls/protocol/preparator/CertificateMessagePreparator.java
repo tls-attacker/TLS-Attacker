@@ -8,13 +8,16 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -41,13 +44,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private Certificate chooseCert() {
-        Certificate cert;
-
-        if (context.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
-            cert = context.getClientCertificate();
-        } else {
-            cert = context.getServerCertificate();
-        }
+        Certificate cert = context.getConfig().getOurCertificate();
         if (cert == null) {
             throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for "
                     + context.getTalkingConnectionEnd().name());
@@ -60,7 +57,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
         try {
             cert.encode(certByteStream);
-            return certByteStream.toByteArray();
+            //the encoded cert is actually Length + Bytes so we strap the length
+            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH,certByteStream.toByteArray().length);
         } catch (IOException ex) {
             throw new PreparationException(
                     "Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);

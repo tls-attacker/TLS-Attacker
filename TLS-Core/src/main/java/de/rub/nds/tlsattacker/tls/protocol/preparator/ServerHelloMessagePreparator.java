@@ -45,8 +45,6 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
         prepareCompressionMethod();
         prepareExtensions();
         prepareExtensionLength();
-        prepareMessageLength(0);
-
     }
 
     private void prepareCipherSuite() {
