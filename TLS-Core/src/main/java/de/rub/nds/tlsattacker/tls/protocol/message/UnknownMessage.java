@@ -43,16 +43,7 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return "UnknownMessage";
     }
 
     @Override
