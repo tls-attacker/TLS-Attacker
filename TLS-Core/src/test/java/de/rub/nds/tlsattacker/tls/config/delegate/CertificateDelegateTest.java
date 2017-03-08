@@ -125,12 +125,10 @@ public class CertificateDelegateTest {
         config.setAlias(null);
         config.setPassword(null);
         config.setOurCertificate(null);
-        config.setOurX509Certificate(null);
         delegate.applyDelegate(config);
         assertNotNull("Keystore not set correctly in config", config.getKeyStore());
         assertTrue("Password not set correctly in config", config.getPassword().equals(args[3]));
         assertTrue("Alias not set correctly in config", config.getAlias().equals(args[5]));
-        assertNotNull("Ceritifcate could not be loaded", config.getOurX509Certificate());
         assertNotNull("Ceritifcate could not be loaded", config.getOurCertificate());
     }
 
@@ -148,7 +146,6 @@ public class CertificateDelegateTest {
         config.setAlias(null);
         config.setPassword(null);
         config.setOurCertificate(null);
-        config.setOurX509Certificate(null);
         assertNotNull("Default keystore should be loaded", config.getKeyStore());
         config.setKeyStore(null);
         delegate.applyDelegate(config);
@@ -156,7 +153,6 @@ public class CertificateDelegateTest {
         assertTrue("Alias not set correctly in config", config.getAlias().equals(args[3]));
         assertNull("Keystore should not get loaded if not specified", config.getKeyStore());
         assertNull("Certificate should not get loaded if not specified", config.getOurCertificate());
-        assertNull("Certificate should not get laoded if not specified", config.getOurX509Certificate());
     }
 
     @Test(expected = ConfigurationException.class)

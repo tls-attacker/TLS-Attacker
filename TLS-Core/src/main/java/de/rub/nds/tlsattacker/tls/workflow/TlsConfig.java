@@ -35,8 +35,7 @@ import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.asn1.x509.Certificate;
-import org.bouncycastle.jce.provider.X509CertificateObject;
+import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -210,10 +209,6 @@ public final class TlsConfig {
      * The Certificate we initialize CertificateMessages with
      */
     private Certificate ourCertificate;
-    /**
-     * The Certificate we initialize CertificateMessages with
-     */
-    private X509CertificateObject ourX509Certificate;
 
     private byte[] distinguishedNames = new byte[0];
 
@@ -396,14 +391,6 @@ public final class TlsConfig {
 
     public void setOurCertificate(Certificate ourCertificate) {
         this.ourCertificate = ourCertificate;
-    }
-
-    public X509CertificateObject getOurX509Certificate() {
-        return ourX509Certificate;
-    }
-
-    public void setOurX509Certificate(X509CertificateObject ourX509Certificate) {
-        this.ourX509Certificate = ourX509Certificate;
     }
 
     public ProtocolVersion getHighestProtocolVersion() {

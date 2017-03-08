@@ -71,8 +71,7 @@ public class CertificateDelegate extends Delegate {
         try {
             if (keystore != null) {
                 config.setKeyStore(KeystoreHandler.loadKeyStore(keystore, config.getPassword()));
-                config.setOurCertificate(JKSLoader.loadCertificate(config.getKeyStore(), alias));
-                config.setOurX509Certificate(JKSLoader.loadX509Certificate(config.getKeyStore(), alias));
+                config.setOurCertificate(JKSLoader.loadTLSCertificate(config.getKeyStore(), alias));
             }
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load Keystore at: " + keystore, ex);
