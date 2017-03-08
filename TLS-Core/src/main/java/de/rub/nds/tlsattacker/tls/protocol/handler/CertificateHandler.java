@@ -82,7 +82,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             X509CertificateObject certObj = new X509CertificateObject(cert.getCertificateAt(0));
             return certObj.getPublicKey();
         } catch (CertificateParsingException ex) {
-            LOGGER.warn("Could extract public Key from Certificate!",ex);
+            LOGGER.warn("Could extract public Key from Certificate!", ex);
             return null;
         }
     }

@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage>{
+public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage> {
 
     public UnknownMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -44,7 +44,7 @@ public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage
 
     @Override
     protected void adjustTLSContext(UnknownMessage message) {
-        //Nothing to do
+        // Nothing to do
     }
-    
+
 }

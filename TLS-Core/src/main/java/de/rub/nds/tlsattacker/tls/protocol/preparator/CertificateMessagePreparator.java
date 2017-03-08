@@ -57,8 +57,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
         try {
             cert.encode(certByteStream);
-            //the encoded cert is actually Length + Bytes so we strap the length
-            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH,certByteStream.toByteArray().length);
+            // the encoded cert is actually Length + Bytes so we strap the
+            // length
+            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH,
+                    certByteStream.toByteArray().length);
         } catch (IOException ex) {
             throw new PreparationException(
                     "Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);

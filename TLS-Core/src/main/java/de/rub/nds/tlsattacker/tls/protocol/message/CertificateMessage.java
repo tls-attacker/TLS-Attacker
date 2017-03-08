@@ -82,5 +82,5 @@ public class CertificateMessage extends HandshakeMessage {
     public Serializer getSerializer() {
         return new CertificateMessageSerializer(this);
     }
-    
+
 }

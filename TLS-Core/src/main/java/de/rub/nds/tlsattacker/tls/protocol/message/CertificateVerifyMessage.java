@@ -91,5 +91,5 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     @Override
     public Serializer getSerializer() {
         return new CertificateVerifyMessageSerializer(this);
-    }   
+    }
 }

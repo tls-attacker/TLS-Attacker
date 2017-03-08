@@ -88,7 +88,6 @@ public class CertificateHandlerTest {
         assertNull(context.getClientCertificate());
         assertNotNull(context.getServerCertificate());
         assertNotNull(context.getServerPublicKey());
-        
 
     }
 

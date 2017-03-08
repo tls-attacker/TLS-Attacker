@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
     private final UnknownMessage message;
-    
+
     public UnknownMessagePreparator(TlsContext context, UnknownMessage message) {
         super(context, message);
         this.message = message;
@@ -29,5 +29,5 @@ public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownM
     protected void prepareProtocolMessageContents() {
         message.setCompleteResultingMessage(message.getDataConfig());
     }
-    
+
 }

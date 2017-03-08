@@ -80,7 +80,7 @@ public class ParserSerializerStressTest {
     @Test
     @Category(IntegrationTest.class)
     public void testParser() {
-        
+
         for (int i = 0; i < 100000; i++) {
             Random r = new Random(i);
             int random = r.nextInt(20);
@@ -104,14 +104,14 @@ public class ParserSerializerStressTest {
             LOGGER.debug("Bytes to parse:\t" + ArrayConverter.bytesToHexString(bytesToParse, false));
             LOGGER.debug("Expected:\t" + ArrayConverter.bytesToHexString(expected, false));
             LOGGER.debug("Result:\t" + ArrayConverter.bytesToHexString(result, false));
-            ProtocolMessageParser parser2 = getRandomParser(random,0, result);
+            ProtocolMessageParser parser2 = getRandomParser(random, 0, result);
             ProtocolMessage serialized = parser2.parse();
             LOGGER.debug(serialized.toString());
             assertArrayEquals(result, expected);
             assertArrayEquals(serialized.getCompleteResultingMessage().getValue(), result);
         }
     }
-    
+
     private ProtocolMessageParser getRandomParser(int random, int start, byte[] bytesToParse) {
         switch (random) {
             case 0:
@@ -158,7 +158,7 @@ public class ParserSerializerStressTest {
                 throw new UnsupportedOperationException("Unsupported");
         }
     }
-    
+
     private ProtocolMessageSerializer getRandomSerializer(int random, ProtocolMessage message) {
         switch (random) {
             case 0:

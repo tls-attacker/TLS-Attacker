@@ -30,6 +30,15 @@ public class ArbitraryMessage extends ProtocolMessage {
 
     @Override
     public Serializer getSerializer() {
-        throw new UnsupportedOperationException("Arbitrary Messages should not be serialized"); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Arbitrary Messages should not be serialized"); // To
+                                                                                                // change
+                                                                                                // body
+                                                                                                // of
+                                                                                                // generated
+                                                                                                // methods,
+                                                                                                // choose
+                                                                                                // Tools
+                                                                                                // |
+                                                                                                // Templates.
     }
 }

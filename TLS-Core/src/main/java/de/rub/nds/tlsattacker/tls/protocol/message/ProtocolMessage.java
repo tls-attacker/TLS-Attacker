@@ -72,10 +72,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     @XmlElementWrapper
-    @XmlElements(value = {
-        @XmlElement(type = Record.class, name = "Record")
-        ,
-            @XmlElement(type = DtlsRecord.class, name = "DtlsRecord")})
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
+            @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
     public List<Record> getRecords() {
         return records;
     }

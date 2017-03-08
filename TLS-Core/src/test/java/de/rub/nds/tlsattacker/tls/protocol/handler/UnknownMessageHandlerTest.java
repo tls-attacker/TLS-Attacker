@@ -40,7 +40,7 @@ public class UnknownMessageHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[]{0}, 0) instanceof UnknownMessageParser);
+        assertTrue(handler.getParser(new byte[] { 0 }, 0) instanceof UnknownMessageParser);
     }
 
     /**
