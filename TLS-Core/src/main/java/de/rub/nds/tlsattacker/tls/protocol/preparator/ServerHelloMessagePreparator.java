@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.Time;
+import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
  *
@@ -83,22 +84,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
         }
     }
-
-    private void prepareRandom() {
-        byte[] random = new byte[HandshakeByteLength.RANDOM];
-        RandomHelper.getRandom().nextBytes(random);
-        message.setRandom(random);
-    }
-
-    private void prepareUnixTime() {
-        final long unixTime = Time.getUnixTime();
-        message.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
-    }
-
-    private void prepareSessionIDLength() {
-        message.setSessionIdLength(message.getSessionId().getOriginalValue().length);
-    }
-
+    
     private void prepareSessionID() {
         if (context.getConfig().getSessionId().length > 0) {
             message.setSessionId(context.getConfig().getSessionId());
@@ -142,24 +128,4 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
             }
         }
     }
-
-    private void prepareExtensions() {
-        for (ExtensionMessage extensionMessage : message.getExtensions()) {
-
-        }
-    }
-
-    private void prepareExtensionLength() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
-    }
-
 }
