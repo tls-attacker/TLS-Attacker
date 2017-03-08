@@ -59,7 +59,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public String toCompactString() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "Unknown HandshakeMessage";
     }
 
     @Override
