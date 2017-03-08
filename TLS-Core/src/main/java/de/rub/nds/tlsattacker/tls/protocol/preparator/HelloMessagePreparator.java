@@ -43,7 +43,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
     }
     
     protected void prepareSessionIDLength() {
-        message.setSessionIdLength(message.getSessionId().getOriginalValue().length);
+        message.setSessionIdLength(message.getSessionId().getValue().length);
     }
     
     protected void prepareExtensions() {
