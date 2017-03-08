@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
@@ -53,4 +55,8 @@ public class UnknownMessage extends ProtocolMessage {
                                                                        // Templates.
     }
 
+    @Override
+    public Serializer getSerializer() {
+        return new UnknownMessageSerializer(this);
+    }
 }

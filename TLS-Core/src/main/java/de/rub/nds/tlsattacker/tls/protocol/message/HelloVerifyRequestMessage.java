@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -84,5 +85,10 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new HelloVerifyRequestSerializer(this);
     }
 }

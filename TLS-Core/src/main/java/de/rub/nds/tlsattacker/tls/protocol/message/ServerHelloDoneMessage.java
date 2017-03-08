@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
@@ -26,5 +27,10 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
 
     public ServerHelloDoneMessage() {
         super(HandshakeMessageType.SERVER_HELLO_DONE);
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new ServerHelloDoneSerializer(this);
     }
 }

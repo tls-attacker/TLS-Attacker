@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -108,5 +109,10 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public DHClientComputations getComputations() {
         return computations;
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new DHClientKeyExchangeSerializer(this);
     }
 }

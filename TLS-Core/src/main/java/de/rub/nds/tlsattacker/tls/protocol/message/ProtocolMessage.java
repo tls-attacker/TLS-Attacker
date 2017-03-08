@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
@@ -71,8 +72,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-            @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
+    @XmlElements(value = {
+        @XmlElement(type = Record.class, name = "Record")
+        ,
+            @XmlElement(type = DtlsRecord.class, name = "DtlsRecord")})
     public List<Record> getRecords() {
         return records;
     }
@@ -138,4 +141,5 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public abstract String toCompactString();
 
+    public abstract Serializer getSerializer();
 }

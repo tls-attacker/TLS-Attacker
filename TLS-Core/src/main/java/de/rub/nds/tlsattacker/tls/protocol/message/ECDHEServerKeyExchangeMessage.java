@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.ECDHEServerComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -110,5 +111,10 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public KeyExchangeComputations getComputations() {
         return computations;
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new ECDHEServerKeyExchangeSerializer(this);
     }
 }

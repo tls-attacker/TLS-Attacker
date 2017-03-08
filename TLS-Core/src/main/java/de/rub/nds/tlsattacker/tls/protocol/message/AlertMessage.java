@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -147,5 +148,10 @@ public class AlertMessage extends ProtocolMessage {
         hash = 73 * hash + Objects.hashCode(this.level.getValue());
         hash = 73 * hash + Objects.hashCode(this.description.getValue());
         return hash;
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new AlertSerializer(this);
     }
 }

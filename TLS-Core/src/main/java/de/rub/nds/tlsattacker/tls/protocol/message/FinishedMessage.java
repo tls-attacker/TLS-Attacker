@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.FinishedHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.FinishedMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -57,5 +58,10 @@ public class FinishedMessage extends HandshakeMessage {
             sb.append(ArrayConverter.bytesToHexString(verifyData.getValue()));
         }
         return sb.toString();
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new FinishedMessageSerializer(this);
     }
 }

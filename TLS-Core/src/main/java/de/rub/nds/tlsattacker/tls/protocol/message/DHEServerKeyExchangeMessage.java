@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHEServerComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -185,5 +186,10 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new DHEServerKeyExchangeSerializer(this);
     }
 }

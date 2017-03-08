@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.math.BigInteger;
 
@@ -133,5 +135,10 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public KeyExchangeComputations getComputations() {
         return computations;
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new ECDHClientKeyExchangeSerializer(this);
     }
 }

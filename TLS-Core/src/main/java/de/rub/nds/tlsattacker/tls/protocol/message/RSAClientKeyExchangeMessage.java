@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.RSAClientComputations;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.RSAClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -83,4 +84,8 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         return computations;
     }
 
+    @Override
+    public Serializer getSerializer() {
+        return new RSAClientKeyExchangeSerializer(this);
+    }
 }

@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateRequestMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -193,5 +194,10 @@ public class CertificateRequestMessage extends HandshakeMessage {
         }
         // sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new CertificateRequestMessageSerializer(this);
     }
 }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownHandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
@@ -61,4 +62,8 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public Serializer getSerializer() {
+        return new UnknownHandshakeMessageSerializer(this);
+    }
 }

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -59,5 +60,10 @@ public class ApplicationMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         return "Application";
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new ApplicationMessageSerializer(this);
     }
 }

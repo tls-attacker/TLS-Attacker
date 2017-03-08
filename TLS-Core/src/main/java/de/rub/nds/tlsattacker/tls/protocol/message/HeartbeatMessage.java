@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -127,5 +128,10 @@ public class HeartbeatMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         return "Heartbeat";
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new HeartbeatMessageSerializer(this);
     }
 }

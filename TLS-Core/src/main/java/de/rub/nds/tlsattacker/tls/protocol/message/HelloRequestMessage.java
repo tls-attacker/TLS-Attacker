@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.HelloRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -28,5 +29,10 @@ public class HelloRequestMessage extends HandshakeMessage {
     public HelloRequestMessage() {
         super(HandshakeMessageType.HELLO_REQUEST);
         setIncludeInDigest(false);
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new HelloRequestSerializer(this);
     }
 }

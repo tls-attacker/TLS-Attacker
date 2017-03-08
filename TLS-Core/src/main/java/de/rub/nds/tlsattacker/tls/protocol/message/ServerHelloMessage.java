@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensi
 import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -112,5 +113,10 @@ public class ServerHelloMessage extends HelloMessage {
             sb.append(e.toString());
         }
         return sb.toString();
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new ServerHelloMessageSerializer(this);
     }
 }

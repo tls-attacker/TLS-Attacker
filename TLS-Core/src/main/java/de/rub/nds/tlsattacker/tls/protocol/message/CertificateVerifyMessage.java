@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateVerifyHandler;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateVerifyMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -86,4 +87,9 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     public void setSignature(byte[] signature) {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
+
+    @Override
+    public Serializer getSerializer() {
+        return new CertificateVerifyMessageSerializer(this);
+    }   
 }
