@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -57,7 +58,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
             byte[] rawHandshakeBytes = context.getDigest().getRawBytes();
             SignatureAndHashAlgorithm algorithm = selectSigHashAlgorithm();
             Signature signature = Signature.getInstance(algorithm.getJavaName());
-            signature.initSign(context.getConfig().getPrivateKey());
+            signature.initSign(context.getConfig().getPrivateKey(),RandomHelper.getBadSecureRandom());
             signature.update(rawHandshakeBytes);
             return signature.sign();
         } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException ex) {
