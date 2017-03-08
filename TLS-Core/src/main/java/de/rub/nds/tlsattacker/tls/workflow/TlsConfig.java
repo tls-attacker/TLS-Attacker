@@ -662,26 +662,6 @@ public final class TlsConfig {
         this.heartbeatMode = heartbeatMode;
     }
 
-    public LinkedList<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithmsForRSA() {
-        LinkedList<SignatureAndHashAlgorithm> rsaAlgorithms = new LinkedList<>();
-        for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
-            if (alg.getSignatureAlgorithm() == SignatureAlgorithm.RSA) {
-                rsaAlgorithms.add(alg);
-            }
-        }
-        return rsaAlgorithms;
-    }
-
-    public LinkedList<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithmsForEC() {
-        LinkedList<SignatureAndHashAlgorithm> ecAlgorithms = new LinkedList<>();
-        for (SignatureAndHashAlgorithm alg : supportedSignatureAndHashAlgorithms) {
-            if (alg.getSignatureAlgorithm() == SignatureAlgorithm.ECDSA) {
-                ecAlgorithms.add(alg);
-            }
-        }
-        return ecAlgorithms;
-    }
-
     public boolean isAddECPointFormatExtension() {
         return addECPointFormatExtension;
     }
