@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -29,16 +31,17 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     private void prepareMessageLength(int length) {
         message.setLength(length);
     }
-    
-    private void prepareMessageType(HandshakeMessageType type)
-    {
+
+    private void prepareMessageType(HandshakeMessageType type) {
         message.setType(type.getValue());
     }
-    
+
     @Override
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
-        prepareMessageLength(0);// TODO
+        // Ugly but only temporary
+        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getSerializer();
+        prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
         prepareMessageType(message.getHandshakeMessageType());
     }
 
