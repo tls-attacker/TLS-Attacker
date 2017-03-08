@@ -43,20 +43,14 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private SignatureAndHashAlgorithm selectSigHashAlgorithm() {
         PrivateKey key = context.getConfig().getPrivateKey();
-        List<SignatureAndHashAlgorithm> possibleList = null;
-        switch (key.getAlgorithm()) {
-            case "RSA":
-                possibleList = context.getConfig().getSupportedSignatureAndHashAlgorithmsForRSA();
-                break;
-            case "EC":
-                possibleList = context.getConfig().getSupportedSignatureAndHashAlgorithmsForEC();
-                break;
+        for (SignatureAndHashAlgorithm algo : context.getConfig().getSupportedSignatureAndHashAlgorithms()) {
+            if (algo.getSignatureAlgorithm().getJavaName().equals(key.getAlgorithm())) {
+                context.setSelectedSigHashAlgorithm(algo);
+                return algo;
+            }
         }
-        if (possibleList == null || possibleList.isEmpty()) {
-            throw new PreparationException("No SignatureAlgorithm supported for the configured private Key:"
-                    + key.getAlgorithm());
-        }
-        return possibleList.get(0);
+        throw new PreparationException("No SignatureAlgorithm supported for the configured private Key:"
+                + key.getAlgorithm());
     }
 
     private byte[] createSignature() {
