@@ -48,7 +48,7 @@ public class BadRandom extends SecureRandom {
 
     @Override
     public void setSeed(long seed) {
-
+        r = new Random(seed);
     }
 
     @Override
