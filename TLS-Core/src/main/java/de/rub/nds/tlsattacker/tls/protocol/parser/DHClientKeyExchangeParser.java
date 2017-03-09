@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import java.math.BigInteger;
@@ -19,8 +20,8 @@ import java.math.BigInteger;
  */
 public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientKeyExchangeMessage> {
 
-    public DHClientKeyExchangeParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public DHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
+        super(startposition, array, version);
     }
 
     @Override

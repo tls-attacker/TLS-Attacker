@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -64,7 +65,7 @@ public class UnknownHandshakeMessageParserTest {
      */
     @Test
     public void testParse() {
-        UnknownHandshakeMessageParser parser = new UnknownHandshakeMessageParser(start, message);
+        UnknownHandshakeMessageParser parser = new UnknownHandshakeMessageParser(start, message, ProtocolVersion.TLS12);
         UnknownHandshakeMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

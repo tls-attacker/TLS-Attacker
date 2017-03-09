@@ -29,7 +29,7 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     protected ApplicationMessageParser getParser(byte[] message, int pointer) {
-        return new ApplicationMessageParser(pointer, message);
+        return new ApplicationMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

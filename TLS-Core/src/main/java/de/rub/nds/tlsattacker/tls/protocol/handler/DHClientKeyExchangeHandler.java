@@ -34,7 +34,7 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     protected DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHClientKeyExchangeParser(pointer, message);
+        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

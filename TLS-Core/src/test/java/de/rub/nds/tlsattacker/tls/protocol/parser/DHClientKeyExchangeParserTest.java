@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public class DHClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        DHClientKeyExchangeParser parser = new DHClientKeyExchangeParser(start, message);
+        DHClientKeyExchangeParser parser = new DHClientKeyExchangeParser(start, message, ProtocolVersion.TLS12);
         DHClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

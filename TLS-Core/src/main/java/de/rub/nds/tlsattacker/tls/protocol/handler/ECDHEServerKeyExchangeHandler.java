@@ -49,7 +49,7 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 
     @Override
     protected ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHEServerKeyExchangeParser(pointer, message);
+        return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

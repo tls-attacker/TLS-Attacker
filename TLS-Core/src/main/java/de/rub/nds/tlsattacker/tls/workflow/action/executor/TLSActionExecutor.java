@@ -121,8 +121,8 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
         LOGGER.debug("Preparing the following protocol message to send: {}", message.getClass());
-        ProtocolMessageHandler handler = null;// TODO//
-                                              // message.getProtocolMessageHandler(context);
+        ProtocolMessageHandler handler = message.getProtocolMessageType().getProtocolMessageHandler(
+                message.getProtocolMessageType().getValue(), context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;
     }

@@ -32,7 +32,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     protected FinishedMessageParser getParser(byte[] message, int pointer) {
-        return new FinishedMessageParser(pointer, message);
+        return new FinishedMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

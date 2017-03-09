@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import java.util.Random;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class UnknownMessageParserStressTest {
             byte[] array = new byte[r.nextInt(100)];
             if (array.length != 0) {
                 r.nextBytes(array);
-                parser = new UnknownMessageParser(0, array);
+                parser = new UnknownMessageParser(0, array, ProtocolVersion.TLS12);
                 UnknownMessage message = parser.parse();
                 assertArrayEquals(array, message.getCompleteResultingMessage().getValue());
             }

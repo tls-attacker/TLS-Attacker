@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 
@@ -18,8 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
  */
 public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClientKeyExchangeMessage> {
 
-    public RSAClientKeyExchangeParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public RSAClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
+        super(startposition, array, version);
     }
 
     @Override

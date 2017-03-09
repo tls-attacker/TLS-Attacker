@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,8 @@ public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessa
 
     private static final Logger LOGGER = LogManager.getLogger(HelloRequestParser.class);
 
-    public HelloRequestParser(int pointer, byte[] array) {
-        super(pointer, array, HandshakeMessageType.HELLO_REQUEST);
+    public HelloRequestParser(int pointer, byte[] array, ProtocolVersion version) {
+        super(pointer, array, HandshakeMessageType.HELLO_REQUEST, version);
     }
 
     @Override

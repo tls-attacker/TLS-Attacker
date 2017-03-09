@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
@@ -85,7 +86,8 @@ public class CertificateRequestMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateRequestMessageParser parser = new CertificateRequestMessageParser(start, message);
+        CertificateRequestMessageParser parser = new CertificateRequestMessageParser(start, message,
+                ProtocolVersion.TLS12);
         CertificateRequestMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
@@ -43,8 +44,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      * @param type
      *            Expected Type value for the Message
      */
-    public HelloParser(int pointer, byte[] array, HandshakeMessageType type) {
-        super(pointer, array, type);
+    public HelloParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version) {
+        super(pointer, array, type, version);
     }
 
     /**

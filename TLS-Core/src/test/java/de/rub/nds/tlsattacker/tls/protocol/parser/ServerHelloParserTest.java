@@ -101,7 +101,7 @@ public class ServerHelloParserTest {
      */
     @Test
     public void verify() {
-        ServerHelloParser parser = new ServerHelloParser(0, message);
+        ServerHelloParser parser = new ServerHelloParser(0, message, ProtocolVersion.TLS12);
         ServerHelloMessage helloMessage = parser.parse();
         assertTrue(helloMessage.getType().getValue() == messageType);
         assertTrue(helloMessage.getLength().getValue() == messageLength);

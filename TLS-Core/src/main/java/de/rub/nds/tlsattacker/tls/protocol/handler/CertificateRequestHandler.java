@@ -33,7 +33,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     protected CertificateRequestMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateRequestMessageParser(pointer, message);
+        return new CertificateRequestMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

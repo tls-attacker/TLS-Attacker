@@ -34,7 +34,7 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
     @Override
     protected ServerHelloDoneParser getParser(byte[] message, int pointer) {
-        return new ServerHelloDoneParser(pointer, message);
+        return new ServerHelloDoneParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

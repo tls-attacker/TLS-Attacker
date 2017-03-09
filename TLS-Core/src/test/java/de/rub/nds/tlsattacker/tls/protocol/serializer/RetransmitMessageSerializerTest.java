@@ -18,6 +18,8 @@ import static org.junit.Assert.*;
  */
 public class RetransmitMessageSerializerTest {
 
+    
+    
     public RetransmitMessageSerializerTest() {
     }
 

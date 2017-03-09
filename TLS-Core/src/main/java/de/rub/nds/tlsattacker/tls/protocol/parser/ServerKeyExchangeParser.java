@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
 
 /**
@@ -18,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
  */
 public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
-    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array, expectedType);
+    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
+        super(pointer, array, expectedType, version);
     }
 }

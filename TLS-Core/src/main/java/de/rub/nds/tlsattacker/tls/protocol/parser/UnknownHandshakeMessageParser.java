@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 
 /**
@@ -17,8 +18,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
  */
 public class UnknownHandshakeMessageParser extends HandshakeMessageParser<UnknownHandshakeMessage> {
 
-    public UnknownHandshakeMessageParser(int pointer, byte[] array) {
-        super(pointer, array, HandshakeMessageType.UNKNOWN);
+    public UnknownHandshakeMessageParser(int pointer, byte[] array, ProtocolVersion version) {
+        super(pointer, array, HandshakeMessageType.UNKNOWN, version);
     }
 
     @Override

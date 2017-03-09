@@ -62,7 +62,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     protected Parser getParser(byte[] message, int pointer) {
-        return new ServerHelloParser(pointer, message);
+        return new ServerHelloParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

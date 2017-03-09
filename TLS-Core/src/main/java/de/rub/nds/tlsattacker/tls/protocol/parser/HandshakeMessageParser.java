@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,9 +42,10 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      *            parse
      * @param expectedType
      *            The expected type of the parsed HandshakeMessage
+     * @param version
      */
-    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType) {
-        super(pointer, array);
+    public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
+        super(pointer, array, version);
         this.expectedType = expectedType;
     }
 

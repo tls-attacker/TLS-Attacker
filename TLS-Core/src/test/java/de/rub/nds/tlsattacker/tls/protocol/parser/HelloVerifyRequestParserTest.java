@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,7 +59,7 @@ public class HelloVerifyRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(start, message);
+        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(start, message, ProtocolVersion.TLS12);
         HelloVerifyRequestMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

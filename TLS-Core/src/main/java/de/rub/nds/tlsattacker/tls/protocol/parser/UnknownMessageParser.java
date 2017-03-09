@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 
 /**
@@ -16,8 +17,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
  */
 public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> {
 
-    public UnknownMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public UnknownMessageParser(int startposition, byte[] array, ProtocolVersion version) {
+        super(startposition, array, version);
     }
 
     /**

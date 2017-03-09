@@ -32,7 +32,7 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
     @Override
     protected Parser getParser(byte[] message, int pointer) {
-        return new HeartbeatMessageParser(pointer, message);
+        return new HeartbeatMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -69,7 +70,7 @@ public class RSAClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        RSAClientKeyExchangeParser parser = new RSAClientKeyExchangeParser(start, message);
+        RSAClientKeyExchangeParser parser = new RSAClientKeyExchangeParser(start, message, ProtocolVersion.TLS12);
         RSAClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

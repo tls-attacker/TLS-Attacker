@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import java.util.Random;
@@ -49,45 +50,45 @@ public class ParserStressTest {
     private Parser getRandomParser(Random r, int start, byte[] bytesToParse) {
         switch (r.nextInt(20)) {
             case 0:
-                return new AlertParser(start, bytesToParse);
+                return new AlertParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 1:
-                return new ApplicationMessageParser(start, bytesToParse);
+                return new ApplicationMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 2:
-                return new CertificateMessageParser(start, bytesToParse);
+                return new CertificateMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 3:
-                return new CertificateRequestMessageParser(start, bytesToParse);
+                return new CertificateRequestMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 4:
-                return new CertificateVerifyMessageParser(start, bytesToParse);
+                return new CertificateVerifyMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 5:
-                return new ChangeCipherSpecParser(start, bytesToParse);
+                return new ChangeCipherSpecParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 6:
-                return new ClientHelloParser(start, bytesToParse);
+                return new ClientHelloParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 7:
-                return new DHClientKeyExchangeParser(start, bytesToParse);
+                return new DHClientKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 8:
-                return new DHEServerKeyExchangeParser(start, bytesToParse);
+                return new DHEServerKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 9:
-                return new ECDHClientKeyExchangeParser(start, bytesToParse);
+                return new ECDHClientKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 10:
-                return new ECDHEServerKeyExchangeParser(start, bytesToParse);
+                return new ECDHEServerKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 11:
-                return new FinishedMessageParser(start, bytesToParse);
+                return new FinishedMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 12:
-                return new HeartbeatMessageParser(start, bytesToParse);
+                return new HeartbeatMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 13:
-                return new HelloRequestParser(start, bytesToParse);
+                return new HelloRequestParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 14:
-                return new HelloVerifyRequestParser(start, bytesToParse);
+                return new HelloVerifyRequestParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 15:
-                return new RSAClientKeyExchangeParser(start, bytesToParse);
+                return new RSAClientKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 16:
-                return new ServerHelloDoneParser(start, bytesToParse);
+                return new ServerHelloDoneParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 17:
-                return new ServerHelloParser(start, bytesToParse);
+                return new ServerHelloParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 18:
-                return new UnknownHandshakeMessageParser(start, bytesToParse);
+                return new UnknownHandshakeMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownMessageParser(start, bytesToParse);
+                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

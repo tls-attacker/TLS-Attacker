@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 
 /**
@@ -18,8 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
  */
 public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
 
-    public ClientHelloParser(int pointer, byte[] array) {
-        super(pointer, array, HandshakeMessageType.CLIENT_HELLO);
+    public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version) {
+        super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version);
     }
 
     @Override

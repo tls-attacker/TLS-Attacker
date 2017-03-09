@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 
 /**
@@ -18,8 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
  */
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
-    public CertificateMessageParser(int startposition, byte[] array) {
-        super(startposition, array, HandshakeMessageType.CERTIFICATE);
+    public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version) {
+        super(startposition, array, HandshakeMessageType.CERTIFICATE, version);
     }
 
     @Override

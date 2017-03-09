@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 
@@ -18,8 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
  */
 public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHClientKeyExchangeMessage> {
 
-    public ECDHClientKeyExchangeParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ECDHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
+        super(startposition, array, version);
     }
 
     @Override

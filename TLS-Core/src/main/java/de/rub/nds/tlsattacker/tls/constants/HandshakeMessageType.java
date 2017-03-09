@@ -89,7 +89,7 @@ public enum HandshakeMessageType {
     }
 
     public byte[] getArrayValue() {
-        return new byte[]{(byte) value};
+        return new byte[] { (byte) value };
     }
 
     public final String getName() {

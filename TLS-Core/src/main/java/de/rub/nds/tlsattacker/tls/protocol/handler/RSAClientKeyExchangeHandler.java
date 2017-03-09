@@ -32,7 +32,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     protected RSAClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new RSAClientKeyExchangeParser(pointer, message);
+        return new RSAClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

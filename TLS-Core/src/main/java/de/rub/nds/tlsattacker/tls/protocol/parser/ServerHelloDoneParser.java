@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +23,8 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
 
     private static final Logger LOGGER = LogManager.getLogger(ServerHelloDoneParser.class);
 
-    public ServerHelloDoneParser(int pointer, byte[] array) {
-        super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE);
+    public ServerHelloDoneParser(int pointer, byte[] array, ProtocolVersion version) {
+        super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE, version);
     }
 
     @Override

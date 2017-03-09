@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class ChangeCipherSpecParserTest {
      */
     @Test
     public void testParse() {
-        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(start, message);
+        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(start, message, ProtocolVersion.TLS12);
         ChangeCipherSpecMessage ccsMessagee = parser.parse();
         assertArrayEquals(expectedPart, ccsMessagee.getCompleteResultingMessage().getValue());
         assertTrue(ccsType == ccsMessagee.getCcsProtocolType().getValue());

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public class CertificateMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateMessageParser parser = new CertificateMessageParser(start, message);
+        CertificateMessageParser parser = new CertificateMessageParser(start, message, ProtocolVersion.TLS12);
         CertificateMessage certMessage = parser.parse();
         assertArrayEquals(certMessage.getCompleteResultingMessage().getValue(), expectedPart);
         assertTrue(certMessage.getLength().getValue() == length);

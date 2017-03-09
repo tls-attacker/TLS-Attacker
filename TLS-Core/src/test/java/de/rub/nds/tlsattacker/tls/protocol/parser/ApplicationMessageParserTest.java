@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,7 +52,7 @@ public class ApplicationMessageParserTest {
      */
     @Test
     public void testParse() {
-        ApplicationMessageParser parser = new ApplicationMessageParser(start, message);
+        ApplicationMessageParser parser = new ApplicationMessageParser(start, message, ProtocolVersion.TLS12);
         ApplicationMessage applcationMessage = parser.parse();
         assertArrayEquals(applcationMessage.getCompleteResultingMessage().getValue(), expectedPart);
         assertArrayEquals(applcationMessage.getData().getValue(), data);

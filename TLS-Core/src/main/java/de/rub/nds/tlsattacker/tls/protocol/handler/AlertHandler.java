@@ -28,7 +28,7 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     @Override
     protected AlertParser getParser(byte[] message, int pointer) {
-        return new AlertParser(pointer, message);
+        return new AlertParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

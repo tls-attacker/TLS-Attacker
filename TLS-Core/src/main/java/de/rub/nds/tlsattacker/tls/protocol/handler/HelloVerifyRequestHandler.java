@@ -30,7 +30,7 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     @Override
     protected HelloVerifyRequestParser getParser(byte[] message, int pointer) {
-        return new HelloVerifyRequestParser(pointer, message);
+        return new HelloVerifyRequestParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

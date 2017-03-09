@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -88,7 +89,7 @@ public class ECDHEServerKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        ECDHEServerKeyExchangeParser parser = new ECDHEServerKeyExchangeParser(start, message);
+        ECDHEServerKeyExchangeParser parser = new ECDHEServerKeyExchangeParser(start, message, ProtocolVersion.TLS12);
         ECDHEServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(length == msg.getLength().getValue());

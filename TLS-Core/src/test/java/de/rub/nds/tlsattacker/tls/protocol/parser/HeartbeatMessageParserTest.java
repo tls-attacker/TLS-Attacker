@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,7 +58,7 @@ public class HeartbeatMessageParserTest {
      */
     @Test
     public void testParse() {
-        HeartbeatMessageParser parser = new HeartbeatMessageParser(start, message);
+        HeartbeatMessageParser parser = new HeartbeatMessageParser(start, message, ProtocolVersion.TLS12);
         HeartbeatMessage msg = parser.parse();
         assertTrue(heartBeatType == msg.getHeartbeatMessageType().getValue());
         assertTrue(payloadLength == msg.getPayloadLength().getValue());

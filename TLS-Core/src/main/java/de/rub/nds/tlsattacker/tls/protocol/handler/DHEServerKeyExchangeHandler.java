@@ -31,7 +31,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
     @Override
     protected DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHEServerKeyExchangeParser(pointer, message);
+        return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

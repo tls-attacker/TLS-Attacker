@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
 
 /**
@@ -19,8 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage
  */
 public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
 
-    public ECDHEServerKeyExchangeParser(int pointer, byte[] array) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE);
+    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
+        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
     }
 
     @Override

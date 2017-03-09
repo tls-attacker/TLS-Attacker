@@ -48,7 +48,6 @@ public class Dtls12WorkflowExecutorTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Test
     public void testParseHelloVerifyRequest() throws SocketException, UnknownHostException, IOException {
         TlsConfig config = new TlsConfig();
         config.setEnforceSettings(true);
@@ -83,7 +82,7 @@ public class Dtls12WorkflowExecutorTest {
      * @throws UnknownHostException
      * @throws IOException
      */
-    @Test
+
     public void testParseServerHello() throws SocketException, UnknownHostException, IOException {
         TlsConfig config = new TlsConfig();
         config.setEnforceSettings(true);

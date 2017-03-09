@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class ServerHelloDoneParserTest {
      */
     @Test
     public void testParse() {
-        ServerHelloDoneParser parser = new ServerHelloDoneParser(start, message);
+        ServerHelloDoneParser parser = new ServerHelloDoneParser(start, message, ProtocolVersion.TLS12);
         ServerHelloDoneMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

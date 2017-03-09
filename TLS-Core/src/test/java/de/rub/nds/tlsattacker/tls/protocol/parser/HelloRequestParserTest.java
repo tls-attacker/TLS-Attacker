@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,7 +52,7 @@ public class HelloRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloRequestParser parser = new HelloRequestParser(start, message);
+        HelloRequestParser parser = new HelloRequestParser(start, message, ProtocolVersion.TLS12);
         HelloRequestMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

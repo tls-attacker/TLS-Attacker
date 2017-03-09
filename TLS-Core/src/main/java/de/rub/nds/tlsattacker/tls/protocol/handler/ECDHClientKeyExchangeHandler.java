@@ -56,7 +56,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     protected ECDHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser(pointer, message);
+        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override

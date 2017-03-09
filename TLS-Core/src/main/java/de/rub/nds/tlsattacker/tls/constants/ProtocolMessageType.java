@@ -59,9 +59,10 @@ public enum ProtocolMessageType {
     }
 
     public byte[] getArrayValue() {
-        return new byte[]{value};
+        return new byte[] { value };
     }
-    //TODO this should not be here
+
+    // TODO this should not be here
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(byte value, TlsContext tlsContext) {
 
         LOGGER.debug("Trying to get a protocol message handler for the following content type: {}", this);

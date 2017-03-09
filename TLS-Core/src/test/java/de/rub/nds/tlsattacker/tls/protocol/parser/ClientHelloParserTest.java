@@ -106,7 +106,7 @@ public class ClientHelloParserTest {
      */
     @Test
     public void testParse() {
-        ClientHelloParser parser = new ClientHelloParser(start, message);
+        ClientHelloParser parser = new ClientHelloParser(start, message, ProtocolVersion.TLS12);
         ClientHelloMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

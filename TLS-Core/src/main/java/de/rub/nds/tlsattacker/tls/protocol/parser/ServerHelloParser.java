@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import org.apache.logging.log4j.LogManager;
@@ -32,9 +33,10 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
      *            to start parsing
      * @param array
      *            The byte[] which the ServerHellorParser is supposed to parse
+     * @param version
      */
-    public ServerHelloParser(int pointer, byte[] array) {
-        super(pointer, array, HandshakeMessageType.SERVER_HELLO);
+    public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version) {
+        super(pointer, array, HandshakeMessageType.SERVER_HELLO, version);
     }
 
     /**

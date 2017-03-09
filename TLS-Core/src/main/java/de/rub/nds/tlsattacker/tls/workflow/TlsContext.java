@@ -166,20 +166,31 @@ public class TlsContext {
 
     private byte[] distinguishedNames;
 
-    // TODO does this make sense?
+    private ProtocolVersion lastRecordVersion;
+
     public TlsContext() {
         digest = new TlsMessageDigest();
         config = new TlsConfig();
         clientCertificateTypes = new LinkedList<>();
-        // init protocolVersion for records
+        // init lastRecordVersion for records
+        lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
     public TlsContext(TlsConfig config) {
         digest = new TlsMessageDigest();
         this.config = config;
-        // init protocolVersion for records
+        // init lastRecordVersion for records
+        lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public ProtocolVersion getLastRecordVersion() {
+        return lastRecordVersion;
+    }
+
+    public void setLastRecordVersion(ProtocolVersion lastRecordVersion) {
+        this.lastRecordVersion = lastRecordVersion;
     }
 
     public byte[] getDistinguishedNames() {
