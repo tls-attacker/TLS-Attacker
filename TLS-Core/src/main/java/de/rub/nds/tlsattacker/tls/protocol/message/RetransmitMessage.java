@@ -41,4 +41,13 @@ public class RetransmitMessage extends ProtocolMessage {
     public Serializer getSerializer() {
         return new RetransmitMessageSerializer(this);
     }
+
+    public byte[] getBytesToTransmit() {
+        return bytesToTransmit;
+    }
+
+    public void setBytesToTransmit(byte[] bytesToTransmit) {
+        this.bytesToTransmit = bytesToTransmit;
+    }
+
 }
