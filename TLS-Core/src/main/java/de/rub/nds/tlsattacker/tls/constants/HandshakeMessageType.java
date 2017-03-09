@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * Also called Handshake Type
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
@@ -45,48 +45,11 @@ public enum HandshakeMessageType {
     HELLO_VERIFY_REQUEST((byte) 3),
     NEW_SESSION_TICKET((byte) 4),
     CERTIFICATE((byte) 11),
-    SERVER_KEY_EXCHANGE((byte) 12) {
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            CipherSuite cs = tlsContext.getSelectedCipherSuite();
-            KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
-            switch (algorithm) {
-                case EC_DIFFIE_HELLMAN:
-                    return new ECDHEServerKeyExchangeHandler(tlsContext);
-                case DHE_DSS:
-                case DHE_RSA:
-                case DH_ANON:
-                case DH_DSS:
-                case DH_RSA:
-                    return new DHEServerKeyExchangeHandler(tlsContext);
-                default:
-                    throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
-            }
-        }
-    },
+    SERVER_KEY_EXCHANGE((byte) 12),
     CERTIFICATE_REQUEST((byte) 13),
     SERVER_HELLO_DONE((byte) 14),
     CERTIFICATE_VERIFY((byte) 15),
-    CLIENT_KEY_EXCHANGE((byte) 16) {
-
-        ProtocolMessageHandler<? extends ProtocolMessage> getMessageHandler(TlsContext tlsContext) {
-            CipherSuite cs = tlsContext.getSelectedCipherSuite();
-            KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
-            switch (algorithm) {
-                case RSA:
-                    return new RSAClientKeyExchangeHandler(tlsContext);
-                case EC_DIFFIE_HELLMAN:
-                    return new ECDHClientKeyExchangeHandler(tlsContext);
-                case DHE_DSS:
-                case DHE_RSA:
-                case DH_ANON:
-                case DH_DSS:
-                case DH_RSA:
-                    return new DHClientKeyExchangeHandler(tlsContext);
-                default:
-                    throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
-            }
-        }
-    },
+    CLIENT_KEY_EXCHANGE((byte) 16),
     FINISHED((byte) 20);
 
     private int value;
@@ -106,17 +69,18 @@ public enum HandshakeMessageType {
     static {
         MAP = new HashMap<>();
         for (HandshakeMessageType cm : HandshakeMessageType.values()) {
+            if (cm == UNKNOWN) {
+                continue;
+            }
             MAP.put((byte) cm.value, cm);
         }
     }
 
     public static HandshakeMessageType getMessageType(byte value) {
-        return MAP.get(value);
-    }
-
-    public static HandshakeMessageType getMessageType(byte value, ConnectionEnd messageSender) {
         HandshakeMessageType type = MAP.get(value);
-        type.messageSender = messageSender;
+        if (type == null) {
+            type = UNKNOWN;
+        }
         return type;
     }
 
@@ -125,7 +89,7 @@ public enum HandshakeMessageType {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { (byte) value };
+        return new byte[]{(byte) value};
     }
 
     public final String getName() {

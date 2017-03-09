@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ApplicationHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.HeartbeatHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.factory.HandshakeMessageHandlerFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,34 +59,26 @@ public enum ProtocolMessageType {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[]{value};
     }
-
+    //TODO this should not be here
     public ProtocolMessageHandler<? extends ProtocolMessage> getProtocolMessageHandler(byte value, TlsContext tlsContext) {
-        ProtocolMessageHandler<? extends ProtocolMessage> pmh = null;
+
         LOGGER.debug("Trying to get a protocol message handler for the following content type: {}", this);
         switch (this) {
             case HANDSHAKE:
                 HandshakeMessageType hmt = HandshakeMessageType.getMessageType(value);
-                LOGGER.debug("Trying to get a protocol message handler for the following handshake message: {}", hmt);
-                // TODO pmh = hmt.getProtocolMessageHandler(tlsContext);
-                break;
+                return HandshakeMessageHandlerFactory.getHandler(tlsContext, hmt);
             case CHANGE_CIPHER_SPEC:
-                pmh = new ChangeCipherSpecHandler(tlsContext);
-                break;
+                return new ChangeCipherSpecHandler(tlsContext);
             case ALERT:
-                pmh = new AlertHandler(tlsContext);
-                break;
+                return new AlertHandler(tlsContext);
             case APPLICATION_DATA:
-                pmh = new ApplicationHandler(tlsContext);
-                break;
+                return new ApplicationHandler(tlsContext);
             case HEARTBEAT:
-                pmh = new HeartbeatHandler(tlsContext);
-                break;
+                return new HeartbeatHandler(tlsContext);
+            default:
+                return new UnknownMessageHandler(tlsContext);
         }
-        if (pmh == null) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-        return pmh;
     }
 }

@@ -37,8 +37,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class HandshakeMessageHandlerFactory {
 
-    public static HandshakeMessageHandler getHandler(TlsContext context, byte value) {
-        HandshakeMessageType type = HandshakeMessageType.getMessageType(value);
+    public static HandshakeMessageHandler getHandler(TlsContext context, HandshakeMessageType type) {
         switch (type) {
             case CERTIFICATE:
                 return new CertificateHandler(context);
