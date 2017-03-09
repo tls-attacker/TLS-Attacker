@@ -27,5 +27,6 @@ public class RetransmitMessagePreparator extends ProtocolMessagePreparator<Retra
 
     @Override
     protected void prepareProtocolMessageContents() {
+        message.setCompleteResultingMessage(message.getBytesToTransmit());
     }
 }

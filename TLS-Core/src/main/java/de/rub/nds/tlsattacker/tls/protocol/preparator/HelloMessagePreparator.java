@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import java.io.ByteArrayOutputStream;
 
 /**
  *
@@ -41,27 +42,20 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         final long unixTime = TimeHelper.getTime();
         message.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
     }
-    
+
     protected void prepareSessionIDLength() {
         message.setSessionIdLength(message.getSessionId().getValue().length);
     }
-    
-    protected void prepareExtensions() {
-        for (ExtensionMessage extensionMessage : message.getExtensions()) {
 
+    protected void prepareExtensions() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (ExtensionMessage extensionMessage : message.getExtensions()) {
+            // TODO
         }
+        message.setExtensionBytes(stream.toByteArray());
     }
 
     protected void prepareExtensionLength() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        message.setExtensionsLength(message.getExtensionBytes().getValue().length);
     }
 }

@@ -29,8 +29,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
     }
 
     private byte[] generatePayload() {
-        int payloadLength = RandomHelper.getRandom().nextInt(context.getConfig().getHeartbeatMaxPayloadLength());
-        byte[] payload = new byte[payloadLength];
+        byte[] payload = new byte[context.getConfig().getHeartbeatPayloadLength()];
         RandomHelper.getRandom().nextBytes(payload);
         return payload;
     }
@@ -50,6 +49,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     @Override
     protected void prepareProtocolMessageContents() {
+        // TODO currently only requests supported
         message.setHeartbeatMessageType(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue());
         message.setPayload(generatePayload());
         message.setPayloadLength(message.getPayload().getValue().length);

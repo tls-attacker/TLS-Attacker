@@ -35,13 +35,29 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     @Override
     public void prepareHandshakeMessageContents() {
+        message.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        prepareUnixTime();
+        prepareRandom();
+        prepareSessionID();
+        prepareSessionIDLength();
         message.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
         message.setCompressionLength(message.getCompressions().getValue().length);
         message.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
         message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
-        message.setCookie(context.getDtlsHandshakeCookie());
-        message.setCookieLength((byte) message.getCookie().getValue().length);// TODO
-                                                                              // warn
+        if (context.getDtlsHandshakeCookie() != null) {
+            message.setCookie(context.getDtlsHandshakeCookie());
+            message.setCookieLength((byte) message.getCookie().getValue().length);
+        }
+        prepareExtensions();
+        prepareExtensionLength();
+    }
+
+    private void prepareSessionID() {
+        if (context.getSessionID() == null) {
+            message.setSessionId(context.getConfig().getSessionId());
+        } else {
+            message.setSessionId(context.getSessionID());
+        }
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {

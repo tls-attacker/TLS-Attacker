@@ -10,17 +10,12 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-import de.rub.nds.tlsattacker.util.Time;
-import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
  *
@@ -84,7 +79,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
         }
     }
-    
+
     private void prepareSessionID() {
         if (context.getConfig().getSessionId().length > 0) {
             message.setSessionId(context.getConfig().getSessionId());

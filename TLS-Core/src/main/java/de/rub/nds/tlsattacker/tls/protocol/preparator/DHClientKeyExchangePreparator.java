@@ -17,7 +17,10 @@ import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import javax.crypto.interfaces.DHPublicKey;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -46,9 +49,9 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
     public void prepareHandshakeMessageContents() {
         AsymmetricCipherKeyPair kp = null;
 
-        if (context.getServerDHParameters() == null) {
+        if (context.getServerPublicKey() == null) {
             kp = getParamsFromCertificate();
-            // context.setServerDHParameters(new ServerDHParams(parameters));
+
         } else {
             kp = generateFreshParams();
         }
@@ -95,8 +98,8 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         } else {
             try {
                 DHPublicKeyParameters parameters = (DHPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
-                return TlsDHUtils.generateDHKeyPair(new SecureRandom(), context.getServerDHParameters().getPublicKey()
-                        .getParameters());
+                return TlsDHUtils.generateDHKeyPair(RandomHelper.getBadSecureRandom(), context.getServerDHParameters()
+                        .getPublicKey().getParameters());
             } catch (IOException e) {
                 throw new PreparationException("Problem in parsing public key parameters from certificate", e);
             }
