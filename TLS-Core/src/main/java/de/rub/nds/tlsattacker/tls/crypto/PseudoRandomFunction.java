@@ -84,7 +84,7 @@ public final class PseudoRandomFunction {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(), seed);
             SecretKeySpec keySpec = null;
             try {
-                if (secret.length == 0) {
+                if (secret == null || secret.length == 0) {
                     // empty key, but we still want to try to compute the
                     // SecretKeySpec
                     // Create an object using a fake key and then change that
