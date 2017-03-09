@@ -69,11 +69,14 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 .getX509CertificateBytes().getValue());
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
             tlsContext.setClientCertificate(cert);
-            tlsContext.setClientPublicKey(parsePublicKey(cert));
+            if (cert != null) {
+                tlsContext.setClientPublicKey(parsePublicKey(cert));
+            }
         } else {
             tlsContext.setServerCertificate(cert);
-            tlsContext.setServerPublicKey(parsePublicKey(cert));
-
+            if (cert != null) {
+                tlsContext.setServerPublicKey(parsePublicKey(cert));
+            }
         }
     }
 
