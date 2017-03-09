@@ -19,7 +19,7 @@ public class RandomHelper {
 
     public static Random getRandom() {
         if (random == null) {
-            random = new Random();
+            random = new Random(0);
         }
         return random;
     }
