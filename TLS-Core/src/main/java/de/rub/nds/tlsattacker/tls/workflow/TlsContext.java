@@ -51,19 +51,19 @@ public class TlsContext {
     /**
      * master secret established during the handshake
      */
-    private byte[] masterSecret = new byte[0];
+    private byte[] masterSecret;
     /**
      * premaster secret established during the handshake
      */
-    private byte[] preMasterSecret = new byte[0];
+    private byte[] preMasterSecret;
     /**
      * client random, including unix time /** client random, including unix time
      */
-    private byte[] clientRandom = new byte[0];
+    private byte[] clientRandom;
     /**
      * server random, including unix time
      */
-    private byte[] serverRandom = new byte[0];
+    private byte[] serverRandom;
     /**
      * selected cipher suite
      */
@@ -77,7 +77,7 @@ public class TlsContext {
     /**
      * session ID
      */
-    private byte[] sessionID = new byte[0];
+    private byte[] sessionID;
     /**
      * server certificate parsed from the server certificate message
      */
@@ -113,7 +113,7 @@ public class TlsContext {
     /**
      * DTLS Cookie
      */
-    private byte[] dtlsHandshakeCookie = new byte[0];
+    private byte[] dtlsHandshakeCookie;
 
     private ProtocolVersion selectedProtocolVersion;
 

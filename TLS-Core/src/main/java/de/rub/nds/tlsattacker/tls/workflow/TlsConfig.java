@@ -247,7 +247,7 @@ public final class TlsConfig {
     /**
      * max payload length used in our application (not set by the spec)
      */
-    private int heartbeatMaxPayloadLength = 256;
+    private int heartbeatPayloadLength = 256;
 
     /**
      * according to the specification, the min padding length is 16
@@ -297,12 +297,12 @@ public final class TlsConfig {
 
     }
 
-    public int getHeartbeatMaxPayloadLength() {
-        return heartbeatMaxPayloadLength;
+    public int getHeartbeatPayloadLength() {
+        return heartbeatPayloadLength;
     }
 
-    public void setHeartbeatMaxPayloadLength(int heartbeatMaxPayloadLength) {
-        this.heartbeatMaxPayloadLength = heartbeatMaxPayloadLength;
+    public void setHeartbeatPayloadLength(int heartbeatPayloadLength) {
+        this.heartbeatPayloadLength = heartbeatPayloadLength;
     }
 
     public int getHeartbeatMinPaddingLength() {
