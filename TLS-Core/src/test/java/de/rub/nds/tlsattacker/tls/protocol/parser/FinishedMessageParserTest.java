@@ -27,18 +27,17 @@ public class FinishedMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {}, });
+        return Arrays.asList(new Object[][] {}); // TODO add testcases!!
     }
 
-    // TODO get a real finished message
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private final byte[] message;
+    private final int start;
+    private final byte[] expectedPart;
 
-    private HandshakeMessageType type;
-    private int length;
+    private final HandshakeMessageType type;
+    private final int length;
 
-    private byte[] verifyData;
+    private final byte[] verifyData;
 
     public FinishedMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
             int length, byte[] verifyData) {

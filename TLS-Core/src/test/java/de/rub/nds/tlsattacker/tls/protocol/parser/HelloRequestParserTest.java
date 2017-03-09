@@ -27,7 +27,7 @@ public class HelloRequestParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {}, {} });
+        return Arrays.asList(new Object[][] {}); // TODO add Testcases!
     }
 
     // TODO get a true message
