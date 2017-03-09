@@ -48,7 +48,7 @@ public class HandshakeMessageHandlerFactory {
             case CLIENT_HELLO:
                 return new ClientHelloHandler(context);
             case CLIENT_KEY_EXCHANGE:
-                // TODO
+                return getClientKeyExchangeHandler(context);
             case FINISHED:
                 return new FinishedHandler(context);
             case HELLO_REQUEST:
@@ -63,7 +63,7 @@ public class HandshakeMessageHandlerFactory {
             case SERVER_HELLO_DONE:
                 return new ServerHelloDoneHandler(context);
             case SERVER_KEY_EXCHANGE:
-                // TODO
+                return getServerKeyExchangeHandler(context);
             case UNKNOWN:
                 return new UnknownHandshakeMessageHandler(context);
         }
