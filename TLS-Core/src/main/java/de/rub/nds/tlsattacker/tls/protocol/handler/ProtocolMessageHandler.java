@@ -59,7 +59,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         preparator.prepare();
         adjustTLSContext(message);
         Serializer serializer = getSerializer(message);
-        serializer.serialize();
+        byte[] completeMessage = serializer.serialize();
+        message.setCompleteResultingMessage(completeMessage);
         return message.getCompleteResultingMessage().getValue();
     }
 
