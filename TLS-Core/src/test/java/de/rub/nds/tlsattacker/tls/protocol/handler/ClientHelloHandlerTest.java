@@ -89,7 +89,7 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCiphersuites().size() == 2);
         assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
-        assertTrue(context.getDtlsHandshakeCookie().length == 0);
+        assertNull(context.getDtlsHandshakeCookie());
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
 

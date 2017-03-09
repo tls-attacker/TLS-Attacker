@@ -85,8 +85,8 @@ public class DHEServerKeyExchangeHandlerTest {
     public void testAdjustTLSContextWithoutComputations() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
         handler.adjustTLSContext(message);
-        assertTrue(context.getPreMasterSecret().length == 0);
-        assertTrue(context.getMasterSecret().length == 0);
+        assertNull(context.getPreMasterSecret());
+        assertNull(context.getMasterSecret());
     }
 
 }

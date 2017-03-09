@@ -85,8 +85,8 @@ public class RSAClientKeyExchangeHandlerTest {
     public void testAdjustTLSContextWithoutComputations() {
         RSAClientKeyExchangeMessage message = new RSAClientKeyExchangeMessage();
         handler.adjustTLSContext(message);
-        assertTrue(context.getPreMasterSecret().length == 0);
-        assertTrue(context.getMasterSecret().length == 0);
+        assertNull(context.getPreMasterSecret());
+        assertNull(context.getMasterSecret());
     }
 
 }

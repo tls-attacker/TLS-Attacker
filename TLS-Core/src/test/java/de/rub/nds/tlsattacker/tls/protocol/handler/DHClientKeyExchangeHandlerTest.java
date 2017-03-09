@@ -85,7 +85,7 @@ public class DHClientKeyExchangeHandlerTest {
     public void testAdjustTLSContextWithoutComputations() {
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
         handler.adjustTLSContext(message);
-        assertTrue(context.getPreMasterSecret().length == 0);
-        assertTrue(context.getMasterSecret().length == 0);
+        assertNull(context.getPreMasterSecret());
+        assertNull(context.getMasterSecret());
     }
 }

@@ -83,8 +83,8 @@ public class ECDHClientKeyExchangeHandlerTest {
     public void testAdjustTLSContextWithoutComputations() {
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
         handler.adjustTLSContext(message);
-        assertTrue(context.getPreMasterSecret().length == 0);
-        assertTrue(context.getMasterSecret().length == 0);
+        assertNull(context.getPreMasterSecret());
+        assertNull(context.getMasterSecret());
     }
 
 }
