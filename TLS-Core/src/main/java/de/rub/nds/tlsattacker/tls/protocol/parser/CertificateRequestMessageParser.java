@@ -29,7 +29,9 @@ public class CertificateRequestMessageParser extends HandshakeMessageParser<Cert
         msg.setSignatureHashAlgorithmsLength(parseIntField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH));
         msg.setSignatureHashAlgorithms(parseByteArrayField(msg.getSignatureHashAlgorithmsLength().getValue()));
         msg.setDistinguishedNamesLength(parseIntField(HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH));
-        msg.setDistinguishedNames(parseByteArrayField(msg.getDistinguishedNamesLength().getValue()));
+        if (msg.getDistinguishedNamesLength().getValue() != 0) {
+            msg.setDistinguishedNames(parseByteArrayField(msg.getDistinguishedNamesLength().getValue()));
+        }
     }
 
     @Override
