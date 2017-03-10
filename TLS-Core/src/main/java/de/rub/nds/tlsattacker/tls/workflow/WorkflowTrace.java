@@ -411,10 +411,11 @@ public class WorkflowTrace implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("WorkflowTrace Configured Messages:");
-        for (ProtocolMessage pm : getAllConfiguredMessages()) {
-            sb.append("\n").append(pm.toCompactString());
+        StringBuilder sb = new StringBuilder("Trace Actions:");
+        for(TLSAction action : tlsActions)
+        {
+            sb.append("\n");
+            sb.append(action.toString());
         }
         return sb.toString();
     }

@@ -66,4 +66,23 @@ public class ReceiveAction extends MessageAction {
         return builder.toString();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb =  new StringBuilder("Receive Action:\n");
+        sb.append("\tConfigured:");
+        for(ProtocolMessage message : configuredMessages)
+        {
+            sb.append(message.toCompactString());
+            sb.append(", ");
+        }
+        sb.append("\n\tActual:");
+        for(ProtocolMessage message : actualMessages)
+        {
+            sb.append(message.toCompactString());
+            sb.append(", ");
+        }
+        return sb.toString();
+    }
+    
+
 }
