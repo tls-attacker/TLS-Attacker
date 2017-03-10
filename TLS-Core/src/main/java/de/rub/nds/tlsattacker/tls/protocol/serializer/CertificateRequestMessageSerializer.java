@@ -33,7 +33,9 @@ public class CertificateRequestMessageSerializer extends HandshakeMessageSeriali
                 HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
         appendBytes(message.getSignatureHashAlgorithms().getValue());
         appendInt(message.getDistinguishedNamesLength().getValue(), HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
-        appendBytes(message.getDistinguishedNames().getValue());
+        if (message.getDistinguishedNamesLength().getValue() != 0) {
+            appendBytes(message.getDistinguishedNames().getValue());
+        }
         return getAlreadySerialized();
     }
 
