@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;

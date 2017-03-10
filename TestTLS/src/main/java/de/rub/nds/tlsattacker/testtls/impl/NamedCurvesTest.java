@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class NamedCurvesTest extends HandshakeTest {
@@ -82,11 +82,11 @@ public class NamedCurvesTest extends HandshakeTest {
             }
             if (success) {
                 supportedCurves.add(nc);
-                if (lastTlsContext.getEcContext().getServerPublicKeyParameters() != null) {
-                    LOGGER.info("EC parameter public key size: {}", lastTlsContext.getEcContext()
-                            .getServerPublicKeyParameters().getParameters().getCurve().getFieldSize());
-                    int groupSize = lastTlsContext.getEcContext().getServerPublicKeyParameters().getParameters()
-                            .getCurve().getFieldSize();
+                if (lastTlsContext.getServerPublicKeyParameters() != null) {
+                    LOGGER.info("EC parameter public key size: {}", lastTlsContext.getServerPublicKeyParameters()
+                            .getParameters().getCurve().getFieldSize());
+                    int groupSize = lastTlsContext.getServerPublicKeyParameters().getParameters().getCurve()
+                            .getFieldSize();
                     if (minimumECDHGroupSize == 0 || groupSize < minimumECDHGroupSize) {
                         minimumECDHGroupSize = groupSize;
                     }

@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.util.Collections;
 import java.util.HashMap;
