@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
-import de.rub.nds.tlsattacker.dtls.workflow.Dtls12WorkflowExecutor;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
@@ -19,9 +18,15 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.alert.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.application.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.heartbeat.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.AlertPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.HeartbeatMessagePreparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.workflow.Dtls12WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -140,8 +145,8 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
         byte[] roundMessageData = new byte[config.getTrainMessageSize()];
         RandomHelper.getRandom().nextBytes(roundMessageData);
         HeartbeatMessage sentHbMessage = new HeartbeatMessage(tlsConfig);
-        sentHbMessage.getProtocolMessageHandler(tlsContext).prepareMessage();
-
+        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(tlsContext, sentHbMessage);
+        preparator.prepare();
         byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData,
                 sentHbMessage);
         byte[][] invalidMacTrain = createInvalidMacMessageTrain(config.getMessagesPerTrain(), roundMessageData,
@@ -175,11 +180,10 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
                     flushTransportHandler();
                     return -1;
                 } else {
-                    receivedHbMessage.getProtocolMessageHandler(tlsContext).parseMessage(
-                            parsedReceivedRecords.get(0).getProtocolMessageBytes().getValue(), 0);
+                    HeartbeatMessageParser parser = new HeartbeatMessageParser(0, parsedReceivedRecords.get(0).getProtocolMessageBytes().getValue(), ProtocolVersion.DTLS12);
+                    receivedHbMessage = parser.parse();
                     if (!Arrays.equals(receivedHbMessage.getPayload().getValue(), sentHeartbeatMessagePayload)) {
                         LOGGER.info("Heartbeat answer didn't contain the correct payload. Train: " + trainInfo);
-
                         flushTransportHandler();
                         return -1;
                     } else {
@@ -274,8 +278,9 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
         records.add(new DtlsRecord());
 
         try {
-            transportHandler.sendData(recordHandler.wrapData(closeNotify.getProtocolMessageHandler(tlsContext)
-                    .prepareMessage(), ProtocolMessageType.ALERT, records));
+            AlertPreparator preparator = new AlertPreparator( new TlsContext(tlsConfig), closeNotify);
+            preparator.prepare();
+            transportHandler.sendData(recordHandler.wrapData(closeNotify.getCompleteResultingMessage().getValue(), ProtocolMessageType.ALERT, records));
         } catch (IOException e) {
             LOGGER.error(e.getLocalizedMessage());
         }

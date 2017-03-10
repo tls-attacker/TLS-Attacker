@@ -20,8 +20,8 @@ import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handshake.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
@@ -93,7 +93,7 @@ public class RealDirectMessageECOracle extends ECOracle {
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getKeyBits() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
-        message.setPremasterSecret(pms);
+        message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {
             LOGGER.info("Number of queries so far: {}", numberOfQueries);
@@ -166,7 +166,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             BigInteger x = message.getPublicKeyBaseX().getValue();
             BigInteger y = message.getPublicKeyBaseY().getValue();
             checkPoint = new Point(x, y);
-            checkPMS = message.getPremasterSecret().getValue();
+            checkPMS = message.getComputations().getPremasterSecret().getValue();
         }
     }
 }
