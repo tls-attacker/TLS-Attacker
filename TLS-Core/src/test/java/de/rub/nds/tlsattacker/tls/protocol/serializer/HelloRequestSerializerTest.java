@@ -58,7 +58,7 @@ public class HelloRequestSerializerTest {
         msg.setLength(length);
         msg.setType(type.getValue());
         HelloRequestSerializer serializer = new HelloRequestSerializer(msg);
-        assertArrayEquals(expectedPart,serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

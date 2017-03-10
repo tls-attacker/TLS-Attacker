@@ -62,7 +62,7 @@ public class FinishedMessageSerializerTest {
         msg.setVerifyData(verifyData);
         msg.setCompleteResultingMessage(expectedPart);
         FinishedMessageSerializer serializer = new FinishedMessageSerializer(msg);
-        assertArrayEquals(expectedPart,serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

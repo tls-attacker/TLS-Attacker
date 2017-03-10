@@ -25,7 +25,7 @@ public class UnknownMessageSerializerTest {
 
     private UnknownMessage msg;
     private UnknownMessageSerializer serializer;
-    
+
     public UnknownMessageSerializerTest() {
     }
 
@@ -41,8 +41,8 @@ public class UnknownMessageSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
-        msg.setCompleteResultingMessage(new byte[]{1,2,3});
-        assertArrayEquals(new byte[]{1,2,3}, serializer.serialize());
+        msg.setCompleteResultingMessage(new byte[] { 1, 2, 3 });
+        assertArrayEquals(new byte[] { 1, 2, 3 }, serializer.serialize());
     }
 
 }

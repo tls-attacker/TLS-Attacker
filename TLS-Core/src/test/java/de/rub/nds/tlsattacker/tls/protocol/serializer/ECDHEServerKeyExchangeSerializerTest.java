@@ -83,7 +83,7 @@ public class ECDHEServerKeyExchangeSerializerTest {
         msg.setSignatureLength(sigLength);
         msg.setSignature(signature);
         ECDHEServerKeyExchangeSerializer serializer = new ECDHEServerKeyExchangeSerializer(msg);
-        assertArrayEquals(expectedPart,serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

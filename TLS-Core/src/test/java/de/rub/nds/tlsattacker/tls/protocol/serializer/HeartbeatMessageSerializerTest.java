@@ -63,7 +63,7 @@ public class HeartbeatMessageSerializerTest {
         msg.setPayload(payload);
         msg.setPadding(padding);
         HeartbeatMessageSerializer serializer = new HeartbeatMessageSerializer(msg);
-        assertArrayEquals(expectedPart,serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

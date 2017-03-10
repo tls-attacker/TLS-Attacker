@@ -68,7 +68,7 @@ public class HelloVerifyRequestSerializerTest {
         msg.setCookieLength(cookieLength);
         msg.setCookie(cookie);
         HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg);
-        assertArrayEquals(expectedPart,serializer.serialize());
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

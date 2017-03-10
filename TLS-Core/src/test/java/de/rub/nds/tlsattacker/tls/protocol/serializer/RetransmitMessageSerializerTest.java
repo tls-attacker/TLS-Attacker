@@ -24,16 +24,16 @@ import org.junit.runners.Parameterized;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class RetransmitMessageSerializerTest {
- 
+
     private RetransmitMessageSerializer serializer;
     private RetransmitMessage msg;
-    
+
     public RetransmitMessageSerializerTest() {
     }
 
     @Before
     public void setUp() {
-        msg = new RetransmitMessage(new byte[]{6,6,6});
+        msg = new RetransmitMessage(new byte[] { 6, 6, 6 });
         serializer = new RetransmitMessageSerializer(msg);
     }
 
@@ -45,6 +45,6 @@ public class RetransmitMessageSerializerTest {
     public void testSerializeProtocolMessageContent() {
         RetransmitMessagePreparator preparator = new RetransmitMessagePreparator(new TlsContext(), msg);
         preparator.prepare();
-        assertArrayEquals(new byte[]{6,6,6},serializer.serialize());
+        assertArrayEquals(new byte[] { 6, 6, 6 }, serializer.serialize());
     }
 }
