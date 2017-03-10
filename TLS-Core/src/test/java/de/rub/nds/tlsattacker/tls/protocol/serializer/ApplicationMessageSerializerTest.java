@@ -8,21 +8,38 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ApplicationMessageParserTest;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class ApplicationMessageSerializerTest {
 
-    public ApplicationMessageSerializerTest() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return ApplicationMessageParserTest.generateData();
     }
 
-    @Before
-    public void setUp() {
+    private byte[] message;
+    private int start;
+    private byte[] expectedPart;
+    private byte[] data;
+
+    public ApplicationMessageSerializerTest(byte[] message, int start, byte[] expectedPart, byte[] data) {
+        this.message = message;
+        this.start = start;
+        this.expectedPart = expectedPart;
+        this.data = data;
     }
 
     /**
@@ -31,6 +48,11 @@ public class ApplicationMessageSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
+        ApplicationMessage message = new ApplicationMessage();
+        message.setData(data);
+        message.setCompleteResultingMessage(expectedPart);
+        ApplicationMessageSerializer serializer = new ApplicationMessageSerializer(message);
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

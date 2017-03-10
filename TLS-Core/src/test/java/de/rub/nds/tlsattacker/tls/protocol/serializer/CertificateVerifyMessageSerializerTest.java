@@ -8,21 +8,50 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.CertificateVerifyMessageParserTest;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class CertificateVerifyMessageSerializerTest {
 
-    public CertificateVerifyMessageSerializerTest() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return CertificateVerifyMessageParserTest.generateData();
     }
 
-    @Before
-    public void setUp() {
+    private byte[] message;
+    private int start;
+    private byte[] expectedPart;
+
+    private HandshakeMessageType type;
+    private int length;
+
+    private byte[] sigHashAlgo;
+    private int signatureLength;
+    private byte[] signature;
+
+    public CertificateVerifyMessageSerializerTest(byte[] message, int start, byte[] expectedPart,
+            HandshakeMessageType type, int length, byte[] sigHashAlgo, int signatureLength, byte[] signature) {
+        this.message = message;
+        this.start = start;
+        this.expectedPart = expectedPart;
+        this.type = type;
+        this.length = length;
+        this.sigHashAlgo = sigHashAlgo;
+        this.signatureLength = signatureLength;
+        this.signature = signature;
     }
 
     /**
@@ -31,6 +60,14 @@ public class CertificateVerifyMessageSerializerTest {
      */
     @Test
     public void testSerializeHandshakeMessageContent() {
+        CertificateVerifyMessage message = new CertificateVerifyMessage();
+        message.setLength(length);
+        message.setType(type.getValue());
+        message.setSignature(signature);
+        message.setSignatureLength(signatureLength);
+        message.setSignatureHashAlgorithm(sigHashAlgo);
+        CertificateVerifyMessageSerializer serializer = new CertificateVerifyMessageSerializer(message);
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

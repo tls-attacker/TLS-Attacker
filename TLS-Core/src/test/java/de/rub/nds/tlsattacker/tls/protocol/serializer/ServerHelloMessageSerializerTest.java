@@ -29,6 +29,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class ServerHelloMessageSerializerTest {
 
+    // TODO should reuse parser tests
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays

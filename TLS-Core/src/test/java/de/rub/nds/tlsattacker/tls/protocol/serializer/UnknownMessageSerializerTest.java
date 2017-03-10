@@ -8,9 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.UnknownMessageParser;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
@@ -18,11 +23,16 @@ import static org.junit.Assert.*;
  */
 public class UnknownMessageSerializerTest {
 
+    private UnknownMessage msg;
+    private UnknownMessageSerializer serializer;
+    
     public UnknownMessageSerializerTest() {
     }
 
     @Before
     public void setUp() {
+        msg = new UnknownMessage();
+        serializer = new UnknownMessageSerializer(msg);
     }
 
     /**
@@ -31,6 +41,8 @@ public class UnknownMessageSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
+        msg.setCompleteResultingMessage(new byte[]{1,2,3});
+        assertArrayEquals(new byte[]{1,2,3}, serializer.serialize());
     }
 
 }

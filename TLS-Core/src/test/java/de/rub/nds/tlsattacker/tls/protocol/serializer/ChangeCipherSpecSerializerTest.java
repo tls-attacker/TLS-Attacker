@@ -8,21 +8,39 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ChangeCipherSpecParserTest;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class ChangeCipherSpecSerializerTest {
 
-    public ChangeCipherSpecSerializerTest() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return ChangeCipherSpecParserTest.generateData();
     }
 
-    @Before
-    public void setUp() {
+    private byte[] message;
+    private int start;
+    private byte[] expectedPart;
+
+    private byte ccsType;
+
+    public ChangeCipherSpecSerializerTest(byte[] message, int start, byte[] expectedPart, byte ccsType) {
+        this.message = message;
+        this.start = start;
+        this.expectedPart = expectedPart;
+        this.ccsType = ccsType;
     }
 
     /**
@@ -31,6 +49,11 @@ public class ChangeCipherSpecSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
+        ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
+        msg.setCcsProtocolType(ccsType);
+        msg.setCompleteResultingMessage(expectedPart);
+        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg);
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }

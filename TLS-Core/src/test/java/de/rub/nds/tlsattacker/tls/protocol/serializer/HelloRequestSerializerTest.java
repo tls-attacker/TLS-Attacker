@@ -8,21 +8,43 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.HelloRequestParserTest;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class HelloRequestSerializerTest {
 
-    public HelloRequestSerializerTest() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return HelloRequestParserTest.generateData();
     }
 
-    @Before
-    public void setUp() {
+    private byte[] message;
+    private int start;
+    private byte[] expectedPart;
+
+    private HandshakeMessageType type;
+    private int length;
+
+    public HelloRequestSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
+            int length) {
+        this.message = message;
+        this.start = start;
+        this.expectedPart = expectedPart;
+        this.type = type;
+        this.length = length;
     }
 
     /**
@@ -31,6 +53,12 @@ public class HelloRequestSerializerTest {
      */
     @Test
     public void testSerializeHandshakeMessageContent() {
+        HelloRequestMessage msg = new HelloRequestMessage();
+        msg.setCompleteResultingMessage(expectedPart);
+        msg.setLength(length);
+        msg.setType(type.getValue());
+        HelloRequestSerializer serializer = new HelloRequestSerializer(msg);
+        assertArrayEquals(expectedPart,serializer.serialize());
     }
 
 }

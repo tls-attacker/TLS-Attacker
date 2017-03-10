@@ -8,21 +8,48 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
+import de.rub.nds.tlsattacker.tls.protocol.parser.RSAClientKeyExchangeParserTest;
+import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@RunWith(Parameterized.class)
 public class RSAClientKeyExchangeSerializerTest {
 
-    public RSAClientKeyExchangeSerializerTest() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return RSAClientKeyExchangeParserTest.generateData();
     }
 
-    @Before
-    public void setUp() {
+    private byte[] message;
+    private int start;
+    private byte[] expectedPart;
+
+    private HandshakeMessageType type;
+    private int length;
+
+    private int serializedKeyLength;
+    private byte[] serializedKey;
+
+    public RSAClientKeyExchangeSerializerTest(byte[] message, int start, byte[] expectedPart,
+            HandshakeMessageType type, int length, int serializedKeyLength, byte[] serializedKey) {
+        this.message = message;
+        this.start = start;
+        this.expectedPart = expectedPart;
+        this.type = type;
+        this.length = length;
+        this.serializedKeyLength = serializedKeyLength;
+        this.serializedKey = serializedKey;
     }
 
     /**
@@ -31,6 +58,14 @@ public class RSAClientKeyExchangeSerializerTest {
      */
     @Test
     public void testSerializeHandshakeMessageContent() {
+        RSAClientKeyExchangeMessage msg = new RSAClientKeyExchangeMessage();
+        msg.setCompleteResultingMessage(expectedPart);
+        msg.setType(type.getValue());
+        msg.setLength(length);
+        msg.setSerializedPublicKey(serializedKey);
+        msg.setSerializedPublicKeyLength(serializedKeyLength);
+        RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg);
+        assertArrayEquals(expectedPart, serializer.serialize());
     }
 
 }
