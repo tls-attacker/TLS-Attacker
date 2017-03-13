@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -23,6 +25,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
  */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final FinishedMessage message;
 
     public FinishedMessagePreparator(TlsContext context, FinishedMessage message) {

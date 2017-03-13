@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -16,6 +18,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  * @param <T>
  */
 public abstract class Preparator<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     protected final TlsContext context;
     private final T object;

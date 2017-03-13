@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final AlertMessage message;
 
     public AlertPreparator(TlsContext context, AlertMessage message) {

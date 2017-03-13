@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.io.ByteArrayOutputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -25,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final HelloMessage message;
 
     public HelloMessagePreparator(TlsContext context, HelloMessage message) {

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequestMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final HelloRequestMessage message;
 
     public HelloRequestPreparator(TlsContext context, HelloRequestMessage message) {

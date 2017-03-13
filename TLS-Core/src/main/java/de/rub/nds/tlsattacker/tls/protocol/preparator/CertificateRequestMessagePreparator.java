@@ -12,13 +12,12 @@ import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -26,6 +25,8 @@ import java.util.logging.Logger;
  */
 public class CertificateRequestMessagePreparator extends HandshakeMessagePreparator<CertificateRequestMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final CertificateRequestMessage message;
 
     public CertificateRequestMessagePreparator(TlsContext context, CertificateRequestMessage message) {

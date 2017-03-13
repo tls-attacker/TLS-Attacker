@@ -21,6 +21,8 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -28,6 +30,8 @@ import java.util.List;
  */
 public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final CertificateVerifyMessage message;
 
     public CertificateVerifyMessagePreparator(TlsContext context, CertificateVerifyMessage message) {

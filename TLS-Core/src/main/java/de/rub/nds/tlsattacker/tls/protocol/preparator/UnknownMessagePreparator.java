@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final UnknownMessage message;
 
     public UnknownMessagePreparator(TlsContext context, UnknownMessage message) {

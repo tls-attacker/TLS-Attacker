@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
  */
 public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final HelloVerifyRequestMessage message;
 
     public HelloVerifyRequestPreparator(TlsContext context, HelloVerifyRequestMessage message) {

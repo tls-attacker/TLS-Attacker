@@ -11,15 +11,12 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
@@ -28,6 +25,8 @@ import org.bouncycastle.crypto.tls.Certificate;
  */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final CertificateMessage message;
 
     public CertificateMessagePreparator(TlsContext context, CertificateMessage message) {

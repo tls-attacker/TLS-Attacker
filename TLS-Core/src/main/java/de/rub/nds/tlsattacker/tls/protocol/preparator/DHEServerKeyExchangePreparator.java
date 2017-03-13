@@ -9,32 +9,18 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.UnrecoverableKeyException;
-import java.security.interfaces.RSAPrivateCrtKey;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -53,8 +39,8 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<DHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(DHEServerKeyExchangePreparator.class);
-
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final DHEServerKeyExchangeMessage message;
 
     public DHEServerKeyExchangePreparator(TlsContext context, DHEServerKeyExchangeMessage message) {

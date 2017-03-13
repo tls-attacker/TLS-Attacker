@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class ApplicationMessagePreparator extends ProtocolMessagePreparator<ApplicationMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final ApplicationMessage message;
 
     public ApplicationMessagePreparator(TlsContext context, ApplicationMessage message) {

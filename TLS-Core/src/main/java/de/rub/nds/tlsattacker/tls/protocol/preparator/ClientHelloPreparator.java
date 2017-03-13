@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -26,6 +28,8 @@ import java.util.List;
  */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final ClientHelloMessage message;
 
     public ClientHelloPreparator(TlsContext context, ClientHelloMessage message) {

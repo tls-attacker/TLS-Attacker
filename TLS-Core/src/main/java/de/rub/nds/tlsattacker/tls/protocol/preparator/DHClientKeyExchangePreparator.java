@@ -21,6 +21,8 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import javax.crypto.interfaces.DHPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -37,7 +39,9 @@ import org.bouncycastle.util.BigIntegers;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<DHClientKeyExchangeMessage> {
-
+    
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final DHClientKeyExchangeMessage message;
 
     public DHClientKeyExchangePreparator(TlsContext context, DHClientKeyExchangeMessage message) {

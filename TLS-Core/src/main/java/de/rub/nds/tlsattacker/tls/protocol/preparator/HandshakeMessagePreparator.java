@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -22,6 +24,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final HandshakeMessage message;
 
     public HandshakeMessagePreparator(TlsContext context, T message) {

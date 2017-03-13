@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -23,6 +25,8 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     private final ServerHelloMessage message;
 
     public ServerHelloMessagePreparator(TlsContext context, ServerHelloMessage message) {

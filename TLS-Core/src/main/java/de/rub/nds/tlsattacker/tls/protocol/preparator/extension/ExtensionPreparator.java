@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Preparator<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    
     public ExtensionPreparator(TlsContext context, T object) {
         super(context, object);
     }
