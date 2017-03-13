@@ -16,12 +16,16 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public AlertHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

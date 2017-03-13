@@ -16,12 +16,16 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public HelloRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

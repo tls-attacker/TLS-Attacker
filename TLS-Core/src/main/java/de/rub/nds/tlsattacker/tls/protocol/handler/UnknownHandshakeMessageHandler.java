@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.UnknownHandshakeMessagePre
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownHandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -23,6 +25,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<UnknownHandshakeMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public UnknownHandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
@@ -22,6 +24,8 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeMessage> extends
         ProtocolMessageHandler<ProtocolMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -21,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -28,6 +30,8 @@ import java.util.Arrays;
  */
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public ServerHelloDoneHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

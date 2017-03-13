@@ -17,12 +17,16 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.ApplicationMessageSerializ
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public ApplicationHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -10,19 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.InvalidMessageTypeException;
-import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
@@ -32,9 +21,6 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-import de.rub.nds.tlsattacker.util.Time;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,8 +30,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessage.class);
-
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public ServerHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

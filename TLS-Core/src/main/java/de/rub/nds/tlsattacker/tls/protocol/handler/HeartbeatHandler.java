@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Handler for Heartbeat messages: http://tools.ietf.org/html/rfc6520#page-4
@@ -24,6 +26,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public HeartbeatHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

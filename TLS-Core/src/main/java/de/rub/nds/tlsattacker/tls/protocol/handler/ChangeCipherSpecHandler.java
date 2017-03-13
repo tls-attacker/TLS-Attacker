@@ -25,6 +25,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -32,8 +34,8 @@ import javax.crypto.NoSuchPaddingException;
  */
 public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
 
-    public static final byte CCS_PROTOCOL_TYPE = 1;
-
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public ChangeCipherSpecHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

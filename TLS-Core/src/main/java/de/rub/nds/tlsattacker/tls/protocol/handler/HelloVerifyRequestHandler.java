@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
@@ -24,6 +26,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVerifyRequestMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

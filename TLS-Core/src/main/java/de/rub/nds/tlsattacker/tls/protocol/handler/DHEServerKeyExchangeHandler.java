@@ -23,8 +23,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(DHEServerKeyExchangeHandler.class);
-
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -23,8 +23,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(RetransmitMessageHandler.class);
-
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public RetransmitMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

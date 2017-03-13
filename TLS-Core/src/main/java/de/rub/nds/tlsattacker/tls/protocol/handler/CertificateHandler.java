@@ -42,8 +42,8 @@ import sun.security.rsa.RSAPublicKeyImpl;
  */
 public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateHandler.class);
-
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public CertificateHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

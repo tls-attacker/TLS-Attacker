@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import static de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
@@ -24,6 +23,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -32,6 +33,8 @@ import java.util.List;
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
