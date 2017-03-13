@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class ServerNameIndicationExtensionHandler extends ExtensionHandler<ServerNameIndicationExtensionMessage> {
 
-    private static ServerNameIndicationExtensionHandler instance;
-
     /**
      * Server Name list length
      */
