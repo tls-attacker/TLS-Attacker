@@ -88,7 +88,7 @@ public class RecordHandlerTest {
         assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord
                 .getProtocolVersion().getValue());
         assertEquals("Check first record epoch", new Integer(0), currentRecord.getEpoch().getValue());
-        assertEquals("Check first record sequence number", new BigInteger("0"), currentRecord.getSequenceNumber()
+        assertEquals("Check first record sequence number", BigInteger.ZERO, currentRecord.getSequenceNumber()
                 .getValue());
         assertEquals("Check first record length", new Integer(5), currentRecord.getLength().getValue());
         assertArrayEquals("Check first record protocol message content",
