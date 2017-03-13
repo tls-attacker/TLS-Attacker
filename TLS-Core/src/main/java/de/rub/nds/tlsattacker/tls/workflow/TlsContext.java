@@ -136,14 +136,6 @@ public class TlsContext {
     private PublicKey serverPublicKey;
 
     /**
-     * EC public key parameters for EC handshakes
-     */
-    private ECPublicKeyParameters clientPublicKeyParameters;
-    /**
-     * EC private key parameters
-     */
-    private ECPrivateKeyParameters clientPrivateKeyParameters;
-    /**
      * EC public key parameters of the server
      */
     private ECPublicKeyParameters serverPublicKeyParameters;

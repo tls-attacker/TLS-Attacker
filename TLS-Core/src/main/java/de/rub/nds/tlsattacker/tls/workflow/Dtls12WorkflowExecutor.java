@@ -55,7 +55,6 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
         List<TLSAction> actions = workflowTrace.getTLSActions();
         try {
-            ProtocolMessage pm = null;
             while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
                 TLSAction action = actions.get(workflowContext.getActionPointer());
                 action.execute(tlsContext, actionExecutor);
