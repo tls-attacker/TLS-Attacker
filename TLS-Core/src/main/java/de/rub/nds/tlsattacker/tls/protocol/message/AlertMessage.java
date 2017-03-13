@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -151,7 +152,7 @@ public class AlertMessage extends ProtocolMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new AlertSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new AlertHandler(context);
     }
 }

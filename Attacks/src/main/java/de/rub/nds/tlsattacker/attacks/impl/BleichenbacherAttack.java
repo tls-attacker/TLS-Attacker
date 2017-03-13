@@ -115,7 +115,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
                 .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
-        cke.setEncryptedPremasterSecret(epms);
+        cke.setSerializedPublicKey(epms);
         try {
             FileOutputStream fos = new FileOutputStream("/tmp/test.xml");
             WorkflowTraceSerializer.write(fos, trace);

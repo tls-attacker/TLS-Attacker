@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
@@ -75,13 +74,11 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
-        TlsContextAnalyzer.AnalyzerResponse analyzerResponse = TlsContextAnalyzer
-                .containsAlertAfterModifiedMessage(tlsContext);
-        if (analyzerResponse == TlsContextAnalyzer.AnalyzerResponse.ALERT) {
+        if (tlsContext.isReceivedFatalAlert()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             vulnerable = false;
-        } else if (analyzerResponse == TlsContextAnalyzer.AnalyzerResponse.NO_ALERT) {
+        } else if (!tlsContext.isReceivedFatalAlert()) { //TODO this does not work properly atm
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             vulnerable = true;

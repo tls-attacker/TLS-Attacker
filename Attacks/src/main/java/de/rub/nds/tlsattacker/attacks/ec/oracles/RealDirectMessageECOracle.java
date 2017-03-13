@@ -20,11 +20,12 @@ import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -110,13 +111,34 @@ public class RealDirectMessageECOracle extends ECOracle {
             transportHandler.closeConnection();
         }
 
-        if (!TlsContextAnalyzer.containsFullWorkflow(tlsContext)) {
+        if (!isWorkflowTraceReasonable(tlsContext.getWorkflowTrace())) {
             valid = false;
         }
 
         return valid;
     }
-
+    
+    //TODO duplicate code
+    private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
+        int counter = 0;
+        for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
+            if (counter >= trace.getAllExecutedMessages().size()) {
+                return false;
+            }
+            ProtocolMessage receivedMessage = trace.getAllExecutedMessages().get(counter);
+            if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
+                break;
+            }
+            if (configuredMessage.getClass() != receivedMessage.getClass()) {
+                if (configuredMessage.isRequired()) {
+                    return false;
+                }
+            } else {
+                counter++;
+            }
+        }
+        return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
+    }
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
         // BigInteger correct = new

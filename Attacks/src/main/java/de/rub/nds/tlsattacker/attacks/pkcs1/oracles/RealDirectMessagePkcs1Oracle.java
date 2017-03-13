@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
@@ -83,7 +82,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));
-        cke.setEncryptedPremasterSecret(pms);
+        cke.setSerializedPublicKey(pms);
 
         if (numberOfQueries % 100 == 0) {
             LOGGER.info("Number of queries so far: {}", numberOfQueries);
@@ -102,7 +101,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             transportHandler.closeConnection();
         }
         // TODO veraltet
-        if (TlsContextAnalyzer.containsAlertAfterModifiedMessage(tlsContext) == TlsContextAnalyzer.AnalyzerResponse.ALERT) {
+        if (tlsContext.isReceivedFatalAlert()) {
             valid = false;
         }
 

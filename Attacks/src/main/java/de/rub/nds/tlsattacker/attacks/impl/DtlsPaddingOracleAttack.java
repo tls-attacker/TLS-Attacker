@@ -180,7 +180,8 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
                     flushTransportHandler();
                     return -1;
                 } else {
-                    HeartbeatMessageParser parser = new HeartbeatMessageParser(0, parsedReceivedRecords.get(0).getProtocolMessageBytes().getValue(), ProtocolVersion.DTLS12);
+                    HeartbeatMessageParser parser = new HeartbeatMessageParser(0, parsedReceivedRecords.get(0)
+                            .getProtocolMessageBytes().getValue(), ProtocolVersion.DTLS12);
                     receivedHbMessage = parser.parse();
                     if (!Arrays.equals(receivedHbMessage.getPayload().getValue(), sentHeartbeatMessagePayload)) {
                         LOGGER.info("Heartbeat answer didn't contain the correct payload. Train: " + trainInfo);
@@ -278,9 +279,10 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
         records.add(new DtlsRecord());
 
         try {
-            AlertPreparator preparator = new AlertPreparator( new TlsContext(tlsConfig), closeNotify);
+            AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
             preparator.prepare();
-            transportHandler.sendData(recordHandler.wrapData(closeNotify.getCompleteResultingMessage().getValue(), ProtocolMessageType.ALERT, records));
+            transportHandler.sendData(recordHandler.wrapData(closeNotify.getCompleteResultingMessage().getValue(),
+                    ProtocolMessageType.ALERT, records));
         } catch (IOException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
