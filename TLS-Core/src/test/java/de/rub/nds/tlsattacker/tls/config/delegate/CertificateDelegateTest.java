@@ -10,13 +10,27 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.bouncycastle.operator.OperatorCreationException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  *
@@ -27,6 +41,8 @@ public class CertificateDelegateTest {
     private CertificateDelegate delegate;
     private JCommander jcommander;
     private String args[];
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     public CertificateDelegateTest() {
 
@@ -108,14 +124,19 @@ public class CertificateDelegateTest {
      * Test of applyDelegate method, of class CertificateDelegate.
      */
     @Test
-    public void testApplyDelegate() {
+    public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,
+            InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException,
+            OperatorCreationException {
+        KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024));
+        File keyStoreFile = folder.newFile("key.store");
+        store.store(new FileOutputStream(keyStoreFile), "password".toCharArray());
         args = new String[6];
         args[0] = "-keystore";
-        args[1] = "../resources/default.jks";
+        args[1] = keyStoreFile.getAbsolutePath();
         args[2] = "-password";
         args[3] = "password";
         args[4] = "-alias";
-        args[5] = "default";
+        args[5] = "alias";
         jcommander.parse(args);
         assertTrue("Keystore parameter gets not parsed correctly", delegate.getKeystore().equals(args[1]));
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
@@ -203,6 +224,6 @@ public class CertificateDelegateTest {
         TlsConfig config2 = new TlsConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
-                                                                                // ugly
+        // ugly
     }
 }
