@@ -20,10 +20,10 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHEServerKeyExchangeMessage> {
+public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -45,11 +45,7 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
 
     @Override
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
-        if (message.getComputations().getPremasterSecret() != null) {
-            tlsContext.setPreMasterSecret(message.getComputations().getPremasterSecret().getValue());
-        }
-        if (message.getComputations().getMasterSecret() != null) {
-            tlsContext.setMasterSecret(message.getComputations().getMasterSecret().getValue());
-        }
+        adjustPremasterSecret(message);
+        adjustMasterSecret(message);
     }
 }

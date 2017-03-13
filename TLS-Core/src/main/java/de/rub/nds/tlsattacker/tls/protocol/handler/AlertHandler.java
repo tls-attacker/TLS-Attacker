@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public AlertHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -49,6 +49,7 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
     protected void adjustTLSContext(AlertMessage message) {
         if (tlsContext.getTalkingConnectionEnd() == tlsContext.getConfig().getMyConnectionEnd()
                 && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
+            LOGGER.debug("Setting received Fatal Alert in Context");
             tlsContext.setReceivedFatalAlert(true);
         }
     }

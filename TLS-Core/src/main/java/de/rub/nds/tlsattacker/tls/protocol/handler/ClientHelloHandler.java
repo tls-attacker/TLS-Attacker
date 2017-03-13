@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -56,21 +56,59 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     protected void adjustTLSContext(ClientHelloMessage message) {
-        setRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
-        tlsContext.setHighestClientProtocolVersion(ProtocolVersion.getProtocolVersion(message.getProtocolVersion()
-                .getValue()));
-        tlsContext.setClientSupportedCiphersuites(convertCipherSuites(message.getCipherSuites().getValue()));
-        tlsContext.setClientSupportedCompressions(convertCompressionMethods(message.getCompressions().getValue()));
-        if (message.getCookie() != null) {
-            tlsContext.setDtlsHandshakeCookie(message.getCookie().getValue());
+        adjustRandomContext(message);
+        adjustProtocolVersion(message);
+        adjustClientSupportedCipherSuites(message);
+        adjustClientSupportedCompressions(message);
+        if (isCookieFieldSet(message)) {
+            adjustDTLSCookie(message);
         }
-        tlsContext.setSessionID(message.getSessionId().getValue());
+        adjustSessionID(message);
         for (ExtensionMessage extension : message.getExtensions()) {
             throw new UnsupportedOperationException("Get extensionHandlers here and adjust context");
         }
     }
 
-    private void setRandomContext(byte[] unixTime, byte[] random) {
+    private boolean isCookieFieldSet(ClientHelloMessage message) {
+        return message.getCookie() != null;
+    }
+
+    private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
+        List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
+        tlsContext.setClientSupportedCiphersuites(suiteList);
+        LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+    }
+
+    private void adjustClientSupportedCompressions(ClientHelloMessage message) {
+        List<CompressionMethod> compressionList = convertCompressionMethods(message.getCompressions().getValue());
+        tlsContext.setClientSupportedCompressions(compressionList);
+        LOGGER.debug("Set ClientSupportedCompressions in Context to " + compressionList.toString());
+    }
+
+    private void adjustDTLSCookie(ClientHelloMessage message) {
+        byte[] dtlsCookie = message.getCookie().getValue();
+        tlsContext.setDtlsHandshakeCookie(dtlsCookie);
+        LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
+    }
+
+    private void adjustSessionID(ClientHelloMessage message) {
+        byte[] sessionId = message.getSessionId().getValue();
+        tlsContext.setSessionID(sessionId);
+        LOGGER.debug("Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
+    }
+
+    private void adjustProtocolVersion(ClientHelloMessage message) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        tlsContext.setHighestClientProtocolVersion(version);
+        LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
+    }
+
+    private void adjustRandomContext(ClientHelloMessage message) {
+        setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
+    }
+
+    private void setClientRandomContext(byte[] unixTime, byte[] random) {
         tlsContext.setClientRandom(ArrayConverter.concatenate(unixTime, random));
     }
 

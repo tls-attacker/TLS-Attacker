@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public CertificateRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -52,11 +52,30 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     protected void adjustTLSContext(CertificateRequestMessage message) {
-        tlsContext.setClientCertificateTypes(convertClientCertificateTypes(message.getClientCertificateTypes()
-                .getValue()));
-        tlsContext.setDistinguishedNames(message.getDistinguishedNames().getValue());
-        tlsContext.setServerSupportedSignatureAndHashAlgorithms(convertSignatureAndHashAlgorithms(message
-                .getSignatureHashAlgorithms().getValue()));
+        adjustClientCertificateTypes(message);
+        adjustDistinguishedNames(message);
+        adjustServerSupportedSignatureAndHashAlgorithms(message);
+    }
+
+    private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
+        List<SignatureAndHashAlgorithm> algoList = convertSignatureAndHashAlgorithms(message
+                .getSignatureHashAlgorithms().getValue());
+        tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
+        LOGGER.debug("Set ServerSupportedSignatureAndHashAlgortihms to " + algoList.toString());
+    }
+
+    private void adjustDistinguishedNames(CertificateRequestMessage message) {
+        byte[] distinguishedNames = message.getDistinguishedNames().getValue();
+        tlsContext.setDistinguishedNames(distinguishedNames);
+        LOGGER.debug("Set DistinguishedNames in Context to "
+                + ArrayConverter.bytesToHexString(distinguishedNames, false));
+    }
+
+    private void adjustClientCertificateTypes(CertificateRequestMessage message) {
+        List<ClientCertificateType> clientCertTypes = convertClientCertificateTypes(message.getClientCertificateTypes()
+                .getValue());
+        tlsContext.setClientCertificateTypes(clientCertTypes);
+        LOGGER.debug("Set ClientCertificateType in Context to " + clientCertTypes.toString());
     }
 
     private List<ClientCertificateType> convertClientCertificateTypes(byte[] bytesToConvert) {

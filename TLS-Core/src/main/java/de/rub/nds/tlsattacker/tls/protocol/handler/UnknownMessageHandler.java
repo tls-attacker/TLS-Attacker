@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public UnknownMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

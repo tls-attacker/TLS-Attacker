@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public HeartbeatHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

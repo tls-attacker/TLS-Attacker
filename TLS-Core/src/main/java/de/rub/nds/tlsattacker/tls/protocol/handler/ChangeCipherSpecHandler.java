@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public ChangeCipherSpecHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -59,15 +59,18 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     protected void adjustTLSContext(ChangeCipherSpecMessage message) {
         if (tlsContext.getTalkingConnectionEnd() == tlsContext.getConfig().getMyConnectionEnd()) {
             setRecordCipher();
+            LOGGER.debug("Setting RecordHandler to EncryptSending");
             tlsContext.getRecordHandler().setEncryptSending(true);
         } else {
             setRecordCipher();
+            LOGGER.debug("Setting RecordHandler to DecryptReceiving");
             tlsContext.getRecordHandler().setDecryptReceiving(true);
         }
     }
 
     private void setRecordCipher() {
         try {
+            LOGGER.debug("Setting new TlsRecordBlockCipher in RecordHandler");
             TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
             tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException

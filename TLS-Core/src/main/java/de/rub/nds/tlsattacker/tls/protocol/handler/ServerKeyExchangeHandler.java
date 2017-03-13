@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
@@ -21,16 +22,16 @@ import org.apache.logging.log4j.Logger;
  * @author Philip Riese <philip.riese@rub.de>
  * @param <Message>
  */
-public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
+public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
-    public ClientKeyExchangeHandler(TlsContext tlsContext) {
+    public ServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
-    protected void adjustPremasterSecret(ClientKeyExchangeMessage message) {
+    protected void adjustPremasterSecret(ServerKeyExchangeMessage message) {
         if (message.getComputations().getPremasterSecret() != null) {
             byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
             tlsContext.setPreMasterSecret(premasterSecret);
@@ -40,7 +41,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         }
     }
 
-    protected void adjustMasterSecret(ClientKeyExchangeMessage message) {
+    protected void adjustMasterSecret(ServerKeyExchangeMessage message) {
         if (message.getComputations().getMasterSecret() != null) {
             byte[] masterSecret = message.getComputations().getMasterSecret().getValue();
             tlsContext.setMasterSecret(masterSecret);

@@ -21,10 +21,10 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServerKeyExchangeMessage> {
+public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -46,11 +46,7 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
 
     @Override
     protected void adjustTLSContext(DHEServerKeyExchangeMessage message) {
-        if (message.getComputations().getPremasterSecret() != null) {
-            tlsContext.setPreMasterSecret(message.getComputations().getPremasterSecret().getValue());
-        }
-        if (message.getComputations().getMasterSecret() != null) {
-            tlsContext.setMasterSecret(message.getComputations().getMasterSecret().getValue());
-        }
+        adjustPremasterSecret(message);
+        adjustMasterSecret(message);
     }
 }

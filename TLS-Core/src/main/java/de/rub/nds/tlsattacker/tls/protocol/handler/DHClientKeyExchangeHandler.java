@@ -9,25 +9,27 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -49,11 +51,8 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     protected void adjustTLSContext(DHClientKeyExchangeMessage message) {
-        if (message.getComputations().getPremasterSecret() != null) {
-            tlsContext.setPreMasterSecret(message.getComputations().getPremasterSecret().getValue());
-        }
-        if (message.getComputations().getMasterSecret() != null) {
-            tlsContext.setMasterSecret(message.getComputations().getMasterSecret().getValue());
-        }
+        adjustPremasterSecret(message);
+        adjustMasterSecret(message);
     }
+
 }

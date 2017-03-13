@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<UnknownHandshakeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public UnknownHandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public ApplicationHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

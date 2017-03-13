@@ -25,7 +25,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
         ProtocolMessageHandler<ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

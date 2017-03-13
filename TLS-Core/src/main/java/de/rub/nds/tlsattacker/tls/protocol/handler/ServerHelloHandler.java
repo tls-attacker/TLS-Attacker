@@ -29,41 +29,77 @@ import org.apache.logging.log4j.Logger;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
-
+    
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
     
     public ServerHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
-
+    
     @Override
     public Preparator getPreparator(ServerHelloMessage message) {
         return new ServerHelloMessagePreparator(tlsContext, message);
     }
-
+    
     @Override
     public Serializer getSerializer(ServerHelloMessage message) {
         return new ServerHelloMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
-
+    
     @Override
     public Parser getParser(byte[] message, int pointer) {
         return new ServerHelloParser(pointer, message, tlsContext.getLastRecordVersion());
     }
-
+    
     @Override
     protected void adjustTLSContext(ServerHelloMessage message) {
-        tlsContext.setSelectedCipherSuite(CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue()));
-        tlsContext.setServerRandom(ArrayConverter.concatenate(message.getUnixTime().getValue(), message.getRandom()
-                .getValue()));
-        tlsContext.setSelectedCompressionMethod(CompressionMethod.getCompressionMethod(message
-                .getSelectedCompressionMethod().getValue()));
-        tlsContext.setSessionID(message.getSessionId().getValue());
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.getProtocolVersion(message.getProtocolVersion()
-                .getValue()));
+        adjustSelectedCiphersuite(message);
+        adjustSelectedCompression(message);
+        adjustSelectedProtocolVersion(message);
+        adjustSelectedSessionID(message);
+        adjustServerRandom(message);
         for (ExtensionMessage extension : message.getExtensions()) {
             throw new UnsupportedOperationException("Get extensionHandlers here and adjust context");
         }
+        adjustMessageDigest(message);
+    }
+    
+    private void adjustSelectedCiphersuite(ServerHelloMessage message) {
+        CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
+        tlsContext.setSelectedCipherSuite(suite);
+        LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+    }
+    
+    private void adjustServerRandom(ServerHelloMessage message) {
+        byte[] random = ArrayConverter.concatenate(message.getUnixTime().getValue(), message.getRandom()
+                .getValue());
+        tlsContext.setServerRandom(random);
+        LOGGER.debug("Set ServerRandom in Context to " + ArrayConverter.bytesToHexString(random));
+    }
+    
+    private void adjustSelectedCompression(ServerHelloMessage message) {
+        CompressionMethod method = CompressionMethod.getCompressionMethod(message
+                .getSelectedCompressionMethod().getValue());
+        tlsContext.setSelectedCompressionMethod(method);
+        LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+    }
+    
+    private void adjustSelectedSessionID(ServerHelloMessage message) {
+        byte[] sessionID = message.getSessionId().getValue();
+        tlsContext.setSessionID(sessionID);
+        LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID,false));
+        
+    }
+    
+    private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion()
+                .getValue());
+        tlsContext.setSelectedProtocolVersion(version);
+        LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+    }
+    
+    private void adjustMessageDigest(ServerHelloMessage message) {
         tlsContext.initiliazeTlsMessageDigest();
+        LOGGER.debug("Initializing TLS Message Digest");
     }
 }

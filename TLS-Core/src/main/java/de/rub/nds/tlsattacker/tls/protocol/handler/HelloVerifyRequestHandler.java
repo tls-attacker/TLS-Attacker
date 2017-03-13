@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVerifyRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public HelloVerifyRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -49,6 +50,12 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     @Override
     protected void adjustTLSContext(HelloVerifyRequestMessage message) {
-        tlsContext.setDtlsHandshakeCookie(message.getCookie().getValue());
+        adjustDTLSCookie(message);
+    }
+
+    private void adjustDTLSCookie(HelloVerifyRequestMessage message) {
+        byte[] dtlsCookie = message.getCookie().getValue();
+        tlsContext.setDtlsHandshakeCookie(dtlsCookie);
+        LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie, false));
     }
 }

@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-    
+
     public RSAClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -47,11 +47,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     protected void adjustTLSContext(RSAClientKeyExchangeMessage message) {
-        if (message.getComputations().getPremasterSecret() != null) {
-            tlsContext.setPreMasterSecret(message.getComputations().getPremasterSecret().getValue());
-        }
-        if (message.getComputations().getMasterSecret() != null) {
-            tlsContext.setMasterSecret(message.getComputations().getMasterSecret().getValue());
-        }
+        adjustPremasterSecret(message);
+        adjustMasterSecret(message);
     }
 }
