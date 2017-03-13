@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger(ProtocolMessageParser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     private ProtocolVersion version;
 

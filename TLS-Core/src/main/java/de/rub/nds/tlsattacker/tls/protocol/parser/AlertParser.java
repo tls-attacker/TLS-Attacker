@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.AlertByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
  */
 public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public AlertParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

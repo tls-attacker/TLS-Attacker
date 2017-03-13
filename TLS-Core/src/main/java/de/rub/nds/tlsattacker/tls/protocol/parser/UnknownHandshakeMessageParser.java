@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownHandshakeMessageParser extends HandshakeMessageParser<UnknownHandshakeMessage> {
 
-    static final Logger LOGGER = LogManager.getLogger(UnknownHandshakeMessage.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     public UnknownHandshakeMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.UNKNOWN, version);

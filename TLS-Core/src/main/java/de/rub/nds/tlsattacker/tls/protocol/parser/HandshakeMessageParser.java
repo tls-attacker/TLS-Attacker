@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger(HandshakeMessageParser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * The expected value for the Type field of the Message

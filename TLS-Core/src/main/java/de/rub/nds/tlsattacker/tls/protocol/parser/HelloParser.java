@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger(HelloParser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the Parser class

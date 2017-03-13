@@ -184,5 +184,5 @@ public abstract class Parser<T> {
      */
     public abstract T parse();
 
-    private static final Logger LOGGER = LogManager.getLogger(Parser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 }

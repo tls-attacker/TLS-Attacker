@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(HelloRequestParser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     public HelloRequestParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.HELLO_REQUEST, version);

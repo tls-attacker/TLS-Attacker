@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.ChangeCipherSpecByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
  */
 public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSpecMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

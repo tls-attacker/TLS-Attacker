@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDoneMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloDoneParser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     public ServerHelloDoneParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE, version);

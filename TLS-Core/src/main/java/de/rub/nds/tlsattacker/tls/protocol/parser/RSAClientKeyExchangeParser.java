@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
  */
 public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClientKeyExchangeMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public RSAClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

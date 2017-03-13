@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
  */
 public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

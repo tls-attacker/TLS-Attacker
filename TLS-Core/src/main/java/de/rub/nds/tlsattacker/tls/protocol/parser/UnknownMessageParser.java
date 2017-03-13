@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
  */
 public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public UnknownMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

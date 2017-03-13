@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloParser.class);
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the ServerHelloMessageParser

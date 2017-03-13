@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -20,7 +22,9 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage
  */
 public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
 
-    private ProtocolVersion version;
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
+    private final ProtocolVersion version;
 
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);

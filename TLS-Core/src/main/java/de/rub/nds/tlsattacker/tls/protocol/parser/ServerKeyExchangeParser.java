@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
  */
 public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
         super(pointer, array, expectedType, version);
     }

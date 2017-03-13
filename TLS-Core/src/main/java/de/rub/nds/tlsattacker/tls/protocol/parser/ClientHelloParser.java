@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
  */
 public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version);
     }

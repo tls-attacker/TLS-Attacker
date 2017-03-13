@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -16,6 +18,8 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
  */
 public class ExtensionParserFactory {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public static ExtensionParser getExtensionParser(int startPosition, byte[] array) {
         // Try to read the type, else just return unknown
         ExtensionType type = ExtensionType.UNKNOWN;

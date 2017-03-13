@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
  */
 public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    
     public ApplicationMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
