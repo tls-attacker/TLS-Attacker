@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.util;
 
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -54,14 +55,14 @@ public class KeyStoreGenerator {
 
     public static KeyPair createRSAKeyPair(int bits) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(bits, new SecureRandom());
+        keyPairGenerator.initialize(bits, RandomHelper.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
     }
 
     public static KeyPair createECKeyPair(int bits) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
-        keyPairGenerator.initialize(bits, new SecureRandom());
+        keyPairGenerator.initialize(bits, RandomHelper.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
     }
@@ -75,7 +76,7 @@ public class KeyStoreGenerator {
         X500Name issuerName = new X500Name("CN=127.0.0.1, O=TLS-Attacker, L=RUB, ST=NRW, C=DE");
         X500Name subjectName = issuerName;
 
-        BigInteger serial = BigInteger.valueOf(new SecureRandom().nextInt());
+        BigInteger serial = BigInteger.valueOf(RandomHelper.getBadSecureRandom().nextInt());
 
         X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, BEFORE, AFTER,
                 subjectName, publicKey);
