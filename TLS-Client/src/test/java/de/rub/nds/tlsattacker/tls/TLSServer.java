@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
+import de.rub.nds.tlsattacker.util.BadRandom;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -121,7 +122,7 @@ public class TLSServer extends Thread {
         trustManagerFactory.init(keyStore);
         TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
         sslContext = SSLContext.getInstance(protocol);
-        sslContext.init(keyManagers, trustManagers, null);
+        sslContext.init(keyManagers, trustManagers, new BadRandom());
 
         cipherSuites = sslContext.getServerSocketFactory().getSupportedCipherSuites();
 
@@ -171,6 +172,7 @@ public class TLSServer extends Thread {
 
     private void preSetup() throws SocketException, IOException {
         SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
+
         serverSocket = serverSocketFactory.createServerSocket(port);
         serverSocket.setReuseAddress(true);
         // if (cipherSuites != null) {

@@ -28,13 +28,16 @@ import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContextAnalyzer;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.File;
 import java.io.FileFilter;
@@ -44,7 +47,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ServerTestSuite extends TestSuite {
@@ -211,7 +214,7 @@ public class ServerTestSuite extends TestSuite {
                         tlsContext);
                 workflowExecutor.executeWorkflow();
                 transportHandler.closeConnection();
-                if (TlsContextAnalyzer.containsFullWorkflow(tlsContext)) {
+                if (isWorkflowTraceReasonable(tlsContext.getWorkflowTrace())) {
                     LOGGER.info("    {} passed", xmlFile.getName());
                     List<ModifiableVariableField> mvfs = ModifiableVariableAnalyzer
                             .getAllModifiableVariableFieldsRecursively(tlsContext.getWorkflowTrace());
@@ -241,6 +244,28 @@ public class ServerTestSuite extends TestSuite {
         }
 
         return succesful;
+    }
+
+    //TODO duplicate code
+    private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
+        int counter = 0;
+        for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
+            if (counter >= trace.getAllExecutedMessages().size()) {
+                return false;
+            }
+            ProtocolMessage receivedMessage = trace.getAllExecutedMessages().get(counter);
+            if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
+                break;
+            }
+            if (configuredMessage.getClass() != receivedMessage.getClass()) {
+                if (configuredMessage.isRequired()) {
+                    return false;
+                }
+            } else {
+                counter++;
+            }
+        }
+        return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
     class DirectoryFilter implements FileFilter {

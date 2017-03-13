@@ -109,7 +109,7 @@ public final class TlsConfig {
      */
     private List<CompressionMethod> supportedCompressionMethods;
     /**
-     * If we are a dynamic workflow //TODO
+     * If we are a dynamic workflow //TODO implement
      */
     private boolean dynamicWorkflow = false;
     /**
@@ -153,7 +153,7 @@ public final class TlsConfig {
      */
     private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
     /**
-     * If the workflow should be verified //TODO
+     * If the workflow should be verified //TODO ???
      */
     private boolean verifyWorkflow = false;
     /**

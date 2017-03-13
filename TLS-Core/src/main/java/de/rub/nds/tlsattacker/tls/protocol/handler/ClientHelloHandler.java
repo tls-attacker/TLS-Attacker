@@ -37,18 +37,18 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
+    public Parser getParser(byte[] message, int pointer) {
         return new ClientHelloParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(ClientHelloMessage message) {
+    public Preparator getPreparator(ClientHelloMessage message) {
         return new ClientHelloPreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(ClientHelloMessage message) {
-        return new ClientHelloSerializer(message);
+    public Serializer getSerializer(ClientHelloMessage message) {
+        return new ClientHelloSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

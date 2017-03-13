@@ -9,12 +9,16 @@
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -25,6 +29,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * This ActionExecutor tries to perform Actions in a way that imitates a TLS
@@ -66,7 +71,7 @@ public class TLSActionExecutor extends ActionExecutor {
         try {
             sendData(context.getTransportHandler(), messageBytesCollector);
         } catch (IOException ex) {
-            // TODO
+            ex.printStackTrace();
         }
         return messages;
     }
@@ -121,8 +126,13 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
         LOGGER.debug("Preparing the following protocol message to send: {}", message.getClass());
-        ProtocolMessageHandler handler = message.getProtocolMessageType().getProtocolMessageHandler(
-                message.getProtocolMessageType().getValue(), context);
+        ProtocolMessageType protocolType = message.getProtocolMessageType();
+
+        HandshakeMessageType type = null;
+        if (protocolType == ProtocolMessageType.HANDSHAKE) {
+            type = ((HandshakeMessage) message).getHandshakeMessageType();
+        }
+        ProtocolMessageHandler handler = message.getHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;
     }
@@ -228,20 +238,46 @@ public class TLSActionExecutor extends ActionExecutor {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < rawProtocolMessageBytes.length) {
-            ProtocolMessageHandler pmh = protocolMessageType.getProtocolMessageHandler(
-                    rawProtocolMessageBytes[dataPointer], context);
-            if (Arrays.equals(rawProtocolMessageBytes,
-                    new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 })) {
-                context.getConfig().setRenegotiation(true);
-            } else {
-                ParserResult result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
-                dataPointer = result.getParserPosition();
-                LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
-                receivedMessages.add(result.getMessage());
-                if (receivedFatalAlert(result.getMessage())) {
-                    if (!context.getConfig().isFuzzingMode()) {
-                        workflowContext.setProceedWorkflow(false);
+            ParserResult result = null;
+            try {
+                HandshakeMessageType handshakeMessageType = HandshakeMessageType
+                        .getMessageType(rawProtocolMessageBytes[dataPointer]);
+                ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, protocolMessageType,
+                        handshakeMessageType);
+                result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
+
+            } catch (ParserException E) {
+                LOGGER.log(Level.WARN,
+                        "Could not parse Message as a CorrectMessage, parsing as UnknownHandshakeMessage instead!", E);
+
+                // Parsing as the specified Message did not work, try parsing it
+                // as an Unknown message
+                try {
+                    if (protocolMessageType == ProtocolMessageType.HANDSHAKE) {
+                        HandshakeMessageType handshakeType = HandshakeMessageType.UNKNOWN;
+                        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, protocolMessageType,
+                                handshakeType);
+                        result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
                     }
+                } catch (ParserException ex) {
+                    LOGGER.log(Level.WARN,
+                            "Could not parse Message as UnknownHandshakeMessage, parsing as UnknownMessage instead!",
+                            ex);
+                } finally {
+                    if (result == null) {
+                        protocolMessageType = ProtocolMessageType.UNKNOWN;
+                        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, protocolMessageType, null);
+                        result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
+
+                    }
+                }
+            }
+            dataPointer = result.getParserPosition();
+            LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
+            receivedMessages.add(result.getMessage());
+            if (receivedFatalAlert(result.getMessage())) {
+                if (!context.getConfig().isFuzzingMode()) {
+                    workflowContext.setProceedWorkflow(false);
                 }
             }
         }

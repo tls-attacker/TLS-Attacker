@@ -16,10 +16,13 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
 
@@ -49,16 +52,6 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger g;
-    /**
-     * public key length
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger publicKeyLength;
-    /**
-     * public key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger publicKey;
 
     @HoldsModifiableVariable
     protected DHEServerComputations computations;
@@ -121,30 +114,6 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
-    public ModifiableBigInteger getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(ModifiableBigInteger publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public void setPublicKey(BigInteger publicKey) {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
-    }
-
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
-    }
-
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
-    }
-
-    public void setPublicKeyLength(int length) {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, length);
-    }
-
     public DHEServerComputations getComputations() {
         return computations;
     }
@@ -165,8 +134,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if (publicKey != null) {
-            sb.append(publicKey.getValue().toString(16));
+        if (getSerializedPublicKey() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getSerializedPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
@@ -189,7 +158,12 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new DHEServerKeyExchangeSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new DHEServerKeyExchangeHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return "DHE_SERVER_KEY_EXCHANGE";
     }
 }

@@ -27,18 +27,18 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
     }
 
     @Override
-    protected AlertParser getParser(byte[] message, int pointer) {
+    public AlertParser getParser(byte[] message, int pointer) {
         return new AlertParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(AlertMessage message) {
+    public Preparator getPreparator(AlertMessage message) {
         return new AlertPreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(AlertMessage message) {
-        return new AlertSerializer(message);
+    public Serializer getSerializer(AlertMessage message) {
+        return new AlertSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

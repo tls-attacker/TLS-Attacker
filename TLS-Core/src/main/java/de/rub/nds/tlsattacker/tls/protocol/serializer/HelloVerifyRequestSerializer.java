@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -19,8 +20,8 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
 
     private HelloVerifyRequestMessage message;
 
-    public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message) {
-        super(message);
+    public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

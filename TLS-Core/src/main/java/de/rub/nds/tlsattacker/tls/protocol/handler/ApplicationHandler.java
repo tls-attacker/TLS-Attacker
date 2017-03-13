@@ -28,18 +28,18 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     }
 
     @Override
-    protected ApplicationMessageParser getParser(byte[] message, int pointer) {
+    public ApplicationMessageParser getParser(byte[] message, int pointer) {
         return new ApplicationMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(ApplicationMessage message) {
+    public Preparator getPreparator(ApplicationMessage message) {
         return new ApplicationMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(ApplicationMessage message) {
-        return new ApplicationMessageSerializer(message);
+    public Serializer getSerializer(ApplicationMessage message) {
+        return new ApplicationMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

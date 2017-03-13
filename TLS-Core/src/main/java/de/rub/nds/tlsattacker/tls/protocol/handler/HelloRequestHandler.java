@@ -27,18 +27,18 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
     }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
+    public Parser getParser(byte[] message, int pointer) {
         return new HelloRequestParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(HelloRequestMessage message) {
+    public Preparator getPreparator(HelloRequestMessage message) {
         return new HelloRequestPreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(HelloRequestMessage message) {
-        return new HelloRequestSerializer(message);
+    public Serializer getSerializer(HelloRequestMessage message) {
+        return new HelloRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

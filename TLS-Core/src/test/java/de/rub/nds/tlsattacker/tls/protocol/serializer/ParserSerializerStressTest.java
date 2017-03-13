@@ -163,45 +163,48 @@ public class ParserSerializerStressTest {
     private ProtocolMessageSerializer getRandomSerializer(int random, ProtocolMessage message) {
         switch (random) {
             case 0:
-                return new AlertSerializer((AlertMessage) message);
+                return new AlertSerializer((AlertMessage) message, ProtocolVersion.TLS12);
             case 1:
-                return new ApplicationMessageSerializer((ApplicationMessage) message);
+                return new ApplicationMessageSerializer((ApplicationMessage) message, ProtocolVersion.TLS12);
             case 2:
-                return new CertificateMessageSerializer((CertificateMessage) message);
+                return new CertificateMessageSerializer((CertificateMessage) message, ProtocolVersion.TLS12);
             case 3:
-                return new CertificateRequestMessageSerializer((CertificateRequestMessage) message);
+                return new CertificateRequestMessageSerializer((CertificateRequestMessage) message,
+                        ProtocolVersion.TLS12);
             case 4:
-                return new CertificateVerifyMessageSerializer((CertificateVerifyMessage) message);
+                return new CertificateVerifyMessageSerializer((CertificateVerifyMessage) message, ProtocolVersion.TLS12);
             case 5:
-                return new ChangeCipherSpecSerializer((ChangeCipherSpecMessage) message);
+                return new ChangeCipherSpecSerializer((ChangeCipherSpecMessage) message, ProtocolVersion.TLS12);
             case 6:
-                return new ClientHelloSerializer((ClientHelloMessage) message);
+                return new ClientHelloSerializer((ClientHelloMessage) message, ProtocolVersion.TLS12);
             case 7:
-                return new DHClientKeyExchangeSerializer((DHClientKeyExchangeMessage) message);
+                return new DHClientKeyExchangeSerializer((DHClientKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 8:
-                return new DHEServerKeyExchangeSerializer((DHEServerKeyExchangeMessage) message);
+                return new DHEServerKeyExchangeSerializer((DHEServerKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 9:
-                return new ECDHClientKeyExchangeSerializer((ECDHClientKeyExchangeMessage) message);
+                return new ECDHClientKeyExchangeSerializer((ECDHClientKeyExchangeMessage) message,
+                        ProtocolVersion.TLS12);
             case 10:
-                return new ECDHEServerKeyExchangeSerializer((ECDHEServerKeyExchangeMessage) message);
+                return new ECDHEServerKeyExchangeSerializer((ECDHEServerKeyExchangeMessage) message,
+                        ProtocolVersion.TLS12);
             case 11:
-                return new FinishedMessageSerializer((FinishedMessage) message);
+                return new FinishedMessageSerializer((FinishedMessage) message, ProtocolVersion.TLS12);
             case 12:
-                return new HeartbeatMessageSerializer((HeartbeatMessage) message);
+                return new HeartbeatMessageSerializer((HeartbeatMessage) message, ProtocolVersion.TLS12);
             case 13:
-                return new HelloRequestSerializer((HelloRequestMessage) message);
+                return new HelloRequestSerializer((HelloRequestMessage) message, ProtocolVersion.TLS12);
             case 14:
-                return new HelloVerifyRequestSerializer((HelloVerifyRequestMessage) message);
+                return new HelloVerifyRequestSerializer((HelloVerifyRequestMessage) message, ProtocolVersion.TLS12);
             case 15:
-                return new RSAClientKeyExchangeSerializer((RSAClientKeyExchangeMessage) message);
+                return new RSAClientKeyExchangeSerializer((RSAClientKeyExchangeMessage) message, ProtocolVersion.TLS12);
             case 16:
-                return new ServerHelloDoneSerializer((ServerHelloDoneMessage) message);
+                return new ServerHelloDoneSerializer((ServerHelloDoneMessage) message, ProtocolVersion.TLS12);
             case 17:
-                return new ServerHelloMessageSerializer((ServerHelloMessage) message);
+                return new ServerHelloMessageSerializer((ServerHelloMessage) message, ProtocolVersion.TLS12);
             case 18:
-                return new UnknownHandshakeMessageSerializer((UnknownHandshakeMessage) message);
+                return new UnknownHandshakeMessageSerializer((UnknownHandshakeMessage) message, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownMessageSerializer((UnknownMessage) message);
+                return new UnknownMessageSerializer((UnknownMessage) message, ProtocolVersion.TLS12);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

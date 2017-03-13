@@ -30,7 +30,12 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new ServerHelloDoneSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new ServerHelloDoneHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

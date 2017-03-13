@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.RetransmitMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.RetransmitMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -37,11 +39,6 @@ public class RetransmitMessage extends ProtocolMessage {
         return "Retransmitted Message";
     }
 
-    @Override
-    public Serializer getSerializer() {
-        return new RetransmitMessageSerializer(this);
-    }
-
     public byte[] getBytesToTransmit() {
         return bytesToTransmit;
     }
@@ -50,4 +47,8 @@ public class RetransmitMessage extends ProtocolMessage {
         this.bytesToTransmit = bytesToTransmit;
     }
 
+    @Override
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new RetransmitMessageHandler(context);
+    }
 }

@@ -88,7 +88,8 @@ public class ECDHEServerKeyExchangeParserTest {
      * Test of parse method, of class ECDHEServerKeyExchangeParser.
      */
     @Test
-    public void testParse() {
+    public void testParse() {// TODO make protocolversion a parameter and test
+                             // for other versions too
         ECDHEServerKeyExchangeParser parser = new ECDHEServerKeyExchangeParser(start, message, ProtocolVersion.TLS12);
         ECDHEServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -139,5 +140,5 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public abstract String toCompactString();
 
-    public abstract Serializer getSerializer();
+    public abstract ProtocolMessageHandler getHandler(TlsContext context);
 }

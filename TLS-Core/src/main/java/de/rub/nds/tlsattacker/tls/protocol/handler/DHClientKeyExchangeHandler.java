@@ -33,18 +33,18 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     }
 
     @Override
-    protected DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
+    public DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
         return new DHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected DHClientKeyExchangePreparator getPreparator(DHClientKeyExchangeMessage message) {
+    public DHClientKeyExchangePreparator getPreparator(DHClientKeyExchangeMessage message) {
         return new DHClientKeyExchangePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangeSerializer(message);
+    public Serializer getSerializer(DHClientKeyExchangeMessage message) {
+        return new DHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

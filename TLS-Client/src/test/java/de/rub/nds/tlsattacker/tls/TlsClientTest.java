@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -73,7 +74,7 @@ public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
 
-    private static final int PORT = 56789;
+    private static final int PORT = 4433;
 
     private static final int TIMEOUT = 2000;
     @Rule
@@ -121,6 +122,7 @@ public class TlsClientTest {
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
                 | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
                 | SignatureException ex) {
+            ex.printStackTrace();
             fail(); // Todo
         }
     }
@@ -147,7 +149,8 @@ public class TlsClientTest {
         testProtocolCompatibility(serverList, config, algorithm);
 
         if (algorithm == PublicKeyAlgorithm.RSA) {
-            testCustomWorkflow(port);
+            boolean result = testCustomWorkflow(port);
+            collector.checkThat("Custom failed.", result, is(true));
         }
 
     }
@@ -180,16 +183,18 @@ public class TlsClientTest {
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException E) {
+        } catch (Exception E) {
             E.printStackTrace();
         }
+        LOGGER.log(Level.INFO, tlsContext.getWorkflowTrace().toString());
         transportHandler.closeConnection();
         boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+        tlsContext.getWorkflowTrace().reset();
         if (!result) {
             LOGGER.log(Level.INFO, "Failed vanilla execution");
             return result;
         }
-        tlsContext.getWorkflowTrace().reset();
+
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         tlsContext = configHandler.initializeTlsContext(config);
         tlsContext.setWorkflowTrace(trace);
@@ -200,12 +205,15 @@ public class TlsClientTest {
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
+        LOGGER.log(Level.INFO, tlsContext.getWorkflowTrace().toString());
         transportHandler.closeConnection();
         result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+        tlsContext.getWorkflowTrace().reset();
         if (!result) {
             LOGGER.log(Level.INFO, "Failed reset execution");
             return result;
         }
+        LOGGER.log(Level.INFO, tlsContext.getWorkflowTrace().toString());
         tlsContext.getWorkflowTrace().reset();
         tlsContext.getWorkflowTrace().makeGeneric();
         trace = tlsContext.getWorkflowTrace();
@@ -218,6 +226,7 @@ public class TlsClientTest {
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
+        LOGGER.log(Level.INFO, "MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
         transportHandler.closeConnection();
         result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         if (!result) {
@@ -247,7 +256,7 @@ public class TlsClientTest {
         return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
-    private void testCustomWorkflow(int port) {
+    private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         ConfigHandler configHandler = new ConfigHandler();
         configHandler.initialize(clientCommandConfig);
@@ -276,7 +285,8 @@ public class TlsClientTest {
         workflowExecutor.executeWorkflow();
 
         transportHandler.closeConnection();
-        assertFalse(tlsContext.getWorkflowTrace()
+
+        return !(tlsContext.getWorkflowTrace()
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 

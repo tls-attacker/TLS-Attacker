@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -20,8 +21,8 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
 
     private final HeartbeatMessage message;
 
-    public HeartbeatMessageSerializer(HeartbeatMessage message) {
-        super(message);
+    public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

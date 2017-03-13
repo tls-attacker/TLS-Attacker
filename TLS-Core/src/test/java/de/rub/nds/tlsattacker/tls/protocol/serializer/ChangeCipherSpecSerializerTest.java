@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ChangeCipherSpecParserTest;
@@ -52,7 +53,7 @@ public class ChangeCipherSpecSerializerTest {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
         msg.setCcsProtocolType(ccsType);
         msg.setCompleteResultingMessage(expectedPart);
-        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg);
+        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

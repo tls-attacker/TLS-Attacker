@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloVerifyRequestSerializer;
@@ -88,7 +89,12 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new HelloVerifyRequestSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new HelloVerifyRequestHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

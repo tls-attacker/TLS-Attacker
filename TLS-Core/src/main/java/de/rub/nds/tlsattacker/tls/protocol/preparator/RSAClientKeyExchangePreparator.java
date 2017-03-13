@@ -93,8 +93,8 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 // too much data for RSA block
                 throw new PreparationException("Too much data for RSA-Block", E);
             }
-            message.setEncryptedPremasterSecret(encrypted);
-            message.setEncryptedPremasterSecretLength(message.getEncryptedPremasterSecret().getValue().length);
+            message.setSerializedPublicKey(encrypted);
+            message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
         } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException
                 | NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new PreparationException("Could not prepare RSAClientKeyExchange Message");

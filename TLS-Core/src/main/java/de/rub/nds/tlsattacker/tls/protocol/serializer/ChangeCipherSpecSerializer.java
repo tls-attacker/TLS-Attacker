@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
@@ -20,8 +21,8 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
 
     private ChangeCipherSpecMessage message;
 
-    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message) {
-        super(message);
+    public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

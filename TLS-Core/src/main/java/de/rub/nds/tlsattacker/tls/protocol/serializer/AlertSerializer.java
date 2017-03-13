@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 
 /**
@@ -18,8 +19,8 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
     private final AlertMessage message;
 
-    public AlertSerializer(AlertMessage message) {
-        super(message);
+    public AlertSerializer(AlertMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

@@ -80,11 +80,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 
-    protected abstract Parser getParser(byte[] message, int pointer);
+    public abstract Parser getParser(byte[] message, int pointer);
 
-    protected abstract Preparator getPreparator(Message message);
+    public abstract Preparator getPreparator(Message message);
 
-    protected abstract Serializer getSerializer(Message message);
+    public abstract Serializer getSerializer(Message message);
 
     /**
      * Adjusts the TLS Context according to the received or sending

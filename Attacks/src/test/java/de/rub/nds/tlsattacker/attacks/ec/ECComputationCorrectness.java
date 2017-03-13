@@ -35,7 +35,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class ECComputationCorrectness {
@@ -129,10 +129,8 @@ public class ECComputationCorrectness {
                 System.out.println("[CUS] Secret: null");
             }
 
-            if (sunSecret != null) {
-                if (sunSecret.equals(cusSecret)) {
-                    correctComputations++;
-                }
+            if (sunSecret != null && sunSecret.equals(cusSecret)) {
+                correctComputations++;
             }
 
         }
@@ -197,10 +195,10 @@ public class ECComputationCorrectness {
     /**
      * Executes point multiplication with custom and java sun computation. In
      * case the results differ, returns false.
-     * 
+     *
      * In case Sun returns null, the result is not observed (sun returns null,
      * by accident?)
-     * 
+     *
      * @param namedCurve
      * @param badX
      * @param badY

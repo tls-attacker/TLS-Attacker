@@ -33,6 +33,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     @Override
     public void prepareHandshakeMessageContents() {
         byte[] verifyData = computeVerifyData();
+
         message.setVerifyData(verifyData);
     }
 

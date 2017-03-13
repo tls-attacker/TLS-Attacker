@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -19,8 +20,8 @@ public class RetransmitMessageSerializer extends ProtocolMessageSerializer<Retra
 
     private final RetransmitMessage message;
 
-    public RetransmitMessageSerializer(RetransmitMessage message) {
-        super(message);
+    public RetransmitMessageSerializer(RetransmitMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

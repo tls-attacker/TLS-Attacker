@@ -112,7 +112,12 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new DHClientKeyExchangeSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new DHClientKeyExchangeHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return "DH_CLIENT_KEY_EXCHANGE";
     }
 }

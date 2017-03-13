@@ -51,17 +51,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    protected Preparator getPreparator(ServerHelloMessage message) {
+    public Preparator getPreparator(ServerHelloMessage message) {
         return new ServerHelloMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloMessageSerializer(message);
+    public Serializer getSerializer(ServerHelloMessage message) {
+        return new ServerHelloMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
+    public Parser getParser(byte[] message, int pointer) {
         return new ServerHelloParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 

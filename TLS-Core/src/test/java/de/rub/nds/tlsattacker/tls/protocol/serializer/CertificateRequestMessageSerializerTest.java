@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.tls.protocol.parser.CertificateRequestMessageParserTest;
@@ -76,7 +77,8 @@ public class CertificateRequestMessageSerializerTest {
         message.setSignatureHashAlgorithms(sigHashAlgs);
         message.setDistinguishedNamesLength(distinguishedNamesLength);
         message.setDistinguishedNames(disitinguishedNames);
-        CertificateRequestMessageSerializer serializer = new CertificateRequestMessageSerializer(message);
+        CertificateRequestMessageSerializer serializer = new CertificateRequestMessageSerializer(message,
+                ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

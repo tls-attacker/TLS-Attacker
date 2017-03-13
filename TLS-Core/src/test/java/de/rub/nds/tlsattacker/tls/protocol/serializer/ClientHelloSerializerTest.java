@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ClientHelloParserTest;
 import java.util.Collection;
@@ -104,7 +105,7 @@ public class ClientHelloSerializerTest {
         clientMessage.setUnixTime(unixtime);
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
-        ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage);
+        ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 }

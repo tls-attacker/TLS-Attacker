@@ -95,7 +95,7 @@ public class ServerHelloMessageSerializerTest {
      */
     @Test
     public void serialize() {
-        ServerHelloMessageSerializer serializer = new ServerHelloMessageSerializer(helloMessage);
+        ServerHelloMessageSerializer serializer = new ServerHelloMessageSerializer(helloMessage, ProtocolVersion.TLS12);
         byte[] serialised = serializer.serialize();
         assertArrayEquals(serialised, message);
     }

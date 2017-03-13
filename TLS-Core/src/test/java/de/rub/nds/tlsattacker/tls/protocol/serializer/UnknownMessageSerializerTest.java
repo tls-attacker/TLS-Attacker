@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.UnknownMessageParser;
 import java.util.Collection;
@@ -32,7 +33,7 @@ public class UnknownMessageSerializerTest {
     @Before
     public void setUp() {
         msg = new UnknownMessage();
-        serializer = new UnknownMessageSerializer(msg);
+        serializer = new UnknownMessageSerializer(msg, ProtocolVersion.TLS12);
     }
 
     /**

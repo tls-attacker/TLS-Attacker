@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 
 /**
@@ -28,8 +29,8 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
      * @param message
      *            Message that should be serialized
      */
-    public ServerHelloMessageSerializer(ServerHelloMessage message) {
-        super(message);
+    public ServerHelloMessageSerializer(ServerHelloMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

@@ -32,7 +32,12 @@ public class HelloRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new HelloRequestSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new HelloRequestHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

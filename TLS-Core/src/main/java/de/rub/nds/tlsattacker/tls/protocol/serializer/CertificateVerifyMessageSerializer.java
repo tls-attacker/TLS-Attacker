@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -20,8 +21,8 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
 
     private final CertificateVerifyMessage message;
 
-    public CertificateVerifyMessageSerializer(CertificateVerifyMessage message) {
-        super(message);
+    public CertificateVerifyMessageSerializer(CertificateVerifyMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

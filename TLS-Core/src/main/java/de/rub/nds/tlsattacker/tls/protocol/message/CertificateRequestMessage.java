@@ -177,7 +177,6 @@ public class CertificateRequestMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
-        // TODO Das hier kann fÃ¼r kaputte nachrichten nicht funktionieren
         sb.append("\n  Signature Hash Algorithms: ");
         if (signatureHashAlgorithms != null) {
             for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i += 2) {
@@ -197,7 +196,12 @@ public class CertificateRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new CertificateRequestMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new CertificateRequestHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

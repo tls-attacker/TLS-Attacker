@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 import de.rub.nds.tlsattacker.dtls.record.HandshakeFragmentHandler;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
@@ -309,8 +311,8 @@ public class DTLSActionExecutor extends ActionExecutor {
         byte[] rawMessageBytes = rcvRecord.getProtocolMessageBytes().getValue();
         ProtocolMessageType rcvRecordContentType = ProtocolMessageType.getContentType(rcvRecord.getContentType()
                 .getValue());
-        ProtocolMessageHandler pmh = rcvRecordContentType.getProtocolMessageHandler(
-                rawMessageBytes[messageParseBufferOffset], tlsContext);
+        ProtocolMessageHandler pmh = HandlerFactory.getHandler(tlsContext, rcvRecordContentType,
+                HandshakeMessageType.getMessageType(rawMessageBytes[messageParseBufferOffset]));
         ParserResult result = pmh.parseMessage(rawMessageBytes, messageParseBufferOffset);
         ProtocolMessage protocolMessage = result.getMessage();
         messageParseBufferOffset = result.getParserPosition();

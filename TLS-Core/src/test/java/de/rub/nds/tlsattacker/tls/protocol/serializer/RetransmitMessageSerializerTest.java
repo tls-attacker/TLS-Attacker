@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.RetransmitMessagePreparator;
@@ -34,7 +35,7 @@ public class RetransmitMessageSerializerTest {
     @Before
     public void setUp() {
         msg = new RetransmitMessage(new byte[] { 6, 6, 6 });
-        serializer = new RetransmitMessageSerializer(msg);
+        serializer = new RetransmitMessageSerializer(msg, ProtocolVersion.TLS12);
     }
 
     /**

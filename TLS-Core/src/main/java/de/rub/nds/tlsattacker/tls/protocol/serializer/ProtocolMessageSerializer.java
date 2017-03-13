@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 
 /**
@@ -17,7 +18,10 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
  */
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
 
-    public ProtocolMessageSerializer(T message) {
+    protected ProtocolVersion version;
+
+    public ProtocolMessageSerializer(T message, ProtocolVersion version) {
+        this.version = version;
     }
 
     @Override

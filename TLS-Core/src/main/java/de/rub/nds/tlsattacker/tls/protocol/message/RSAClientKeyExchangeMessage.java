@@ -28,12 +28,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger encryptedPremasterSecretLength;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray encryptedPremasterSecret;
-
     @HoldsModifiableVariable
     protected RSAClientComputations computations;
 
@@ -45,31 +39,6 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public RSAClientKeyExchangeMessage() {
         super();
         computations = new RSAClientComputations();
-    }
-
-    public ModifiableInteger getEncryptedPremasterSecretLength() {
-        return encryptedPremasterSecretLength;
-    }
-
-    public void setEncryptedPremasterSecretLength(ModifiableInteger encryptedPremasterSecretLength) {
-        this.encryptedPremasterSecretLength = encryptedPremasterSecretLength;
-    }
-
-    public void setEncryptedPremasterSecretLength(int length) {
-        this.encryptedPremasterSecretLength = ModifiableVariableFactory.safelySetValue(
-                this.encryptedPremasterSecretLength, length);
-    }
-
-    public ModifiableByteArray getEncryptedPremasterSecret() {
-        return encryptedPremasterSecret;
-    }
-
-    public void setEncryptedPremasterSecret(ModifiableByteArray encryptedPremasterSecret) {
-        this.encryptedPremasterSecret = encryptedPremasterSecret;
-    }
-
-    public void setEncryptedPremasterSecret(byte[] value) {
-        this.encryptedPremasterSecret = ModifiableVariableFactory.safelySetValue(this.encryptedPremasterSecret, value);
     }
 
     @Override
@@ -85,7 +54,12 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new RSAClientKeyExchangeSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new RSAClientKeyExchangeHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return "RSA_CLIENT_KEY_EXCHANGE";
     }
 }

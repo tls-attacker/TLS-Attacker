@@ -48,18 +48,18 @@ public class ECDHEServerKeyExchangeHandler extends HandshakeMessageHandler<ECDHE
     }
 
     @Override
-    protected ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
+    public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
         return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
+    public ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
         return new ECDHEServerKeyExchangePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangeSerializer(message);
+    public Serializer getSerializer(ECDHEServerKeyExchangeMessage message) {
+        return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

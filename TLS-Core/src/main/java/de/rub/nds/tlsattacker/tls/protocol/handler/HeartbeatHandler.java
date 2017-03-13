@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
@@ -31,18 +29,18 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
     }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
+    public Parser getParser(byte[] message, int pointer) {
         return new HeartbeatMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(HeartbeatMessage message) {
+    public Preparator getPreparator(HeartbeatMessage message) {
         return new HeartbeatMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(HeartbeatMessage message) {
-        return new HeartbeatMessageSerializer(message);
+    public Serializer getSerializer(HeartbeatMessage message) {
+        return new HeartbeatMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

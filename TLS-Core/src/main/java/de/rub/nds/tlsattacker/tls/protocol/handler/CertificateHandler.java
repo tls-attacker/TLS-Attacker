@@ -49,18 +49,18 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     }
 
     @Override
-    protected CertificateMessageParser getParser(byte[] message, int pointer) {
+    public CertificateMessageParser getParser(byte[] message, int pointer) {
         return new CertificateMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(CertificateMessage message) {
+    public Preparator getPreparator(CertificateMessage message) {
         return new CertificateMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(CertificateMessage message) {
-        return new CertificateMessageSerializer(message);
+    public Serializer getSerializer(CertificateMessage message) {
+        return new CertificateMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownHandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownHandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -59,11 +60,11 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public String toCompactString() {
-        return "Unknown HandshakeMessage";
+        return "UNKNOWN_HANDSHAKE_MESSAGE";
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new UnknownHandshakeMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new UnknownHandshakeMessageHandler(context);
     }
 }

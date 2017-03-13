@@ -61,7 +61,12 @@ public class FinishedMessage extends HandshakeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new FinishedMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new FinishedHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

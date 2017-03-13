@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
@@ -58,11 +59,11 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        return "ChangeCipherSpec";
+        return "CHANGE_CIPHER_SPEC";
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new ChangeCipherSpecSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new ChangeCipherSpecHandler(context);
     }
 }

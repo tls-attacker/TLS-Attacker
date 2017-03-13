@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.tls.protocol.parser.RSAClientKeyExchangeParserTest;
@@ -64,7 +65,7 @@ public class RSAClientKeyExchangeSerializerTest {
         msg.setLength(length);
         msg.setSerializedPublicKey(serializedKey);
         msg.setSerializedPublicKeyLength(serializedKeyLength);
-        RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg);
+        RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

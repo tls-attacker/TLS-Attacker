@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 
 /**
@@ -31,8 +32,8 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      * @param message
      *            Message that should be serialized
      */
-    public HelloMessageSerializer(T message) {
-        super(message);
+    public HelloMessageSerializer(T message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

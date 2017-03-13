@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
@@ -29,16 +30,16 @@ public class ArbitraryMessage extends ProtocolMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        throw new UnsupportedOperationException("Arbitrary Messages should not be serialized"); // To
-                                                                                                // change
-                                                                                                // body
-                                                                                                // of
-                                                                                                // generated
-                                                                                                // methods,
-                                                                                                // choose
-                                                                                                // Tools
-                                                                                                // |
-                                                                                                // Templates.
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        throw new UnsupportedOperationException("Cannot retrueve Handler this way"); // To
+                                                                                     // change
+                                                                                     // body
+                                                                                     // of
+                                                                                     // generated
+                                                                                     // methods,
+                                                                                     // choose
+                                                                                     // Tools
+                                                                                     // |
+                                                                                     // Templates.
     }
 }

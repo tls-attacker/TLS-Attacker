@@ -58,7 +58,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     private void parseType(HandshakeMessage message) {
         message.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
-        if (message.getType().getValue() != expectedType.getValue()) {
+        if (message.getType().getValue() != expectedType.getValue() && expectedType != HandshakeMessageType.UNKNOWN) {
             LOGGER.warn("Parsed wrong message type. Parsed:" + message.getType().getValue() + " but expected:"
                     + expectedType.getValue());
         }

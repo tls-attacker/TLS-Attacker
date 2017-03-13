@@ -116,7 +116,12 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new ServerHelloMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new ServerHelloHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

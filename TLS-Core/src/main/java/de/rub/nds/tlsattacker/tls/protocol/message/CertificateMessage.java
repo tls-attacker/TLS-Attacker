@@ -13,9 +13,12 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -79,8 +82,12 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new CertificateMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new CertificateHandler(context);
     }
 
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
+    }
 }

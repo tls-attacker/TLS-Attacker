@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.tls.protocol.parser.DHClientKeyExchangeParserTest;
@@ -64,7 +65,7 @@ public class DHClientKeyExchangeSerializerTest {
         msg.setSerializedPublicKeyLength(serializedKeyLength);
         msg.setType(type.getValue());
         msg.setLength(length);
-        DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg);
+        DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

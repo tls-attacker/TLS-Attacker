@@ -45,8 +45,6 @@ public class ICEAttacker {
 
     private BigInteger result;
 
-    private long iteration;
-
     public ICEAttacker(ECOracle oracle) {
         this(oracle, ServerType.NORMAL);
     }

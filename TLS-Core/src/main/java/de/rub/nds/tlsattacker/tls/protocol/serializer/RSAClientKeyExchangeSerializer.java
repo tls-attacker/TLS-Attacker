@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -20,8 +21,8 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
 
     private final RSAClientKeyExchangeMessage message;
 
-    public RSAClientKeyExchangeSerializer(RSAClientKeyExchangeMessage message) {
-        super(message);
+    public RSAClientKeyExchangeSerializer(RSAClientKeyExchangeMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

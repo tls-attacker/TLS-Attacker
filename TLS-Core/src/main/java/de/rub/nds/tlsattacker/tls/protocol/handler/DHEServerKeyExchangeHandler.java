@@ -30,18 +30,18 @@ public class DHEServerKeyExchangeHandler extends HandshakeMessageHandler<DHEServ
     }
 
     @Override
-    protected DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
+    public DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
         return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected DHEServerKeyExchangePreparator getPreparator(DHEServerKeyExchangeMessage message) {
+    public DHEServerKeyExchangePreparator getPreparator(DHEServerKeyExchangeMessage message) {
         return new DHEServerKeyExchangePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(DHEServerKeyExchangeMessage message) {
-        return new DHEServerKeyExchangeSerializer(message);
+    public Serializer getSerializer(DHEServerKeyExchangeMessage message) {
+        return new DHEServerKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

@@ -225,7 +225,12 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new ClientHelloSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new ClientHelloHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

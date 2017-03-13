@@ -12,9 +12,13 @@ import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.AlertHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ApplicationHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateVerifyHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.DHClientKeyExchangeHandler;
@@ -23,21 +27,43 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.HandshakeMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownHandshakeMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HandshakeMessageHandlerFactory {
+public class HandlerFactory {
 
-    public static HandshakeMessageHandler getHandler(TlsContext context, HandshakeMessageType type) {
+    public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
+            HandshakeMessageType handshakeType) {
+        switch (protocolType) {
+            case HANDSHAKE:
+                HandshakeMessageType hmt = HandshakeMessageType.getMessageType(handshakeType.getValue());
+                return HandlerFactory.getHandshakeHandler(context, hmt);
+            case CHANGE_CIPHER_SPEC:
+                return new ChangeCipherSpecHandler(context);
+            case ALERT:
+                return new AlertHandler(context);
+            case APPLICATION_DATA:
+                return new ApplicationHandler(context);
+            case HEARTBEAT:
+                return new HeartbeatHandler(context);
+            default:
+                return new UnknownMessageHandler(context);
+        }
+    }
+
+    public static HandshakeMessageHandler getHandshakeHandler(TlsContext context, HandshakeMessageType type) {
         switch (type) {
             case CERTIFICATE:
                 return new CertificateHandler(context);
@@ -91,12 +117,12 @@ public class HandshakeMessageHandlerFactory {
     }
 
     private static HandshakeMessageHandler getServerKeyExchangeHandler(TlsContext context) {// TODO
-                                                                                            // there
-                                                                                            // should
-                                                                                            // be
-                                                                                            // a
-                                                                                            // server
-                                                                                            // keyexchangeHandler
+        // there
+        // should
+        // be
+        // a
+        // server
+        // keyexchangeHandler
         CipherSuite cs = context.getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {

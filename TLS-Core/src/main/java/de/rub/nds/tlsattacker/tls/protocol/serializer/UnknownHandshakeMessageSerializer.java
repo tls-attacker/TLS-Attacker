@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -19,8 +20,8 @@ public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerialize
 
     private UnknownHandshakeMessage message;
 
-    public UnknownHandshakeMessageSerializer(UnknownHandshakeMessage message) {
-        super(message);
+    public UnknownHandshakeMessageSerializer(UnknownHandshakeMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

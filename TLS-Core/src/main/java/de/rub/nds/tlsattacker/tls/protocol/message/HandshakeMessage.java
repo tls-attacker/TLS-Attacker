@@ -146,9 +146,4 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         }
         return sb.toString();
     }
-
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
-    }
 }

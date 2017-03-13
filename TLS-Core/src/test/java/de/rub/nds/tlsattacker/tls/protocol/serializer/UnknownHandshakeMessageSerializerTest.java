@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.UnknownHandshakeMessageParserTest;
 import java.util.Collection;
@@ -59,7 +60,7 @@ public class UnknownHandshakeMessageSerializerTest {
         msg.setType(type.getValue());
         msg.setLength(length);
         msg.setData(data);
-        UnknownHandshakeMessageSerializer serializer = new UnknownHandshakeMessageSerializer(msg);
+        UnknownHandshakeMessageSerializer serializer = new UnknownHandshakeMessageSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

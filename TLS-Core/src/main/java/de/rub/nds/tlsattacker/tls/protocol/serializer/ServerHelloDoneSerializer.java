@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -19,8 +20,8 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
 
     private final ServerHelloDoneMessage message;
 
-    public ServerHelloDoneSerializer(ServerHelloDoneMessage message) {
-        super(message);
+    public ServerHelloDoneSerializer(ServerHelloDoneMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

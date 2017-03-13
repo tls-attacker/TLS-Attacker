@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
@@ -21,8 +22,8 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMessage> extends
         HandshakeMessageSerializer<T> {
 
-    public ServerKeyExchangeSerializer(T message) {
-        super(message);
+    public ServerKeyExchangeSerializer(T message, ProtocolVersion version) {
+        super(message, version);
     }
 
 }

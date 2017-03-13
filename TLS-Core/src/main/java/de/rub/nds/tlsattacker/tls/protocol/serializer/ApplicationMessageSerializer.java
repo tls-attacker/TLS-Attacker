@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
@@ -20,8 +21,8 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
 
     private final ApplicationMessage message;
 
-    public ApplicationMessageSerializer(ApplicationMessage message) {
-        super(message);
+    public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

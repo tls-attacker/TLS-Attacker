@@ -33,17 +33,17 @@ public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<Unkn
     }
 
     @Override
-    protected UnknownHandshakeMessageParser getParser(byte[] message, int pointer) {
+    public UnknownHandshakeMessageParser getParser(byte[] message, int pointer) {
         return new UnknownHandshakeMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(UnknownHandshakeMessage message) {
+    public Preparator getPreparator(UnknownHandshakeMessage message) {
         return new UnknownHandshakeMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(UnknownHandshakeMessage message) {
-        return new UnknownHandshakeMessageSerializer(message);
+    public Serializer getSerializer(UnknownHandshakeMessage message) {
+        return new UnknownHandshakeMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 }

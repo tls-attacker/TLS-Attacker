@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.tls.protocol.parser.DHEServerKeyExchangeParserTest;
@@ -44,10 +45,14 @@ public class DHEServerKeyExchangeSerializerTest {
     private byte[] g;
     private int serializedKeyLength;
     private byte[] serializedKey;
+    private byte hashAlgo;
+    private byte sigAlgo;
+    private int sigLength;
+    private byte[] signature;
 
     public DHEServerKeyExchangeSerializerTest(byte[] message, int start, byte[] expectedPart,
             HandshakeMessageType type, int length, int pLength, byte[] p, int gLength, byte[] g,
-            int serializedKeyLength, byte[] serializedKey) {
+            int serializedKeyLength, byte[] serializedKey, byte hashAlgo, byte sigAlgo, int sigLength, byte[] signature) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -59,6 +64,10 @@ public class DHEServerKeyExchangeSerializerTest {
         this.g = g;
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
+        this.hashAlgo = hashAlgo;
+        this.sigAlgo = sigAlgo;
+        this.sigLength = sigLength;
+        this.signature = signature;
     }
 
     /**
@@ -77,7 +86,11 @@ public class DHEServerKeyExchangeSerializerTest {
         msg.setG(new BigInteger(1, g));
         msg.setSerializedPublicKey(serializedKey);
         msg.setSerializedPublicKeyLength(serializedKeyLength);
-        DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg);
+        msg.setSignature(signature);
+        msg.setSignatureAlgorithm(sigAlgo);
+        msg.setHashAlgorithm(hashAlgo);
+        msg.setSignatureLength(sigLength);
+        DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
 
     }

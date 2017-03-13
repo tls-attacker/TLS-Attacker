@@ -31,18 +31,18 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     @Override
-    protected FinishedMessageParser getParser(byte[] message, int pointer) {
+    public FinishedMessageParser getParser(byte[] message, int pointer) {
         return new FinishedMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    protected Preparator getPreparator(FinishedMessage message) {
+    public Preparator getPreparator(FinishedMessage message) {
         return new FinishedMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(FinishedMessage message) {
-        return new FinishedMessageSerializer(message);
+    public Serializer getSerializer(FinishedMessage message) {
+        return new FinishedMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

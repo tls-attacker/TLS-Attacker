@@ -20,18 +20,23 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage
  */
 public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
 
+    private ProtocolVersion version;
+
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
+        this.version = version;
     }
 
     @Override
     protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
         msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
         msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH) & 0xFF);
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
-        msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
+            msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
+            msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        }
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
     }

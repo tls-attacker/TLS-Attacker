@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -20,8 +21,8 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
 
     private final DHClientKeyExchangeMessage message;
 
-    public DHClientKeyExchangeSerializer(DHClientKeyExchangeMessage message) {
-        super(message);
+    public DHClientKeyExchangeSerializer(DHClientKeyExchangeMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

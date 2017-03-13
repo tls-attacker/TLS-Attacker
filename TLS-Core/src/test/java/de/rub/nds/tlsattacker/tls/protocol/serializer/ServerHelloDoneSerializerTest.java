@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloDoneParserTest;
@@ -57,7 +58,7 @@ public class ServerHelloDoneSerializerTest {
         msg.setCompleteResultingMessage(expectedPart);
         msg.setType(type.getValue());
         msg.setLength(length);
-        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg);
+        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

@@ -30,19 +30,19 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
     }
 
     @Override
-    protected Parser getParser(byte[] message, int pointer) {
+    public Parser getParser(byte[] message, int pointer) {
         throw new UnsupportedOperationException(
                 "Receiving a retransmitted message is impossible, it would appear the correct message in the WorkflowTrace");
     }
 
     @Override
-    protected Preparator getPreparator(RetransmitMessage message) {
+    public Preparator getPreparator(RetransmitMessage message) {
         return new RetransmitMessagePreparator(tlsContext, message);
     }
 
     @Override
-    protected Serializer getSerializer(RetransmitMessage message) {
-        return new RetransmitMessageSerializer(message);
+    public Serializer getSerializer(RetransmitMessage message) {
+        return new RetransmitMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override

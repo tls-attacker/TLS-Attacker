@@ -83,7 +83,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
         message.setG(dhPublic.getParameters().getG());
         message.setP(dhPublic.getParameters().getP());
-        message.setPublicKey(dhPublic.getY());
+        message.setSerializedPublicKey(dhPublic.getY().toByteArray());
         message.getComputations().setPrivateKey(dhPrivate.getX());
         context.setServerDHPrivateKeyParameters(dhPrivate);
 
@@ -95,13 +95,9 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         message.getComputations().setSerializedG(serializedG);
         message.getComputations().setSerializedGLength(message.getComputations().getSerializedG().getValue().length);
 
-        byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(message.getPublicKey().getValue());
-        message.setSerializedPublicKey(serializedPublicKey);
-        message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
-
         p = new BigInteger(1, serializedP);
         g = new BigInteger(1, serializedG);
-        BigInteger y = new BigInteger(1, serializedPublicKey);
+        BigInteger y = new BigInteger(1, message.getSerializedPublicKey().getValue());
 
         ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(y, new DHParameters(p, g)));
         context.setServerDHParameters(publicKeyParameters);

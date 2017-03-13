@@ -83,19 +83,17 @@ public class SendAction extends MessageAction {
         return ((protocolMessages.size() == (pointer + 1)) || currentProtocolMessage.getProtocolMessageType() != (protocolMessages
                 .get(pointer + 1).getProtocolMessageType()));
     }
-    
+
     @Override
     public String toString() {
-        StringBuilder sb =  new StringBuilder("Send Action:\n");
+        StringBuilder sb = new StringBuilder("Send Action:\n");
         sb.append("\tConfigured:");
-        for(ProtocolMessage message : configuredMessages)
-        {
+        for (ProtocolMessage message : configuredMessages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
         sb.append("\n\tActual:");
-        for(ProtocolMessage message : actualMessages)
-        {
+        for (ProtocolMessage message : actualMessages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -43,11 +44,11 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        return "UnknownMessage";
+        return "UNKNOWN_MESSAGE";
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new UnknownMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new UnknownMessageHandler(context);
     }
 }

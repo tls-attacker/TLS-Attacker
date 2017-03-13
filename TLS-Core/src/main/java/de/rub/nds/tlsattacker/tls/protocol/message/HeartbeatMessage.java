@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HeartbeatMessageSerializer;
@@ -131,7 +132,7 @@ public class HeartbeatMessage extends ProtocolMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new HeartbeatMessageSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new HeartbeatHandler(context);
     }
 }

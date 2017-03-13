@@ -62,7 +62,8 @@ public class RecordHandler {
         while (dataPointer != data.length) {
             // we check if there are enough records to be written in
             if (records.size() == currentRecord) {
-                records.add(new Record());
+                records.add(new Record());// TODO i dont think we want to
+                                          // manipulate the handshake here
             }
             Record record = records.get(currentRecord);
             // fill record with data
@@ -72,7 +73,8 @@ public class RecordHandler {
 
         // remove records that we did not need
         while (currentRecord != records.size()) {
-            records.remove(currentRecord);
+            records.remove(currentRecord);// TODO i dont think we want to
+                                          // manipulate the handshake here
         }
 
         // create resulting byte array
@@ -148,7 +150,12 @@ public class RecordHandler {
         if (encryptSending && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
             if (recordCipher == null && tlsContext.getConfig().isFuzzingMode()) {
                 try {
-                    recordCipher = new TlsRecordBlockCipher(tlsContext);
+                    recordCipher = new TlsRecordBlockCipher(tlsContext); // TODO
+                                                                         // get
+                                                                         // rid
+                                                                         // of
+                                                                         // fuzzing
+                                                                         // mode
                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                         | InvalidAlgorithmParameterException ex) {
                     throw new UnsupportedOperationException(ex);

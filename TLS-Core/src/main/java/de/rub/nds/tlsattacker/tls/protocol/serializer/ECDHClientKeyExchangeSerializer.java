@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 
@@ -20,8 +21,8 @@ public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
 
     private final ECDHClientKeyExchangeMessage message;
 
-    public ECDHClientKeyExchangeSerializer(ECDHClientKeyExchangeMessage message) {
-        super(message);
+    public ECDHClientKeyExchangeSerializer(ECDHClientKeyExchangeMessage message, ProtocolVersion version) {
+        super(message, version);
         this.message = message;
     }
 

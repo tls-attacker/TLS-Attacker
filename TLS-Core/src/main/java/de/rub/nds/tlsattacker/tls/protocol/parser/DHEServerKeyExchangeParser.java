@@ -19,8 +19,11 @@ import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
  */
 public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServerKeyExchangeMessage> {
 
+    private ProtocolVersion version;
+
     public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
+        this.version = version;
     }
 
     @Override
@@ -31,6 +34,12 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
         msg.setG(parseBigIntField(msg.getgLength().getValue()));
         msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
+            msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
+            msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        }
+        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
+        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
     }
 
     @Override
