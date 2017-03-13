@@ -54,7 +54,7 @@ public class RecordHandler {
 
         // if there are no records defined, we throw an exception
         if (records == null || records.isEmpty()) {
-            throw new WorkflowExecutionException("No records to be write in");
+            throw new WorkflowExecutionException("No records to be written in");
         }
 
         int dataPointer = 0;
