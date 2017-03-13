@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import java.util.Objects;
 
 /**
  * 
@@ -76,4 +77,11 @@ public class ProtocolMessageTypeHolder {
         return protocolMessageType == pmth.protocolMessageType && handshakeMessageType == pmth.handshakeMessageType;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.protocolMessageType);
+        hash = 71 * hash + Objects.hashCode(this.handshakeMessageType);
+        return hash;
+    }
 }
