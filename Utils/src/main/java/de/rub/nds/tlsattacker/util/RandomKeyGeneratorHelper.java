@@ -40,7 +40,7 @@ public class RandomKeyGeneratorHelper {
         ECKeyPairGenerator keygen = new ECKeyPairGenerator();
         ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(), ecp.getG(), ecp.getN(), ecp.getH(),
                 ecp.getSeed());
-        keygen.init(new ECKeyGenerationParameters(domainParams, new SecureRandom()));
+        keygen.init(new ECKeyGenerationParameters(domainParams, RandomHelper.getBadSecureRandom()));
         return keygen.generateKeyPair();
     }
 
@@ -49,7 +49,7 @@ public class RandomKeyGeneratorHelper {
         // reuse it for now
         if (dhPair == null) {
             // TODO generate better keys
-            Random r = new Random();
+            Random r = RandomHelper.getRandom();
 
             BigInteger valP = new BigInteger(r.nextInt(4100), r);
             BigInteger valG = new BigInteger(r.nextInt(4100), r);
