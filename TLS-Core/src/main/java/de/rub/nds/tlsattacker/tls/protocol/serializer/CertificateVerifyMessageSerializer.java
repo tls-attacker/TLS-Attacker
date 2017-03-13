@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  */
 public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializer<CertificateVerifyMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     private final CertificateVerifyMessage message;
 
     public CertificateVerifyMessageSerializer(CertificateVerifyMessage message, ProtocolVersion version) {

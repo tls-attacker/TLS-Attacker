@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  */
 public class ApplicationMessageSerializer extends ProtocolMessageSerializer<ApplicationMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     private final ApplicationMessage message;
 
     public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {

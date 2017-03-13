@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  */
 public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     private final HeartbeatMessage message;
 
     public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {

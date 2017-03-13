@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -19,6 +21,8 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  */
 public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<ChangeCipherSpecMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     private ChangeCipherSpecMessage message;
 
     public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message, ProtocolVersion version) {

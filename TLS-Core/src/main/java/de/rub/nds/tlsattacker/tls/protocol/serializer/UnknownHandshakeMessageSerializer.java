@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.*;
  */
 public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerializer<UnknownHandshakeMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     private UnknownHandshakeMessage message;
 
     public UnknownHandshakeMessageSerializer(UnknownHandshakeMessage message, ProtocolVersion version) {

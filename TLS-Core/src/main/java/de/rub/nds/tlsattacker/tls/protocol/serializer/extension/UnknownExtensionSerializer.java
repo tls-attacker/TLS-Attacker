@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
  */
 public class UnknownExtensionSerializer<T extends UnknownExtensionMessage> extends ExtensionSerializer<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     public UnknownExtensionSerializer() {
     }
 

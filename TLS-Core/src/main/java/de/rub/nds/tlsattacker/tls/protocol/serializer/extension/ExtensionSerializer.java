@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
  */
 public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     public ExtensionSerializer() {
         super();
     }

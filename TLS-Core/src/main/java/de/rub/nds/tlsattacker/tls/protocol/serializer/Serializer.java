@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The Serializer is responsible to write an Object T into a byte[] form. This
@@ -23,6 +24,8 @@ import org.apache.logging.log4j.LogManager;
  */
 public abstract class Serializer<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     /**
      * The ByteArrayOutputStream with which the byte[] is constructed.
      */
@@ -101,6 +104,4 @@ public abstract class Serializer<T> {
         serializeBytes();
         return getAlreadySerialized();
     }
-
-    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Serializer.class);
 }

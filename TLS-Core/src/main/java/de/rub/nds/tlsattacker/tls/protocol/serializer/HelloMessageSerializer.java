@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Abstract Serializer class for HelloMessages
@@ -21,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
  */
 public abstract class HelloMessageSerializer<T extends HelloMessage> extends HandshakeMessageSerializer<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
     /**
      * The message that should be serialized
      */

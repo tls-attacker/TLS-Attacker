@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * SerializerClass for ServerHelloMessages
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
  */
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     /**
      * The message that should be serialized
      */

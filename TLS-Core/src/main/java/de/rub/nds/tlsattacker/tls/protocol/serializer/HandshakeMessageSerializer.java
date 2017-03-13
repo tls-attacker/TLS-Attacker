@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Abstract Serializer for HandshakeMessages
@@ -21,6 +23,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
  */
 public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     /**
      * The message that should be serialized
      */

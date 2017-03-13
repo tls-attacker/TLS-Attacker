@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
  */
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    
     protected ProtocolVersion version;
 
     public ProtocolMessageSerializer(T message, ProtocolVersion version) {
