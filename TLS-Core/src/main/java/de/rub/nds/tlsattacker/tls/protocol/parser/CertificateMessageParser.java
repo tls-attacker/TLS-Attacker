@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, HandshakeMessageType.CERTIFICATE, version);
     }

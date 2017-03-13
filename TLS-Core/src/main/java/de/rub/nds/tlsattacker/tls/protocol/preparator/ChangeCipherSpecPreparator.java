@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final ChangeCipherSpecMessage message;
     private final byte CCS_PROTOCOL_TYPE = 1;
 

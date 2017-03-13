@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public ApplicationMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class ApplicationMessageSerializer extends ProtocolMessageSerializer<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final ApplicationMessage message;
 
     public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {

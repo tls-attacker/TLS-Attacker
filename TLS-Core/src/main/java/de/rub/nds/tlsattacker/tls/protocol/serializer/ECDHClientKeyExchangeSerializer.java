@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<ECDHClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final ECDHClientKeyExchangeMessage message;
 
     public ECDHClientKeyExchangeSerializer(ECDHClientKeyExchangeMessage message, ProtocolVersion version) {

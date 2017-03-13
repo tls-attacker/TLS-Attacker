@@ -40,7 +40,7 @@ import org.bouncycastle.util.BigIntegers;
 public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<DHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final DHEServerKeyExchangeMessage message;
 
     public DHEServerKeyExchangePreparator(TlsContext context, DHEServerKeyExchangeMessage message) {

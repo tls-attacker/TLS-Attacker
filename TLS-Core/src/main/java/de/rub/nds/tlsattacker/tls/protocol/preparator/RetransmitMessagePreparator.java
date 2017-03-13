@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class RetransmitMessagePreparator extends ProtocolMessagePreparator<RetransmitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final RetransmitMessage message;
 
     public RetransmitMessagePreparator(TlsContext context, RetransmitMessage message) {

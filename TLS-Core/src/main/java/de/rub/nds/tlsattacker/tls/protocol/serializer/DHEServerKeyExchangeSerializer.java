@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<DHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private DHEServerKeyExchangeMessage message;
 
     public DHEServerKeyExchangeSerializer(DHEServerKeyExchangeMessage message, ProtocolVersion version) {

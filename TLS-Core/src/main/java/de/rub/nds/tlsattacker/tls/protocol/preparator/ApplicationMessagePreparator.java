@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class ApplicationMessagePreparator extends ProtocolMessagePreparator<ApplicationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final ApplicationMessage message;
 
     public ApplicationMessagePreparator(TlsContext context, ApplicationMessage message) {

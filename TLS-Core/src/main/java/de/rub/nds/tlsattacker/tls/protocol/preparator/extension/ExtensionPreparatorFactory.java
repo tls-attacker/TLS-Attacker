@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class ExtensionPreparatorFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     public static ExtensionPreparator getExtensionPreparator(TlsContext context, ExtensionMessage message) {
         try {
             return message.getExtensionPreparator();

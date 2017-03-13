@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

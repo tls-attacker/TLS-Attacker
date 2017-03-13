@@ -28,7 +28,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final HelloMessage message;
 
     public HelloMessagePreparator(TlsContext context, HelloMessage message) {

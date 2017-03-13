@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     private final ProtocolVersion version;
 
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {

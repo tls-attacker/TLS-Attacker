@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSpecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

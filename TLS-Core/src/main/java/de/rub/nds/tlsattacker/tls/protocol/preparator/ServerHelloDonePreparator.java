@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class ServerHelloDonePreparator extends HandshakeMessagePreparator<ServerHelloDoneMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final ServerHelloDoneMessage message;
 
     public ServerHelloDonePreparator(TlsContext context, ServerHelloDoneMessage message) {

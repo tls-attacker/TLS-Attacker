@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<HelloVerifyRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private HelloVerifyRequestMessage message;
 
     public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {

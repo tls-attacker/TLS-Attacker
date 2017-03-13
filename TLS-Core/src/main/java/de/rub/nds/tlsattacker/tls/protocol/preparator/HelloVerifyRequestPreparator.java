@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final HelloVerifyRequestMessage message;
 
     public HelloVerifyRequestPreparator(TlsContext context, HelloVerifyRequestMessage message) {

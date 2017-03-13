@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final AlertMessage message;
 
     public AlertSerializer(AlertMessage message, ProtocolVersion version) {

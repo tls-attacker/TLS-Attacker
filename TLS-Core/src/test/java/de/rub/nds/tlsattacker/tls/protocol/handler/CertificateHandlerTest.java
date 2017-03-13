@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
+import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateMessagePreparator;
@@ -15,6 +16,9 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateMessageSerializ
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +38,10 @@ public class CertificateHandlerTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         handler = new CertificateHandler(context);
-
+        RandomHelper.getRandom().setSeed(0);
     }
 
     @After

@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     /**
      * The message that should be serialized
      */

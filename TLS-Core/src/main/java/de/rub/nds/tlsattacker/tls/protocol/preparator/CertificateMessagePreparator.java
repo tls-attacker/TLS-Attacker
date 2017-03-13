@@ -26,7 +26,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final CertificateMessage message;
 
     public CertificateMessagePreparator(TlsContext context, CertificateMessage message) {

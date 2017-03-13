@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     private final ProtocolVersion version;
 
     public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {

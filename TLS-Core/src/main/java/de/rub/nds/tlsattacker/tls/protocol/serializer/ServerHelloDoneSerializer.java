@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<ServerHelloDoneMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final ServerHelloDoneMessage message;
 
     public ServerHelloDoneSerializer(ServerHelloDoneMessage message, ProtocolVersion version) {

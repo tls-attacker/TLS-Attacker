@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public RSAClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

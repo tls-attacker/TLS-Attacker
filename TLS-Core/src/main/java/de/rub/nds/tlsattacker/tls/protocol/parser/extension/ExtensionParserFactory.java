@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public static ExtensionParser getExtensionParser(int startPosition, byte[] array) {
         // Try to read the type, else just return unknown
         ExtensionType type = ExtensionType.UNKNOWN;

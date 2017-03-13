@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public ExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }

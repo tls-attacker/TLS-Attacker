@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public ClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, HandshakeMessageType.CLIENT_KEY_EXCHANGE, version);
     }

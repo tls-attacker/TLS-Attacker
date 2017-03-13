@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class CertificateMessageSerializer extends HandshakeMessageSerializer<CertificateMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final CertificateMessage message;
 
     public CertificateMessageSerializer(CertificateMessage message, ProtocolVersion version) {

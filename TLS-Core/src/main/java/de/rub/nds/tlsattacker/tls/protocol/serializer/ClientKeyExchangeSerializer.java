@@ -24,7 +24,7 @@ public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMes
         HandshakeMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     public ClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
     }

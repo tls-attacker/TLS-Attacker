@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final AlertMessage message;
 
     public AlertPreparator(TlsContext context, AlertMessage message) {

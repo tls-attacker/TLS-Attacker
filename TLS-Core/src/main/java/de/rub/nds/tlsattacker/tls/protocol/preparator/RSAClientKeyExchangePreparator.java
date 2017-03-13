@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<RSAClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final RSAClientKeyExchangeMessage message;
 
     public RSAClientKeyExchangePreparator(TlsContext context, RSAClientKeyExchangeMessage message) {

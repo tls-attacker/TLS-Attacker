@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final HeartbeatMessage message;
 
     public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {

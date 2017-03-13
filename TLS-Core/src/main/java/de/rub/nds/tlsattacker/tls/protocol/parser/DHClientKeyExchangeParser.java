@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public DHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

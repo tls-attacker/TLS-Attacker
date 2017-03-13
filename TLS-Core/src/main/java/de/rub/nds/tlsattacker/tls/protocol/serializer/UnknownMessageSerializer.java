@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private UnknownMessage message;
 
     public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {

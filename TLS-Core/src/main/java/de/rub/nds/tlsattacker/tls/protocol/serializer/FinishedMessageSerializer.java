@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class FinishedMessageSerializer extends HandshakeMessageSerializer<FinishedMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final FinishedMessage message;
 
     public FinishedMessageSerializer(FinishedMessage message, ProtocolVersion version) {

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public FinishedMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.FINISHED, version);
     }

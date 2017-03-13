@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final ClientHelloMessage message;
 
     public ClientHelloPreparator(TlsContext context, ClientHelloMessage message) {

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version);
     }

@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class RetransmitMessageSerializer extends ProtocolMessageSerializer<RetransmitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private final RetransmitMessage message;
 
     public RetransmitMessageSerializer(RetransmitMessage message, ProtocolVersion version) {

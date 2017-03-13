@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
+
     public UnknownExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }

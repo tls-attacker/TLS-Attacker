@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerializer<UnknownHandshakeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     private UnknownHandshakeMessage message;
 
     public UnknownHandshakeMessageSerializer(UnknownHandshakeMessage message, ProtocolVersion version) {

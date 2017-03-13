@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final HeartbeatMessage message;
 
     public HeartbeatMessagePreparator(TlsContext context, HeartbeatMessage message) {

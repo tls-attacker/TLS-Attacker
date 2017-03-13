@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class CertificateRequestMessagePreparator extends HandshakeMessagePreparator<CertificateRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final CertificateRequestMessage message;
 
     public CertificateRequestMessagePreparator(TlsContext context, CertificateRequestMessage message) {

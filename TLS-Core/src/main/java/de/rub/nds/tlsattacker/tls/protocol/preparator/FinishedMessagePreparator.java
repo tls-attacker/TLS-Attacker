@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final FinishedMessage message;
 
     public FinishedMessagePreparator(TlsContext context, FinishedMessage message) {

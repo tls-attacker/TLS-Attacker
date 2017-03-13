@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Preparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     public ExtensionPreparator(TlsContext context, T object) {
         super(context, object);
     }

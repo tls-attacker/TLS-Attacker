@@ -39,9 +39,9 @@ import org.bouncycastle.util.BigIntegers;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<DHClientKeyExchangeMessage> {
-    
+
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final DHClientKeyExchangeMessage message;
 
     public DHClientKeyExchangePreparator(TlsContext context, DHClientKeyExchangeMessage message) {

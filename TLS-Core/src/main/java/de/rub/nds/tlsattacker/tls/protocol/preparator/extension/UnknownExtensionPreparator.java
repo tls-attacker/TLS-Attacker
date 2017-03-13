@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     public UnknownExtensionPreparator(TlsContext context, T object) {
         super(context, object);
     }

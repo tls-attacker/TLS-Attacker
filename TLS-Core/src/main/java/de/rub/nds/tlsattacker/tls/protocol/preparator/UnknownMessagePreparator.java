@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final UnknownMessage message;
 
     public UnknownMessagePreparator(TlsContext context, UnknownMessage message) {

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     private final ServerHelloMessage message;
 
     public ServerHelloMessagePreparator(TlsContext context, ServerHelloMessage message) {

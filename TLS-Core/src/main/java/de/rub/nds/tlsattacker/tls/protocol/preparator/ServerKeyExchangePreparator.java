@@ -23,7 +23,7 @@ public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMes
         HandshakeMessagePreparator<ServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-    
+
     public ServerKeyExchangePreparator(TlsContext context, ServerKeyExchangeMessage message) {
         super(context, message);
     }
