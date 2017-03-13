@@ -19,8 +19,6 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
 
-    private static EllipticCurvesExtensionHandler instance;
-
     /**
      * byte length of the supported elliptic curves length
      */
