@@ -92,15 +92,13 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException e) {
-            // TODO Das padding oracle über eine gecatchted "Exception" zu
-            // implementoieren ist nicht clever
+            // TODO implementing the orcale through caught exceptions is not smart
             valid = false;
             e.printStackTrace();
         } finally {
             numberOfQueries++;
             transportHandler.closeConnection();
         }
-        // TODO veraltet
         if (tlsContext.isReceivedFatalAlert()) {
             valid = false;
         }
