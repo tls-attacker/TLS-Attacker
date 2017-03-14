@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.DHClientKeyExchangePrepara
 import de.rub.nds.tlsattacker.tls.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.math.BigInteger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +75,9 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
+        message.setP(BigInteger.TEN);
+        message.setG(BigInteger.ONE);
+        message.setSerializedPublicKey(new byte[]{0,1,2,3});
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
         message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
         handler.adjustTLSContext(message);
@@ -84,6 +88,9 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContextWithoutComputations() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
+        message.setP(BigInteger.TEN);
+        message.setG(BigInteger.ONE);
+        message.setSerializedPublicKey(new byte[]{0,1,2,3});
         handler.adjustTLSContext(message);
         assertNull(context.getPreMasterSecret());
         assertNull(context.getMasterSecret());

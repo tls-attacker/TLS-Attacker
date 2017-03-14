@@ -8,14 +8,24 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.crypto.tls.ServerDHParams;
+import org.bouncycastle.util.BigIntegers;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -46,7 +56,16 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
 
     @Override
     protected void adjustTLSContext(DHEServerKeyExchangeMessage message) {
+        adjustServerDHParameters(message);
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+    }
+
+    private void adjustServerDHParameters(DHEServerKeyExchangeMessage message) {
+        DHParameters parameters = new DHParameters(message.getP().getValue(), message.getG().getValue());
+        BigInteger pubkey = new BigInteger(1, message.getSerializedPublicKey().getValue());
+        ServerDHParams dhParams = new ServerDHParams(new DHPublicKeyParameters(pubkey, parameters));
+        tlsContext.setServerDHParameters(dhParams);
+
     }
 }
