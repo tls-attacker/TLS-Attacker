@@ -117,8 +117,8 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         return valid;
     }
-    
-    //TODO duplicate code
+
+    // TODO duplicate code
     private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
         int counter = 0;
         for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
@@ -139,6 +139,7 @@ public class RealDirectMessageECOracle extends ECOracle {
         }
         return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
+
     @Override
     public boolean isFinalSolutionCorrect(BigInteger guessedSecret) {
         // BigInteger correct = new

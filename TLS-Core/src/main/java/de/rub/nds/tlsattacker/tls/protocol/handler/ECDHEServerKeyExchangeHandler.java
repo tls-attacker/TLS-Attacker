@@ -8,14 +8,23 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
+import com.sun.xml.internal.ws.handler.HandlerException;
+import de.rub.nds.tlsattacker.tls.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.tls.TlsFatalAlert;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -47,5 +56,29 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        adjustECParameter(message);
+    }
+
+    private void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
+
+        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message
+                .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getSerializedPublicKeyLength()
+                .getValue(), 1), message.getSerializedPublicKey().getValue());
+        InputStream is = new ByteArrayInputStream(ecParams);
+        ECPublicKeyParameters publicKeyParameters = null;
+        try {
+            publicKeyParameters = ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
+            LOGGER.debug("Parsed the following EC domain parameters: ");
+            LOGGER.debug("  Curve order: {}", publicKeyParameters.getParameters().getCurve().getOrder());
+            LOGGER.debug("  Parameter A: {}", publicKeyParameters.getParameters().getCurve().getA());
+            LOGGER.debug("  Parameter B: {}", publicKeyParameters.getParameters().getCurve().getB());
+            LOGGER.debug("  Base point: {} ", publicKeyParameters.getParameters().getG());
+            LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
+        } catch (TlsFatalAlert alert) {
+            throw new HandlerException("Problematic EC parameters, we dont support these yet", alert);
+        } catch (IOException ex) {
+            throw new HandlerException("EC public key parsing failed", ex);
+        }
+        tlsContext.setServerPublicKeyParameters(publicKeyParameters);
     }
 }

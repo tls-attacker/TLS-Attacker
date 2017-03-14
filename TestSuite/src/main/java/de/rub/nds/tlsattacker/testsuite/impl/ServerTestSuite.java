@@ -246,7 +246,7 @@ public class ServerTestSuite extends TestSuite {
         return succesful;
     }
 
-    //TODO duplicate code
+    // TODO duplicate code
     private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
         int counter = 0;
         for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {

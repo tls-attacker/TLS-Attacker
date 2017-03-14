@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeCompu
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
@@ -87,7 +88,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        // TODO
+        sb.append(ArrayConverter.bytesToHexString(getSerializedPublicKey().getValue()));
         sb.append("\n  Signature Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
@@ -114,7 +115,12 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new ECDHEServerKeyExchangeSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new ECDHEServerKeyExchangeHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return "ECDHE_SERVER_KEY_EXCHANGE";
     }
 }

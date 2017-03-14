@@ -53,8 +53,10 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     @Override
     public void prepareHandshakeMessageContents() {
         AsymmetricCipherKeyPair kp = null;
-        if (context.getServerPublicKey() == null) {
-            kp = generateKeyPairFromCertificate();
+        ECPublicKeyParameters parameters = context.getServerPublicKeyParameters();
+        if (context.getServerPublicKeyParameters() == null) {
+            parameters = createECPublicKeyParameters();
+            kp = generatePublicKeyFromParameters(parameters);
         } else {
             kp = generateFreshKeyPair();
         }
@@ -84,8 +86,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                     .byteValue() }, new byte[] { message.getEcPointFormat().getValue() }, message.getEcPointEncoded()
                     .getValue());
 
-            byte[] premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(context.getServerPublicKeyParameters(),
-                    ecPrivateKey);
+            byte[] premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(parameters, ecPrivateKey);
             message.getComputations().setPremasterSecret(premasterSecret);
 
             byte[] random = context.getClientServerRandom();
@@ -104,19 +105,22 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 .getParameters());
     }
 
-    private AsymmetricCipherKeyPair generateKeyPairFromCertificate() {
+    private ECPublicKeyParameters createECPublicKeyParameters() {
         Certificate x509Cert = context.getServerCertificate();
         SubjectPublicKeyInfo keyInfo = x509Cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey)) {
             throw new PreparationException("Invalid KeyType in ServerCertificate");
         } else {
             try {
-                ECPublicKeyParameters parameters = (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
-                return TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), parameters.getParameters());
+                return (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
             } catch (IOException e) {
                 throw new PreparationException("Problem in parsing public key parameters from certificate", e);
             }
         }
+    }
+
+    private AsymmetricCipherKeyPair generatePublicKeyFromParameters(ECPublicKeyParameters parameters) {
+        return TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), parameters.getParameters());
     }
 
     private byte[] computeMasterSecret(byte[] preMasterSecret, byte[] random) {

@@ -63,7 +63,7 @@ public class RecordHandler {
             // we check if there are enough records to be written in
             if (records.size() == currentRecord) {
                 records.add(new Record());// TODO i dont think we want to
-                                          // manipulate the handshake here
+                // manipulate the handshake here
             }
             Record record = records.get(currentRecord);
             // fill record with data
@@ -74,7 +74,7 @@ public class RecordHandler {
         // remove records that we did not need
         while (currentRecord != records.size()) {
             records.remove(currentRecord);// TODO i dont think we want to
-                                          // manipulate the handshake here
+            // manipulate the handshake here
         }
 
         // create resulting byte array
@@ -120,7 +120,7 @@ public class RecordHandler {
      * returns the size of the data, which were currently wrapped in the records
      * (it is namely possible to divide Protocol message data into several
      * records).
-     * 
+     *
      * @param record
      *            record going to be filled in
      * @param contentType
@@ -151,11 +151,11 @@ public class RecordHandler {
             if (recordCipher == null && tlsContext.getConfig().isFuzzingMode()) {
                 try {
                     recordCipher = new TlsRecordBlockCipher(tlsContext); // TODO
-                                                                         // get
-                                                                         // rid
-                                                                         // of
-                                                                         // fuzzing
-                                                                         // mode
+                    // get
+                    // rid
+                    // of
+                    // fuzzing
+                    // mode
                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
                         | InvalidAlgorithmParameterException ex) {
                     throw new UnsupportedOperationException(ex);
@@ -191,7 +191,7 @@ public class RecordHandler {
     }
 
     /**
-     * 
+     *
      * @param rawRecordData
      * @return list of parsed records or null, if there was not enough data
      */
@@ -249,10 +249,6 @@ public class RecordHandler {
             records.add(record);
             dataPointer = lastByte;
 
-            // if (contentType == ProtocolMessageType.HANDSHAKE) {
-            // // update digest over hansdhake data
-            // digest.update(plainMessageBytes);
-            // }
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
 
@@ -278,7 +274,7 @@ public class RecordHandler {
     /**
      * Parses stored finish bytes into records and sets the stored finished
      * bytes to null. Returns null if no records were parsed
-     * 
+     *
      * @return List of parsed Records
      */
     public List<Record> parseFinishedBytes() {

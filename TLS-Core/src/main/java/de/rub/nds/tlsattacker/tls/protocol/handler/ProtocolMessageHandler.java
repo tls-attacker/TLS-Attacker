@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
+import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
@@ -61,6 +62,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);
+        if (message instanceof HandshakeMessage) {
+            if (((HandshakeMessage) message).getIncludeInDigest()) {
+                tlsContext.getDigest().update(message.getCompleteResultingMessage().getValue());
+            }
+        }
         return message.getCompleteResultingMessage().getValue();
     }
 
@@ -68,7 +74,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * Parses a byteArray from a Position into a MessageObject and returns the
      * parsed MessageObjet and parser position in a parser result. The current
      * TlsContext is adjusted as
-     * 
+     *
      * @param message
      * @param pointer
      * @return
@@ -77,6 +83,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
         adjustTLSContext(parsedMessage);
+        if (parsedMessage instanceof HandshakeMessage) {
+            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
+                tlsContext.getDigest().update(parsedMessage.getCompleteResultingMessage().getValue());
+            }
+        }
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 

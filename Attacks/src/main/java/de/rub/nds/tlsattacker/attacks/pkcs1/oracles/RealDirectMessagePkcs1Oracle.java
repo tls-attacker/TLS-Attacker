@@ -92,7 +92,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException e) {
-            // TODO implementing the orcale through caught exceptions is not smart
+            // TODO implementing the orcale through caught exceptions is not
+            // smart
             valid = false;
             e.printStackTrace();
         } finally {

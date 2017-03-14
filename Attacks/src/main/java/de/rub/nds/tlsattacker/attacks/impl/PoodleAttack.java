@@ -78,7 +78,8 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             vulnerable = false;
-        } else if (!tlsContext.isReceivedFatalAlert()) { //TODO this does not work properly atm
+        } else if (!tlsContext.isReceivedFatalAlert()) { // TODO this does not
+                                                         // work properly atm
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             vulnerable = true;

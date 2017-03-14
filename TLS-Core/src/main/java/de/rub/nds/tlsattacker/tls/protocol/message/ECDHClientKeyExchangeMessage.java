@@ -14,11 +14,14 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
 /**
@@ -138,7 +141,12 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new ECDHClientKeyExchangeSerializer(this);
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new ECDHClientKeyExchangeHandler(context);
+    }
+
+    @Override
+    public String toCompactString() {
+        return "ECDH_CLIENT_KEY_EXCHANGE";
     }
 }

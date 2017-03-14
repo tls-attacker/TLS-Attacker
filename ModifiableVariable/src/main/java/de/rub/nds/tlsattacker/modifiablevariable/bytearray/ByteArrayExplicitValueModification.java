@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -44,4 +45,11 @@ public class ByteArrayExplicitValueModification extends VariableModification<byt
     public void setExplicitValue(byte[] explicitValue) {
         this.explicitValue = explicitValue;
     }
+
+    @Override
+    public String toString() {
+        return "ByteArrayExplicitValueModification{" + "explicitValue="
+                + ArrayConverter.bytesToHexString(explicitValue) + '}';
+    }
+
 }

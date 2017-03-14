@@ -26,6 +26,7 @@ import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 import org.bouncycastle.util.BigIntegers;
+import sun.security.rsa.RSAPublicKeyImpl;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -66,6 +67,7 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
         BigInteger pubkey = new BigInteger(1, message.getSerializedPublicKey().getValue());
         ServerDHParams dhParams = new ServerDHParams(new DHPublicKeyParameters(pubkey, parameters));
         tlsContext.setServerDHParameters(dhParams);
+        // tlsContext.setServerPublicKey();
 
     }
 }

@@ -70,14 +70,10 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
         // set the modified values of client's private and public parameters
         DHParameters newParams = new DHParameters(message.getP().getValue(), message.getG().getValue());
-        DHPublicKeyParameters newDhPublic = new DHPublicKeyParameters(message.getY().getValue(), newParams);// TODO
-                                                                                                            // this
-                                                                                                            // maybe
-                                                                                                            // wrong
         DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(message.getComputations().getX().getValue(),
                 newParams);
 
-        byte[] premasterSecret = calculatePremasterSecret(newDhPrivate, newDhPublic);
+        byte[] premasterSecret = calculatePremasterSecret(newDhPrivate, context.getServerDHParameters().getPublicKey());
         message.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = message.getComputations().getPremasterSecret().getValue();
 

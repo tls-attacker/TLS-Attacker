@@ -59,7 +59,6 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.Test;
@@ -165,6 +164,9 @@ public class TlsClientTest {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
                 config.setSupportedCiphersuites(cslist);
+                if (config.getWorkflowTrace() != null) {
+                    config.getWorkflowTrace().reset();
+                }
                 boolean result = testExecuteWorkflow(config);
                 LOGGER.info("Testing: " + cs.name() + " Succes:" + result);
                 collector.checkThat("" + cs.name() + " failed.", result, is(true));
@@ -175,23 +177,27 @@ public class TlsClientTest {
     private boolean testExecuteWorkflow(TlsConfig config) {
 
         // TODO ugly
+        config.setWorkflowTrace(null);
         ConfigHandler configHandler = new ConfigHandler();
         TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
+        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (Exception E) {
             E.printStackTrace();
         }
-        LOGGER.log(Level.INFO, tlsContext.getWorkflowTrace().toString());
+        String workflowString = tlsContext.getWorkflowTrace().toString();
         transportHandler.closeConnection();
         boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         tlsContext.getWorkflowTrace().reset();
         if (!result) {
             LOGGER.log(Level.INFO, "Failed vanilla execution");
+            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
+            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
+            LOGGER.info(workflowString);
             return result;
         }
 
@@ -205,15 +211,19 @@ public class TlsClientTest {
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
-        LOGGER.log(Level.INFO, tlsContext.getWorkflowTrace().toString());
+        workflowString = tlsContext.getWorkflowTrace().toString();
+        LOGGER.log(Level.DEBUG, tlsContext.getWorkflowTrace().toString());
         transportHandler.closeConnection();
         result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         tlsContext.getWorkflowTrace().reset();
         if (!result) {
             LOGGER.log(Level.INFO, "Failed reset execution");
+            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
+            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
+            LOGGER.info(workflowString);
             return result;
         }
-        LOGGER.log(Level.INFO, tlsContext.getWorkflowTrace().toString());
+        LOGGER.log(Level.DEBUG, tlsContext.getWorkflowTrace().toString());
         tlsContext.getWorkflowTrace().reset();
         tlsContext.getWorkflowTrace().makeGeneric();
         trace = tlsContext.getWorkflowTrace();
@@ -226,11 +236,15 @@ public class TlsClientTest {
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
-        LOGGER.log(Level.INFO, "MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
+        workflowString = tlsContext.getWorkflowTrace().toString();
         transportHandler.closeConnection();
         result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         if (!result) {
             LOGGER.log(Level.INFO, "Failed reset&generic execution");
+            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
+            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
+            LOGGER.info(workflowString);
+
         }
         return result;
     }
