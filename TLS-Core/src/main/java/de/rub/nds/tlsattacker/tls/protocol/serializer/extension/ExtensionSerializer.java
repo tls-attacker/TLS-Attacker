@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import org.apache.logging.log4j.LogManager;
@@ -21,9 +22,30 @@ import org.apache.logging.log4j.Logger;
 public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    private ExtensionMessage message;
 
-    public ExtensionSerializer() {
+    public ExtensionSerializer(T message) {
         super();
+        this.message = message;
     }
 
+    @Override
+    protected byte[] serializeBytes() {
+        writeType();
+        writeLength();
+        serializeExtensionContent();
+        
+        return getAlreadySerialized();
+    }
+
+    
+    private void writeType() {
+        appendBytes(message.getExtensionType().getValue());
+    }
+
+    private void writeLength() {
+        appendInt(message.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH);
+    }
+    
+    public abstract byte[] serializeExtensionContent();
 }

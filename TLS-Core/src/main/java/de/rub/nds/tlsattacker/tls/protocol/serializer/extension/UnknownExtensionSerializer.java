@@ -17,25 +17,25 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  */
-public class UnknownExtensionSerializer<T extends UnknownExtensionMessage> extends ExtensionSerializer<T> {
+public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
-    public UnknownExtensionSerializer() {
+    private final UnknownExtensionMessage message;
+    
+    public UnknownExtensionSerializer(UnknownExtensionMessage message) {
+        super(message);
+        this.message = message;
     }
 
     @Override
-    protected byte[] serializeBytes() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public byte[] serializeExtensionContent() {
+        if(message.getExtensionData() != null)
+        {
+            appendBytes(message.getExtensionData().getValue());
+        }
+        return getAlreadySerialized();
     }
+
+ 
 
 }

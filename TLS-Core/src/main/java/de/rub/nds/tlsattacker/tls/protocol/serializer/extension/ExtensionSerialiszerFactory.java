@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class ExtensionSerialiszerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
+    
     public static ExtensionSerializer getExtensionSerialiszer(TlsContext context, ExtensionMessage message) {
         try {
             return message.getExtensionSerializer();
