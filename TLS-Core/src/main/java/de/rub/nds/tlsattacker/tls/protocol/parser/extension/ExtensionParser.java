@@ -35,7 +35,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * @param message
      *            Message to write in
      */
-    protected void parseExtensionLength(UnknownExtensionMessage message) {
+    protected void parseExtensionLength(ExtensionMessage message) {
         message.setExtensionLength(parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH));
     }
 
@@ -46,7 +46,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * @param message
      *            Message to write in
      */
-    protected void parseExtensionType(UnknownExtensionMessage message) {
+    protected void parseExtensionType(ExtensionMessage message) {
         message.setExtensionType(parseByteArrayField(ExtensionByteLength.TYPE));
     }
 
@@ -57,11 +57,11 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      *            The message to check
      * @return True if extension did specify Data in its length field
      */
-    protected boolean hasExtensionData(UnknownExtensionMessage message) {
+    protected boolean hasExtensionData(ExtensionMessage message) {
         return message.getExtensionLength().getValue() > 0;
     }
 
-    protected void setExtensionBytes(UnknownExtensionMessage message) {
+    protected void setExtensionBytes(ExtensionMessage message) {
         message.setExtensionBytes(getAlreadyParsed());
     }
 
