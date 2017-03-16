@@ -103,7 +103,7 @@ public class ExtensionParserFactory {
         }
         if (parser == null) {
             LOGGER.warn("Type: " + type.name() + " not implemented yet, using UnknownExtensionParser instead");
-            parser = new UnknownExtensionParser(pointer, typeBytes);
+            parser = new UnknownExtensionParser(pointer, extensionBytes);
         }
         return parser;
     }
