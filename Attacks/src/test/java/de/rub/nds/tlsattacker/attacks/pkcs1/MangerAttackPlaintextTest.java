@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.crypto.Cipher;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -32,6 +34,8 @@ import org.junit.Test;
  */
 public class MangerAttackPlaintextTest {
 
+    static Logger LOGGER = LogManager.getLogger(MangerAttackPlaintextTest.class);
+    
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
     @Test
@@ -68,7 +72,7 @@ public class MangerAttackPlaintextTest {
 
         // test with a message not starting with 0x00
         message = ArrayConverter.concatenate(new byte[] { 1 }, message);
-        System.out.println(ArrayConverter.bytesToHexString(message));
+        LOGGER.info(ArrayConverter.bytesToHexString(message));
         attacker = new Manger(message, oracle);
         attacker.attack();
         solution = attacker.getSolution();
@@ -117,6 +121,6 @@ public class MangerAttackPlaintextTest {
         }
 
         Collections.sort(queries);
-        System.out.println(queries);
+        LOGGER.info(queries);
     }
 }

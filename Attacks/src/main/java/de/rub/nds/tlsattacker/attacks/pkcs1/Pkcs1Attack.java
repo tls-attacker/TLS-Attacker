@@ -84,7 +84,7 @@ public class Pkcs1Attack {
 
     protected boolean queryOracle(BigInteger message, BigInteger si) {
         byte[] msg = prepareMsg(message, si);
-        System.out.println(ArrayConverter.bytesToHexString(msg));
+        LOGGER.info(ArrayConverter.bytesToHexString(msg));
         return oracle.checkPKCSConformity(msg);
     }
 

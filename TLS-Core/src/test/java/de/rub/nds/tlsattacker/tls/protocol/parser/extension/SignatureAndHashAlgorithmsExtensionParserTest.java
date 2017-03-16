@@ -25,14 +25,23 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SignatureAndHashAlgorithmsExtensionParserTest {
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{{ArrayConverter.hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"), 0,
-            ArrayConverter.hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"), ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS, 32, 30,
-            ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203")}});
+        return Arrays
+                .asList(new Object[][] { {
+                        ArrayConverter
+                                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
+                        0,
+                        ArrayConverter
+                                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
+                        ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS,
+                        32,
+                        30,
+                        ArrayConverter
+                                .hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203") } });
     }
-    
+
     private byte[] extension;
     private int start;
     private byte[] completeExtension;
@@ -41,7 +50,8 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
     private int algoListLength;
     private byte[] algoList;
 
-    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type, int extensionLength, int algoListLength, byte[] algoList) {
+    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
+            ExtensionType type, int extensionLength, int algoListLength, byte[] algoList) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -50,14 +60,15 @@ public class SignatureAndHashAlgorithmsExtensionParserTest {
         this.algoListLength = algoListLength;
         this.algoList = algoList;
     }
-    
+
     /**
      * Test of parseExtensionMessageContent method, of class
      * SignatureAndHashAlgorithmsExtensionParser.
      */
     @Test
     public void testParseExtensionMessageContent() {
-        SignatureAndHashAlgorithmsExtensionParser parser = new SignatureAndHashAlgorithmsExtensionParser(start, extension);
+        SignatureAndHashAlgorithmsExtensionParser parser = new SignatureAndHashAlgorithmsExtensionParser(start,
+                extension);
         SignatureAndHashAlgorithmsExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());

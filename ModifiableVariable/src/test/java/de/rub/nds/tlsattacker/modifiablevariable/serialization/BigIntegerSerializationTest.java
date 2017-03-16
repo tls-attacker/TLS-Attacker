@@ -73,7 +73,7 @@ public class BigIntegerSerializationTest {
         m.marshal(start, writer);
 
         String xmlString = writer.toString();
-        System.out.println(xmlString);
+        LOGGER.info(xmlString);
 
         um = context.createUnmarshaller();
         ModifiableBigInteger mv = (ModifiableBigInteger) um.unmarshal(new StringReader(xmlString));

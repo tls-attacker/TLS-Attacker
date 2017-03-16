@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -47,10 +49,12 @@ public class HelloVerifyRequestPreparatorTest {
         context.getConfig().setDTLSCookieLength(10);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         preparator.prepare();
-        System.out.println(ArrayConverter.bytesToHexString(message.getCookie().getValue(), false));
+        LOGGER.info(ArrayConverter.bytesToHexString(message.getCookie().getValue(), false));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB"), message.getCookie().getValue());
         assertTrue(10 == message.getCookieLength().getValue());
         assertArrayEquals(ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion().getValue());
     }
+
+    private static final Logger LOGGER = LogManager.getLogger(HelloVerifyRequestPreparatorTest.class);
 
 }

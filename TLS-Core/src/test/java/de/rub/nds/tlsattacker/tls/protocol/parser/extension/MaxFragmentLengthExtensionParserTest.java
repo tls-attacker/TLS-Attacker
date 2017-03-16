@@ -26,10 +26,10 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class MaxFragmentLengthExtensionParserTest {
 
-    
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { });//TODO collect a real maxfragmentlength extension
+        return Arrays.asList(new Object[][] {});// TODO collect a real
+                                                // maxfragmentlength extension
     }
 
     private byte[] extension;
@@ -39,7 +39,8 @@ public class MaxFragmentLengthExtensionParserTest {
     private int extensionLength;
     private byte[] maxFragmentLength;
 
-    public MaxFragmentLengthExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type, int extensionLength, byte[] maxFragmentLength) {
+    public MaxFragmentLengthExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
+            ExtensionType type, int extensionLength, byte[] maxFragmentLength) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -47,7 +48,7 @@ public class MaxFragmentLengthExtensionParserTest {
         this.extensionLength = extensionLength;
         this.maxFragmentLength = maxFragmentLength;
     }
-    
+
     /**
      * Test of parseExtensionMessageContent method, of class
      * MaxFragmentLengthExtensionParser.

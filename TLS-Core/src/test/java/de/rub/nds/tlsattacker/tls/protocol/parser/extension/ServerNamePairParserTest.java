@@ -28,11 +28,11 @@ public class ServerNamePairParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{
-            {}//TODO collect a real servername pair
-        });
+        return Arrays.asList(new Object[][] { // TODO collect a real
+                                                 // servername pair
+                });
     }
-    
+
     private byte[] servernamePairBytes;
     private byte[] serverName;
     private int serverNameLength;
@@ -45,15 +45,13 @@ public class ServerNamePairParserTest {
         this.serverType = serverType;
     }
 
-    
-
     /**
      * Test of parse method, of class ServerNamePairParser.
      */
     @Test
     public void testParse() {
         ServerNamePairParser parser = new ServerNamePairParser(0, servernamePairBytes);
-        ServerNamePair pair =  parser.parse();
+        ServerNamePair pair = parser.parse();
         assertArrayEquals(serverName, pair.getServerName().getValue());
         assertTrue(serverNameLength == pair.getServerNameLength().getValue());
         assertTrue(serverType == pair.getServerNameType().getValue());

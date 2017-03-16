@@ -29,6 +29,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -83,7 +86,7 @@ public class ClientHelloTest {
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
         m.marshal(cl, writer);
         String xmlString = writer.toString();
-        System.out.println(xmlString);
+        LOGGER.info(xmlString);
         um = context.createUnmarshaller();
         ClientHelloMessage clu = (ClientHelloMessage) um.unmarshal(new StringReader(xmlString));
         writer.append("abcd");
@@ -99,4 +102,7 @@ public class ClientHelloTest {
         m.marshal(trace, writer);
         String xmlString = writer.toString();
     }
+
+    private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);
+
 }

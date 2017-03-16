@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.tls.protocol.ClientHelloTest;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -24,6 +25,8 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +100,7 @@ public class CertificateVerifyMessagePreparatorTest {
         algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1));
         context.getConfig().setSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
-        System.out.println(ArrayConverter.bytesToHexString(message.getSignature().getValue(), false));
+        LOGGER.info(ArrayConverter.bytesToHexString(message.getSignature().getValue(), false));
 
         assertArrayEquals(new byte[] { 2, 3 }, message.getSignatureHashAlgorithm().getValue());
         // TODO I dont check if the signature is correctly calcualted or
@@ -119,4 +122,7 @@ public class CertificateVerifyMessagePreparatorTest {
         context.getConfig().setPrivateKey(pair.getPrivate());
         preparator.prepare();
     }
+
+    private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
+
 }

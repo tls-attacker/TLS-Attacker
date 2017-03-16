@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNamePair;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -53,7 +53,6 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
         TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
         TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         List<TLSAction> actions = trace.getTLSActions();
         ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage(tlsConfig);
@@ -66,14 +65,11 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
         ch2.addExtension(sni);
         actions.add(new SendAction(ch2));
         List<ProtocolMessage> messageList = new LinkedList<>();
-
         messageList.add(new ServerHelloMessage(tlsConfig));
         messageList.add(new CertificateMessage(tlsConfig));
         actions.add(new ReceiveAction(messageList));
-
         workflowExecutor.executeWorkflow();
         transportHandler.closeConnection();
-
     }
 
 }

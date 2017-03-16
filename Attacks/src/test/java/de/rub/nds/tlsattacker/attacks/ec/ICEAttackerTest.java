@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.attacks.ec;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECOracle;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECSunOracle;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,6 +23,8 @@ import org.junit.Test;
  */
 public class ICEAttackerTest {
 
+    static Logger LOGGER = LogManager.getLogger(ICEAttackerTest.class);
+    
     public ICEAttackerTest() {
     }
 
@@ -35,8 +39,8 @@ public class ICEAttackerTest {
         attacker.attack();
         BigInteger result = attacker.getResult();
 
-        System.out.println(result);
-        System.out.println(oracle.getComputer().getSecret());
+        LOGGER.info(result);
+        LOGGER.info(oracle.getComputer().getSecret());
 
         assertEquals(oracle.getComputer().getSecret(), result);
     }
@@ -52,8 +56,8 @@ public class ICEAttackerTest {
         attacker.attack();
         BigInteger result = attacker.getResult();
 
-        System.out.println(result);
-        System.out.println(oracle.getComputer().getSecret());
+        LOGGER.info(result);
+        LOGGER.info(oracle.getComputer().getSecret());
 
         assertEquals(oracle.getComputer().getSecret(), result);
     }
@@ -67,7 +71,7 @@ public class ICEAttackerTest {
                 + (results * (1 - probability) * Math.pow(probability, results - 1))
                 + (190 * Math.pow(1 - probability, 2) * Math.pow(probability, results - 2))
                 + (1140 * Math.pow(1 - probability, 3) * Math.pow(probability, results - 3));
-        System.out.println(result);
+        LOGGER.info(result);
     }
 
 }

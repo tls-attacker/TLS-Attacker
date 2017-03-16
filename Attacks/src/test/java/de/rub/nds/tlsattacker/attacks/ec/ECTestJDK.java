@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
+import static de.rub.nds.tlsattacker.attacks.ec.ECComputationCorrectness.LOGGER;
+import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Attack;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -23,15 +25,19 @@ import java.security.spec.ECPoint;
 import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.ECPublicKeySpec;
 import javax.crypto.KeyAgreement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @version 0.1
  */
 public class ECTestJDK {
+
+    static Logger LOGGER = LogManager.getLogger(ECTestJDK.class);
 
     public ECTestJDK() {
         Security.addProvider(new BouncyCastleProvider());
@@ -41,7 +47,7 @@ public class ECTestJDK {
     public void testGeneration() throws Exception {
         KeyPairGenerator kpg;
         kpg = KeyPairGenerator.getInstance("EC");
-        System.out.println(kpg.getProvider());
+        LOGGER.info(kpg.getProvider());
         ECGenParameterSpec ecsp;
         ecsp = new ECGenParameterSpec("secp256r1");
         kpg.initialize(ecsp);
@@ -50,8 +56,8 @@ public class ECTestJDK {
         PrivateKey privKey = kp.getPrivate();
         PublicKey pubKey = kp.getPublic();
 
-        System.out.println(privKey.toString());
-        System.out.println(pubKey.toString());
+        LOGGER.info(privKey.toString());
+        LOGGER.info(pubKey.toString());
     }
 
     @Test
@@ -68,23 +74,23 @@ public class ECTestJDK {
 
         PrivateKey privKeyU = kpU.getPrivate();
         PublicKey pubKeyU = kpU.getPublic();
-        System.out.println("User U: " + privKeyU.toString());
-        System.out.println("User U: " + pubKeyU.toString());
+        LOGGER.info("User U: " + privKeyU.toString());
+        LOGGER.info("User U: " + pubKeyU.toString());
         KeyPair kpV = kpg.genKeyPair();
         PrivateKey privKeyV = kpV.getPrivate();
         PublicKey pubKeyV = kpV.getPublic();
-        System.out.println("User V: " + privKeyV.toString());
-        System.out.println("User V: " + pubKeyV.toString());
+        LOGGER.info("User V: " + privKeyV.toString());
+        LOGGER.info("User V: " + pubKeyV.toString());
         KeyAgreement ecdhU = KeyAgreement.getInstance("ECDH");
         ecdhU.init(privKeyU);
         ecdhU.doPhase(pubKeyV, true);
         KeyAgreement ecdhV = KeyAgreement.getInstance("ECDH");
         ecdhV.init(privKeyV);
         ecdhV.doPhase(pubKeyU, true);
-        System.out.println("Secret computed by U: 0x"
+        LOGGER.info("Secret computed by U: 0x"
                 + (new BigInteger(1, ecdhU.generateSecret("TlsPremasterSecret").getEncoded()).toString(16))
                         .toUpperCase());
-        System.out.println("Secret computed by V: 0x"
+        LOGGER.info("Secret computed by V: 0x"
                 + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
     }
 
@@ -122,10 +128,10 @@ public class ECTestJDK {
 
             try {
                 ecdhV.doPhase(bpub, true);
-                System.out.println("Secret " + x + ": 0x"
+                LOGGER.info("Secret " + x + ": 0x"
                         + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
             } catch (IllegalStateException | InvalidKeyException e) {
-                System.out.println("Secret: null");
+                LOGGER.info("Secret: null");
             }
         }
     }
@@ -166,10 +172,10 @@ public class ECTestJDK {
 
             try {
                 ecdhV.doPhase(bpub, true);
-                System.out.println("Secret " + x + ": 0x"
+                LOGGER.info("Secret " + x + ": 0x"
                         + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
             } catch (InvalidKeyException | IllegalStateException e) {
-                System.out.println("Secret: null");
+                LOGGER.info("Secret: null");
             }
         }
     }

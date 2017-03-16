@@ -28,7 +28,8 @@ public class ServerNameIndicationExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{}); //TODO collect a real sni message
+        return Arrays.asList(new Object[][] {}); // TODO collect a real sni
+                                                 // message
     }
 
     private byte[] extension;
@@ -39,7 +40,8 @@ public class ServerNameIndicationExtensionParserTest {
     private int sniListLength;
     private byte[] sniListBytes;
 
-    public ServerNameIndicationExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type, int extensionLength, int sniListLength, byte[] sniListBytes) {
+    public ServerNameIndicationExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
+            ExtensionType type, int extensionLength, int sniListLength, byte[] sniListBytes) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;
@@ -49,7 +51,6 @@ public class ServerNameIndicationExtensionParserTest {
         this.sniListBytes = sniListBytes;
     }
 
-    
     /**
      * Test of parseExtensionMessageContent method, of class
      * ServerNameIndicationExtensionParser.
@@ -57,7 +58,7 @@ public class ServerNameIndicationExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         ServerNameIndicationExtensionParser parser = new ServerNameIndicationExtensionParser(start, extension);
-        ServerNameIndicationExtensionMessage msg  = parser.parse();
+        ServerNameIndicationExtensionMessage msg = parser.parse();
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());

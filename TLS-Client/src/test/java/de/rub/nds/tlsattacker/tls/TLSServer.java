@@ -62,10 +62,10 @@ public class TLSServer extends Thread {
             Security.removeProvider("SunPKCS11-NSS");
             Security.removeProvider("SunEC");
             Security.insertProviderAt(new BouncyCastleProvider(), 1);
-            System.out.println("Using BC provider");
+            LOGGER.info("Using BC provider");
         }
         for (Provider p : Security.getProviders()) {
-            System.out.println(p);
+            LOGGER.info(p);
         }
         System.setProperty("java.security.debug", "ssl");
         String path;
@@ -84,7 +84,7 @@ public class TLSServer extends Thread {
             protocol = PROTOCOL;
             port = PORT;
         } else {
-            System.out.println("Usage (run with): java -jar [name].jar [jks-path] "
+            LOGGER.info("Usage (run with): java -jar [name].jar [jks-path] "
                     + "[password] [protocol] [port] \n (set [protocol] to TLS)");
             return;
         }

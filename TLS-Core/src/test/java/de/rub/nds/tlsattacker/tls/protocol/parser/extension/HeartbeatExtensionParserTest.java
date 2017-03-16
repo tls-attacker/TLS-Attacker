@@ -28,9 +28,8 @@ public class HeartbeatExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{{ArrayConverter.hexStringToByteArray("000f000101"), 0,
-            ArrayConverter.hexStringToByteArray("000f000101"), ExtensionType.HEARTBEAT, 1,
-            new byte[]{1}}});
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000f000101"), 0,
+                ArrayConverter.hexStringToByteArray("000f000101"), ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } });
     }
 
     private byte[] extension;
@@ -40,7 +39,8 @@ public class HeartbeatExtensionParserTest {
     private int extensionLength;
     private byte[] heartbeatMode;
 
-    public HeartbeatExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type, int extensionLength, byte[] heartbeatMode) {
+    public HeartbeatExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
+            int extensionLength, byte[] heartbeatMode) {
         this.extension = extension;
         this.start = start;
         this.completeExtension = completeExtension;

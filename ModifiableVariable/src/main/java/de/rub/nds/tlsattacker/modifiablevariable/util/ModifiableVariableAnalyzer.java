@@ -123,8 +123,7 @@ public class ModifiableVariableAnalyzer {
             if (o != null) {
                 result.addAll(getAllModifiableVariableHoldersRecursively(o));
             } else {
-                // TODO
-                System.out.println("Found null getAllModifiableVariableHoldersFromList");
+                LOGGER.info("Found null getAllModifiableVariableHoldersFromList");
             }
         }
         return result;

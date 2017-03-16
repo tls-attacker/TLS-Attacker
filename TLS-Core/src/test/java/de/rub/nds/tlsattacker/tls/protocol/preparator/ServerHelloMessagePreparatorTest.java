@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -84,7 +86,7 @@ public class ServerHelloMessagePreparatorTest {
         preparator.prepare();
         assertArrayEquals(ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
         assertArrayEquals(ArrayConverter.longToUint32Bytes(12345l), message.getUnixTime().getValue());
-        System.out.println(ArrayConverter.bytesToHexString(message.getRandom().getValue()));
+        LOGGER.info(ArrayConverter.bytesToHexString(message.getRandom().getValue()));
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C"),
                 message.getRandom().getValue());
@@ -93,5 +95,7 @@ public class ServerHelloMessagePreparatorTest {
         assertTrue(message.getExtensionBytes().getValue().length == 0);
         assertTrue(0 == message.getExtensionsLength().getValue());
     }
+
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessagePreparatorTest.class);
 
 }

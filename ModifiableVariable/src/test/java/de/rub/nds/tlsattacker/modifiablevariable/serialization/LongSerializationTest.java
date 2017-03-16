@@ -72,7 +72,7 @@ public class LongSerializationTest {
         m.marshal(start, writer);
 
         String xmlString = writer.toString();
-        System.out.println(xmlString);
+        LOGGER.info(xmlString);
 
         um = context.createUnmarshaller();
         ModifiableLong mv = (ModifiableLong) um.unmarshal(new StringReader(xmlString));

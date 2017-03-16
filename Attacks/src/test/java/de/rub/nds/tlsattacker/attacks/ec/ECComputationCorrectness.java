@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
+import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Attack;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
@@ -31,6 +32,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Random;
 import javax.crypto.KeyAgreement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
@@ -40,6 +43,8 @@ import org.junit.Test;
  */
 public class ECComputationCorrectness {
 
+    static Logger LOGGER = LogManager.getLogger(ECComputationCorrectness.class);
+    
     public ECComputationCorrectness() {
         Security.addProvider(new BouncyCastleProvider());
     }
@@ -113,20 +118,20 @@ public class ECComputationCorrectness {
             try {
                 ecdhV.doPhase(bpub, true);
                 sunSecret = new BigInteger(1, ecdhV.generateSecret());
-                System.out.println("[SUN] Secret " + x + ": 0x" + (sunSecret).toString(16).toUpperCase());
+                LOGGER.info("[SUN] Secret " + x + ": 0x" + (sunSecret).toString(16).toUpperCase());
             } catch (IllegalStateException | InvalidKeyException e) {
-                System.out.println("[SUN] Secret: null");
+                LOGGER.info("[SUN] Secret: null");
             }
 
             BigInteger cusSecret = null;
             try {
                 Point res = ecc.mul(basePoint, true);
                 cusSecret = res.getX();
-                System.out.println("[CUS] Secret " + x + ": 0x" + cusSecret.toString(16).toUpperCase());
+                LOGGER.info("[CUS] Secret " + x + ": 0x" + cusSecret.toString(16).toUpperCase());
 
-                System.out.println();
+                LOGGER.info("");
             } catch (DivisionException e) {
-                System.out.println("[CUS] Secret: null");
+                LOGGER.info("[CUS] Secret: null");
             }
 
             if (sunSecret != null && sunSecret.equals(cusSecret)) {
@@ -135,8 +140,8 @@ public class ECComputationCorrectness {
 
         }
 
-        System.out.println("Correct Computations: " + correctComputations + " / " + iterations);
-        System.out.println("Secret length (bits): " + x.bitLength());
+        LOGGER.info("Correct Computations: " + correctComputations + " / " + iterations);
+        LOGGER.info("Secret length (bits): " + x.bitLength());
     }
 
     @Test
@@ -145,15 +150,15 @@ public class ECComputationCorrectness {
         int iter = 10;
         List<ICEPoint> points = ICEPointReader.readPoints(namedCurve);
         for (ICEPoint p : points) {
-            System.out.println("-------------------");
-            System.out.println(p);
+            LOGGER.info("-------------------");
+            LOGGER.info(p);
             BigInteger secretBase = new BigInteger("2");
             int pow = -1;
             boolean identical = true;
             while (identical) {
                 pow += 8;
                 BigInteger secret = secretBase.pow(pow).subtract(new BigInteger("5"));
-                System.out.println("Using Secret (" + secret.bitLength() + " bits): " + secret);
+                LOGGER.info("Using Secret (" + secret.bitLength() + " bits): " + secret);
                 identical = resultsIdentical(namedCurve, p.getX(), p.getY(), secret, iter);
             }
         }
@@ -175,20 +180,20 @@ public class ECComputationCorrectness {
                 }
             }
             if (i % 10 == 0) {
-                System.out.println("Running iteration nr " + i);
+                LOGGER.info("Running iteration nr " + i);
             }
         }
 
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
             double percentage = correctResults[j] / iterations;
-            System.out.println("Curve with order " + p.getOrder()
+            LOGGER.info("Curve with order " + p.getOrder()
                     + " has success probability of valid computation [%]: " + (percentage * 100.0));
         }
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
             double percentage = correctResults[j] / iterations;
-            System.out.println(p.getOrder() + " " + (percentage * 100.0));
+            LOGGER.info(p.getOrder() + " " + (percentage * 100.0));
         }
     }
 
@@ -282,6 +287,6 @@ public class ECComputationCorrectness {
         BigInteger bady = new BigInteger("4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
         BigInteger secret = new BigInteger("aa6c4535a832135f7d5934e6e0de35d7eaedf8352ee2450e127efd13379949b8", 16);
         BigInteger result = computeSecretWithCustomAlgorithm("secp256r1", badx, bady, secret);
-        System.out.println(result.toString(16));
+        LOGGER.info(result.toString(16));
     }
 }

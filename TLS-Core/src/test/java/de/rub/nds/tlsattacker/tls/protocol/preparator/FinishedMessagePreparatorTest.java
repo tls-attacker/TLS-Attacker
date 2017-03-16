@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -47,11 +49,12 @@ public class FinishedMessagePreparatorTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
         preparator.prepare();
-        System.out.println(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
+        LOGGER.info(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"), message.getVerifyData()
                 .getValue());// TODO Did not check if this is calculated
                              // correctly, just made sure it is set
 
     }
 
+    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 }

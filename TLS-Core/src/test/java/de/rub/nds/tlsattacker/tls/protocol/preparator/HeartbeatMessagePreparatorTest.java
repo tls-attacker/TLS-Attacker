@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -50,13 +52,15 @@ public class HeartbeatMessagePreparatorTest {
         context.getConfig().setHeartbeatMinPaddingLength(5);
         preparator.prepare();
         assertTrue(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue() == message.getHeartbeatMessageType().getValue());
-        System.out.println("padding: " + ArrayConverter.bytesToHexString(message.getPadding().getValue()));
-        System.out.println("payload: " + ArrayConverter.bytesToHexString(message.getPayload().getValue()));
+        LOGGER.info("padding: " + ArrayConverter.bytesToHexString(message.getPadding().getValue()));
+        LOGGER.info("payload: " + ArrayConverter.bytesToHexString(message.getPayload().getValue()));
 
         assertArrayEquals(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770"), message.getPadding().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB93"), message.getPayload()
                 .getValue());
         assertTrue(11 == message.getPayloadLength().getValue());
     }
+
+    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
 
 }

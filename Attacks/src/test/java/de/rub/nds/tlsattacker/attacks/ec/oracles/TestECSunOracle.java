@@ -43,7 +43,7 @@ public class TestECSunOracle extends ECOracle {
         // BigInteger privateKey = new
         // BigInteger("25091756309879652045519159642875354611257005804552159157");
         computer = new ECComputer(curve, privateKey);
-        System.out.println("Using the following key: " + privateKey);
+        LOGGER.info("Using the following key: " + privateKey);
     }
 
     @Override

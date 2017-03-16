@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateMessagePreparatorTest;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -20,6 +21,8 @@ import de.rub.nds.tlsattacker.unittest.FakeTransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +68,7 @@ public class TLSActionExecutorTest {
         protocolMessages.add(message);
         executor.sendMessages(protocolMessages);
         byte[] sendByte = ((FakeTransportHandler) context.getTransportHandler()).getSendByte();
-        System.out.println(ArrayConverter.bytesToHexString(sendByte));
+        LOGGER.info(ArrayConverter.bytesToHexString(sendByte));
         assertArrayEquals(sendByte, new byte[] { 21, 03, 03, 00, 02, 02, 51 });
     }
 
@@ -81,5 +84,7 @@ public class TLSActionExecutorTest {
         List<ProtocolMessage> messages = executor.receiveMessages(shouldReceive);
         assertEquals(messages.get(0), message);
     }
+
+    private static final Logger LOGGER = LogManager.getLogger(TLSActionExecutorTest.class);
 
 }
