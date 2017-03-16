@@ -8,16 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParserTest;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
@@ -93,27 +88,4 @@ public class UnknownExtensionParserTest {
             assertNull(unknownMessage.getExtensionData());
         }
     }
-
-    /**
-     * Test of parseExtensionData method, of class UnknownExtensionParser.
-     */
-    @Test
-    public void testParseExtensionData() {
-    }
-
-    /**
-     * Test of parseExtensionMessageContent method, of class
-     * UnknownExtensionParser.
-     */
-    @Test
-    public void testParseExtensionMessageContent() {
-    }
-
-    /**
-     * Test of createExtensionMessage method, of class UnknownExtensionParser.
-     */
-    @Test
-    public void testCreateExtensionMessage() {
-    }
-
 }
