@@ -13,6 +13,10 @@ package de.rub.nds.tlsattacker.tls.constants;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class AlertByteLength {
+
+    private AlertByteLength() {
+    }
+    
     /**
      * certificate length field
      */
