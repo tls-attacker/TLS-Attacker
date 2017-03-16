@@ -9,25 +9,25 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmentLengthExtensionMessage>{
+public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmentLengthExtensionMessage> {
 
     public MaxFragmentLengthExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
-    public MaxFragmentLengthExtensionMessage parse() {
-        MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
-        parseExtensionType(msg);
-        parseExtensionLength(msg);
+    public void parseExtensionMessageContent(MaxFragmentLengthExtensionMessage msg) {
         msg.setMaxFragmentLength(parseByteArrayField(ExtensionByteLength.MAX_FRAGMENT_EXTENSION_LENGTH));
-        return msg;
     }
-    
+
+    @Override
+    protected MaxFragmentLengthExtensionMessage createExtensionMessage() {
+        return new MaxFragmentLengthExtensionMessage();
+    }
 }

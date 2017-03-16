@@ -41,7 +41,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     }
 
     @Override
-    public Serializer getSerializer(RSAClientKeyExchangeMessage message) {
+    public RSAClientKeyExchangeSerializer getSerializer(RSAClientKeyExchangeMessage message) {
         return new RSAClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

@@ -12,8 +12,8 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.*;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class ExtensionSerialiszerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-    
+
     public static ExtensionSerializer getExtensionSerialiszer(TlsContext context, ExtensionMessage message) {
         try {
             return message.getExtensionSerializer();

@@ -50,12 +50,12 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public Preparator getPreparator(CertificateVerifyMessage message) {
+    public CertificateVerifyMessagePreparator getPreparator(CertificateVerifyMessage message) {
         return new CertificateVerifyMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(CertificateVerifyMessage message) {
+    public CertificateVerifyMessageSerializer getSerializer(CertificateVerifyMessage message) {
         return new CertificateVerifyMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

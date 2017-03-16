@@ -40,7 +40,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     }
 
     @Override
-    public Serializer getSerializer(ECDHClientKeyExchangeMessage message) {
+    public ECDHClientKeyExchangeSerializer getSerializer(ECDHClientKeyExchangeMessage message) {
         return new ECDHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

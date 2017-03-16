@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
-import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 
 /**
  *
@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
 public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<EllipticCurvesExtensionMessage> {
 
     private final EllipticCurvesExtensionMessage message;
-    
+
     public EllipticCurvesExtensionSerializer(EllipticCurvesExtensionMessage message) {
         super(message);
         this.message = message;

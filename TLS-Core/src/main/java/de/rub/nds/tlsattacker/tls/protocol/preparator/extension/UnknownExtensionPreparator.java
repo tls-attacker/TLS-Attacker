@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +27,7 @@ public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> exten
     }
 
     @Override
-    public void prepare() {
+    public void prepareExtensionContent() {
         throw new UnsupportedOperationException("Not supported yet."); // To
                                                                        // change
                                                                        // body

@@ -10,17 +10,17 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ECPointFormatExtensionSerializer extends ExtensionSerializer<ECPointFormatExtensionMessage>{
+public class ECPointFormatExtensionSerializer extends ExtensionSerializer<ECPointFormatExtensionMessage> {
 
     private final ECPointFormatExtensionMessage message;
-             
+
     public ECPointFormatExtensionSerializer(ECPointFormatExtensionMessage message) {
         super(message);
         this.message = message;

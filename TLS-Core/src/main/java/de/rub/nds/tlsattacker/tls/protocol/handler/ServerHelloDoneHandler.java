@@ -42,12 +42,12 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
     }
 
     @Override
-    public Preparator getPreparator(ServerHelloDoneMessage message) {
+    public ServerHelloDonePreparator getPreparator(ServerHelloDoneMessage message) {
         return new ServerHelloDonePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(ServerHelloDoneMessage message) {
+    public ServerHelloDoneSerializer getSerializer(ServerHelloDoneMessage message) {
         return new ServerHelloDoneSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

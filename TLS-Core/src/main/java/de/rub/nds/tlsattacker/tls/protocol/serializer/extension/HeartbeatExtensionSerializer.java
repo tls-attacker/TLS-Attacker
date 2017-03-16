@@ -8,18 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
-import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HeartbeatExtensionSerializer extends ExtensionSerializer<HeartbeatExtensionMessage>{
+public class HeartbeatExtensionSerializer extends ExtensionSerializer<HeartbeatExtensionMessage> {
 
     private final HeartbeatExtensionMessage message;
-    
+
     public HeartbeatExtensionSerializer(HeartbeatExtensionMessage message) {
         super(message);
         this.message = message;
@@ -29,5 +29,5 @@ public class HeartbeatExtensionSerializer extends ExtensionSerializer<HeartbeatE
     public byte[] serializeExtensionContent() {
         appendBytes(message.getHeartbeatMode().getValue());
         return getAlreadySerialized();
-    }   
+    }
 }

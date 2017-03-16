@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handler;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.RetransmitMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.RetransmitMessageSerializer;
@@ -30,18 +31,18 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
     }
 
     @Override
-    public Parser getParser(byte[] message, int pointer) {
+    public ProtocolMessageParser getParser(byte[] message, int pointer) {
         throw new UnsupportedOperationException(
                 "Receiving a retransmitted message is impossible, it would appear the correct message in the WorkflowTrace");
     }
 
     @Override
-    public Preparator getPreparator(RetransmitMessage message) {
+    public RetransmitMessagePreparator getPreparator(RetransmitMessage message) {
         return new RetransmitMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(RetransmitMessage message) {
+    public RetransmitMessageSerializer getSerializer(RetransmitMessage message) {
         return new RetransmitMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

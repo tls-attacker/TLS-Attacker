@@ -14,9 +14,12 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ServerHelloMessagePreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -91,11 +94,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 
-    public abstract Parser getParser(byte[] message, int pointer);
+    public abstract ProtocolMessageParser getParser(byte[] message, int pointer);
 
-    public abstract Preparator getPreparator(Message message);
+    public abstract ProtocolMessagePreparator getPreparator(Message message);
 
-    public abstract Serializer getSerializer(Message message);
+    public abstract ProtocolMessageSerializer getSerializer(Message message);
 
     /**
      * Adjusts the TLS Context according to the received or sending

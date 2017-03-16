@@ -46,12 +46,12 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     }
 
     @Override
-    public Preparator getPreparator(ChangeCipherSpecMessage message) {
+    public ChangeCipherSpecPreparator getPreparator(ChangeCipherSpecMessage message) {
         return new ChangeCipherSpecPreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(ChangeCipherSpecMessage message) {
+    public ChangeCipherSpecSerializer getSerializer(ChangeCipherSpecMessage message) {
         return new ChangeCipherSpecSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

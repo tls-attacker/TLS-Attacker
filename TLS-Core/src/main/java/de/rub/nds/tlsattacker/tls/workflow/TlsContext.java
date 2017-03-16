@@ -213,7 +213,7 @@ public class TlsContext {
         return serverPublicKeyParameters;
     }
 
-    public void setServerPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
+    public void setServerECPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
         this.serverPublicKeyParameters = serverPublicKeyParameters;
     }
 

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;

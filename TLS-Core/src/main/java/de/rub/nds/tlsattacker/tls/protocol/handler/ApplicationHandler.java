@@ -37,12 +37,12 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     }
 
     @Override
-    public Preparator getPreparator(ApplicationMessage message) {
+    public ApplicationMessagePreparator getPreparator(ApplicationMessage message) {
         return new ApplicationMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(ApplicationMessage message) {
+    public ApplicationMessageSerializer getSerializer(ApplicationMessage message) {
         return new ApplicationMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

@@ -8,18 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
-import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class MaxFragmentLengthExtensionSerializer extends ExtensionSerializer<MaxFragmentLengthExtensionMessage>{
+public class MaxFragmentLengthExtensionSerializer extends ExtensionSerializer<MaxFragmentLengthExtensionMessage> {
 
     private final MaxFragmentLengthExtensionMessage message;
-    
+
     public MaxFragmentLengthExtensionSerializer(MaxFragmentLengthExtensionMessage message) {
         super(message);
         this.message = message;

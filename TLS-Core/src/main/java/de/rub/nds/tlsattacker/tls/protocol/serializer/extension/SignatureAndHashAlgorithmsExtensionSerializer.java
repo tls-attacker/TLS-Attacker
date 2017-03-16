@@ -10,16 +10,17 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
-import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class SignatureAndHashAlgorithmsExtensionSerializer extends ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage>{
+public class SignatureAndHashAlgorithmsExtensionSerializer extends
+        ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage> {
 
     private final SignatureAndHashAlgorithmsExtensionMessage message;
-    
+
     public SignatureAndHashAlgorithmsExtensionSerializer(SignatureAndHashAlgorithmsExtensionMessage message) {
         super(message);
         this.message = message;
@@ -27,7 +28,8 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends ExtensionSeri
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getSignatureAndHashAlgorithmsLength().getValue(), ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH);
+        appendInt(message.getSignatureAndHashAlgorithmsLength().getValue(),
+                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH);
         appendBytes(message.getSignatureAndHashAlgorithms().getValue());
         return getAlreadySerialized();
     }

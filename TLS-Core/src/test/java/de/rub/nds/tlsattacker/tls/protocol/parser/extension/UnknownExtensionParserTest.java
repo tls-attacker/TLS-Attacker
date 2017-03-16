@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParserTest;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
@@ -45,8 +45,6 @@ public class UnknownExtensionParserTest {
                 { ArrayConverter.hexStringToByteArray("000f00010100"),
                         ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f"),
                         1, ArrayConverter.hexStringToByteArray("01"), },
-                { ArrayConverter.hexStringToByteArray("0000"), ArrayConverter.hexStringToByteArray("0000"), null, null,
-                        null, },
                 { ArrayConverter.hexStringToByteArray("00000000"), ArrayConverter.hexStringToByteArray("00000000"),
                         ArrayConverter.hexStringToByteArray("0000"), 0, null, },
                 { ArrayConverter.hexStringToByteArray("0000FFFF"), ArrayConverter.hexStringToByteArray("0000FFFF"),
@@ -60,7 +58,6 @@ public class UnknownExtensionParserTest {
     private final byte[] data;
 
     public UnknownExtensionParserTest(byte[] array, byte[] message, byte[] type, Integer extensionLength, byte[] data) {
-
         this.array = array;
         this.message = message;
         this.type = type;
@@ -95,6 +92,28 @@ public class UnknownExtensionParserTest {
         } else {
             assertNull(unknownMessage.getExtensionData());
         }
+    }
+
+    /**
+     * Test of parseExtensionData method, of class UnknownExtensionParser.
+     */
+    @Test
+    public void testParseExtensionData() {
+    }
+
+    /**
+     * Test of parseExtensionMessageContent method, of class
+     * UnknownExtensionParser.
+     */
+    @Test
+    public void testParseExtensionMessageContent() {
+    }
+
+    /**
+     * Test of createExtensionMessage method, of class UnknownExtensionParser.
+     */
+    @Test
+    public void testCreateExtensionMessage() {
     }
 
 }

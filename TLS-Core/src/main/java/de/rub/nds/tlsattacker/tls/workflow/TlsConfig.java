@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.constants.NameType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
@@ -129,6 +130,10 @@ public final class TlsConfig {
      */
     private String sniHostname = "localhost";
     /**
+     * SNI HostnameType
+     */
+    private NameType sniType = NameType.HOST_NAME;
+    /**
      * Should we terminate the connection on a wrong SNI ?
      */
     private boolean sniHostnameFatal = false;
@@ -178,7 +183,7 @@ public final class TlsConfig {
      */
     private boolean addECPointFormatExtension = false;
     /**
-     * If we generate ClientHello with the EllipticCurveExtension extension
+     * If we generate ClientHello with the EllipticCurve extension
      */
     private boolean addEllipticCurveExtension = false;
     /**
@@ -204,7 +209,6 @@ public final class TlsConfig {
      * workflowTrace
      */
     private boolean updateTimestamps = true;
-
     /**
      * The Certificate we initialize CertificateMessages with
      */
@@ -295,6 +299,14 @@ public final class TlsConfig {
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
 
+    }
+
+    public NameType getSniType() {
+        return sniType;
+    }
+
+    public void setSniType(NameType sniType) {
+        this.sniType = sniType;
     }
 
     public int getHeartbeatPayloadLength() {

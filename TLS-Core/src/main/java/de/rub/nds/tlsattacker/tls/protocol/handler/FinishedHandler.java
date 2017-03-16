@@ -36,12 +36,12 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     @Override
-    public Preparator getPreparator(FinishedMessage message) {
+    public FinishedMessagePreparator getPreparator(FinishedMessage message) {
         return new FinishedMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(FinishedMessage message) {
+    public FinishedMessageSerializer getSerializer(FinishedMessage message) {
         return new FinishedMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

@@ -42,12 +42,12 @@ public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<Unkn
     }
 
     @Override
-    public Preparator getPreparator(UnknownHandshakeMessage message) {
+    public UnknownHandshakeMessagePreparator getPreparator(UnknownHandshakeMessage message) {
         return new UnknownHandshakeMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(UnknownHandshakeMessage message) {
+    public UnknownHandshakeMessageSerializer getSerializer(UnknownHandshakeMessage message) {
         return new UnknownHandshakeMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 }

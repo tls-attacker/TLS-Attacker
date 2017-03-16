@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import com.sun.xml.internal.ws.handler.HandlerException;
 import de.rub.nds.tlsattacker.tls.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
@@ -24,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -48,7 +46,7 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
     }
 
     @Override
-    public Serializer getSerializer(ECDHEServerKeyExchangeMessage message) {
+    public ECDHEServerKeyExchangeSerializer getSerializer(ECDHEServerKeyExchangeMessage message) {
         return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
@@ -75,10 +73,10 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
             LOGGER.debug("  Base point: {} ", publicKeyParameters.getParameters().getG());
             LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
         } catch (TlsFatalAlert alert) {
-            throw new HandlerException("Problematic EC parameters, we dont support these yet", alert);
+            throw new AdjustmentException("Problematic EC parameters, we dont support these yet", alert);
         } catch (IOException ex) {
-            throw new HandlerException("EC public key parsing failed", ex);
+            throw new AdjustmentException("EC public key parsing failed", ex);
         }
-        tlsContext.setServerPublicKeyParameters(publicKeyParameters);
+        tlsContext.setServerECPublicKeyParameters(publicKeyParameters);
     }
 }

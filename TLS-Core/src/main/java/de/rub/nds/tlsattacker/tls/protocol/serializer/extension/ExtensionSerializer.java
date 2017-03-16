@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,11 +34,10 @@ public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Se
         writeType();
         writeLength();
         serializeExtensionContent();
-        
+
         return getAlreadySerialized();
     }
 
-    
     private void writeType() {
         appendBytes(message.getExtensionType().getValue());
     }
@@ -46,6 +45,6 @@ public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Se
     private void writeLength() {
         appendInt(message.getExtensionLength().getValue(), ExtensionByteLength.EXTENSIONS_LENGTH);
     }
-    
+
     public abstract byte[] serializeExtensionContent();
 }

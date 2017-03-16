@@ -32,17 +32,17 @@ public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage
     }
 
     @Override
-    public Parser getParser(byte[] message, int pointer) {
+    public UnknownMessageParser getParser(byte[] message, int pointer) {
         return new UnknownMessageParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
     @Override
-    public Preparator getPreparator(UnknownMessage message) {
+    public UnknownMessagePreparator getPreparator(UnknownMessage message) {
         return new UnknownMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(UnknownMessage message) {
+    public UnknownMessageSerializer getSerializer(UnknownMessage message) {
         return new UnknownMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

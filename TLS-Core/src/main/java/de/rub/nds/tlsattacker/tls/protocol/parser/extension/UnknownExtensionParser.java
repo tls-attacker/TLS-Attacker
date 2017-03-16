@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,36 +27,6 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         super(startposition, array);
     }
 
-    @Override
-    public UnknownExtensionMessage parse() {
-        UnknownExtensionMessage message = new UnknownExtensionMessage();
-        // It might be that there is not enoguth data left to parse a proper but
-        // unknown extension
-        // in that case we just add the remaining bytes into the unknown
-        // extension and warn the user
-        if (enoughBytesLeft(ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH)) {
-            parseExtensionType(message);
-            parseExtensionLength(message);
-            if (hasExtensionData(message)) {
-                parseExtensionData(message);
-            }
-
-        } else {
-            parseByteArrayField(getBytesLeft());
-        }
-        setExtensionBytes(message);
-        return message;
-    }
-
-    /**
-     * Reads the next bytes as extension Bytes and writes it in the message. If
-     * the extension did specify more bytes than there are left according to the
-     * ExtensionLength field of the carrier Message. The carrier length field is
-     * respected and just the remaining bytes are parsed
-     *
-     * @param message
-     *            Message to write in
-     */
     protected void parseExtensionData(UnknownExtensionMessage message) {
         if (getBytesLeft() == 0) {
             // No bytes left for extension data
@@ -63,5 +35,17 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         } else {
             message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));
         }
+    }
+
+    @Override
+    public void parseExtensionMessageContent(UnknownExtensionMessage message) {
+        if (hasExtensionData(message)) {
+            parseExtensionData(message);
+        }
+    }
+
+    @Override
+    protected UnknownExtensionMessage createExtensionMessage() {
+        return new UnknownExtensionMessage();
     }
 }

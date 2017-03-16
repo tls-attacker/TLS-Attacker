@@ -9,25 +9,26 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtensionMessage>{
+public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtensionMessage> {
 
     public HeartbeatExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
-    public HeartbeatExtensionMessage parse() {
-        HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
-        parseExtensionType(msg);
-        parseExtensionLength(msg);
+    public void parseExtensionMessageContent(HeartbeatExtensionMessage msg) {
         msg.setHeartbeatMode(parseByteArrayField(ExtensionByteLength.HEARTBEAT_MODE_LENGTH));
-        return msg;
     }
-    
+
+    @Override
+    protected HeartbeatExtensionMessage createExtensionMessage() {
+        return new HeartbeatExtensionMessage();
+    }
+
 }

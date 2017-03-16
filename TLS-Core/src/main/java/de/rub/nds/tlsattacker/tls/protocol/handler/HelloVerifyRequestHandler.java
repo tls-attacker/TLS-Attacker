@@ -39,12 +39,12 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
     }
 
     @Override
-    public Preparator getPreparator(HelloVerifyRequestMessage message) {
+    public HelloVerifyRequestPreparator getPreparator(HelloVerifyRequestMessage message) {
         return new HelloVerifyRequestPreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(HelloVerifyRequestMessage message) {
+    public HelloVerifyRequestSerializer getSerializer(HelloVerifyRequestMessage message) {
         return new HelloVerifyRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

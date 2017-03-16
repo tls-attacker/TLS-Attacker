@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
 
 /**
  *
@@ -22,13 +22,14 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
     }
 
     @Override
-    public EllipticCurvesExtensionMessage parse() {
-        EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
-        parseExtensionType(msg);
-        parseExtensionLength(msg);
+    public void parseExtensionMessageContent(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedCurvesLength(parseIntField(ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES_LENGTH));
         msg.setSupportedCurves(parseByteArrayField(msg.getSupportedCurvesLength().getValue()));
-        return msg;
     }
-    
+
+    @Override
+    protected EllipticCurvesExtensionMessage createExtensionMessage() {
+        return new EllipticCurvesExtensionMessage();
+    }
+
 }

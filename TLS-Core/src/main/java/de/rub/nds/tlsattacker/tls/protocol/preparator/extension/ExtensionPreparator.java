@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +24,22 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    public ExtensionPreparator(TlsContext context, T object) {
-        super(context, object);
+    private ExtensionMessage message;
+
+    public ExtensionPreparator(TlsContext context, T message) {
+        super(context, message);
+        this.message = message;
     }
+
+    @Override
+    public final void prepare() {
+        prepareExtensionContent();
+        ExtensionSerializer serializer = message.getExtensionSerializer();
+        byte[] content = serializer.serializeExtensionContent();
+        message.setExtensionBytes(content);
+        message.setExtensionLength(message.getExtensionBytes().getValue().length);
+    }
+
+    public abstract void prepareExtensionContent();
 
 }

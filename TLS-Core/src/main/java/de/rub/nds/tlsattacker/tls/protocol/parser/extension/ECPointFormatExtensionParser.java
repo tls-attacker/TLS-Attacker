@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
 
 /**
  *
@@ -22,13 +22,14 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
     }
 
     @Override
-    public ECPointFormatExtensionMessage parse() {
-        ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
-        parseExtensionType(msg);
-        parseExtensionLength(msg);
+    public void parseExtensionMessageContent(ECPointFormatExtensionMessage msg) {
         msg.setPointFormatsLength(parseIntField(ExtensionByteLength.EC_POINT_FORMATS_LENGTH));
         msg.setPointFormats(parseByteArrayField(msg.getPointFormatsLength().getValue()));
-        return msg;
+    }
+
+    @Override
+    protected ECPointFormatExtensionMessage createExtensionMessage() {
+        return new ECPointFormatExtensionMessage();
     }
 
 }

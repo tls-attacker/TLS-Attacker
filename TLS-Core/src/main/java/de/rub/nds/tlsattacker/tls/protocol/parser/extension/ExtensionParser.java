@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +28,20 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
         super(startposition, array);
     }
 
+    @Override
+    public final T parse() {
+        T msg = createExtensionMessage();
+        parseExtensionType(msg);
+        parseExtensionLength(msg);
+        parseExtensionMessageContent(msg);
+        msg.setExtensionBytes(getAlreadyParsed());
+        return msg;
+    }
+
+    public abstract void parseExtensionMessageContent(T msg);
+
+    protected abstract T createExtensionMessage();
+
     /**
      * Reads the next bytes as the length of the Extension and writes them in
      * the message
@@ -35,7 +49,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * @param message
      *            Message to write in
      */
-    protected void parseExtensionLength(ExtensionMessage message) {
+    private void parseExtensionLength(ExtensionMessage message) {
         message.setExtensionLength(parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH));
     }
 
@@ -46,7 +60,7 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * @param message
      *            Message to write in
      */
-    protected void parseExtensionType(ExtensionMessage message) {
+    private void parseExtensionType(ExtensionMessage message) {
         message.setExtensionType(parseByteArrayField(ExtensionByteLength.TYPE));
     }
 

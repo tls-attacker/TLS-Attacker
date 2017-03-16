@@ -9,26 +9,27 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class SignatureAndHashAlgorithmsExtensionParser extends ExtensionParser<SignatureAndHashAlgorithmsExtensionMessage>{
+public class SignatureAndHashAlgorithmsExtensionParser extends
+        ExtensionParser<SignatureAndHashAlgorithmsExtensionMessage> {
 
     public SignatureAndHashAlgorithmsExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
-    public SignatureAndHashAlgorithmsExtensionMessage parse() {
-        SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
-        parseExtensionType(msg);
-        parseExtensionLength(msg);
+    public void parseExtensionMessageContent(SignatureAndHashAlgorithmsExtensionMessage msg) {
         msg.setSignatureAndHashAlgorithmsLength(parseIntField(ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH));
         msg.setSignatureAndHashAlgorithms(parseByteArrayField(msg.getSignatureAndHashAlgorithmsLength().getValue()));
-        return msg;
     }
-    
+
+    @Override
+    protected SignatureAndHashAlgorithmsExtensionMessage createExtensionMessage() {
+        return new SignatureAndHashAlgorithmsExtensionMessage();
+    }
 }

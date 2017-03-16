@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.tls.protocol.extension.ECPointFormatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.extension.HeartbeatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.MaxFragmentLengthExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.SignatureAndHashAlgorithmsExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.extension.UnknownExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ECPointFormatExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.EllipticCurvesExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.HeartbeatExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ServerNameIndicationExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.UnknownExtensionHandler;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -82,24 +82,5 @@ public enum ExtensionType {
 
     public byte getMinor() {
         return value[1];
-    }
-
-    public ExtensionHandler<? extends ExtensionMessage> getExtensionHandler() {
-        switch (this) {
-            case SERVER_NAME_INDICATION:
-                return new ServerNameIndicationExtensionHandler();
-            case MAX_FRAGMENT_LENGTH:
-                return new MaxFragmentLengthExtensionHandler();
-            case EC_POINT_FORMATS:
-                return new ECPointFormatExtensionHandler();
-            case ELLIPTIC_CURVES:
-                return new EllipticCurvesExtensionHandler();
-            case SIGNATURE_AND_HASH_ALGORITHMS:
-                return new SignatureAndHashAlgorithmsExtensionHandler();
-            case HEARTBEAT:
-                return new HeartbeatExtensionHandler();
-            default:
-                return new UnknownExtensionHandler();
-        }
     }
 }

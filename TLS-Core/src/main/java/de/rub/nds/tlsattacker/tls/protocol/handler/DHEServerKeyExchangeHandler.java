@@ -51,7 +51,7 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     }
 
     @Override
-    public Serializer getSerializer(DHEServerKeyExchangeMessage message) {
+    public DHEServerKeyExchangeSerializer getSerializer(DHEServerKeyExchangeMessage message) {
         return new DHEServerKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

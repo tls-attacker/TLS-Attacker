@@ -36,12 +36,12 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
     }
 
     @Override
-    public Preparator getPreparator(AlertMessage message) {
+    public AlertPreparator getPreparator(AlertMessage message) {
         return new AlertPreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(AlertMessage message) {
+    public AlertSerializer getSerializer(AlertMessage message) {
         return new AlertSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 

@@ -9,14 +9,14 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNamePair;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ServerNamePairParser extends Parser<ServerNamePair>{
+public class ServerNamePairParser extends Parser<ServerNamePair> {
 
     public ServerNamePairParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -30,6 +30,5 @@ public class ServerNamePairParser extends Parser<ServerNamePair>{
         pair.setServerName(parseByteArrayField(pair.getServerNameLength().getValue()));
         return pair;
     }
-    
-    
+
 }

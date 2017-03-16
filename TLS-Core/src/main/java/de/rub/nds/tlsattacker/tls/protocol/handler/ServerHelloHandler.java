@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.handler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
@@ -37,17 +37,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    public Preparator getPreparator(ServerHelloMessage message) {
+    public ServerHelloMessagePreparator getPreparator(ServerHelloMessage message) {
         return new ServerHelloMessagePreparator(tlsContext, message);
     }
 
     @Override
-    public Serializer getSerializer(ServerHelloMessage message) {
+    public ServerHelloMessageSerializer getSerializer(ServerHelloMessage message) {
         return new ServerHelloMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override
-    public Parser getParser(byte[] message, int pointer) {
+    public ServerHelloParser getParser(byte[] message, int pointer) {
         return new ServerHelloParser(pointer, message, tlsContext.getLastRecordVersion());
     }
 
