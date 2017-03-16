@@ -34,7 +34,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     @Override
     public final void prepare() {
         prepareExtensionContent();
-        ExtensionSerializer serializer = message.getExtensionSerializer();
+        ExtensionSerializer serializer = message.getHandler(context).getSerializer(message);
         byte[] content = serializer.serializeExtensionContent();
         message.setExtensionBytes(content);
         message.setExtensionLength(message.getExtensionBytes().getValue().length);

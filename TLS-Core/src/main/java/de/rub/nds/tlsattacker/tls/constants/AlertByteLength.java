@@ -16,7 +16,7 @@ public class AlertByteLength {
 
     private AlertByteLength() {
     }
-    
+
     /**
      * certificate length field
      */

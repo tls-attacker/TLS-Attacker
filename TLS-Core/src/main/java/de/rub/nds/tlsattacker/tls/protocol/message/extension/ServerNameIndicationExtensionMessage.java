@@ -16,16 +16,19 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NameType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Describes Server Name Indication extension from
  * http://tools.ietf.org/html/rfc6066
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
@@ -88,31 +91,7 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionPreparator<? extends ExtensionMessage> getExtensionPreparator() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public ServerNameIndicationExtensionHandler getHandler(TlsContext context) {
+        return new ServerNameIndicationExtensionHandler(context);
     }
-
-    @Override
-    public ExtensionSerializer<? extends ExtensionMessage> getExtensionSerializer() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
-    }
-
 }

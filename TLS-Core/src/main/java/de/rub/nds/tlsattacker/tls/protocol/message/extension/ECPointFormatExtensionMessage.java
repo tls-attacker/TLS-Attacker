@@ -14,9 +14,9 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ECPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -74,30 +74,7 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionPreparator<? extends ExtensionMessage> getExtensionPreparator() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
-    }
-
-    @Override
-    public ExtensionSerializer<? extends ExtensionMessage> getExtensionSerializer() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public ECPointFormatExtensionHandler getHandler(TlsContext context) {
+        return new ECPointFormatExtensionHandler(context);
     }
 }

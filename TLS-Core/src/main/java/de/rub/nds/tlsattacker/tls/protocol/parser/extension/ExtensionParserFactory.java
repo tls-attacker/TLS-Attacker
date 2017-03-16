@@ -8,7 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ECPointFormatExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.EllipticCurvesExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,29 +25,35 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
-    public static ExtensionParser getExtensionParser(int startPosition, byte[] array) {
-        // Try to read the type, else just return unknown
-        ExtensionType type = ExtensionType.UNKNOWN;
-        if (array.length - startPosition >= 2) {
-            byte[] byteType = new byte[2];
-            byteType[0] = array[startPosition];
-            byteType[1] = array[startPosition + 1];
-            type = ExtensionType.getExtensionType(byteType);
+    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer) {
+        if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
+            throw new PreparationException("Could not retrieve Parser for ExtensionBytes");
         }
+        byte[] typeBytes = new byte[2];
+        typeBytes[0] = extensionBytes[pointer];
+        typeBytes[1] = extensionBytes[pointer + 1];
+        ExtensionType type = ExtensionType.getExtensionType(typeBytes);
+        ExtensionParser parser = null;
         switch (type) {
             case CLIENT_CERTIFICATE_URL:
                 break;
             case EC_POINT_FORMATS:
+                parser = new ECPointFormatExtensionParser(pointer, extensionBytes);
                 break;
             case ELLIPTIC_CURVES:
+                parser = new EllipticCurvesExtensionParser(pointer, extensionBytes);
                 break;
             case HEARTBEAT:
+                parser = new HeartbeatExtensionParser(pointer, extensionBytes);
                 break;
             case MAX_FRAGMENT_LENGTH:
+                parser = new MaxFragmentLengthExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_NAME_INDICATION:
+                parser = new ServerNameIndicationExtensionParser(pointer, extensionBytes);
                 break;
             case SIGNATURE_AND_HASH_ALGORITHMS:
+                parser = new SignatureAndHashAlgorithmsExtensionParser(pointer, extensionBytes);
                 break;
             case STATUS_REQUEST:
                 break;
@@ -51,8 +62,12 @@ public class ExtensionParserFactory {
             case TRUSTED_CA_KEYS:
                 break;
             case UNKNOWN:
-                return new UnknownExtensionParser(startPosition, array);
+                parser = new UnknownExtensionParser(pointer, extensionBytes);
+                break;
         }
-        return new UnknownExtensionParser(startPosition, array);
+        if (parser == null) {
+            LOGGER.warn("Type: " + type.name() + " not implemented yet, using UnknownExtensionParser instead");
+        }
+        return parser;
     }
 }

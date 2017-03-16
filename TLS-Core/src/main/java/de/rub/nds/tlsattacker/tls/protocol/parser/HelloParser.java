@@ -159,8 +159,7 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
         int pointer = 0;
         while (pointer < extensionBytes.length) {
-            ExtensionParser<ExtensionMessage> parser = ExtensionParserFactory.getExtensionParser(pointer,
-                    extensionBytes);
+            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer);
             extensionMessages.add(parser.parse());
             pointer = parser.getPointer();
         }

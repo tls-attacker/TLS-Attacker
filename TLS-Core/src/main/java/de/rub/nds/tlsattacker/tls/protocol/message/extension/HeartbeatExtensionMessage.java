@@ -13,9 +13,12 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -59,31 +62,7 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionPreparator<? extends ExtensionMessage> getExtensionPreparator() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public HeartbeatExtensionHandler getHandler(TlsContext context) {
+        return new HeartbeatExtensionHandler(context);
     }
-
-    @Override
-    public ExtensionSerializer<? extends ExtensionMessage> getExtensionSerializer() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
-    }
-
 }
