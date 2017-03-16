@@ -13,11 +13,12 @@ import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.NameType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -56,8 +57,10 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         List<TLSAction> actions = trace.getTLSActions();
         ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage(tlsConfig);
-        sni.setServerNameConfig(config.getServerName2());
-        sni.setNameTypeConfig(NameType.HOST_NAME);
+        ServerNamePair pair = new ServerNamePair();
+        pair.setServerNameConfig(config.getServerName2().getBytes());
+        pair.setServerNameTypeConfig(NameType.HOST_NAME.getValue());
+        sni.getServerNameList().add(pair);
         ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
                 .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
         ch2.addExtension(sni);
