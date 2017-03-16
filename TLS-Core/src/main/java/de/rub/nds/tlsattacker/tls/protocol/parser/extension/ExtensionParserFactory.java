@@ -61,12 +61,49 @@ public class ExtensionParserFactory {
                 break;
             case TRUSTED_CA_KEYS:
                 break;
+            case ALPN:
+                break;
+            case CACHED_INFO:
+                break;
+            case CERT_TYPE:
+                break;
+            case CLIENT_AUTHZ:
+                break;
+            case CLIENT_CERTIFICATE_TYPE:
+                break;
+            case ENCRYPT_THEN_MAC:
+                break;
+            case EXTENDED_MASTER_SECRET:
+                break;
+            case PADDING:
+                break;
+            case RENEGOTIATION_INFO:
+                break;
+            case SERVER_AUTHZ:
+                break;
+            case SERVER_CERTIFICATE_TYPE:
+                break;
+            case SESSION_TICKET:
+                break;
+            case SIGNED_CERTIFICATE_TIMESTAMP:
+                break;
+            case SRP:
+                break;
+            case STATUS_REQUEST_V2:
+                break;
+            case TOKEN_BINDING:
+                break;
+            case USER_MAPPING:
+                break;
+            case USE_SRTP:
+                break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes);
                 break;
         }
         if (parser == null) {
             LOGGER.warn("Type: " + type.name() + " not implemented yet, using UnknownExtensionParser instead");
+            parser = new UnknownExtensionParser(pointer, typeBytes);
         }
         return parser;
     }
