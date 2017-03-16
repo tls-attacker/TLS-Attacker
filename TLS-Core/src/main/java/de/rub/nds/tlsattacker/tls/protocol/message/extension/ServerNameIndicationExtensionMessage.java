@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message.extension;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;

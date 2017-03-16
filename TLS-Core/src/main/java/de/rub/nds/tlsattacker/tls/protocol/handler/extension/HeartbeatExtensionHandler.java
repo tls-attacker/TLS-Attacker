@@ -8,21 +8,13 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.HeartbeatExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.HeartbeatExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -35,16 +27,13 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
     @Override
     protected void adjustTLSContext(HeartbeatExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        byte[] heartbeatMode = message.getHeartbeatMode().getValue();
+        if(heartbeatMode.length != 1)
+        {
+            throw new AdjustmentException("Cannot set Heartbeatmode to a resonable Value");
+        }
+        HeartbeatMode mode = HeartbeatMode.getHeartbeatMessageType(heartbeatMode[0]);
+        context.setHeartbeatMode(mode);
     }
 
     @Override

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ECPointFormatExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
@@ -16,6 +17,9 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPrepara
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -28,16 +32,18 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
 
     @Override
     protected void adjustTLSContext(ECPointFormatExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        List<ECPointFormat> formatList = new LinkedList<>();
+        byte[] pointFormats = message.getPointFormats().getValue();
+        for (byte b : pointFormats) {
+            ECPointFormat format = ECPointFormat.getECPointFormat(pointFormats[b]);
+            formatList.add(format);
+        }
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+            context.setClientPointFormatsList(formatList);
+        } else {
+            context.setServerPointFormatsList(formatList);
+        }
+
     }
 
     @Override

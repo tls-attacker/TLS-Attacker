@@ -8,24 +8,18 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -40,16 +34,19 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
 
     @Override
     protected void adjustTLSContext(SignatureAndHashAlgorithmsExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
+        byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
+        if(signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0)
+        {
+            throw new AdjustmentException("Cannot adjust ClientSupportedSignature and Hash algorithms to a resonable Value");
+        }
+        for(int i = 0; i < signatureAndHashBytes.length; i = i+HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
+        {
+            byte[] algoBytes = Arrays.copyOfRange(signatureAndHashBytes, i, i+HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
+            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+            algoList.add(algo);
+        }
+        context.setClientSupportedSignatureAndHashAlgorithms(algoList);
     }
 
     @Override

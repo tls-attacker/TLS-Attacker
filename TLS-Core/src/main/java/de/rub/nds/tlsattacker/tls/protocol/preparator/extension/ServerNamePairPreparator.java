@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNamePair;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 

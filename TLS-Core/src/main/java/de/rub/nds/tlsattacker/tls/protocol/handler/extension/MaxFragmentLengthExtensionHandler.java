@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
@@ -35,16 +37,12 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
 
     @Override
     protected void adjustTLSContext(MaxFragmentLengthExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        byte[] maxFragmentLengthBytes = message.getMaxFragmentLength().getValue();
+        if (maxFragmentLengthBytes.length != 1) {
+            throw new AdjustmentException("Cannot adjust MaxFragmentLength to a resonable value");
+        }
+        MaxFragmentLength length = MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
+        context.setMaxFragmentLength(length);
     }
 
     @Override

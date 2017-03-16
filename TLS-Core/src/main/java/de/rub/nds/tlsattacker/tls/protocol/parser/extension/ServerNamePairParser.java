@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNamePair;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 
 /**

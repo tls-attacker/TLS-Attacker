@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,11 +73,11 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         ECPoint point = curve.createPoint(message.getPublicKeyBaseX().getValue(), message.getPublicKeyBaseY()
                 .getValue());
 
-        ECPointFormat[] pointFormats = context.getServerPointFormats();
+        List<ECPointFormat> pointFormatList = context.getServerPointFormatsList();
         // TODO i guess some of the intermediate calculated values could be
         // inseterd into computations
         try {
-            byte[] serializedPoint = ECCUtilsBCWrapper.serializeECPoint(pointFormats, point);
+            byte[] serializedPoint = ECCUtilsBCWrapper.serializeECPoint((ECPointFormat[]) pointFormatList.toArray(), point);
             message.setEcPointFormat(serializedPoint[0]);
             message.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
             message.setSerializedPublicKey(serializedPoint);

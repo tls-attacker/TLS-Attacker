@@ -8,20 +8,16 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.constants.NameType;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ServerNameIndicationExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -34,16 +30,12 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     @Override
     protected void adjustTLSContext(ServerNameIndicationExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        List<SNIEntry> sniEntryList = new LinkedList<>();
+        for(ServerNamePair pair : message.getServerNameList())
+        {
+            sniEntryList.add(new SNIEntry(new String(pair.getServerName().getValue()), NameType.HOST_NAME));
+        }
+        context.setClientSNIEntryList(sniEntryList);
     }
 
     @Override

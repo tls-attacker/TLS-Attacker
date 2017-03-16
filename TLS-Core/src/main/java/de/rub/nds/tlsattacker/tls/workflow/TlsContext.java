@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -125,6 +127,8 @@ public class TlsContext {
 
     private List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms;
 
+    private List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms;
+
     private HeartbeatMode heartbeatMode;
 
     private MaxFragmentLength maxFragmentLength;
@@ -144,13 +148,11 @@ public class TlsContext {
      */
     private NamedCurve[] clientNamedCurves;
     /**
-     * supported server point formats
-     */
-    private ECPointFormat[] serverPointFormats;
-    /**
      * supported client point formats
      */
-    private ECPointFormat[] clientPointFormats;
+    private List<ECPointFormat> clientPointFormatsList;
+    
+    private List<ECPointFormat> serverPointFormatsList;
 
     private boolean receivedFatalAlert = false;
 
@@ -159,6 +161,8 @@ public class TlsContext {
     private byte[] distinguishedNames;
 
     private ProtocolVersion lastRecordVersion;
+
+    private List<SNIEntry> clientSNIEntryList;
 
     public TlsContext() {
         digest = new TlsMessageDigest();
@@ -175,6 +179,30 @@ public class TlsContext {
         // init lastRecordVersion for records
         lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public List<ECPointFormat> getServerPointFormatsList() {
+        return serverPointFormatsList;
+    }
+
+    public void setServerPointFormatsList(List<ECPointFormat> serverPointFormatsList) {
+        this.serverPointFormatsList = serverPointFormatsList;
+    }
+    
+    public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
+        return clientSupportedSignatureAndHashAlgorithms;
+    }
+
+    public void setClientSupportedSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+        this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
+    }
+
+    public List<SNIEntry> getClientSNIEntryList() {
+        return clientSNIEntryList;
+    }
+
+    public void setClientSNIEntryList(List<SNIEntry> clientSNIEntryList) {
+        this.clientSNIEntryList = clientSNIEntryList;
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -225,20 +253,12 @@ public class TlsContext {
         this.clientNamedCurves = clientNamedCurves;
     }
 
-    public ECPointFormat[] getServerPointFormats() {
-        return serverPointFormats;
+    public List<ECPointFormat> getClientPointFormatsList() {
+        return clientPointFormatsList;
     }
 
-    public void setServerPointFormats(ECPointFormat[] serverPointFormats) {
-        this.serverPointFormats = serverPointFormats;
-    }
-
-    public ECPointFormat[] getClientPointFormats() {
-        return clientPointFormats;
-    }
-
-    public void setClientPointFormats(ECPointFormat[] clientPointFormats) {
-        this.clientPointFormats = clientPointFormats;
+    public void setClientPointFormatsList(List<ECPointFormat> clientPointFormatsList) {
+        this.clientPointFormatsList = clientPointFormatsList;
     }
 
     public PublicKey getClientPublicKey() {

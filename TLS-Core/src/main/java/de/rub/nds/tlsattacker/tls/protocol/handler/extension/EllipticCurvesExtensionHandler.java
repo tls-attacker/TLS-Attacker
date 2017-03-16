@@ -9,20 +9,16 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.EllipticCurvesExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -35,16 +31,18 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     @Override
     protected void adjustTLSContext(EllipticCurvesExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        byte[] curveBytes = message.getSupportedCurves().getValue();
+        if (curveBytes.length % NamedCurve.LENGTH != 0) {
+            throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");
+        }
+        List<NamedCurve> curveList = new LinkedList<>();
+        for (int i = 0; i < curveBytes.length; i = i + NamedCurve.LENGTH) {
+            byte[] curve = Arrays.copyOfRange(curveBytes, i, i+NamedCurve.LENGTH);
+            NamedCurve namedCurve = NamedCurve.getNamedCurve(curve);
+            curveList.add(namedCurve);
+        }
+        //TODO should use the list directly
+        context.setClientNamedCurves((NamedCurve[]) curveList.toArray());
     }
 
     @Override
