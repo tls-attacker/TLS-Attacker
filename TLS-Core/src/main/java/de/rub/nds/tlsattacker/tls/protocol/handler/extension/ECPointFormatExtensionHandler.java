@@ -20,11 +20,15 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public ECPointFormatExtensionHandler(TlsContext context) {
         super(context);
@@ -36,7 +40,11 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         byte[] pointFormats = message.getPointFormats().getValue();
         for (byte b : pointFormats) {
             ECPointFormat format = ECPointFormat.getECPointFormat(b);
-            formatList.add(format);
+            if (format != null) {
+                formatList.add(format);
+            } else {
+                LOGGER.warn("Unknown ECPointFormat:" + b);
+            }
         }
         if (context.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
             context.setClientPointFormatsList(formatList);

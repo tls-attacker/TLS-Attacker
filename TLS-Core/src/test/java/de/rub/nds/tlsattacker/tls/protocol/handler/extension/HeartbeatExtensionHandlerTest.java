@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.HeartbeatExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.HeartbeatExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.HeartbeatExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,11 +24,17 @@ import static org.junit.Assert.*;
  */
 public class HeartbeatExtensionHandlerTest {
 
+    private HeartbeatExtensionHandler handler;
+
+    private TlsContext context;
+
     public HeartbeatExtensionHandlerTest() {
     }
 
     @Before
     public void setUp() {
+        context = new TlsContext();
+        handler = new HeartbeatExtensionHandler(context);
     }
 
     /**
@@ -30,6 +42,18 @@ public class HeartbeatExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
+        HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
+        msg.setHeartbeatMode(new byte[] { 1 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getHeartbeatMode() == HeartbeatMode.PEER_ALLOWED_TO_SEND);
+    }
+
+    @Test
+    public void testAdjustUnspecifiedMode() {
+        HeartbeatExtensionMessage msg = new HeartbeatExtensionMessage();
+        msg.setHeartbeatMode(new byte[] { (byte) 0xFF });
+        handler.adjustTLSContext(msg);
+        assertNull(context.getHeartbeatMode());
     }
 
     /**
@@ -37,6 +61,7 @@ public class HeartbeatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, }, 0) instanceof HeartbeatExtensionParser);
     }
 
     /**
@@ -44,6 +69,7 @@ public class HeartbeatExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
+        assertTrue(handler.getPreparator(new HeartbeatExtensionMessage()) instanceof HeartbeatExtensionPreparator);
     }
 
     /**
@@ -51,6 +77,7 @@ public class HeartbeatExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
+        assertTrue(handler.getSerializer(new HeartbeatExtensionMessage()) instanceof HeartbeatExtensionSerializer);
     }
 
 }

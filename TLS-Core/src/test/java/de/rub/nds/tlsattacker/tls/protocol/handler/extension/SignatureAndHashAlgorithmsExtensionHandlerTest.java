@@ -8,6 +8,13 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SignatureAndHashAlgorithmsExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,11 +25,16 @@ import static org.junit.Assert.*;
  */
 public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
+    private SignatureAndHashAlgorithmsExtensionHandler handler;
+    private TlsContext context;
+
     public SignatureAndHashAlgorithmsExtensionHandlerTest() {
     }
 
     @Before
     public void setUp() {
+        context = new TlsContext();
+        handler = new SignatureAndHashAlgorithmsExtensionHandler(context);
     }
 
     /**
@@ -31,6 +43,20 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
+        SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
+        msg.setSignatureAndHashAlgorithms(new byte[] { 0, 0 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm() == SignatureAlgorithm.ANONYMOUS);
+    }
+
+    @Test
+    public void testAdjustInvalidTLSContext() {
+        SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
+        msg.setSignatureAndHashAlgorithms(new byte[] { 99, 99 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 0);
     }
 
     /**
@@ -39,6 +65,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
+        assertTrue(handler.getParser(new byte[] { 0, 2 }, 0) instanceof SignatureAndHashAlgorithmsExtensionParser);
     }
 
     /**
@@ -47,6 +74,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
+        assertTrue(handler.getPreparator(new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionPreparator);
     }
 
     /**
@@ -55,6 +83,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
+        assertTrue(handler.getSerializer(new SignatureAndHashAlgorithmsExtensionMessage()) instanceof SignatureAndHashAlgorithmsExtensionSerializer);
     }
 
 }

@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.MaxFragmentLengthExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,11 +24,17 @@ import static org.junit.Assert.*;
  */
 public class MaxFragmentLengthExtensionHandlerTest {
 
+    private MaxFragmentLengthExtensionHandler handler;
+
+    private TlsContext context;
+
     public MaxFragmentLengthExtensionHandlerTest() {
     }
 
     @Before
     public void setUp() {
+        context = new TlsContext();
+        handler = new MaxFragmentLengthExtensionHandler(context);
     }
 
     /**
@@ -31,6 +43,18 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
+        MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
+        msg.setMaxFragmentLength(new byte[] { 1 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getMaxFragmentLength() == MaxFragmentLength.TWO_9);
+    }
+
+    @Test
+    public void testUndefinedAdjustment() {
+        MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
+        msg.setMaxFragmentLength(new byte[] { 77 });
+        handler.adjustTLSContext(msg);
+        assertNull(context.getMaxFragmentLength());
     }
 
     /**
@@ -38,6 +62,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3 }, 0) instanceof MaxFragmentLengthExtensionParser);
     }
 
     /**
@@ -45,6 +70,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
+        assertTrue(handler.getPreparator(new MaxFragmentLengthExtensionMessage()) instanceof MaxFragmentLengthExtensionPreparator);
     }
 
     /**
@@ -52,6 +78,7 @@ public class MaxFragmentLengthExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
+        assertTrue(handler.getSerializer(new MaxFragmentLengthExtensionMessage()) instanceof MaxFragmentLengthExtensionSerializer);
     }
 
 }

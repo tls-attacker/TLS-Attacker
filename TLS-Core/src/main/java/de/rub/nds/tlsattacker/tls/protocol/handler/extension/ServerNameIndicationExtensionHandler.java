@@ -18,11 +18,15 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ServerNameIndica
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ServerNameIndicationExtensionHandler extends ExtensionHandler<ServerNameIndicationExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public ServerNameIndicationExtensionHandler(TlsContext context) {
         super(context);
@@ -31,9 +35,13 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
     @Override
     protected void adjustTLSContext(ServerNameIndicationExtensionMessage message) {
         List<SNIEntry> sniEntryList = new LinkedList<>();
-        for(ServerNamePair pair : message.getServerNameList())
-        {
-            sniEntryList.add(new SNIEntry(new String(pair.getServerName().getValue()), NameType.HOST_NAME));
+        for (ServerNamePair pair : message.getServerNameList()) {
+            NameType type = NameType.getNameType(pair.getServerNameType().getValue());
+            if (type != null) {
+                sniEntryList.add(new SNIEntry(new String(pair.getServerName().getValue()), type));
+            } else {
+                LOGGER.warn("Unknown SNI Type:" + pair.getServerNameType().getValue());
+            }
         }
         context.setClientSNIEntryList(sniEntryList);
     }

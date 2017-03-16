@@ -8,6 +8,13 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ECPointFormatExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ECPointFormatExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ECPointFormatExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,11 +25,16 @@ import static org.junit.Assert.*;
  */
 public class ECPointFormatExtensionHandlerTest {
 
+    private ECPointFormatExtensionHandler handler;
+    private TlsContext context;
+
     public ECPointFormatExtensionHandlerTest() {
     }
 
     @Before
     public void setUp() {
+        context = new TlsContext();
+        handler = new ECPointFormatExtensionHandler(context);
     }
 
     /**
@@ -30,6 +42,19 @@ public class ECPointFormatExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
+        ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
+        msg.setPointFormats(new byte[] { 0, 1 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getClientPointFormatsList().size() == 2);
+        assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.UNCOMPRESSED));
+        assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+    }
+
+    public void testUnadjustableMessage() {
+        ECPointFormatExtensionMessage msg = new ECPointFormatExtensionMessage();
+        msg.setPointFormats(new byte[] { 5 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getClientPointFormatsList().isEmpty());
     }
 
     /**
@@ -37,6 +62,7 @@ public class ECPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
+        assertTrue(handler.getParser(new byte[] { 123 }, 0) instanceof ECPointFormatExtensionParser);
     }
 
     /**
@@ -44,6 +70,7 @@ public class ECPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
+        assertTrue(handler.getPreparator(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionPreparator);
     }
 
     /**
@@ -51,6 +78,7 @@ public class ECPointFormatExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
+        assertTrue(handler.getSerializer(new ECPointFormatExtensionMessage()) instanceof ECPointFormatExtensionSerializer);
     }
 
 }

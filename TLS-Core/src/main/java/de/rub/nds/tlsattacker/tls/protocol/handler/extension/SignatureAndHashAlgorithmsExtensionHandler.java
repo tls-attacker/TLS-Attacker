@@ -17,9 +17,12 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SignatureAndHashAlgo
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -27,6 +30,8 @@ import java.util.List;
  */
 public class SignatureAndHashAlgorithmsExtensionHandler extends
         ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public SignatureAndHashAlgorithmsExtensionHandler(TlsContext context) {
         super(context);
@@ -36,15 +41,19 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     protected void adjustTLSContext(SignatureAndHashAlgorithmsExtensionMessage message) {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
-        if(signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0)
-        {
-            throw new AdjustmentException("Cannot adjust ClientSupportedSignature and Hash algorithms to a resonable Value");
+        if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
+            throw new AdjustmentException(
+                    "Cannot adjust ClientSupportedSignature and Hash algorithms to a resonable Value");
         }
-        for(int i = 0; i < signatureAndHashBytes.length; i = i+HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
-        {
-            byte[] algoBytes = Arrays.copyOfRange(signatureAndHashBytes, i, i+HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
+        for (int i = 0; i < signatureAndHashBytes.length; i = i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
+            byte[] algoBytes = Arrays.copyOfRange(signatureAndHashBytes, i, i
+                    + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
-            algoList.add(algo);
+            if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
+                LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
+            } else {
+                algoList.add(algo);
+            }
         }
         context.setClientSupportedSignatureAndHashAlgorithms(algoList);
     }

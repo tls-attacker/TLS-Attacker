@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.UnknownExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.UnknownExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.UnknownExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,11 +23,16 @@ import static org.junit.Assert.*;
  */
 public class UnknownExtensionHandlerTest {
 
+    private UnknownExtensionHandler handler;
+    private TlsContext context;
+
     public UnknownExtensionHandlerTest() {
     }
 
     @Before
     public void setUp() {
+        context = new TlsContext();
+        handler = new UnknownExtensionHandler(context);
     }
 
     /**
@@ -30,6 +40,9 @@ public class UnknownExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
+        UnknownExtensionMessage msg = new UnknownExtensionMessage();
+        handler.adjustTLSContext(msg);
+        // TODO Check that context does not change
     }
 
     /**
@@ -37,6 +50,7 @@ public class UnknownExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
+        assertTrue(handler.getParser(new byte[] { 0, 1, 2, 3, 4 }, 0) instanceof UnknownExtensionParser);
     }
 
     /**
@@ -44,6 +58,7 @@ public class UnknownExtensionHandlerTest {
      */
     @Test
     public void testGetPreparator() {
+        assertTrue(handler.getPreparator(new UnknownExtensionMessage()) instanceof UnknownExtensionPreparator);
     }
 
     /**
@@ -51,6 +66,7 @@ public class UnknownExtensionHandlerTest {
      */
     @Test
     public void testGetSerializer() {
+        assertTrue(handler.getSerializer(new UnknownExtensionMessage()) instanceof UnknownExtensionSerializer);
     }
 
 }

@@ -16,12 +16,16 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPrepara
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     protected final TlsContext context;
 

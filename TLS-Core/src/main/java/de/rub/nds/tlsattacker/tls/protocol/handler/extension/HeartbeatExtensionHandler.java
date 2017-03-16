@@ -15,11 +15,16 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.extension.HeartbeatExtensionPa
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.HeartbeatExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public HeartbeatExtensionHandler(TlsContext context) {
         super(context);
@@ -28,12 +33,15 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     @Override
     protected void adjustTLSContext(HeartbeatExtensionMessage message) {
         byte[] heartbeatMode = message.getHeartbeatMode().getValue();
-        if(heartbeatMode.length != 1)
-        {
+        if (heartbeatMode.length != 1) {
             throw new AdjustmentException("Cannot set Heartbeatmode to a resonable Value");
         }
         HeartbeatMode mode = HeartbeatMode.getHeartbeatMessageType(heartbeatMode[0]);
-        context.setHeartbeatMode(mode);
+        if (mode == null) {
+            LOGGER.warn("Unknown HeartbeatMode: " + ArrayConverter.bytesToHexString(heartbeatMode));
+        } else {
+            context.setHeartbeatMode(mode);
+        }
     }
 
     @Override

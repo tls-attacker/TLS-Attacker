@@ -25,11 +25,15 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.MaxFragmentLengt
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragmentLengthExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public MaxFragmentLengthExtensionHandler(TlsContext context) {
         super(context);
@@ -42,7 +46,11 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
             throw new AdjustmentException("Cannot adjust MaxFragmentLength to a resonable value");
         }
         MaxFragmentLength length = MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
-        context.setMaxFragmentLength(length);
+        if (length == null) {
+            LOGGER.warn("Unknown MaxFragmentLength:" + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
+        } else {
+            context.setMaxFragmentLength(length);
+        }
     }
 
     @Override

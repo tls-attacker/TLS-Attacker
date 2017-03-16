@@ -8,20 +8,16 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.UnknownExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.UnknownExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -29,22 +25,15 @@ import java.util.Arrays;
  */
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+
     public UnknownExtensionHandler(TlsContext context) {
         super(context);
     }
 
     @Override
     protected void adjustTLSContext(UnknownExtensionMessage message) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+
     }
 
     @Override

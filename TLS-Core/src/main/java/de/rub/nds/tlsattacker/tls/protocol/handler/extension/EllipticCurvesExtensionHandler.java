@@ -16,14 +16,19 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.extension.EllipticCurvesExtens
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public EllipticCurvesExtensionHandler(TlsContext context) {
         super(context);
@@ -37,12 +42,16 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
         }
         List<NamedCurve> curveList = new LinkedList<>();
         for (int i = 0; i < curveBytes.length; i = i + NamedCurve.LENGTH) {
-            byte[] curve = Arrays.copyOfRange(curveBytes, i, i+NamedCurve.LENGTH);
+            byte[] curve = Arrays.copyOfRange(curveBytes, i, i + NamedCurve.LENGTH);
             NamedCurve namedCurve = NamedCurve.getNamedCurve(curve);
-            curveList.add(namedCurve);
+            if (namedCurve == null) {
+                LOGGER.warn("Unknown EllipticCruve:" + ArrayConverter.bytesToHexString(curve));
+            } else {
+                curveList.add(namedCurve);
+            }
         }
-        //TODO should use the list directly
-        context.setClientNamedCurves((NamedCurve[]) curveList.toArray());
+
+        context.setClientNamedCurvesList(curveList);
     }
 
     @Override

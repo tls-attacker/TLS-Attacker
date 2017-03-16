@@ -146,12 +146,12 @@ public class TlsContext {
     /**
      * supported named curves
      */
-    private NamedCurve[] clientNamedCurves;
+    private List<NamedCurve> clientNamedCurvesList;
     /**
      * supported client point formats
      */
     private List<ECPointFormat> clientPointFormatsList;
-    
+
     private List<ECPointFormat> serverPointFormatsList;
 
     private boolean receivedFatalAlert = false;
@@ -181,6 +181,14 @@ public class TlsContext {
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
+    public List<NamedCurve> getClientNamedCurvesList() {
+        return clientNamedCurvesList;
+    }
+
+    public void setClientNamedCurvesList(List<NamedCurve> clientNamedCurvesList) {
+        this.clientNamedCurvesList = clientNamedCurvesList;
+    }
+
     public List<ECPointFormat> getServerPointFormatsList() {
         return serverPointFormatsList;
     }
@@ -188,12 +196,13 @@ public class TlsContext {
     public void setServerPointFormatsList(List<ECPointFormat> serverPointFormatsList) {
         this.serverPointFormatsList = serverPointFormatsList;
     }
-    
+
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
         return clientSupportedSignatureAndHashAlgorithms;
     }
 
-    public void setClientSupportedSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+    public void setClientSupportedSignatureAndHashAlgorithms(
+            List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
@@ -243,14 +252,6 @@ public class TlsContext {
 
     public void setServerECPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
         this.serverPublicKeyParameters = serverPublicKeyParameters;
-    }
-
-    public NamedCurve[] getClientNamedCurves() {
-        return clientNamedCurves;
-    }
-
-    public void setClientNamedCurves(NamedCurve[] clientNamedCurves) {
-        this.clientNamedCurves = clientNamedCurves;
     }
 
     public List<ECPointFormat> getClientPointFormatsList() {
