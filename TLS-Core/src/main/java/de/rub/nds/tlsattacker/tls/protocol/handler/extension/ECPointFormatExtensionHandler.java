@@ -35,7 +35,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         List<ECPointFormat> formatList = new LinkedList<>();
         byte[] pointFormats = message.getPointFormats().getValue();
         for (byte b : pointFormats) {
-            ECPointFormat format = ECPointFormat.getECPointFormat(pointFormats[b]);
+            ECPointFormat format = ECPointFormat.getECPointFormat(b);
             formatList.add(format);
         }
         if (context.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
