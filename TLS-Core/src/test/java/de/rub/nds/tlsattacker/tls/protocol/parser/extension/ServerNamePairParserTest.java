@@ -28,9 +28,9 @@ public class ServerNamePairParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{ // TODO collect a real
-        // servername pair
-        });
+        return Arrays.asList(new Object[][] { // TODO collect a real
+                // servername pair
+                });
     }
 
     private byte[] servernamePairBytes;

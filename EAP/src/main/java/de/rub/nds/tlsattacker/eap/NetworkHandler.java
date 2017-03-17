@@ -62,9 +62,10 @@ public class NetworkHandler {
         StringBuilder errbuf = new StringBuilder(); // For any error msgs
         int index; // Device Index
         /**
-         * *************************************************************************
-         * First get a list of devices on this system
-         * ************************************************************************
+         * *********************************************************************
+         * **** First get a list of devices on this system
+         * **********************
+         * **************************************************
          */
         int r = Pcap.findAllDevs(alldevs, errbuf);
         if (r == Pcap.NOT_OK || alldevs.isEmpty()) {
@@ -72,8 +73,8 @@ public class NetworkHandler {
             return;
         }
         /**
+         * *************************************** Show all network interfaces
          * ***************************************
-         * Show all network interfaces ***************************************
          */
 
         int i = 0;
@@ -83,8 +84,8 @@ public class NetworkHandler {
             System.out.printf("#%d: %s [%s]\n", i++, device.getName(), description);
         }
         /**
+         * *************************************** Select network interfaces
          * ***************************************
-         * Select network interfaces ***************************************
          */
         try (final Scanner scanner = new Scanner(System.in)) {
             while (true) {
