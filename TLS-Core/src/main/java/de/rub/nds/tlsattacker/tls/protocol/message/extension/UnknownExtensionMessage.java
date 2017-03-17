@@ -30,13 +30,11 @@ public class UnknownExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray extensionData;
 
     public UnknownExtensionMessage(TlsConfig tlsConfig) {
-        super();
-        this.extensionTypeConstant = ExtensionType.UNKNOWN;
+        super(ExtensionType.UNKNOWN);
     }
 
     public UnknownExtensionMessage() {
-        super();
-        this.extensionTypeConstant = ExtensionType.UNKNOWN;
+        super(ExtensionType.UNKNOWN);
     }
 
     public int getLengthConfig() {
@@ -78,8 +76,8 @@ public class UnknownExtensionMessage extends ExtensionMessage {
     @Override
     public String toString() {
         return "UnknownExtensionMessage{ extensionData="
-                + ArrayConverter.bytesToHexString(extensionType.getValue(), false) + " extensionLength="
-                + extensionLength.getValue() + " extensionData="
+                + ArrayConverter.bytesToHexString(getExtensionType().getValue(), false) + " extensionLength="
+                + getExtensionLength().getValue() + " extensionData="
                 + ArrayConverter.bytesToHexString(extensionData.getValue(), false) + '}';
     }
 

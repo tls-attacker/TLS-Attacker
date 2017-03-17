@@ -44,19 +44,17 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     private List<ServerNamePair> serverNameList;
 
     public ServerNameIndicationExtensionMessage() {
-        super();
+        super(ExtensionType.SERVER_NAME_INDICATION);
         serverNameList = new LinkedList<>();
-        this.extensionTypeConstant = ExtensionType.SERVER_NAME_INDICATION;
     }
 
     public ServerNameIndicationExtensionMessage(TlsConfig config) {
-        super();
+        super(ExtensionType.SERVER_NAME_INDICATION);
         serverNameList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair();
         pair.setServerNameConfig(config.getSniHostname().getBytes());
         pair.setServerNameTypeConfig(config.getSniType().getValue());
         serverNameList.add(pair);
-        this.extensionTypeConstant = ExtensionType.SERVER_NAME_INDICATION;
     }
 
     public ModifiableInteger getServerNameListLength() {

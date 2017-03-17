@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -23,17 +24,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger supportedCurvesLength;
+    private ModifiableInteger supportedCurvesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray supportedCurves;
+    private ModifiableByteArray supportedCurves;
 
     public EllipticCurvesExtensionMessage(TlsConfig config) {
-        super();
+        super(ExtensionType.ELLIPTIC_CURVES);
     }
 
     public EllipticCurvesExtensionMessage() {
-        super();
+        super(ExtensionType.ELLIPTIC_CURVES);
     }
 
     public ModifiableInteger getSupportedCurvesLength() {

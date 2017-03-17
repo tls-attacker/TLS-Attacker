@@ -27,20 +27,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ECPointFormatExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger pointFormatsLength;
+    private ModifiableInteger pointFormatsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray pointFormats;
+    private ModifiableByteArray pointFormats;
 
     public ECPointFormatExtensionMessage() {
-        super();
-        this.extensionTypeConstant = ExtensionType.EC_POINT_FORMATS;
+        super(ExtensionType.EC_POINT_FORMATS);
     }
 
     public ECPointFormatExtensionMessage(TlsConfig tlsConfig) {
-        super();
+        super(ExtensionType.EC_POINT_FORMATS);
         this.setExtensionType(ExtensionType.EC_POINT_FORMATS.getValue());
-        this.extensionTypeConstant = ExtensionType.EC_POINT_FORMATS;
         byte[] formats = new byte[0];
         for (ECPointFormat format : tlsConfig.getPointFormats()) {
             formats = ArrayConverter.concatenate(format.getArrayValue(), formats);

@@ -30,17 +30,16 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
      * Maximum fragment length value described in rfc3546
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray maxFragmentLength;
+    private ModifiableByteArray maxFragmentLength;
 
     public MaxFragmentLengthExtensionMessage(TlsConfig tlsConfig) {
-        super();
-        this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
+        super(ExtensionType.MAX_FRAGMENT_LENGTH);
         this.setMaxFragmentLength(tlsConfig.getMaxFragmentLength().getArrayValue());
     }
 
     public MaxFragmentLengthExtensionMessage() {
-        super();
-        this.extensionTypeConstant = ExtensionType.MAX_FRAGMENT_LENGTH;
+        super(ExtensionType.MAX_FRAGMENT_LENGTH);
+
     }
 
     public ModifiableByteArray getMaxFragmentLength() {

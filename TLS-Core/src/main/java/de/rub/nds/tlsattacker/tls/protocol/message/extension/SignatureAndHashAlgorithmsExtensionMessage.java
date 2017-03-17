@@ -24,20 +24,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger signatureAndHashAlgorithmsLength;
+    private ModifiableInteger signatureAndHashAlgorithmsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray signatureAndHashAlgorithms;
+    private ModifiableByteArray signatureAndHashAlgorithms;
 
     public SignatureAndHashAlgorithmsExtensionMessage(TlsConfig tlsConfig) {
-        super();
-        this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
-
+        super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
     }
 
     public SignatureAndHashAlgorithmsExtensionMessage() {
-        super();
-        this.extensionTypeConstant = ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS;
+        super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
     }
 
     public ModifiableInteger getSignatureAndHashAlgorithmsLength() {
