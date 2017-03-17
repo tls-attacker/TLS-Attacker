@@ -63,25 +63,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>TLS-Core</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>EAP</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>ModifiableVariable</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>Utils</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>Utils</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <properties>
