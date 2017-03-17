@@ -191,14 +191,26 @@ public class MathHelper {
 
     public static class BigIntegerTripple {
 
-        public final BigInteger a;
-        public final BigInteger b;
-        public final BigInteger c;
+        private final BigInteger a;
+        private final BigInteger b;
+        private final BigInteger c;
 
         public BigIntegerTripple(BigInteger a, BigInteger b, BigInteger c) {
             this.a = a;
             this.b = b;
             this.c = c;
+        }
+
+        public BigInteger getA() {
+            return a;
+        }
+
+        public BigInteger getB() {
+            return b;
+        }
+
+        public BigInteger getC() {
+            return c;
         }
     }
 }
