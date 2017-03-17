@@ -66,8 +66,8 @@ public class ClientHelloParserTest {
     private byte[] random;
     private int sessionIdLength;
     private byte[] sessionID;
-    private int ciphersuitesLength;
-    private byte[] ciphersuites;
+    private int cipherSuitesLength;
+    private byte[] cipherSuites;
     private int compressionsLength;
     private byte[] compressions;
     private Integer extensionLength;
@@ -78,7 +78,7 @@ public class ClientHelloParserTest {
 
     public ClientHelloParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length,
             byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
-            int ciphersuitesLength, byte[] ciphersuites, int compressionsLength, byte[] compressions,
+            int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
             Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
         this.message = message;
         this.start = start;
@@ -90,8 +90,8 @@ public class ClientHelloParserTest {
         this.random = random;
         this.sessionIdLength = sessionIdLength;
         this.sessionID = sessionID;
-        this.ciphersuitesLength = ciphersuitesLength;
-        this.ciphersuites = ciphersuites;
+        this.cipherSuitesLength = cipherSuitesLength;
+        this.cipherSuites = cipherSuites;
         this.compressionsLength = compressionsLength;
         this.compressions = compressions;
         this.extensionLength = extensionLength;
@@ -111,7 +111,7 @@ public class ClientHelloParserTest {
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());
-        assertArrayEquals(ciphersuites, msg.getCipherSuites().getValue());
+        assertArrayEquals(cipherSuites, msg.getCipherSuites().getValue());
         assertArrayEquals(compressions, msg.getCompressions().getValue());
         assertArrayEquals(sessionID, msg.getSessionId().getValue());
         assertArrayEquals(random, msg.getRandom().getValue());
@@ -140,7 +140,7 @@ public class ClientHelloParserTest {
         } else {
             assertNull(msg.getCookieLength());
         }
-        assertTrue(ciphersuitesLength == msg.getCipherSuiteLength().getValue());
+        assertTrue(cipherSuitesLength == msg.getCipherSuiteLength().getValue());
         assertTrue(compressionsLength == msg.getCompressionLength().getValue());
         assertTrue(sessionIdLength == msg.getSessionIdLength().getValue());
     }

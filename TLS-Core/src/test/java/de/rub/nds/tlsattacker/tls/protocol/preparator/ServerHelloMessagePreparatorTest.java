@@ -59,7 +59,7 @@ public class ServerHelloMessagePreparatorTest {
         suiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);// use
                                                                                  // an
                                                                                  // unusual
-                                                                                 // ciphersuite
+                                                                                 // CipherSuite
                                                                                  // to
                                                                                  // make
                                                                                  // sure
@@ -79,8 +79,8 @@ public class ServerHelloMessagePreparatorTest {
         context.getConfig().setSupportedCompressionMethods(ourCompressionList);
         context.setHighestClientProtocolVersion(ProtocolVersion.TLS11);
         List<CompressionMethod> compressionList = new LinkedList<>();
-        compressionList.add(CompressionMethod.NULL);// same as ciphersuite
-        compressionList.add(CompressionMethod.LZS);// same as ciphersuite
+        compressionList.add(CompressionMethod.NULL);// same as CipherSuite
+        compressionList.add(CompressionMethod.LZS);// same as CipherSuite
         context.setClientSupportedCompressions(compressionList);
         context.getConfig().setSessionId(new byte[] { 0, 1, 2, 3, 4, 5 });
         preparator.prepare();

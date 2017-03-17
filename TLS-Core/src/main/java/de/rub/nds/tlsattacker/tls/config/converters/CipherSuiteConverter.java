@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import java.util.Arrays;
 
 /**
- * Converts a ciphersuite string to a CipherSuite (for command line purposes).
+ * Converts a CipherSuite string to a CipherSuite (for command line purposes).
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -26,7 +26,7 @@ public class CipherSuiteConverter implements IStringConverter<CipherSuite> {
         try {
             return CipherSuite.valueOf(value);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException("Value " + value + " cannot be converted to a ciphersuite. "
+            throw new ParameterException("Value " + value + " cannot be converted to a CipherSuite. "
                     + "Available values are: " + Arrays.toString(CipherSuite.values()));
         }
     }

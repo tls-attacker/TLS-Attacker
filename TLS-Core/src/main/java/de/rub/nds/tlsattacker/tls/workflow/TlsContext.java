@@ -69,7 +69,7 @@ public class TlsContext {
     /**
      * selected cipher suite
      */
-    // Initially no ciphersuite is selected
+    // Initially no CipherSuite is selected
     private CipherSuite selectedCipherSuite = null;
 
     /**

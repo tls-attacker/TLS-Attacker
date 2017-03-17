@@ -57,7 +57,7 @@ public class CiphersuiteDelegateTest {
         args = new String[2];
         args[0] = "-cipher";
         args[1] = "TLS_RSA_WITH_AES_128_S_256_CBC_SHA"; // Not a correct
-                                                        // ciphersuite
+                                                        // CipherSuite
         jcommander.parse(args);
     }
 

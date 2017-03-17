@@ -389,7 +389,7 @@ public enum CipherSuite {
     UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
     UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
     UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
-    // Chacha poly ciphersuites, some are double specified, added RFC_ infront
+    // Chacha poly CipherSuites, some are double specified, added RFC_ infront
     RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
     RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
     RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCAA),
@@ -436,7 +436,7 @@ public enum CipherSuite {
         List<CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         if (values.length % 2 != 0) {
-            // TODO not a ciphersuite field
+            // TODO not a CipherSuite field
         }
         while (pointer < values.length) {
             byte[] suite = new byte[2];

@@ -57,7 +57,7 @@ public class ClientHelloMessage extends HelloMessage {
     @XmlElements(value = { @XmlElement(type = CompressionMethod.class, name = "CompressionMethod") })
     private List<CompressionMethod> supportedCompressionMethods = new LinkedList<>();
     /**
-     * List of supported ciphersuites
+     * List of supported CipherSuites
      */
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = CipherSuite.class, name = "CipherSuite") })
@@ -73,7 +73,7 @@ public class ClientHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger cipherSuiteLength;
     /**
-     * array of supported ciphersuites
+     * array of supported CipherSuites
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherSuites;
