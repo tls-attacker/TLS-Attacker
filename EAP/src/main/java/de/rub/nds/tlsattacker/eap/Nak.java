@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public class Nak extends EAPResponseDecorator {
-    EAPFrame eapframe;
+    private EAPFrame eapframe;
 
     public Nak(EAPFrame eapframe, int id) {
         this.eapframe = eapframe;

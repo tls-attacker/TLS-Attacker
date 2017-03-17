@@ -17,11 +17,11 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public class Identity extends EAPResponseDecorator {
-    EAPFrame eapframe;
+    private EAPFrame eapframe;
 
-    byte[] userbyte;
+    private byte[] userbyte;
 
-    String username;
+    private String username;
 
     public Identity(EAPFrame eapframe, String username, int id) {
         this.eapframe = eapframe;

@@ -21,19 +21,19 @@ public class FragState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FragState.class);
 
-    EapolMachine eapolMachine;
+    private EapolMachine eapolMachine;
 
-    int id, count;
+    private int id, count;
 
-    EapFactory eaptlsfactory = new EapTlsFactory();
+    private EapFactory eaptlsfactory = new EapTlsFactory();
 
-    NetworkHandler nic = NetworkHandler.getInstance();
+    private NetworkHandler nic = NetworkHandler.getInstance();
 
-    SplitTLS fragment = SplitTLS.getInstance();
+    private SplitTLS fragment = SplitTLS.getInstance();
 
-    EAPFrame eapstart;
+    private EAPFrame eapstart;
 
-    byte[] data = {};
+    private byte[] data = {};
 
     public FragState(EapolMachine eapolMachine, int id) {
 

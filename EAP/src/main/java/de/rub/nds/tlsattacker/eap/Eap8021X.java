@@ -16,7 +16,7 @@ package de.rub.nds.tlsattacker.eap;
  */
 public class Eap8021X extends EAPFrame {
 
-    byte version;
+    private byte version;
 
     public Eap8021X(byte version) {
 

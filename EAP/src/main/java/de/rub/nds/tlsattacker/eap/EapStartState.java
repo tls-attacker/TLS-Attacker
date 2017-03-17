@@ -16,13 +16,13 @@ package de.rub.nds.tlsattacker.eap;
  */
 public class EapStartState implements EapState {
 
-    EapolMachine eapolMachine;
+    private EapolMachine eapolMachine;
 
-    EapFactory eaptlsfactory = new EapTlsFactory();
+    private EapFactory eaptlsfactory = new EapTlsFactory();
 
-    NetworkHandler nic = NetworkHandler.getInstance();
+    private NetworkHandler nic = NetworkHandler.getInstance();
 
-    byte[] data = {};
+    private byte[] data = {};
 
     public EapStartState(EapolMachine eapolMachine) {
 

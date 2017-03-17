@@ -21,15 +21,15 @@ public class FinishedState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FragEndState.class);
 
-    EapolMachine eapolMachine;
+    private EapolMachine eapolMachine;
 
-    int id;
+    private int id;
 
-    EapFactory eaptlsfactory = new EapTlsFactory();
+    private EapFactory eaptlsfactory = new EapTlsFactory();
 
-    NetworkHandler nic = NetworkHandler.getInstance();
+    private NetworkHandler nic = NetworkHandler.getInstance();
 
-    byte[] data = {};
+    private byte[] data = {};
 
     public FinishedState(EapolMachine eapolMachine, int id) {
 

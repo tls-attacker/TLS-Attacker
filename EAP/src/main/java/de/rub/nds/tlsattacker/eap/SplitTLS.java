@@ -12,19 +12,20 @@ import java.nio.ByteBuffer;
 
 /**
  * Split the TLS-Packets from TLS-Attacker for Fragmentation
- * 
+ *
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public class SplitTLS {
+
     private static SplitTLS splittls = new SplitTLS();
 
     public static SplitTLS getInstance() {
         return splittls;
     }
 
-    byte[] sslraw;
+    private byte[] sslraw;
 
-    byte[][] clientresponse;
+    private byte[][] clientresponse;
 
     private SplitTLS() {
     }

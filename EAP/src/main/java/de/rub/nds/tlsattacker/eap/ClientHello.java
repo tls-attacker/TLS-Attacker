@@ -18,9 +18,9 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class ClientHello extends EAPResponseDecorator {
 
-    EAPFrame eapframe;
+    private EAPFrame eapframe;
 
-    byte[] tlspacket;
+    private byte[] tlspacket;
 
     public ClientHello(EAPFrame eapframe, int id, byte[] tlspacket) {
         this.eapframe = eapframe;

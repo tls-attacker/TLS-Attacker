@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class FragAck extends EAPResponseDecorator {
 
-    EAPFrame eapframe;
+    private EAPFrame eapframe;
 
     public FragAck(EAPFrame eapframe, int id) {
         this.eapframe = eapframe;

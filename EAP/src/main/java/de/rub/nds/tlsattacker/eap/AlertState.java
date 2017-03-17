@@ -20,13 +20,13 @@ public class AlertState implements EapState {
 
     private static final Logger LOGGER = LogManager.getLogger(FailureState.class);
 
-    EapolMachine eapolMachine;
+    private EapolMachine eapolMachine;
 
-    int id;
+    private int id;
 
-    EapFactory eaptlsfactory = new EapTlsFactory();
+    private EapFactory eaptlsfactory = new EapTlsFactory();
 
-    NetworkHandler nic = NetworkHandler.getInstance();
+    private NetworkHandler nic = NetworkHandler.getInstance();
 
     public AlertState(EapolMachine eapolMachine, int id) {
 

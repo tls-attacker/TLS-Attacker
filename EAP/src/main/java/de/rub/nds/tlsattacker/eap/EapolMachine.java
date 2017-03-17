@@ -16,9 +16,9 @@ package de.rub.nds.tlsattacker.eap;
  */
 public class EapolMachine {
 
-    EapState eapStartState;
+    private EapState eapStartState;
 
-    EapState state;
+    private EapState state;
 
     public EapolMachine() {
 

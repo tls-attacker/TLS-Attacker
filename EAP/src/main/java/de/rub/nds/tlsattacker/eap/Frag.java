@@ -18,9 +18,9 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class Frag extends EAPResponseDecorator {
 
-    EAPFrame eapframe;
+    private EAPFrame eapframe;
 
-    byte[] tlspacket;
+    private byte[] tlspacket;
 
     public Frag(EAPFrame eapframe, int id, byte[] tlspacket) {
         this.eapframe = eapframe;

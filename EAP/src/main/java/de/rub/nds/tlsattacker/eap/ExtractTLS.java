@@ -15,7 +15,7 @@ package de.rub.nds.tlsattacker.eap;
  */
 public class ExtractTLS {
 
-    byte[] frame, tls;
+    private byte[] frame, tls;
 
     public ExtractTLS() {
 

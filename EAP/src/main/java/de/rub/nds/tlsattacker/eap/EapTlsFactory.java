@@ -21,7 +21,7 @@ public class EapTlsFactory extends EapFactory {
             case "STARTEAP":
                 return new Start8021X((byte) 0x01);
             case "EAPID":
-                return new Identity(new Eap8021X((byte) 0x01), NetworkHandler.getInstance().username, id);
+                return new Identity(new Eap8021X((byte) 0x01), NetworkHandler.getInstance().getUsername(), id);
             case "EAPNAK":
                 return new Nak(new Eap8021X((byte) 0x01), id);
             case "EAPTLSFRAGACK":

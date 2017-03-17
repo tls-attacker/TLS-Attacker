@@ -14,13 +14,13 @@ package de.rub.nds.tlsattacker.eap;
  * @author Felix Lange <flx.lange@gmail.com>
  */
 public abstract class EAPFrame {
-    byte[] frame;
+    protected byte[] frame;
 
-    short eaplength;
+    protected short eaplength;
 
-    int tlslength;
+    protected int tlslength;
 
-    int id;
+    protected int id;
 
     public byte[] getFrame() {
         return frame;

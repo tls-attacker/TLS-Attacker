@@ -16,17 +16,17 @@ package de.rub.nds.tlsattacker.eap;
  */
 public class FragStartState implements EapState {
 
-    EapolMachine eapolMachine;
+    private EapolMachine eapolMachine;
 
-    int id;
+    private int id;
 
-    EapFactory eaptlsfactory = new EapTlsFactory();
+    private EapFactory eaptlsfactory = new EapTlsFactory();
 
-    NetworkHandler nic = NetworkHandler.getInstance();
+    private NetworkHandler nic = NetworkHandler.getInstance();
 
-    EAPFrame eapstart;
+    private EAPFrame eapstart;
 
-    byte[] data = {};
+    private byte[] data = {};
 
     public FragStartState(EapolMachine eapolMachine, int id) {
 
