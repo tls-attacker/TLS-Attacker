@@ -29,6 +29,7 @@ public abstract class WorkflowExecutor {
     public WorkflowExecutor(ExecutorType type, TlsContext context) {
         this.type = type;
         this.context = context;
+        initWorkflowTrace();
     }
 
     private void initWorkflowTrace() {
