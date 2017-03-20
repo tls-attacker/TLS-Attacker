@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -27,8 +26,8 @@ import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
@@ -55,9 +54,9 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
+    public void executeAttack() {
         RSAPublicKey publicKey;
-        TlsConfig tlsConfig = configHandler.initialize(config);
+        TlsConfig tlsConfig = config.createConfig();
         try {
             publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
             LOGGER.info("Fetched the following server public key: " + publicKey);
@@ -70,7 +69,7 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
         for (byte[] vector : vectors) {
-            ProtocolMessage pm = executeTlsFlow(configHandler, vector);
+            ProtocolMessage pm = executeTlsFlow(vector);
             protocolMessages.add(pm);
         }
 
@@ -102,13 +101,13 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
 
     }
 
-    private ProtocolMessage executeTlsFlow(ConfigHandler configHandler, byte[] encryptedPMS) {
+    private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        TlsConfig tlsConfig = configHandler.initialize(config);
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsConfig tlsConfig = config.createConfig();
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
@@ -126,8 +125,6 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
         workflowExecutor.executeWorkflow();
 
         tlsContexts.add(tlsContext);
-
-        transportHandler.closeConnection();
         return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);
     }
 

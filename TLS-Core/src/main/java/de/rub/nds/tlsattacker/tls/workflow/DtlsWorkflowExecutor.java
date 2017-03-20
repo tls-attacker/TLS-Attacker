@@ -11,14 +11,9 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.workflow.GenericWorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.DTLSActionExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -27,19 +22,19 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
+public class DtlsWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(Dtls12WorkflowExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger(DtlsWorkflowExecutor.class);
 
     private final WorkflowTrace workflowTrace;
     private final DTLSActionExecutor actionExecutor;
 
-    public Dtls12WorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-        super(transportHandler, tlsContext, ExecutorType.DTLS);
-        tlsContext.setTransportHandler(transportHandler);
+    public DtlsWorkflowExecutor(TlsContext tlsContext) {
+        super(ExecutorType.DTLS, tlsContext);
+        tlsContext.setTransportHandler(createTransportHandler());
         tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
         actionExecutor = new DTLSActionExecutor(tlsContext);
-        workflowTrace = this.tlsContext.getWorkflowTrace();
+        workflowTrace = this.context.getWorkflowTrace();
 
         if (tlsContext.getTransportHandler() == null || tlsContext.getRecordHandler() == null) {
             throw new ConfigurationException("The WorkflowExecutor was not configured properly");
@@ -48,22 +43,22 @@ public class Dtls12WorkflowExecutor extends GenericWorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        if (executed) {
-            throw new IllegalStateException("The workflow has already been executed. Create a new Workflow.");
-        }
-        executed = true;
-
+        WorkflowContext workflowContext = new WorkflowContext();
         List<TLSAction> actions = workflowTrace.getTLSActions();
         try {
+            // This construct is necessary since some actions have to be
+            // rewinded?
             while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
                 TLSAction action = actions.get(workflowContext.getActionPointer());
-                action.execute(tlsContext, actionExecutor);
+                action.execute(context, actionExecutor);
                 workflowContext.incrementActionPointer();
             }
         } catch (WorkflowExecutionException | IOException e) {
             e.printStackTrace();
             throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
         }
+        context.getTransportHandler().closeConnection();
+
     }
 
     public DTLSActionExecutor getActionExecutor() {

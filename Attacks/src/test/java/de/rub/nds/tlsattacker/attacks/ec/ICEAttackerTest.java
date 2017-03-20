@@ -24,7 +24,7 @@ import org.junit.Test;
 public class ICEAttackerTest {
 
     static Logger LOGGER = LogManager.getLogger(ICEAttackerTest.class);
-    
+
     public ICEAttackerTest() {
     }
 

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
@@ -22,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
@@ -60,10 +60,9 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
-        ConfigHandler configHandler = new ConfigHandler();
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(config);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+                tlsContext);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(new ServerHelloMessage(config));
@@ -98,7 +97,6 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             e.printStackTrace();
         } finally {
             numberOfQueries++;
-            transportHandler.closeConnection();
         }
         if (tlsContext.isReceivedFatalAlert()) {
             valid = false;

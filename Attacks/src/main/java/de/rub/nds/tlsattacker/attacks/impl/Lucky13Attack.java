@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Lucky13 attack test
- * 
+ *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
@@ -57,7 +57,7 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
+    public void executeAttack() {
         String[] paddingStrings = config.getPaddings().split(",");
         int[] paddings = new int[paddingStrings.length];
         for (int i = 0; i < paddingStrings.length; i++) {
@@ -68,7 +68,7 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
             for (int p : paddings) {
                 Record record = createRecordWithPadding(p);
                 record.setMeasuringTiming(true);
-                executeAttackRound(configHandler, record);
+                executeAttackRound(record);
                 if (results.get(p) == null) {
                     results.put(p, new LinkedList<Long>());
                 }
@@ -121,11 +121,11 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
         }
     }
 
-    public void executeAttackRound(ConfigHandler configHandler, Record record) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+    public void executeAttackRound(Record record) {
+        TlsConfig tlsConfig = config.createConfig();
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         // Client
@@ -141,9 +141,8 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
         tlsContexts.add(tlsContext);
-        lastResult = transportHandler.getLastMeasurement();
+        lastResult = tlsContext.getTransportHandler().getLastMeasurement();
 
-        transportHandler.closeConnection();
     }
 
     private Record createRecordWithPadding(int p) {

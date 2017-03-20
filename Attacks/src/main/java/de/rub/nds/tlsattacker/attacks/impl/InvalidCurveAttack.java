@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
@@ -23,15 +22,15 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig> {
@@ -49,13 +48,12 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
 
     public InvalidCurveAttack(InvalidCurveAttackCommandConfig config) {
         super(config);
-        ConfigHandler configHandler = new ConfigHandler();
-        tlsConfig = configHandler.initialize(config);
+        tlsConfig = config.createConfig();
 
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
+    public void executeAttack() {
         if (config.getPublicPointBaseX() == null || config.getPublicPointBaseY() == null
                 || config.getPremasterSecret() == null) {
 
@@ -67,7 +65,7 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
                     "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16));
             for (int i = 0; i < PROTOCOL_FLOWS; i++) {
                 try {
-                    WorkflowTrace trace = executeProtocolFlow(configHandler);
+                    WorkflowTrace trace = executeProtocolFlow();
                     if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
 
                     } else {
@@ -81,14 +79,14 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
             }
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT vulnerable to the invalid curve attack.");
         } else {
-            executeProtocolFlow(configHandler);
+            executeProtocolFlow();
         }
     }
 
-    private WorkflowTrace executeProtocolFlow(ConfigHandler configHandler) {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+    private WorkflowTrace executeProtocolFlow() {
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
@@ -114,9 +112,6 @@ public class InvalidCurveAttack extends Attacker<InvalidCurveAttackCommandConfig
         workflowExecutor.executeWorkflow();
 
         tlsContexts.add(tlsContext);
-
-        transportHandler.closeConnection();
-
         return trace;
     }
 

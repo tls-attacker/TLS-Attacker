@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Collections;
@@ -41,7 +40,7 @@ public abstract class Attacker<Config extends TLSDelegateConfig> {
      * 
      * @param configHandler
      */
-    public abstract void executeAttack(ConfigHandler configHandler);
+    public abstract void executeAttack();
 
     public Config getConfig() {
         return config;

@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -35,8 +34,8 @@ public class InvalidCurveAttackFull extends Attacker<InvalidCurveAttackFullComma
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
+    public void executeAttack() {
+        TlsConfig tlsConfig = config.createConfig();
         if (tlsConfig.getNamedCurves().size() > 1) {
             throw new ConfigurationException("Please specify only one named curve which should be attacked");
         }

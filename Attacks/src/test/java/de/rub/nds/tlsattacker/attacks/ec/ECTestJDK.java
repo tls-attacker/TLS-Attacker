@@ -90,8 +90,7 @@ public class ECTestJDK {
         LOGGER.info("Secret computed by U: 0x"
                 + (new BigInteger(1, ecdhU.generateSecret("TlsPremasterSecret").getEncoded()).toString(16))
                         .toUpperCase());
-        LOGGER.info("Secret computed by V: 0x"
-                + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
+        LOGGER.info("Secret computed by V: 0x" + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
     }
 
     @Test

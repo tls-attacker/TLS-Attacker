@@ -9,24 +9,18 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class WorkflowExecutorFactory {
 
-    public static WorkflowExecutor createWorkflowExecutor(TransportHandler transportHandler, TlsContext tlsContext) {
-        WorkflowExecutor we = null;
-        switch (tlsContext.getConfig().getHighestProtocolVersion()) {
-            case TLS10:
-            case TLS11:
-            case TLS12:
-                we = new GenericWorkflowExecutor(transportHandler, tlsContext, ExecutorType.TLS);
-                return we;
-            case DTLS12:
-                we = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
-                return we;
+    public static WorkflowExecutor createWorkflowExecutor(ExecutorType type, TlsContext tlsContext) {
+        switch (type) {
+            case TLS:
+                return new TLSWorkflowExecutor(tlsContext);
+            case DTLS:
+                return new DtlsWorkflowExecutor(tlsContext);
             default:
                 throw new UnsupportedOperationException(tlsContext.getConfig().getHighestProtocolVersion().name()
                         + " not yet implemented");

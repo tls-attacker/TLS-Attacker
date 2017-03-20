@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -26,14 +25,14 @@ import java.util.Set;
 /**
  * Tests the acceptance of the Signature and Hash Algorithm extension. See
  * https://tools.ietf.org/html/rfc5246#section-7.4.1.4.1
- * 
+ *
  * We just send different values in the extension with all the supported
  * extension values. If the server responds with a ServerHello message, it must
  * support the proposed signature and hash algorithms.
- * 
+ *
  * This extension is only fully supported in TLS 1.2. In previous versions, it
  * can be ignored if the server does not understand it.
- * 
+ *
  * From https://tools.ietf.org/html/rfc5246#section-7.4.3 (describing
  * ServerKeyExchange message): "If the client has offered the
  * "signature_algorithms" extension, the signature algorithm and hash algorithm
@@ -44,7 +43,7 @@ import java.util.Set;
  * suites against the "signature_algorithms" extension before selecting them.
  * This is somewhat inelegant but is a compromise designed to minimize changes
  * to the original cipher suite design."
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
@@ -53,9 +52,9 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
 
     private final HashMap<ProtocolVersion, List<CipherSuite>> supportedCipherSuites;
 
-    public SignatureAndHashAlgorithmsTest(ConfigHandler configHandler, TestServerConfig serverConfig,
+    public SignatureAndHashAlgorithmsTest(TestServerConfig serverConfig,
             HashMap<ProtocolVersion, List<CipherSuite>> supportedCipherSuites) {
-        super(configHandler, serverConfig);
+        super(serverConfig);
         this.signatureAndHashAlgorithms = new HashSet<>();
         this.supportedCipherSuites = supportedCipherSuites;
     }
@@ -73,7 +72,7 @@ public class SignatureAndHashAlgorithmsTest extends HandshakeTest {
 
     private void testSupportedSignatureAndHashAlgorithms(ProtocolVersion pv) {
         for (SignatureAndHashAlgorithm algorithm : SignatureAndHashAlgorithm.values()) {
-            TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+            TlsConfig tlsConfig = serverConfig.createConfig();
 
             tlsConfig.setHighestProtocolVersion(pv);
             tlsConfig.setSupportedCiphersuites(supportedCipherSuites.get(pv));

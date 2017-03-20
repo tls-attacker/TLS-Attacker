@@ -44,7 +44,7 @@ import org.junit.Test;
 public class ECComputationCorrectness {
 
     static Logger LOGGER = LogManager.getLogger(ECComputationCorrectness.class);
-    
+
     public ECComputationCorrectness() {
         Security.addProvider(new BouncyCastleProvider());
     }
@@ -187,8 +187,8 @@ public class ECComputationCorrectness {
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
             double percentage = correctResults[j] / iterations;
-            LOGGER.info("Curve with order " + p.getOrder()
-                    + " has success probability of valid computation [%]: " + (percentage * 100.0));
+            LOGGER.info("Curve with order " + p.getOrder() + " has success probability of valid computation [%]: "
+                    + (percentage * 100.0));
         }
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);

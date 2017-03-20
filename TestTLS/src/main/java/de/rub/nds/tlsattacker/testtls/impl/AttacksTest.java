@@ -21,11 +21,9 @@ import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 
 /**
  * 
@@ -35,8 +33,8 @@ public class AttacksTest extends TestTLS {
 
     private final TestServerConfig serverConfig;
 
-    public AttacksTest(ConfigHandler config, TestServerConfig serverConfig) {
-        super(config);
+    public AttacksTest(TestServerConfig serverConfig) {
+        super();
         this.serverConfig = serverConfig;
     }
 
@@ -48,7 +46,7 @@ public class AttacksTest extends TestTLS {
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(serverConfig.getGeneralDelegate());
         setHost(bb);
         attacker = new BleichenbacherAttack(bb);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         attack = BleichenbacherCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": Vulnerable\n ";
@@ -59,7 +57,7 @@ public class AttacksTest extends TestTLS {
         InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig(serverConfig.getGeneralDelegate());
         setHost(icea);
         attacker = new InvalidCurveAttack(icea);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         attack = InvalidCurveAttackCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": Vulnerable\n ";
@@ -70,7 +68,7 @@ public class AttacksTest extends TestTLS {
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(serverConfig.getGeneralDelegate());
         setHost(heartbleed);
         attacker = new HeartbleedAttack(heartbleed);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         attack = HeartbleedCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": (Probably) Vulnerable\n ";
@@ -81,7 +79,7 @@ public class AttacksTest extends TestTLS {
         PoodleCommandConfig poodle = new PoodleCommandConfig(serverConfig.getGeneralDelegate());
         setHost(poodle);
         attacker = new PoodleAttack(poodle);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         attack = PoodleCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": (Probably) Vulnerable\n ";
@@ -92,7 +90,7 @@ public class AttacksTest extends TestTLS {
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(serverConfig.getGeneralDelegate());
         setHost(po);
         attacker = new PaddingOracleAttack(po);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         attack = PaddingOracleCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": (Probably) Vulnerable\n ";

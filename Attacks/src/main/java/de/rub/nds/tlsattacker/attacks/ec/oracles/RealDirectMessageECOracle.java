@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificati
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
@@ -27,6 +26,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -70,10 +70,9 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
-        ConfigHandler configHandler = new ConfigHandler();
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(config);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
@@ -108,7 +107,6 @@ public class RealDirectMessageECOracle extends ECOracle {
             e.printStackTrace();
         } finally {
             numberOfQueries++;
-            transportHandler.closeConnection();
         }
 
         if (!isWorkflowTraceReasonable(tlsContext.getWorkflowTrace())) {
@@ -166,15 +164,13 @@ public class RealDirectMessageECOracle extends ECOracle {
      * further validation purposes.
      */
     private void executeValidWorkflowAndExtractCheckValues() {
-        ConfigHandler configHandler = new ConfigHandler();
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(config);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
         workflowExecutor.executeWorkflow();
-        transportHandler.closeConnection();
 
         List<HandshakeMessage> clientKeyExchangeList = trace
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);

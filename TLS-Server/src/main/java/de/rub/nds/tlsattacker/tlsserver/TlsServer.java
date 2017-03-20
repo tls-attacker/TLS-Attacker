@@ -14,7 +14,6 @@
 package de.rub.nds.tlsattacker.tlsserver;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -23,7 +22,7 @@ import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,10 +65,9 @@ public class TlsServer {
     }
 
     public void startTlsServer(TlsConfig config) {
-        ConfigHandler handler = new ConfigHandler();
-        TransportHandler transportHandler = handler.initializeTransportHandler(config);
-        TlsContext tlsContext = handler.initializeTlsContext(config);
-        WorkflowExecutor workflowExecutor = handler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(config);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+                tlsContext);
 
         try {
             workflowExecutor.executeWorkflow();
@@ -78,8 +76,6 @@ public class TlsServer {
                     "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
-
-        transportHandler.closeConnection();
 
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             FileOutputStream fos = null;

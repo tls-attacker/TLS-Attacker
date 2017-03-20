@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
@@ -29,6 +28,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
- * 
+ *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
@@ -55,9 +55,9 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
+    public void executeAttack() {
         List<ProtocolVersion> versions = config.getVersions();
-        TlsConfig tlsConfig = configHandler.initialize(config);
+        TlsConfig tlsConfig = config.createConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {
@@ -73,7 +73,7 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
             for (CipherSuite cs : ciphers) {
                 tlsConfig.setHighestProtocolVersion(pv);
                 tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
-                executeAttackRound(configHandler);
+                executeAttackRound();
             }
         }
 
@@ -91,14 +91,14 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         }
     }
 
-    private void executeAttackRound(ConfigHandler configHandler) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
+    private void executeAttackRound() {
+        TlsConfig tlsConfig = config.createConfig();
         LOGGER.info("Testing {}, {}", tlsConfig.getHighestProtocolVersion(), tlsConfig.getSupportedCiphersuites()
                 .get(0));
 
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
@@ -142,8 +142,6 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         } else {
             LOGGER.info("  Not Vulnerable / Not supported");
         }
-
-        transportHandler.closeConnection();
     }
 
     private Record createRecordWithBadPadding() {

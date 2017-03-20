@@ -36,7 +36,6 @@ import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
 import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -170,12 +169,11 @@ public class Main {
             default:
                 throw new ConfigurationException("No command found");
         }
-        ConfigHandler configHandler = new ConfigHandler();
-        if (configHandler.printHelpForCommand(jc, attacker.getConfig())) {
+        if (printHelpForCommand(jc, attacker.getConfig())) {
             return;
         }
 
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
 
         TLSDelegateConfig config = attacker.getConfig();
         // TODO this is the attackers job, not ours
@@ -196,5 +194,13 @@ public class Main {
         TlsConfig tlsConfig = config.createConfig();
         TlsServer server = new TlsServer();
         server.startTlsServer(tlsConfig);
+    }
+
+    public static boolean printHelpForCommand(JCommander jc, TLSDelegateConfig config) {
+        if (config.getGeneralDelegate().isHelp()) {
+            jc.usage(jc.getParsedCommand());
+            return true;
+        }
+        return false;
     }
 }

@@ -14,12 +14,12 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Allows to execute the Winshock attack, by setting the CertificateVerify
  * protocol message properties. I
- * 
+ *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class WinshockAttack extends Attacker<WinshockCommandConfig> {
@@ -41,12 +41,12 @@ public class WinshockAttack extends Attacker<WinshockCommandConfig> {
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
+    public void executeAttack() {
+        TlsConfig tlsConfig = config.createConfig();
         tlsConfig.setClientAuthentication(true);
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
@@ -70,6 +70,5 @@ public class WinshockAttack extends Attacker<WinshockCommandConfig> {
 
         tlsContexts.add(tlsContext);
 
-        transportHandler.closeConnection();
     }
 }

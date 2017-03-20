@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -25,14 +24,14 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.HeartbeatMessagePreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.tls.workflow.Dtls12WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.FileWriter;
@@ -71,13 +70,13 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
 
     public DtlsPaddingOracleAttack(DtlsPaddingOracleAttackCommandConfig config) {
         super(config);
-        ConfigHandler configHandler = new ConfigHandler();
-        tlsConfig = configHandler.initialize(config);
+        tlsConfig = config.createConfig();
+        tlsConfig.setExecutorType(ExecutorType.DTLS);
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
-        initExecuteAttack(configHandler);
+    public void executeAttack() {
+        initExecuteAttack();
 
         long[][] resultBuffer = new long[config.getNrOfRounds()][2];
         FileWriter fileWriter;
@@ -288,11 +287,9 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
         }
     }
 
-    private void initExecuteAttack(ConfigHandler configHandler) {
-        transportHandler = (UDPTransportHandler) configHandler.initializeTransportHandler(tlsConfig);
-        transportHandler.setTlsTimeout(tlsConfig.getTlsTimeout());
-        tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        workflowExecutor = new Dtls12WorkflowExecutor(transportHandler, tlsContext);
+    private void initExecuteAttack() {
+        tlsContext = new TlsContext(tlsConfig);
+        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(), tlsContext);
         recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
         trace = tlsContext.getWorkflowTrace();
         actionList = trace.getTLSActions();

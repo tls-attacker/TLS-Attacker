@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.testtls.impl;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import static de.rub.nds.tlsattacker.testtls.impl.HandshakeTest.LOGGER;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.KeyExchangeAlgorithm;
@@ -39,9 +38,9 @@ public class NamedCurvesTest extends HandshakeTest {
      */
     private int minimumECDHGroupSize;
 
-    public NamedCurvesTest(ConfigHandler configHandler, TestServerConfig serverConfig,
+    public NamedCurvesTest(TestServerConfig serverConfig,
             HashMap<ProtocolVersion, List<CipherSuite>> supportedCipherSuites) {
-        super(configHandler, serverConfig);
+        super(serverConfig);
         this.supportedCurves = new HashSet<>();
         this.supportedCipherSuites = supportedCipherSuites;
     }
@@ -68,7 +67,7 @@ public class NamedCurvesTest extends HandshakeTest {
 
     private void testSupportedCurves(ProtocolVersion pv, CipherSuite cs) {
         for (NamedCurve nc : NamedCurve.values()) {
-            TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+            TlsConfig tlsConfig = serverConfig.createConfig();
 
             tlsConfig.setHighestProtocolVersion(pv);
             tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));

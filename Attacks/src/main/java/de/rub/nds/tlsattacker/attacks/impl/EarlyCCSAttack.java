@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
@@ -25,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * TODO: currently does not work correctly, will be fixed after some
  * refactorings.
- * 
+ *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
@@ -50,12 +50,12 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
+    public void executeAttack() {
+        TlsConfig tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         byte[] ms = new byte[48];
         byte[] pms = new byte[48];
@@ -105,7 +105,6 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
         receiveAction = new ReceiveAction(messageList);
         workflowTrace.add(receiveAction);
         workflowExecutor.executeWorkflow();
-        transportHandler.closeConnection();
 
         if (workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Server Finished message found");

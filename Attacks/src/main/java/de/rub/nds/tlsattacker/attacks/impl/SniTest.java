@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.NameType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
@@ -22,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Sends different server names in the SNI extension in the ClientHello
  * messages.
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class SniTest extends Attacker<SniTestCommandConfig> {
@@ -48,11 +48,11 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+    public void executeAttack() {
+        TlsConfig tlsConfig = config.createConfig();
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         List<TLSAction> actions = trace.getTLSActions();
         ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage(tlsConfig);
@@ -69,7 +69,6 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
         messageList.add(new CertificateMessage(tlsConfig));
         actions.add(new ReceiveAction(messageList));
         workflowExecutor.executeWorkflow();
-        transportHandler.closeConnection();
     }
 
 }

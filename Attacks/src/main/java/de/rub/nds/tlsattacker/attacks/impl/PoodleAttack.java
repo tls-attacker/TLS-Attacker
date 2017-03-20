@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
+
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
@@ -22,9 +22,11 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Executes a poodle attack. It logs an error in case the tested server is
  * vulnerable to poodle.
- * 
+ *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class PoodleAttack extends Attacker<PoodleCommandConfig> {
@@ -44,11 +46,12 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
-        TlsConfig tlsConfig = configHandler.initialize(config);
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+    public void executeAttack() {
+        TlsConfig tlsConfig = config.createConfig();
+
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
@@ -79,7 +82,7 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
                     "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             vulnerable = false;
         } else if (!tlsContext.isReceivedFatalAlert()) { // TODO this does not
-                                                         // work properly atm
+            // work properly atm
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             vulnerable = true;
@@ -91,6 +94,5 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
 
         tlsContexts.add(tlsContext);
 
-        transportHandler.closeConnection();
     }
 }

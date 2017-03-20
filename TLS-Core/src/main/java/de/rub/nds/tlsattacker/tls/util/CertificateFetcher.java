@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.util;
 
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
@@ -18,15 +16,15 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -51,12 +49,7 @@ public class CertificateFetcher {
     }
 
     public static Certificate fetchServerCertificate(TlsConfig config) {
-        ConfigHandler configHandler = new ConfigHandler();
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext context = configHandler.initializeTlsContext(config);
-
-        context.setSelectedProtocolVersion(config.getHighestProtocolVersion());
-        context.setSelectedCipherSuite(config.getSupportedCiphersuites().get(0));
+        TlsContext context = new TlsContext(config);
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         ClientHelloMessage clientHello = new ClientHelloMessage(config);
@@ -66,14 +59,15 @@ public class CertificateFetcher {
         protocolMessages.add(new ServerHelloMessage(config));
         protocolMessages.add(new CertificateMessage(config));
         workflowTrace.add(new ReceiveAction(protocolMessages));
-        context.setWorkflowTrace(workflowTrace);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, context);
+        config.setWorkflowTrace(workflowTrace);
+        ExecutorType type = context.getConfig().getHighestProtocolVersion().isDTLS() ? ExecutorType.DTLS
+                : ExecutorType.TLS;
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(type, context);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             LOGGER.warn("Error while Fetching Certificate", E);
         }
-        transportHandler.closeConnection();
         return context.getServerCertificate();
     }
 

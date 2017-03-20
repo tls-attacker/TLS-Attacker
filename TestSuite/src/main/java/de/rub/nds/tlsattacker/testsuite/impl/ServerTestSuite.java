@@ -23,11 +23,9 @@ import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
@@ -37,6 +35,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.File;
@@ -56,8 +55,6 @@ public class ServerTestSuite extends TestSuite {
 
     private final ServerTestSuiteConfig testConfig;
 
-    private ConfigHandler configHandler;
-
     public ServerTestSuite(ServerTestSuiteConfig serverTestConfig) {
         super();
         this.testConfig = serverTestConfig;
@@ -75,7 +72,7 @@ public class ServerTestSuite extends TestSuite {
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(testConfig.getGeneralDelegate());
         setHost(bb);
         attacker = new BleichenbacherAttack(bb);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
         } else {
@@ -85,7 +82,7 @@ public class ServerTestSuite extends TestSuite {
         InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig(testConfig.getGeneralDelegate());
         setHost(icea);
         attacker = new InvalidCurveAttack(icea);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
         } else {
@@ -95,7 +92,7 @@ public class ServerTestSuite extends TestSuite {
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(testConfig.getGeneralDelegate());
         setHost(heartbleed);
         attacker = new HeartbleedAttack(heartbleed);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
         } else {
@@ -105,7 +102,7 @@ public class ServerTestSuite extends TestSuite {
         PoodleCommandConfig poodle = new PoodleCommandConfig(testConfig.getGeneralDelegate());
         setHost(poodle);
         attacker = new PoodleAttack(poodle);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(PoodleCommandConfig.ATTACK_COMMAND);
         } else {
@@ -115,7 +112,7 @@ public class ServerTestSuite extends TestSuite {
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(testConfig.getGeneralDelegate());
         setHost(po);
         attacker = new PaddingOracleAttack(po);
-        attacker.executeAttack(configHandler);
+        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
         } else {
@@ -205,15 +202,13 @@ public class ServerTestSuite extends TestSuite {
 
         for (File xmlFile : xmlFiles) {
             try {
-                TlsConfig tlsConfig = configHandler.initialize(testConfig);
+                TlsConfig tlsConfig = testConfig.createConfig();
                 tlsConfig.setWorkflowInput(xmlFile.getAbsolutePath());
-                TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
 
-                TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-                WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler,
-                        tlsContext);
+                TlsContext tlsContext = new TlsContext(tlsConfig);
+                WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                        tlsConfig.getExecutorType(), tlsContext);
                 workflowExecutor.executeWorkflow();
-                transportHandler.closeConnection();
                 if (isWorkflowTraceReasonable(tlsContext.getWorkflowTrace())) {
                     LOGGER.info("    {} passed", xmlFile.getName());
                     List<ModifiableVariableField> mvfs = ModifiableVariableAnalyzer

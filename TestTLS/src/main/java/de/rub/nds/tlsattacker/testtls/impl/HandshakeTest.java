@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -20,10 +19,10 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,15 +38,13 @@ public abstract class HandshakeTest extends TestTLS {
 
     TlsContext lastTlsContext;
 
-    public HandshakeTest(ConfigHandler configHandler, TestServerConfig serverConfig) {
-        super(configHandler);
+    public HandshakeTest(TestServerConfig serverConfig) {
+        super();
         this.serverConfig = serverConfig;
     }
 
     boolean executeHandshake(TlsConfig tlsConfig) {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
+        TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowTrace workflowTrace = new WorkflowTrace();
         ClientHelloMessage ch = new ClientHelloMessage(tlsConfig);
         workflowTrace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, ch));
@@ -64,14 +61,14 @@ public abstract class HandshakeTest extends TestTLS {
         tlsContext.setWorkflowTrace(workflowTrace);
         // TODO
         // WorkflowConfigurationFactory.initializeProtocolMessageOrder(tlsContext);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
         lastTlsContext = tlsContext;
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             ex.printStackTrace();
         }
-        transportHandler.closeConnection();
         return !workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty();
     }
 

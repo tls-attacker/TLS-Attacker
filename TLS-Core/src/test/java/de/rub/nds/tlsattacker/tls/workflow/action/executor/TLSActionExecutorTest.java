@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.RecordHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
-import de.rub.nds.tlsattacker.unittest.FakeTransportHandler;
+import de.rub.nds.tlsattacker.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,10 +29,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TLSActionExecutorTest {
+
     private TlsContext context;
     private TLSActionExecutor executor;
     private AlertMessage message;
@@ -45,7 +46,7 @@ public class TLSActionExecutorTest {
         context = new TlsContext();
         context.setTransportHandler(new FakeTransportHandler());
         context.setRecordHandler(new RecordHandler(context));
-        executor = new TLSActionExecutor(context, new WorkflowContext());
+        executor = new TLSActionExecutor(context);
         message = new AlertMessage(context.getConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         message.setDescription(AlertDescription.DECODE_ERROR.getValue());
@@ -69,7 +70,7 @@ public class TLSActionExecutorTest {
         executor.sendMessages(protocolMessages);
         byte[] sendByte = ((FakeTransportHandler) context.getTransportHandler()).getSendByte();
         LOGGER.info(ArrayConverter.bytesToHexString(sendByte));
-        assertArrayEquals(sendByte, new byte[] { 21, 03, 03, 00, 02, 02, 51 });
+        assertArrayEquals(new byte[] { 21, 03, 03, 00, 02, 02, 51 }, sendByte);
     }
 
     /**

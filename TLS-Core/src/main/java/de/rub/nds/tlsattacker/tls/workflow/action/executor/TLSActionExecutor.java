@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
+import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
@@ -26,10 +27,11 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This ActionExecutor tries to perform Actions in a way that imitates a TLS
@@ -39,12 +41,15 @@ import org.apache.logging.log4j.Level;
  */
 public class TLSActionExecutor extends ActionExecutor {
 
-    private final TlsContext context;
-    private final WorkflowContext workflowContext;
+    private static final Logger LOGGER = LogManager.getLogger(TLSActionExecutor.class);
 
-    public TLSActionExecutor(TlsContext context, WorkflowContext workflowContext) {
+    private final TlsContext context;
+
+    private boolean proceed;
+
+    public TLSActionExecutor(TlsContext context) {
+        this.proceed = true;
         this.context = context;
-        this.workflowContext = workflowContext;
     }
 
     /**
@@ -56,6 +61,9 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     @Override
     public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
+        if (!proceed) {
+            return null;
+        }
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
             LOGGER.debug("Preparing " + message.toCompactString());
@@ -89,6 +97,9 @@ public class TLSActionExecutor extends ActionExecutor {
      */
     @Override
     public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
+        if (!proceed) {
+            return null;
+        }
         List<ProtocolMessage> receivedList = new LinkedList<>();
         try {
             receivedList = handleProtocolMessagesFromPeer(messages);
@@ -280,7 +291,7 @@ public class TLSActionExecutor extends ActionExecutor {
             receivedMessages.add(result.getMessage());
             if (receivedFatalAlert(result.getMessage())) {
                 if (!context.getConfig().isFuzzingMode()) {
-                    workflowContext.setProceedWorkflow(false);
+                    proceed = false;
                 }
             }
         }

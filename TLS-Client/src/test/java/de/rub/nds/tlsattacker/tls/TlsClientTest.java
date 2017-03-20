@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls;
 
 import de.rub.nds.tlsattacker.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
@@ -31,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
@@ -135,8 +135,7 @@ public class TlsClientTest {
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
-        ConfigHandler configHandler = new ConfigHandler();
-        TlsConfig config = configHandler.initialize(clientCommandConfig);
+        TlsConfig config = clientCommandConfig.createConfig();
         config.setHost("localhost:" + port);
         config.setTlsTimeout(TIMEOUT);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
@@ -175,24 +174,18 @@ public class TlsClientTest {
     }
 
     private boolean testExecuteWorkflow(TlsConfig config) {
-
-        // TODO ugly
-        config.setWorkflowTrace(null);
-        ConfigHandler configHandler = new ConfigHandler();
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
+        TlsContext tlsContext = new TlsContext(config);
 
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+                tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (Exception E) {
             E.printStackTrace();
         }
         String workflowString = tlsContext.getWorkflowTrace().toString();
-        transportHandler.closeConnection();
         boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
-        tlsContext.getWorkflowTrace().reset();
         if (!result) {
             LOGGER.log(Level.INFO, "Failed vanilla execution");
             LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
@@ -200,44 +193,16 @@ public class TlsClientTest {
             LOGGER.info(workflowString);
             return result;
         }
-
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        tlsContext = configHandler.initializeTlsContext(config);
-        tlsContext.setWorkflowTrace(trace);
-        transportHandler = configHandler.initializeTransportHandler(config);
-        workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+        config.getWorkflowTrace().reset();
+        config.getWorkflowTrace().makeGeneric();
+        tlsContext = new TlsContext(config);
+        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
         workflowString = tlsContext.getWorkflowTrace().toString();
-        LOGGER.log(Level.DEBUG, tlsContext.getWorkflowTrace().toString());
-        transportHandler.closeConnection();
-        result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
-        tlsContext.getWorkflowTrace().reset();
-        if (!result) {
-            LOGGER.log(Level.INFO, "Failed reset execution");
-            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
-            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
-            LOGGER.info(workflowString);
-            return result;
-        }
-        LOGGER.log(Level.DEBUG, tlsContext.getWorkflowTrace().toString());
-        tlsContext.getWorkflowTrace().reset();
-        tlsContext.getWorkflowTrace().makeGeneric();
-        trace = tlsContext.getWorkflowTrace();
-        tlsContext = configHandler.initializeTlsContext(config);
-        tlsContext.setWorkflowTrace(trace);
-        transportHandler = configHandler.initializeTransportHandler(config);
-        workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException E) {
-            E.printStackTrace();
-        }
-        workflowString = tlsContext.getWorkflowTrace().toString();
-        transportHandler.closeConnection();
         result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         if (!result) {
             LOGGER.log(Level.INFO, "Failed reset&generic execution");
@@ -272,17 +237,13 @@ public class TlsClientTest {
 
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        ConfigHandler configHandler = new ConfigHandler();
-        configHandler.initialize(clientCommandConfig);
-
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = clientCommandConfig.createConfig();
         config.setHost("localhost:" + port);
         config.setTlsTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
 
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-        TlsContext tlsContext = configHandler.initializeTlsContext(config);
-        tlsContext.setWorkflowTrace(new WorkflowTrace());
+        TlsContext tlsContext = new TlsContext(config);
+        config.setWorkflowTrace(new WorkflowTrace());
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, new ClientHelloMessage(
@@ -295,10 +256,13 @@ public class TlsClientTest {
                         config)));
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-        workflowExecutor.executeWorkflow();
-
-        transportHandler.closeConnection();
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+                tlsContext);
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException E) {
+            return false;
+        }
 
         return !(tlsContext.getWorkflowTrace()
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());

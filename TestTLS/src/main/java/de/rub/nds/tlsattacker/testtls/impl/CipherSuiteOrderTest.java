@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.testtls.impl;
 import de.rub.nds.tlsattacker.main.TLSClient;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -38,8 +37,8 @@ public class CipherSuiteOrderTest extends HandshakeTest {
 
     private ProtocolVersion currentProtocolVersion;
 
-    public CipherSuiteOrderTest(ConfigHandler configHandler, TestServerConfig serverConfig) {
-        super(configHandler, serverConfig);
+    public CipherSuiteOrderTest(TestServerConfig serverConfig) {
+        super(serverConfig);
         supportedCipherSuites = new HashSet<>();
     }
 
@@ -48,13 +47,13 @@ public class CipherSuiteOrderTest extends HandshakeTest {
         collectCipherSuites();
         if (supportedCipherSuites.size() > 1) {
             try {
-                TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+                TlsConfig tlsConfig = serverConfig.createConfig();
                 List<CipherSuite> list = new ArrayList<>(supportedCipherSuites);
                 tlsConfig.setSupportedCiphersuites(list);
                 tlsConfig.setHighestProtocolVersion(currentProtocolVersion);
                 CipherSuite cs1 = getSelectedCipherSuite(tlsConfig);
                 Collections.reverse(list);
-                tlsConfig = configHandler.initialize(serverConfig);
+                tlsConfig = serverConfig.createConfig();
                 tlsConfig.setSupportedCiphersuites(list);
                 CipherSuite cs2 = getSelectedCipherSuite(tlsConfig);
                 if (cs2 == cs1) {
@@ -78,7 +77,7 @@ public class CipherSuiteOrderTest extends HandshakeTest {
             }
             currentProtocolVersion = pv;
             for (CipherSuite cs : CipherSuite.values()) {
-                TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+                TlsConfig tlsConfig = serverConfig.createConfig();
 
                 tlsConfig.setHighestProtocolVersion(pv);
                 tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));

@@ -13,7 +13,6 @@
  */
 package de.rub.nds.tlsscanner.probe;
 
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -24,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
@@ -116,17 +116,15 @@ public class CiphersuiteProbe extends TLSProbe {
             trace.add(new SendAction(new ClientHelloMessage(config)));
             trace.add(new ReceiveAction(new ArbitraryMessage()));
             config.setWorkflowTrace(trace);
-            ConfigHandler handler = new ConfigHandler();
-            TransportHandler transportHandler = handler.initializeTransportHandler(config);
-            TlsContext tlsContext = handler.initializeTlsContext(config);
-            WorkflowExecutor workflowExecutor = handler.initializeWorkflowExecutor(transportHandler, tlsContext);
+            TlsContext tlsContext = new TlsContext(config);
+            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                    config.getExecutorType(), tlsContext);
             try {
                 workflowExecutor.executeWorkflow();
-            } catch (Exception ex) {
+            } catch (WorkflowExecutionException ex) {
                 ex.printStackTrace();
                 supportsMore = false;
             }
-            transportHandler.closeConnection();
             if (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty()) {
                 LOGGER.info("Server chose " + tlsContext.getSelectedCipherSuite().name());
                 supportsMore = true;

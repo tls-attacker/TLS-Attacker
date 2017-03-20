@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.testtls.impl;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.BotanPolicyParser;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -29,36 +28,33 @@ public class TestTLSServer {
 
     private final TestServerConfig testConfig;
 
-    private ConfigHandler configHandler;
-
     public TestTLSServer(TestServerConfig serverTestConfig) {
         this.testConfig = serverTestConfig;
     }
 
     public boolean startTests() {
-        configHandler = new ConfigHandler();
 
         List<TestTLS> tests = new LinkedList<>();
         TlsPeerProperties properties = new TlsPeerProperties();
 
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting TLS Test");
 
-        ProtocolVersionTest protocolVersionTest = new ProtocolVersionTest(configHandler, testConfig);
+        ProtocolVersionTest protocolVersionTest = new ProtocolVersionTest(testConfig);
         protocolVersionTest.startTests();
         tests.add(protocolVersionTest);
 
-        CryptoTest cryptoTest = new CryptoTest(configHandler, testConfig);
+        CryptoTest cryptoTest = new CryptoTest(testConfig);
         cryptoTest.startTests();
         tests.add(cryptoTest);
-        NamedCurvesTest ncTest = new NamedCurvesTest(configHandler, testConfig, cryptoTest.getSupportedCipherSuites());
+        NamedCurvesTest ncTest = new NamedCurvesTest(testConfig, cryptoTest.getSupportedCipherSuites());
         tests.add(ncTest);
         ncTest.startTests();
-        SignatureAndHashAlgorithmsTest shTest = new SignatureAndHashAlgorithmsTest(configHandler, testConfig,
+        SignatureAndHashAlgorithmsTest shTest = new SignatureAndHashAlgorithmsTest(testConfig,
                 cryptoTest.getSupportedCipherSuites());
         shTest.startTests();
         tests.add(shTest);
 
-        CipherSuiteOrderTest csOrderTest = new CipherSuiteOrderTest(configHandler, testConfig);
+        CipherSuiteOrderTest csOrderTest = new CipherSuiteOrderTest(testConfig);
         csOrderTest.startTests();
         tests.add(csOrderTest);
         // removing for now

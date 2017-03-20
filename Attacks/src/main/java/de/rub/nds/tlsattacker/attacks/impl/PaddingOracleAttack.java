@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.Attacker;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
@@ -49,20 +49,19 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
 
     public PaddingOracleAttack(PaddingOracleCommandConfig config) {
         super(config);
-        ConfigHandler configHandler = new ConfigHandler();
-        tlsConfig = configHandler.initialize(config);
+        tlsConfig = config.createConfig();
         lastMessages = new LinkedList<>();
     }
 
     @Override
-    public void executeAttack(ConfigHandler configHandler) {
+    public void executeAttack() {
         List<Record> records = new LinkedList<>();
         records.addAll(createRecordsWithPlainData());
         records.addAll(createRecordsWithModifiedMac());
         records.addAll(createRecordsWithModifiedPadding());
 
         for (Record record : records) {
-            executeAttackRound(configHandler, record);
+            executeAttackRound(record);
 
         }
 
@@ -95,10 +94,10 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
         }
     }
 
-    public void executeAttackRound(ConfigHandler configHandler, Record record) {
-        TransportHandler transportHandler = configHandler.initializeTransportHandler(tlsConfig);
-        TlsContext tlsContext = configHandler.initializeTlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
+    public void executeAttackRound(Record record) {
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
@@ -117,7 +116,6 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
         lastMessages.add(trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1));
         tlsContexts.add(tlsContext);
 
-        transportHandler.closeConnection();
     }
 
     private List<Record> createRecordsWithPlainData() {

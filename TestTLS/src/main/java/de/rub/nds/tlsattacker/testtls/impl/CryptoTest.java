@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
@@ -61,8 +60,8 @@ public class CryptoTest extends HandshakeTest {
 
     private int minimumRSAKeySize;
 
-    public CryptoTest(ConfigHandler configHandler, TestServerConfig serverConfig) {
-        super(configHandler, serverConfig);
+    public CryptoTest(TestServerConfig serverConfig) {
+        super(serverConfig);
         supportedCipherSuites = new HashMap<>();
         allSupportedCipherSuites = new HashSet<>();
         supportedKeyExchangeAlgorithms = new HashSet<>();
@@ -78,7 +77,7 @@ public class CryptoTest extends HandshakeTest {
                 continue;
             }
             for (CipherSuite cs : CipherSuite.values()) {
-                TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+                TlsConfig tlsConfig = serverConfig.createConfig();
                 tlsConfig.setHighestProtocolVersion(pv);
                 tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
                 boolean success = false;

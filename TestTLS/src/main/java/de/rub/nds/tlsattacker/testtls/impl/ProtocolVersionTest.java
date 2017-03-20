@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -26,8 +25,8 @@ public class ProtocolVersionTest extends HandshakeTest {
 
     private final Set<ProtocolVersion> supportedProtocols;
 
-    public ProtocolVersionTest(ConfigHandler configHandler, TestServerConfig serverConfig) {
-        super(configHandler, serverConfig);
+    public ProtocolVersionTest(TestServerConfig serverConfig) {
+        super(serverConfig);
         supportedProtocols = new HashSet<>();
     }
 
@@ -44,7 +43,7 @@ public class ProtocolVersionTest extends HandshakeTest {
 
     private void testCipherSuites(ProtocolVersion pv) {
         for (CipherSuite cs : CipherSuite.values()) {
-            TlsConfig tlsConfig = configHandler.initialize(serverConfig);
+            TlsConfig tlsConfig = serverConfig.createConfig();
 
             tlsConfig.setHighestProtocolVersion(pv);
             tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));

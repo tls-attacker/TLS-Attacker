@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
-import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 
 /**
  * 
@@ -17,12 +16,9 @@ import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
  */
 public abstract class TestTLS {
 
-    String result;
+    protected String result;
 
-    ConfigHandler configHandler;
-
-    public TestTLS(ConfigHandler configHandler) {
-        this.configHandler = configHandler;
+    public TestTLS() {
     }
 
     public abstract void startTests();
