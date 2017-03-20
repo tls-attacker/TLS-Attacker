@@ -34,7 +34,7 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
     @Override
     public void prepareExtensionContent() {
         prepareEllipticCurves();
-        message.setExtensionLength(message.getSupportedCurves().getValue().length);
+        message.setSupportedCurvesLength(message.getSupportedCurves().getValue().length);
     }
 
     private void prepareEllipticCurves() {
