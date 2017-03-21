@@ -62,7 +62,7 @@ public class TLSActionExecutor extends ActionExecutor {
     @Override
     public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
         if (!proceed) {
-            return null;
+            return new LinkedList<>();
         }
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
