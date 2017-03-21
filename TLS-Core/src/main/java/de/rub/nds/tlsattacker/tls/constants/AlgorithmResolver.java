@@ -92,9 +92,9 @@ public class AlgorithmResolver {
         } else if (cipher.startsWith("TLS_DH_ANON_")) {
             return KeyExchangeAlgorithm.DH_ANON;
         } else if (cipher.startsWith("TLS_ECDH_")) {
-            return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
+            return KeyExchangeAlgorithm.ECDH;
         } else if (cipher.startsWith("TLS_ECDHE_")) {
-            return KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN;
+            return KeyExchangeAlgorithm.ECDH;
         } else if (cipher.startsWith("TLS_NULL_")) {
             return KeyExchangeAlgorithm.NULL;
         } else if (cipher.startsWith("TLS_KRB5_")) {

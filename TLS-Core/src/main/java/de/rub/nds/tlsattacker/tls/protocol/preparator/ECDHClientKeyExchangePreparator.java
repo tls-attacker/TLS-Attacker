@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
@@ -74,22 +75,22 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 .getValue());
 
         List<ECPointFormat> pointFormatList = context.getServerPointFormatsList();
-        if(pointFormatList == null)
-        {
-            throw new PreparationException("Server did not specify a List of supported PointFormats");
+        if (pointFormatList == null) {
+            pointFormatList = new LinkedList<>();
+            pointFormatList.add(ECPointFormat.UNCOMPRESSED);
         }
         // TODO i guess some of the intermediate calculated values could be
-        // inseterd into computations
+        // inserted into computations
         try {
-            byte[] serializedPoint = ECCUtilsBCWrapper.serializeECPoint((ECPointFormat[]) pointFormatList.toArray(),
-                    point);
+            ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
+            byte[] serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, point);
             message.setEcPointFormat(serializedPoint[0]);
             message.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
             message.setSerializedPublicKey(serializedPoint);
             message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
 
-            byte[] result = ArrayConverter.concatenate(new byte[] { message.getSerializedPublicKeyLength().getValue()
-                    .byteValue() }, new byte[] { message.getEcPointFormat().getValue() }, message.getEcPointEncoded()
+            byte[] result = ArrayConverter.concatenate(new byte[]{message.getSerializedPublicKeyLength().getValue()
+                .byteValue()}, new byte[]{message.getEcPointFormat().getValue()}, message.getEcPointEncoded()
                     .getValue());
 
             byte[] premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(parameters, ecPrivateKey);

@@ -146,7 +146,7 @@ public class WorkflowConfigurationFactory {
             case RSA:
                 messages.add(new RSAClientKeyExchangeMessage(config));
                 break;
-            case EC_DIFFIE_HELLMAN:
+            case ECDH:
                 messages.add(new ECDHClientKeyExchangeMessage(config));
                 break;
             case DHE_DSS:
@@ -169,7 +169,7 @@ public class WorkflowConfigurationFactory {
             case RSA:
                 messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
-            case EC_DIFFIE_HELLMAN:
+            case ECDH:
                 messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
             case DHE_DSS:

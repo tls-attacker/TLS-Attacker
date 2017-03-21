@@ -58,7 +58,7 @@ public class NamedCurvesTest extends HandshakeTest {
 
     private void testSupportedCurves(ProtocolVersion pv) {
         for (CipherSuite cs : supportedCipherSuites.get(pv)) {
-            if (AlgorithmResolver.getKeyExchangeAlgorithm(cs) == KeyExchangeAlgorithm.EC_DIFFIE_HELLMAN) {
+            if (AlgorithmResolver.getKeyExchangeAlgorithm(cs) == KeyExchangeAlgorithm.ECDH) {
                 testSupportedCurves(pv, cs);
                 return;
             }
