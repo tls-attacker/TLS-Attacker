@@ -74,6 +74,10 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 .getValue());
 
         List<ECPointFormat> pointFormatList = context.getServerPointFormatsList();
+        if(pointFormatList == null)
+        {
+            throw new PreparationException("Server did not specify a List of supported PointFormats");
+        }
         // TODO i guess some of the intermediate calculated values could be
         // inseterd into computations
         try {
