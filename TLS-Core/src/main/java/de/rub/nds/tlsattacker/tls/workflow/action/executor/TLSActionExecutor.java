@@ -98,7 +98,7 @@ public class TLSActionExecutor extends ActionExecutor {
     @Override
     public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
         if (!proceed) {
-            return null;
+            return new LinkedList<>();
         }
         List<ProtocolMessage> receivedList = new LinkedList<>();
         try {
