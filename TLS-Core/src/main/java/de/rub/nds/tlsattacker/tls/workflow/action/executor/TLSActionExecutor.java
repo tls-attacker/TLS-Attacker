@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
@@ -260,7 +261,7 @@ public class TLSActionExecutor extends ActionExecutor {
                         handshakeMessageType);
                 result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
 
-            } catch (ParserException E) {
+            } catch (ParserException | AdjustmentException E) {
                 LOGGER.log(Level.WARN,
                         "Could not parse Message as a CorrectMessage, parsing as UnknownHandshakeMessage instead!", E);
 

@@ -89,8 +89,8 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
             message.setSerializedPublicKey(serializedPoint);
             message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
 
-            byte[] result = ArrayConverter.concatenate(new byte[]{message.getSerializedPublicKeyLength().getValue()
-                .byteValue()}, new byte[]{message.getEcPointFormat().getValue()}, message.getEcPointEncoded()
+            byte[] result = ArrayConverter.concatenate(new byte[] { message.getSerializedPublicKeyLength().getValue()
+                    .byteValue() }, new byte[] { message.getEcPointFormat().getValue() }, message.getEcPointEncoded()
                     .getValue());
 
             byte[] premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(parameters, ecPrivateKey);

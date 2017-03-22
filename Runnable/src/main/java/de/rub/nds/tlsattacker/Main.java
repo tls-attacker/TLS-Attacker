@@ -43,7 +43,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tlsserver.ServerCommandConfig;
 import de.rub.nds.tlsattacker.tlsserver.TlsServer;
 import de.rub.nds.tlsscanner.report.SiteReport;
-import de.rub.nds.tlsscanner.ScannerConfig;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.TLSScanner;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
