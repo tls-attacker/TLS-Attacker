@@ -13,8 +13,7 @@
  */
 package de.rub.nds.tlsscanner.report;
 
-import de.rub.nds.tlsscanner.flaw.ConfigurationFlaw;
-import de.rub.nds.tlsscanner.flaw.FlawLevel;
+import de.rub.nds.tlsscanner.report.check.TLSCheck;
 import java.util.List;
 
 /**
@@ -22,22 +21,22 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProbeResult {
-    private String probeName;
-    private List<ResultValue> resultList;
-    private List<ConfigurationFlaw> flawList;
+    private final String probeName;
+    private final List<ResultValue> resultList;
+    private final List<TLSCheck> checkList;
 
-    public ProbeResult(String probeName, List<ResultValue> resultList, List<ConfigurationFlaw> flawList) {
+    public ProbeResult(String probeName, List<ResultValue> resultList, List<TLSCheck> checkList) {
         this.probeName = probeName;
         this.resultList = resultList;
-        this.flawList = flawList;
+        this.checkList = checkList;
     }
 
     public String toJson() {
         StringBuilder builder = new StringBuilder();
         builder.append("\t\t\"" + probeName + "\": {\n");
-        builder.append("\t\t\t\"result\": " + flawList.isEmpty() + "\n");
+        builder.append("\t\t\t\"result\": " + checkList.isEmpty() + "\n");
 
-        builder.append("\t\t\t\"description\": \"" + getFlawString() + "\"\n");
+        builder.append("\t\t\t\"description\": \"" + getCheckString() + "\"\n");
         builder.append("\t\t}\n");
         return builder.toString();
     }
@@ -51,16 +50,18 @@ public class ProbeResult {
             builder.append(value.toString());
             builder.append("\n");
         }
-        builder.append("Flaws:\n");
-        builder.append(getFlawString());
+        builder.append("Checks:\n");
+        builder.append(getCheckString());
         return builder.toString();
     }
 
-    public String getFlawString() {
+    public String getCheckString() {
         StringBuilder builder = new StringBuilder();
-        for (ConfigurationFlaw flaw : flawList) {
-            builder.append(flaw.toString());
-            builder.append("\n");
+        for (TLSCheck check : checkList) {
+            if (check != null) {
+                builder.append(check.toString());
+                builder.append("\n");
+            }
         }
         return builder.toString();
     }

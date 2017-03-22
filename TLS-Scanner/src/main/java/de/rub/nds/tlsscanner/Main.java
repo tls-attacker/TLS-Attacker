@@ -9,6 +9,9 @@
 package de.rub.nds.tlsscanner;
 
 import de.rub.nds.tlsscanner.report.SiteReport;
+import de.rub.nds.tlsscanner.report.check.CheckConfig;
+import de.rub.nds.tlsscanner.report.check.CheckConfigSerializer;
+import java.io.File;
 
 /**
  *
@@ -16,8 +19,7 @@ import de.rub.nds.tlsscanner.report.SiteReport;
  */
 class Main {
     public static void main(String args[]) {
-        TLSScanner scanner = new TLSScanner(args[0]);
-        SiteReport report = scanner.scan();
-        System.out.println(report.getJsonReport());
+        CheckConfig config = new CheckConfig("test", "test", "test", "test", true);
+        CheckConfigSerializer.serialize(config, new File("test.xml"));
     }
 }

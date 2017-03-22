@@ -65,10 +65,6 @@
                 </exclusion>
                 <exclusion>
                     <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>ModifiableVariable</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
                     <artifactId>Utils</artifactId>
                 </exclusion>
             </exclusions>

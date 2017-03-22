@@ -50,8 +50,8 @@ public class TLSScanner {
         List<TLSProbe> testList = new LinkedList<>();
         testList.add(new CertificateProbe(websiteHost));
         // testList.add(new ProtocolVersionProbe(websiteHost));
-        // testList.add(new CiphersuiteProbe(websiteHost));
-        // testList.add(new CiphersuiteOrderProbe(websiteHost));
+        testList.add(new CiphersuiteProbe(websiteHost));
+        testList.add(new CiphersuiteOrderProbe(websiteHost));
         // testList.add(new HeartbleedProbe(websiteHost));
         // testList.add(new NamedCurvesProbe(websiteHost));
         // testList.add(new PaddingOracleProbe(websiteHost));
