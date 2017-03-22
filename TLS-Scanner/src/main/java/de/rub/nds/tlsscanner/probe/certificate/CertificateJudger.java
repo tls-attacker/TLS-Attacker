@@ -13,11 +13,17 @@
  */
 package de.rub.nds.tlsscanner.probe.certificate;
 
+import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsscanner.flaw.ConfigurationFlaw;
 import de.rub.nds.tlsscanner.flaw.FlawLevel;
 import de.rub.nds.tlsscanner.report.ResultValue;
+import de.rub.nds.tlsscanner.report.SiteReport;
+import de.rub.nds.tlsscanner.report.check.CheckType;
+import de.rub.nds.tlsscanner.report.check.TLSCheck;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.asn1.x509.Certificate;
@@ -30,119 +36,84 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateJudger {
 
-    public List<ConfigurationFlaw> getFlaws(Certificate certificate, String domainName) {
-        List<ConfigurationFlaw> configurationFlaws = new LinkedList<>();
-        if (certificate == null) {
-            configurationFlaws.add(new ConfigurationFlaw("Could not retrieve Certificate", FlawLevel.FATAL, domainName,
-                    ""));
-            return configurationFlaws;
-        }
-        if (isCertificateExpired(certificate)) {
-            configurationFlaws
-                    .add(new ConfigurationFlaw(
-                            "Zertifikat ausgelaufen",
-                            FlawLevel.FATAL,
-                            "Das Zertifikat ist ausgelaufen. Zertifikate haben nur eine begrenzte gültigkeit und müssen von Zeit zu Zeit erneuert werden. Ein abgelaufenes Zertifikat schwächt eine TLS Verbindung enorm.",
-                            "Beantragen sie ein neues Zertifikat!"));
-        }
-        if (isCertificateValidYet(certificate)) {
-            configurationFlaws
-                    .add(new ConfigurationFlaw(
-                            "Zertifikat noch nicht gültig",
-                            FlawLevel.FATAL,
-                            "Das Zertifikat ist noch nicht gültig. Zertifikate haben ein gültigkeits Zeitraum und das konfigurierte Zertifikat ist noch nicht gültig. Ein noch nicht gültiges Zertifikat schwächt eine TLS Verbindung enorm.",
-                            "Beantrage sie ein Zertifikat welches schon gültig ist!"));
-        }
-        if (isRevoked(certificate)) {
-            configurationFlaws.add(new ConfigurationFlaw("Zertifikat zurückgerufen", FlawLevel.FATAL,
-                    "Das eingesetzte Zertifikat wurde zurück gerufen und darf nicht mehr eingesetzt werden.",
-                    "Beantrage sie ein neues Zertifikat."));
-        }
-        if (usesMD2signature(certificate)) {
-            configurationFlaws
-                    .add(new ConfigurationFlaw(
-                            "MD2 Signatur",
-                            FlawLevel.FATAL,
-                            "Das eingesetzte Zertifikat benutzt den veralteten MD2 Algorithmus in seiner Signatur. Dies erlaubt das fälschen von Zertifikaten und schwächt die TLS-Verbindung erheblich.",
-                            "Beantrage sie ein neues Zertifikat mit einem sicheren Hash-Algorithmus wie z.B. SHA-256"));
-        }
-        if (usesMD5signature(certificate)) {
-            configurationFlaws
-                    .add(new ConfigurationFlaw(
-                            "MD5 Signatur",
-                            FlawLevel.FATAL,
-                            "Das eingesetzte Zertifikat benutzt den veralteten MD5 Algorithmus in seiner Signatur. Dies erlaubt das fälschen von Zertifikaten und schwächt die TLS-Verbindung erheblich.",
-                            "Beantrage sie ein neues Zertifikat mit einem sicheren Hash-Algorithmus wie z.B. SHA-256"));
-        }
-        if (domainNameDoesNotMatch(certificate, domainName)) {
-            configurationFlaws.add(new ConfigurationFlaw("Domain nicht zulässig", FlawLevel.FATAL,
-                    "Das eingesetzte Zertifikat ist für die gescannte Domain nicht gültig.",
-                    "Beantrage sie ein neues Zertifikat welches ebenfalls für die Domain " + domainName
-                            + " gültig ist."));
-        }
-        if (isNotTrusted(certificate)) {
-            configurationFlaws.add(new ConfigurationFlaw("Zertifikat nicht vertrauenswürdig", FlawLevel.FATAL,
-                    "Dem Eingesetzten Zertifikat wird nicht vertraut",
-                    "Beantrage sie ein neues Zertifikat welchem Vertraut werden kann."));
-        }
-        if (isSelfSigned(certificate)) {
-            configurationFlaws
-                    .add(new ConfigurationFlaw(
-                            "Zertifikat ist selbst signiert",
-                            FlawLevel.FATAL,
-                            "Das eingesetzte Zertifikat legitimiert sich selbst. Besucher ihrer Seite können die Validität dieses Zertifikats nicht überprüfen.",
-                            "Beantragen sie ein Zertifikat bei einer vertrauenswürdigen Zertifizierungsstelle."));
-        }
-        if (isWeakKey(certificate)) {
-            configurationFlaws.add(getWeakKeyFlaw(certificate));
-        }
-        return configurationFlaws;
+    private final Certificate certificate;
+    private final String domainName;
+    private final CertificateReport report;
+
+    public CertificateJudger(Certificate certificate, String domainName, CertificateReport report) {
+        this.certificate = certificate;
+        this.domainName = domainName;
+        this.report = report;
     }
 
-    public boolean isWeakKey(Certificate certificate) {
-        // TODO
-        return false;
+    public List<TLSCheck> getChecks() {
+        List<TLSCheck> tlsCheckList = new LinkedList<>();
+        boolean sentCert = certificate != null;
+        tlsCheckList.add(new TLSCheck(sentCert, CheckType.CERTIFICATE_SENT_BY_SERVER));
+        if (!sentCert) {
+            return tlsCheckList;
+        }
+        tlsCheckList.add(checkCertificateRevoked());
+        tlsCheckList.add(checkExpired());
+        tlsCheckList.add(checkNotYetValid());
+        tlsCheckList.add(checkHashAlgorithm());
+        tlsCheckList.add(checkSignAlgorithm());
+        tlsCheckList.add(checkDomainNameMatch());
+        tlsCheckList.add(checkCertificateTrusted());
+        tlsCheckList.add(checkSelfSigned());
+        tlsCheckList.add(checkBlacklistedKey());
+
+        return tlsCheckList;
     }
 
-    public ConfigurationFlaw getWeakKeyFlaw(Certificate certificate) {
-        // TODO
-        return new ConfigurationFlaw(null, FlawLevel.FATAL, null, null);
+    public TLSCheck checkExpired() {
+        boolean result = isCertificateExpired(report);
+        return new TLSCheck(result, CheckType.CERTIFICATE_EXPIRED);
     }
 
-    public boolean isCertificateExpired(Certificate certificate) {
-        // try {
-        // certificate.checkValidity();
-        // } catch (CertificateExpiredException E) {
-        // return true;
-        // } catch (CertificateNotYetValidException E) {
-        // return false;
-        // }//TODO
-        return false;
+    public TLSCheck checkNotYetValid() {
+        boolean result = isCertificateValidYet(report);
+        return new TLSCheck(result, CheckType.CERTIFICATE_NOT_VALID_YET);
     }
 
-    public boolean isCertificateValidYet(Certificate certificate) {
-        // try {
-        // certificate.checkValidity();
-        // } catch (CertificateNotYetValidException E) {
-        // return true;
-        // } catch (CertificateExpiredException E) {
-        // return false;
-        // }//TODO
-        return false;
+    public TLSCheck checkCertificateRevoked() {
+        boolean result = isRevoked(certificate);
+        return new TLSCheck(result, CheckType.CERTIFICATE_REVOKED);
+    }
+
+    private TLSCheck checkHashAlgorithm() {
+        boolean result = isWeakHashAlgo(report);
+        return new TLSCheck(result, CheckType.CERTIFICATE_WEAK_HASH_FUNCTION);
+    }
+
+    private TLSCheck checkSignAlgorithm() {
+        boolean result = isWeakSigAlgo(report);
+        return new TLSCheck(result, CheckType.CERTIFICATE_WEAK_SIGN_ALGORITHM);
+    }
+
+    public boolean isWeakHashAlgo(CertificateReport report) {
+        HashAlgorithm algo = report.getSignatureAndHashAlgorithm().getHashAlgorithm();
+        return algo == HashAlgorithm.MD5 || algo == HashAlgorithm.NONE || algo == HashAlgorithm.SHA1;
+    }
+
+    public boolean isWeakSigAlgo(CertificateReport report) {
+        SignatureAlgorithm algo = report.getSignatureAndHashAlgorithm().getSignatureAlgorithm();
+        return algo == SignatureAlgorithm.ANONYMOUS; // TODO is this weak?
+    }
+
+    public boolean isWeakKey(CertificateReport report) {
+        return report.getWeakDebianKey() == Boolean.TRUE;
+    }
+
+    public boolean isCertificateExpired(CertificateReport report) {
+        return !report.getValidTo().after(new Date(System.currentTimeMillis()));
+    }
+
+    public boolean isCertificateValidYet(CertificateReport report) {
+        return !report.getValidFrom().before(new Date(System.currentTimeMillis()));
     }
 
     public boolean isRevoked(Certificate certificate) {
-        // TODO
-        return false;
-    }
-
-    public boolean usesMD2signature(Certificate certificate) {
-        // TODO
-        // if(certificate.)
-        return false;
-    }
-
-    public boolean usesMD5signature(Certificate certificate) {
         // TODO
         return false;
     }
@@ -159,22 +130,49 @@ public class CertificateJudger {
 
     private boolean isSelfSigned(Certificate certificate) {
         return false;
-        // TODO
-        // throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
+
     }
 
-    public List<ResultValue> getResults(Certificate serverCert, String serverHost) {
-        return new LinkedList<>();
-        // TODO
+    private TLSCheck checkDomainNameMatch() {
+        // if (domainNameDoesNotMatch(certificate, domainName)) {
+        // tlsCheckList.add(new ConfigurationFlaw("Domain nicht zulässig",
+        // FlawLevel.FATAL,
+        // "Das eingesetzte Zertifikat ist für die gescannte Domain nicht gültig.",
+        // "Beantrage sie ein neues Zertifikat welches ebenfalls für die Domain "
+        // + domainName
+        // + " gültig ist."));
+        // }
+        return null;
     }
 
+    private TLSCheck checkCertificateTrusted() {
+        // if (isNotTrusted(certificate)) {
+        // tlsCheckList.add(new
+        // ConfigurationFlaw("Zertifikat nicht vertrauenswürdig",
+        // FlawLevel.FATAL,
+        // "Dem Eingesetzten Zertifikat wird nicht vertraut",
+        // "Beantrage sie ein neues Zertifikat welchem Vertraut werden kann."));
+        // }
+        return null;
+    }
+
+    private TLSCheck checkSelfSigned() {
+        // if (isSelfSigned(certificate)) {
+        // tlsCheckList
+        // .add(new ConfigurationFlaw(
+        // "Zertifikat ist selbst signiert",
+        // FlawLevel.FATAL,
+        // "Das eingesetzte Zertifikat legitimiert sich selbst. Besucher ihrer Seite können die Validität dieses Zertifikats nicht überprüfen.",
+        // "Beantragen sie ein Zertifikat bei einer vertrauenswürdigen Zertifizierungsstelle."));
+        // }
+        return null;
+    }
+
+    private TLSCheck checkBlacklistedKey() {
+        // if (isWeakKey(report)) {
+        // tlsCheckList.add(new ConfigurationFlaw(domainName, FlawLevel.FATAL,
+        // domainName, domainName));
+        // }
+        return null;
+    }
 }

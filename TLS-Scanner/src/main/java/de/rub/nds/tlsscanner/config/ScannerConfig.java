@@ -13,37 +13,30 @@
  */
 package de.rub.nds.tlsscanner.config;
 
-import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.delegate.Delegate;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsscanner.report.check.CheckConfigCache;
-import java.io.File;
+import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ScannerConfig extends Delegate {
+public class ScannerConfig extends TLSDelegateConfig {
+    public static final String COMMAND = "scan";
 
-    @Parameter(names = "-language_path", required = true, description = "Which language configuration folder to use")
-    private String resultFilePath = "../resources/scanner/config_en/";
-
-    public String getResultFilePath() {
-        return resultFilePath;
+    @ParametersDelegate
+    private final ClientDelegate clientDelegate;
+    
+    @ParametersDelegate
+    private final ScannerDelegate scannerDelegate;
+    
+    public ScannerConfig(GeneralDelegate delegate) {
+        super(delegate);
+        clientDelegate = new ClientDelegate();
+        scannerDelegate = new ScannerDelegate();
+        addDelegate(clientDelegate);
+        addDelegate(scannerDelegate);
     }
 
-    public void setResultFilePath(String resultFilePath) {
-        this.resultFilePath = resultFilePath;
-    }
-
-    public ScannerConfig() {
-    }
-
-    @Override
-    public void applyDelegate(TlsConfig config) throws ConfigurationException {
-        if (resultFilePath != null) {
-            CheckConfigCache.getInstance().setPathToConfig(new File(resultFilePath));
-        }
-    }
 }
