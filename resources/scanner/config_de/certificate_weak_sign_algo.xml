@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Das eingesetzte Zertifikat nutzt eine starke Signatur-Funktion.</successDescription>
+    <successName>Starke Signatur-Funktion genutzt</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Das eingesetzte Zertifikat nutzt eine schwache Signatur-Funktion.</unsuccessDescription>
+    <unsuccessName>Schwache Signatur-Funktion genutzt</unsuccessName>
+</checkConfig>

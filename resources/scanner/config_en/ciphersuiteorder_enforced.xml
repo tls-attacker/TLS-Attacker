@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>The server chooses CipherSuites on his own and does not rely on a client provided ordering</successDescription>
+    <successName>CipherSuite choice enforced</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>CipherSuite choice not enforce</unsuccessDescription>
+    <unsuccessName>The server does not enforce the seleced CipherSuite and relys on a client provided ordering. The server should be responsible and choose the cipher himself.</unsuccessName>
+</checkConfig>

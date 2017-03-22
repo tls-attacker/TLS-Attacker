@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Das eingesetzte Zertifikat darf schon eingesetzt werden</successDescription>
+    <successName>Zertifikat darf schon eingesetzt werden</successName>
+    <transparentIfPassed>true</transparentIfPassed>
+    <unsuccessDescription>Das eingesetzte Zeritifkat ist noch nicht gültig und sollte noch nicht eingesetzt werden.</unsuccessDescription>
+    <unsuccessName>Zertifikat noch nicht gültig</unsuccessName>
+</checkConfig>

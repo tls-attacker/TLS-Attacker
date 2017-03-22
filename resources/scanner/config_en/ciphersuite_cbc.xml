@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Vulnerable CBC CipherSuites are not supported</successDescription>
+    <successName>CBC CipherSuites not supported</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>The server does support vulnerable CBC CipherSuites</unsuccessDescription>
+    <unsuccessName>CBC CipherSuites supported</unsuccessName>
+</checkConfig>
