@@ -26,4 +26,5 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
     public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
         super(pointer, array, expectedType, version);
     }
+
 }

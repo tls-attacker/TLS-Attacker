@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,13 +29,23 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
 
     @Override
     protected void parseHandshakeMessageContent(ECDHClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDH_PARAM_LENGTH));
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
     }
 
     @Override
     protected ECDHClientKeyExchangeMessage createHandshakeMessage() {
         return new ECDHClientKeyExchangeMessage();
+    }
+
+    private void parseSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDH_PARAM_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    private void parseSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 
 }

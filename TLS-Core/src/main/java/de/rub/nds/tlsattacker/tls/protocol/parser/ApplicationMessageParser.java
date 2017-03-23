@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,9 +28,14 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
 
     @Override
     protected ApplicationMessage parseMessageContent() {
-        ApplicationMessage message = new ApplicationMessage();
-        message.setData(parseByteArrayField(getBytesLeft()));
-        return message;
+        ApplicationMessage msg = new ApplicationMessage();
+        parseData(msg);
+        return msg;
+    }
+
+    private void parseData(ApplicationMessage msg) {
+        msg.setData(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
     }
 
 }

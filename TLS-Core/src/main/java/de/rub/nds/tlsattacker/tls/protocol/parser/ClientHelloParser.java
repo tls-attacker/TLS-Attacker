@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,10 +35,10 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
         parseRandom(msg);
         parseSessionIDLength(msg);
         parseSessionID(msg);
-        msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
-        msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
-        msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
-        msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));
+        parseCipherSuiteLength(msg);
+        parseCipherSuites(msg);
+        parseCompressionLength(msg);
+        parseCompressions(msg);
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
@@ -49,5 +50,25 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     @Override
     protected ClientHelloMessage createHandshakeMessage() {
         return new ClientHelloMessage();
+    }
+
+    private void parseCipherSuiteLength(ClientHelloMessage msg) {
+        msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
+        LOGGER.debug("CiepherSuiteLength: " + msg.getCipherSuiteLength().getValue());
+    }
+
+    private void parseCipherSuites(ClientHelloMessage msg) {
+        msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
+        LOGGER.debug("CipherSuites: " + Arrays.toString(msg.getCipherSuites().getValue()));
+    }
+
+    private void parseCompressionLength(ClientHelloMessage message) {
+        message.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
+        LOGGER.debug("CompressionLength: " + message.getCompressionLength().getValue());
+    }
+
+    private void parseCompressions(ClientHelloMessage message) {
+        message.setCompressions(parseByteArrayField(message.getCompressionLength().getValue()));
+        LOGGER.debug("Compressions: " + Arrays.toString(message.getCompressions().getValue()));
     }
 }

@@ -30,8 +30,13 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
     @Override
     protected ChangeCipherSpecMessage parseMessageContent() {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
-        msg.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        parseCcsProtocolType(msg);
         return msg;
+    }
+
+    private void parseCcsProtocolType(ChangeCipherSpecMessage msg) {
+        msg.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        LOGGER.debug("CcsProtocolType: " + msg.getCcsProtocolType().getValue());
     }
 
 }

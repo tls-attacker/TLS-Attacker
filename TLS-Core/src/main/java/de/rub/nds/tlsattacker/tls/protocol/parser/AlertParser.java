@@ -28,9 +28,19 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
     @Override
     protected AlertMessage parseMessageContent() {
-        AlertMessage message = new AlertMessage();
-        message.setLevel(parseByteField(AlertByteLength.LEVEL_LENGTH));
-        message.setDescription(parseByteField(AlertByteLength.DESCRIPTION_LENGTH));
-        return message;
+        AlertMessage msg = new AlertMessage();
+        parseLevel(msg);
+        parseDescription(msg);
+        return msg;
+    }
+
+    private void parseLevel(AlertMessage msg) {
+        msg.setLevel(parseByteField(AlertByteLength.LEVEL_LENGTH));
+        LOGGER.debug("Level: " + msg.getLevel().getValue());
+    }
+
+    private void parseDescription(AlertMessage msg) {
+        msg.setDescription(parseByteField(AlertByteLength.DESCRIPTION_LENGTH));
+        LOGGER.debug("Description: " + msg.getDescription().getValue());
     }
 }
