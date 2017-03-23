@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableByteArray extends ModifiableVariable<byte[]> implements Serializable {
 
+    private byte[] originalValue;
+
     @Override
     protected void createRandomModification() {
         VariableModification<byte[]> vm = ByteArrayModificationFactory.createRandomModification(originalValue);
@@ -40,6 +42,7 @@ public class ModifiableByteArray extends ModifiableVariable<byte[]> implements S
         return originalValue;
     }
 
+    @Override
     public void setOriginalValue(byte[] originalValue) {
         this.originalValue = originalValue;
     }

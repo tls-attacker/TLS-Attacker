@@ -29,17 +29,8 @@ public class SiteReport {
         this.host = host;
     }
 
-    // JSon magic
-    public String getJsonReport() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\n");
-        builder.append("\t \"checks\": [\n");
-        for (ProbeResult result : resultList) {
-            builder.append(result.toJson());
-        }
-        builder.append("\t]\n");
-        builder.append("}\n");
-        return builder.toString();
+    public List<ProbeResult> getResultList() {
+        return resultList;
     }
 
     public String getStringReport() {

@@ -21,6 +21,7 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ProbeResult {
+
     private final String probeName;
     private final List<ResultValue> resultList;
     private final List<TLSCheck> checkList;
@@ -29,16 +30,6 @@ public class ProbeResult {
         this.probeName = probeName;
         this.resultList = resultList;
         this.checkList = checkList;
-    }
-
-    public String toJson() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\t\t\"" + probeName + "\": {\n");
-        builder.append("\t\t\t\"result\": " + checkList.isEmpty() + "\n");
-
-        builder.append("\t\t\t\"description\": \"" + getCheckString() + "\"\n");
-        builder.append("\t\t}\n");
-        return builder.toString();
     }
 
     public String toString() {
@@ -64,5 +55,9 @@ public class ProbeResult {
             }
         }
         return builder.toString();
+    }
+
+    public List<TLSCheck> getCheckList() {
+        return checkList;
     }
 }

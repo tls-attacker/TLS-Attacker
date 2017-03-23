@@ -27,10 +27,10 @@ public class ScannerConfig extends TLSDelegateConfig {
 
     @ParametersDelegate
     private final ClientDelegate clientDelegate;
-    
+
     @ParametersDelegate
     private final ScannerDelegate scannerDelegate;
-    
+
     public ScannerConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();

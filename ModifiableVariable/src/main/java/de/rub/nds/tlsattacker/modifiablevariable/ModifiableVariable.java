@@ -27,8 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlTransient
 public abstract class ModifiableVariable<E> {
 
-    protected E originalValue;
-
     private VariableModification<E> modification = null;
 
     private boolean createRandomModification;
@@ -55,18 +53,14 @@ public abstract class ModifiableVariable<E> {
         }
 
         if (modification != null) {
-            return modification.modify(originalValue);
+            return modification.modify(getOriginalValue());
         }
-        return originalValue;
+        return getOriginalValue();
     }
 
-    public E getOriginalValue() {
-        return originalValue;
-    }
+    public abstract E getOriginalValue();
 
-    public void setOriginalValue(E originalValue) {
-        this.originalValue = originalValue;
-    }
+    public abstract void setOriginalValue(E originalValue);
 
     protected abstract void createRandomModification();
 

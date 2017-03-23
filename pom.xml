@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>1.2</version>
+    <version>2.0Beta1</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
@@ -20,6 +20,17 @@
             <organizationUrl>http://www.nds.rub.de</organizationUrl>
             <roles>
                 <role>Architect</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>ic0ns</id>
+            <name>Robert Merget</name>
+            <email>robert.merget@rub.de</email>
+            <url>http://www.nds.rub.de/</url>
+            <organization>NDS</organization>
+            <organizationUrl>http://www.nds.rub.de</organizationUrl>
+            <roles>
                 <role>Developer</role>
             </roles>
         </developer>

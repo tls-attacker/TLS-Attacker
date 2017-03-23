@@ -56,7 +56,7 @@ public class ModifiableVariableFactory {
         mv.setOriginalValue(value);
         return mv;
     }
-    
+
     public static ModifiableByte safelySetValue(ModifiableByte mv, Byte value) {
         if (mv == null) {
             mv = new ModifiableByte();

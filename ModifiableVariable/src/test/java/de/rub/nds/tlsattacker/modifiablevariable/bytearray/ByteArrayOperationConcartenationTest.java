@@ -3,7 +3,8 @@
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.modifiablevariable.bytearray;
 
@@ -20,8 +21,7 @@ import static org.junit.Assert.*;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ByteArrayOperationConcartenationTest {
-    
-    
+
     private ModifiableByteArray start;
 
     private byte[] expectedResult, result;
@@ -32,16 +32,16 @@ public class ByteArrayOperationConcartenationTest {
     @Before
     public void setUp() {
         start = new ModifiableByteArray();
-        start.setOriginalValue(new byte[]{1,10});
+        start.setOriginalValue(new byte[] { 1, 10 });
     }
 
     @Test
     public void testInsertThenXOR() {
         // input (insert4@1) xor 1,2,3 = 1 4 10 XOR 1 2 3,
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.insert(new byte[]{4}, 1);
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.insert(new byte[] { 4 }, 1);
         start.setModification(modifier);
-        modifier.setPostModification(ByteArrayModificationFactory.xor(new byte[]{1,2,3},0));
-        expectedResult = new byte[]{0,6,9};
+        modifier.setPostModification(ByteArrayModificationFactory.xor(new byte[] { 1, 2, 3 }, 0));
+        expectedResult = new byte[] { 0, 6, 9 };
         result = start.getValue();
         assertArrayEquals(expectedResult, result);
     }

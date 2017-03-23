@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableByte extends ModifiableVariable<Byte> implements Serializable {
 
+    private Byte originalValue;
+
     @Override
     protected void createRandomModification() {
         VariableModification<Byte> vm = ByteModificationFactory.createRandomModification();
@@ -53,5 +55,15 @@ public class ModifiableByte extends ModifiableVariable<Byte> implements Serializ
             }
         }
         return valid;
+    }
+
+    @Override
+    public Byte getOriginalValue() {
+        return originalValue;
+    }
+
+    @Override
+    public void setOriginalValue(Byte originalValue) {
+        this.originalValue = originalValue;
     }
 }
