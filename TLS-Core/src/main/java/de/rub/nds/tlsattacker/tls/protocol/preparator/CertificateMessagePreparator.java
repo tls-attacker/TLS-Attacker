@@ -27,19 +27,19 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final CertificateMessage message;
+    private final CertificateMessage msg;
 
-    public CertificateMessagePreparator(TlsContext context, CertificateMessage message) {
-        super(context, message);
-        this.message = message;
+    public CertificateMessagePreparator(TlsContext context, CertificateMessage msg) {
+        super(context, msg);
+        this.msg = msg;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
         Certificate cert = chooseCert();
         byte[] encodedCert = encodeCert(cert);
-        message.setX509CertificateBytes(encodedCert);
-        message.setCertificatesLength(message.getX509CertificateBytes().getValue().length);
+        msg.setX509CertificateBytes(encodedCert);
+        msg.setCertificatesLength(msg.getX509CertificateBytes().getValue().length);
     }
 
     private Certificate chooseCert() {
