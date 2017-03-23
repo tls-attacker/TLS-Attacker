@@ -23,6 +23,17 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition  
+     *            Position in the array where the ClientKeyExchangeParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the ClientKeyExchangeParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public RSAClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -38,11 +49,23 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
         return new RSAClientKeyExchangeMessage();
     }
 
+    /**
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
     }
 
+    /**
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));

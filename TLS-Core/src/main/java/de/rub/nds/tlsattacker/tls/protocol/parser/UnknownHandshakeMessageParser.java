@@ -24,6 +24,17 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+     /**
+     * Constructor for the Parser class
+     *
+     * @param pointer 
+     *            Position in the array where the HandshakeMessageParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the HandshakeMessageParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public UnknownHandshakeMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.UNKNOWN, version);
     }
@@ -41,6 +52,12 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
         return new UnknownHandshakeMessage();
     }
 
+    /**
+     * Reads the next bytes as the Data and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseData(UnknownHandshakeMessage msg) {
         msg.setData(parseByteArrayField(msg.getLength().getValue()));
         LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));        

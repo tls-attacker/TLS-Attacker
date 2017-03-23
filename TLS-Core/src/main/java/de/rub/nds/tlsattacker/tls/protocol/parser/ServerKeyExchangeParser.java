@@ -23,6 +23,19 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+     /**
+     * Constructor for the Parser class
+     *
+     * @param pointer 
+     *            Position in the array where the ServerKeyExchangeParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the ServerKeyExchangeParser is supposed to parse
+     * @param expectedType
+     *            The Handshake message type that is expected
+     * @param version
+     *            Version of the Protocol
+     */ 
     public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
         super(pointer, array, expectedType, version);
     }

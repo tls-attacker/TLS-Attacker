@@ -24,10 +24,21 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param pointer 
+     *            Position in the array where the HelloParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the HelloParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version);
     }
-
+    
     @Override
     protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         parseProtocolVersion(msg);
@@ -52,21 +63,45 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
         return new ClientHelloMessage();
     }
 
+    /**
+     * Reads the next bytes as the CypherSuiteLength and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseCipherSuiteLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
         LOGGER.debug("CiepherSuiteLength: " + msg.getCipherSuiteLength().getValue());
     }
 
+    /**
+     * Reads the next bytes as the CypherSuites and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
         LOGGER.debug("CipherSuites: " + Arrays.toString(msg.getCipherSuites().getValue()));
     }
 
+    /**
+     * Reads the next bytes as the CompressionLength and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseCompressionLength(ClientHelloMessage message) {
         message.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
         LOGGER.debug("CompressionLength: " + message.getCompressionLength().getValue());
     }
 
+    /**
+     * Reads the next bytes as the Compression and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseCompressions(ClientHelloMessage message) {
         message.setCompressions(parseByteArrayField(message.getCompressionLength().getValue()));
         LOGGER.debug("Compressions: " + Arrays.toString(message.getCompressions().getValue()));

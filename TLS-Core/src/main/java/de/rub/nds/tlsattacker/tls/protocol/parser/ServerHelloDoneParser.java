@@ -22,6 +22,17 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param pointer 
+     *            Position in the array where the HandshakeMessageParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the HandshakeMessageParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public ServerHelloDoneParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO_DONE, version);
     }

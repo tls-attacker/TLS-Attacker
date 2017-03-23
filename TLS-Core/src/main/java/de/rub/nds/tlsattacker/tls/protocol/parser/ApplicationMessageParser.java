@@ -22,6 +22,17 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition 
+     *            Position in the array where the ProtocolMessageParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the ProtocolMessageParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public ApplicationMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -33,6 +44,12 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
         return msg;
     }
 
+    /**
+     * Reads the next bytes as the Data and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseData(ApplicationMessage msg) {
         msg.setData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));

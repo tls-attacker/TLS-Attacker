@@ -21,6 +21,17 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition  
+     *            Position in the array where the ProtocolMessageParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the ProtocolMessageParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public UnknownMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }

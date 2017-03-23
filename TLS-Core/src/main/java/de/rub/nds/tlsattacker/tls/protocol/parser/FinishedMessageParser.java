@@ -23,6 +23,17 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param pointer 
+     *            Position in the array where the HandshakeMessageParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the HandshakeMessageParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public FinishedMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.FINISHED, version);
     }
@@ -37,6 +48,12 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
         return new FinishedMessage();
     }
 
+    /**
+     * Reads the next bytes as the VerifyData and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseVerifyData(FinishedMessage msg) {
         msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
         LOGGER.debug("VerifiyData: " + Arrays.toString(msg.getVerifyData().getValue()));

@@ -23,6 +23,17 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition  
+     *            Position in the array where the ClientKeyExchangeParser is supposed
+     *            to start parsing
+     * @param array
+     *            The byte[] which the ClientKeyExchangeParser is supposed to parse
+     * @param version
+     *            Version of the Protocol
+     */ 
     public DHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -38,11 +49,23 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
         return new DHClientKeyExchangeMessage();
     }
 
+    /**
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseSerializedPublicKeyLength(DHClientKeyExchangeMessage message) {
         message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
         LOGGER.debug("SerializedPublicKeyLength: " + message.getSerializedPublicKeyLength().getValue());
     }
 
+    /**
+     * Reads the next bytes as the SerializedPublicKey and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
     private void parseSerializedPublicKey(DHClientKeyExchangeMessage message) {
         message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + Arrays.toString(message.getSerializedPublicKey().getValue()));
