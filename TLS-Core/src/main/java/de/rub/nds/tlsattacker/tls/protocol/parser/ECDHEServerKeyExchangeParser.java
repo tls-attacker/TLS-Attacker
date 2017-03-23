@@ -37,13 +37,13 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
         parseCurveType(msg);
         parseNamedCurve(msg);
         parseSerializedPublicKeyLength(msg);
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
-            msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
-            msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        parseSerializedPublicKey(msg);
+        if (isTLS12() || isDTLS12()) {
+            parseHashAlgorithm(msg);
+            parseSignatureAlgorithm(msg);
         }
-        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
+        parseSignatureLength(msg);
+        parseSignature(msg);
     }
 
     @Override
@@ -69,5 +69,33 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
     private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+    }
+
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
+
+    private void parseHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
+        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
+    }
+
+    private void parseSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
+    }
+
+    private void parseSignatureLength(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
+        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+    }
+
+    private void parseSignature(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
+        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
     }
 }

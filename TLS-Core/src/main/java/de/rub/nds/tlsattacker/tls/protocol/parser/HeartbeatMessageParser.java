@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,12 +29,32 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
 
     @Override
     protected HeartbeatMessage parseMessageContent() {
-        HeartbeatMessage message = new HeartbeatMessage();
-        message.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
-        message.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
-        message.setPayload(parseByteArrayField(message.getPayloadLength().getValue()));
-        message.setPadding(parseByteArrayField(getBytesLeft()));
-        return message;
+        HeartbeatMessage msg = new HeartbeatMessage();
+        parseHeartbeatMessageType(msg);
+        parsePayloadLength(msg);
+        parsePayload(msg);
+        parsePadding(msg);
+        return msg;
+    }
+
+    private void parseHeartbeatMessageType(HeartbeatMessage msg) {
+        msg.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
+        LOGGER.debug("HeartbeatMessageType: " + msg.getHeartbeatMessageType().getValue());
+    }
+
+    private void parsePayloadLength(HeartbeatMessage msg) {
+        msg.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
+        LOGGER.debug("PayloadLength: " + msg.getPayloadLength().getValue());
+    }
+
+    private void parsePayload(HeartbeatMessage msg) {
+        msg.setPayload(parseByteArrayField(msg.getPayloadLength().getValue()));
+        LOGGER.debug("Payload: " + Arrays.toString(msg.getPayload().getValue()));
+    }
+
+    private void parsePadding(HeartbeatMessage msg) {
+        msg.setPadding(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("Padding: " + Arrays.toString(msg.getPadding().getValue()));
     }
 
 }

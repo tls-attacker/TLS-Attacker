@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,12 +29,17 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
 
     @Override
     protected void parseHandshakeMessageContent(FinishedMessage msg) {
-        msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
+        parseVerifyData(msg);
     }
 
     @Override
     protected FinishedMessage createHandshakeMessage() {
         return new FinishedMessage();
+    }
+
+    private void parseVerifyData(FinishedMessage msg) {
+        msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
+        LOGGER.debug("VerifiyData: " + Arrays.toString(msg.getVerifyData().getValue()));
     }
 
 }

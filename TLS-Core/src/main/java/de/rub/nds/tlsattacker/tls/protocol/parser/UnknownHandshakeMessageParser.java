@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +30,7 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
 
     @Override
     protected void parseHandshakeMessageContent(UnknownHandshakeMessage msg) {
-        msg.setData(parseByteArrayField(msg.getLength().getValue()));
+        parseData(msg);
         LOGGER.warn("Parsed UnknownHandshake Message: "
                 + ArrayConverter.bytesToHexString(msg.getData().getValue(), false));
 
@@ -39,5 +39,10 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
     @Override
     protected UnknownHandshakeMessage createHandshakeMessage() {
         return new UnknownHandshakeMessage();
+    }
+
+    private void parseData(UnknownHandshakeMessage msg) {
+        msg.setData(parseByteArrayField(msg.getLength().getValue()));
+        LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));        
     }
 }

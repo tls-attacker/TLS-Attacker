@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,13 +29,23 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
 
     @Override
     protected void parseHandshakeMessageContent(RSAClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
     }
 
     @Override
     protected RSAClientKeyExchangeMessage createHandshakeMessage() {
         return new RSAClientKeyExchangeMessage();
+    }
+
+    private void parseSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    private void parseSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 
 }
