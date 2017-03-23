@@ -29,14 +29,15 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     /**
      * Constructor for the Parser class
      *
-     * @param pointer 
-     *            Position in the array where the ServerKeyExchangeParser is supposed
-     *            to start parsing
+     * @param pointer
+     *            Position in the array where the ServerKeyExchangeParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the ServerKeyExchangeParser is supposed to parse
+     *            The byte[] which the ServerKeyExchangeParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
         this.version = version;
@@ -108,7 +109,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
+     * the message
      *
      * @param msg
      *            Message to write in
@@ -119,7 +121,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in
@@ -163,7 +166,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     /**
-     * Reads the next bytes as the SignatureAlgorithm and writes them in the message
+     * Reads the next bytes as the SignatureAlgorithm and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in
@@ -174,7 +178,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     /**
-     * Reads the next bytes as the SignatureLength and writes them in the message
+     * Reads the next bytes as the SignatureLength and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in

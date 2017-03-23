@@ -26,14 +26,15 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
     /**
      * Constructor for the Parser class
      *
-     * @param pointer 
-     *            Position in the array where the HandshakeMessageParser is supposed
-     *            to start parsing
+     * @param pointer
+     *            Position in the array where the HandshakeMessageParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the HandshakeMessageParser is supposed to parse
+     *            The byte[] which the HandshakeMessageParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public FinishedMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.FINISHED, version);
     }

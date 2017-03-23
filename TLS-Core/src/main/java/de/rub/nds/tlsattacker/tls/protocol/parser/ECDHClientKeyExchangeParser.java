@@ -26,14 +26,15 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
     /**
      * Constructor for the Parser class
      *
-     * @param startposition  
-     *            Position in the array where the ClientKeyExchangeParser is supposed
-     *            to start parsing
+     * @param startposition
+     *            Position in the array where the ClientKeyExchangeParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to parse
+     *            The byte[] which the ClientKeyExchangeParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public ECDHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -49,8 +50,9 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
         return new ECDHClientKeyExchangeMessage();
     }
 
-     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
+    /**
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
+     * the message
      *
      * @param msg
      *            Message to write in
@@ -60,8 +62,9 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
     }
 
-     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the message
+    /**
+     * Reads the next bytes as the SerializedPublicKey and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in

@@ -55,13 +55,14 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     protected abstract T parseMessageContent();
 
     /**
-     * Reads the next bytes as the CompleteResultingMessage and writes them in the message
+     * Reads the next bytes as the CompleteResultingMessage and writes them in
+     * the message
      *
      * @param msg
      *            Message to write in
      */
     private void parseCompleteResultingMessage(ProtocolMessage msg) {
         msg.setCompleteResultingMessage(getAlreadyParsed());
-        LOGGER.debug("CompleteResultMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 }

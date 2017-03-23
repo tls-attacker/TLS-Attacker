@@ -26,14 +26,15 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
     /**
      * Constructor for the Parser class
      *
-     * @param startposition  
-     *            Position in the array where the ClientKeyExchangeParser is supposed
-     *            to start parsing
+     * @param startposition
+     *            Position in the array where the ClientKeyExchangeParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to parse
+     *            The byte[] which the ClientKeyExchangeParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public DHClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -50,7 +51,8 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
+     * the message
      *
      * @param msg
      *            Message to write in
@@ -61,7 +63,8 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the message
+     * Reads the next bytes as the SerializedPublicKey and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in

@@ -27,9 +27,9 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     /**
      * Constructor for the Parser class
      *
-     * @param pointer 
-     *            Position in the array where the HelloParser is supposed
-     *            to start parsing
+     * @param pointer
+     *            Position in the array where the HelloParser is supposed to
+     *            start parsing
      * @param array
      *            The byte[] which the HelloParser is supposed to parse
      * @param version
@@ -38,7 +38,7 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version);
     }
-    
+
     @Override
     protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         parseProtocolVersion(msg);
@@ -64,7 +64,8 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CypherSuiteLength and writes them in the message
+     * Reads the next bytes as the CypherSuiteLength and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in
@@ -86,7 +87,8 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     }
 
     /**
-     * Reads the next bytes as the CompressionLength and writes them in the message
+     * Reads the next bytes as the CompressionLength and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in

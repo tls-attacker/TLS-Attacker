@@ -22,22 +22,22 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
-     /**
+    /**
      * Constructor for the Parser class
      *
-     * @param startposition  
-     *            Position in the array where the ProtocolMessageParser is supposed
-     *            to start parsing
+     * @param startposition
+     *            Position in the array where the ProtocolMessageParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the ProtocolMessageParser is supposed to parse
+     *            The byte[] which the ProtocolMessageParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
 
-    
     @Override
     protected ChangeCipherSpecMessage parseMessageContent() {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
@@ -46,7 +46,8 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
     }
 
     /**
-     * Reads the next bytes as the CcsProtocolType and writes them in the message
+     * Reads the next bytes as the CcsProtocolType and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in

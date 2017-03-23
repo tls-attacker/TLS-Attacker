@@ -21,23 +21,23 @@ import org.apache.logging.log4j.Logger;
 public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
-    
-     /**
+
+    /**
      * Constructor for the Parser class
      *
-     * @param startposition 
-     *            Position in the array where the ProtocolMessageParser is supposed
-     *            to start parsing
+     * @param startposition
+     *            Position in the array where the ProtocolMessageParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the ProtocolMessageParser is supposed to parse
+     *            The byte[] which the ProtocolMessageParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public AlertParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
-    
-    
+
     @Override
     protected AlertMessage parseMessageContent() {
         AlertMessage msg = new AlertMessage();

@@ -26,14 +26,15 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
     /**
      * Constructor for the Parser class
      *
-     * @param startposition  
-     *            Position in the array where the ClientKeyExchangeParser is supposed
-     *            to start parsing
+     * @param startposition
+     *            Position in the array where the ClientKeyExchangeParser is
+     *            supposed to start parsing
      * @param array
-     *            The byte[] which the ClientKeyExchangeParser is supposed to parse
+     *            The byte[] which the ClientKeyExchangeParser is supposed to
+     *            parse
      * @param version
      *            Version of the Protocol
-     */ 
+     */
     public ClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, HandshakeMessageType.CLIENT_KEY_EXCHANGE, version);
     }
