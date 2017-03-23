@@ -93,27 +93,27 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareProtocolVersion(ClientHelloMessage msg) {
         msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
         msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
-        LOGGER.debug("Compressions: "+ Arrays.toString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: " + Arrays.toString(msg.getCompressions().getValue()));
     }
 
     private void prepareCompressionLength(ClientHelloMessage msg) {
         msg.setCompressionLength(msg.getCompressions().getValue().length);
-        LOGGER.debug("CompressionLength: "+ msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
     }
 
     private void prepareCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
-        LOGGER.debug("CipherSuites: "+ Arrays.toString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: " + Arrays.toString(msg.getCipherSuites().getValue()));
     }
 
     private void prepareCipherSuitesLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
-        LOGGER.debug("CipherSuitesLength: "+ msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
     }
 
     private boolean hasHandshakeCookie() {
@@ -122,12 +122,12 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareCookie(ClientHelloMessage msg) {
         msg.setCookie(context.getDtlsHandshakeCookie());
-        LOGGER.debug("Cookie: "+ Arrays.toString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: " + Arrays.toString(msg.getCookie().getValue()));
     }
 
     private void prepareCookieLength(ClientHelloMessage msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
-        LOGGER.debug("CookieLength: "+ msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
     }
 
     private boolean hasSessionID() {

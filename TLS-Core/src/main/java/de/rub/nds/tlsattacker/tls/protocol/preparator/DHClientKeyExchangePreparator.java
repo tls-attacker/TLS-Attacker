@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import javax.crypto.interfaces.DHPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -42,11 +38,11 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final DHClientKeyExchangeMessage message;
+    private final DHClientKeyExchangeMessage msg;
 
-    public DHClientKeyExchangePreparator(TlsContext context, DHClientKeyExchangeMessage message) {
-        super(context, message);
-        this.message = message;
+    public DHClientKeyExchangePreparator(TlsContext context, DHClientKeyExchangeMessage msg) {
+        super(context, msg);
+        this.msg = msg;
     }
 
     @Override
@@ -63,30 +59,30 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         DHPublicKeyParameters dhPublic = (DHPublicKeyParameters) kp.getPublic();
         DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) kp.getPrivate();
 
-        message.setG(dhPublic.getParameters().getG());
-        message.setP(dhPublic.getParameters().getP());
-        message.setY(dhPublic.getY());
-        message.getComputations().setX(dhPrivate.getX());
+        msg.setG(dhPublic.getParameters().getG());
+        msg.setP(dhPublic.getParameters().getP());
+        msg.setY(dhPublic.getY());
+        msg.getComputations().setX(dhPrivate.getX());
 
         // set the modified values of client's private and public parameters
-        DHParameters newParams = new DHParameters(message.getP().getValue(), message.getG().getValue());
-        DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(message.getComputations().getX().getValue(),
+        DHParameters newParams = new DHParameters(msg.getP().getValue(), msg.getG().getValue());
+        DHPrivateKeyParameters newDhPrivate = new DHPrivateKeyParameters(msg.getComputations().getX().getValue(),
                 newParams);
 
         byte[] premasterSecret = calculatePremasterSecret(newDhPrivate, context.getServerDHParameters().getPublicKey());
-        message.getComputations().setPremasterSecret(premasterSecret);
-        premasterSecret = message.getComputations().getPremasterSecret().getValue();
+        msg.getComputations().setPremasterSecret(premasterSecret);
+        premasterSecret = msg.getComputations().getPremasterSecret().getValue();
 
-        byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(message.getY().getValue());
-        message.setSerializedPublicKey(serializedPublicKey);
-        message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
+        byte[] serializedPublicKey = BigIntegers.asUnsignedByteArray(msg.getY().getValue());
+        msg.setSerializedPublicKey(serializedPublicKey);
+        msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
 
         byte[] random = context.getClientServerRandom();
-        message.getComputations().setClientRandom(random);
-        random = message.getComputations().getClientRandom().getValue();
+        msg.getComputations().setClientRandom(random);
+        random = msg.getComputations().getClientRandom().getValue();
 
         byte[] masterSecret = calculateMasterSecret(random, premasterSecret);
-        message.getComputations().setMasterSecret(masterSecret);
+        msg.getComputations().setMasterSecret(masterSecret);
     }
 
     private AsymmetricCipherKeyPair getParamsFromCertificate() {
