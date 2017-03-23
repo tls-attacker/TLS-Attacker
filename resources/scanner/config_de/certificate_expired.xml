@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <checkConfig>
-    <successDescription>Das Zeritifikat ist noch nicht ausgelaufen</successDescription>
+    <successDescription>Das Zertifikat ist noch nicht ausgelaufen</successDescription>
     <successName>Zertifikat noch nicht ausgelaufen</successName>
     <transparentIfPassed>false</transparentIfPassed>
     <unsuccessDescription>Das Zertifikat ist nicht mehr gültig und muss erneuert werden.</unsuccessDescription>

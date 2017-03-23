@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <checkConfig>
-    <successDescription>Die veraltete Ciphersuite RC4 wird nicht unterstützt.</successDescription>
-    <successName>RC4 Ciphersuites werden nicht unterstützt</successName>
+    <successDescription>Die veraltete Verschlüsselungsfunktion RC4 wird nicht unterstützt.</successDescription>
+    <successName>RC4 Ciphersuites nicht unterstützt</successName>
     <transparentIfPassed>false</transparentIfPassed>
     <unsuccessDescription>Der Server unterstützt die veraltete Verschlüsselungsfunktion RC4. Diese sollte deaktiviert werden.</unsuccessDescription>
-    <unsuccessName>RC4 Ciphersuites unterstützt</unsuccessName>
+    <unsuccessName>RC4 CipherSuites unterstützt</unsuccessName>
 </checkConfig>

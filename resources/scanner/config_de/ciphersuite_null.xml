@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <checkConfig>
-    <successDescription>Unsichere NULL Ciphersuites werden nicht unterstützt.</successDescription>
-    <successName>Null Ciphersuites werden nicht unterstützt</successName>
+    <successDescription>Unsichere NULL CipherSuites werden nicht unterstützt.</successDescription>
+    <successName>NULL CipherSuites nicht unterstützt</successName>
     <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>Der Server unterstützt CipherSuites mit einem NULL Algorithmus. Diese sollte deaktiviert werden.</unsuccessDescription>
-    <unsuccessName>Null Ciphersuites unterstützt</unsuccessName>
+    <unsuccessDescription>Der Server unterstützt CipherSuites mit einem NULL Algorithmus. Diese sollten deaktiviert werden.</unsuccessDescription>
+    <unsuccessName>NULL CipherSuites unterstützt</unsuccessName>
 </checkConfig>
