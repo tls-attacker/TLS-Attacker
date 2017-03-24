@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Die veraltete Version SSLv2 wird nicht unterstützt.</successDescription>
+    <successName>SSLv2 nicht unterstützt</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Der Server unterstützt die veraltete Version SSLv2. Diese sollte umgehend deaktiviert werden.</unsuccessDescription>
+    <unsuccessName>SSLv2 unterstützt</unsuccessName>
+</checkConfig>

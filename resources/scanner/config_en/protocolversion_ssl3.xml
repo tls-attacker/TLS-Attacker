@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>The deprecated version SSL 3 is not supported.</successDescription>
+    <successName>SSL 3 not supported</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>The server supports the deprecated version SSL 3.</unsuccessDescription>
+    <unsuccessName>SSL 3 supported</unsuccessName>
+</checkConfig>
