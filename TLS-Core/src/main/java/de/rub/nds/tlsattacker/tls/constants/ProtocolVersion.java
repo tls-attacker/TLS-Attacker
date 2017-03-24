@@ -50,7 +50,7 @@ public enum ProtocolVersion {
     }
 
     public boolean isDTLS() {
-        return value[0] == 0xFE;
+        return this == DTLS10 || this == DTLS12;
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {
@@ -84,9 +84,9 @@ public enum ProtocolVersion {
 
     /**
      * Maps a string protocol version value to an enum.
-     * 
+     *
      * It handles specific cases like TLSv1.2 or SSLv3
-     * 
+     *
      * @param protocolVersion
      * @return
      */

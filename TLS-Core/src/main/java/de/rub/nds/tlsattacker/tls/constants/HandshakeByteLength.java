@@ -164,17 +164,17 @@ public class HandshakeByteLength {
      * messages.
      */
     public static final int DTLS_HANDSHAKE_COOKIE_LENGTH = 1;
-    
+
     /**
      * Length of the Message Sequence field
      */
     public static final int DTLS_MESSAGE_SEQUENCE = 2;
-    
+
     /**
      * Fragment Offset length
      */
     public static final int DTLS_FRAGMENT_OFFSET = 3;
-    
+
     /**
      * Fragment length
      */

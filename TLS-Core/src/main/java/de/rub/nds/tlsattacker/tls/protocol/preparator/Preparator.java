@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
+import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,9 @@ public abstract class Preparator<T> {
     public Preparator(TlsContext context, T object) {
         this.context = context;
         this.object = object;
+        if (object == null) {
+            throw new PreparationException("Cannot prepare NULL");
+        }
     }
 
     public abstract void prepare();

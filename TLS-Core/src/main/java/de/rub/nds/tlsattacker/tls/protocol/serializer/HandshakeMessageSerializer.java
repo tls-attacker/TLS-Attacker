@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Abstract Serializer for HandshakeMessages
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  *            Type of the HandshakeMessages to serialize
@@ -32,7 +32,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
 
     /**
      * Constructor for the HandshakeMessageSerializer
-     * 
+     *
      * @param message
      *            Message that should be serialized
      */
@@ -59,10 +59,26 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     public final byte[] serializeProtocolMessageContent() {
         writeType();
         writeLength();
+        if (version.isDTLS()) {
+            writeSequenceNumber();
+            writeFragmentOffset();
+            writeFragmentLength();
+        }
         serializeHandshakeMessageContent();
         return getAlreadySerialized();
     }
 
     public abstract byte[] serializeHandshakeMessageContent();
 
+    private void writeSequenceNumber() {
+        appendInt(message.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+    }
+
+    private void writeFragmentOffset() {
+        appendInt(message.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
+    }
+
+    private void writeFragmentLength() {
+        appendInt(message.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
+    }
 }

@@ -47,7 +47,13 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         // Ugly but only temporary
         HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getHandler(context).getSerializer(
                 message);
+
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
+        if (context.getSelectedProtocolVersion().isDTLS()) {
+            message.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
+            message.setFragmentOffset(0);
+            message.setMessageSeq(context.getSequenceNumber());
+        }
         prepareMessageType(message.getHandshakeMessageType());
     }
 

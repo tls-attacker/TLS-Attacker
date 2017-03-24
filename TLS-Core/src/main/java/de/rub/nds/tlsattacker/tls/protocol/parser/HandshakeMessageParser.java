@@ -19,7 +19,8 @@ import org.apache.logging.log4j.Logger;
  * An abstract Parser class for HandshakeMessages
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T> Type of the HandshakeMessages to parse
+ * @param <T>
+ *            Type of the HandshakeMessages to parse
  */
 public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
 
@@ -35,11 +36,14 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     /**
      * Constructor for the Parser class
      *
-     * @param pointer Position in the array where the HandshakeMessageParser is
-     * supposed to start parsing
-     * @param array The byte[] which the HandshakeMessageParser is supposed to
-     * parse
-     * @param expectedType The expected type of the parsed HandshakeMessage
+     * @param pointer
+     *            Position in the array where the HandshakeMessageParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the HandshakeMessageParser is supposed to
+     *            parse
+     * @param expectedType
+     *            The expected type of the parsed HandshakeMessage
      * @param version
      */
     public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
@@ -52,7 +56,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * Reads the next bytes as a HandshakeMessageType and writes them in the
      * message
      *
-     * @param message Message to write in
+     * @param message
+     *            Message to write in
      */
     private void parseType(HandshakeMessage message) {
         message.setType(parseByteField(HandshakeByteLength.MESSAGE_TYPE));
@@ -66,7 +71,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     /**
      * Reads the next bytes as the MessageLength and writes them in the message
      *
-     * @param message Message to write in
+     * @param message
+     *            Message to write in
      */
     private void parseLength(HandshakeMessage message) {
         message.setLength(parseIntField(HandshakeByteLength.MESSAGE_LENGTH_FIELD));
