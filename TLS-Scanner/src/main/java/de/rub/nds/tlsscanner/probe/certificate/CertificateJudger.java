@@ -53,15 +53,15 @@ public class CertificateJudger {
         if (!sentCert) {
             return tlsCheckList;
         }
-        tlsCheckList.add(checkCertificateRevoked());
+        // tlsCheckList.add(checkCertificateRevoked());
         tlsCheckList.add(checkExpired());
         tlsCheckList.add(checkNotYetValid());
         tlsCheckList.add(checkHashAlgorithm());
         tlsCheckList.add(checkSignAlgorithm());
-        tlsCheckList.add(checkDomainNameMatch());
-        tlsCheckList.add(checkCertificateTrusted());
-        tlsCheckList.add(checkSelfSigned());
-        tlsCheckList.add(checkBlacklistedKey());
+        // tlsCheckList.add(checkDomainNameMatch());
+        // tlsCheckList.add(checkCertificateTrusted());
+        // tlsCheckList.add(checkSelfSigned());
+        // tlsCheckList.add(checkBlacklistedKey());
 
         return tlsCheckList;
     }

@@ -19,7 +19,8 @@ import java.io.File;
  */
 class Main {
     public static void main(String args[]) {
-        CheckConfig config = new CheckConfig("test", "test", "test", "test", true);
-        CheckConfigSerializer.serialize(config, new File("test.xml"));
+        TLSScanner scanner = new TLSScanner("google.com");
+        SiteReport report = scanner.scan();
+        System.out.println(report.getStringReport());
     }
 }

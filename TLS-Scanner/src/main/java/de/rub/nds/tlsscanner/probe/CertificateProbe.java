@@ -50,15 +50,10 @@ public class CertificateProbe extends TLSProbe {
         List<TLSCheck> checkList = new LinkedList<>();
         List<ResultValue> resultList = new LinkedList<>();
         List<CertificateReport> reportList = CertificateReportGenerator.generateReports(serverCert);
-        int counter = 1;
 
-        for (org.bouncycastle.asn1.x509.Certificate cert : serverCert.getCertificateList()) {
-
-            CertificateReport report = CertificateReportGenerator.generateReport(cert);
-            CertificateJudger judger = new CertificateJudger(cert, getServerHost(), report);
-            checkList.addAll(judger.getChecks());
-            counter++;
-        }
+        CertificateReport report = CertificateReportGenerator.generateReport(serverCert.getCertificateAt(0));
+        CertificateJudger judger = new CertificateJudger(serverCert.getCertificateAt(0), getServerHost(), report);
+        checkList.addAll(judger.getChecks());
         return new ProbeResult(getProbeName(), resultList, checkList);
 
     }

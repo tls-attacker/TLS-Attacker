@@ -85,6 +85,10 @@ public class CheckConfigCache {
                 return "ciphersuite_null.xml";
             case CIPHERSUITE_RC4:
                 return "ciphersuite_rc4.xml";
+            case PROTOCOLVERSION_SSL2:
+                return "protocolversion_ssl2.xml";
+            case PROTOCOLVERSION_SSL3:
+                return "protocolversion_ssl3.xml";
             default:
                 throw new UnloadableConfigException("Could not convert CheckType \"" + type.name()
                         + "\" to a config Filename");

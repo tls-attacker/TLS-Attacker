@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -37,11 +38,12 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateReportGenerator {
 
+    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("PROBE");
+
     public static List<CertificateReport> generateReports(Certificate certs) {
         List<CertificateReport> reportList = new LinkedList<>();
-        for (org.bouncycastle.asn1.x509.Certificate cert : certs.getCertificateList()) {
-            reportList.add(generateReport(cert));
-        }
+        reportList.add(generateReport(certs.getCertificateAt(0)));
+
         return reportList;
     }
 
@@ -112,10 +114,15 @@ public class CertificateReportGenerator {
 
     private static void setSignatureAndHashAlgorithm(CertificateReportImplementation report,
             org.bouncycastle.asn1.x509.Certificate cert) {
+        String sigAndHashString = null;
         try {
             X509CertificateObject x509Cert = new X509CertificateObject(cert);
-            String sigAndHashString = x509Cert.getSigAlgName();
-            String[] algos = sigAndHashString.split("WITH");
+            sigAndHashString = x509Cert.getSigAlgName();
+            System.out.println(sigAndHashString);
+            String[] algos = sigAndHashString.toUpperCase().split("WITH");
+            if (algos.length != 2) {
+                return;
+            }
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.valueOf(algos[1]);
             HashAlgorithm hashAlgorithm = HashAlgorithm.valueOf(algos[0]);
             if (hashAlgorithm == null || signatureAlgorithm == null) {
@@ -123,8 +130,8 @@ public class CertificateReportGenerator {
             }
             SignatureAndHashAlgorithm sigHashAlgo = new SignatureAndHashAlgorithm(signatureAlgorithm, hashAlgorithm);
             report.setSignatureAndHashAlgorithm(sigHashAlgo);
-        } catch (CertificateParsingException ex) {
-            // TODO logger
+        } catch (Exception E) {
+            LOGGER.debug("Could not extraxt SignatureAndHashAlgorithm from String:" + sigAndHashString, E);
         }
     }
 
