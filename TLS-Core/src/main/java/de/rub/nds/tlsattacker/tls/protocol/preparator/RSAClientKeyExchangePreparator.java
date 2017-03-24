@@ -67,8 +67,8 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         message.getComputations().setPremasterSecret(premasterSecret);
         // TODO what are those magic numbers?
         message.getComputations().setPlainPaddedPremasterSecret(
-                ArrayConverter.concatenate(new byte[]{0x00, 0x02}, padding, new byte[]{0x00}, message
-                .getComputations().getPremasterSecret().getValue()));
+                ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, message
+                        .getComputations().getPremasterSecret().getValue()));
 
         byte[] paddedPremasterSecret = message.getComputations().getPlainPaddedPremasterSecret().getValue();
 
@@ -81,7 +81,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             if (paddedPremasterSecret.length == 0) {
-                paddedPremasterSecret = new byte[]{0};
+                paddedPremasterSecret = new byte[] { 0 };
             }
             if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
                 throw new PreparationException("Trying to encrypt more Data than moduls Size!");
