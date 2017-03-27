@@ -60,4 +60,28 @@ public class ProbeResult {
     public List<TLSCheck> getCheckList() {
         return checkList;
     }
+
+    public boolean hasFailedCheck() {
+        for (TLSCheck check : checkList) {
+            if (check.isResult()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getFailedReasons() {
+        StringBuilder builder = new StringBuilder();
+        for (TLSCheck check : checkList) {
+            if (check.isResult()) {
+                builder.append(check.getDescription());
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    public String getProbeName() {
+        return probeName;
+    }
 }

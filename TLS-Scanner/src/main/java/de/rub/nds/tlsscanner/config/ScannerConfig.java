@@ -13,6 +13,7 @@
  */
 package de.rub.nds.tlsscanner.config;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
@@ -28,15 +29,32 @@ public class ScannerConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final ClientDelegate clientDelegate;
 
-    @ParametersDelegate
-    private final ScannerDelegate scannerDelegate;
+    @Parameter(names = "-language", required = true, description = "Which language the scanner should output")
+    private Language language = Language.ENGLISH;
+
+    @Parameter(names = "-threads", required = false, description = "How many threads should execute Probes")
+    private int threads = 1;
 
     public ScannerConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
-        scannerDelegate = new ScannerDelegate();
         addDelegate(clientDelegate);
-        addDelegate(scannerDelegate);
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public int getThreads() {
+        return threads;
+    }
+
+    public void setThreads(int threads) {
+        this.threads = threads;
     }
 
 }

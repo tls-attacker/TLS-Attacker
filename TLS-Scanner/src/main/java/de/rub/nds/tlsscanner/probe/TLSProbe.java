@@ -13,6 +13,7 @@
  */
 package de.rub.nds.tlsscanner.probe;
 
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 import java.util.concurrent.Callable;
 
@@ -22,17 +23,16 @@ import java.util.concurrent.Callable;
  */
 public abstract class TLSProbe implements Callable<ProbeResult> {
 
-    private String serverHost;
+    private ScannerConfig config;
     private String probeName;
 
-    public TLSProbe(String testName, String serverHost) {
+    public TLSProbe(String testName, ScannerConfig config) {
         this.probeName = testName;
-        this.serverHost = serverHost;
-
+        this.config = config;
     }
 
-    public String getServerHost() {
-        return serverHost;
+    public ScannerConfig getConfig() {
+        return config;
     }
 
     public String getProbeName() {

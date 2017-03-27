@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 import de.rub.nds.tlsscanner.report.ResultValue;
 import de.rub.nds.tlsscanner.report.check.CheckType;
@@ -45,8 +46,8 @@ public class CiphersuiteOrderProbe extends TLSProbe {
 
     private static final Logger LOGGER = LogManager.getLogger(CiphersuiteProbe.class);
 
-    public CiphersuiteOrderProbe(String serverHost) {
-        super("CiphersuiteOrder", serverHost);
+    public CiphersuiteOrderProbe(ScannerConfig config) {
+        super("CiphersuiteOrder", config);
     }
 
     @Override
@@ -65,32 +66,31 @@ public class CiphersuiteOrderProbe extends TLSProbe {
                 + (firstSelectedCipherSuite == secondSelectedCipherSuite)));
         List<TLSCheck> checkList = new LinkedList<>();
         checkList.add(new TLSCheck(firstSelectedCipherSuite != secondSelectedCipherSuite,
-                CheckType.CIPHERSUITEORDER_ENFORCED));
+                CheckType.CIPHERSUITEORDER_ENFORCED, getConfig().getLanguage()));
         return new ProbeResult(getProbeName(), resultList, checkList);
 
     }
 
     public CipherSuite getSelectedCipherSuite(List<CipherSuite> toTestList) {
 
-        TlsConfig config = new TlsConfig();
-        config.setHost(getServerHost());
-        config.setSupportedCiphersuites(toTestList);
-        config.setHighestProtocolVersion(ProtocolVersion.TLS12);
-        config.setEnforceSettings(true);
-        config.setAddServerNameIndicationExtension(false);
-        config.setAddECPointFormatExtension(true);
-        config.setAddEllipticCurveExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        TlsConfig tlsConfig = getConfig().createConfig();
+        tlsConfig.setSupportedCiphersuites(toTestList);
+        tlsConfig.setHighestProtocolVersion(ProtocolVersion.TLS12);
+        tlsConfig.setEnforceSettings(true);
+        tlsConfig.setAddServerNameIndicationExtension(false);
+        tlsConfig.setAddECPointFormatExtension(true);
+        tlsConfig.setAddEllipticCurveExtension(true);
+        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         List<NamedCurve> namedCurves = Arrays.asList(NamedCurve.values());
 
-        config.setNamedCurves(namedCurves);
+        tlsConfig.setNamedCurves(namedCurves);
         WorkflowTrace trace = new WorkflowTrace();
-        ClientHelloMessage message = new ClientHelloMessage(config);
+        ClientHelloMessage message = new ClientHelloMessage(tlsConfig);
         trace.add(new SendAction(message));
         trace.add(new ReceiveAction(new ArbitraryMessage()));
-        config.setWorkflowTrace(trace);
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+        tlsConfig.setWorkflowTrace(trace);
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
         try {
             workflowExecutor.executeWorkflow();

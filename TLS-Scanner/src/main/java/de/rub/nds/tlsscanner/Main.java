@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsscanner;
 
+import de.rub.nds.tlsscanner.config.Language;
 import de.rub.nds.tlsscanner.report.SiteReport;
 import de.rub.nds.tlsscanner.report.check.CheckConfig;
 import de.rub.nds.tlsscanner.report.check.CheckConfigSerializer;
@@ -19,7 +20,7 @@ import java.io.File;
  */
 class Main {
     public static void main(String args[]) {
-        TLSScanner scanner = new TLSScanner("google.com");
+        TLSScanner scanner = new TLSScanner("google.com", Language.ENGLISH);
         SiteReport report = scanner.scan();
         System.out.println(report.getStringReport());
     }

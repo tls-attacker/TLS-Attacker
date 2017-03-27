@@ -34,6 +34,15 @@ public abstract class TLSDelegateConfig {
         delegateList.add(delegate);
     }
 
+    public Delegate getDelegate(Class<? extends Delegate> delegateClass) {
+        for (Delegate delegate : getDelegateList()) {
+            if (delegate.getClass().equals(delegateClass)) {
+                return delegate;
+            }
+        }
+        return null;
+    }
+
     public List<Delegate> getDelegateList() {
         return Collections.unmodifiableList(delegateList);
     }

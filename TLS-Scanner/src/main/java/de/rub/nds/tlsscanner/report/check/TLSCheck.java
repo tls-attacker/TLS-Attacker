@@ -6,13 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.report.check;
 
+import de.rub.nds.tlsscanner.config.Language;
 import java.io.File;
 import java.io.Serializable;
 
@@ -23,11 +19,17 @@ import java.io.Serializable;
 public class TLSCheck {
 
     private final CheckConfig config;
+    private final CheckType type;
     private final boolean result;
 
-    public TLSCheck(boolean result, CheckType type) {
+    public TLSCheck(boolean result, CheckType type, Language lang) {
         this.result = result;
-        this.config = CheckConfigCache.getInstance().getCheckConfig(type);
+        this.config = CheckConfigCache.getInstance().getCheckConfig(type, lang);
+        this.type = type;
+    }
+
+    public CheckType getType() {
+        return type;
     }
 
     public boolean isTransparentIfPassed() {
@@ -57,6 +59,7 @@ public class TLSCheck {
 
     @Override
     public String toString() {
-        return "TLSCheck{" + "name=" + getName() + ", descption=" + getDescription() + ", result=" + result + '}';
+        return "TLSCheck{" + "name=" + getName() + ", Type=" + type.name() + ", descption=" + getDescription()
+                + ", result=" + result + '}';
     }
 }
