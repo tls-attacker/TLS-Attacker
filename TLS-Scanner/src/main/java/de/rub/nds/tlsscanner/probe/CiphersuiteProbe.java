@@ -188,9 +188,7 @@ public class CiphersuiteProbe extends TLSProbe {
             config.setAddEllipticCurveExtension(true);
             config.setAddSignatureAndHashAlgrorithmsExtension(true);
             List<NamedCurve> namedCurves = new LinkedList<>();
-            for (NamedCurve curve : NamedCurve.values()) {
-                namedCurves.add(curve);
-            }
+            namedCurves.addAll(Arrays.asList(NamedCurve.values()));
             config.setNamedCurves(namedCurves);
             WorkflowTrace trace = new WorkflowTrace();
             ClientHelloMessage message = new ClientHelloMessage(config);
