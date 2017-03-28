@@ -80,13 +80,18 @@ public class CiphersuiteProbe extends TLSProbe {
 
         LOGGER.info("Starting CiphersuiteProbe");
         Set<CipherSuite> supportedCiphersuites = new HashSet<>();
-
+        Set<CipherSuite> tls10Ciphersuites = new HashSet<>();
         for (ProtocolVersion version : protocolVersions) {
             LOGGER.info("Testing:" + version.name());
             List<CipherSuite> toTestList = new LinkedList<>();
             toTestList.addAll(Arrays.asList(CipherSuite.values()));
             toTestList.remove(CipherSuite.TLS_FALLBACK_SCSV);
-            supportedCiphersuites.addAll(getSupportedCipherSuitesFromList(toTestList, version));
+            List<CipherSuite> versionSupportedSuites = getSupportedCipherSuitesFromList(toTestList, version);
+            supportedCiphersuites.addAll(versionSupportedSuites);
+            if(version == ProtocolVersion.TLS10)
+            {
+                tls10Ciphersuites.addAll(versionSupportedSuites);
+            }
         }
         List<ResultValue> resultList = new LinkedList<>();
         List<TLSCheck> checkList = new LinkedList<>();
@@ -94,7 +99,7 @@ public class CiphersuiteProbe extends TLSProbe {
             resultList.add(new ResultValue("Ciphersuite", suite.name()));
         }
         checkList.add(checkAnonCiphers(supportedCiphersuites));
-        checkList.add(checkCBCCiphers(supportedCiphersuites));
+        checkList.add(checkCBCCiphers(tls10Ciphersuites));
         checkList.add(checkExportCiphers(supportedCiphersuites));
         checkList.add(checkNullCiphers(supportedCiphersuites));
         checkList.add(checkRC4Ciphers(supportedCiphersuites));
@@ -201,7 +206,6 @@ public class CiphersuiteProbe extends TLSProbe {
             try {
                 workflowExecutor.executeWorkflow();
             } catch (WorkflowExecutionException ex) {
-                ex.printStackTrace();
                 supportsMore = false;
             }
             if (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty()) {
