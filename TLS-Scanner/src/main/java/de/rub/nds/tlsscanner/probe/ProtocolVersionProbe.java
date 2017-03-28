@@ -56,10 +56,11 @@ public class ProtocolVersionProbe extends TLSProbe {
     public ProbeResult call() {
         List<ResultValue> resultList = new LinkedList<>();
         List<TLSCheck> checkList = new LinkedList<>();
-        //LOGGER.info("Testing SSL2:");
-        //boolean result = isProtocolVersionSupported(ProtocolVersion.SSL2);
-        //resultList.add(new ResultValue("SSL 2", "" + result));
-        //checkList.add(new TLSCheck(result, CheckType.PROTOCOLVERSION_SSL2, getConfig().getLanguage()));
+        // LOGGER.info("Testing SSL2:");
+        // boolean result = isProtocolVersionSupported(ProtocolVersion.SSL2);
+        // resultList.add(new ResultValue("SSL 2", "" + result));
+        // checkList.add(new TLSCheck(result, CheckType.PROTOCOLVERSION_SSL2,
+        // getConfig().getLanguage()));
         LOGGER.info("Testing SSL3:");
         boolean result = isProtocolVersionSupported(ProtocolVersion.SSL3);
         resultList.add(new ResultValue("SSL 3", "" + result));

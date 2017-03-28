@@ -88,8 +88,7 @@ public class CiphersuiteProbe extends TLSProbe {
             toTestList.remove(CipherSuite.TLS_FALLBACK_SCSV);
             List<CipherSuite> versionSupportedSuites = getSupportedCipherSuitesFromList(toTestList, version);
             supportedCiphersuites.addAll(versionSupportedSuites);
-            if(version == ProtocolVersion.TLS10)
-            {
+            if (version == ProtocolVersion.TLS10) {
                 tls10Ciphersuites.addAll(versionSupportedSuites);
             }
         }
