@@ -52,9 +52,10 @@ public class CertificateJudger {
 
     public List<TLSCheck> getChecks() {
         List<TLSCheck> tlsCheckList = new LinkedList<>();
-        boolean sentCert = certificate != null;
-        tlsCheckList.add(new TLSCheck(sentCert, CheckType.CERTIFICATE_SENT_BY_SERVER, config.getLanguage()));
-        if (!sentCert) {
+        boolean receivedCertificate = (certificate != null);
+        tlsCheckList
+                .add(new TLSCheck(!receivedCertificate, CheckType.CERTIFICATE_SENT_BY_SERVER, config.getLanguage()));
+        if (!receivedCertificate) {
             return tlsCheckList;
         }
         // tlsCheckList.add(checkCertificateRevoked());
