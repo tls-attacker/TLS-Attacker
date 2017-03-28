@@ -29,7 +29,7 @@ public class ScannerConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final ClientDelegate clientDelegate;
 
-    @Parameter(names = "-language", required = true, description = "Which language the scanner should output")
+    @Parameter(names = "-language", required = false, description = "Which language the scanner should output")
     private Language language = Language.ENGLISH;
 
     @Parameter(names = "-threads", required = false, description = "How many threads should execute Probes")
