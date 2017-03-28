@@ -286,7 +286,7 @@ public final class TlsConfig {
         supportedCompressionMethods = new LinkedList<>();
         supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCiphersuites = new LinkedList<>();
-        supportedCiphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.SECP192R1);
         namedCurves.add(NamedCurve.SECP256R1);
