@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class InvalidCurveAttackConfig extends AttackConfig {
 
-    public static final String ATTACK_COMMAND = "invalid_curve_full";
+    public static final String ATTACK_COMMAND = "invalid_curve";
 
     @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedCurveConverter.class)
     private NamedCurve namedCurve = null;
