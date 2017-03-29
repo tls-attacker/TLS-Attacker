@@ -36,7 +36,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "invalid_curve";
 
     @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedCurveConverter.class)
-    private NamedCurve namedCurve = null;
+    private NamedCurve namedCurve = NamedCurve.SECP256R1;
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
     private int additionalEquations = 3;
