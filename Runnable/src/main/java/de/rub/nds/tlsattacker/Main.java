@@ -12,6 +12,7 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
@@ -34,6 +35,7 @@ import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
@@ -80,6 +82,8 @@ public class Main {
         jc.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
         WinshockCommandConfig winshock = new WinshockCommandConfig(generalDelegate);
         jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
+        EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig(generalDelegate);
+        jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
         ServerCommandConfig server = new ServerCommandConfig(generalDelegate);
         jc.addCommand(ServerCommandConfig.COMMAND, server);
         ClientCommandConfig client = new ClientCommandConfig(generalDelegate);
@@ -156,6 +160,9 @@ public class Main {
                 break;
             case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
                 attacker = new DtlsPaddingOracleAttacker(dtlsPaddingOracleAttackTest);
+                break;
+            case EarlyCCSCommandConfig.ATTACK_COMMAND:
+                attacker = new EarlyCCSAttacker(earlyCCS);
                 break;
             default:
                 throw new ConfigurationException("No command found");
