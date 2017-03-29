@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
@@ -24,8 +25,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,8 +78,8 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
             return null;
         }
-
-        if (tlsContext.isReceivedFatalAlert()) {
+        System.out.println(trace.toString());
+        if (trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() > 0) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
