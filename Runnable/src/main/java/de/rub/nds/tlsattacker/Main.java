@@ -172,7 +172,7 @@ public class Main {
             } else {
                 try {
                     Boolean result = attacker.isVulnerable();
-                    LOGGER.info("Vulnerable:" + result == null ? "Uncertain" : result.toString());
+                    LOGGER.info("Vulnerable:" + (result == null ? "Uncertain" : result.toString()));
                 } catch (UnsupportedOperationException E) {
                     LOGGER.info("The selection is currently not implemented");
                 }
@@ -194,7 +194,6 @@ public class Main {
 
     public static boolean isPrintHelpForCommand(JCommander jc, TLSDelegateConfig config) {
         if (config.getGeneralDelegate().isHelp()) {
-
             return true;
         }
         return false;
