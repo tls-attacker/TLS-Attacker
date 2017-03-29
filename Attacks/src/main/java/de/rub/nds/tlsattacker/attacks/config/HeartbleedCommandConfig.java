@@ -63,6 +63,7 @@ public class HeartbleedCommandConfig extends AttackConfig {
     @Override
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
+        config.setAddHeartbeatExtension(true);
         config.setWorkflowTraceType(WorkflowTraceType.FULL);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
         return config;
