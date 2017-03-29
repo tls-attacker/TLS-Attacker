@@ -36,16 +36,21 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
+public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(HeartbleedAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(HeartbleedAttacker.class);
 
-    public HeartbleedAttack(HeartbleedCommandConfig config) {
-        super(config);
+    public HeartbleedAttacker(HeartbleedCommandConfig config) {
+        super(config, false);
     }
 
     @Override
     public void executeAttack() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Boolean isVulnerable() {
         TlsConfig tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
@@ -75,20 +80,20 @@ public class HeartbleedAttack extends Attacker<HeartbleedCommandConfig> {
         if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
+            return null;
         } else {
             ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(
                     trace.getAllActuallyReceivedMessages().size() - 1);
             if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                        "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid ");
-                vulnerable = true;
+                LOGGER.log(
+                        LogLevel.CONSOLE_OUTPUT,
+                        "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
+                return true;
             } else {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                         "(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
-                vulnerable = false;
+                return false;
             }
         }
-
-        tlsContexts.add(tlsContext);
     }
 }

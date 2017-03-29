@@ -43,16 +43,16 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
+public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(Lucky13Attack.class);
+    private static final Logger LOGGER = LogManager.getLogger(Lucky13Attacker.class);
 
     private final Map<Integer, List<Long>> results;
 
     private long lastResult;
 
-    public Lucky13Attack(Lucky13CommandConfig config) {
-        super(config);
+    public Lucky13Attacker(Lucky13CommandConfig config) {
+        super(config, false);
         results = new HashMap<>();
     }
 
@@ -140,7 +140,6 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
-        tlsContexts.add(tlsContext);
         lastResult = tlsContext.getTransportHandler().getLastMeasurement();
 
     }
@@ -172,6 +171,20 @@ public class Lucky13Attack extends Attacker<Lucky13CommandConfig> {
             paddingBytes[i] = (byte) padding;
         }
         return paddingBytes;
+    }
+
+    @Override
+    public Boolean isVulnerable() {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }

@@ -31,8 +31,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -43,58 +41,32 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
+public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(Cve20162107.class);
+    private static final Logger LOGGER = LogManager.getLogger(Cve20162107Attacker.class);
 
     private final List<ProtocolMessage> lastMessages;
 
-    public Cve20162107(Cve20162107CommandConfig config) {
-        super(config);
+    private boolean vulnerable;
+
+    public Cve20162107Attacker(Cve20162107CommandConfig config) {
+        super(config, false);
         lastMessages = new LinkedList<>();
     }
 
     @Override
     public void executeAttack() {
-        List<ProtocolVersion> versions = config.getVersions();
-        TlsConfig tlsConfig = config.createConfig();
-        List<CipherSuite> ciphers = new LinkedList<>();
-        if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
-            for (CipherSuite cs : CipherSuite.getImplemented()) {
-                if (cs.isCBC()) {
-                    ciphers.add(cs);
-                }
-            }
-        } else {
-            ciphers = tlsConfig.getSupportedCiphersuites();
-        }
-
-        for (ProtocolVersion pv : versions) {
-            for (CipherSuite cs : ciphers) {
-                tlsConfig.setHighestProtocolVersion(pv);
-                tlsConfig.setSupportedCiphersuites(Collections.singletonList(cs));
-                executeAttackRound();
-            }
-        }
-
-        if (vulnerable) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "VULNERABLE");
-        } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT VULNERABLE");
-        }
-
-        LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
-        for (ProtocolMessage pm : lastMessages) {
-            LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
-            LOGGER.debug("Last protocol message in the protocol flow");
-            LOGGER.debug(pm.toString());
-        }
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    private void executeAttackRound() {
+    private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         TlsConfig tlsConfig = config.createConfig();
-        LOGGER.info("Testing {}, {}", tlsConfig.getHighestProtocolVersion(), tlsConfig.getSupportedCiphersuites()
-                .get(0));
+        List<CipherSuite> suiteList = new LinkedList<>();
+        suiteList.add(suite);
+        tlsConfig.setSupportedCiphersuites(suiteList);
+        tlsConfig.setEnforceSettings(true);
+        tlsConfig.setHighestProtocolVersion(version);
+        LOGGER.info("Testing {}, {}", version.name(), suite.name());
 
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
@@ -118,14 +90,12 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.warn("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
 
         ProtocolMessage lm = trace.getAllActuallyReceivedMessages().get(
                 trace.getAllActuallyReceivedMessages().size() - 1);
         lastMessages.add(lm);
-        tlsContexts.add(tlsContext);
-
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);
             LOGGER.info("  Last protocol message: Alert ({},{}) [{},{}]", AlertLevel.getAlertLevel(am.getLevel()
@@ -138,9 +108,10 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
                 && ((AlertMessage) lm).getDescription().getValue() == 22) {
             LOGGER.info("  Vulnerable");
-            vulnerable = true;
+            return true;
         } else {
             LOGGER.info("  Not Vulnerable / Not supported");
+            return false;
         }
     }
 
@@ -160,5 +131,45 @@ public class Cve20162107 extends Attacker<Cve20162107CommandConfig> {
         plainData.setModification(modifier);
         r.setPlainRecordBytes(plainData);
         return r;
+    }
+
+    @Override
+    public Boolean isVulnerable() {
+        List<ProtocolVersion> versions = config.getVersions();
+        TlsConfig tlsConfig = config.createConfig();
+        List<CipherSuite> ciphers = new LinkedList<>();
+        if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
+            for (CipherSuite cs : CipherSuite.getImplemented()) {
+                if (cs.isCBC()) {
+                    ciphers.add(cs);
+                }
+            }
+        } else {
+            ciphers = tlsConfig.getSupportedCiphersuites();
+        }
+
+        for (ProtocolVersion version : versions) {
+            for (CipherSuite suite : ciphers) {
+                try {
+                    vulnerable |= executeAttackRound(version, suite);
+                } catch (Throwable t) {
+                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name());
+                }
+            }
+        }
+
+        if (vulnerable) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "VULNERABLE");
+        } else {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT VULNERABLE");
+        }
+
+        LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
+        for (ProtocolMessage pm : lastMessages) {
+            LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
+            LOGGER.debug("Last protocol message in the protocol flow");
+            LOGGER.debug(pm.toString());
+        }
+        return vulnerable;
     }
 }

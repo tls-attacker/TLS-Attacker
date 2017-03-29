@@ -42,29 +42,45 @@ import org.apache.logging.log4j.Logger;
  * Sends differently formatted PKCS#1 messages to the TLS server and observes
  * the server responses. In case there are differences in the server responses,
  * it is very likely that it is possible to execute Bleichenbacher attacks.
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> {
+public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(BleichenbacherAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(BleichenbacherAttacker.class);
 
-    public BleichenbacherAttack(BleichenbacherCommandConfig config) {
-        super(config);
+    public BleichenbacherAttacker(BleichenbacherCommandConfig config) {
+        super(config, false);
     }
 
     @Override
     public void executeAttack() {
+
+    }
+
+    private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
+        // we are initializing a new connection in every loop step, since most
+        // of the known servers close the connection after an invalid handshake
+        TlsConfig tlsConfig = config.createConfig();
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
+                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        ModifiableByteArray epms = new ModifiableByteArray();
+        epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
+        cke.setSerializedPublicKey(epms);
+        workflowExecutor.executeWorkflow();
+        return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);
+    }
+
+    @Override
+    public Boolean isVulnerable() {
         RSAPublicKey publicKey;
         TlsConfig tlsConfig = config.createConfig();
-        try {
-            publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
-            LOGGER.info("Fetched the following server public key: " + publicKey);
-        } catch (Exception e) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, No connection possible: {}", tlsConfig.getHost(),
-                    e.getLocalizedMessage());
-            return;
-        }
+        publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        LOGGER.info("Fetched the following server public key: " + publicKey);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
@@ -92,40 +108,11 @@ public class BleichenbacherAttack extends Attacker<BleichenbacherCommandConfig> 
         if (protocolMessageSet.size() == 1) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
                     sb.toString());
-            vulnerable = false;
+            return false;
         } else {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getHost(),
                     sb.toString());
-            vulnerable = true;
+            return true;
         }
-
     }
-
-    private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
-        // we are initializing a new connection in every loop step, since most
-        // of the known servers close the connection after an invalid handshake
-        TlsConfig tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
-
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-        ModifiableByteArray epms = new ModifiableByteArray();
-        epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
-        cke.setSerializedPublicKey(epms);
-        try {
-            FileOutputStream fos = new FileOutputStream("/tmp/test.xml");
-            WorkflowTraceSerializer.write(fos, trace);
-        } catch (IOException | JAXBException ex) {
-            ex.printStackTrace();
-        }
-
-        workflowExecutor.executeWorkflow();
-
-        tlsContexts.add(tlsContext);
-        return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);
-    }
-
 }

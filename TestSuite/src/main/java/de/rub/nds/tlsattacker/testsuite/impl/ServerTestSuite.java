@@ -10,14 +10,14 @@ package de.rub.nds.tlsattacker.testsuite.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
-import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
-import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
-import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
-import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ModifiableVariableField;
@@ -37,7 +37,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -71,54 +70,49 @@ public class ServerTestSuite extends TestSuite {
         Attacker<? extends TLSDelegateConfig> attacker;
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(testConfig.getGeneralDelegate());
         setHost(bb);
-        attacker = new BleichenbacherAttack(bb);
+        attacker = new BleichenbacherAttacker(bb);
         attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
         } else {
             successfulTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
         }
-
-        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig(testConfig.getGeneralDelegate());
+        InvalidCurveAttackConfig icea = new InvalidCurveAttackConfig(testConfig.getGeneralDelegate());
         setHost(icea);
-        attacker = new InvalidCurveAttack(icea);
+        attacker = new InvalidCurveAttacker(icea);
         attacker.executeAttack();
         if (attacker.isVulnerable()) {
-            failedTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
+            failedTests.add(InvalidCurveAttackConfig.ATTACK_COMMAND);
         } else {
-            successfulTests.add(InvalidCurveAttackCommandConfig.ATTACK_COMMAND);
+            successfulTests.add(InvalidCurveAttackConfig.ATTACK_COMMAND);
         }
-
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(testConfig.getGeneralDelegate());
         setHost(heartbleed);
-        attacker = new HeartbleedAttack(heartbleed);
+        attacker = new HeartbleedAttacker(heartbleed);
         attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
         } else {
             successfulTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
         }
-
         PoodleCommandConfig poodle = new PoodleCommandConfig(testConfig.getGeneralDelegate());
         setHost(poodle);
-        attacker = new PoodleAttack(poodle);
+        attacker = new PoodleAttacker(poodle);
         attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(PoodleCommandConfig.ATTACK_COMMAND);
         } else {
             successfulTests.add(PoodleCommandConfig.ATTACK_COMMAND);
         }
-
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(testConfig.getGeneralDelegate());
         setHost(po);
-        attacker = new PaddingOracleAttack(po);
+        attacker = new PaddingOracleAttacker(po);
         attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
         } else {
             successfulTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
         }
-
     }
 
     // TODO Ugly probably better to have a client/server delegate config for

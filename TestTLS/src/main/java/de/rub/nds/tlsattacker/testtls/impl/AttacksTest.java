@@ -10,14 +10,14 @@ package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
-import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
-import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
-import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
-import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.Attacker;
@@ -45,8 +45,7 @@ public class AttacksTest extends TestTLS {
         result = "\n ";
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(serverConfig.getGeneralDelegate());
         setHost(bb);
-        attacker = new BleichenbacherAttack(bb);
-        attacker.executeAttack();
+        attacker = new BleichenbacherAttacker(bb);
         attack = BleichenbacherCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": Vulnerable\n ";
@@ -54,11 +53,10 @@ public class AttacksTest extends TestTLS {
             result = result + attack + ": Not vulnerable\n ";
         }
 
-        InvalidCurveAttackCommandConfig icea = new InvalidCurveAttackCommandConfig(serverConfig.getGeneralDelegate());
+        InvalidCurveAttackConfig icea = new InvalidCurveAttackConfig(serverConfig.getGeneralDelegate());
         setHost(icea);
-        attacker = new InvalidCurveAttack(icea);
-        attacker.executeAttack();
-        attack = InvalidCurveAttackCommandConfig.ATTACK_COMMAND;
+        attacker = new InvalidCurveAttacker(icea);
+        attack = InvalidCurveAttackConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": Vulnerable\n ";
         } else {
@@ -67,8 +65,7 @@ public class AttacksTest extends TestTLS {
 
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(serverConfig.getGeneralDelegate());
         setHost(heartbleed);
-        attacker = new HeartbleedAttack(heartbleed);
-        attacker.executeAttack();
+        attacker = new HeartbleedAttacker(heartbleed);
         attack = HeartbleedCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": (Probably) Vulnerable\n ";
@@ -78,8 +75,7 @@ public class AttacksTest extends TestTLS {
 
         PoodleCommandConfig poodle = new PoodleCommandConfig(serverConfig.getGeneralDelegate());
         setHost(poodle);
-        attacker = new PoodleAttack(poodle);
-        attacker.executeAttack();
+        attacker = new PoodleAttacker(poodle);
         attack = PoodleCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": (Probably) Vulnerable\n ";
@@ -89,8 +85,7 @@ public class AttacksTest extends TestTLS {
 
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(serverConfig.getGeneralDelegate());
         setHost(po);
-        attacker = new PaddingOracleAttack(po);
-        attacker.executeAttack();
+        attacker = new PaddingOracleAttacker(po);
         attack = PaddingOracleCommandConfig.ATTACK_COMMAND;
         if (attacker.isVulnerable()) {
             result = result + attack + ": (Probably) Vulnerable\n ";
@@ -117,16 +112,7 @@ public class AttacksTest extends TestTLS {
 
     @Override
     public void fillTlsPeerProperties(TlsPeerProperties properties) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

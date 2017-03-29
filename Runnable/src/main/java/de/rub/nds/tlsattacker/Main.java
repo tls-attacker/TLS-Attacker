@@ -13,22 +13,21 @@ import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackFullCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
+import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
-import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttack;
-import de.rub.nds.tlsattacker.attacks.impl.Cve20162107;
-import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttack;
-import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttack;
-import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttack;
-import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttackFull;
-import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attack;
-import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttack;
-import de.rub.nds.tlsattacker.attacks.impl.PoodleAttack;
-import de.rub.nds.tlsattacker.attacks.impl.WinshockAttack;
+import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.DtlsPaddingOracleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.main.TLSClient;
 import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
@@ -68,10 +67,8 @@ public class Main {
         DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig(
                 generalDelegate);
         jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
-        InvalidCurveAttackCommandConfig ellipticTest = new InvalidCurveAttackCommandConfig(generalDelegate);
-        jc.addCommand(InvalidCurveAttackCommandConfig.ATTACK_COMMAND, ellipticTest);
-        InvalidCurveAttackFullCommandConfig elliptic = new InvalidCurveAttackFullCommandConfig(generalDelegate);
-        jc.addCommand(InvalidCurveAttackFullCommandConfig.ATTACK_COMMAND, elliptic);
+        InvalidCurveAttackConfig ellipticTest = new InvalidCurveAttackConfig(generalDelegate);
+        jc.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
         jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
         Lucky13CommandConfig lucky13 = new Lucky13CommandConfig(generalDelegate);
@@ -105,7 +102,7 @@ public class Main {
             return;
         }
 
-        Attacker<? extends TLSDelegateConfig> attacker;
+        Attacker<? extends TLSDelegateConfig> attacker = null;
         switch (jc.getParsedCommand()) {
             case ServerCommandConfig.COMMAND:
                 startSimpleTlsServer(server);
@@ -137,51 +134,40 @@ public class Main {
                 LOGGER.info("Scan Results:" + report.toString());
                 return;
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
-                attacker = new BleichenbacherAttack(bleichenbacherTest);
+                attacker = new BleichenbacherAttacker(bleichenbacherTest);
                 break;
-            case InvalidCurveAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new InvalidCurveAttack(ellipticTest);
-                break;
-            case InvalidCurveAttackFullCommandConfig.ATTACK_COMMAND:
-                attacker = new InvalidCurveAttackFull(elliptic);
+            case InvalidCurveAttackConfig.ATTACK_COMMAND:
+                attacker = new InvalidCurveAttacker(ellipticTest);
                 break;
             case HeartbleedCommandConfig.ATTACK_COMMAND:
-                attacker = new HeartbleedAttack(heartbleed);
+                attacker = new HeartbleedAttacker(heartbleed);
                 break;
             case Lucky13CommandConfig.ATTACK_COMMAND:
-                attacker = new Lucky13Attack(lucky13);
+                attacker = new Lucky13Attacker(lucky13);
                 break;
             case PoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new PoodleAttack(poodle);
+                attacker = new PoodleAttacker(poodle);
                 break;
             case PaddingOracleCommandConfig.ATTACK_COMMAND:
-                attacker = new PaddingOracleAttack(paddingOracle);
+                attacker = new PaddingOracleAttacker(paddingOracle);
                 break;
             case Cve20162107CommandConfig.ATTACK_COMMAND:
-                attacker = new Cve20162107(cve20162107);
+                attacker = new Cve20162107Attacker(cve20162107);
                 break;
             case WinshockCommandConfig.ATTACK_COMMAND:
-                attacker = new WinshockAttack(winshock);
+                attacker = new WinshockAttacker(winshock);
                 break;
             case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new DtlsPaddingOracleAttack(dtlsPaddingOracleAttackTest);
+                attacker = new DtlsPaddingOracleAttacker(dtlsPaddingOracleAttackTest);
                 break;
             default:
                 throw new ConfigurationException("No command found");
         }
-        if (printHelpForCommand(jc, attacker.getConfig())) {
-            return;
+        if (isPrintHelpForCommand(jc, attacker.getConfig())) {
+            jc.usage(jc.getParsedCommand());
+        } else {
+            attacker.executeAttack();
         }
-
-        attacker.executeAttack();
-
-        TLSDelegateConfig config = attacker.getConfig();
-        // TODO this is the attackers job, not ours
-        // if (config.getWorkflowOutput() != null &&
-        // !config.getWorkflowOutput().isEmpty()) {
-        // logWorkflowTraces(attacker.getTlsContexts(),
-        // config.getWorkflowOutput());
-        // }
     }
 
     private static void startSimpleTlsClient(TLSDelegateConfig config) throws JAXBException, IOException {
@@ -196,9 +182,9 @@ public class Main {
         server.startTlsServer(tlsConfig);
     }
 
-    public static boolean printHelpForCommand(JCommander jc, TLSDelegateConfig config) {
+    public static boolean isPrintHelpForCommand(JCommander jc, TLSDelegateConfig config) {
         if (config.getGeneralDelegate().isHelp()) {
-            jc.usage(jc.getParsedCommand());
+
             return true;
         }
         return false;

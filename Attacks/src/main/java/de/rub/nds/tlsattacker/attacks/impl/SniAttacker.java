@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,16 +38,21 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class SniTest extends Attacker<SniTestCommandConfig> {
+public class SniAttacker extends Attacker<SniTestCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(SniTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(SniAttacker.class);
 
-    public SniTest(SniTestCommandConfig config) {
-        super(config);
+    public SniAttacker(SniTestCommandConfig config) {
+        super(config, false);
     }
 
     @Override
     public void executeAttack() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Boolean isVulnerable() {
         TlsConfig tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
@@ -69,6 +73,7 @@ public class SniTest extends Attacker<SniTestCommandConfig> {
         messageList.add(new CertificateMessage(tlsConfig));
         actions.add(new ReceiveAction(messageList));
         workflowExecutor.executeWorkflow();
+        throw new UnsupportedOperationException("Work in progress");
     }
 
 }

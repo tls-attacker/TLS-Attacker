@@ -23,16 +23,11 @@ public abstract class Attacker<Config extends TLSDelegateConfig> {
 
     protected Config config;
 
-    protected boolean vulnerable;
+    protected final boolean saveToScan;
 
-    /**
-     * Tls Contexts stored for logging purposes
-     */
-    protected List<TlsContext> tlsContexts;
-
-    public Attacker(Config config) {
+    public Attacker(Config config, boolean saveToScan) {
         this.config = config;
-        tlsContexts = new LinkedList<>();
+        this.saveToScan = saveToScan;
     }
 
     /**
@@ -42,27 +37,9 @@ public abstract class Attacker<Config extends TLSDelegateConfig> {
      */
     public abstract void executeAttack();
 
+    public abstract Boolean isVulnerable();
+
     public Config getConfig() {
         return config;
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-
-    public List<TlsContext> getTlsContexts() {
-        return Collections.unmodifiableList(tlsContexts);
-    }
-
-    public void setTlsContexts(List<TlsContext> tlsContexts) {
-        this.tlsContexts = tlsContexts;
-    }
-
-    public boolean isVulnerable() {
-        return vulnerable;
-    }
-
-    public void setVulnerable(boolean vulnerable) {
-        this.vulnerable = vulnerable;
     }
 }
