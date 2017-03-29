@@ -44,7 +44,7 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
         prepareDistinguishedNames(msg);
         prepareDistinguishedNamesLength(msg);
         sigHashAlgos = convertSigAndHashAlgos(context.getConfig().getSupportedSignatureAndHashAlgorithms());
-        prepareSignatureHashAlgorithms(msg);       
+        prepareSignatureHashAlgorithms(msg);
         prepareSignatureHashAlgorithmsLength(msg);
     }
 
@@ -93,17 +93,17 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
 
     private void prepareDistinguishedNamesLength(CertificateRequestMessage msg) {
         msg.setDistinguishedNamesLength(msg.getDistinguishedNames().getValue().length);
-        LOGGER.debug("DistinguishedNamesLength: "+ msg.getDistinguishedNamesLength().getValue());
+        LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
     }
 
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(sigHashAlgos);
-        LOGGER.debug("SignatureHashAlgorithms: "+ Arrays.toString(msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: " + Arrays.toString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithmsLength(msg.getSignatureHashAlgorithms().getValue().length);
-        LOGGER.debug("SignatureHashAlgorithmsLength: "+ msg.getSignatureHashAlgorithmsLength().getValue());
+        LOGGER.debug("SignatureHashAlgorithmsLength: " + msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
 }
