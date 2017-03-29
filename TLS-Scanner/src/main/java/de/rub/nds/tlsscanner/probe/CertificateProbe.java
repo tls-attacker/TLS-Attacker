@@ -6,11 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.probe;
 
 import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
@@ -44,18 +39,14 @@ public class CertificateProbe extends TLSProbe {
 
     @Override
     public ProbeResult call() {
-
         TlsConfig tlsConfig = getConfig().createConfig();
         Certificate serverCert = CertificateFetcher.fetchServerCertificate(tlsConfig);
         List<TLSCheck> checkList = new LinkedList<>();
         List<ResultValue> resultList = new LinkedList<>();
         List<CertificateReport> reportList = CertificateReportGenerator.generateReports(serverCert);
-
         CertificateReport report = CertificateReportGenerator.generateReport(serverCert.getCertificateAt(0));
         CertificateJudger judger = new CertificateJudger(serverCert.getCertificateAt(0), getConfig(), report);
         checkList.addAll(judger.getChecks());
         return new ProbeResult(getProbeName(), resultList, checkList);
-
     }
-
 }

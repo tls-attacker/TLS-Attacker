@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -50,9 +49,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
+public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(DtlsPaddingOracleAttacker.class);
 
     private TlsContext tlsContext;
 
@@ -68,8 +67,8 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
     private WorkflowTrace trace;
     private final TlsConfig tlsConfig;
 
-    public DtlsPaddingOracleAttack(DtlsPaddingOracleAttackCommandConfig config) {
-        super(config);
+    public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config) {
+        super(config, false);
         tlsConfig = config.createConfig();
         tlsConfig.setExecutorType(ExecutorType.DTLS);
     }
@@ -308,5 +307,10 @@ public class DtlsPaddingOracleAttack extends Attacker<DtlsPaddingOracleAttackCom
         } finally {
             transportHandler.setTlsTimeout(tlsConfig.getTlsTimeout());
         }
+    }
+
+    @Override
+    public Boolean isVulnerable() {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

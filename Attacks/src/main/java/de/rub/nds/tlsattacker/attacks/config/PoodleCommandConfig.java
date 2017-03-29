@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class PoodleCommandConfig extends TLSDelegateConfig {
+public class PoodleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "poodle";
     @ParametersDelegate
