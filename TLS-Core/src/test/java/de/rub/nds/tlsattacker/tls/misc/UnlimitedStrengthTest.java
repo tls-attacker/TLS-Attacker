@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.misc;
 
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.InvalidKeyException;
@@ -18,6 +20,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.fail;
+import org.junit.Test;
 
 /**
  * If you run on an Oracle Java platform, it is possible that strong algorithms
@@ -33,18 +37,10 @@ public class UnlimitedStrengthTest {
 
     final Logger logger = LogManager.getLogger(UnlimitedStrengthTest.class);
 
+    @Test
     public void testAES256() throws Exception {
         try {
-            Field isRestricted = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-            isRestricted.setAccessible(true);
-            if (Boolean.TRUE.equals(isRestricted.get(null))) {
-                if (Modifier.isFinal(isRestricted.getModifiers())) {
-                    Field modifiers = Field.class.getDeclaredField("modifiers");
-                    modifiers.setAccessible(true);
-                    modifiers.setInt(isRestricted, isRestricted.getModifiers() & ~Modifier.FINAL);
-                }
-                isRestricted.setBoolean(null, false); // isRestricted = false;
-            }
+            new GeneralDelegate().applyDelegate(new TlsConfig());
 
             Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
             IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
@@ -53,6 +49,7 @@ public class UnlimitedStrengthTest {
         } catch (InvalidKeyException ex) {
             logger.warn("AES256 is probably not supported, you have to install Java Cryptography "
                     + "Extension (JCE) Unlimited Strength Jurisdiction Policy Files.");
+            fail();
         }
     }
 }
