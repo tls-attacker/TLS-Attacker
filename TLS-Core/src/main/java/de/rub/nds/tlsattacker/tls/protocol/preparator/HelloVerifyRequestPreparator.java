@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,25 +23,40 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final HelloVerifyRequestMessage message;
+    private final HelloVerifyRequestMessage msg;
 
     public HelloVerifyRequestPreparator(TlsContext context, HelloVerifyRequestMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        message.setCookie(generateCookie());
-        message.setCookieLength((byte) message.getCookie().getValue().length);// TODO
+        prepareCookie(msg);
+        prepareCookieLength(msg);
                                                                               // WARN
-        message.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        prepareProtocolVersion(msg);
     }
 
     private byte[] generateCookie() {
         byte[] cookie = new byte[context.getConfig().getDTLSCookieLength()];
         RandomHelper.getRandom().nextBytes(cookie);
         return cookie;
+    }
+
+    private void prepareCookie(HelloVerifyRequestMessage msg) {
+        msg.setCookie(generateCookie());
+        LOGGER.debug("Cookie: "+ Arrays.toString(msg.getCookie().getValue()));
+    }
+
+    private void prepareCookieLength(HelloVerifyRequestMessage msg) {
+        msg.setCookieLength((byte) msg.getCookie().getValue().length);// TODO
+        LOGGER.debug("CookieLength: "+ msg.getCookieLength().getValue());
+    }
+
+    private void prepareProtocolVersion(HelloVerifyRequestMessage msg) {
+        msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 
 }

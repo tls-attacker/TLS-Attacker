@@ -9,10 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,29 +24,31 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final HandshakeMessage message;
+    private final HandshakeMessage msg;
 
     public HandshakeMessagePreparator(TlsContext context, T message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     private void prepareMessageLength(int length) {
-        message.setLength(length);
+        msg.setLength(length);
+        LOGGER.debug("Length: "+ msg.getLength().getValue());
     }
 
     private void prepareMessageType(HandshakeMessageType type) {
-        message.setType(type.getValue());
+        msg.setType(type.getValue());
+        LOGGER.debug("Type: "+ msg.getType().getValue());
     }
 
     @Override
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
         // Ugly but only temporary
-        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getHandler(context).getSerializer(
-                message);
+        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(
+                msg);
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
-        prepareMessageType(message.getHandshakeMessageType());
+        prepareMessageType(msg.getHandshakeMessageType());
     }
 
     protected abstract void prepareHandshakeMessageContents();

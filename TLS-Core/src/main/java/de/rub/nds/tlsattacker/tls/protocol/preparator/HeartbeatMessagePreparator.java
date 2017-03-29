@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.Arrays;

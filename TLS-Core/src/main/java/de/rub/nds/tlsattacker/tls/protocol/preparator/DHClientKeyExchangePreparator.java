@@ -129,7 +129,7 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
     private byte[] calculateMasterSecret(byte[] random, byte[] premasterSecret) {
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
                 context.getSelectedCipherSuite());
-        byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, premasterSecret,
+        masterSecret = PseudoRandomFunction.compute(prfAlgorithm, premasterSecret,
                 PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
         return masterSecret;
 
