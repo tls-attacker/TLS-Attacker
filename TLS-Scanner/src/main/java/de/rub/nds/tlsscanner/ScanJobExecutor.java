@@ -13,6 +13,8 @@
  */
 package de.rub.nds.tlsscanner;
 
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 import de.rub.nds.tlsscanner.report.SiteReport;
 import de.rub.nds.tlsscanner.probe.TLSProbe;
@@ -36,7 +38,7 @@ public class ScanJobExecutor {
         executor = Executors.newFixedThreadPool(1);
     }
 
-    public SiteReport execute(String hostname, ScanJob scanJob) {
+    public SiteReport execute(ScannerConfig config, ScanJob scanJob) {
         List<Future<ProbeResult>> futureResults = new LinkedList<>();
         for (TLSProbe probe : scanJob.getProbeList()) {
             futureResults.add(executor.submit(probe));
@@ -50,6 +52,8 @@ public class ScanJobExecutor {
             }
         }
         executor.shutdown();
+        ClientDelegate clientDelegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
+        String hostname = clientDelegate.getHost();
         return new SiteReport(hostname, resultList);
     }
 }

@@ -13,6 +13,7 @@
  */
 package de.rub.nds.tlsscanner.probe;
 
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 
 /**
@@ -21,8 +22,8 @@ import de.rub.nds.tlsscanner.report.ProbeResult;
  */
 public class NamedCurvesProbe extends TLSProbe {
 
-    public NamedCurvesProbe(String serverHost) {
-        super("NamedCurves", serverHost);
+    public NamedCurvesProbe(ScannerConfig config) {
+        super("NamedCurves", config);
     }
 
     @Override

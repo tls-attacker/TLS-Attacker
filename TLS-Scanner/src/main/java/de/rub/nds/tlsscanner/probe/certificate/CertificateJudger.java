@@ -13,8 +13,10 @@
  */
 package de.rub.nds.tlsscanner.probe.certificate;
 
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.flaw.ConfigurationFlaw;
 import de.rub.nds.tlsscanner.flaw.FlawLevel;
 import de.rub.nds.tlsscanner.report.ResultValue;
@@ -39,18 +41,21 @@ public class CertificateJudger {
     private final Certificate certificate;
     private final String domainName;
     private final CertificateReport report;
+    private final ScannerConfig config;
 
-    public CertificateJudger(Certificate certificate, String domainName, CertificateReport report) {
+    public CertificateJudger(Certificate certificate, ScannerConfig config, CertificateReport report) {
         this.certificate = certificate;
-        this.domainName = domainName;
+        this.config = config;
+        this.domainName = config.createConfig().getSniHostname();
         this.report = report;
     }
 
     public List<TLSCheck> getChecks() {
         List<TLSCheck> tlsCheckList = new LinkedList<>();
-        boolean sentCert = certificate != null;
-        tlsCheckList.add(new TLSCheck(sentCert, CheckType.CERTIFICATE_SENT_BY_SERVER));
-        if (!sentCert) {
+        boolean receivedCertificate = (certificate != null);
+        tlsCheckList
+                .add(new TLSCheck(!receivedCertificate, CheckType.CERTIFICATE_SENT_BY_SERVER, config.getLanguage()));
+        if (!receivedCertificate) {
             return tlsCheckList;
         }
         // tlsCheckList.add(checkCertificateRevoked());
@@ -68,27 +73,27 @@ public class CertificateJudger {
 
     public TLSCheck checkExpired() {
         boolean result = isCertificateExpired(report);
-        return new TLSCheck(result, CheckType.CERTIFICATE_EXPIRED);
+        return new TLSCheck(result, CheckType.CERTIFICATE_EXPIRED, config.getLanguage());
     }
 
     public TLSCheck checkNotYetValid() {
         boolean result = isCertificateValidYet(report);
-        return new TLSCheck(result, CheckType.CERTIFICATE_NOT_VALID_YET);
+        return new TLSCheck(result, CheckType.CERTIFICATE_NOT_VALID_YET, config.getLanguage());
     }
 
     public TLSCheck checkCertificateRevoked() {
         boolean result = isRevoked(certificate);
-        return new TLSCheck(result, CheckType.CERTIFICATE_REVOKED);
+        return new TLSCheck(result, CheckType.CERTIFICATE_REVOKED, config.getLanguage());
     }
 
     private TLSCheck checkHashAlgorithm() {
         boolean result = isWeakHashAlgo(report);
-        return new TLSCheck(result, CheckType.CERTIFICATE_WEAK_HASH_FUNCTION);
+        return new TLSCheck(result, CheckType.CERTIFICATE_WEAK_HASH_FUNCTION, config.getLanguage());
     }
 
     private TLSCheck checkSignAlgorithm() {
         boolean result = isWeakSigAlgo(report);
-        return new TLSCheck(result, CheckType.CERTIFICATE_WEAK_SIGN_ALGORITHM);
+        return new TLSCheck(result, CheckType.CERTIFICATE_WEAK_SIGN_ALGORITHM, config.getLanguage());
     }
 
     public boolean isWeakHashAlgo(CertificateReport report) {

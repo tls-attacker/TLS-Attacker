@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public enum ProtocolVersion {
 
-    SSL2(new byte[] { (byte) 0x02, (byte) 0x00 }),
+    SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }),
     SSL3(new byte[] { (byte) 0x03, (byte) 0x00 }),
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),

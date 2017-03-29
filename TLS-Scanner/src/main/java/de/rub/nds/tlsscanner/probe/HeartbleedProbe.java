@@ -13,6 +13,7 @@
  */
 package de.rub.nds.tlsscanner.probe;
 
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 
 /**
@@ -21,8 +22,8 @@ import de.rub.nds.tlsscanner.report.ProbeResult;
  */
 public class HeartbleedProbe extends TLSProbe {
 
-    public HeartbleedProbe(String serverHost) {
-        super("Heartbleed", serverHost);
+    public HeartbleedProbe(ScannerConfig config) {
+        super("Heartbleed", config);
     }
 
     @Override

@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 import de.rub.nds.tlsscanner.report.ResultValue;
 import de.rub.nds.tlsscanner.report.check.CheckType;
@@ -47,24 +48,30 @@ public class ProtocolVersionProbe extends TLSProbe {
 
     private static final Logger LOGGER = LogManager.getLogger("PROBE");
 
-    public ProtocolVersionProbe(String serverHost) {
-        super("ProtocolVersion", serverHost);
+    public ProtocolVersionProbe(ScannerConfig config) {
+        super("ProtocolVersion", config);
     }
 
     @Override
     public ProbeResult call() {
         List<ResultValue> resultList = new LinkedList<>();
         List<TLSCheck> checkList = new LinkedList<>();
-        boolean result = isProtocolVersionSupported(ProtocolVersion.SSL2);
-        resultList.add(new ResultValue("SSL 2", "" + result));
-        checkList.add(new TLSCheck(result, CheckType.PROTOCOLVERSION_SSL2));
-        result = isProtocolVersionSupported(ProtocolVersion.SSL3);
+        // LOGGER.info("Testing SSL2:");
+        // boolean result = isProtocolVersionSupported(ProtocolVersion.SSL2);
+        // resultList.add(new ResultValue("SSL 2", "" + result));
+        // checkList.add(new TLSCheck(result, CheckType.PROTOCOLVERSION_SSL2,
+        // getConfig().getLanguage()));
+        LOGGER.info("Testing SSL3:");
+        boolean result = isProtocolVersionSupported(ProtocolVersion.SSL3);
         resultList.add(new ResultValue("SSL 3", "" + result));
-        checkList.add(new TLSCheck(result, CheckType.PROTOCOLVERSION_SSL3));
+        checkList.add(new TLSCheck(result, CheckType.PROTOCOLVERSION_SSL3, getConfig().getLanguage()));
+        LOGGER.info("Testing TLS 1.0:");
         result = isProtocolVersionSupported(ProtocolVersion.TLS10);
         resultList.add(new ResultValue("TLS 1.0", "" + result));
+        LOGGER.info("Testing TLS 1.1:");
         result = isProtocolVersionSupported(ProtocolVersion.TLS11);
         resultList.add(new ResultValue("TLS 1.1", "" + result));
+        LOGGER.info("Testing TLS 1.2:");
         result = isProtocolVersionSupported(ProtocolVersion.TLS12);
         resultList.add(new ResultValue("TLS 1.2", "" + result));
         return new ProbeResult(getProbeName(), resultList, checkList);
@@ -73,47 +80,50 @@ public class ProtocolVersionProbe extends TLSProbe {
 
     public boolean isProtocolVersionSupported(ProtocolVersion toTest) {
 
-        TlsConfig config = new TlsConfig();
-        config.setHost(getServerHost());
-        config.setSupportedCiphersuites(Arrays.asList(CipherSuite.values()));
-        config.setHighestProtocolVersion(toTest);
-        config.setEnforceSettings(true);
+        TlsConfig tlsConfig = getConfig().createConfig();
+        List<CipherSuite> cipherSuites = new LinkedList<>();
+        cipherSuites.addAll(Arrays.asList(CipherSuite.values()));
+        cipherSuites.remove(CipherSuite.TLS_FALLBACK_SCSV);
+        tlsConfig.setSupportedCiphersuites(cipherSuites);
+        tlsConfig.setHighestProtocolVersion(toTest);
+        tlsConfig.setEnforceSettings(true);
         if (toTest != ProtocolVersion.SSL2) {
-            config.setAddServerNameIndicationExtension(false);
-            config.setAddECPointFormatExtension(true);
-            config.setAddEllipticCurveExtension(true);
-            config.setAddSignatureAndHashAlgrorithmsExtension(true);
+            tlsConfig.setAddServerNameIndicationExtension(false);
+            tlsConfig.setAddECPointFormatExtension(true);
+            tlsConfig.setAddEllipticCurveExtension(true);
+            tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         } else {
             // Dont send extensions if we are in sslv2
-            config.setAddECPointFormatExtension(false);
-            config.setAddEllipticCurveExtension(false);
-            config.setAddHeartbeatExtension(false);
-            config.setAddMaxFragmentLengthExtenstion(false);
-            config.setAddServerNameIndicationExtension(false);
-            config.setAddSignatureAndHashAlgrorithmsExtension(false);
+            tlsConfig.setAddECPointFormatExtension(false);
+            tlsConfig.setAddEllipticCurveExtension(false);
+            tlsConfig.setAddHeartbeatExtension(false);
+            tlsConfig.setAddMaxFragmentLengthExtenstion(false);
+            tlsConfig.setAddServerNameIndicationExtension(false);
+            tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(false);
         }
         List<NamedCurve> namedCurves = Arrays.asList(NamedCurve.values());
 
-        config.setNamedCurves(namedCurves);
+        tlsConfig.setNamedCurves(namedCurves);
         WorkflowTrace trace = new WorkflowTrace();
-        ClientHelloMessage message = new ClientHelloMessage(config);
+        ClientHelloMessage message = new ClientHelloMessage(tlsConfig);
         trace.add(new SendAction(message));
         trace.add(new ReceiveAction(new ArbitraryMessage()));
-        config.setWorkflowTrace(trace);
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
+        tlsConfig.setWorkflowTrace(trace);
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            ex.printStackTrace();
         }
         List<HandshakeMessage> messages = trace
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
         if (messages.isEmpty()) {
+            LOGGER.warn(trace.toString());
             return false;
         } else {
             LOGGER.warn(trace.toString());
+            LOGGER.warn("Selected Version:" + tlsContext.getSelectedProtocolVersion().name());
             return tlsContext.getSelectedProtocolVersion() == toTest;
         }
     }

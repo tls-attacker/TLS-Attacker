@@ -13,13 +13,12 @@
  */
 package de.rub.nds.tlsscanner.report.check;
 
-import de.rub.nds.tlsscanner.exception.UnloadableConfigException;
+import de.rub.nds.tlsscanner.probe.CertificateProbe;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.InputStream;
 import javax.xml.bind.JAXB;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -27,15 +26,15 @@ import javax.xml.bind.JAXB;
  */
 public class CheckConfigSerializer {
 
+    private static final Logger LOGGER = LogManager.getLogger(CheckConfigSerializer.class);
+
     public static void serialize(CheckConfig config, File file) {
         JAXB.marshal(config, file);
     }
 
-    public static CheckConfig deserialize(File file) {
-        try {
-            return JAXB.unmarshal(new FileInputStream(file), CheckConfig.class);
-        } catch (FileNotFoundException ex) {
-            throw new UnloadableConfigException("Could not load: " + file.getAbsolutePath(), ex);
-        }
+    public static CheckConfig deserialize(String resourcePath) {
+        LOGGER.info("Loading resource from:" + resourcePath);
+        InputStream stream = CheckConfigSerializer.class.getResourceAsStream(resourcePath);
+        return JAXB.unmarshal(stream, CheckConfig.class);
     }
 }
