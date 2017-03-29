@@ -91,7 +91,12 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         } catch (WorkflowExecutionException ex) {
             LOGGER.warn("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
-
+        // The Server has to answer to our ClientHello with a ServerHello
+        // Message, else he does not support
+        // the offered Ciphersuite and protocol version
+        if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty()) {
+            return false;
+        }
         ProtocolMessage lm = trace.getAllActuallyReceivedMessages().get(
                 trace.getAllActuallyReceivedMessages().size() - 1);
         lastMessages.add(lm);
@@ -152,7 +157,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 try {
                     vulnerable |= executeAttackRound(version, suite);
                 } catch (Throwable t) {
-                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name());
+                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name(), t);
                 }
             }
         }
