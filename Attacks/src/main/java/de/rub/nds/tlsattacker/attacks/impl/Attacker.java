@@ -1,3 +1,5 @@
+package de.rub.nds.tlsattacker.attacks.impl;
+
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
@@ -6,20 +8,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls;
 
-import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 
 /**
  * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Config>
  */
-public abstract class Attacker<Config extends TLSDelegateConfig> {
+public abstract class Attacker<Config extends AttackConfig> {
 
     protected Config config;
 
@@ -32,8 +29,6 @@ public abstract class Attacker<Config extends TLSDelegateConfig> {
 
     /**
      * Executes a given attack.
-     * 
-     * @param configHandler
      */
     public abstract void executeAttack();
 

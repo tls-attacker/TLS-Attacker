@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class HeartbleedCommandConfig extends TLSDelegateConfig {
+public class HeartbleedCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "heartbleed";
 

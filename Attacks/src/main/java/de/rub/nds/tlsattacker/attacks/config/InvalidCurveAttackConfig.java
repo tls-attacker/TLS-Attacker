@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class InvalidCurveAttackConfig extends TLSDelegateConfig {
+public class InvalidCurveAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve_full";
 

@@ -33,7 +33,7 @@ import de.rub.nds.tlsattacker.testsuite.config.ServerTestSuiteConfig;
 import de.rub.nds.tlsattacker.testsuite.impl.ServerTestSuite;
 import de.rub.nds.tlsattacker.testtls.config.TestServerConfig;
 import de.rub.nds.tlsattacker.testtls.impl.TestTLSServer;
-import de.rub.nds.tlsattacker.tls.Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
@@ -58,10 +58,9 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-        // TODO TODO TODO
+
         GeneralDelegate generalDelegate = new GeneralDelegate();
         JCommander jc = new JCommander(generalDelegate);
-
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
         DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig(
@@ -92,7 +91,6 @@ public class Main {
         ScannerConfig scannerConfig = new ScannerConfig(generalDelegate);
         jc.addCommand(ScannerConfig.COMMAND, scannerConfig);
         jc.parse(args);
-
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
                 jc.usage();
@@ -101,7 +99,6 @@ public class Main {
             }
             return;
         }
-
         Attacker<? extends TLSDelegateConfig> attacker = null;
         switch (jc.getParsedCommand()) {
             case ServerCommandConfig.COMMAND:
@@ -163,10 +160,23 @@ public class Main {
             default:
                 throw new ConfigurationException("No command found");
         }
+        if (attacker == null) {
+            throw new ConfigurationException("Attacker not found");
+        }
         if (isPrintHelpForCommand(jc, attacker.getConfig())) {
             jc.usage(jc.getParsedCommand());
         } else {
-            attacker.executeAttack();
+
+            if (attacker.getConfig().isExecuteAttack()) {
+                attacker.executeAttack();
+            } else {
+                try {
+                    Boolean result = attacker.isVulnerable();
+                    LOGGER.info("Vulnerable:" + result == null ? "Uncertain" : result.toString());
+                } catch (UnsupportedOperationException E) {
+                    LOGGER.info("The selection is currently not implemented");
+                }
+            }
         }
     }
 

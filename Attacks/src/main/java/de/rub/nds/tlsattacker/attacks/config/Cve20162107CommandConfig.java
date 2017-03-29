@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class Cve20162107CommandConfig extends TLSDelegateConfig {
+public class Cve20162107CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "cve20162107";
     @Parameter(names = "-versions", description = "Protocol versions to test")

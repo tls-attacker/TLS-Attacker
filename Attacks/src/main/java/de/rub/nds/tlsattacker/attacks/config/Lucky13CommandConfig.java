@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class Lucky13CommandConfig extends TLSDelegateConfig {
+public class Lucky13CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "lucky13";
 
