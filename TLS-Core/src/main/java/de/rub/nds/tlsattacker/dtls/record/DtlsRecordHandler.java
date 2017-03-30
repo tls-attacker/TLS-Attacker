@@ -63,11 +63,11 @@ public class DtlsRecordHandler extends RecordHandler {
             if (records.size() == currentRecord) {
                 // TODO The RecordHandler should not add records without beeing
                 // asked to
-                records.add(new de.rub.nds.tlsattacker.dtls.record.DtlsRecord());
+                records.add(new Record());
             }
             Record record = records.get(currentRecord);
             // fill record with data
-            dataPointer = fillRecord((de.rub.nds.tlsattacker.dtls.record.DtlsRecord) record, contentType, data,
+            dataPointer = fillRecord( record, contentType, data,
                     dataPointer);
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                 advanceEpoch();
@@ -83,11 +83,10 @@ public class DtlsRecordHandler extends RecordHandler {
         // create resulting byte array
         byte[] result = new byte[0];
         for (Record record : records) {
-            de.rub.nds.tlsattacker.dtls.record.DtlsRecord dtlsRecord = (de.rub.nds.tlsattacker.dtls.record.DtlsRecord) record;
             byte[] ctArray = { record.getContentType().getValue() };
             byte[] pv = record.getProtocolVersion().getValue();
-            byte[] en = ArrayConverter.intToBytes(dtlsRecord.getEpoch().getValue(), RecordByteLength.EPOCH);
-            byte[] sn = ArrayConverter.bigIntegerToNullPaddedByteArray(dtlsRecord.getSequenceNumber().getValue(),
+            byte[] en = ArrayConverter.intToBytes(record.getEpoch().getValue(), RecordByteLength.EPOCH);
+            byte[] sn = ArrayConverter.bigIntegerToNullPaddedByteArray(record.getSequenceNumber().getValue(),
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
             if (!encryptSending || contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || epochCounter < 1) {
@@ -119,7 +118,7 @@ public class DtlsRecordHandler extends RecordHandler {
      *            current position in the read data
      * @return new position of the data going to be sent in the records
      */
-    private int fillRecord(de.rub.nds.tlsattacker.dtls.record.DtlsRecord record, ProtocolMessageType contentType,
+    private int fillRecord(Record record, ProtocolMessageType contentType,
             byte[] data, int dataPointer) {
         record.setContentType(contentType.getValue());
         record.setProtocolVersion(tlsContext.getSelectedProtocolVersion().getValue());
@@ -176,7 +175,7 @@ public class DtlsRecordHandler extends RecordHandler {
                 throw new WorkflowExecutionException("Could not identify valid protocol message type for the current "
                         + "record. The value in the record was: " + rawRecordData[dataPointer]);
             }
-            de.rub.nds.tlsattacker.dtls.record.DtlsRecord record = new de.rub.nds.tlsattacker.dtls.record.DtlsRecord();
+            Record record = new Record();
             record.setContentType(contentType.getValue());
 
             byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };

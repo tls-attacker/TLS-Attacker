@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.dtls.record.HandshakeFragmentHandler;
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
@@ -55,7 +54,9 @@ public class DTLSActionExecutor extends ActionExecutor {
     private int retransmitCounter;
     private int retransmitEpoch;
 
-    private DtlsRecord currentRecord, changeCipherSpecRecordBuffer, parseRecordBuffer;
+    private Record currentRecord;
+    private Record changeCipherSpecRecordBuffer;
+    private Record parseRecordBuffer;
 
     private final List<byte[]> retransmitList;
 
@@ -188,7 +189,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
         byte[] messageBytes = pmh.prepareMessage(protocolMessage);
         if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
-            protocolMessage.addRecord(new DtlsRecord());
+            protocolMessage.addRecord(new Record());
         }
         byte[] record = recordHandler.wrapData(messageBytes, protocolMessage.getProtocolMessageType(),
                 protocolMessage.getRecords());
@@ -209,7 +210,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         retransmitList.add(messageBytes);
 
         if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
-            protocolMessage.addRecord(new DtlsRecord());
+            protocolMessage.addRecord(new Record());
         }
 
         byte[] record = recordHandler.wrapData(messageBytes, ProtocolMessageType.CHANGE_CIPHER_SPEC,
@@ -228,7 +229,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
         if (handshakeMessageSendRecordList == null) {
             handshakeMessageSendRecordList = new ArrayList<>();
-            handshakeMessageSendRecordList.add(new DtlsRecord());
+            handshakeMessageSendRecordList.add(new Record());
         }
 
         handshakeMessage.setRecords(handshakeMessageSendRecordList);
@@ -270,9 +271,9 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     }
 
-    private DtlsRecord getNextProtocolMessageRecord() {
+    private Record getNextProtocolMessageRecord() {
         byte[] rawMessageBytes;
-        DtlsRecord rcvRecord = new DtlsRecord();
+        Record rcvRecord = new Record();
         ProtocolMessageType rcvRecordContentType;
         long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
         while (System.currentTimeMillis() <= endTimeMillies) {
@@ -285,7 +286,7 @@ public class DTLSActionExecutor extends ActionExecutor {
             try {
                 rcvRecord = receiveNextValidRecord();
             } catch (IOException e) {
-                rcvRecord = new DtlsRecord();
+                rcvRecord = new Record();
                 continue;
             }
             rcvRecordContentType = ProtocolMessageType.getContentType(rcvRecord.getContentType().getValue());
@@ -309,7 +310,7 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private ProtocolMessage receiveAndParseNextProtocolMessage() {
-        DtlsRecord rcvRecord = parseRecordBuffer;
+        Record rcvRecord = parseRecordBuffer;
 
         if (rcvRecord == null) {
             rcvRecord = getNextProtocolMessageRecord();
@@ -365,7 +366,7 @@ public class DTLSActionExecutor extends ActionExecutor {
             RetransmitMessage message = new RetransmitMessage(retransmitByte);
             lastActualSendList.add(message);
             newRetransmitList.add(message);
-            recordList.add(new DtlsRecord());
+            recordList.add(new Record());
             byte[] retransmittedMessage = retransmitByte;
 
             if (retransmittedMessage.length == 1) {
@@ -388,9 +389,9 @@ public class DTLSActionExecutor extends ActionExecutor {
         return AlertLevel.getAlertLevel(am.getLevel().getValue()) != AlertLevel.FATAL;
     }
 
-    protected DtlsRecord getHandshakeMessage() {
-        DtlsRecord rcvRecord;
-        DtlsRecord outRecord = new DtlsRecord();
+    protected Record getHandshakeMessage() {
+        Record rcvRecord;
+        Record outRecord = new Record();
         ProtocolMessageType rcvRecordProtocolMessageType;
         long endTimeMillies = System.currentTimeMillis() + maxWaitForExpectedRecord;
         byte[] rawMessageBytes;
@@ -429,13 +430,13 @@ public class DTLSActionExecutor extends ActionExecutor {
         return changeCipherSpecRecordBuffer != null;
     }
 
-    private DtlsRecord getReceivedChangeCipherSepc() {
-        DtlsRecord output = changeCipherSpecRecordBuffer;
+    private Record getReceivedChangeCipherSepc() {
+        Record output = changeCipherSpecRecordBuffer;
         changeCipherSpecRecordBuffer = null;
         return output;
     }
 
-    private void processChangeCipherSpecRecord(DtlsRecord ccsRecord) {
+    private void processChangeCipherSpecRecord(Record ccsRecord) {
         if (changeCipherSpecRecordBuffer == null) {
             changeCipherSpecRecordBuffer = ccsRecord;
         }
@@ -447,19 +448,19 @@ public class DTLSActionExecutor extends ActionExecutor {
      * @return
      * @throws IOException
      */
-    private DtlsRecord receiveNextValidRecord() throws IOException {
-        DtlsRecord nextRecord = receiveNextRecord();
+    private Record receiveNextValidRecord() throws IOException {
+        Record nextRecord = receiveNextRecord();
         while (!checkRecordValidity(nextRecord)) {
             nextRecord = receiveNextRecord();
         }
         return nextRecord;
     }
 
-    private DtlsRecord receiveNextRecord() throws IOException {
+    private Record receiveNextRecord() throws IOException {
         if (recordBuffer.isEmpty()) {
             processNextPacket();
         }
-        DtlsRecord out = (DtlsRecord) recordBuffer.get(0);
+        Record out = (Record) recordBuffer.get(0);
         recordBuffer.remove(0);
         return out;
     }
@@ -468,7 +469,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         recordBuffer = recordHandler.parseRecords(receiveNextPacket());
     }
 
-    private boolean checkRecordValidity(DtlsRecord record) {
+    private boolean checkRecordValidity(Record record) {
         return record.getEpoch().getValue() == serverEpochCounter;
     }
 

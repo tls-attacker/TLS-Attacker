@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
@@ -58,11 +57,7 @@ public class SendAction extends MessageAction {
             ProtocolMessage pm = protocolMessages.get(pmPointer);
             if (handlingMyLastProtocolMessageWithContentType(protocolMessages, pmPointer)) {
                 if (pm.getRecords() == null || pm.getRecords().isEmpty()) {
-                    if (context.getConfig().getTransportHandlerType() == TransportHandlerType.UDP) {
-                        pm.addRecord(new DtlsRecord());
-                    } else {
-                        pm.addRecord(new Record());
-                    }
+                    pm.addRecord(new Record());
                 }
             }
         }

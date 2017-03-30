@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
@@ -23,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.HeartbeatMessagePreparator;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -222,18 +222,18 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
-        DtlsRecord record;
+        Record record;
         apMessage.setData(messageData);
 
         for (int i = 0; i < n; i++) {
-            record = new DtlsRecord();
+            record = new Record();
             record.setPadding(modifiedPaddingArray);
             records.add(record);
             train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
             records.remove(0);
         }
 
-        records.add(new DtlsRecord());
+        records.add(new Record());
         action.getConfiguredMessages().add(heartbeatMessage);
         train[n] = recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records);
@@ -250,7 +250,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         actionList.add(action);
         apMessage.setData(applicationMessageContent);
 
-        DtlsRecord record = new DtlsRecord();
+        Record record = new Record();
         record.setMac(modifiedMacArray);
         record.setPadding(modifiedPaddingArray);
         records.add(record);
@@ -262,7 +262,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         }
 
         records.remove(0);
-        records.add(new DtlsRecord());
+        records.add(new Record());
         action.getConfiguredMessages().add(heartbeatMessage);
         train[n] = (recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records));
@@ -274,7 +274,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         AlertMessage closeNotify = new AlertMessage(tlsConfig);
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-        records.add(new DtlsRecord());
+        records.add(new Record());
 
         try {
             AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);

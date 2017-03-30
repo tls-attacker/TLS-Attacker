@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.dtls.record;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -48,7 +49,7 @@ public class RecordHandlerTest {
 
         protocolMessageData = ArrayConverter.hexStringToByteArray("6666666666");
         expectedResult = ArrayConverter.hexStringToByteArray("16fefd000000000000000000056666666666");
-        testRecords.add(new DtlsRecord());
+        testRecords.add(new Record());
         result = rh.wrapData(protocolMessageData, ProtocolMessageType.HANDSHAKE, testRecords);
 
         assertEquals("Check first result length", expectedResult.length, result.length);
@@ -56,7 +57,7 @@ public class RecordHandlerTest {
 
         protocolMessageData = ArrayConverter.hexStringToByteArray("01");
         expectedResult = ArrayConverter.hexStringToByteArray("14fefd0000000000000001000101");
-        testRecords.add(new DtlsRecord());
+        testRecords.add(new Record());
         result = rh.wrapData(protocolMessageData, ProtocolMessageType.CHANGE_CIPHER_SPEC, testRecords);
 
         assertEquals("Check second result length", expectedResult.length, result.length);
@@ -64,7 +65,7 @@ public class RecordHandlerTest {
 
         protocolMessageData = ArrayConverter.hexStringToByteArray("6667778889");
         expectedResult = ArrayConverter.hexStringToByteArray("16fefd000100000000000000056667778889");
-        testRecords.add(new DtlsRecord());
+        testRecords.add(new Record());
         result = rh.wrapData(protocolMessageData, ProtocolMessageType.HANDSHAKE, testRecords);
 
         assertEquals("Check third result length", expectedResult.length, result.length);
@@ -82,7 +83,7 @@ public class RecordHandlerTest {
         List<de.rub.nds.tlsattacker.tls.record.Record> result = rh.parseRecords(testOnWireBytes);
 
         assertEquals("Check number of records", 3, result.size());
-        DtlsRecord currentRecord = (de.rub.nds.tlsattacker.dtls.record.DtlsRecord) result.get(0);
+        Record currentRecord = result.get(0);
         assertEquals("Check first record type", new Byte(ProtocolMessageType.HANDSHAKE.getValue()), currentRecord
                 .getContentType().getValue());
         assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord
@@ -94,7 +95,7 @@ public class RecordHandlerTest {
         assertArrayEquals("Check first record protocol message content",
                 ArrayConverter.hexStringToByteArray("0123456789"), currentRecord.getProtocolMessageBytes().getValue());
 
-        currentRecord = (de.rub.nds.tlsattacker.dtls.record.DtlsRecord) result.get(1);
+        currentRecord = result.get(1);
         assertEquals("Check first record type", new Byte(ProtocolMessageType.CHANGE_CIPHER_SPEC.getValue()),
                 currentRecord.getContentType().getValue());
         assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord
@@ -106,7 +107,7 @@ public class RecordHandlerTest {
         assertArrayEquals("Check first record protocol message content", ArrayConverter.hexStringToByteArray("01"),
                 currentRecord.getProtocolMessageBytes().getValue());
 
-        currentRecord = (de.rub.nds.tlsattacker.dtls.record.DtlsRecord) result.get(2);
+        currentRecord = result.get(2);
         assertEquals("Check first record type", new Byte(ProtocolMessageType.HANDSHAKE.getValue()), currentRecord
                 .getContentType().getValue());
         assertArrayEquals("Check first record protocol version", ProtocolVersion.DTLS12.getValue(), currentRecord

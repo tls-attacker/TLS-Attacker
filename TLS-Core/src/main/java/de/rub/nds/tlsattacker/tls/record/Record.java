@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import java.math.BigInteger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -79,15 +81,37 @@ public class Record extends ModifiableVariableHolder {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     ModifiableByteArray encryptedProtocolMessageBytes;
+    
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableInteger epoch;
 
-    /**
-     * It is possible to define a sleep [in milliseconds] after the protocol
-     * message was sent.
-     */
-    private int sleepAfterMessageSent;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableBigInteger sequenceNumber;
 
-    private boolean measuringTiming;
+    public ModifiableInteger getEpoch() {
+        return epoch;
+    }
 
+    public ModifiableBigInteger getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setEpoch(int epoch) {
+        this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
+    }
+
+    public void setEpoch(ModifiableInteger epoch) {
+        this.epoch = epoch;
+    }
+
+    public void setSequenceNumber(BigInteger sequenceNumber) {
+        this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+    
     public ModifiableInteger getLength() {
         return length;
     }
@@ -203,21 +227,5 @@ public class Record extends ModifiableVariableHolder {
 
     public void setMaxRecordLengthConfig(Integer maxRecordLengthConfig) {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
-    }
-
-    public void setSleepAfterMessageSent(int sleepAfterMessageSent) {
-        this.sleepAfterMessageSent = sleepAfterMessageSent;
-    }
-
-    public int getSleepAfterMessageSent() {
-        return sleepAfterMessageSent;
-    }
-
-    public boolean isMeasuringTiming() {
-        return measuringTiming;
-    }
-
-    public void setMeasuringTiming(boolean measuringTiming) {
-        this.measuringTiming = measuringTiming;
     }
 }

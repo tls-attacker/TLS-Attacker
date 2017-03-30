@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.config;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
@@ -102,7 +101,7 @@ public class WorkflowTraceSerializerTest {
         List<ProtocolMessage> pms = trace.getAllConfiguredMessages();
         int random = RandomHelper.getRandom().nextInt(pms.size());
         List<Record> records = new LinkedList<>();
-        DtlsRecord r = new DtlsRecord();
+        Record r = new Record();
         ModifiableInteger mv = ModifiableVariableFactory.createIntegerModifiableVariable();
         VariableModification<Integer> iam = IntegerModificationFactory.createRandomModification();
         iam.setPostModification(IntegerModificationFactory.explicitValue(random));
