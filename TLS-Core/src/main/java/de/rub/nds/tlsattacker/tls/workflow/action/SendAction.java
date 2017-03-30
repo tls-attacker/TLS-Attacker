@@ -47,6 +47,7 @@ public class SendAction extends MessageAction {
         // I dont think we want the workflowExecutor to modify the
         // workflowtrace, it should
         // simply execute it TODO
+
         actualMessages.addAll(executor.sendMessages(configuredMessages));
         executed = true;
 

@@ -6,11 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.report;
 
 import java.util.List;
@@ -29,17 +24,8 @@ public class SiteReport {
         this.host = host;
     }
 
-    // JSon magic
-    public String getJsonReport() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\n");
-        builder.append("\t \"checks\": [\n");
-        for (ProbeResult result : resultList) {
-            builder.append(result.toJson());
-        }
-        builder.append("\t]\n");
-        builder.append("}\n");
-        return builder.toString();
+    public List<ProbeResult> getResultList() {
+        return resultList;
     }
 
     public String getStringReport() {

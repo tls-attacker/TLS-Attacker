@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +67,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         } else {
             kp = generateFreshKeyPair();
         }
-        
+
         ecPublicKey = (ECPublicKeyParameters) kp.getPublic();
         ecPrivateKey = (ECPrivateKeyParameters) kp.getPrivate();
 
@@ -75,14 +76,17 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         preparePublicKeyBaseY(msg);
 
         ECCurve curve = ecPublicKey.getParameters().getCurve();
-        ECPoint point = curve.createPoint(msg.getPublicKeyBaseX().getValue(), msg.getPublicKeyBaseY()
-                .getValue());
+        ECPoint point = curve.createPoint(msg.getPublicKeyBaseX().getValue(), msg.getPublicKeyBaseY().getValue());
 
         List<ECPointFormat> pointFormatList = context.getServerPointFormatsList();
+        if (pointFormatList == null) {
+            pointFormatList = new LinkedList<>();
+            pointFormatList.add(ECPointFormat.UNCOMPRESSED);
+        }
         // TODO i guess some of the intermediate calculated values could be
-        // inseterd into computations
+        // inserted into computations
         try {
-            serializedPoint = ECCUtilsBCWrapper.serializeECPoint((ECPointFormat[]) pointFormatList.toArray(),point);
+            serializedPoint = ECCUtilsBCWrapper.serializeECPoint((ECPointFormat[]) pointFormatList.toArray(), point);
             prepareEcPointFormat(msg);
             prepareEcPointEncoded(msg);
             prepareSerializedPublicKey(msg);
@@ -99,8 +103,8 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
             random = context.getClientServerRandom();
             prepareClientRandom(msg);
 
-            masterSecret = computeMasterSecret(msg.getComputations().getPremasterSecret().getValue(),
-                    msg.getComputations().getClientRandom().getValue());
+            masterSecret = computeMasterSecret(msg.getComputations().getPremasterSecret().getValue(), msg
+                    .getComputations().getClientRandom().getValue());
             prepareMasterSecret(msg);
         } catch (IOException ex) {
             throw new PreparationException("EC point serialization failure", ex);
@@ -139,12 +143,12 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     private void preparePublicKeyBaseX(ECDHClientKeyExchangeMessage msg) {
         msg.setPublicKeyBaseX(ecPublicKey.getQ().getAffineXCoord().toBigInteger());
-        LOGGER.debug("PublicKeyBaseX: "+ msg.getPublicKeyBaseX().getValue());
+        LOGGER.debug("PublicKeyBaseX: " + msg.getPublicKeyBaseX().getValue());
     }
 
     private void preparePublicKeyBaseY(ECDHClientKeyExchangeMessage msg) {
         msg.setPublicKeyBaseY(ecPublicKey.getQ().getAffineYCoord().toBigInteger());
-        LOGGER.debug("PublicKeyBaseY: "+ msg.getPublicKeyBaseY().getValue());
+        LOGGER.debug("PublicKeyBaseY: " + msg.getPublicKeyBaseY().getValue());
     }
 
     private boolean hasServerPublicKeyParameters() {
@@ -153,36 +157,36 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     private void prepareEcPointFormat(ECDHClientKeyExchangeMessage msg) {
         msg.setEcPointFormat(serializedPoint[0]);
-        LOGGER.debug("EcPointFormat: "+ msg.getEcPointFormat().getValue());
+        LOGGER.debug("EcPointFormat: " + msg.getEcPointFormat().getValue());
     }
 
     private void prepareEcPointEncoded(ECDHClientKeyExchangeMessage msg) {
         msg.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
-        LOGGER.debug("EcPointEncoded: "+ Arrays.toString(msg.getEcPointEncoded().getValue()));
+        LOGGER.debug("EcPointEncoded: " + Arrays.toString(msg.getEcPointEncoded().getValue()));
     }
 
     private void prepareSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(serializedPoint);
-        LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
     }
 
     private void preparePremasterSecret(ECDHClientKeyExchangeMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: "+ Arrays.toString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: " + Arrays.toString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void prepareClientRandom(ECDHClientKeyExchangeMessage msg) {
         msg.getComputations().setClientRandom(random);
-        LOGGER.debug("ClientRandom: "+ Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareMasterSecret(ECDHClientKeyExchangeMessage msg) {
         msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "+ Arrays.toString(msg.getComputations().getMasterSecret().getValue()));
+        LOGGER.debug("MasterSecret: " + Arrays.toString(msg.getComputations().getMasterSecret().getValue()));
     }
 }

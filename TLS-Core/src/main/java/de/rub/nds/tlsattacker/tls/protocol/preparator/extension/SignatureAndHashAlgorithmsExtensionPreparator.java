@@ -33,7 +33,7 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
     @Override
     public void prepareExtensionContent() {
         prepareSignatureAndHashAlgorithms();
-        message.setSignatureAndHashAlgorithmsLength(0);
+        message.setSignatureAndHashAlgorithmsLength(message.getSignatureAndHashAlgorithms().getValue().length);
     }
 
     private void prepareSignatureAndHashAlgorithms() {

@@ -59,7 +59,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedSessionID(message);
         adjustServerRandom(message);
         for (ExtensionMessage extension : message.getExtensions()) {
-            throw new UnsupportedOperationException("Get extensionHandlers here and adjust context");
+            extension.getHandler(tlsContext).adjustTLSContext(extension);
         }
         adjustMessageDigest(message);
     }

@@ -32,22 +32,22 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
     }
 
     @Override
-    protected void adjustTLSContext(UnknownExtensionMessage message) {
+    public void adjustTLSContext(UnknownExtensionMessage message) {
 
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public UnknownExtensionParser getParser(byte[] message, int pointer) {
         return new UnknownExtensionParser(pointer, message);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(UnknownExtensionMessage message) {
+    public UnknownExtensionPreparator getPreparator(UnknownExtensionMessage message) {
         return new UnknownExtensionPreparator(context, message);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(UnknownExtensionMessage message) {
+    public UnknownExtensionSerializer getSerializer(UnknownExtensionMessage message) {
         return new UnknownExtensionSerializer(message);
     }
 

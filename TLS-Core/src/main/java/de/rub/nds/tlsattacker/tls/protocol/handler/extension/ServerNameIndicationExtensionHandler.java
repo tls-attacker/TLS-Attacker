@@ -33,7 +33,7 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
     }
 
     @Override
-    protected void adjustTLSContext(ServerNameIndicationExtensionMessage message) {
+    public void adjustTLSContext(ServerNameIndicationExtensionMessage message) {
         List<SNIEntry> sniEntryList = new LinkedList<>();
         for (ServerNamePair pair : message.getServerNameList()) {
             NameType type = NameType.getNameType(pair.getServerNameType().getValue());

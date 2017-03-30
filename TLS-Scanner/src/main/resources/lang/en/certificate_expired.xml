@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>The provided certificate is not expired yet.</successDescription>
+    <successName>Certificate not expired</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>The provided certificate has expired and has to be reissued.</unsuccessDescription>
+    <unsuccessName>Certificate expired</unsuccessName>
+</checkConfig>

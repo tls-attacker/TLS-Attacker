@@ -52,7 +52,7 @@ public class ClientHelloParserTest {
                         45,
                         ArrayConverter
                                 .hexStringToByteArray("00230000000d0020001e060106020603050105020503040104020403030103020303020102020203000f000101"),
-                        null, null, 3 } });
+                        null, null, 3 }, });
     }
 
     private byte[] message;

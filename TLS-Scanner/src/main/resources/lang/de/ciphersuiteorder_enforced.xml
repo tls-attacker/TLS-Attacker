@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Der Server wählt eigenständig CipherSuites und überlässt die Auswahl nicht dem Nutzer.</successDescription>
+    <successName>CipherSuite Auswahl erzwungen</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>CipherSuite Auswahl nicht erzwungen</unsuccessDescription>
+    <unsuccessName>Der Server überlässt die Auswahl der CipherSuite dem Nutzer. Der Server sollte jedoch die Verantwortung für die Auswahl der kryptographischen Funktionen übernehmen.</unsuccessName>
+</checkConfig>

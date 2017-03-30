@@ -26,6 +26,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableLong extends ModifiableVariable<Long> implements Serializable {
 
+    private Long originalValue;
+
     @Override
     protected void createRandomModification() {
         VariableModification<Long> vm = LongModificationFactory.createRandomModification();
@@ -58,5 +60,15 @@ public class ModifiableLong extends ModifiableVariable<Long> implements Serializ
             }
         }
         return valid;
+    }
+
+    @Override
+    public Long getOriginalValue() {
+        return originalValue;
+    }
+
+    @Override
+    public void setOriginalValue(Long originalValue) {
+        this.originalValue = originalValue;
     }
 }

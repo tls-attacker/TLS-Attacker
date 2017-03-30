@@ -111,6 +111,12 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private byte[] generateMasterSecret() {
+        if (context.getSelectedCipherSuite() == null) {
+            throw new PreparationException("Cannot choose PRF. Selected Ciphersuite is null");
+        }
+        if (context.getSelectedProtocolVersion() == null) {
+            throw new PreparationException("Cannot choose PRF. Selected ProtocolVersion is null");
+        }
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
                 context.getSelectedCipherSuite());
         return PseudoRandomFunction.compute(prfAlgorithm, message.getComputations().getPremasterSecret().getValue(),

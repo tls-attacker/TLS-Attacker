@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Der veraltete Verschlüsselungsmodus CBC wird nicht unterstützt.</successDescription>
+    <successName>CBC CipherSuites werden nicht unterstützt</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Der Server unterstützt den veralteten Verschlüsselungsmodus CBC. CipherSuites die diesen Modus nutzen sollten deaktiviert werden.</unsuccessDescription>
+    <unsuccessName>CBC CipherSuites unterstützt</unsuccessName>
+</checkConfig>

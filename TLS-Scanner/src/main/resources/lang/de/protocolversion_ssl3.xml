@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Die veraltete Version SSL 3.0 wird nicht unterstützt.</successDescription>
+    <successName>SSL 3.0 nicht unterstützt</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Der Server unterstützt die veraltete Version SSL 3.0. Diese sollte deaktiviert werden.</unsuccessDescription>
+    <unsuccessName>SSL 3.0 unterstützt</unsuccessName>
+</checkConfig>

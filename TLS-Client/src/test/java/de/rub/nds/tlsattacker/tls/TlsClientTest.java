@@ -163,9 +163,7 @@ public class TlsClientTest {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
                 config.setSupportedCiphersuites(cslist);
-                if (config.getWorkflowTrace() != null) {
-                    config.getWorkflowTrace().reset();
-                }
+                config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
                 LOGGER.info("Testing: " + cs.name() + " Succes:" + result);
                 collector.checkThat("" + cs.name() + " failed.", result, is(true));
@@ -187,29 +185,10 @@ public class TlsClientTest {
         String workflowString = tlsContext.getWorkflowTrace().toString();
         boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         if (!result) {
-            LOGGER.log(Level.INFO, "Failed vanilla execution");
             LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
             LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
             LOGGER.info(workflowString);
             return result;
-        }
-        config.getWorkflowTrace().reset();
-        config.getWorkflowTrace().makeGeneric();
-        tlsContext = new TlsContext(config);
-        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(), tlsContext);
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException E) {
-            E.printStackTrace();
-        }
-        workflowString = tlsContext.getWorkflowTrace().toString();
-        result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
-        if (!result) {
-            LOGGER.log(Level.INFO, "Failed reset&generic execution");
-            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
-            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
-            LOGGER.info(workflowString);
-
         }
         return result;
     }
@@ -245,7 +224,7 @@ public class TlsClientTest {
         TlsContext tlsContext = new TlsContext(config);
         config.setWorkflowTrace(new WorkflowTrace());
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = config.getWorkflowTrace();
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, new ClientHelloMessage(
                 config)));
         trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new ServerHelloMessage(

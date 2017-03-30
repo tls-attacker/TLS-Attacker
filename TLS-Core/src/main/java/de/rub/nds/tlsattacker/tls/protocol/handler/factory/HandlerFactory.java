@@ -37,6 +37,8 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownHandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -44,57 +46,68 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class HandlerFactory {
 
+    private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class);
+
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
-        switch (protocolType) {
-            case HANDSHAKE:
-                HandshakeMessageType hmt = HandshakeMessageType.getMessageType(handshakeType.getValue());
-                return HandlerFactory.getHandshakeHandler(context, hmt);
-            case CHANGE_CIPHER_SPEC:
-                return new ChangeCipherSpecHandler(context);
-            case ALERT:
-                return new AlertHandler(context);
-            case APPLICATION_DATA:
-                return new ApplicationHandler(context);
-            case HEARTBEAT:
-                return new HeartbeatHandler(context);
-            default:
-                return new UnknownMessageHandler(context);
+        try {
+            switch (protocolType) {
+                case HANDSHAKE:
+                    HandshakeMessageType hmt = HandshakeMessageType.getMessageType(handshakeType.getValue());
+                    return HandlerFactory.getHandshakeHandler(context, hmt);
+                case CHANGE_CIPHER_SPEC:
+                    return new ChangeCipherSpecHandler(context);
+                case ALERT:
+                    return new AlertHandler(context);
+                case APPLICATION_DATA:
+                    return new ApplicationHandler(context);
+                case HEARTBEAT:
+                    return new HeartbeatHandler(context);
+                default:
+                    return new UnknownMessageHandler(context);
+            }
+        } catch (UnsupportedOperationException E) {
+            // Could not get the correct handler, getting an
+            // unknownMessageHandler instead(always successful)
+            return new UnknownHandshakeMessageHandler(context);
         }
     }
 
     public static HandshakeMessageHandler getHandshakeHandler(TlsContext context, HandshakeMessageType type) {
-        switch (type) {
-            case CERTIFICATE:
-                return new CertificateHandler(context);
-            case CERTIFICATE_REQUEST:
-                return new CertificateRequestHandler(context);
-            case CERTIFICATE_VERIFY:
-                return new CertificateVerifyHandler(context);
-            case CLIENT_HELLO:
-                return new ClientHelloHandler(context);
-            case CLIENT_KEY_EXCHANGE:
-                return getClientKeyExchangeHandler(context);
-            case FINISHED:
-                return new FinishedHandler(context);
-            case HELLO_REQUEST:
-                return new HelloRequestHandler(context);
-            case HELLO_VERIFY_REQUEST:
-                return new HelloVerifyRequestHandler(context);
-            case NEW_SESSION_TICKET:
-                // TODO or should we give an UnknownHandshakeMessageHandler?
-                throw new UnsupportedOperationException("Session Tickets are not supported yet!");
-            case SERVER_HELLO:
-                return new ServerHelloHandler(context);
-            case SERVER_HELLO_DONE:
-                return new ServerHelloDoneHandler(context);
-            case SERVER_KEY_EXCHANGE:
-                return getServerKeyExchangeHandler(context);
-            case UNKNOWN:
-                return new UnknownHandshakeMessageHandler(context);
+        try {
+            switch (type) {
+                case CERTIFICATE:
+                    return new CertificateHandler(context);
+                case CERTIFICATE_REQUEST:
+                    return new CertificateRequestHandler(context);
+                case CERTIFICATE_VERIFY:
+                    return new CertificateVerifyHandler(context);
+                case CLIENT_HELLO:
+                    return new ClientHelloHandler(context);
+                case CLIENT_KEY_EXCHANGE:
+                    return getClientKeyExchangeHandler(context);
+                case FINISHED:
+                    return new FinishedHandler(context);
+                case HELLO_REQUEST:
+                    return new HelloRequestHandler(context);
+                case HELLO_VERIFY_REQUEST:
+                    return new HelloVerifyRequestHandler(context);
+                case NEW_SESSION_TICKET:
+                    // TODO or should we give an UnknownHandshakeMessageHandler?
+                    throw new UnsupportedOperationException("Session Tickets are not supported yet!");
+                case SERVER_HELLO:
+                    return new ServerHelloHandler(context);
+                case SERVER_HELLO_DONE:
+                    return new ServerHelloDoneHandler(context);
+                case SERVER_KEY_EXCHANGE:
+                    return getServerKeyExchangeHandler(context);
+                case UNKNOWN:
+                    return new UnknownHandshakeMessageHandler(context);
+            }
+        } catch (UnsupportedOperationException E) {
+            LOGGER.debug("Could not retrieve correct Handler, returning UnknownHandshakeHandler", E);
         }
-        throw new UnsupportedOperationException(
-                "This MessageType is not specified in the HandshakeMessageHandler Factory!(bug)");
+        return new UnknownHandshakeMessageHandler(context);
     }
 
     private static ClientKeyExchangeHandler getClientKeyExchangeHandler(TlsContext context) {
@@ -103,7 +116,7 @@ public class HandlerFactory {
         switch (algorithm) {
             case RSA:
                 return new RSAClientKeyExchangeHandler(context);
-            case EC_DIFFIE_HELLMAN:
+            case ECDH:
                 return new ECDHClientKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:
@@ -126,7 +139,7 @@ public class HandlerFactory {
         CipherSuite cs = context.getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
-            case EC_DIFFIE_HELLMAN:
+            case ECDH:
                 return new ECDHEServerKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:

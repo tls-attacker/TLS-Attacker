@@ -33,21 +33,26 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     private void prepareMessageLength(int length) {
         msg.setLength(length);
-        LOGGER.debug("Length: "+ msg.getLength().getValue());
+        LOGGER.debug("Length: " + msg.getLength().getValue());
     }
 
     private void prepareMessageType(HandshakeMessageType type) {
         msg.setType(type.getValue());
-        LOGGER.debug("Type: "+ msg.getType().getValue());
+        LOGGER.debug("Type: " + msg.getType().getValue());
     }
 
     @Override
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
         // Ugly but only temporary
-        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(
-                msg);
+        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(msg);
+
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
+        if (context.getSelectedProtocolVersion().isDTLS()) {
+            msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
+            msg.setFragmentOffset(0);
+            msg.setMessageSeq(context.getSequenceNumber()); //TODO refactor
+        }
         prepareMessageType(msg.getHandshakeMessageType());
     }
 

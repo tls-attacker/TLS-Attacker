@@ -73,7 +73,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
         dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
         dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
-        
+
         prepareG(msg);
         prepareP(msg);
         prepareSerializedPublicKey(msg);
@@ -112,12 +112,12 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     private byte[] generateToBeSigned() {
         byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(msg.getComputations()
                 .getSerializedPLength().getValue(), HandshakeByteLength.DH_P_LENGTH), msg.getComputations()
-                .getSerializedP().getValue(), ArrayConverter.intToBytes(msg.getComputations()
-                .getSerializedGLength().getValue(), HandshakeByteLength.DH_G_LENGTH), msg.getComputations()
-                .getSerializedG().getValue(), ArrayConverter.intToBytes(msg.getSerializedPublicKeyLength()
-                .getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH), msg.getSerializedPublicKey().getValue());
-        return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg
-                .getComputations().getServerRandom().getValue(), dhParams);
+                .getSerializedP().getValue(), ArrayConverter.intToBytes(msg.getComputations().getSerializedGLength()
+                .getValue(), HandshakeByteLength.DH_G_LENGTH), msg.getComputations().getSerializedG().getValue(),
+                ArrayConverter.intToBytes(msg.getSerializedPublicKeyLength().getValue(),
+                        HandshakeByteLength.DH_PUBLICKEY_LENGTH), msg.getSerializedPublicKey().getValue());
+        return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
+                .getServerRandom().getValue(), dhParams);
 
     }
 
@@ -136,81 +136,81 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private void prepareG(DHEServerKeyExchangeMessage msg) {
         msg.setG(dhPublic.getParameters().getG());
-        LOGGER.debug("G: "+ msg.getG().getValue());
+        LOGGER.debug("G: " + msg.getG().getValue());
     }
 
     private void prepareP(DHEServerKeyExchangeMessage msg) {
         msg.setP(dhPublic.getParameters().getP());
-        LOGGER.debug("P: "+ msg.getP().getValue());
+        LOGGER.debug("P: " + msg.getP().getValue());
     }
 
     private void prepareSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(dhPublic.getY().toByteArray());
-        LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 
     private void preparePrivateKey(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setPrivateKey(dhPrivate.getX());
-        LOGGER.debug("PrivateKey: "+ msg.getComputations().getPrivateKey().getValue());
+        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
     }
 
     private void prepareServerDHPrivateParameters(TlsContext context) {
         context.setServerDHPrivateKeyParameters(dhPrivate);
-        LOGGER.debug("ServerDHPrivateKeyParameters: "+ context.getServerDHPrivateKeyParameters());
+        LOGGER.debug("ServerDHPrivateKeyParameters: " + context.getServerDHPrivateKeyParameters());
     }
 
     private void prepareSerializedP(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setSerializedP(serializedP);
-        LOGGER.debug("SerializedP: "+ Arrays.toString(msg.getComputations().getSerializedP().getValue()));
+        LOGGER.debug("SerializedP: " + Arrays.toString(msg.getComputations().getSerializedP().getValue()));
     }
 
     private void prepareSerializedPLength(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setSerializedPLength(msg.getComputations().getSerializedP().getValue().length);
-        LOGGER.debug("SerializedPLength: "+ msg.getComputations().getSerializedPLength().getValue());
+        LOGGER.debug("SerializedPLength: " + msg.getComputations().getSerializedPLength().getValue());
     }
 
     private void prepareSerializedG(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setSerializedG(serializedG);
-        LOGGER.debug("SerializedG: "+ Arrays.toString(msg.getComputations().getSerializedG().getValue()));
+        LOGGER.debug("SerializedG: " + Arrays.toString(msg.getComputations().getSerializedG().getValue()));
     }
 
     private void prepareSerializedGLength(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setSerializedGLength(msg.getComputations().getSerializedG().getValue().length);
-        LOGGER.debug("SerializedGLength: "+ msg.getComputations().getSerializedGLength().getValue());
+        LOGGER.debug("SerializedGLength: " + msg.getComputations().getSerializedGLength().getValue());
     }
 
     private void prepareServerDHParameters(TlsContext context) {
         context.setServerDHParameters(publicKeyParameters);
-        LOGGER.debug("ServerDHParameters: "+ context.getServerDHParameters());
+        LOGGER.debug("ServerDHParameters: " + context.getServerDHParameters());
     }
 
     private void prepareSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
         msg.setSignatureAlgorithm(selectedSignatureHashAlgo.getSignatureAlgorithm().getValue());
-        LOGGER.debug("SignatureAlgorithm: "+ msg.getSignatureAlgorithm().getValue());
+        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
     }
 
     private void prepareHashAlgorithm(DHEServerKeyExchangeMessage msg) {
         msg.setHashAlgorithm(selectedSignatureHashAlgo.getHashAlgorithm().getValue());
-        LOGGER.debug("HashAlgorithm: "+ msg.getHashAlgorithm().getValue());
+        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
     }
 
     private void prepareClientRandom(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setClientRandom(context.getClientRandom());
-        LOGGER.debug("ClientRandom: "+ Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareServerRandom(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setServerRandom(context.getServerRandom());
-        LOGGER.debug("ServerRandom: "+ Arrays.toString(msg.getComputations().getServerRandom().getValue()));
+        LOGGER.debug("ServerRandom: " + Arrays.toString(msg.getComputations().getServerRandom().getValue()));
     }
 
     private void prepareSignature(DHEServerKeyExchangeMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug("Signatur: "+ Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signatur: " + Arrays.toString(msg.getSignature().getValue()));
     }
 
     private void prepareSignatureLength(DHEServerKeyExchangeMessage msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 }

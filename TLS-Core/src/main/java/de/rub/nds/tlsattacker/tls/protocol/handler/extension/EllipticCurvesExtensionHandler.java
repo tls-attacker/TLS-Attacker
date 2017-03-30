@@ -35,7 +35,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     }
 
     @Override
-    protected void adjustTLSContext(EllipticCurvesExtensionMessage message) {
+    public void adjustTLSContext(EllipticCurvesExtensionMessage message) {
         byte[] curveBytes = message.getSupportedCurves().getValue();
         if (curveBytes.length % NamedCurve.LENGTH != 0) {
             throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");

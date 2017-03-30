@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Das eingesetzte Zertifikat wurde nicht zurückgerufen</successDescription>
+    <successName>Zertifikat nicht zurückgerufen</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Das eingesetzte Zertifikat wurde zurückgerufen und darf nicht mehr eingesetzt werden.</unsuccessDescription>
+    <unsuccessName>Zertifikat zurückgerufen</unsuccessName>
+</checkConfig>

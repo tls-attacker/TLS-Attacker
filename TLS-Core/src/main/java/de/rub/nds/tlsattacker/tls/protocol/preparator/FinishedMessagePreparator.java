@@ -68,7 +68,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
 
     private void prepareVerifyData(FinishedMessage msg) {
         msg.setVerifyData(verifyData);
-        LOGGER.debug("VerifyData: "+ Arrays.toString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: " + Arrays.toString(msg.getVerifyData().getValue()));
     }
 
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>The provided certificate uses a strong hash function.</successDescription>
+    <successName>Strong hash function used</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>The provided certificate uses a weak hash function.</unsuccessDescription>
+    <unsuccessName>Weak hash function used</unsuccessName>
+</checkConfig>

@@ -33,6 +33,7 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
      * @param array
      *            The byte[] which the ServerHellorParser is supposed to parse
      * @param version
+     * 
      */
     public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO, version);

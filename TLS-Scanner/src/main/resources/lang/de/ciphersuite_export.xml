@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Der Server unterstützt keine veralteten Export CipherSuites.</successDescription>
+    <successName>Export CipherSuites nicht unterstützt</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Der Server unterstützt vorsätzlich geschwächte CipherSuites. Diese sollten deaktiviert werden.</unsuccessDescription>
+    <unsuccessName>Export CipherSuites unterstützt</unsuccessName>
+</checkConfig>

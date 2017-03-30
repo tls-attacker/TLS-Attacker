@@ -182,11 +182,11 @@ public final class TlsConfig {
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
-    private boolean addECPointFormatExtension = false;
+    private boolean addECPointFormatExtension = true;
     /**
      * If we generate ClientHello with the EllipticCurve extension
      */
-    private boolean addEllipticCurveExtension = false;
+    private boolean addEllipticCurveExtension = true;
     /**
      * If we generate ClientHello with the Heartbeat extension
      */
@@ -286,13 +286,14 @@ public final class TlsConfig {
         supportedCompressionMethods = new LinkedList<>();
         supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCiphersuites = new LinkedList<>();
-        supportedCiphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.SECP192R1);
         namedCurves.add(NamedCurve.SECP256R1);
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
+        pointFormats.add(ECPointFormat.UNCOMPRESSED);
         try {
             ClassLoader loader = TlsConfig.class.getClassLoader();
             InputStream stream = loader.getResourceAsStream("default.jks");

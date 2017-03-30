@@ -34,7 +34,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     public void prepareHandshakeMessageContents() {
         prepareCookie(msg);
         prepareCookieLength(msg);
-                                                                              // WARN
+        // WARN
         prepareProtocolVersion(msg);
     }
 
@@ -46,17 +46,17 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private void prepareCookie(HelloVerifyRequestMessage msg) {
         msg.setCookie(generateCookie());
-        LOGGER.debug("Cookie: "+ Arrays.toString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: " + Arrays.toString(msg.getCookie().getValue()));
     }
 
     private void prepareCookieLength(HelloVerifyRequestMessage msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length);// TODO
-        LOGGER.debug("CookieLength: "+ msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
     }
 
     private void prepareProtocolVersion(HelloVerifyRequestMessage msg) {
         msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 
 }

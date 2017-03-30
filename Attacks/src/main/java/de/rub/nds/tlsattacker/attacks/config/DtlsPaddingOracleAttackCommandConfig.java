@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
-public class DtlsPaddingOracleAttackCommandConfig extends TLSDelegateConfig {
+public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "dtls_potest";
 

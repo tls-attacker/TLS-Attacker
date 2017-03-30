@@ -164,6 +164,8 @@ public class TlsContext {
 
     private List<SNIEntry> clientSNIEntryList;
 
+    private int sequenceNumber = 0;
+
     public TlsContext() {
         digest = new TlsMessageDigest();
         config = new TlsConfig();
@@ -311,6 +313,14 @@ public class TlsContext {
 
     public void setClientSupportedCompressions(List<CompressionMethod> clientSupportedCompressions) {
         this.clientSupportedCompressions = clientSupportedCompressions;
+    }
+
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

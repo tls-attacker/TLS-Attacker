@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class HeartbleedCommandConfig extends TLSDelegateConfig {
+public class HeartbleedCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "heartbleed";
 
@@ -63,6 +63,7 @@ public class HeartbleedCommandConfig extends TLSDelegateConfig {
     @Override
     public TlsConfig createConfig() {
         TlsConfig config = super.createConfig();
+        config.setAddHeartbeatExtension(true);
         config.setWorkflowTraceType(WorkflowTraceType.FULL);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
         return config;

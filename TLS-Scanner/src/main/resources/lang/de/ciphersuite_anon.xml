@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkConfig>
+    <successDescription>Unsichere anonyme CipherSuites werden nicht unterstützt.</successDescription>
+    <successName>Anonyme Ciphersuites nicht unterstützt</successName>
+    <transparentIfPassed>false</transparentIfPassed>
+    <unsuccessDescription>Der Server unterstützt unsichere anonyme CipherSuites. Diese sollte deaktiviert werden.</unsuccessDescription>
+    <unsuccessName>Anonyme CipherSuites unterstützt</unsuccessName>
+</checkConfig>

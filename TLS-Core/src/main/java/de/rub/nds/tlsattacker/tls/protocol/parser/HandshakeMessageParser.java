@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for HandshakeMessages
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  *            Type of the HandshakeMessages to parse
@@ -31,9 +31,11 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     private final HandshakeMessageType expectedType;
 
+    private ProtocolVersion version;
+
     /**
      * Constructor for the Parser class
-     * 
+     *
      * @param pointer
      *            Position in the array where the HandshakeMessageParser is
      *            supposed to start parsing
@@ -47,12 +49,13 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
         super(pointer, array, version);
         this.expectedType = expectedType;
+        this.version = version;
     }
 
     /**
      * Reads the next bytes as a HandshakeMessageType and writes them in the
      * message
-     * 
+     *
      * @param message
      *            Message to write in
      */
@@ -67,7 +70,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
 
     /**
      * Reads the next bytes as the MessageLength and writes them in the message
-     * 
+     *
      * @param message
      *            Message to write in
      */
@@ -81,6 +84,11 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         T msg = createHandshakeMessage();
         parseType(msg);
         parseLength(msg);
+        if (version.isDTLS()) {
+            parseMessageSequence(msg);
+            parseFragmentOffset(msg);
+            parseFragmentLength(msg);
+        }
         parseHandshakeMessageContent(msg);
         return msg;
     }
@@ -88,4 +96,16 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     protected abstract void parseHandshakeMessageContent(T msg);
 
     protected abstract T createHandshakeMessage();
+
+    private void parseFragmentOffset(T msg) {
+        msg.setFragmentOffset(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_OFFSET));
+    }
+
+    private void parseFragmentLength(T msg) {
+        msg.setFragmentLength(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_LENGTH));
+    }
+
+    private void parseMessageSequence(T msg) {
+        msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
+    }
 }

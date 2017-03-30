@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
 public class ModifiableBigInteger extends ModifiableVariable<BigInteger> implements Serializable {
 
+    private BigInteger originalValue;
+
     @Override
     protected void createRandomModification() {
         VariableModification<BigInteger> vm = BigIntegerModificationFactory.createRandomModification();
@@ -63,5 +65,15 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
             }
         }
         return valid;
+    }
+
+    @Override
+    public BigInteger getOriginalValue() {
+        return originalValue;
+    }
+
+    @Override
+    public void setOriginalValue(BigInteger originalValue) {
+        this.originalValue = originalValue;
     }
 }

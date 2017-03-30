@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
@@ -62,7 +63,7 @@ public class TLSActionExecutor extends ActionExecutor {
     @Override
     public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
         if (!proceed) {
-            return null;
+            return new LinkedList<>();
         }
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
@@ -98,7 +99,7 @@ public class TLSActionExecutor extends ActionExecutor {
     @Override
     public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
         if (!proceed) {
-            return null;
+            return new LinkedList<>();
         }
         List<ProtocolMessage> receivedList = new LinkedList<>();
         try {
@@ -260,7 +261,7 @@ public class TLSActionExecutor extends ActionExecutor {
                         handshakeMessageType);
                 result = pmh.parseMessage(rawProtocolMessageBytes, dataPointer);
 
-            } catch (ParserException E) {
+            } catch (ParserException | AdjustmentException E) {
                 LOGGER.log(Level.WARN,
                         "Could not parse Message as a CorrectMessage, parsing as UnknownHandshakeMessage instead!", E);
 
@@ -289,31 +290,11 @@ public class TLSActionExecutor extends ActionExecutor {
             dataPointer = result.getParserPosition();
             LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
             receivedMessages.add(result.getMessage());
-            if (receivedFatalAlert(result.getMessage())) {
-                if (!context.getConfig().isFuzzingMode()) {
-                    proceed = false;
-                }
-            }
+        }
+        if (context.isReceivedFatalAlert()) {
+            proceed = false;
         }
         return receivedMessages;
-    }
-
-    /**
-     * Returns true if the protocolMessage in the protocolMessageHandler is a
-     * fatal alert
-     *
-     * @param protocolMessageHandler
-     *            ProtocolmessageHandler to analyze
-     */
-    private boolean receivedFatalAlert(ProtocolMessage msg) {
-        if (msg instanceof AlertMessage) {
-            AlertMessage am = (AlertMessage) msg;
-            if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-                LOGGER.debug("The workflow received a FATAL error");
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

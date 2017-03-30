@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.converters.ProtocolVersionConverter;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**
@@ -41,6 +42,7 @@ public class ProtocolVersionDelegate extends Delegate {
         }
         if (config.getHighestProtocolVersion().isDTLS()) {
             config.setTransportHandlerType(TransportHandlerType.UDP);
+            config.setExecutorType(ExecutorType.DTLS);
         } else {
             config.setTransportHandlerType(TransportHandlerType.TCP);
         }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
@@ -42,11 +43,17 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger(DTLSActionExecutor.class);
 
-    private byte[] handshakeMessageSendBuffer, recordSendBuffer;
+    private byte[] handshakeMessageSendBuffer;
+    private byte[] recordSendBuffer;
     // TODO put this in config
-    private int messageParseBufferOffset, sendHandshakeMessageSeq, maxWaitForExpectedRecord = 3000, maxRetransmits = 0,
-            serverEpochCounter, maxPacketSize = 1400, maxHandshakeReorderBufferSize = 100, retransmitCounter,
-            retransmitEpoch;
+    private int messageParseBufferOffset;
+    private int maxWaitForExpectedRecord = 3000;
+    private int maxRetransmits = 0;
+    private int serverEpochCounter;
+    private int maxPacketSize = 1400;
+    private int maxHandshakeReorderBufferSize = 100;
+    private int retransmitCounter;
+    private int retransmitEpoch;
 
     private DtlsRecord currentRecord, changeCipherSpecRecordBuffer, parseRecordBuffer;
 
@@ -211,9 +218,8 @@ public class DTLSActionExecutor extends ActionExecutor {
     }
 
     private void handleMyHandshakeMessage(HandshakeMessage handshakeMessage) throws IOException {
-        ProtocolMessageHandler pmh = null;// TODO//handshakeMessage.getProtocolMessageHandler(tlsContext);
-        handshakeMessage.setMessageSeq(sendHandshakeMessageSeq);
-        byte[] handshakeMessageBytes = pmh.prepareMessage(previousMessage);
+        HandshakeMessageHandler pmh = (HandshakeMessageHandler) handshakeMessage.getHandler(tlsContext);
+        byte[] handshakeMessageBytes = pmh.prepareMessage(handshakeMessage);
 
         handshakeMessageSendBuffer = ArrayConverter.concatenate(handshakeMessageSendBuffer,
                 handshakeFragmentHandler.fragmentHandshakeMessage(handshakeMessageBytes, maxPacketSize - 25));
@@ -230,7 +236,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         bufferSendData(recordHandler.wrapData(handshakeMessageSendBuffer, ProtocolMessageType.HANDSHAKE,
                 handshakeMessage.getRecords()));
 
-        sendHandshakeMessageSeq++;
+        tlsContext.setSequenceNumber(tlsContext.getSequenceNumber() + 1);
     }
 
     private void bufferSendData(byte[] records) {

@@ -8,24 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.tls.protocol.handler.UnknownHandshakeMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.DHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.FinishedHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.HelloRequestHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.RSAClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloDoneHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.HashMap;
 import java.util.Map;

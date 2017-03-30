@@ -45,5 +45,5 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
      *
      * @param message
      */
-    protected abstract void adjustTLSContext(Message message);
+    public abstract void adjustTLSContext(Message message);
 }
