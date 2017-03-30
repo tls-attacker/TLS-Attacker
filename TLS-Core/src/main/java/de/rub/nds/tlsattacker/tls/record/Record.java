@@ -32,55 +32,55 @@ public class Record extends ModifiableVariableHolder {
      * record layer
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger length;
+    private ModifiableInteger length;
 
     /**
      * Content type
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte contentType;
+    private ModifiableByte contentType;
 
     /**
      * Record Layer Protocol Version
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion;
+    private ModifiableByteArray protocolVersion;
 
     /**
      * protocol message bytes transported in the record
      */
     @ModifiableVariableProperty
-    ModifiableByteArray protocolMessageBytes;
+    private ModifiableByteArray protocolMessageBytes;
 
     /**
      * MAC (message authentication code) for the record (if needed)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    ModifiableByteArray mac;
+    private ModifiableByteArray mac;
 
     /**
      * Padding
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray padding;
+    private ModifiableByteArray padding;
 
     /**
      * Padding length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger paddingLength;
+    private ModifiableInteger paddingLength;
 
     /**
      * Plain record bytes (MACed and padded data)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray plainRecordBytes;
+    private ModifiableByteArray plainRecordBytes;
 
     /**
      * encrypted protocol message bytes (if encryption activated)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    ModifiableByteArray encryptedProtocolMessageBytes;
+    private ModifiableByteArray encryptedProtocolMessageBytes;
     
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
