@@ -67,8 +67,7 @@ public class DtlsRecordHandler extends RecordHandler {
             }
             Record record = records.get(currentRecord);
             // fill record with data
-            dataPointer = fillRecord( record, contentType, data,
-                    dataPointer);
+            dataPointer = fillRecord(record, contentType, data, dataPointer);
             if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                 advanceEpoch();
             }
@@ -118,8 +117,7 @@ public class DtlsRecordHandler extends RecordHandler {
      *            current position in the read data
      * @return new position of the data going to be sent in the records
      */
-    private int fillRecord(Record record, ProtocolMessageType contentType,
-            byte[] data, int dataPointer) {
+    private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
         record.setContentType(contentType.getValue());
         record.setProtocolVersion(tlsContext.getSelectedProtocolVersion().getValue());
         byte[] pmData;

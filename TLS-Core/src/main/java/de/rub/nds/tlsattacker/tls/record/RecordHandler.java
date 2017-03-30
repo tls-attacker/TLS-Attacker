@@ -44,10 +44,6 @@ public class RecordHandler {
     public RecordHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
         recordCipher = null;
-        if (tlsContext == null) {
-            throw new ConfigurationException("The workflow was not configured properly, "
-                    + "it is not included in the ProtocolController");
-        }
     }
 
     public byte[] wrapData(byte[] data, ProtocolMessageType contentType, List<Record> records) {

@@ -81,7 +81,28 @@ public class Record extends ModifiableVariableHolder {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     private ModifiableByteArray encryptedProtocolMessageBytes;
-    
+
+    /**
+     * Clean ProtocalMessageBytes, if the record was not encrypted its equal to
+     * ProtocalMessageBytes, if the message was encrypted clean
+     * protocolMessageBytes contains the decrypted unpadded un maced
+     * messagebytes
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
+    private ModifiableByteArray cleanProtocolMessageBytes;
+
+    public ModifiableByteArray getCleanProtocolMessageBytes() {
+        return cleanProtocolMessageBytes;
+    }
+
+    public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
+        ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+    }
+
+    public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
+        this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
+    }
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
@@ -111,7 +132,7 @@ public class Record extends ModifiableVariableHolder {
     public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
-    
+
     public ModifiableInteger getLength() {
         return length;
     }

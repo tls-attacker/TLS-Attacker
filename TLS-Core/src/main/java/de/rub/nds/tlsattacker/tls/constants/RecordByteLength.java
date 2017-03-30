@@ -12,6 +12,12 @@ package de.rub.nds.tlsattacker.tls.constants;
  * @author juraj
  */
 public class RecordByteLength {
+
+    /**
+     * Content Type length
+     *
+     */
+    public static final int CONTENT_TYPE = 1;
     /**
      * Record length length
      */
