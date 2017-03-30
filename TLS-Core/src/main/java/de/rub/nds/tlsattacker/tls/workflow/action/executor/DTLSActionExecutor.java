@@ -191,7 +191,7 @@ public class DTLSActionExecutor extends ActionExecutor {
         if (protocolMessage.getRecords() == null || protocolMessage.getRecords().isEmpty()) {
             protocolMessage.addRecord(new Record());
         }
-        byte[] record = recordHandler.wrapData(messageBytes, protocolMessage.getProtocolMessageType(),
+        byte[] record = recordHandler.prepareRecords(messageBytes, protocolMessage.getProtocolMessageType(),
                 protocolMessage.getRecords());
         LOGGER.debug("Sending the following protocol message to DTLS peer: " + protocolMessage.getClass()
                 + "\nRaw Bytes: {}", ArrayConverter.bytesToHexString(record));
@@ -213,7 +213,7 @@ public class DTLSActionExecutor extends ActionExecutor {
             protocolMessage.addRecord(new Record());
         }
 
-        byte[] record = recordHandler.wrapData(messageBytes, ProtocolMessageType.CHANGE_CIPHER_SPEC,
+        byte[] record = recordHandler.prepareRecords(messageBytes, ProtocolMessageType.CHANGE_CIPHER_SPEC,
                 protocolMessage.getRecords());
         bufferSendData(record);
     }
@@ -234,7 +234,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
         handshakeMessage.setRecords(handshakeMessageSendRecordList);
 
-        bufferSendData(recordHandler.wrapData(handshakeMessageSendBuffer, ProtocolMessageType.HANDSHAKE,
+        bufferSendData(recordHandler.prepareRecords(handshakeMessageSendBuffer, ProtocolMessageType.HANDSHAKE,
                 handshakeMessage.getRecords()));
 
         tlsContext.setSequenceNumber(tlsContext.getSequenceNumber() + 1);
@@ -370,10 +370,10 @@ public class DTLSActionExecutor extends ActionExecutor {
             byte[] retransmittedMessage = retransmitByte;
 
             if (retransmittedMessage.length == 1) {
-                transportHandler.sendData(recordHandler.wrapData(retransmittedMessage,
+                transportHandler.sendData(recordHandler.prepareRecords(retransmittedMessage,
                         ProtocolMessageType.CHANGE_CIPHER_SPEC, recordList));
             } else if (retransmittedMessage.length > 2) {
-                transportHandler.sendData(recordHandler.wrapData(retransmittedMessage, ProtocolMessageType.HANDSHAKE,
+                transportHandler.sendData(recordHandler.prepareRecords(retransmittedMessage, ProtocolMessageType.HANDSHAKE,
                         recordList));
             } else {
                 LOGGER.error("Empty retransmit message bytes");

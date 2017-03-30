@@ -49,7 +49,7 @@ public class RecordHandlerTest {
         byte[] result;
         List<Record> records = new LinkedList<>();
         records.add(new Record());
-        result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
+        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
 
         byte[] expectedResult = { 22, 3, 3, 0, 10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -61,7 +61,7 @@ public class RecordHandlerTest {
         records.clear();
         records.add(preconfiguredRecord);
 
-        result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
+        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
         assertEquals(2, records.size());
         assertEquals(20, result.length);
 
@@ -71,7 +71,7 @@ public class RecordHandlerTest {
         records.add(preconfiguredRecord);
         records.add(preconfiguredRecord);
 
-        result = recordHandler.wrapData(data, ProtocolMessageType.HANDSHAKE, records);
+        result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
         assertEquals(3, records.size());
         assertEquals(25, result.length);
 

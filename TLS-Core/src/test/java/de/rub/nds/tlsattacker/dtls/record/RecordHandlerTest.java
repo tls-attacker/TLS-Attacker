@@ -50,7 +50,7 @@ public class RecordHandlerTest {
         protocolMessageData = ArrayConverter.hexStringToByteArray("6666666666");
         expectedResult = ArrayConverter.hexStringToByteArray("16fefd000000000000000000056666666666");
         testRecords.add(new Record());
-        result = rh.wrapData(protocolMessageData, ProtocolMessageType.HANDSHAKE, testRecords);
+        result = rh.prepareRecords(protocolMessageData, ProtocolMessageType.HANDSHAKE, testRecords);
 
         assertEquals("Check first result length", expectedResult.length, result.length);
         assertArrayEquals("Check first result content", expectedResult, result);
@@ -58,7 +58,7 @@ public class RecordHandlerTest {
         protocolMessageData = ArrayConverter.hexStringToByteArray("01");
         expectedResult = ArrayConverter.hexStringToByteArray("14fefd0000000000000001000101");
         testRecords.add(new Record());
-        result = rh.wrapData(protocolMessageData, ProtocolMessageType.CHANGE_CIPHER_SPEC, testRecords);
+        result = rh.prepareRecords(protocolMessageData, ProtocolMessageType.CHANGE_CIPHER_SPEC, testRecords);
 
         assertEquals("Check second result length", expectedResult.length, result.length);
         assertArrayEquals("Check second result content", expectedResult, result);
@@ -66,7 +66,7 @@ public class RecordHandlerTest {
         protocolMessageData = ArrayConverter.hexStringToByteArray("6667778889");
         expectedResult = ArrayConverter.hexStringToByteArray("16fefd000100000000000000056667778889");
         testRecords.add(new Record());
-        result = rh.wrapData(protocolMessageData, ProtocolMessageType.HANDSHAKE, testRecords);
+        result = rh.prepareRecords(protocolMessageData, ProtocolMessageType.HANDSHAKE, testRecords);
 
         assertEquals("Check third result length", expectedResult.length, result.length);
         assertArrayEquals("Check third result content", expectedResult, result);

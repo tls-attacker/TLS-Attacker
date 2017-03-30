@@ -8,23 +8,19 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.factory.HandlerFactory;
-import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
@@ -162,7 +158,7 @@ public class TLSActionExecutor extends ActionExecutor {
      * @return Byte array containing the prepared Records
      */
     private byte[] prepareRecords(ProtocolMessage message, MessageBytesCollector messageBytesCollector) {
-        byte[] records = context.getRecordHandler().wrapData(messageBytesCollector.getProtocolMessageBytes(),
+        byte[] records = context.getRecordHandler().prepareRecords(messageBytesCollector.getProtocolMessageBytes(),
                 message.getProtocolMessageType(), message.getRecords());
         return records;
 

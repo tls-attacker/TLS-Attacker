@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class RecordHandler {
+public class RecordHandler extends RecordLayer {
 
     private static final Logger LOGGER = LogManager.getLogger(RecordHandler.class);
 
@@ -44,55 +44,6 @@ public class RecordHandler {
     public RecordHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
         recordCipher = null;
-    }
-
-    public byte[] wrapData(byte[] data, ProtocolMessageType contentType, List<Record> records) {
-
-        // if there are no records defined, we throw an exception
-        if (records == null || records.isEmpty()) {
-            throw new WorkflowExecutionException("No records to be written in");
-        }
-
-        int dataPointer = 0;
-        int currentRecord = 0;
-        while (dataPointer != data.length) {
-            // we check if there are enough records to be written in
-            if (records.size() == currentRecord) {
-                records.add(new Record());// TODO i dont think we want to
-                // manipulate the handshake here
-            }
-            Record record = records.get(currentRecord);
-            // fill record with data
-            dataPointer = fillRecord(record, contentType, data, dataPointer);
-            currentRecord++;
-        }
-
-        // remove records that we did not need
-        while (currentRecord != records.size()) {
-            records.remove(currentRecord);// TODO i dont think we want to
-            // manipulate the handshake here
-        }
-
-        // create resulting byte array
-        byte[] result = new byte[0];
-        for (Record record : records) {
-            byte[] ctArray = { record.getContentType().getValue() };
-            byte[] pv = record.getProtocolVersion().getValue();
-            byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
-            if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
-                byte[] pm = record.getProtocolMessageBytes().getValue();
-                result = ArrayConverter.concatenate(result, ctArray, pv, rl, pm);
-            } else {
-                byte[] epm = record.getEncryptedProtocolMessageBytes().getValue();
-                result = ArrayConverter.concatenate(result, ctArray, pv, rl, epm);
-            }
-        }
-        // LOGGER.debug("The protocol message(s) was split into {} record(s). The result is: {}",
-        // records.size(),
-        // ArrayConverter.bytesToHexString(result));
-        LOGGER.debug("The protocol message(s) was split into {} record(s).", records.size());
-
-        return result;
     }
 
     public boolean isEncryptSending() {
@@ -117,14 +68,10 @@ public class RecordHandler {
      * (it is namely possible to divide Protocol message data into several
      * records).
      *
-     * @param record
-     *            record going to be filled in
-     * @param contentType
-     *            content type
-     * @param data
-     *            data array
-     * @param dataPointer
-     *            current position in the read data
+     * @param record record going to be filled in
+     * @param contentType content type
+     * @param data data array
+     * @param dataPointer current position in the read data
      * @return new position of the data going to be sent in the records
      */
     private int fillRecord(Record record, ProtocolMessageType contentType, byte[] data, int dataPointer) {
@@ -203,9 +150,9 @@ public class RecordHandler {
             }
             Record record = new Record();
             record.setContentType(contentType.getValue());
-            byte[] protocolVersion = { rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2] };
+            byte[] protocolVersion = {rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2]};
             record.setProtocolVersion(protocolVersion);
-            byte[] byteLength = { rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4] };
+            byte[] byteLength = {rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4]};
             int length = ArrayConverter.bytesToInt(byteLength);
             record.setLength(length);
             if (dataPointer + 5 + length > rawRecordData.length) {
@@ -281,5 +228,55 @@ public class RecordHandler {
             finishedBytes = null;
             return records;
         }
+    }
+
+    @Override
+    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<Record> records) {
+
+        // if there are no records defined, we throw an exception
+        if (records == null || records.isEmpty()) {
+            throw new WorkflowExecutionException("No records to be written in");
+        }
+
+        int dataPointer = 0;
+        int currentRecord = 0;
+        while (dataPointer != data.length) {
+            // we check if there are enough records to be written in
+            if (records.size() == currentRecord) {
+                records.add(new Record());// TODO i dont think we want to
+                // manipulate the handshake here
+            }
+            Record record = records.get(currentRecord);
+            // fill record with data
+            dataPointer = fillRecord(record, contentType, data, dataPointer);
+            currentRecord++;
+        }
+
+        // remove records that we did not need
+        while (currentRecord != records.size()) {
+            records.remove(currentRecord);// TODO i dont think we want to
+            // manipulate the handshake here
+        }
+
+        // create resulting byte array
+        byte[] result = new byte[0];
+        for (Record record : records) {
+            byte[] ctArray = {record.getContentType().getValue()};
+            byte[] pv = record.getProtocolVersion().getValue();
+            byte[] rl = ArrayConverter.intToBytes(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
+            if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC || !encryptSending) {
+                byte[] pm = record.getProtocolMessageBytes().getValue();
+                result = ArrayConverter.concatenate(result, ctArray, pv, rl, pm);
+            } else {
+                byte[] epm = record.getEncryptedProtocolMessageBytes().getValue();
+                result = ArrayConverter.concatenate(result, ctArray, pv, rl, epm);
+            }
+        }
+        // LOGGER.debug("The protocol message(s) was split into {} record(s). The result is: {}",
+        // records.size(),
+        // ArrayConverter.bytesToHexString(result));
+        LOGGER.debug("The protocol message(s) was split into {} record(s).", records.size());
+
+        return result;
     }
 }

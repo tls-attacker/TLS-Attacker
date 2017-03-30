@@ -49,7 +49,7 @@ public class DtlsRecordHandler extends RecordHandler {
     }
 
     @Override
-    public byte[] wrapData(byte[] data, ProtocolMessageType contentType, List<Record> records) {
+    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<Record> records) {
 
         // if there are no records defined, we throw an exception
         if (records == null || records.isEmpty()) {
