@@ -15,10 +15,8 @@ package de.rub.nds.tlsattacker.transport;
  */
 public enum ConnectionEnd {
 
-    MITM,
     CLIENT,
     SERVER;
-    // TODO
     public ConnectionEnd getPeer() {
         if (this == CLIENT) {
             return SERVER;
