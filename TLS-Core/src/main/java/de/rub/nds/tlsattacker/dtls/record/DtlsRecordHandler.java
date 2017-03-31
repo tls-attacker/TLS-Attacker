@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class DtlsRecordHandler extends RecordHandler {
+public class DtlsRecordHandler extends TlsRecordLayer {
 
     private static final Logger LOGGER = LogManager
             .getLogger(de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler.class);

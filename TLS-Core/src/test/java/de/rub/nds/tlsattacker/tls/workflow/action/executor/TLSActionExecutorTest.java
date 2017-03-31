@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateMessagePreparatorTest;
 import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.unittest.helper.FakeTransportHandler;
@@ -45,7 +45,7 @@ public class TLSActionExecutorTest {
     public void setUp() {
         context = new TlsContext();
         context.setTransportHandler(new FakeTransportHandler());
-        context.setRecordHandler(new RecordHandler(context));
+        context.setRecordHandler(new TlsRecordLayer(context));
         executor = new TLSActionExecutor(context);
         message = new AlertMessage(context.getConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);

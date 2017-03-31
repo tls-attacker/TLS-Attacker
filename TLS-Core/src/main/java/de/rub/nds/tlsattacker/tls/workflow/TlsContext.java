@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -106,7 +106,7 @@ public class TlsContext {
 
     private TlsMessageDigest digest;
 
-    private RecordHandler recordHandler;
+    private TlsRecordLayer recordHandler;
 
     private TransportHandler transportHandler;
 
@@ -385,10 +385,6 @@ public class TlsContext {
         return masterSecret;
     }
 
-    public byte[] getServerClientRandom() {
-        return ArrayConverter.concatenate(serverRandom, clientRandom);
-    }
-
     public CipherSuite getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
@@ -505,11 +501,11 @@ public class TlsContext {
         this.transportHandler = transportHandler;
     }
 
-    public RecordHandler getRecordHandler() {
+    public TlsRecordLayer getRecordHandler() {
         return recordHandler;
     }
 
-    public void setRecordHandler(RecordHandler recordHandler) {
+    public void setRecordHandler(TlsRecordLayer recordHandler) {
         this.recordHandler = recordHandler;
     }
 

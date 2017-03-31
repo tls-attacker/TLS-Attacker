@@ -229,13 +229,13 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             record = new Record();
             record.setPadding(modifiedPaddingArray);
             records.add(record);
-            train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
+            train[i] = recordHandler.prepareRecords(messageData, ProtocolMessageType.APPLICATION_DATA, records);
             records.remove(0);
         }
 
         records.add(new Record());
         action.getConfiguredMessages().add(heartbeatMessage);
-        train[n] = recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
+        train[n] = recordHandler.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records);
 
         return train;
@@ -254,7 +254,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         record.setMac(modifiedMacArray);
         record.setPadding(modifiedPaddingArray);
         records.add(record);
-        byte[] recordBytes = recordHandler.wrapData(applicationMessageContent, ProtocolMessageType.APPLICATION_DATA,
+        byte[] recordBytes = recordHandler.prepareRecords(applicationMessageContent, ProtocolMessageType.APPLICATION_DATA,
                 records);
 
         for (int i = 0; i < n; i++) {
@@ -264,7 +264,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         records.remove(0);
         records.add(new Record());
         action.getConfiguredMessages().add(heartbeatMessage);
-        train[n] = (recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
+        train[n] = (recordHandler.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records));
 
         return train;
@@ -279,7 +279,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         try {
             AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
             preparator.prepare();
-            transportHandler.sendData(recordHandler.wrapData(closeNotify.getCompleteResultingMessage().getValue(),
+            transportHandler.sendData(recordHandler.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),
                     ProtocolMessageType.ALERT, records));
         } catch (IOException e) {
             LOGGER.error(e.getLocalizedMessage());

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ChangeCipherSpecParser;
@@ -60,18 +60,16 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
         if (tlsContext.getTalkingConnectionEnd() == tlsContext.getConfig().getMyConnectionEnd()) {
             setRecordCipher();
             LOGGER.debug("Setting RecordHandler to EncryptSending");
-            tlsContext.getRecordHandler().setEncryptSending(true);
         } else {
             setRecordCipher();
             LOGGER.debug("Setting RecordHandler to DecryptReceiving");
-            tlsContext.getRecordHandler().setDecryptReceiving(true);
         }
     }
 
     private void setRecordCipher() {
         try {
             LOGGER.debug("Setting new TlsRecordBlockCipher in RecordHandler");
-            TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
+            RecordBlockCipher tlsRecordBlockCipher = new RecordBlockCipher(tlsContext);
             tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
                 | InvalidAlgorithmParameterException ex) {

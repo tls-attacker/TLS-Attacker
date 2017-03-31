@@ -9,19 +9,21 @@
 package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.tls.record.decryptor.RecordDecryptor;
+import de.rub.nds.tlsattacker.tls.record.encryptor.RecordEncryptor;
+import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,37 +31,20 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-public class RecordHandler extends RecordLayer {
+public class TlsRecordLayer extends RecordLayer {
 
-    private static final Logger LOGGER = LogManager.getLogger(RecordHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(TlsRecordLayer.class);
 
     protected final TlsContext tlsContext;
 
-    protected TlsRecordBlockCipher recordCipher;
-    protected boolean encryptSending = false;
-    protected boolean decryptReceiving = false;
+    private RecordDecryptor decryptor;
+    private RecordEncryptor encryptor;
 
-    protected byte[] finishedBytes = null;
-
-    public RecordHandler(TlsContext tlsContext) {
+    public TlsRecordLayer(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        recordCipher = null;
-    }
-
-    public boolean isEncryptSending() {
-        return encryptSending;
-    }
-
-    public void setEncryptSending(boolean encryptSending) {
-        this.encryptSending = encryptSending;
-    }
-
-    public boolean isDecryptReceiving() {
-        return decryptReceiving;
-    }
-
-    public void setDecryptReceiving(boolean decryptReceiving) {
-        this.decryptReceiving = decryptReceiving;
+        RecordCipher cipher = new RecordNullCipher();
+        encryptor = new RecordEncryptor(cipher);
+        decryptor = new RecordDecryptor(cipher);
     }
 
     /**
@@ -87,49 +72,9 @@ public class RecordHandler extends RecordLayer {
                 returnPointer = (dataPointer + record.getMaxRecordLengthConfig());
             }
         }
-        record.setLength(pmData.length);
-        record.setProtocolMessageBytes(pmData);
-
-        if (encryptSending && contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-            if (recordCipher == null && tlsContext.getConfig().isFuzzingMode()) {
-                try {
-                    recordCipher = new TlsRecordBlockCipher(tlsContext); // TODO
-                    // get
-                    // rid
-                    // of
-                    // fuzzing
-                    // mode
-                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-                        | InvalidAlgorithmParameterException ex) {
-                    throw new UnsupportedOperationException(ex);
-                }
-            } else if (recordCipher == null) {
-                throw new WorkflowExecutionException("Cannot encrypt Record, RecordCipher is not yet initialized");
-            }
-            byte[] mac = null;
-            try {
-                mac = recordCipher.calculateMac(tlsContext.getSelectedProtocolVersion().getValue(), contentType, record
-                        .getProtocolMessageBytes().getValue());
-            } catch (NullPointerException E) {
-                E.printStackTrace();
-            }
-            record.setMac(mac);
-            byte[] macedData = ArrayConverter.concatenate(record.getProtocolMessageBytes().getValue(), record.getMac()
-                    .getValue());
-            int paddingLength = recordCipher.calculatePaddingLength(macedData.length);
-            record.setPaddingLength(paddingLength);
-            byte[] padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
-            record.setPadding(padding);
-            byte[] paddedMacedData = ArrayConverter.concatenate(macedData, record.getPadding().getValue());
-            record.setPlainRecordBytes(paddedMacedData);
-            LOGGER.debug("Padded MACed data before encryption:  {}",
-                    ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
-            byte[] encData = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
-            record.setEncryptedProtocolMessageBytes(encData);
-            record.setLength(encData.length);
-            LOGGER.debug("Padded MACed data after encryption:  {}", ArrayConverter.bytesToHexString(encData));
-        }
-
+        record.setCleanProtocolMessageBytes(pmData);
+        encryptor.encrypt(record);
+        record.setLength(record.getProtocolMessageBytes().getValue().length);
         return returnPointer;
     }
 
@@ -143,32 +88,14 @@ public class RecordHandler extends RecordLayer {
         List<Record> records = new LinkedList<>();
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
-            ProtocolMessageType contentType = ProtocolMessageType.getContentType(rawRecordData[dataPointer]);
-            if (contentType == null) {
-                throw new WorkflowExecutionException("Could not identify valid protocol message type for the current "
-                        + "record. The value in the record was: " + rawRecordData[dataPointer]);
-            }
-            Record record = new Record();
-            record.setContentType(contentType.getValue());
-            byte[] protocolVersion = {rawRecordData[dataPointer + 1], rawRecordData[dataPointer + 2]};
-            record.setProtocolVersion(protocolVersion);
-            byte[] byteLength = {rawRecordData[dataPointer + 3], rawRecordData[dataPointer + 4]};
-            int length = ArrayConverter.bytesToInt(byteLength);
-            record.setLength(length);
-            if (dataPointer + 5 + length > rawRecordData.length) {
-                return null;
-            }
-            int lastByte = dataPointer + 5 + length;
-            byte[] rawBytesFromCurrentRecord = Arrays.copyOfRange(rawRecordData, dataPointer + 5, lastByte);
-            LOGGER.debug("Raw protocol bytes from the current record:  {}",
-                    ArrayConverter.bytesToHexString(rawBytesFromCurrentRecord));
-
+            RecordParser parser = new RecordParser(dataPointer, rawRecordData, tlsContext.getSelectedProtocolVersion());
+            Record record = parser.parse();
+            decryptor.decrypt(record);
+            dataPointer = parser.getPointer();
             // store Finished raw bytes to set TLS Record Cipher before parsing
             // them into a record
-            if (contentType == ProtocolMessageType.CHANGE_CIPHER_SPEC && lastByte < rawRecordData.length) {
-                finishedBytes = Arrays.copyOfRange(rawRecordData, lastByte, rawRecordData.length);
-                lastByte = rawRecordData.length;
-                decryptReceiving = true;
+            if (record.getContentType().getValue() == ProtocolMessageType.CHANGE_CIPHER_SPEC.getValue()) {
+                decryptor.setRecordCipher(RecordCipherFactory.getRecordCipher(tlsContext));
             }
             if (decryptReceiving && (contentType != ProtocolMessageType.CHANGE_CIPHER_SPEC)
                     && (recordCipher.getMinimalEncryptedRecordLength() <= length)) {
@@ -198,20 +125,12 @@ public class RecordHandler extends RecordLayer {
         return records;
     }
 
-    public TlsRecordBlockCipher getRecordCipher() {
+    public RecordBlockCipher getRecordCipher() {
         return recordCipher;
     }
 
-    public void setRecordCipher(TlsRecordBlockCipher recordCipher) {
+    public void setRecordCipher(RecordBlockCipher recordCipher) {
         this.recordCipher = recordCipher;
-    }
-
-    public byte[] getFinishedBytes() {
-        return finishedBytes;
-    }
-
-    public void setFinishedBytes(byte[] finishedBytes) {
-        this.finishedBytes = finishedBytes;
     }
 
     /**

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.record.serializer;
 
+import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.record.Record;
 
@@ -17,9 +18,19 @@ import de.rub.nds.tlsattacker.tls.record.Record;
  */
 public class RecordSerializer extends Serializer<Record>{
 
+    private final Record record;
+    
+    public RecordSerializer(Record record) {
+        this.record = record;
+    }
+
     @Override
     protected byte[] serializeBytes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        appendByte(record.getContentType().getValue());
+        appendBytes(record.getProtocolVersion().getValue());
+        appendInt(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
+        appendBytes(record.getProtocolMessageBytes().getValue());
+        return getAlreadySerialized();
     }
     
 }

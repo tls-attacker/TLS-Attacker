@@ -6,53 +6,68 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.record.parser.decryptor;
+package de.rub.nds.tlsattacker.tls.record.decryptor;
 
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class RecordDecryptor extends Decryptor<Record> {
 
     private static final Logger LOGGER = LogManager.getLogger("DECRYPTOR");
 
-    private TlsRecordBlockCipher recordCipher;
-    private boolean decryptReceiving;
+    private RecordCipher recordCipher;
 
-    public RecordDecryptor(TlsRecordBlockCipher recordCipher, boolean decryptReceiving) {
+    public RecordDecryptor(RecordCipher recordCipher) {
         this.recordCipher = recordCipher;
-        this.decryptReceiving = decryptReceiving;
+    }
+
+    public RecordCipher getRecordCipher() {
+        return recordCipher;
+    }
+
+    public void setRecordCipher(RecordCipher recordCipher) {
+        this.recordCipher = recordCipher;
     }
 
     @Override
     public void decrypt(Record record) {
-        if (decryptReceiving) {
-            byte[] encrypted = record.getProtocolMessageBytes().getValue();
-            record.setEncryptedProtocolMessageBytes(encrypted);
-            byte[] decrypted = recordCipher.decrypt(encrypted);
-            record.setPlainRecordBytes(decrypted);
+        byte[] encrypted = record.getProtocolMessageBytes().getValue();
+        byte[] decrypted = recordCipher.decrypt(encrypted);
+        record.setPlainRecordBytes(decrypted);
+        if (recordCipher.isUsePadding()) {
             LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(decrypted));
             int paddingLength = parsePaddingLength(decrypted);
             record.setPaddingLength(paddingLength);
             byte[] unpadded = parseUnpadded(decrypted, paddingLength);
+            record.setUnpaddedRecordBytes(unpadded);
             byte[] padding = parsePadding(decrypted, paddingLength);
             record.setPadding(padding);
             LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpadded));
-            byte[] mac = parseMac(unpadded);
-            record.setMac(mac);
-            byte[] cleanBytes = removeMac(unpadded);
-            record.setCleanProtocolMessageBytes(cleanBytes);
         } else {
-            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+            record.setUnpaddedRecordBytes(decrypted);
+            record.setPaddingLength(0);
+            record.setPadding(new byte[0]);
         }
+        byte[] cleanBytes;
+        if (recordCipher.isUseMac()) {
+            byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
+            record.setMac(mac);
+            cleanBytes = removeMac(record.getUnpaddedRecordBytes().getValue());
+        } else {
+            record.setMac(new byte[0]);
+            cleanBytes = record.getUnpaddedRecordBytes().getValue();
+        }
+        record.setCleanProtocolMessageBytes(cleanBytes);
     }
 
     /**
@@ -97,5 +112,4 @@ public class RecordDecryptor extends Decryptor<Record> {
         return Arrays.copyOf(unpadded,
                 (unpadded.length - recordCipher.getMacLength()));
     }
-
 }

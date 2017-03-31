@@ -12,8 +12,8 @@ import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.unittest.helper.ActionExecutorMock;
 import java.io.StringReader;
@@ -49,14 +49,14 @@ public class ChangeCompressionActionTest {
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordHandler(new RecordHandler(tlsContext));
-        tlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(tlsContext));
+        tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
+        tlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(tlsContext));
         dtlsContext = new TlsContext();
         dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
         dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
         action = new ChangeCompressionAction(CompressionMethod.LZS);
-        dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
+        dtlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(dtlsContext));
     }
 
     @After

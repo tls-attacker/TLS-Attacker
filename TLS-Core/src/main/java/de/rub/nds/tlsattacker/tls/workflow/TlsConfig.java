@@ -265,6 +265,8 @@ public final class TlsConfig {
     private int heartbeatMaxPaddingLength = 256;
 
     private int DTLSCookieLength = 6;
+    
+    private int defaultMaxRecordData = 1048576;
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
@@ -306,6 +308,14 @@ public final class TlsConfig {
 
     }
 
+    public int getDefaultMaxRecordData() {
+        return defaultMaxRecordData;
+    }
+
+    public void setDefaultMaxRecordData(int defaultMaxRecordData) {
+        this.defaultMaxRecordData = defaultMaxRecordData;
+    }
+    
     public ExecutorType getExecutorType() {
         return executorType;
     }

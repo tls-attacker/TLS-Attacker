@@ -26,7 +26,7 @@ import org.junit.Test;
  */
 public class RecordHandlerTest {
 
-    de.rub.nds.tlsattacker.tls.record.RecordHandler rh;
+    de.rub.nds.tlsattacker.tls.record.TlsRecordLayer rh;
 
     TlsContext tlsContext = new TlsContext(new TlsConfig());
 

@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -65,7 +65,7 @@ public class DTLSActionExecutor extends ActionExecutor {
 
     private final HandshakeFragmentHandler handshakeFragmentHandler;
 
-    private final RecordHandler recordHandler;
+    private final TlsRecordLayer recordHandler;
     private final TransportHandler transportHandler;
     private final TlsContext tlsContext;
     private List<ProtocolMessage> lastActualSendList;

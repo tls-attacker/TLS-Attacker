@@ -6,12 +6,12 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.record.parser.encryptor;
+package de.rub.nds.tlsattacker.tls.record.encryptor;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class RecordEncryptor {
-    
+public abstract class Encryptor<T> {
+    public abstract void encrypt(T object);
 }
