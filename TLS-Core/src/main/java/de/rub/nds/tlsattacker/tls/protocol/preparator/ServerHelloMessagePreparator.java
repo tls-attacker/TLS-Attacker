@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import javax.swing.text.html.parser.DTDConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,11 +29,11 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final ServerHelloMessage message;
+    private final ServerHelloMessage msg;
 
     public ServerHelloMessagePreparator(TlsContext context, ServerHelloMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     private void prepareCipherSuite() {
         if (context.getConfig().isEnforceSettings()) {
-            message.setSelectedCipherSuite(context.getConfig().getSupportedCiphersuites().get(0).getByteValue());
+            msg.setSelectedCipherSuite(context.getConfig().getSupportedCiphersuites().get(0).getByteValue());
         } else {
             CipherSuite selectedSuite = null;
             for (CipherSuite suite : context.getConfig().getSupportedCiphersuites()) {
@@ -61,13 +63,14 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
             if (selectedSuite == null) {
                 throw new WorkflowExecutionException("No Ciphersuites in common");
             }
-            message.setSelectedCipherSuite(selectedSuite.getByteValue());
+            msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
+        LOGGER.debug("SelectedCipherSuite: "+ Arrays.toString(msg.getSelectedCipherSuite().getValue()));
     }
 
     private void prepareCompressionMethod() {
         if (context.getConfig().isEnforceSettings()) {
-            message.setSelectedCompressionMethod(context.getConfig().getSupportedCompressionMethods().get(0).getValue());
+            msg.setSelectedCompressionMethod(context.getConfig().getSupportedCompressionMethods().get(0).getValue());
         } else {
             CompressionMethod selectedCompressionMethod = null;
             for (CompressionMethod method : context.getConfig().getSupportedCompressionMethods()) {
@@ -79,18 +82,19 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
             if (selectedCompressionMethod == null) {
                 throw new WorkflowExecutionException("No Compression in common");
             }
-            message.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
-
+            msg.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
         }
+        LOGGER.debug("SelectedCompressionMethod: "+ msg.getSelectedCompressionMethod().getValue());
     }
 
     private void prepareSessionID() {
         if (context.getConfig().getSessionId().length > 0) {
-            message.setSessionId(context.getConfig().getSessionId());
+            msg.setSessionId(context.getConfig().getSessionId());
         } else {
-            message.setSessionId(ArrayConverter
+            msg.setSessionId(ArrayConverter
                     .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
         }
+        LOGGER.debug("SessionID: "+ Arrays.toString(msg.getSessionId().getValue()));
     }
 
     private void prepareProtocolVersion() {
@@ -99,32 +103,33 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
         int intRepresentationOurVersion = ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
         int intRepresentationClientVersion = clientVersion.getValue()[0] * 0x100 + clientVersion.getValue()[1];
         if (context.getConfig().isEnforceSettings()) {
-            message.setProtocolVersion(ourVersion.getValue());
+            msg.setProtocolVersion(ourVersion.getValue());
         } else {
             if (context.getHighestClientProtocolVersion().isDTLS()
                     && context.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
-                    message.setProtocolVersion(ourVersion.getValue());
+                    msg.setProtocolVersion(ourVersion.getValue());
                 } else {
-                    message.setProtocolVersion(clientVersion.getValue());
+                    msg.setProtocolVersion(clientVersion.getValue());
                 }
             }
             if (!context.getHighestClientProtocolVersion().isDTLS()
                     && !context.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
-                    message.setProtocolVersion(ourVersion.getValue());
+                    msg.setProtocolVersion(ourVersion.getValue());
                 } else {
-                    message.setProtocolVersion(clientVersion.getValue());
+                    msg.setProtocolVersion(clientVersion.getValue());
                 }
             } else {
                 if (context.getConfig().isFuzzingMode()) {
-                    message.setProtocolVersion(ourVersion.getValue());
+                    msg.setProtocolVersion(ourVersion.getValue());
                 } else {
                     throw new WorkflowExecutionException("TLS/DTLS Mismatch");
                 }
             }
         }
+        LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 }

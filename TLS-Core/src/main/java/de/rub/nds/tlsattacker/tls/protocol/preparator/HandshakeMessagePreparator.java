@@ -24,6 +24,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
+    private HandshakeMessageSerializer serializer;
     private final HandshakeMessage msg;
 
     public HandshakeMessagePreparator(TlsContext context, T message) {
@@ -45,16 +46,35 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
         // Ugly but only temporary
-        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(msg);
+        serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(msg);
 
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
-        if (context.getSelectedProtocolVersion().isDTLS()) {
-            msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
-            msg.setFragmentOffset(0);
-            msg.setMessageSeq(context.getSequenceNumber()); //TODO refactor
+        if (isDTLS()) {
+            prepareFragmentLenth(msg);
+            prepareFragmentOffset(msg);
+            prepareMessageSeq(msg);
         }
         prepareMessageType(msg.getHandshakeMessageType());
     }
 
     protected abstract void prepareHandshakeMessageContents();
+
+    private void prepareFragmentLenth(HandshakeMessage msg) {
+        msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
+        LOGGER.debug("FragmentLength: "+ msg.getFragmentLength().getValue());
+    }
+
+    private void prepareFragmentOffset(HandshakeMessage msg) {
+        msg.setFragmentOffset(0);
+        LOGGER.debug("FragmentOffset: "+ msg.getFragmentOffset().getValue());
+    }
+
+    private void prepareMessageSeq(HandshakeMessage msg) {
+        msg.setMessageSeq(context.getSequenceNumber());
+        LOGGER.debug("MessageSeq: "+ msg.getMessageSeq().getValue());
+    }
+
+    private boolean isDTLS() {
+        return context.getSelectedProtocolVersion().isDTLS();
+    }
 }
