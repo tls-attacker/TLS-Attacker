@@ -18,13 +18,13 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 @XmlRootElement
-@XmlSeeAlso({ BigIntegerAddModification.class, BigIntegerExplicitValueModification.class,
-        BigIntegerSubtractModification.class, BigIntegerXorModification.class })
-@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
+@XmlSeeAlso({BigIntegerAddModification.class, BigIntegerExplicitValueModification.class,
+    BigIntegerSubtractModification.class, BigIntegerXorModification.class})
+@XmlType(propOrder = {"originalValue", "modification", "assertEquals"})
 public class ModifiableBigInteger extends ModifiableVariable<BigInteger> implements Serializable {
 
     private BigInteger originalValue;
@@ -58,13 +58,12 @@ public class ModifiableBigInteger extends ModifiableVariable<BigInteger> impleme
 
     @Override
     public boolean validateAssertions() {
-        boolean valid = true;
         if (assertEquals != null) {
             if (assertEquals.compareTo(getValue()) != 0) {
-                valid = false;
+                return false;
             }
         }
-        return valid;
+        return true;
     }
 
     @Override
