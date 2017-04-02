@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Arrays;
-import javax.swing.text.html.parser.DTDConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

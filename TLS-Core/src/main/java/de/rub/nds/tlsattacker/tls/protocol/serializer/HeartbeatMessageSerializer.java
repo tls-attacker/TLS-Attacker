@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,20 +24,41 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final HeartbeatMessage message;
+    private final HeartbeatMessage msg;
 
     public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendByte(message.getHeartbeatMessageType().getValue());
-        appendInt(message.getPayloadLength().getValue(), HeartbeatByteLength.PAYLOAD_LENGTH);
-        appendBytes(message.getPayload().getValue());
-        appendBytes(message.getPadding().getValue());
+        serializeHeartbeatMessageType(msg);
+        serializePayloadLength(msg);
+        serializePayload(msg);
+        serializePadding(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeHeartbeatMessageType(HeartbeatMessage msg) {
+        appendByte(msg.getHeartbeatMessageType().getValue());
+        LOGGER.debug("HeartbeatMessageType: "+ msg.getHeartbeatMessageType().getValue());
+    }
+
+    private void serializePayloadLength(HeartbeatMessage msg) {
+        appendInt(msg.getPayloadLength().getValue(), HeartbeatByteLength.PAYLOAD_LENGTH);
+        LOGGER.debug("PayloadLength: "+ msg.getPayloadLength().getValue());
+    }
+
+    private void serializePayload(HeartbeatMessage msg) {
+        appendBytes(msg.getPayload().getValue());
+        LOGGER.debug("Payload: "+ Arrays.toString(msg.getPayload().getValue()));
+    }
+
+    private void serializePadding(HeartbeatMessage msg) {
+        appendBytes(msg.getPadding().getValue());
+        LOGGER.debug("Padding: "+ Arrays.toString(msg.getPadding().getValue())
+        );
     }
 
 }

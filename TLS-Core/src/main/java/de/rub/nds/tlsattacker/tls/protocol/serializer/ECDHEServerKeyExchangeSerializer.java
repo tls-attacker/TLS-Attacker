@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,26 +23,74 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final ECDHEServerKeyExchangeMessage message;
+    private final ECDHEServerKeyExchangeMessage msg;
 
     public ECDHEServerKeyExchangeSerializer(ECDHEServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendByte(message.getCurveType().getValue());
-        appendBytes(message.getNamedCurve().getValue());
-        appendInt(message.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
-        appendBytes(message.getSerializedPublicKey().getValue());
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
-            appendByte(message.getHashAlgorithm().getValue());
-            appendByte(message.getSignatureAlgorithm().getValue());
+        serializeCurveType(msg);
+        serializeNamedCurve(msg);
+        serializeSerializedPublicKeyLength(msg);
+        serializeSerializedPublicKey(msg);
+        if (isTLS12() || isDTLS12()) {
+            serializeHashAlgorithm(msg);
+            serializeSignatureAlgorithm(msg);
         }
-        appendInt(message.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        appendBytes(message.getSignature().getValue());
+        serializeSignatureLength(msg);
+        serializeSignature(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeCurveType(ECDHEServerKeyExchangeMessage msg) {
+        appendByte(msg.getCurveType().getValue());
+        LOGGER.debug("CurveType: "+ msg.getCurveType().getValue());
+    }
+
+    private void serializeNamedCurve(ECDHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getNamedCurve().getValue());
+        LOGGER.debug("NamedCurve: "+ Arrays.toString(msg.getNamedCurve().getValue()));
+    }
+
+    private void serializeSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
+        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    private void serializeSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getSerializedPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
+    }
+    
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
+
+    private void serializeHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        appendByte(msg.getHashAlgorithm().getValue());
+        LOGGER.debug("HashAlgorithm: "+ msg.getHashAlgorithm().getValue());
+    }
+
+    private void serializeSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        appendByte(msg.getSignatureAlgorithm().getValue());
+        LOGGER.debug("SignatureAlgorithm: "+ msg.getSignatureAlgorithm().getValue());
+    }
+
+    private void serializeSignatureLength(ECDHEServerKeyExchangeMessage msg) {
+        appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
+        LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
+    }
+
+    private void serializeSignature(ECDHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getSignature().getValue());
+        LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
     }
 
 }

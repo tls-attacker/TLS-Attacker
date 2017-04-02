@@ -22,11 +22,11 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final ServerHelloDoneMessage message;
+    private final ServerHelloDoneMessage msg;
 
     public ServerHelloDoneSerializer(ServerHelloDoneMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override

@@ -21,18 +21,28 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final AlertMessage message;
+    private final AlertMessage msg;
 
     public AlertSerializer(AlertMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendByte(message.getLevel().getValue());
-        appendByte(message.getDescription().getValue());
+        serializeLevel(msg);
+        serializeDescription(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeLevel(AlertMessage msg) {
+        appendByte(msg.getLevel().getValue());
+        LOGGER.debug("Level: "+ msg.getLevel().getValue());
+    }
+
+    private void serializeDescription(AlertMessage msg) {
+        appendByte(msg.getDescription().getValue());
+        LOGGER.debug("Description: "+ msg.getDescription().getValue());
     }
 
 }

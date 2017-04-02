@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,28 +23,86 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private DHEServerKeyExchangeMessage message;
+    private DHEServerKeyExchangeMessage msg;
 
     public DHEServerKeyExchangeSerializer(DHEServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendInt(message.getpLength().getValue(), HandshakeByteLength.DH_P_LENGTH);
-        appendBytes(message.getP().getByteArray());
-        appendInt(message.getgLength().getValue(), HandshakeByteLength.DH_G_LENGTH);
-        appendBytes(message.getG().getByteArray());
-        appendInt(message.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
-        appendBytes(message.getSerializedPublicKey().getValue());
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
-            appendByte(message.getHashAlgorithm().getValue());
-            appendByte(message.getSignatureAlgorithm().getValue());
+        serializePLength(msg);
+        serializeP(msg);
+        serializegLength(msg);
+        serializeG(msg);
+        serializeSerializedPublicKeyLength(msg);
+        serializeSerializedPublicKey(msg);
+        if (isTLS12() || isDTLS12()) {
+            serializeHashAlgorithm(msg);
+            serializeSignatureAlgorithm(msg);
         }
-        appendInt(message.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        appendBytes(message.getSignature().getValue());
+        serializeSignatureLength(msg);
+        serializeSignature(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializePLength(DHEServerKeyExchangeMessage msg) {
+        appendInt(msg.getpLength().getValue(), HandshakeByteLength.DH_P_LENGTH);
+        LOGGER.debug("pLength: "+ msg.getpLength().getValue());
+    }
+
+    private void serializeP(DHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getP().getByteArray());
+        LOGGER.debug("P: "+ msg.getP().getValue());
+    }
+
+    private void serializegLength(DHEServerKeyExchangeMessage msg) {
+        appendInt(msg.getgLength().getValue(), HandshakeByteLength.DH_G_LENGTH);
+        LOGGER.debug("gLength: "+ msg.getgLength().getValue());
+    }
+
+    private void serializeG(DHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getG().getByteArray());
+        LOGGER.debug("G: "+ msg.getG().getValue());
+    }
+
+    private void serializeSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
+        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    private void serializeSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getSerializedPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
+    }
+
+    private void serializeHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+        appendByte(msg.getHashAlgorithm().getValue());
+        LOGGER.debug("HaslAlgorithm: "+ msg.getHashAlgorithm().getValue());
+    }
+
+    private void serializeSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
+        appendByte(msg.getSignatureAlgorithm().getValue());
+        LOGGER.debug("SignatureAlgorithm: "+ msg.getSignatureAlgorithm().getValue());
+    }
+
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
+
+    private void serializeSignatureLength(DHEServerKeyExchangeMessage msg) {
+        appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
+        LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
+    }
+
+    private void serializeSignature(DHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getSignature().getValue());
+        LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
     }
 
 }

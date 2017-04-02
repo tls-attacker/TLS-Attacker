@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,19 +22,34 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private HelloVerifyRequestMessage message;
+    private HelloVerifyRequestMessage msg;
 
     public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendBytes(message.getProtocolVersion().getValue());
-        appendByte(message.getCookieLength().getValue());
-        appendBytes(message.getCookie().getValue());
+        serializeProtocolVersion(msg);
+        serializeCookieLength(msg);
+        serializeCookie(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeProtocolVersion(HelloVerifyRequestMessage msg) {
+        appendBytes(msg.getProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
+    }
+
+    private void serializeCookieLength(HelloVerifyRequestMessage msg) {
+        appendByte(msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: "+ msg.getCookieLength().getValue());
+    }
+
+    private void serializeCookie(HelloVerifyRequestMessage msg) {
+        appendBytes(msg.getCookie().getValue());
+        LOGGER.debug("Cookie: "+ Arrays.toString(msg.getCookie().getValue()));
     }
 
 }

@@ -10,8 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,17 +22,23 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final ApplicationMessage message;
+    private final ApplicationMessage msg;
 
     public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendBytes(message.getData().getValue());
+        serializeData(msg);
+        appendBytes(msg.getData().getValue());
         return getAlreadySerialized();
+    }
+
+    private void serializeData(ApplicationMessage msg) {
+        appendBytes(msg.getData().getValue());
+        LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));
     }
 
 }

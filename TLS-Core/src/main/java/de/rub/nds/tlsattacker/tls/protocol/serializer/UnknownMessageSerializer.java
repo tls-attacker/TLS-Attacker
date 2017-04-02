@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,17 +22,22 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private UnknownMessage message;
+    private UnknownMessage msg;
 
     public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendBytes(message.getCompleteResultingMessage().getValue());
+        serializeCompleteResultinMessage(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeCompleteResultinMessage(UnknownMessage msg) {
+        appendBytes(msg.getCompleteResultingMessage().getValue());
+        LOGGER.debug("CompleteResultingMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 
 }

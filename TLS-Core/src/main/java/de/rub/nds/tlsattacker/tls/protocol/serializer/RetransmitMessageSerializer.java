@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +22,21 @@ public class RetransmitMessageSerializer extends ProtocolMessageSerializer<Retra
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final RetransmitMessage message;
+    private final RetransmitMessage msg;
 
     public RetransmitMessageSerializer(RetransmitMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendBytes(message.getCompleteResultingMessage().getValue());
+        serializeCompleteResultingMessage(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeCompleteResultingMessage(RetransmitMessage msg) {
+        appendBytes(msg.getCompleteResultingMessage().getValue());
+        LOGGER.debug("CompleteResultingMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 }

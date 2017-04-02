@@ -21,13 +21,13 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @param <T>
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {

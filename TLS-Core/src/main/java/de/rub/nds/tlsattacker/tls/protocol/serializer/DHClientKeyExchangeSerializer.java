@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,17 +23,27 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final DHClientKeyExchangeMessage message;
+    private final DHClientKeyExchangeMessage msg;
 
     public DHClientKeyExchangeSerializer(DHClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendInt(message.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
-        appendBytes(message.getSerializedPublicKey().getValue());
+        serializeSerializedPublicKeyLength(msg);
+        serializeSerializedPublicKey(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeSerializedPublicKeyLength(DHClientKeyExchangeMessage msg) {
+        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
+        LOGGER.debug("SerializedPublicKexLength: "+ msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    private void serializeSerializedPublicKey(DHClientKeyExchangeMessage msg) {
+        appendBytes(msg.getSerializedPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 }

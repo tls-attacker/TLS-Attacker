@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,25 +23,59 @@ public class CertificateRequestMessageSerializer extends HandshakeMessageSeriali
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final CertificateRequestMessage message;
+    private final CertificateRequestMessage msg;
 
     public CertificateRequestMessageSerializer(CertificateRequestMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendInt(message.getClientCertificateTypesCount().getValue(), HandshakeByteLength.CERTIFICATES_TYPES_COUNT);
-        appendBytes(message.getClientCertificateTypes().getValue());
-        appendInt(message.getSignatureHashAlgorithmsLength().getValue(),
-                HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
-        appendBytes(message.getSignatureHashAlgorithms().getValue());
-        appendInt(message.getDistinguishedNamesLength().getValue(), HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
-        if (message.getDistinguishedNamesLength().getValue() != 0) {
-            appendBytes(message.getDistinguishedNames().getValue());
+        serializeClientCertificateTypesCount(msg);
+        serializeClientCertificateTypes(msg);
+        serializeSignatureHandshakeAlgorithmsLenmgth(msg);
+        serializeSignatureHandshakeAlgorithms(msg);
+        serializeDistinguishedNamesLength(msg);
+        if (hasDistinguishedNames(msg)) {
+            serializeDistinguishedNames(msg);
         }
         return getAlreadySerialized();
+    }
+
+    private void serializeClientCertificateTypesCount(CertificateRequestMessage msg) {
+        appendInt(msg.getClientCertificateTypesCount().getValue(), HandshakeByteLength.CERTIFICATES_TYPES_COUNT);
+        LOGGER.debug("ClientCertificateTypesCount: "+ msg.getClientCertificateTypesCount().getValue());
+    }
+
+    private void serializeClientCertificateTypes(CertificateRequestMessage msg) {
+        appendBytes(msg.getClientCertificateTypes().getValue());
+        LOGGER.debug("ClientCertificateTypes: "+ Arrays.toString(msg.getClientCertificateTypes().getValue()));
+    }
+
+    private void serializeSignatureHandshakeAlgorithmsLenmgth(CertificateRequestMessage msg) {
+        appendInt(msg.getSignatureHashAlgorithmsLength().getValue(),
+                HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
+        LOGGER.debug("SignatureHashAlgorithmsLength: "+ msg.getSignatureHashAlgorithmsLength().getValue());
+    }
+
+    private void serializeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
+        appendBytes(msg.getSignatureHashAlgorithms().getValue());
+        LOGGER.debug("SignatureHashAlgorithms: "+ Arrays.toString(msg.getSignatureHashAlgorithms().getValue()));
+    }
+
+    private void serializeDistinguishedNamesLength(CertificateRequestMessage msg) {
+        appendInt(msg.getDistinguishedNamesLength().getValue(), HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
+        LOGGER.debug("DistinguishedNamesLength: "+ msg.getDistinguishedNamesLength().getValue());
+    }
+
+    private boolean hasDistinguishedNames(CertificateRequestMessage msg) {
+        return msg.getDistinguishedNamesLength().getValue() != 0;
+    }
+
+    private void serializeDistinguishedNames(CertificateRequestMessage msg) {
+        appendBytes(msg.getDistinguishedNames().getValue());
+        LOGGER.debug("DistinguishedNames: "+ Arrays.toString(msg.getDistinguishedNames().getValue()));
     }
 
 }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,19 +23,34 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final CertificateVerifyMessage message;
+    private final CertificateVerifyMessage msg;
 
     public CertificateVerifyMessageSerializer(CertificateVerifyMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendBytes(message.getSignatureHashAlgorithm().getValue());
-        appendInt(message.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        appendBytes(message.getSignature().getValue());
+        serializeSignatureHashAlgorithm(msg);
+        serializeSignatureLength(msg);
+        serializeSignature(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
+        appendBytes(msg.getSignatureHashAlgorithm().getValue());
+        LOGGER.debug("SignatureHashAlgorithms: "+ Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
+    }
+
+    private void serializeSignatureLength(CertificateVerifyMessage msg) {
+        appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
+        LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
+    }
+
+    private void serializeSignature(CertificateVerifyMessage msg) {
+        appendBytes(msg.getSignature().getValue());
+        LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
     }
 
 }

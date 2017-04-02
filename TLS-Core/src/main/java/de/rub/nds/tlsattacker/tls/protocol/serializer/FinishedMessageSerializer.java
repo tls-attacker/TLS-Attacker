@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,17 +23,22 @@ public class FinishedMessageSerializer extends HandshakeMessageSerializer<Finish
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-    private final FinishedMessage message;
+    private final FinishedMessage msg;
 
     public FinishedMessageSerializer(FinishedMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendBytes(message.getVerifyData().getValue());
+        serializeVerifyData(msg);
         return getAlreadySerialized();
+    }
+
+    private void serializeVerifyData(FinishedMessage msg) {
+        appendBytes(msg.getVerifyData().getValue());
+        LOGGER.debug("VerifyData: "+ Arrays.toString(msg.getVerifyData().getValue()));
     }
 
 }
