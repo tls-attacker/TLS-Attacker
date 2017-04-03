@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import java.util.List;
 
 /**
@@ -17,8 +18,8 @@ import java.util.List;
  */
 public abstract class ActionExecutor {
 
-    public abstract List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages);
+    public abstract MessageActionResult sendMessages(List<ProtocolMessage> messages, List<Record> records);
 
-    public abstract List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages);
+    public abstract MessageActionResult receiveMessages(List<ProtocolMessage> messages);
 
 }

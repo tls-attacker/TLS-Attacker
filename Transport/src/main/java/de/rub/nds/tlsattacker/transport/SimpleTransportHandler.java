@@ -122,15 +122,10 @@ public class SimpleTransportHandler extends TransportHandler {
                 }
             }
         }
-        // LOGGER.debug("Accepted new bytes from server: {}",
-        // ArrayConverter.bytesToHexString(response));
         if (isServer) {
             LOGGER.debug("Accepted {} new bytes from client", response.length);
         } else {
             LOGGER.debug("Accepted {} new bytes from server", response.length);
-        }
-        if (response.length < 33) {
-            LOGGER.debug(ArrayConverter.bytesToHexString(response));
         }
         return response;
     }

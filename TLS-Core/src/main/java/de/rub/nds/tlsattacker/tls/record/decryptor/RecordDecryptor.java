@@ -104,12 +104,10 @@ public class RecordDecryptor extends Decryptor<Record> {
         if (unpadded.length - recordCipher.getMacLength() < 0) {
             throw new CryptoException("Could not parse MAC, not enough bytes left");
         }
-        return Arrays.copyOfRange(unpadded, (unpadded.length - recordCipher.getMacLength()),
-                unpadded.length);
+        return Arrays.copyOfRange(unpadded, (unpadded.length - recordCipher.getMacLength()), unpadded.length);
     }
 
     private byte[] removeMac(byte[] unpadded) {
-        return Arrays.copyOf(unpadded,
-                (unpadded.length - recordCipher.getMacLength()));
+        return Arrays.copyOf(unpadded, (unpadded.length - recordCipher.getMacLength()));
     }
 }

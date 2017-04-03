@@ -265,11 +265,28 @@ public final class TlsConfig {
     private int heartbeatMaxPaddingLength = 256;
 
     private int DTLSCookieLength = 6;
-    
+
     private int defaultMaxRecordData = 1048576;
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
+
+    /**
+     * Does not mix messages with different message types in a single record
+     */
+    private boolean flushOnMessageTypeChange = true;
+
+    /**
+     * If there is not enough space in the configured records, new records are
+     * dynamically added if not set, protocolmessage bytes that wont fit are
+     * discarded
+     */
+    private boolean createRecordsDynamically = true;
+    /**
+     * When "Null" records are configured to be send, every message will be sent
+     * in atleast one individual record
+     */
+    private boolean createIndividualRecords = true;
 
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -308,6 +325,30 @@ public final class TlsConfig {
 
     }
 
+    public boolean isFlushOnMessageTypeChange() {
+        return flushOnMessageTypeChange;
+    }
+
+    public void setFlushOnMessageTypeChange(boolean flushOnMessageTypeChange) {
+        this.flushOnMessageTypeChange = flushOnMessageTypeChange;
+    }
+
+    public boolean isCreateRecordsDynamically() {
+        return createRecordsDynamically;
+    }
+
+    public void setCreateRecordsDynamically(boolean createRecordsDynamically) {
+        this.createRecordsDynamically = createRecordsDynamically;
+    }
+
+    public boolean isCreateIndividualRecords() {
+        return createIndividualRecords;
+    }
+
+    public void setCreateIndividualRecords(boolean createIndividualRecords) {
+        this.createIndividualRecords = createIndividualRecords;
+    }
+
     public int getDefaultMaxRecordData() {
         return defaultMaxRecordData;
     }
@@ -315,7 +356,7 @@ public final class TlsConfig {
     public void setDefaultMaxRecordData(int defaultMaxRecordData) {
         this.defaultMaxRecordData = defaultMaxRecordData;
     }
-    
+
     public ExecutorType getExecutorType() {
         return executorType;
     }

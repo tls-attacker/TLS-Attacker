@@ -35,8 +35,9 @@ import static org.junit.Assert.*;
 public class TLSActionExecutorTest {
 
     private TlsContext context;
-    private TLSActionExecutor executor;
+    private DefaultActionExecutor executor;
     private AlertMessage message;
+    private Record record;
 
     public TLSActionExecutorTest() {
     }
@@ -46,13 +47,13 @@ public class TLSActionExecutorTest {
         context = new TlsContext();
         context.setTransportHandler(new FakeTransportHandler());
         context.setRecordHandler(new TlsRecordLayer(context));
-        executor = new TLSActionExecutor(context);
+        executor = new DefaultActionExecutor(context);
         message = new AlertMessage(context.getConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         message.setDescription(AlertDescription.DECODE_ERROR.getValue());
         message.setLevel(AlertLevel.FATAL.getValue());
-
-        message.addRecord(new Record());
+        record = new Record();
+        record.setMaxRecordLengthConfig(32000);
 
     }
 
@@ -61,20 +62,22 @@ public class TLSActionExecutorTest {
     }
 
     /**
-     * Test of sendMessages method, of class TLSActionExecutor.
+     * Test of sendMessages method, of class DefaultActionExecutor.
      */
     @Test
     public void testSendMessages() {
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(message);
-        executor.sendMessages(protocolMessages);
+        List<Record> records = new LinkedList<>();
+        records.add(record);
+        executor.sendMessages(protocolMessages, records);
         byte[] sendByte = ((FakeTransportHandler) context.getTransportHandler()).getSendByte();
         LOGGER.info(ArrayConverter.bytesToHexString(sendByte));
         assertArrayEquals(new byte[] { 21, 03, 03, 00, 02, 02, 51 }, sendByte);
     }
 
     /**
-     * Test of receiveMessages method, of class TLSActionExecutor.
+     * Test of receiveMessages method, of class DefaultActionExecutor.
      */
     @Test
     public void testReceiveMessages() {
@@ -82,8 +85,8 @@ public class TLSActionExecutorTest {
                 .setFetchableByte(new byte[] { 21, 03, 03, 00, 02, 02, 51 });
         List<ProtocolMessage> shouldReceive = new LinkedList<>();
         shouldReceive.add(message);
-        List<ProtocolMessage> messages = executor.receiveMessages(shouldReceive);
-        assertEquals(messages.get(0), message);
+        MessageActionResult result = executor.receiveMessages(shouldReceive);
+        assertEquals(result.getMessageList().get(0), message);
     }
 
     private static final Logger LOGGER = LogManager.getLogger(TLSActionExecutorTest.class);

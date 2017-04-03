@@ -28,6 +28,6 @@ public class RecordByteLength {
      */
     public static final int PROTOCOL_VERSION = 2;
     public static int EPOCH = 2;
-    public static int SEQUENCE_NUMBER = 6;
+    public static int SEQUENCE_NUMBER = 8;
 
 }

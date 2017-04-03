@@ -24,45 +24,67 @@ import org.apache.logging.log4j.Logger;
  */
 public class DtlsWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(DtlsWorkflowExecutor.class);
-
-    private final WorkflowTrace workflowTrace;
-    private final DTLSActionExecutor actionExecutor;
-
-    public DtlsWorkflowExecutor(TlsContext tlsContext) {
-        super(ExecutorType.DTLS, tlsContext);
-        tlsContext.setTransportHandler(createTransportHandler());
-        tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
-        actionExecutor = new DTLSActionExecutor(tlsContext);
-        workflowTrace = this.context.getWorkflowTrace();
-
-        if (tlsContext.getTransportHandler() == null || tlsContext.getRecordHandler() == null) {
-            throw new ConfigurationException("The WorkflowExecutor was not configured properly");
-        }
+    public DtlsWorkflowExecutor(TlsContext context) {
+        super(ExecutorType.DTLS, context);
     }
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        WorkflowContext workflowContext = new WorkflowContext();
-        List<TLSAction> actions = workflowTrace.getTLSActions();
-        try {
-            // This construct is necessary since some actions have to be
-            // rewinded?
-            while (workflowContext.getActionPointer() < actions.size() && workflowContext.isProceedWorkflow()) {
-                TLSAction action = actions.get(workflowContext.getActionPointer());
-                action.execute(context, actionExecutor);
-                workflowContext.incrementActionPointer();
-            }
-        } catch (WorkflowExecutionException | IOException e) {
-            e.printStackTrace();
-            throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
-        }
-        context.getTransportHandler().closeConnection();
-
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
-    public DTLSActionExecutor getActionExecutor() {
-        return actionExecutor;
-    }
+    // private static final Logger LOGGER =
+    // LogManager.getLogger(DtlsWorkflowExecutor.class);
+    //
+    // private final WorkflowTrace workflowTrace;
+    // private final DTLSActionExecutor actionExecutor;
+    //
+    // public DtlsWorkflowExecutor(TlsContext tlsContext) {
+    // super(ExecutorType.DTLS, tlsContext);
+    // tlsContext.setTransportHandler(createTransportHandler());
+    // tlsContext.setRecordHandler(new DtlsRecordHandler(tlsContext));
+    // actionExecutor = new DTLSActionExecutor(tlsContext);
+    // workflowTrace = this.context.getWorkflowTrace();
+    //
+    // if (tlsContext.getTransportHandler() == null ||
+    // tlsContext.getRecordHandler() == null) {
+    // throw new
+    // ConfigurationException("The WorkflowExecutor was not configured properly");
+    // }
+    // }
+    //
+    // @Override
+    // public void executeWorkflow() throws WorkflowExecutionException {
+    // WorkflowContext workflowContext = new WorkflowContext();
+    // List<TLSAction> actions = workflowTrace.getTLSActions();
+    // try {
+    // // This construct is necessary since some actions have to be
+    // // rewinded?
+    // while (workflowContext.getActionPointer() < actions.size() &&
+    // workflowContext.isProceedWorkflow()) {
+    // TLSAction action = actions.get(workflowContext.getActionPointer());
+    // action.execute(context, actionExecutor);
+    // workflowContext.incrementActionPointer();
+    // }
+    // } catch (WorkflowExecutionException | IOException e) {
+    // e.printStackTrace();
+    // throw new WorkflowExecutionException(e.getLocalizedMessage(), e);
+    // }
+    // context.getTransportHandler().closeConnection();
+    //
+    // }
+    //
+    // public DTLSActionExecutor getActionExecutor() {
+    // return actionExecutor;
+    // }
 
 }

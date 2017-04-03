@@ -46,13 +46,17 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public void init() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        //Nothing to do here
-    }
-
-    @Override
     public byte[] calculateMac(byte[] data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
@@ -62,12 +66,12 @@ public class RecordNullCipher extends RecordCipher {
 
     @Override
     public byte[] calculatePadding(int paddingLength) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new byte[0];
     }
 
     @Override
     public int getPaddingLength(int dataLength) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0;
     }
 
 }

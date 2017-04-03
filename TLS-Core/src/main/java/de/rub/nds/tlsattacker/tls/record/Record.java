@@ -29,6 +29,11 @@ public class Record extends ModifiableVariableHolder {
     private Integer maxRecordLengthConfig;
 
     /**
+     * This record should only contain a single Message
+     */
+    private boolean bounceToMessage;
+
+    /**
      * total length of the protocol message (handshake, alert..) included in the
      * record layer
      */
@@ -109,7 +114,7 @@ public class Record extends ModifiableVariableHolder {
     }
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
-        ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -168,6 +173,10 @@ public class Record extends ModifiableVariableHolder {
         this.protocolMessageBytes = protocolMessageBytes;
     }
 
+    public void setProtocolMessageBytes(byte[] bytes) {
+        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
+    }
+
     public void setLength(ModifiableInteger length) {
         this.length = length;
     }
@@ -208,10 +217,6 @@ public class Record extends ModifiableVariableHolder {
         this.mac = mac;
     }
 
-    public void setProtocolMessageBytes(byte[] bytes) {
-        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
-    }
-
     public ModifiableInteger getPaddingLength() {
         return paddingLength;
     }
@@ -232,8 +237,8 @@ public class Record extends ModifiableVariableHolder {
         this.plainRecordBytes = plainRecordBytes;
     }
 
-    public void setPlainRecordBytes(byte[] value) {
-        this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, value);
+    public void setPlainRecordBytes(byte[] plainRecordBytes) {
+        this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, plainRecordBytes);
     }
 
     public Integer getMaxRecordLengthConfig() {
@@ -253,6 +258,6 @@ public class Record extends ModifiableVariableHolder {
     }
 
     public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
-        this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes, unpaddedRecordBytes);
+        this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes, unpaddedRecordBytes);
     }
 }

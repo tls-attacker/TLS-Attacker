@@ -165,8 +165,8 @@ public class TlsClientTest {
                 config.setSupportedCiphersuites(cslist);
                 config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
-                LOGGER.info("Testing: " + cs.name() + " Succes:" + result);
-                collector.checkThat("" + cs.name() + " failed.", result, is(true));
+                LOGGER.info("Testing "+config.getHighestProtocolVersion().name()+": " + cs.name() + " Succes:" + result);
+                collector.checkThat(" "+config.getHighestProtocolVersion().name()+ ":" + cs.name() + " failed.", result, is(true));
             }
         }
     }
@@ -185,8 +185,6 @@ public class TlsClientTest {
         String workflowString = tlsContext.getWorkflowTrace().toString();
         boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
         if (!result) {
-            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
-            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
             LOGGER.info(workflowString);
             return result;
         }

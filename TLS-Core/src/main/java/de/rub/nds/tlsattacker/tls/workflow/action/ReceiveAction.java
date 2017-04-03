@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +46,9 @@ public class ReceiveAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionPeer());
-        actualMessages = executor.receiveMessages(configuredMessages);
+        MessageActionResult result = executor.receiveMessages(configuredMessages);
+        actualRecords.addAll(result.getRecordList());
+        actualMessages.addAll(result.getMessageList());
         executed = true;
         // TODO can imrove performance while not debugging
         String expected = getReadableString(configuredMessages);

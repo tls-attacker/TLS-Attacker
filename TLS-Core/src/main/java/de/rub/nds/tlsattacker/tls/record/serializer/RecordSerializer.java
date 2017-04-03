@@ -16,10 +16,10 @@ import de.rub.nds.tlsattacker.tls.record.Record;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class RecordSerializer extends Serializer<Record>{
+public class RecordSerializer extends Serializer<Record> {
 
     private final Record record;
-    
+
     public RecordSerializer(Record record) {
         this.record = record;
     }
@@ -32,5 +32,5 @@ public class RecordSerializer extends Serializer<Record>{
         appendBytes(record.getProtocolMessageBytes().getValue());
         return getAlreadySerialized();
     }
-    
+
 }

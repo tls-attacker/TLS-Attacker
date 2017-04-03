@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import java.util.List;
 
 /**
@@ -18,5 +19,13 @@ import java.util.List;
 public abstract class RecordLayer {
     public abstract List<Record> parseRecords(byte[] rawBytes);
     
+    public abstract void decryptRecord(Record records);
+
     public abstract byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<Record> records);
+
+    public abstract void setRecordCipher(RecordCipher cipher);
+    
+    public abstract void updateEncryptionCipher();
+    
+    public abstract void updateDecryptionCipher();
 }

@@ -52,7 +52,7 @@ public abstract class Parser<T> {
         this.startPoint = startposition;
         this.pointer = startposition;
         this.array = array;
-        if (startposition >= array.length) {
+        if (startposition > array.length) {
             throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
                     + array.length);
         }
@@ -171,6 +171,14 @@ public abstract class Parser<T> {
      */
     protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;
+    }
+
+    protected byte[] parseArrayOrTillEnd(int n) {
+        if (n < getBytesLeft()) {
+            return parseByteArrayField(n);
+        } else {
+            return parseByteArrayField(getBytesLeft());
+        }
     }
 
     protected int getBytesLeft() {

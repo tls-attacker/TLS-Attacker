@@ -25,7 +25,7 @@ public abstract class RecordCipher {
     private int minimalEncryptedRecordLength;
 
     private boolean usePadding;
-    
+
     private boolean useMac;
 
     public RecordCipher(int minimalEncryptedRecordLength, boolean usePadding, boolean useMac) {
@@ -35,14 +35,12 @@ public abstract class RecordCipher {
     }
 
     public abstract byte[] encrypt(byte[] data);
-    
+
     public abstract byte[] decrypt(byte[] data);
-    
+
     public abstract byte[] calculateMac(byte[] data);
-    
+
     public abstract byte[] calculatePadding(int paddingLength);
-    
-    public abstract void init() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException;
 
     public boolean isUsePadding() {
         return usePadding;
@@ -51,11 +49,11 @@ public abstract class RecordCipher {
     public boolean isUseMac() {
         return useMac;
     }
-    
+
     public abstract int getMacLength();
-    
+
     public abstract int getPaddingLength(int dataLength);
-    
+
     public int getMinimalEncryptedRecordLength() {
         return minimalEncryptedRecordLength;
     }

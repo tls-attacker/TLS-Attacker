@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class NullCompression extends CompressionAlgorithm{
+public class NullCompression extends CompressionAlgorithm {
 
     public NullCompression() {
         super(CompressionMethod.NULL);
@@ -22,12 +22,13 @@ public class NullCompression extends CompressionAlgorithm{
 
     /**
      * Null Compression just passes the data through
+     * 
      * @param data
-     * @return 
+     * @return
      */
     @Override
     public byte[] compress(byte[] data) {
         return data;
     }
-    
+
 }

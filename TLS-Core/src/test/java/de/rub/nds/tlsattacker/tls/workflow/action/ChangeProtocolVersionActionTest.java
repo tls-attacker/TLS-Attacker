@@ -50,12 +50,7 @@ public class ChangeProtocolVersionActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(tlsContext));
-        dtlsContext = new TlsContext();
-        dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
         action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
-        dtlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(dtlsContext));
     }
 
     @After

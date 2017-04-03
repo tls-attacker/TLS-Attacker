@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -91,9 +92,32 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     protected List<ProtocolMessage> actualMessages;
 
+    protected List<Record> configuredRecords;
+
+    protected List<Record> actualRecords;
+
     public MessageAction(List<ProtocolMessage> messages) {
         this.configuredMessages = messages;
         actualMessages = new LinkedList<>();
+        actualRecords = new LinkedList<>();
+        this.configuredRecords = null;
+        this.actualRecords = null;
+    }
+
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    public List<Record> getConfiguredRecords() {
+        return configuredRecords;
+    }
+
+    public void setConfiguredRecords(List<Record> configuredRecords) {
+        this.configuredRecords = configuredRecords;
+    }
+
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    public List<Record> getActualRecords() {
+        return actualRecords;
     }
 
     public List<ProtocolMessage> getActualMessages() {
@@ -112,6 +136,7 @@ public abstract class MessageAction extends TLSAction {
     public void reset() {
         executed = false;
         actualMessages = new LinkedList<>();
+        actualRecords = new LinkedList<>();
     }
 
     @Override

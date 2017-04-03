@@ -112,6 +112,7 @@ public final class RecordBlockCipher extends RecordCipher {
     public RecordBlockCipher(TlsContext tlsContext) {
         super(0, true, true);
         this.tlsContext = tlsContext;
+        init();
     }
 
     /**
@@ -131,8 +132,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
         writeMac.update(data);
 
-        LOGGER.debug("The MAC was caluculated over the following data: {}",
-                ArrayConverter.bytesToHexString(data));
+        LOGGER.debug("The MAC was caluculated over the following data: {}", ArrayConverter.bytesToHexString(data));
 
         byte[] result = writeMac.doFinal();
 
@@ -230,8 +230,7 @@ public final class RecordBlockCipher extends RecordCipher {
         }
     }
 
-    @Override
-    public void init() {
+    private void init() {
         try {
             ProtocolVersion protocolVersion = tlsContext.getSelectedProtocolVersion();
             CipherSuite cipherSuite = tlsContext.getSelectedCipherSuite();
@@ -305,10 +304,10 @@ public final class RecordBlockCipher extends RecordCipher {
                 decryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
                 encryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
                 try {
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
-                            encryptIv);
-                    decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()),
-                            decryptIv);
+                    encryptCipher.init(Cipher.ENCRYPT_MODE,
+                            new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()), encryptIv);
+                    decryptCipher.init(Cipher.DECRYPT_MODE,
+                            new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
 
                     readMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
                     writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
@@ -318,7 +317,8 @@ public final class RecordBlockCipher extends RecordCipher {
             }
             if (offset != keyBlock.length) {
                 throw new CryptoException("Offset exceeded the generated key block length");
-            }   // mac has to be put into one or more blocks, depending on the MAC/block
+            } // mac has to be put into one or more blocks, depending on the
+            // MAC/block
             // length
             // additionally, there is a need for one explicit IV block
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
@@ -335,7 +335,7 @@ public final class RecordBlockCipher extends RecordCipher {
 
     @Override
     public byte[] calculatePadding(int paddingLength) {
-        paddingLength = Math.abs(paddingLength); //TODO why?!
+        paddingLength = Math.abs(paddingLength); // TODO why?!
         byte[] padding = new byte[paddingLength];
         for (int i = 0; i < paddingLength; i++) {
             padding[i] = (byte) (paddingLength - 1);

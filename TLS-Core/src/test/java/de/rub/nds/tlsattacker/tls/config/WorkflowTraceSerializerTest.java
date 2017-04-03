@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
@@ -20,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.ByteArrayInputStream;
@@ -47,23 +49,20 @@ public class WorkflowTraceSerializerTest {
      * 
      * @throws java.lang.Exception
      */
+    // TODO Test all messages with all modifiable variables
     @Test
     public void testWriteRead() throws Exception {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(new TlsConfig());
         WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable
-        List<ProtocolMessage> pms = trace.getAllConfiguredMessages();
-        int random = RandomHelper.getRandom().nextInt(pms.size());
-        List<Record> records = new LinkedList<>();
-        Record r = new Record();
-        ModifiableInteger mv = ModifiableVariableFactory.createIntegerModifiableVariable();
-        VariableModification<Integer> iam = IntegerModificationFactory.createRandomModification();
-        iam.setPostModification(IntegerModificationFactory.explicitValue(random));
-        mv.setModification(iam);
-        r.setLength(mv);
-        records.add(r);
-        pms.get(random).setRecords(records);
+        List<Record> records = new LinkedList<Record>();
+        Record record = new Record();
+        record.getContentType().setModification(new ByteExplicitValueModification(Byte.MIN_VALUE));
+        record.setMaxRecordLengthConfig(5);
+        records.add(record);
+        SendAction action = new SendAction(new ClientHelloMessage());
+        action.setConfiguredRecords(records);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);
@@ -79,49 +78,6 @@ public class WorkflowTraceSerializerTest {
         WorkflowTraceSerializer.write(os, wt);
 
         LOGGER.info(new String(os.toByteArray()));
-
-        Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
-                os.toByteArray());
-    }
-
-    /**
-     * Test of write method, of class WorkflowTraceSerializer.
-     * 
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testWriteReadDtls() throws Exception {
-        TlsConfig config = new TlsConfig();
-        config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createFullWorkflow();
-
-        // pick random protocol message and initialize a record with modifiable
-        // variable
-        List<ProtocolMessage> pms = trace.getAllConfiguredMessages();
-        int random = RandomHelper.getRandom().nextInt(pms.size());
-        List<Record> records = new LinkedList<>();
-        Record r = new Record();
-        ModifiableInteger mv = ModifiableVariableFactory.createIntegerModifiableVariable();
-        VariableModification<Integer> iam = IntegerModificationFactory.createRandomModification();
-        iam.setPostModification(IntegerModificationFactory.explicitValue(random));
-        mv.setModification(iam);
-        r.setLength(mv);
-        records.add(r);
-        pms.get(random).setRecords(records);
-
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        WorkflowTraceSerializer.write(os, trace);
-
-        String serializedWorkflow = new String(os.toByteArray());
-
-        LOGGER.debug(serializedWorkflow);
-
-        ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
-        WorkflowTrace wt = WorkflowTraceSerializer.read(bis);
-
-        os = new ByteArrayOutputStream();
-        WorkflowTraceSerializer.write(os, wt);
 
         Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
                 os.toByteArray());

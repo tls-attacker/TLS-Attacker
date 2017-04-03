@@ -14,18 +14,11 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -41,11 +34,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
      * content type
      */
     protected ProtocolMessageType protocolMessageType;
-
-    /**
-     * List of preconfigured records for this protocol message
-     */
-    protected List<Record> records;
 
     /**
      * Defines whether this message is necessarily required in the workflow.
@@ -64,25 +52,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected ModifiableByteArray completeResultingMessage;
 
     public ProtocolMessage() {
-        records = new LinkedList<>();
     }
 
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
-    }
-
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
-    public List<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    public void addRecord(Record record) {
-        this.records.add(record);
     }
 
     public boolean isRequired() {
@@ -104,11 +77,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (records != null) {
-            for (Record r : records) {
-                holders.add(r);
-            }
-        }
         return holders;
     }
 
