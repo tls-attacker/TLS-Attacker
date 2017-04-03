@@ -41,7 +41,7 @@ public class RecordHandlerTest {
     }
 
     /**
-     * Test of wrapData method, of class RecordHandler.
+     * Test of prepare method, of class TlsRecordLayer.
      */
     @Test
     public void testWrapData() {
@@ -62,8 +62,8 @@ public class RecordHandlerTest {
         records.add(preconfiguredRecord);
 
         result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
-        assertEquals(2, records.size());
-        assertEquals(20, result.length);
+        assertEquals(1, records.size());
+        assertEquals(7, result.length);
 
         records.clear();
         preconfiguredRecord = new Record();
@@ -72,10 +72,10 @@ public class RecordHandlerTest {
         records.add(preconfiguredRecord);
 
         result = recordHandler.prepareRecords(data, ProtocolMessageType.HANDSHAKE, records);
-        assertEquals(3, records.size());
-        assertEquals(25, result.length);
+        assertEquals(2, records.size());
+        assertEquals(14, result.length);
 
         records = recordHandler.parseRecords(result);
-        assertEquals(3, records.size());
+        assertEquals(2, records.size());
     }
 }
