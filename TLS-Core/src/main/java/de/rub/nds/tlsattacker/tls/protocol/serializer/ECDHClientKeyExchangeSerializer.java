@@ -25,6 +25,14 @@ public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
 
     private final ECDHClientKeyExchangeMessage msg;
 
+     /**
+     * Constructor for the ECDHClientKeyExchangerSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ECDHClientKeyExchangeSerializer(ECDHClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,17 +40,23 @@ public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeSerializedPublicKeyLength(msg);
-        serializeSerializedPublicKey(msg);
+        writeSerializedPublicKeyLength(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKeyLength of the ECDHCLientKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
         appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
         LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
     }
 
-    private void serializeSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKey of the ECDHCLientKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }

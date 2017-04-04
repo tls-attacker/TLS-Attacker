@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +24,14 @@ public class FinishedMessageSerializer extends HandshakeMessageSerializer<Finish
 
     private final FinishedMessage msg;
 
+     /**
+     * Constructor for the FinishedMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public FinishedMessageSerializer(FinishedMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,11 +39,14 @@ public class FinishedMessageSerializer extends HandshakeMessageSerializer<Finish
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeVerifyData(msg);
+        writeVerifyData(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeVerifyData(FinishedMessage msg) {
+    /**
+     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeVerifyData(FinishedMessage msg) {
         appendBytes(msg.getVerifyData().getValue());
         LOGGER.debug("VerifyData: "+ Arrays.toString(msg.getVerifyData().getValue()));
     }

@@ -25,6 +25,14 @@ public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerialize
 
     private UnknownHandshakeMessage msg;
 
+     /**
+     * Constructor for the UnknownHandshakeMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public UnknownHandshakeMessageSerializer(UnknownHandshakeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,11 +40,14 @@ public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerialize
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeData(msg);
+        writeData(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeData(UnknownHandshakeMessage msg) {
+    /**
+     * Writes the Data of the UnknownHandshakeMessage into the final byte[]
+     */
+    private void writeData(UnknownHandshakeMessage msg) {
         appendBytes(msg.getData().getValue());
         LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));
     }

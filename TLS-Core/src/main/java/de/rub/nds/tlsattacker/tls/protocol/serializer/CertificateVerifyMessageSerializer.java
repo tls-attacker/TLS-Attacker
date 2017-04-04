@@ -25,6 +25,14 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
 
     private final CertificateVerifyMessage msg;
 
+     /**
+     * Constructor for the CertificateVerifyMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public CertificateVerifyMessageSerializer(CertificateVerifyMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,23 +40,32 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeSignatureHashAlgorithm(msg);
-        serializeSignatureLength(msg);
-        serializeSignature(msg);
+        writeSignatureHashAlgorithm(msg);
+        writeSignatureLength(msg);
+        writeSignature(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
+    /**
+     * Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into the final byte[]
+     */
+    private void writeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithm().getValue());
         LOGGER.debug("SignatureHashAlgorithms: "+ Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
     }
 
-    private void serializeSignatureLength(CertificateVerifyMessage msg) {
+    /**
+     * Writes the SignatureLength of the CertificateVerifyMessage into the final byte[]
+     */
+    private void writeSignatureLength(CertificateVerifyMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
         LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
     }
 
-    private void serializeSignature(CertificateVerifyMessage msg) {
+    /**
+     * Writes the Signature of the CertificateVerifyMessage into the final byte[]
+     */
+    private void writeSignature(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignature().getValue());
         LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
     }

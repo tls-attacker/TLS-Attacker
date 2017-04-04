@@ -24,6 +24,14 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
 
     protected ProtocolVersion version;
 
+     /**
+     * Constructor for the ProtocolMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ProtocolMessageSerializer(T message, ProtocolVersion version) {
         this.version = version;
     }

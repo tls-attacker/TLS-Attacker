@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +25,14 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
 
     private final HeartbeatMessage msg;
 
+     /**
+     * Constructor for the HeartbeatMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -33,29 +40,41 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeHeartbeatMessageType(msg);
-        serializePayloadLength(msg);
-        serializePayload(msg);
-        serializePadding(msg);
+        writeHeartbeatMessageType(msg);
+        writePayloadLength(msg);
+        writePayload(msg);
+        writePadding(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeHeartbeatMessageType(HeartbeatMessage msg) {
+    /**
+     * Writes the HeartbeatMessageType of the HeartbeatMessage into the final byte[]
+     */
+    private void writeHeartbeatMessageType(HeartbeatMessage msg) {
         appendByte(msg.getHeartbeatMessageType().getValue());
         LOGGER.debug("HeartbeatMessageType: "+ msg.getHeartbeatMessageType().getValue());
     }
 
-    private void serializePayloadLength(HeartbeatMessage msg) {
+    /**
+     * Writes the PayloadLength of the HeartbeatMessage into the final byte[]
+     */
+    private void writePayloadLength(HeartbeatMessage msg) {
         appendInt(msg.getPayloadLength().getValue(), HeartbeatByteLength.PAYLOAD_LENGTH);
         LOGGER.debug("PayloadLength: "+ msg.getPayloadLength().getValue());
     }
 
-    private void serializePayload(HeartbeatMessage msg) {
+    /**
+     * Writes the Payload of the HeartbeatMessage into the final byte[]
+     */
+    private void writePayload(HeartbeatMessage msg) {
         appendBytes(msg.getPayload().getValue());
         LOGGER.debug("Payload: "+ Arrays.toString(msg.getPayload().getValue()));
     }
 
-    private void serializePadding(HeartbeatMessage msg) {
+    /**
+     * Writes the Padding of the HeartbeatMessage into the final byte[]
+     */
+    private void writePadding(HeartbeatMessage msg) {
         appendBytes(msg.getPadding().getValue());
         LOGGER.debug("Padding: "+ Arrays.toString(msg.getPadding().getValue())
         );

@@ -25,6 +25,14 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
 
     private final DHClientKeyExchangeMessage msg;
 
+     /**
+     * Constructor for the DHClientKeyExchangeSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public DHClientKeyExchangeSerializer(DHClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,17 +40,23 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeSerializedPublicKeyLength(msg);
-        serializeSerializedPublicKey(msg);
+        writeSerializedPublicKeyLength(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeSerializedPublicKeyLength(DHClientKeyExchangeMessage msg) {
+     /**
+     * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKeyLength(DHClientKeyExchangeMessage msg) {
         appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
         LOGGER.debug("SerializedPublicKexLength: "+ msg.getSerializedPublicKeyLength().getValue());
     }
 
-    private void serializeSerializedPublicKey(DHClientKeyExchangeMessage msg) {
+     /**
+     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKey(DHClientKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }

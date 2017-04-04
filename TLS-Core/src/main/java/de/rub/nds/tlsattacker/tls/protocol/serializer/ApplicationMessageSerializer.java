@@ -24,6 +24,14 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
 
     private final ApplicationMessage msg;
 
+     /**
+     * Constructor for the ApplicationMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ApplicationMessageSerializer(ApplicationMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -31,12 +39,15 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeData(msg);
+        writeData(msg);
         appendBytes(msg.getData().getValue());
         return getAlreadySerialized();
     }
 
-    private void serializeData(ApplicationMessage msg) {
+    /**
+     * Writes the data of the ApplicationMessage into the final byte[]
+     */
+    private void writeData(ApplicationMessage msg) {
         appendBytes(msg.getData().getValue());
         LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));
     }

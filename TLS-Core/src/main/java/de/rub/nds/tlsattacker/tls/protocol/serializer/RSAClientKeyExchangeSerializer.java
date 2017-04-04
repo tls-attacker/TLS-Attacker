@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +25,14 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
 
     private final RSAClientKeyExchangeMessage msg;
 
+     /**
+     * Constructor for the RSAClientKeyExchangeSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public RSAClientKeyExchangeSerializer(RSAClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -33,18 +40,24 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeSerializedPublicKeyLength(msg);
-        serializeSerializedPublickey(msg);
+        writeSerializedPublicKeyLength(msg);
+        writeSerializedPublickey(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
         appendInt(msg.getSerializedPublicKeyLength().getValue(),
                 HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
         LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
     }
 
-    private void serializeSerializedPublickey(RSAClientKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublickey(RSAClientKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }

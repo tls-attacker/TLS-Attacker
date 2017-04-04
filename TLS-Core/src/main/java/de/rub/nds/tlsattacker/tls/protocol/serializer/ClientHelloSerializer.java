@@ -25,6 +25,14 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
 
     private ClientHelloMessage msg;
 
+     /**
+     * Constructor for the ClientHelloSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ClientHelloSerializer(ClientHelloMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -37,45 +45,63 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
         writeRandom();
         writeSessionIDLength();
         writeSessionID();
-        serializeCipherSuiteLength(msg);
-        serializeCipherSuites(msg);
-        serializeCompressionLength(msg);
-        serializeCompressions(msg);
+        writeCipherSuiteLength(msg);
+        writeCipherSuites(msg);
+        writeCompressionLength(msg);
+        writeCompressions(msg);
         if (hasExtensionLengthField()) {
-            serializeExtensionLength(msg);
+            writeExtensionLength(msg);
             if (hasExtensions()) {
-                serializeExtensionBytes(msg);
+                writeExtensionBytes(msg);
             }
         }
         return getAlreadySerialized();
     }
 
-    private void serializeCipherSuiteLength(ClientHelloMessage msg) {
+    /**
+     * Writes the CihperSuiteLength of the ClientHelloMessage into the final byte[]
+     */
+    private void writeCipherSuiteLength(ClientHelloMessage msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), HandshakeByteLength.CIPHER_SUITES_LENGTH);
         LOGGER.debug("CipherSuiteLength: "+ msg.getCipherSuiteLength().getValue());
     }
 
-    private void serializeCipherSuites(ClientHelloMessage msg) {
+     /**
+     * Writes the CihperSuites of the ClientHelloMessage into the final byte[]
+     */
+    private void writeCipherSuites(ClientHelloMessage msg) {
         appendBytes(msg.getCipherSuites().getValue());
         LOGGER.debug("CipherSuite: "+ Arrays.toString(msg.getCipherSuites().getValue()));
     }
 
-    private void serializeCompressionLength(ClientHelloMessage msg) {
+     /**
+     * Writes the CompressionLength of the ClientHelloMessage into the final byte[]
+     */
+    private void writeCompressionLength(ClientHelloMessage msg) {
         appendInt(msg.getCompressionLength().getValue(), HandshakeByteLength.COMPRESSION_LENGTH);
         LOGGER.debug("CompressionLength: "+ msg.getCompressionLength().getValue());
     }
 
-    private void serializeCompressions(ClientHelloMessage msg) {
+     /**
+     * Writes the Compressions of the ClientHelloMessage into the final byte[]
+     */
+    private void writeCompressions(ClientHelloMessage msg) {
         appendBytes(msg.getCompressions().getValue());
         LOGGER.debug("Compressions: "+ Arrays.toString(msg.getCompressions().getValue()));
     }
 
-    private void serializeExtensionLength(ClientHelloMessage msg) {
+     /**
+     * Writes the ExtensionLength of the ClientHelloMessage into the final byte[]
+     */
+    private void writeExtensionLength(ClientHelloMessage msg) {
         appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
         LOGGER.debug("ExtensionLength: "+ msg.getExtensionsLength().getValue());
     }
 
-    private void serializeExtensionBytes(ClientHelloMessage msg) {
+     /**
+     * Writes the ExtensionBytes of the ClientHelloMessage into the final byte[]
+     */
+    private void writeExtensionBytes(ClientHelloMessage msg) {
         appendBytes(msg.getExtensionBytes().getValue());
         LOGGER.debug("ExtensionBytes: "+ Arrays.toString(msg.getExtensionBytes().getValue()));
     }

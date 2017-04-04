@@ -23,6 +23,14 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
     private final AlertMessage msg;
 
+     /**
+     * Constructor for the AlertSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public AlertSerializer(AlertMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -30,17 +38,23 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeLevel(msg);
-        serializeDescription(msg);
+        writeLevel(msg);
+        writeDescription(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeLevel(AlertMessage msg) {
+     /**
+     * Writes the level of the AlertMessage into the final byte[]
+     */
+    private void writeLevel(AlertMessage msg) {
         appendByte(msg.getLevel().getValue());
         LOGGER.debug("Level: "+ msg.getLevel().getValue());
     }
 
-    private void serializeDescription(AlertMessage msg) {
+    /**
+     * Writes the description of the AlertMessage into the final byte[]
+     */
+    private void writeDescription(AlertMessage msg) {
         appendByte(msg.getDescription().getValue());
         LOGGER.debug("Description: "+ msg.getDescription().getValue());
     }

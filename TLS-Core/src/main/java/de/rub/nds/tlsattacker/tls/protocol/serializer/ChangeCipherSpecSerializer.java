@@ -23,6 +23,14 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
 
     private ChangeCipherSpecMessage msg;
 
+     /**
+     * Constructor for the ChangerCipherSpecSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -30,11 +38,14 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeCcsProtocolType(msg);
+        writeCcsProtocolType(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeCcsProtocolType(ChangeCipherSpecMessage msg) {
+    /**
+     * Writes the CcsPrtotocolType of the ChangeCipherSpecMessage into the final byte[]
+     */
+    private void writeCcsProtocolType(ChangeCipherSpecMessage msg) {
         appendByte(msg.getCcsProtocolType().getValue());
         LOGGER.debug("CcsProtocolType: "+ msg.getCcsProtocolType().getValue());
     }

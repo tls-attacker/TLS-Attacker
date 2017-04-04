@@ -25,6 +25,14 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     private DHEServerKeyExchangeMessage msg;
 
+     /**
+     * Constructor for the DHServerKeyExchangeSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public DHEServerKeyExchangeSerializer(DHEServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,57 +40,81 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializePLength(msg);
-        serializeP(msg);
-        serializegLength(msg);
-        serializeG(msg);
-        serializeSerializedPublicKeyLength(msg);
-        serializeSerializedPublicKey(msg);
+        writePLength(msg);
+        writeP(msg);
+        writeGLength(msg);
+        writeG(msg);
+        writeSerializedPublicKeyLength(msg);
+        writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
-            serializeHashAlgorithm(msg);
-            serializeSignatureAlgorithm(msg);
+            writeHashAlgorithm(msg);
+            writeSignatureAlgorithm(msg);
         }
-        serializeSignatureLength(msg);
-        serializeSignature(msg);
+        writeSignatureLength(msg);
+        writeSignature(msg);
         return getAlreadySerialized();
     }
 
-    private void serializePLength(DHEServerKeyExchangeMessage msg) {
+     /**
+     * Writes the pLength of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writePLength(DHEServerKeyExchangeMessage msg) {
         appendInt(msg.getpLength().getValue(), HandshakeByteLength.DH_P_LENGTH);
         LOGGER.debug("pLength: "+ msg.getpLength().getValue());
     }
 
-    private void serializeP(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the P of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeP(DHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getP().getByteArray());
         LOGGER.debug("P: "+ msg.getP().getValue());
     }
 
-    private void serializegLength(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the gLength of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeGLength(DHEServerKeyExchangeMessage msg) {
         appendInt(msg.getgLength().getValue(), HandshakeByteLength.DH_G_LENGTH);
         LOGGER.debug("gLength: "+ msg.getgLength().getValue());
     }
 
-    private void serializeG(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the G of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeG(DHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getG().getByteArray());
         LOGGER.debug("G: "+ msg.getG().getValue());
     }
 
-    private void serializeSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKeyLength of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
         appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
         LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
     }
 
-    private void serializeSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKey of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 
-    private void serializeHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the Hashalgorithm of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeHashAlgorithm(DHEServerKeyExchangeMessage msg) {
         appendByte(msg.getHashAlgorithm().getValue());
         LOGGER.debug("HaslAlgorithm: "+ msg.getHashAlgorithm().getValue());
     }
 
-    private void serializeSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SignatureAlgorithm of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
         appendByte(msg.getSignatureAlgorithm().getValue());
         LOGGER.debug("SignatureAlgorithm: "+ msg.getSignatureAlgorithm().getValue());
     }
@@ -95,12 +127,18 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
         return version == ProtocolVersion.DTLS12;
     }
 
-    private void serializeSignatureLength(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSignatureLength(DHEServerKeyExchangeMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
         LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
     }
 
-    private void serializeSignature(DHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSignature(DHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignature().getValue());
         LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
     }

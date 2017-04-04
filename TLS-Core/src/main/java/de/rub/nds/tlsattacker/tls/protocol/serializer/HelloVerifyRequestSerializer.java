@@ -24,6 +24,14 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
 
     private HelloVerifyRequestMessage msg;
 
+     /**
+     * Constructor for the HelloVerifyRequestSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -31,23 +39,32 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeProtocolVersion(msg);
-        serializeCookieLength(msg);
-        serializeCookie(msg);
+        writeProtocolVersion(msg);
+        writeCookieLength(msg);
+        writeCookie(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeProtocolVersion(HelloVerifyRequestMessage msg) {
+    /**
+     * Writes the ProtocolVersion of the HelloVerifyMessage into the final byte[]
+     */
+    private void writeProtocolVersion(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 
-    private void serializeCookieLength(HelloVerifyRequestMessage msg) {
+    /**
+     * Writes the CookieLength of the HelloVerifyMessage into the final byte[]
+     */
+    private void writeCookieLength(HelloVerifyRequestMessage msg) {
         appendByte(msg.getCookieLength().getValue());
         LOGGER.debug("CookieLength: "+ msg.getCookieLength().getValue());
     }
 
-    private void serializeCookie(HelloVerifyRequestMessage msg) {
+    /**
+     * Writes the Cookie of the HelloVerifyMessage into the final byte[]
+     */
+    private void writeCookie(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getCookie().getValue());
         LOGGER.debug("Cookie: "+ Arrays.toString(msg.getCookie().getValue()));
     }

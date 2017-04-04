@@ -23,6 +23,14 @@ public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMes
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
+     /**
+     * Constructor for the ServerKeyExchangeSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ServerKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
     }

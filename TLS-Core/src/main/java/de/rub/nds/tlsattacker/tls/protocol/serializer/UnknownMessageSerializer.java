@@ -24,6 +24,14 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
 
     private UnknownMessage msg;
 
+     /**
+     * Constructor for the UnknownMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public UnknownMessageSerializer(UnknownMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -31,11 +39,14 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        serializeCompleteResultinMessage(msg);
+        writeCompleteResultinMessage(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeCompleteResultinMessage(UnknownMessage msg) {
+    /**
+     * Writes the CompleteResultingMessage of the UnknownMessage into the final byte[]
+     */
+    private void writeCompleteResultinMessage(UnknownMessage msg) {
         appendBytes(msg.getCompleteResultingMessage().getValue());
         LOGGER.debug("CompleteResultingMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }

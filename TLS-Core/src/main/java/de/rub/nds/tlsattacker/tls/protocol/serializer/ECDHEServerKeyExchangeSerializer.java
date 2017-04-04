@@ -25,6 +25,14 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
 
     private final ECDHEServerKeyExchangeMessage msg;
 
+     /**
+     * Constructor for the ECDHServerKeyExchangerSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ECDHEServerKeyExchangeSerializer(ECDHEServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -32,35 +40,47 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        serializeCurveType(msg);
-        serializeNamedCurve(msg);
-        serializeSerializedPublicKeyLength(msg);
-        serializeSerializedPublicKey(msg);
+        writeCurveType(msg);
+        writeNamedCurve(msg);
+        writeSerializedPublicKeyLength(msg);
+        writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
-            serializeHashAlgorithm(msg);
-            serializeSignatureAlgorithm(msg);
+            writeHashAlgorithm(msg);
+            writeSignatureAlgorithm(msg);
         }
-        serializeSignatureLength(msg);
-        serializeSignature(msg);
+        writeSignatureLength(msg);
+        writeSignature(msg);
         return getAlreadySerialized();
     }
 
-    private void serializeCurveType(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeCurveType(ECDHEServerKeyExchangeMessage msg) {
         appendByte(msg.getCurveType().getValue());
         LOGGER.debug("CurveType: "+ msg.getCurveType().getValue());
     }
 
-    private void serializeNamedCurve(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeNamedCurve(ECDHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getNamedCurve().getValue());
         LOGGER.debug("NamedCurve: "+ Arrays.toString(msg.getNamedCurve().getValue()));
     }
 
-    private void serializeSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKeyLength of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
         appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
         LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
     }
 
-    private void serializeSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
@@ -73,22 +93,34 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
         return version == ProtocolVersion.DTLS12;
     }
 
-    private void serializeHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the HashAlgorithm of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
         appendByte(msg.getHashAlgorithm().getValue());
         LOGGER.debug("HashAlgorithm: "+ msg.getHashAlgorithm().getValue());
     }
 
-    private void serializeSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SignatureAlgorithm of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg) {
         appendByte(msg.getSignatureAlgorithm().getValue());
         LOGGER.debug("SignatureAlgorithm: "+ msg.getSignatureAlgorithm().getValue());
     }
 
-    private void serializeSignatureLength(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSignatureLength(ECDHEServerKeyExchangeMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
         LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
     }
 
-    private void serializeSignature(ECDHEServerKeyExchangeMessage msg) {
+    /**
+     * Writes the Signature of the ECDHEServerKeyExchangeMessage into the final byte[]
+     */
+    private void writeSignature(ECDHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignature().getValue());
         LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
     }
