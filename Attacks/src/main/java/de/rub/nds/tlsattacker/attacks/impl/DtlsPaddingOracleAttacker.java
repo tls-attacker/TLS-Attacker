@@ -254,8 +254,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         record.setMac(modifiedMacArray);
         record.setPadding(modifiedPaddingArray);
         records.add(record);
-        byte[] recordBytes = recordHandler.prepareRecords(applicationMessageContent, ProtocolMessageType.APPLICATION_DATA,
-                records);
+        byte[] recordBytes = recordHandler.prepareRecords(applicationMessageContent,
+                ProtocolMessageType.APPLICATION_DATA, records);
 
         for (int i = 0; i < n; i++) {
             train[i] = recordBytes;
@@ -279,8 +279,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         try {
             AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
             preparator.prepare();
-            transportHandler.sendData(recordHandler.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),
-                    ProtocolMessageType.ALERT, records));
+            transportHandler.sendData(recordHandler.prepareRecords(
+                    closeNotify.getCompleteResultingMessage().getValue(), ProtocolMessageType.ALERT, records));
         } catch (IOException e) {
             LOGGER.error(e.getLocalizedMessage());
         }

@@ -120,10 +120,10 @@ public class RealDirectMessageECOracle extends ECOracle {
     private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
         int counter = 0;
         for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
-            if (counter >= trace.getAllExecutedMessages().size()) {
+            if (counter >= trace.getAllActualMessages().size()) {
                 return false;
             }
-            ProtocolMessage receivedMessage = trace.getAllExecutedMessages().get(counter);
+            ProtocolMessage receivedMessage = trace.getAllActualMessages().get(counter);
             if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
                 break;
             }

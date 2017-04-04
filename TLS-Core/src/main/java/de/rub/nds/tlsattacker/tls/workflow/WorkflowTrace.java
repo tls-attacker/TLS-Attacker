@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * A wrapper class over a list of protocol configuredMessages maintained in the
  * TLS context.
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement
@@ -102,13 +102,6 @@ public class WorkflowTrace implements Serializable {
         this.description = description;
     }
 
-    /**
-     * Adds protocol message to the list
-     * 
-     * @param action
-     * @param pm
-     * @return Returns true if the list was changed
-     */
     public boolean add(TLSAction action) {
         return tlsActions.add(action);
     }
@@ -119,6 +112,14 @@ public class WorkflowTrace implements Serializable {
 
     public TLSAction remove(int index) {
         return tlsActions.remove(index);
+    }
+
+    public List<TLSAction> getTLSActions() {
+        return tlsActions;
+    }
+
+    public void setTLSActions(List<TLSAction> tlsActions) {
+        this.tlsActions = tlsActions;
     }
 
     public List<ReceiveAction> getReceiveActions() {
@@ -139,14 +140,6 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return sendActions;
-    }
-
-    public List<TLSAction> getTLSActions() {
-        return tlsActions;
-    }
-
-    public void setTLSActions(List<TLSAction> tlsActions) {
-        this.tlsActions = tlsActions;
     }
 
     private List<ProtocolMessage> filterMessageList(List<ProtocolMessage> messages, ProtocolMessageType type) {
@@ -179,10 +172,6 @@ public class WorkflowTrace implements Serializable {
         return returnedMessages;
     }
 
-    public List<ProtocolMessage> getActualReceivedProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllActuallyReceivedMessages(), type);
-    }
-
     public ProtocolMessage getFirstConfiguredSendMessageOfType(ProtocolMessageType type) {
         return filterMessageList(getAllConfiguredSendMessages(), type).get(0);
     }
@@ -206,6 +195,10 @@ public class WorkflowTrace implements Serializable {
 
     public HandshakeMessage getFirstActuallySendMessageOfType(HandshakeMessageType type) {
         return filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()), type).get(0);
+    }
+
+    public List<ProtocolMessage> getActualReceivedProtocolMessagesOfType(ProtocolMessageType type) {
+        return filterMessageList(getAllActuallyReceivedMessages(), type);
     }
 
     public List<HandshakeMessage> getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType type) {
@@ -252,7 +245,7 @@ public class WorkflowTrace implements Serializable {
         return messages;
     }
 
-    public List<ProtocolMessage> getAllExecutedMessages() {
+    public List<ProtocolMessage> getAllActualMessages() {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof MessageAction) {
@@ -269,9 +262,7 @@ public class WorkflowTrace implements Serializable {
         for (TLSAction action : tlsActions) {
             if (action instanceof ReceiveAction) {
                 for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-
                     messages.add(pm);
-
                 }
             }
         }
@@ -292,25 +283,23 @@ public class WorkflowTrace implements Serializable {
         return messages;
     }
 
-    public List<ProtocolMessage> getAllActuallySentMessages() {
+    public List<ProtocolMessage> getAllConfiguredSendMessages() {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
-
+                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
                     messages.add(pm);
-
                 }
             }
         }
         return messages;
     }
 
-    public List<ProtocolMessage> getAllConfiguredSendMessages() {
+    public List<ProtocolMessage> getAllActuallySentMessages() {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
+                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
                     messages.add(pm);
                 }
             }
