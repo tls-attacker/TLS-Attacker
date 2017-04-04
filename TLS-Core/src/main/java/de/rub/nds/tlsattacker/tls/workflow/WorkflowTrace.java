@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
@@ -70,7 +69,6 @@ public class WorkflowTrace implements Serializable {
 
     private String name = null;
     private String description = null;
-    private ProtocolVersion protocolVersion;
 
     /**
      * Initializes the workflow trace with an empty list of protocol
@@ -401,14 +399,6 @@ public class WorkflowTrace implements Serializable {
         this.name = name;
     }
 
-    public ProtocolVersion getProtocolVersion() {
-        return protocolVersion;
-    }
-
-    public void setProtocolVersion(ProtocolVersion protocolVersion) {
-        this.protocolVersion = protocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Trace Actions:");
@@ -425,7 +415,6 @@ public class WorkflowTrace implements Serializable {
         hash = 23 * hash + Objects.hashCode(this.tlsActions);
         hash = 23 * hash + Objects.hashCode(this.name);
         hash = 23 * hash + Objects.hashCode(this.description);
-        hash = 23 * hash + Objects.hashCode(this.protocolVersion);
         return hash;
     }
 
@@ -450,7 +439,6 @@ public class WorkflowTrace implements Serializable {
         if (!Objects.equals(this.tlsActions, other.tlsActions)) {
             return false;
         }
-        return this.protocolVersion == other.protocolVersion;
+        return true;
     }
-
 }
