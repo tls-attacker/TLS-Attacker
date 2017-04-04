@@ -56,7 +56,7 @@ public class WorkflowTrace implements Serializable {
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
-            @XmlElement(type = DeactivateEncryptionAction.class, name = "ToggleEncryptionAction"),
+            @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
             @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
