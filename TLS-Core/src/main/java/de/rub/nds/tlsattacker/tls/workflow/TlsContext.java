@@ -501,7 +501,7 @@ public class TlsContext {
         this.transportHandler = transportHandler;
     }
 
-    public TlsRecordLayer getRecordHandler() {
+    public TlsRecordLayer getRecordLayer() {
         return recordHandler;
     }
 

@@ -392,6 +392,33 @@ public class WorkflowTrace implements Serializable {
         return true;
     }
 
+    public SendAction getFirstConfiguredSendActionWithType(ProtocolMessageType type) {
+        for (TLSAction action : tlsActions) {
+            if (action instanceof SendAction) {
+                SendAction sendAction = (SendAction) action;
+                for (ProtocolMessage message : sendAction.getConfiguredMessages()) {
+                    if (message.getProtocolMessageType() == type) {
+                        return sendAction;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public SendAction getFirstConfiguredSendActionWithType(HandshakeMessageType type) {
+        for (TLSAction action : tlsActions) {
+            if (action instanceof SendAction) {
+                SendAction sendAction = (SendAction) action;
+                List<HandshakeMessage> messages = filterHandshakeMessagesFromList(sendAction.getConfiguredMessages());
+                if (!filterMessageList(messages, type).isEmpty()) {
+                    return sendAction;
+                }
+            }
+        }
+        return null;
+    }
+
     public String getName() {
         return name;
     }

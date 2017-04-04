@@ -75,7 +75,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
                 if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                    context.getRecordHandler().updateEncryptionCipher();
+                    context.getRecordLayer().updateEncryptionCipher();
                 }
             }
             lastType = message.getProtocolMessageType();
@@ -126,8 +126,8 @@ public class DefaultActionExecutor extends ActionExecutor {
         int length = collector.getProtocolMessageBytesStream().length;
         int recordLength = 0;
         List<Record> toFillList = getEnoughRecords(length, recordPosition, records);
-        collector.appendRecordBytes(context.getRecordHandler().prepareRecords(
-                collector.getProtocolMessageBytesStream(), type, toFillList));
+        collector.appendRecordBytes(context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(),
+                type, toFillList));
         collector.flushProtocolMessageBytes();
         return recordPosition + toFillList.size();
     }
@@ -204,7 +204,7 @@ public class DefaultActionExecutor extends ActionExecutor {
     }
 
     private List<Record> parseRecords(byte[] recordBytes) {
-        List<Record> receivedRecords = context.getRecordHandler().parseRecords(recordBytes);
+        List<Record> receivedRecords = context.getRecordLayer().parseRecords(recordBytes);
         return receivedRecords;
     }
 
@@ -335,10 +335,10 @@ public class DefaultActionExecutor extends ActionExecutor {
 
     private void decryptRecords(List<Record> records) {
         for (Record record : records) {
-            context.getRecordHandler().decryptRecord(record);
+            context.getRecordLayer().decryptRecord(record);
             if (record.getContentType().getValue() == ProtocolMessageType.CHANGE_CIPHER_SPEC.getValue()) {
-                context.getRecordHandler().updateDecryptionCipher();// TODO
-                                                                    // unfortunate
+                context.getRecordLayer().updateDecryptionCipher();// TODO
+                                                                  // unfortunate
             }
         }
     }

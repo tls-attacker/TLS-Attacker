@@ -54,6 +54,6 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     private void setRecordCipher() {
         LOGGER.debug("Setting new Cipher in RecordLayer");
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.getRecordHandler().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 }

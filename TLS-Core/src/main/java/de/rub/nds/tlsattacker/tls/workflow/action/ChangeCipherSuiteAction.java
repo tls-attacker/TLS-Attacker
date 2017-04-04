@@ -58,9 +58,9 @@ public class ChangeCipherSuiteAction extends TLSAction {
         // LOGGER.debug("Setting new Cipher in RecordLayer"); //TODO Action
         // Logging
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.getRecordHandler().setRecordCipher(recordCipher);
-        tlsContext.getRecordHandler().updateDecryptionCipher();
-        tlsContext.getRecordHandler().updateEncryptionCipher();
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
         executed = true;
     }
 

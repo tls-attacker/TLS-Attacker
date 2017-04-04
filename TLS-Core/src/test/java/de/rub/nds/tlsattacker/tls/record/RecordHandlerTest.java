@@ -37,7 +37,7 @@ public class RecordHandlerTest {
         config.setWorkflowTrace(trace);
         TlsContext context = new TlsContext(config);
         context.setRecordHandler(new TlsRecordLayer(context));
-        recordHandler = context.getRecordHandler();
+        recordHandler = context.getRecordLayer();
     }
 
     /**

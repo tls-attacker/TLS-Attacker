@@ -67,7 +67,8 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();
         r.setPadding(padding);
-        applicationMessage.addRecord(r);
+        SendAction sendAction = new SendAction(applicationMessage);
+        sendAction.getConfiguredRecords().add(r);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.add(new SendAction(applicationMessage));
         trace.add(new ReceiveAction(alertMessage));

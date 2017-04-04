@@ -24,9 +24,9 @@ public class DeactivateEncryptionAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        tlsContext.getRecordHandler().setRecordCipher(new RecordNullCipher());
-        tlsContext.getRecordHandler().updateDecryptionCipher();
-        tlsContext.getRecordHandler().updateEncryptionCipher();
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
         executed = true;
     }
 

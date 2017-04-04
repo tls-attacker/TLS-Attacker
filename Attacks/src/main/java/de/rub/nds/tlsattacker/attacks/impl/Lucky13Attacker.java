@@ -24,6 +24,8 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -66,7 +68,6 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting round {}", i);
             for (int p : paddings) {
                 Record record = createRecordWithPadding(p);
-                record.setMeasuringTiming(true);
                 executeAttackRound(record);
                 if (results.get(p) == null) {
                     results.put(p, new LinkedList<Long>());
@@ -129,11 +130,12 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        applicationMessage.addRecord(record);
+        SendAction action = new SendAction(applicationMessage);
+        trace.add(action);
+        action.getConfiguredRecords().add(record);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, applicationMessage));
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, alertMessage));
+        trace.add(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

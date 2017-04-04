@@ -64,8 +64,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        applicationMessage.addRecord(record);
-        trace.add(new SendAction(applicationMessage));
+        SendAction sendAction = new SendAction(applicationMessage);
+        sendAction.getConfiguredRecords().add(record);
+        trace.add(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.add(new ReceiveAction(alertMessage));
 

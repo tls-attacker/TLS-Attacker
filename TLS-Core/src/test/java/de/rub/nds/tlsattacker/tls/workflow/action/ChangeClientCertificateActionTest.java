@@ -51,7 +51,7 @@ public class ChangeClientCertificateActionTest {
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         action = new ChangeClientCertificateAction(TestCertificates.getTestCertificate());
     }
 

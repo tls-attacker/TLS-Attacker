@@ -190,7 +190,7 @@ public class TlsClientTest {
         }
         return result;
     }
-    
+
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         TlsConfig config = clientCommandConfig.createConfig();
