@@ -11,12 +11,16 @@ package de.rub.nds.tlsattacker.tls.record.cipher;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.tls.constants.CipherType;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class RecordCipherFactory {
+
+    private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
 
     public static RecordCipher getRecordCipher(TlsContext context) {
         if (context.getSelectedCipherSuite() == null) {
@@ -31,7 +35,8 @@ public class RecordCipherFactory {
                 case STREAM:
                     return new RecordStreamCipher(context);
             }
+            LOGGER.warn("UnknownCipherType:" + type.name());
+            return new RecordNullCipher();
         }
-        return new RecordNullCipher();
     }
 }

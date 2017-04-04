@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.record.cipher;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
-
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
@@ -47,16 +42,7 @@ public class RecordNullCipher extends RecordCipher {
 
     @Override
     public byte[] calculateMac(byte[] data) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

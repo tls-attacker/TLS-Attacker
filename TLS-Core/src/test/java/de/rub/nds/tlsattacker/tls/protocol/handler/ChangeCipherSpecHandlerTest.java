@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateVerifyMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import org.junit.After;

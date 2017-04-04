@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.record.serializer;
 
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.tls.record.Record;
 
 /**
  *

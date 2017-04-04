@@ -53,13 +53,6 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
     }
 
-    public abstract AbstractRecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor,
-            ProtocolMessageType type);
-
-    public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
-
-    public abstract AbstractRecordSerializer getRecordSerializer();
-
     public ProtocolMessageType getContentMessageType() {
         return contentMessageType;
     }
@@ -101,4 +94,10 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
+    public abstract AbstractRecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor,
+            ProtocolMessageType type);
+
+    public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
+
+    public abstract AbstractRecordSerializer getRecordSerializer();
 }

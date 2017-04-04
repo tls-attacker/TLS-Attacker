@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.record.decryptor;
 
-import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
@@ -25,19 +24,8 @@ public class RecordDecryptor extends Decryptor<Record> {
 
     private static final Logger LOGGER = LogManager.getLogger("DECRYPTOR");
 
-    private RecordCipher recordCipher;
-
     public RecordDecryptor(RecordCipher recordCipher) {
         super(recordCipher);
-        this.recordCipher = recordCipher;
-    }
-
-    public RecordCipher getRecordCipher() {
-        return recordCipher;
-    }
-
-    public void setRecordCipher(RecordCipher recordCipher) {
-        this.recordCipher = recordCipher;
     }
 
     @Override

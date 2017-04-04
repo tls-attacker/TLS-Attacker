@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.tls.record.Record;
  */
 public class RecordParser extends AbstractRecordParser<Record> {
 
-    private ProtocolVersion version;
+    private final ProtocolVersion version;
 
     public RecordParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array);

@@ -8,26 +8,17 @@
  */
 package de.rub.nds.tlsattacker.tls.record.compressor;
 
-import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class RecordCompressor extends Compressor<Record> {
+public abstract class RecordCompressor extends Compressor<AbstractRecord> {
 
     @Override
-    public void compress(Record object) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public void compress(AbstractRecord record) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;

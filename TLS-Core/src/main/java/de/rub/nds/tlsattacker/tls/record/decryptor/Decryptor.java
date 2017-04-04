@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.record.decryptor;
 
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
-import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

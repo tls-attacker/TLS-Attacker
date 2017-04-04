@@ -37,5 +37,4 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         encryptor.encrypt(record);
         record.setLength(record.getProtocolMessageBytes().getValue().length);
     }
-
 }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.unittest.helper.ActionExecutorMock;
 import java.io.StringReader;

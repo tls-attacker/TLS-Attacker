@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.record.decryptor.RecordCryptoUnit;
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
+ * @param <T>
  */
 public abstract class Encryptor<T extends AbstractRecord> extends RecordCryptoUnit {
 

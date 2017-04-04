@@ -26,21 +26,10 @@ public class RecordEncryptor extends Encryptor<Record> {
 
     private static final Logger LOGGER = LogManager.getLogger("ENCRYPTOR");
 
-    private RecordCipher recordCipher;
-
     private int sequenceNumber = 0;
 
     public RecordEncryptor(RecordCipher recordCipher) {
         super(recordCipher);
-        this.recordCipher = recordCipher;
-    }
-
-    public RecordCipher getRecordCipher() {
-        return recordCipher;
-    }
-
-    public void setRecordCipher(RecordCipher recordCipher) {
-        this.recordCipher = recordCipher;
     }
 
     @Override
@@ -66,8 +55,7 @@ public class RecordEncryptor extends Encryptor<Record> {
         } else {
             record.setMac(new byte[0]);
         }
-        record.setUnpaddedRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
-                record.getMac().getValue()));
+        record.setUnpaddedRecordBytes(ArrayConverter.concatenate(cleanBytes, record.getMac().getValue()));
         byte[] padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
                 .getValue().length));
         record.setPadding(padding);

@@ -6,12 +6,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.record;
+package de.rub.nds.tlsattacker.tls.record.layer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.tls.protocol.parser.special.CleanRecordByteSeperator;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.tls.record.decryptor.Decryptor;
 import de.rub.nds.tlsattacker.tls.record.decryptor.RecordDecryptor;
@@ -20,11 +23,9 @@ import de.rub.nds.tlsattacker.tls.record.encryptor.RecordEncryptor;
 import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.tls.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.tls.record.serializer.AbstractRecordSerializer;
-import de.rub.nds.tlsattacker.tls.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -40,8 +41,8 @@ public class TlsRecordLayer extends RecordLayer {
 
     protected final TlsContext tlsContext;
 
-    private Decryptor decryptor;
-    private Encryptor encryptor;
+    private final Decryptor decryptor;
+    private final Encryptor encryptor;
 
     private RecordCipher cipher;
 
@@ -63,10 +64,15 @@ public class TlsRecordLayer extends RecordLayer {
         List<AbstractRecord> records = new LinkedList<>();
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
-            RecordParser parser = new RecordParser(dataPointer, rawRecordData, tlsContext.getSelectedProtocolVersion());
-            Record record = parser.parse();
-            records.add(record);
-            dataPointer = parser.getPointer();
+            try {
+                RecordParser parser = new RecordParser(dataPointer, rawRecordData,
+                        tlsContext.getSelectedProtocolVersion());
+                Record record = parser.parse();
+                records.add(record);
+                dataPointer = parser.getPointer();
+            } catch (ParserException E) {
+                // TODO Could not parse as record try parsing Blob
+            }
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
         return records;
@@ -88,14 +94,12 @@ public class TlsRecordLayer extends RecordLayer {
                 throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
             }
         }
-
         return stream.toByteArray();
     }
 
     @Override
     public void setRecordCipher(RecordCipher cipher) {
         this.cipher = cipher;
-
     }
 
     @Override

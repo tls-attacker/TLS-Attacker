@@ -26,7 +26,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -123,51 +122,17 @@ public final class RecordBlockCipher extends RecordCipher {
      * version field, and a 2-byte length field. It then calculates a MAC over
      * the bytes SQN || HDR || R.
      *
-     * @param protocolVersion
-     * @param contentType
      * @param data
      * @return
      */
+    @Override
     public byte[] calculateMac(byte[] data) {
-
         writeMac.update(data);
-
         LOGGER.debug("The MAC was caluculated over the following data: {}", ArrayConverter.bytesToHexString(data));
-
         byte[] result = writeMac.doFinal();
-
         LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
-
         // we increment sequence number for the sent records
         sequenceNumber++;
-
-        return result;
-    }
-
-    public byte[] calculateDtlsMac(ProtocolVersion protocolVersion, ProtocolMessageType contentType, byte[] data,
-            long dtlsSequenceNumber, int epochNumber) {
-
-        byte[] SQN = ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
-                ArrayConverter.longToUint48Bytes(dtlsSequenceNumber));
-        byte[] HDR = ArrayConverter.concatenate(contentType.getArrayValue(), protocolVersion.getValue(),
-                ArrayConverter.intToBytes(data.length, 2));
-
-        writeMac.update(SQN);
-        writeMac.update(HDR);
-        writeMac.update(data);
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("The MAC will be calculated over the following data: {}", ArrayConverter
-                    .bytesToHexString(ArrayConverter.concatenate(ArrayConverter.intToBytes(epochNumber, 2),
-                            ArrayConverter.longToUint48Bytes(sequenceNumber), HDR, data)));
-        }
-
-        byte[] result = writeMac.doFinal();
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
-        }
-
         return result;
     }
 
@@ -205,6 +170,7 @@ public final class RecordBlockCipher extends RecordCipher {
      * @return
      * @throws CryptoException
      */
+    @Override
     public byte[] decrypt(byte[] data) throws CryptoException {
         try {
             byte[] plaintext;

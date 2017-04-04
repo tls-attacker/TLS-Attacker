@@ -74,8 +74,10 @@ public class TlsClientTest {
     private static final int PORT = 4433;
 
     private static final int TIMEOUT = 2000;
+
     @Rule
     public ErrorCollector collector = new ErrorCollector();
+
     private TLSServer tlsServer;
 
     public TlsClientTest() {

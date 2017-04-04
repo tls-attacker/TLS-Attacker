@@ -8,12 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.record.cipher;
 
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
-
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -42,14 +36,6 @@ public abstract class RecordCipher {
 
     public abstract byte[] calculatePadding(int paddingLength);
 
-    public boolean isUsePadding() {
-        return usePadding;
-    }
-
-    public boolean isUseMac() {
-        return useMac;
-    }
-
     public abstract int getMacLength();
 
     public abstract int getPaddingLength(int dataLength);
@@ -62,4 +48,11 @@ public abstract class RecordCipher {
         this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
     }
 
+    public boolean isUsePadding() {
+        return usePadding;
+    }
+
+    public boolean isUseMac() {
+        return useMac;
+    }
 }

@@ -23,5 +23,4 @@ public abstract class CompressionAlgorithm {
     }
 
     public abstract byte[] compress(byte[] data);
-
 }
