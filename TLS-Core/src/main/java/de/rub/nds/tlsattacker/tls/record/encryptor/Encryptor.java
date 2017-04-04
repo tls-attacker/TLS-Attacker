@@ -8,10 +8,19 @@
  */
 package de.rub.nds.tlsattacker.tls.record.encryptor;
 
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.tls.record.decryptor.RecordCryptoUnit;
+
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public abstract class Encryptor<T> {
+public abstract class Encryptor<T extends AbstractRecord> extends RecordCryptoUnit {
+
+    public Encryptor(RecordCipher cipher) {
+        super(cipher);
+    }
+
     public abstract void encrypt(T object);
 }

@@ -49,21 +49,16 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-
         TlsConfig tlsConfig = config.createConfig();
-
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
-
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
         // if the padding was {0x02, 0x02, 0x02}, it becomes {0x03, 0x02, 0x02}
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
         padding.setModification(modifier);
-
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();
         r.setPadding(padding);
@@ -72,7 +67,6 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.add(new SendAction(applicationMessage));
         trace.add(new ReceiveAction(alertMessage));
-
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

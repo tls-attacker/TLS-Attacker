@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
@@ -60,9 +61,9 @@ public class DefaultActionExecutor extends ActionExecutor {
      *
      */
     @Override
-    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<Record> records) {
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records) {
         if (!proceed) {
-            return new MessageActionResult(new LinkedList<Record>(), new LinkedList<ProtocolMessage>());
+            return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
         }
         if (records == null) {
             records = new LinkedList<>();
@@ -121,19 +122,19 @@ public class DefaultActionExecutor extends ActionExecutor {
         return protocolMessageBytes;
     }
 
-    private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type, List<Record> records,
-            int recordPosition) {
+    private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
+            List<AbstractRecord> records, int recordPosition) {
         int length = collector.getProtocolMessageBytesStream().length;
         int recordLength = 0;
-        List<Record> toFillList = getEnoughRecords(length, recordPosition, records);
+        List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records);
         collector.appendRecordBytes(context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(),
                 type, toFillList));
         collector.flushProtocolMessageBytes();
         return recordPosition + toFillList.size();
     }
 
-    private List<Record> getEnoughRecords(int length, int position, List<Record> records) {
-        List<Record> toFillList = new LinkedList<>();
+    private List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records) {
+        List<AbstractRecord> toFillList = new LinkedList<>();
         int recordLength = 0;
         while (recordLength < length) {
             if (position >= records.size()) {
@@ -143,7 +144,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                     return toFillList;
                 }
             }
-            Record record = records.get(position);
+            AbstractRecord record = records.get(position);
             toFillList.add(record);
             recordLength += record.getMaxRecordLengthConfig();
             position++;
@@ -177,11 +178,11 @@ public class DefaultActionExecutor extends ActionExecutor {
      */
     @Override
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages) {
-        List<Record> records = new LinkedList<>();
+        List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
         try {
             if (!proceed) {
-                return new MessageActionResult(new LinkedList<Record>(), new LinkedList<ProtocolMessage>());
+                return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
             }
             byte[] recievedBytes = null;
             do {
@@ -203,16 +204,16 @@ public class DefaultActionExecutor extends ActionExecutor {
         return context.getTransportHandler().fetchData();
     }
 
-    private List<Record> parseRecords(byte[] recordBytes) {
-        List<Record> receivedRecords = context.getRecordLayer().parseRecords(recordBytes);
+    private List<AbstractRecord> parseRecords(byte[] recordBytes) {
+        List<AbstractRecord> receivedRecords = context.getRecordLayer().parseRecords(recordBytes);
         return receivedRecords;
     }
 
-    private List<ProtocolMessage> parseMessages(List<Record> records) {
+    private List<ProtocolMessage> parseMessages(List<AbstractRecord> records) {
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         int recordPosition = 0;
         do {
-            List<Record> recordSubGroup = getNextRecordSubgroupd(records, recordPosition);
+            List<AbstractRecord> recordSubGroup = getNextRecordSubgroupd(records, recordPosition);
             ProtocolMessageType type = getProtocolMessageType(recordSubGroup);
             recordPosition += recordSubGroup.size();
             byte[] cleanProtocolMessageBytes = getCleanBytes(recordSubGroup);
@@ -266,25 +267,9 @@ public class DefaultActionExecutor extends ActionExecutor {
         return receivedMessages;
     }
 
-    /**
-     * Returns true if the List contains an ArbitraryMessage
-     *
-     * @param protocolMessages
-     *            Protocol messages to search in
-     * @return True if it contains atleast one ArbitraryMessage
-     */
-    private boolean containsArbitaryMessage(List<ProtocolMessage> protocolMessages) {
-        for (ProtocolMessage message : protocolMessages) {
-            if (message instanceof ArbitraryMessage) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private byte[] getCleanBytes(List<Record> recordSubGroup) {
+    private byte[] getCleanBytes(List<AbstractRecord> recordSubGroup) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (Record record : recordSubGroup) {
+        for (AbstractRecord record : recordSubGroup) {
             try {
                 stream.write(record.getCleanProtocolMessageBytes().getValue());
             } catch (IOException ex) {
@@ -294,15 +279,15 @@ public class DefaultActionExecutor extends ActionExecutor {
         return stream.toByteArray();
     }
 
-    private List<Record> getNextRecordSubgroupd(List<Record> records, int recordPosition) {
-        List<Record> returnList = new LinkedList<>();
+    private List<AbstractRecord> getNextRecordSubgroupd(List<AbstractRecord> records, int recordPosition) {
+        List<AbstractRecord> returnList = new LinkedList<>();
         if (records.size() <= recordPosition) {
             return returnList;
         }
-        byte type = records.get(recordPosition).getContentType().getValue();
+        ProtocolMessageType type = records.get(recordPosition).getContentMessageType();
         for (int i = recordPosition; i < records.size(); i++) {
-            Record record = records.get(i);
-            if (record.getContentType().getValue() == type) {
+            AbstractRecord record = records.get(i);
+            if (record.getContentMessageType() == type) {
                 returnList.add(record);
             } else {
                 return returnList;
@@ -312,18 +297,14 @@ public class DefaultActionExecutor extends ActionExecutor {
 
     }
 
-    /**
-     *
-     * @param recordSubGroup
-     * @return
-     */
-    private ProtocolMessageType getProtocolMessageType(List<Record> recordSubGroup) {
+    private ProtocolMessageType getProtocolMessageType(List<AbstractRecord> recordSubGroup) {
         ProtocolMessageType type = null;
-        for (Record record : recordSubGroup) {
+        for (AbstractRecord record : recordSubGroup) {
             if (type == null) {
-                type = ProtocolMessageType.getContentType(record.getContentType().getValue());
+                type = record.getContentMessageType();
             } else {
-                ProtocolMessageType tempType = ProtocolMessageType.getContentType(record.getContentType().getValue());
+                ProtocolMessageType tempType = ProtocolMessageType.getContentType(record.getContentMessageType()
+                        .getValue());
                 if (tempType != type) {
                     LOGGER.warn("Mixed Subgroup detected");
                 }
@@ -333,12 +314,12 @@ public class DefaultActionExecutor extends ActionExecutor {
         return type;
     }
 
-    private void decryptRecords(List<Record> records) {
-        for (Record record : records) {
+    private void decryptRecords(List<AbstractRecord> records) {
+        for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
-            if (record.getContentType().getValue() == ProtocolMessageType.CHANGE_CIPHER_SPEC.getValue()) {
+            if (record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                 context.getRecordLayer().updateDecryptionCipher();// TODO
-                                                                  // unfortunate
+                // unfortunate
             }
         }
     }

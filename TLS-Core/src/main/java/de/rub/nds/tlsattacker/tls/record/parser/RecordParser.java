@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.record.parser;
 
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
@@ -17,7 +18,7 @@ import de.rub.nds.tlsattacker.tls.record.Record;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class RecordParser extends Parser<Record> {
+public class RecordParser extends AbstractRecordParser<Record> {
 
     private ProtocolVersion version;
 
@@ -30,6 +31,7 @@ public class RecordParser extends Parser<Record> {
     public Record parse() {
         Record record = new Record();
         parseContentType(record);
+        record.setContentMessageType(ProtocolMessageType.getContentType(record.getContentType().getValue()));
         parseVersion(record);
         parseLength(record);
         parseProtocolMessageBytes(record);

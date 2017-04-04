@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.tls.record.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.record.Record;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class RecordSerializer extends Serializer<Record> {
+public class RecordSerializer extends AbstractRecordSerializer<Record> {
 
     private final Record record;
 
@@ -26,7 +25,7 @@ public class RecordSerializer extends Serializer<Record> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendByte(record.getContentType().getValue());
+        appendByte(record.getContentMessageType().getValue());
         appendBytes(record.getProtocolVersion().getValue());
         appendInt(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
         appendBytes(record.getProtocolMessageBytes().getValue());

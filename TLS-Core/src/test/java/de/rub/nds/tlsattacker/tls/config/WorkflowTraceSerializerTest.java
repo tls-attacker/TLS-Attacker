@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -62,7 +63,7 @@ public class WorkflowTraceSerializerTest {
         WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable
-        List<Record> records = new LinkedList<Record>();
+        List<AbstractRecord> records = new LinkedList<AbstractRecord>();
         Record record = new Record();
         record.setContentType(new ModifiableByte());
         record.getContentType().setModification(new ByteExplicitValueModification(Byte.MIN_VALUE));

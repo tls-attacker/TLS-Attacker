@@ -17,11 +17,11 @@ import java.util.List;
  * @author Robert Merget <robert.merget@rub.de>
  */
 public abstract class RecordLayer {
-    public abstract List<Record> parseRecords(byte[] rawBytes);
+    public abstract List<AbstractRecord> parseRecords(byte[] rawBytes);
 
-    public abstract void decryptRecord(Record records);
+    public abstract void decryptRecord(AbstractRecord records);
 
-    public abstract byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<Record> records);
+    public abstract byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records);
 
     public abstract void setRecordCipher(RecordCipher cipher);
 

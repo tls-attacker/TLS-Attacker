@@ -28,6 +28,7 @@ public class RecordDecryptor extends Decryptor<Record> {
     private RecordCipher recordCipher;
 
     public RecordDecryptor(RecordCipher recordCipher) {
+        super(recordCipher);
         this.recordCipher = recordCipher;
     }
 

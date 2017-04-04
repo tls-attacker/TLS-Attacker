@@ -31,6 +31,7 @@ public class RecordEncryptor extends Encryptor<Record> {
     private int sequenceNumber = 0;
 
     public RecordEncryptor(RecordCipher recordCipher) {
+        super(recordCipher);
         this.recordCipher = recordCipher;
     }
 
@@ -50,7 +51,7 @@ public class RecordEncryptor extends Encryptor<Record> {
             try {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 stream.write(ArrayConverter.intToBytes(sequenceNumber, RecordByteLength.SEQUENCE_NUMBER));
-                stream.write(record.getContentType().getValue());
+                stream.write(record.getContentMessageType().getValue());
                 stream.write(record.getProtocolVersion().getValue());
                 stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
                         RecordByteLength.RECORD_LENGTH)); // TODO

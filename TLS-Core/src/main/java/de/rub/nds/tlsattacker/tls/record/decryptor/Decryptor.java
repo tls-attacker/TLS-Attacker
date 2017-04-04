@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.record.decryptor;
 
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,9 +19,13 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget <robert.merget@rub.de>
  * @param <T>
  */
-public abstract class Decryptor<T> {
+public abstract class Decryptor<T extends AbstractRecord> extends RecordCryptoUnit {
 
     private static final Logger LOGGER = LogManager.getLogger("DECRYPTOR");
+
+    public Decryptor(RecordCipher cipher) {
+        super(cipher);
+    }
 
     public abstract void decrypt(T object);
 }

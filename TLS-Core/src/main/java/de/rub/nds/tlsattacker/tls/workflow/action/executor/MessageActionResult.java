@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import java.util.List;
 
 /**
@@ -18,16 +18,16 @@ import java.util.List;
  */
 public class MessageActionResult {
 
-    private final List<Record> recordList;
+    private final List<AbstractRecord> recordList;
 
     private final List<ProtocolMessage> messageList;
 
-    public MessageActionResult(List<Record> recordList, List<ProtocolMessage> messageList) {
+    public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList) {
         this.recordList = recordList;
         this.messageList = messageList;
     }
 
-    public List<Record> getRecordList() {
+    public List<AbstractRecord> getRecordList() {
         return recordList;
     }
 

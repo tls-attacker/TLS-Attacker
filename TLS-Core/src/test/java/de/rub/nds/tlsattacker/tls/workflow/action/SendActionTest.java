@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -60,7 +59,7 @@ public class SendActionTest {
         tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         action = new SendAction(alert);
-        action.setConfiguredRecords(new LinkedList<Record>());
+        action.setConfiguredRecords(new LinkedList<AbstractRecord>());
     }
 
     @After

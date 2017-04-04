@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.HeartbeatMessagePreparator;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.RecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -171,7 +172,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
             if (serverAnswer != null && serverAnswer.length > 1) {
                 HeartbeatMessage receivedHbMessage = new HeartbeatMessage(tlsConfig);
-                List<de.rub.nds.tlsattacker.tls.record.Record> parsedReceivedRecords = recordLayer
+                List<AbstractRecord> parsedReceivedRecords = recordLayer
                         .parseRecords(serverAnswer);
                 if (parsedReceivedRecords.size() != 1) {
                     LOGGER.info("Unexpected number of records parsed from server. Train: {}", trainInfo);
@@ -219,7 +220,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData, HeartbeatMessage heartbeatMessage) {
         byte[][] train = new byte[n + 1][];
-        List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
+        List<AbstractRecord> records = new ArrayList<>();
         ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
@@ -245,7 +246,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private byte[][] createInvalidMacMessageTrain(int n, byte[] applicationMessageContent,
             HeartbeatMessage heartbeatMessage) {
         byte[][] train = new byte[n + 1][];
-        List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
+        List<AbstractRecord> records = new ArrayList<>();
         ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
@@ -274,7 +275,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private void closeDtlsConnectionGracefully() {
         AlertMessage closeNotify = new AlertMessage(tlsConfig);
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
-        List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
+        List<AbstractRecord> records = new ArrayList<>();
         records.add(new Record());
 
         AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);

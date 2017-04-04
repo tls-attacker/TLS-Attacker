@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -76,7 +77,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
         // We need two Records, one for the CCS message and one with finished
         // message with the modified padding
-        List<Record> records = new LinkedList<>();
+        List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
         records.add(new Record());
         records.add(record);

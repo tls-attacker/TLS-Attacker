@@ -220,8 +220,7 @@ public class TlsClientTest {
             return false;
         }
 
-        return !(tlsContext.getWorkflowTrace()
-                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
+        return trace.configuredLooksLikeActual();
     }
 
 }

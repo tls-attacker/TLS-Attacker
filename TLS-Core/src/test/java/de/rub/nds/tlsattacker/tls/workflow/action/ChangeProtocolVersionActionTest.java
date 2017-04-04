@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;

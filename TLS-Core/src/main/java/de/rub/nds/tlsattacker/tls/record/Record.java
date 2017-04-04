@@ -14,24 +14,23 @@ import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.record.encryptor.Encryptor;
+import de.rub.nds.tlsattacker.tls.record.parser.AbstractRecordParser;
+import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
+import de.rub.nds.tlsattacker.tls.record.preparator.AbstractRecordPreparator;
+import de.rub.nds.tlsattacker.tls.record.preparator.RecordPreparator;
+import de.rub.nds.tlsattacker.tls.record.serializer.AbstractRecordSerializer;
+import de.rub.nds.tlsattacker.tls.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class Record extends ModifiableVariableHolder {
-
-    /**
-     * maximum length configuration for this record
-     */
-    private Integer maxRecordLengthConfig;
-
-    /**
-     * This record should only contain a single Message
-     */
-    private boolean bounceToMessage;
+public class Record extends AbstractRecord {
 
     /**
      * total length of the protocol message (handshake, alert..) included in the
@@ -71,13 +70,6 @@ public class Record extends ModifiableVariableHolder {
     private ModifiableInteger paddingLength;
 
     /**
-     * protocol message bytes transported in the record as seen on the transport
-     * layer if encrypption is active this is encrypted if not its plaintext
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    private ModifiableByteArray protocolMessageBytes;
-
-    /**
      * protocol message bytes after decryption
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
@@ -90,12 +82,6 @@ public class Record extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray unpaddedRecordBytes;
 
-    /**
-     * The decrypted , unpadded, unmaced record bytes
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
-    private ModifiableByteArray cleanProtocolMessageBytes;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
@@ -103,23 +89,10 @@ public class Record extends ModifiableVariableHolder {
     private ModifiableBigInteger sequenceNumber;
 
     public Record(TlsConfig config) {
-        this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
+        super(config);
     }
 
     public Record() {
-    }
-
-    public ModifiableByteArray getCleanProtocolMessageBytes() {
-        return cleanProtocolMessageBytes;
-    }
-
-    public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes,
-                cleanProtocolMessageBytes);
-    }
-
-    public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
     }
 
     public ModifiableInteger getEpoch() {
@@ -164,18 +137,6 @@ public class Record extends ModifiableVariableHolder {
 
     public ModifiableByteArray getPadding() {
         return padding;
-    }
-
-    public ModifiableByteArray getProtocolMessageBytes() {
-        return protocolMessageBytes;
-    }
-
-    public void setProtocolMessageBytes(ModifiableByteArray protocolMessageBytes) {
-        this.protocolMessageBytes = protocolMessageBytes;
-    }
-
-    public void setProtocolMessageBytes(byte[] bytes) {
-        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
     }
 
     public void setLength(ModifiableInteger length) {
@@ -242,14 +203,6 @@ public class Record extends ModifiableVariableHolder {
         this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, plainRecordBytes);
     }
 
-    public Integer getMaxRecordLengthConfig() {
-        return maxRecordLengthConfig;
-    }
-
-    public void setMaxRecordLengthConfig(Integer maxRecordLengthConfig) {
-        this.maxRecordLengthConfig = maxRecordLengthConfig;
-    }
-
     public ModifiableByteArray getUnpaddedRecordBytes() {
         return unpaddedRecordBytes;
     }
@@ -261,5 +214,20 @@ public class Record extends ModifiableVariableHolder {
     public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
         this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes,
                 unpaddedRecordBytes);
+    }
+
+    @Override
+    public RecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor, ProtocolMessageType type) {
+        return new RecordPreparator(context, this, encryptor, type);
+    }
+
+    @Override
+    public RecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
+        return new RecordParser(0, null, ProtocolVersion.SSL2);
+    }
+
+    @Override
+    public RecordSerializer getRecordSerializer() {
+        return new RecordSerializer(this);
     }
 }

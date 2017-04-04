@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.special;
 
 import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import java.util.List;
 
@@ -19,20 +20,20 @@ import java.util.List;
  * 
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class CleanRecordByteSeperator extends Parser<List<Record>> {
+public class CleanRecordByteSeperator extends Parser<List<AbstractRecord>> {
 
-    private final List<Record> records;
+    private final List<AbstractRecord> records;
     private final int defaultMaxSize;
 
-    public CleanRecordByteSeperator(List<Record> records, int defaultMaxSize, int startposition, byte[] array) {
+    public CleanRecordByteSeperator(List<AbstractRecord> records, int defaultMaxSize, int startposition, byte[] array) {
         super(startposition, array);
         this.records = records;
         this.defaultMaxSize = defaultMaxSize;
     }
 
     @Override
-    public List<Record> parse() {
-        for (Record record : records) {
+    public List<AbstractRecord> parse() {
+        for (AbstractRecord record : records) {
             Integer maxData = record.getMaxRecordLengthConfig();
             if (maxData == null) {
                 maxData = defaultMaxSize;

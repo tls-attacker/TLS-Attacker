@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,11 +96,11 @@ public abstract class MessageAction extends TLSAction {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
-    protected List<Record> configuredRecords;
+    protected List<AbstractRecord> configuredRecords;
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
-    protected List<Record> actualRecords;
+    protected List<AbstractRecord> actualRecords;
 
     public MessageAction(List<ProtocolMessage> messages) {
         this.configuredMessages = messages;
@@ -108,15 +109,15 @@ public abstract class MessageAction extends TLSAction {
         this.configuredRecords = null;
     }
 
-    public List<Record> getConfiguredRecords() {
+    public List<AbstractRecord> getConfiguredRecords() {
         return configuredRecords;
     }
 
-    public void setConfiguredRecords(List<Record> configuredRecords) {
+    public void setConfiguredRecords(List<AbstractRecord> configuredRecords) {
         this.configuredRecords = configuredRecords;
     }
 
-    public List<Record> getActualRecords() {
+    public List<AbstractRecord> getActualRecords() {
         return actualRecords;
     }
 
@@ -143,7 +144,7 @@ public abstract class MessageAction extends TLSAction {
             return false;
         } else {
             for (int i = 0; i < actualMessages.size(); i++) {
-                if (actualMessages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
+                if (!actualMessages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
                     return false;
                 }
             }

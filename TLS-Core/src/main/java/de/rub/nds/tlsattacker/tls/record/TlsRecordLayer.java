@@ -13,9 +13,13 @@ import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.tls.protocol.parser.special.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.tls.record.decryptor.Decryptor;
 import de.rub.nds.tlsattacker.tls.record.decryptor.RecordDecryptor;
+import de.rub.nds.tlsattacker.tls.record.encryptor.Encryptor;
 import de.rub.nds.tlsattacker.tls.record.encryptor.RecordEncryptor;
 import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
+import de.rub.nds.tlsattacker.tls.record.preparator.AbstractRecordPreparator;
+import de.rub.nds.tlsattacker.tls.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.tls.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -36,8 +40,8 @@ public class TlsRecordLayer extends RecordLayer {
 
     protected final TlsContext tlsContext;
 
-    private RecordDecryptor decryptor;
-    private RecordEncryptor encryptor;
+    private Decryptor decryptor;
+    private Encryptor encryptor;
 
     private RecordCipher cipher;
 
@@ -54,9 +58,9 @@ public class TlsRecordLayer extends RecordLayer {
      * @return list of parsed records or null, if there was not enough data
      */
     @Override
-    public List<Record> parseRecords(byte[] rawRecordData) {
+    public List<AbstractRecord> parseRecords(byte[] rawRecordData) {
 
-        List<Record> records = new LinkedList<>();
+        List<AbstractRecord> records = new LinkedList<>();
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
             RecordParser parser = new RecordParser(dataPointer, rawRecordData, tlsContext.getSelectedProtocolVersion());
@@ -65,22 +69,19 @@ public class TlsRecordLayer extends RecordLayer {
             dataPointer = parser.getPointer();
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());
-
         return records;
     }
 
     @Override
-    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<Record> records) {
+    public byte[] prepareRecords(byte[] data, ProtocolMessageType contentType, List<AbstractRecord> records) {
         CleanRecordByteSeperator seperator = new CleanRecordByteSeperator(records, tlsContext.getConfig()
                 .getDefaultMaxRecordData(), 0, data);
         records = seperator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (Record record : records) {
-            record.setContentType(contentType.getValue());
-            record.setProtocolVersion(tlsContext.getSelectedProtocolVersion().getValue());
-            encryptor.encrypt(record);
-            record.setLength(record.getProtocolMessageBytes().getValue().length);
-            RecordSerializer serializer = new RecordSerializer(record);
+        for (AbstractRecord record : records) {
+            AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext, encryptor, contentType);
+            preparator.prepare();
+            AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -108,7 +109,7 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     @Override
-    public void decryptRecord(Record record) {
+    public void decryptRecord(AbstractRecord record) {
         decryptor.decrypt(record);
     }
 

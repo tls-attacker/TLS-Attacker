@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateMessagePreparatorTest;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -68,7 +69,7 @@ public class TLSActionExecutorTest {
     public void testSendMessages() {
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(message);
-        List<Record> records = new LinkedList<>();
+        List<AbstractRecord> records = new LinkedList<>();
         records.add(record);
         executor.sendMessages(protocolMessages, records);
         byte[] sendByte = ((FakeTransportHandler) context.getTransportHandler()).getSendByte();
