@@ -35,8 +35,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -185,35 +183,14 @@ public class TlsClientTest {
             E.printStackTrace();
         }
         String workflowString = tlsContext.getWorkflowTrace().toString();
-        boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+        boolean result = tlsContext.getWorkflowTrace().configuredLooksLikeActual();
         if (!result) {
             LOGGER.info(workflowString);
             return result;
         }
         return result;
     }
-
-    private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
-        int counter = 0;
-        for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
-            if (counter >= trace.getAllActualMessages().size()) {
-                return false;
-            }
-            ProtocolMessage receivedMessage = trace.getAllActualMessages().get(counter);
-            if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
-                break;
-            }
-            if (configuredMessage.getClass() != receivedMessage.getClass()) {
-                if (configuredMessage.isRequired()) {
-                    return false;
-                }
-            } else {
-                counter++;
-            }
-        }
-        return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
-    }
-
+    
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         TlsConfig config = clientCommandConfig.createConfig();

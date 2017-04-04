@@ -380,6 +380,18 @@ public class WorkflowTrace implements Serializable {
         return false;
     }
 
+    public boolean configuredLooksLikeActual() {
+        for (TLSAction action : tlsActions) {
+            if (action instanceof MessageAction) {
+                MessageAction messageAction = (MessageAction) action;
+                if (!messageAction.configuredLooksLikeActual()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public String getName() {
         return name;
     }

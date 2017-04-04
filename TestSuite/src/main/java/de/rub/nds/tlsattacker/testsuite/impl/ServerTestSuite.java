@@ -203,7 +203,7 @@ public class ServerTestSuite extends TestSuite {
                 WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                         tlsConfig.getExecutorType(), tlsContext);
                 workflowExecutor.executeWorkflow();
-                if (isWorkflowTraceReasonable(tlsContext.getWorkflowTrace())) {
+                if (tlsContext.getWorkflowTrace().configuredLooksLikeActual()) {
                     LOGGER.info("    {} passed", xmlFile.getName());
                     List<ModifiableVariableField> mvfs = ModifiableVariableAnalyzer
                             .getAllModifiableVariableFieldsRecursively(tlsContext.getWorkflowTrace());
@@ -233,28 +233,6 @@ public class ServerTestSuite extends TestSuite {
         }
 
         return succesful;
-    }
-
-    // TODO duplicate code
-    private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
-        int counter = 0;
-        for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
-            if (counter >= trace.getAllActualMessages().size()) {
-                return false;
-            }
-            ProtocolMessage receivedMessage = trace.getAllActualMessages().get(counter);
-            if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
-                break;
-            }
-            if (configuredMessage.getClass() != receivedMessage.getClass()) {
-                if (configuredMessage.isRequired()) {
-                    return false;
-                }
-            } else {
-                counter++;
-            }
-        }
-        return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
     class DirectoryFilter implements FileFilter {

@@ -132,6 +132,25 @@ public abstract class MessageAction extends TLSAction {
         this.configuredMessages = configuredMessages;
     }
 
+    /**
+     * Checks that every configured message also appears in the actual messages
+     * and no additional messages are present
+     * 
+     * @return
+     */
+    public boolean configuredLooksLikeActual() {
+        if (actualMessages.size() != configuredMessages.size()) {
+            return false;
+        } else {
+            for (int i = 0; i < actualMessages.size(); i++) {
+                if (actualMessages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void reset() {
         executed = false;
@@ -164,5 +183,4 @@ public abstract class MessageAction extends TLSAction {
         }
         return Objects.equals(this.actualMessages, other.actualMessages);
     }
-
 }
