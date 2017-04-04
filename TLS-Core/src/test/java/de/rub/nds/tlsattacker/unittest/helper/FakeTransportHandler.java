@@ -45,7 +45,9 @@ public class FakeTransportHandler extends TransportHandler {
 
     @Override
     public byte[] fetchData() throws IOException {
-        return fetchableByte;
+        byte[] answer = fetchableByte;
+        fetchableByte = new byte[0];
+        return answer;
     }
 
     @Override

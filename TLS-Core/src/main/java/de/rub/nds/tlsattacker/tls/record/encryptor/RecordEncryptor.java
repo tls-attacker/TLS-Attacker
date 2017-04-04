@@ -29,7 +29,7 @@ public class RecordEncryptor extends Encryptor<Record> {
     private RecordCipher recordCipher;
 
     private int sequenceNumber = 0;
-    
+
     public RecordEncryptor(RecordCipher recordCipher) {
         this.recordCipher = recordCipher;
     }
@@ -52,7 +52,8 @@ public class RecordEncryptor extends Encryptor<Record> {
                 stream.write(ArrayConverter.intToBytes(sequenceNumber, RecordByteLength.SEQUENCE_NUMBER));
                 stream.write(record.getContentType().getValue());
                 stream.write(record.getProtocolVersion().getValue());
-                stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,RecordByteLength.RECORD_LENGTH)); //TODO
+                stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
+                        RecordByteLength.RECORD_LENGTH)); // TODO
                 stream.write(record.getCleanProtocolMessageBytes().getValue());
                 toBeMaced = stream.toByteArray();
                 sequenceNumber++;

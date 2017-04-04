@@ -35,7 +35,6 @@ import static org.junit.Assert.*;
 public class ChangeCompressionActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private ChangeCompressionAction action;

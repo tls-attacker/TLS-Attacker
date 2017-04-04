@@ -174,7 +174,8 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param data correctly padded data
+     * @param data
+     *            correctly padded data
      * @return
      * @throws CryptoException
      */
@@ -199,7 +200,8 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes ciphertexts and decrypts it
      *
-     * @param data correctly padded data
+     * @param data
+     *            correctly padded data
      * @return
      * @throws CryptoException
      */
@@ -318,9 +320,9 @@ public final class RecordBlockCipher extends RecordCipher {
             if (offset != keyBlock.length) {
                 throw new CryptoException("Offset exceeded the generated key block length");
             } // mac has to be put into one or more blocks, depending on the
-            // MAC/block
-            // length
-            // additionally, there is a need for one explicit IV block
+              // MAC/block
+              // length
+              // additionally, there is a need for one explicit IV block
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
                     * decryptCipher.getBlockSize());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

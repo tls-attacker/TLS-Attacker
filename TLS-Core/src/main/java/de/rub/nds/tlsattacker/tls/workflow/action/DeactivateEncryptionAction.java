@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 
@@ -16,16 +17,17 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ToggleEncryptionAction extends TLSAction {
+public class DeactivateEncryptionAction extends TLSAction {
 
-    public ToggleEncryptionAction() {
+    public DeactivateEncryptionAction() {
     }
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        // tlsContext.getRecordHandler().setEncryptSending(!tlsContext.getRecordHandler().isEncryptSending());
+        tlsContext.getRecordHandler().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordHandler().updateDecryptionCipher();
+        tlsContext.getRecordHandler().updateEncryptionCipher();
         executed = true;
-        throw new UnsupportedOperationException("Currently not supported");
     }
 
     @Override
@@ -35,7 +37,7 @@ public class ToggleEncryptionAction extends TLSAction {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof ToggleEncryptionAction;
+        return o instanceof DeactivateEncryptionAction;
     }
 
     @Override

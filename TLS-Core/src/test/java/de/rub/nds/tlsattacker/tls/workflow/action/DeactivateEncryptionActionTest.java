@@ -31,15 +31,14 @@ import static org.junit.Assert.*;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ToggleEncryptionActionTest {
+public class DeactivateEncryptionActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
-    private ToggleEncryptionAction action;
+    private DeactivateEncryptionAction action;
 
-    public ToggleEncryptionActionTest() {
+    public DeactivateEncryptionActionTest() {
     }
 
     @Before
@@ -50,7 +49,7 @@ public class ToggleEncryptionActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(tlsContext));
-        action = new ToggleEncryptionAction();
+        action = new DeactivateEncryptionAction();
     }
 
     @After
@@ -58,21 +57,17 @@ public class ToggleEncryptionActionTest {
     }
 
     /**
-     * Test of execute method, of class ToggleEncryptionAction.
+     * Test of execute method, of class DeactivateEncryptionAction.
      */
     @Test
     public void testExecute() throws Exception {
-        // TODOassertFalse(tlsContext.getRecordHandler().isEncryptSending());
         action.execute(tlsContext, executor);
-        // TODOassertTrue(tlsContext.getRecordHandler().isEncryptSending());
         assertTrue(action.isExecuted());
-        action.reset();
-        action.execute(tlsContext, executor);
-        // TODOassertFalse(tlsContext.getRecordHandler().isEncryptSending());
+        // TODO Check that decryption is disabled
     }
 
     /**
-     * Test of reset method, of class ToggleEncryptionAction.
+     * Test of reset method, of class DeactivateEncryptionAction.
      */
     @Test
     public void testReset() {
@@ -90,7 +85,7 @@ public class ToggleEncryptionActionTest {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
         TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
-                ToggleEncryptionAction.class);
+                DeactivateEncryptionAction.class);
         assertEquals(action, action2);
     }
 }

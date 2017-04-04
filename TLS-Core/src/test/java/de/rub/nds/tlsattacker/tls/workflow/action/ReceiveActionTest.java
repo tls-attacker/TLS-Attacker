@@ -38,7 +38,6 @@ import static org.junit.Assert.*;
 public class ReceiveActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private ReceiveAction action;

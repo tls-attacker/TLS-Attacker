@@ -53,7 +53,8 @@ public class DefaultActionExecutor extends ActionExecutor {
     /**
      * Sends a list of ProtocolMessage
      *
-     * @param messages Protocolmessages to send
+     * @param messages
+     *            Protocolmessages to send
      * @param records
      * @return
      *
@@ -103,7 +104,8 @@ public class DefaultActionExecutor extends ActionExecutor {
      * Chooses the correct handler for the ProtocolMessage and returns the
      * preparedMessage bytes
      *
-     * @param message Message to prepare
+     * @param message
+     *            Message to prepare
      * @return Prepared message bytes for the ProtocolMessage
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
@@ -153,9 +155,12 @@ public class DefaultActionExecutor extends ActionExecutor {
      * Sends all messageBytes in the MessageByteCollector with the specified
      * TransportHandler
      *
-     * @param handler TransportHandler to send the Data with
-     * @param messageBytesCollector MessageBytes to send
-     * @throws IOException Thrown if something goes wrong while sending
+     * @param handler
+     *            TransportHandler to send the Data with
+     * @param messageBytesCollector
+     *            MessageBytes to send
+     * @throws IOException
+     *             Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
@@ -166,7 +171,8 @@ public class DefaultActionExecutor extends ActionExecutor {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages Messages which should be received
+     * @param expectedMessages
+     *            Messages which should be received
      * @return Actually received Messages
      */
     @Override
@@ -263,7 +269,8 @@ public class DefaultActionExecutor extends ActionExecutor {
     /**
      * Returns true if the List contains an ArbitraryMessage
      *
-     * @param protocolMessages Protocol messages to search in
+     * @param protocolMessages
+     *            Protocol messages to search in
      * @return True if it contains atleast one ArbitraryMessage
      */
     private boolean containsArbitaryMessage(List<ProtocolMessage> protocolMessages) {
@@ -330,7 +337,8 @@ public class DefaultActionExecutor extends ActionExecutor {
         for (Record record : records) {
             context.getRecordHandler().decryptRecord(record);
             if (record.getContentType().getValue() == ProtocolMessageType.CHANGE_CIPHER_SPEC.getValue()) {
-                context.getRecordHandler().updateDecryptionCipher();//TODO unfortunate
+                context.getRecordHandler().updateDecryptionCipher();// TODO
+                                                                    // unfortunate
             }
         }
     }

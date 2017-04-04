@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ByteExplicitValueModification;
+import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
@@ -34,19 +35,24 @@ import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class WorkflowTraceSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * Test of write method, of class WorkflowTraceSerializer.
-     * 
+     *
      * @throws java.lang.Exception
      */
     // TODO Test all messages with all modifiable variables
@@ -58,6 +64,7 @@ public class WorkflowTraceSerializerTest {
         // variable
         List<Record> records = new LinkedList<Record>();
         Record record = new Record();
+        record.setContentType(new ModifiableByte());
         record.getContentType().setModification(new ByteExplicitValueModification(Byte.MIN_VALUE));
         record.setMaxRecordLengthConfig(5);
         records.add(record);
@@ -88,7 +95,7 @@ public class WorkflowTraceSerializerTest {
         try {
             WorkflowTrace trace = new WorkflowTrace();
             trace.add(new SendAction(new ClientHelloMessage(new TlsConfig())));
-            File f = new File("workflowtrace.unittest");
+            File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());
             f.delete();

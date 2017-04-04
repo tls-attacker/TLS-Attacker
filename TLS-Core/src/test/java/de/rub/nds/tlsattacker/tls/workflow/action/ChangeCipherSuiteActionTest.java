@@ -35,7 +35,6 @@ import org.junit.Test;
 public class ChangeCipherSuiteActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private ChangeCipherSuiteAction action;
@@ -83,10 +82,6 @@ public class ChangeCipherSuiteActionTest {
     public void testGetOldValue() {
         action.execute(tlsContext, executor);
         assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
-        action.execute(dtlsContext, executor);
-        assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-
     }
 
     /**
@@ -96,10 +91,7 @@ public class ChangeCipherSuiteActionTest {
     public void testExecute() {
         action.execute(tlsContext, executor);
         assertEquals(tlsContext.getSelectedCipherSuite(), action.getNewValue());
-        // TODO does not check if recordcipher is reinitialised
-        action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
-        action.execute(dtlsContext, executor);
-        assertEquals(dtlsContext.getSelectedCipherSuite(), action.getNewValue());
+        // TODO check that cipher is reinitialised
         assertTrue(action.isExecuted());
     }
 

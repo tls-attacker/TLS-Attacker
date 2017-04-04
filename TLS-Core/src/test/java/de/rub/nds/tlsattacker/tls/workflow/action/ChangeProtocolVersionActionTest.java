@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
 public class ChangeProtocolVersionActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private ChangeProtocolVersionAction action;

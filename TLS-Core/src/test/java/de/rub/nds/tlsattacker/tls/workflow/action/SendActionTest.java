@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -24,6 +25,7 @@ import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXB;
 import org.junit.After;
@@ -38,7 +40,6 @@ import static org.junit.Assert.*;
 public class SendActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private SendAction action;
@@ -59,6 +60,7 @@ public class SendActionTest {
         tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordHandler().setRecordCipher(new RecordBlockCipher(tlsContext));
         action = new SendAction(alert);
+        action.setConfiguredRecords(new LinkedList<Record>());
     }
 
     @After

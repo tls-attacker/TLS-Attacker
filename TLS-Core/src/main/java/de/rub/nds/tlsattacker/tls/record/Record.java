@@ -114,7 +114,8 @@ public class Record extends ModifiableVariableHolder {
     }
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.cleanProtocolMessageBytes,
+                cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -258,6 +259,7 @@ public class Record extends ModifiableVariableHolder {
     }
 
     public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
-        this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes, unpaddedRecordBytes);
+        this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes,
+                unpaddedRecordBytes);
     }
 }

@@ -37,7 +37,6 @@ import org.junit.Test;
 public class ChangeClientCertificateActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private ChangeClientCertificateAction action;

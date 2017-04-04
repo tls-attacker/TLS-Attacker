@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.ToggleEncryptionAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.DeactivateEncryptionAction;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class WorkflowTrace implements Serializable {
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
-            @XmlElement(type = ToggleEncryptionAction.class, name = "ToggleEncryptionAction"),
+            @XmlElement(type = DeactivateEncryptionAction.class, name = "ToggleEncryptionAction"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
             @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),

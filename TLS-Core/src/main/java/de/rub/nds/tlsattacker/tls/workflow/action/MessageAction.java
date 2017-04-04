@@ -92,8 +92,13 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     protected List<ProtocolMessage> actualMessages;
 
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     protected List<Record> configuredRecords;
-
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     protected List<Record> actualRecords;
 
     public MessageAction(List<ProtocolMessage> messages) {
@@ -101,11 +106,8 @@ public abstract class MessageAction extends TLSAction {
         actualMessages = new LinkedList<>();
         actualRecords = new LinkedList<>();
         this.configuredRecords = null;
-        this.actualRecords = null;
     }
 
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     public List<Record> getConfiguredRecords() {
         return configuredRecords;
     }
@@ -114,8 +116,6 @@ public abstract class MessageAction extends TLSAction {
         this.configuredRecords = configuredRecords;
     }
 
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
     public List<Record> getActualRecords() {
         return actualRecords;
     }
