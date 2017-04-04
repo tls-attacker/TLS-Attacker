@@ -36,7 +36,7 @@ public class RecordHandlerTest {
         WorkflowTrace trace = factory.createHandshakeWorkflow();
         config.setWorkflowTrace(trace);
         TlsContext context = new TlsContext(config);
-        context.setRecordHandler(new TlsRecordLayer(context));
+        context.setRecordLayer(new TlsRecordLayer(context));
         recordHandler = context.getRecordLayer();
     }
 

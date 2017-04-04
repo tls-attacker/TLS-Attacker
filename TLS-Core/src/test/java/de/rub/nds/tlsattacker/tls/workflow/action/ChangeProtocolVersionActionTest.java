@@ -46,7 +46,7 @@ public class ChangeProtocolVersionActionTest {
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordHandler(new TlsRecordLayer(tlsContext));
+        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
     }

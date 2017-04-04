@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.record.layer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
@@ -20,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.record.decryptor.Decryptor;
 import de.rub.nds.tlsattacker.tls.record.decryptor.RecordDecryptor;
 import de.rub.nds.tlsattacker.tls.record.encryptor.Encryptor;
 import de.rub.nds.tlsattacker.tls.record.encryptor.RecordEncryptor;
+import de.rub.nds.tlsattacker.tls.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.tls.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.tls.record.serializer.AbstractRecordSerializer;
@@ -72,6 +74,11 @@ public class TlsRecordLayer extends RecordLayer {
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 // TODO Could not parse as record try parsing Blob
+                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
+                        tlsContext.getSelectedProtocolVersion());
+                AbstractRecord record = blobParser.parse();
+                records.add(record);
+                dataPointer = blobParser.getPointer();
             }
         }
         LOGGER.debug("The protocol message(s) were collected from {} record(s). ", records.size());

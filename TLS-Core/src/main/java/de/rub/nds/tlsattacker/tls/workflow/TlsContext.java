@@ -505,7 +505,7 @@ public class TlsContext {
         return recordHandler;
     }
 
-    public void setRecordHandler(TlsRecordLayer recordHandler) {
+    public void setRecordLayer(TlsRecordLayer recordHandler) {
         this.recordHandler = recordHandler;
     }
 

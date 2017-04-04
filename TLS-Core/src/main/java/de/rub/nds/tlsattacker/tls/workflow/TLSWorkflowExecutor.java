@@ -34,7 +34,7 @@ public class TLSWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         context.setTransportHandler(createTransportHandler());
-        context.setRecordHandler(new TlsRecordLayer(context));
+        context.setRecordLayer(new TlsRecordLayer(context));
         context.getWorkflowTrace().reset();
         ActionExecutor actionExecutor = new DefaultActionExecutor(context);
         List<TLSAction> tlsActions = context.getWorkflowTrace().getTLSActions();

@@ -76,7 +76,7 @@ public class ChangeCipherSpecHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        context.setRecordHandler(new TlsRecordLayer(context));
+        context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedCipherSuite(CipherSuite.getImplemented().get(0));
         context.setTalkingConnectionEnd(ConnectionEnd.CLIENT);
         handler.adjustTLSContext(message);
