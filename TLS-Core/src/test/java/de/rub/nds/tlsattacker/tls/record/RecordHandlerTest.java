@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.tls.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -27,7 +28,7 @@ import static org.junit.Assert.*;
  */
 public class RecordHandlerTest {
 
-    TlsRecordLayer recordHandler;
+    RecordLayer recordHandler;
 
     public RecordHandlerTest() {
         Security.addProvider(new BouncyCastleProvider());
@@ -35,6 +36,7 @@ public class RecordHandlerTest {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createHandshakeWorkflow();
         config.setWorkflowTrace(trace);
+        config.setRecordLayerType(RecordLayerType.RECORD);
         TlsContext context = new TlsContext(config);
         context.setRecordLayer(new TlsRecordLayer(context));
         recordHandler = context.getRecordLayer();

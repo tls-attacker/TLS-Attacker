@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
@@ -178,7 +179,7 @@ public final class TlsConfig {
      * If the Default generated workflowtrace should contain Application data
      * send by servers
      */
-    private boolean serverSendsApplicationData;
+    private boolean serverSendsApplicationData = false;
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
@@ -288,6 +289,11 @@ public final class TlsConfig {
      */
     private boolean createIndividualRecords = true;
 
+    /**
+     * Which recordLayer should be used
+     */
+    private RecordLayerType recordLayerType = RecordLayerType.RECORD;
+
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -323,6 +329,14 @@ public final class TlsConfig {
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
 
+    }
+
+    public RecordLayerType getRecordLayerType() {
+        return recordLayerType;
+    }
+
+    public void setRecordLayerType(RecordLayerType recordLayerType) {
+        this.recordLayerType = recordLayerType;
     }
 
     public boolean isFlushOnMessageTypeChange() {
