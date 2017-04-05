@@ -40,7 +40,6 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
     @Override
     public byte[] serializeProtocolMessageContent() {
         writeData(msg);
-        appendBytes(msg.getData().getValue());
         return getAlreadySerialized();
     }
 
