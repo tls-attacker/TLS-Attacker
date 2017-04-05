@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.ChangeCipherSpecByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +22,18 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition
+     *            Position in the array where the ProtocolMessageParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the ProtocolMessageParser is supposed to
+     *            parse
+     * @param version
+     *            Version of the Protocol
+     */
     public ChangeCipherSpecParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -30,8 +41,20 @@ public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSp
     @Override
     protected ChangeCipherSpecMessage parseMessageContent() {
         ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
-        msg.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        parseCcsProtocolType(msg);
         return msg;
+    }
+
+    /**
+     * Reads the next bytes as the CcsProtocolType and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseCcsProtocolType(ChangeCipherSpecMessage msg) {
+        msg.setCcsProtocolType(parseByteField(ChangeCipherSpecByteLength.TYPE_LENGTH));
+        LOGGER.debug("CcsProtocolType: " + msg.getCcsProtocolType().getValue());
     }
 
 }

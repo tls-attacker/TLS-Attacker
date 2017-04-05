@@ -20,44 +20,48 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @param <T>
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final HelloMessage message;
+    private final HelloMessage msg;
 
     public HelloMessagePreparator(TlsContext context, HelloMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     protected void prepareRandom() {
         byte[] random = new byte[HandshakeByteLength.RANDOM];
         RandomHelper.getRandom().nextBytes(random);
-        message.setRandom(random);
+        msg.setRandom(random);
+        LOGGER.debug("Random: " + Arrays.toString(msg.getRandom().getValue()));
     }
 
     protected void prepareUnixTime() {
         final long unixTime = TimeHelper.getTime();
-        message.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+        msg.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
+        LOGGER.debug("UnixTime: " + Arrays.toString(msg.getUnixTime().getValue()));
     }
 
     protected void prepareSessionIDLength() {
-        message.setSessionIdLength(message.getSessionId().getValue().length);
+        msg.setSessionIdLength(msg.getSessionId().getValue().length);
+        LOGGER.debug("SessionIdLength: " + msg.getSessionIdLength().getValue());
     }
 
     protected void prepareExtensions() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ExtensionMessage extensionMessage : message.getExtensions()) {
+        for (ExtensionMessage extensionMessage : msg.getExtensions()) {
             ExtensionHandler handler = extensionMessage.getHandler(context);
             handler.getPreparator(extensionMessage).prepare();
             try {
@@ -66,10 +70,12 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
                 throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
             }
         }
-        message.setExtensionBytes(stream.toByteArray());
+        msg.setExtensionBytes(stream.toByteArray());
+        LOGGER.debug("ExtensionBytes: " + Arrays.toString(msg.getExtensionBytes().getValue()));
     }
 
     protected void prepareExtensionLength() {
-        message.setExtensionsLength(message.getExtensionBytes().getValue().length);
+        msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
     }
 }

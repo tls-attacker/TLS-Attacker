@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,18 +23,41 @@ public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessag
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param pointer
+     *            Position in the array where the HandshakeMessageParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the HandshakeMessageParser is supposed to
+     *            parse
+     * @param version
+     *            Version of the Protocol
+     */
     public FinishedMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.FINISHED, version);
     }
 
     @Override
     protected void parseHandshakeMessageContent(FinishedMessage msg) {
-        msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
+        parseVerifyData(msg);
     }
 
     @Override
     protected FinishedMessage createHandshakeMessage() {
         return new FinishedMessage();
+    }
+
+    /**
+     * Reads the next bytes as the VerifyData and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseVerifyData(FinishedMessage msg) {
+        msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
+        LOGGER.debug("VerifiyData: " + Arrays.toString(msg.getVerifyData().getValue()));
     }
 
 }

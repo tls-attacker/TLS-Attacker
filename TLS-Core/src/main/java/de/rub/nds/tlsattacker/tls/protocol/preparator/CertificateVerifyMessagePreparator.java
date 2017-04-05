@@ -12,15 +12,13 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.BadRandom;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.util.List;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,20 +30,22 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final CertificateVerifyMessage message;
+    private SignatureAndHashAlgorithm algorithm;
+    private byte[] signature;
+    private final CertificateVerifyMessage msg;
 
     public CertificateVerifyMessagePreparator(TlsContext context, CertificateVerifyMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        SignatureAndHashAlgorithm algorithm = selectSigHashAlgorithm();
-        byte[] signature = createSignature();
-        message.setSignature(signature);
-        message.setSignatureLength(message.getSignature().getValue().length);
-        message.setSignatureHashAlgorithm(algorithm.getByteValue());
+        algorithm = selectSigHashAlgorithm();
+        signature = createSignature();
+        prepareSignature(msg);
+        prepareSignatureLength(msg);
+        prepareSignatureHashAlgorithm(msg);
     }
 
     private SignatureAndHashAlgorithm selectSigHashAlgorithm() {
@@ -62,13 +62,28 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     private byte[] createSignature() {
         try {
             byte[] rawHandshakeBytes = context.getDigest().getRawBytes();
-            SignatureAndHashAlgorithm algorithm = selectSigHashAlgorithm();
-            Signature signature = Signature.getInstance(algorithm.getJavaName());
-            signature.initSign(context.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());
-            signature.update(rawHandshakeBytes);
-            return signature.sign();
+            algorithm = selectSigHashAlgorithm();
+            Signature tempSignature = Signature.getInstance(algorithm.getJavaName());
+            tempSignature.initSign(context.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());
+            tempSignature.update(rawHandshakeBytes);
+            return tempSignature.sign();
         } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new PreparationException("Could not create Signature!", ex);
         }
+    }
+
+    private void prepareSignature(CertificateVerifyMessage msg) {
+        msg.setSignature(signature);
+        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
+    }
+
+    private void prepareSignatureLength(CertificateVerifyMessage msg) {
+        msg.setSignatureLength(msg.getSignature().getValue().length);
+        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+    }
+
+    private void prepareSignatureHashAlgorithm(CertificateVerifyMessage msg) {
+        msg.setSignatureHashAlgorithm(algorithm.getByteValue());
+        LOGGER.debug("SignatureHasAlgorithm: " + Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
     }
 }

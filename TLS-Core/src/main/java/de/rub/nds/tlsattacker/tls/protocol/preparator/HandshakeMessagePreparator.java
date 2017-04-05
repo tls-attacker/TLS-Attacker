@@ -9,10 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,36 +24,57 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final HandshakeMessage message;
+    private HandshakeMessageSerializer serializer;
+    private final HandshakeMessage msg;
 
     public HandshakeMessagePreparator(TlsContext context, T message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     private void prepareMessageLength(int length) {
-        message.setLength(length);
+        msg.setLength(length);
+        LOGGER.debug("Length: " + msg.getLength().getValue());
     }
 
     private void prepareMessageType(HandshakeMessageType type) {
-        message.setType(type.getValue());
+        msg.setType(type.getValue());
+        LOGGER.debug("Type: " + msg.getType().getValue());
     }
 
     @Override
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
         // Ugly but only temporary
-        HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getHandler(context).getSerializer(
-                message);
+        serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(msg);
 
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
-        if (context.getSelectedProtocolVersion().isDTLS()) {
-            message.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
-            message.setFragmentOffset(0);
-            message.setMessageSeq(context.getSequenceNumber());
+        if (isDTLS()) {
+            prepareFragmentLenth(msg);
+            prepareFragmentOffset(msg);
+            prepareMessageSeq(msg);
         }
-        prepareMessageType(message.getHandshakeMessageType());
+        prepareMessageType(msg.getHandshakeMessageType());
     }
 
     protected abstract void prepareHandshakeMessageContents();
+
+    private void prepareFragmentLenth(HandshakeMessage msg) {
+        msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
+        LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
+    }
+
+    private void prepareFragmentOffset(HandshakeMessage msg) {
+        msg.setFragmentOffset(0);
+        LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
+    }
+
+    private void prepareMessageSeq(HandshakeMessage msg) {
+        msg.setMessageSeq(context.getSequenceNumber());
+        LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
+    }
+
+    private boolean isDTLS() {
+        return context.getSelectedProtocolVersion().isDTLS();
+    }
 }
