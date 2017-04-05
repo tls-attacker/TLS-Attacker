@@ -22,17 +22,9 @@ public class BlobDecryptor extends Decryptor<BlobRecord> {
     }
 
     @Override
-    public void decrypt(BlobRecord object) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public void decrypt(BlobRecord record) {
+        byte[] decrypted = recordCipher.decrypt(record.getProtocolMessageBytes().getValue());
+        record.setCleanProtocolMessageBytes(decrypted);
     }
 
 }

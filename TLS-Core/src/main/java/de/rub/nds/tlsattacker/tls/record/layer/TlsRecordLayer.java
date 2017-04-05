@@ -124,4 +124,9 @@ public class TlsRecordLayer extends RecordLayer {
         decryptor.decrypt(record);
     }
 
+    @Override
+    public AbstractRecord getFreshRecord() {
+        return new Record(tlsContext.getConfig());
+    }
+
 }

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.parser.special.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.BlobRecord;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.tls.record.decryptor.BlobDecryptor;
@@ -97,6 +98,11 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public void updateDecryptionCipher() {
         decryptor.setRecordCipher(cipher);
+    }
+
+    @Override
+    public AbstractRecord getFreshRecord() {
+        return new BlobRecord();
     }
 
 }

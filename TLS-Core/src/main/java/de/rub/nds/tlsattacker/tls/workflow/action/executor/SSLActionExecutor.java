@@ -13,12 +13,12 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ParserResult;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
-import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.MessageBytesCollector;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -30,29 +30,28 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This ActionExecutor tries to perform Actions in a way that imitates a TLS
- * Client/Server.
+ * An ActionExecutor for SSL, this is nessecary since the default ActionExecutor
+ * is unable to guess which Handler should be used when receiving Messages since
+ * SSL2 does not have a record layer.
  *
- * @author Robert Merget - robert.merget@rub.de
+ * @author Robert Merget <robert.merget@rub.de>
  */
-public class DefaultActionExecutor extends ActionExecutor {
+public class SSLActionExecutor extends ActionExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(DefaultActionExecutor.class);
+    private static final Logger LOGGER = LogManager.getLogger(SSLActionExecutor.class);
+
+    private boolean proceed = true;
 
     private final TlsContext context;
 
-    private boolean proceed;
-
-    public DefaultActionExecutor(TlsContext context) {
-        this.proceed = true;
+    public SSLActionExecutor(TlsContext context) {
         this.context = context;
     }
 
     /**
      * Sends a list of ProtocolMessage
      *
-     * @param messages
-     *            Protocolmessages to send
+     * @param messages Protocolmessages to send
      * @param records
      * @return
      *
@@ -94,6 +93,7 @@ public class DefaultActionExecutor extends ActionExecutor {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
         // TODO Parse our messages
         return new MessageActionResult(records, messages);
     }
@@ -102,8 +102,7 @@ public class DefaultActionExecutor extends ActionExecutor {
      * Chooses the correct handler for the ProtocolMessage and returns the
      * preparedMessage bytes
      *
-     * @param message
-     *            Message to prepare
+     * @param message Message to prepare
      * @return Prepared message bytes for the ProtocolMessage
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
@@ -146,12 +145,9 @@ public class DefaultActionExecutor extends ActionExecutor {
      * Sends all messageBytes in the MessageByteCollector with the specified
      * TransportHandler
      *
-     * @param handler
-     *            TransportHandler to send the Data with
-     * @param messageBytesCollector
-     *            MessageBytes to send
-     * @throws IOException
-     *             Thrown if something goes wrong while sending
+     * @param handler TransportHandler to send the Data with
+     * @param messageBytesCollector MessageBytes to send
+     * @throws IOException Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
@@ -162,8 +158,7 @@ public class DefaultActionExecutor extends ActionExecutor {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages
-     *            Messages which should be received
+     * @param expectedMessages Messages which should be received
      * @return Actually received Messages
      */
     @Override
@@ -219,33 +214,14 @@ public class DefaultActionExecutor extends ActionExecutor {
         while (dataPointer < cleanProtocolMessageBytes.length) {
             ParserResult result = null;
             try {
-                HandshakeMessageType handshakeMessageType = HandshakeMessageType
-                        .getMessageType(cleanProtocolMessageBytes[dataPointer]);
-                ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
+
+                ProtocolMessageHandler pmh = new SSL2ServerHelloHandler(context);
                 result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
 
             } catch (ParserException | AdjustmentException E) {
-                LOGGER.log(Level.WARN,
-                        "Could not parse Message as a CorrectMessage, parsing as UnknownHandshakeMessage instead!", E);
-                // Parsing as the specified Message did not work, try parsing it
-                // as an Unknown message
-                try {
-                    if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
-                        HandshakeMessageType handshakeType = HandshakeMessageType.UNKNOWN;
-                        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeType);
-                        result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
-                    }
-                } catch (ParserException ex) {
-                    LOGGER.log(Level.WARN,
-                            "Could not parse Message as UnknownHandshakeMessage, parsing as UnknownMessage instead!",
-                            ex);
-                } finally {
-                    if (result == null) {
-                        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN,
-                                null);
-                        result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
-                    }
-                }
+                ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN,
+                        null);
+                result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
             }
             dataPointer = result.getParserPosition();
             LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
@@ -308,9 +284,9 @@ public class DefaultActionExecutor extends ActionExecutor {
         for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
             if (record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                context.getRecordLayer().updateDecryptionCipher();// TODO
-                // unfortunate
+                context.getRecordLayer().updateDecryptionCipher();// TODO unfortunate
             }
         }
     }
+
 }

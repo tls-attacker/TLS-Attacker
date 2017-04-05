@@ -22,8 +22,9 @@ public class BlobEncryptor extends Encryptor<BlobRecord> {
     }
 
     @Override
-    public void encrypt(BlobRecord object) {
-
+    public void encrypt(BlobRecord record) {
+        byte[] encrypted = recordCipher.encrypt(record.getCleanProtocolMessageBytes().getValue());
+        record.setProtocolMessageBytes(encrypted);
     }
 
 }

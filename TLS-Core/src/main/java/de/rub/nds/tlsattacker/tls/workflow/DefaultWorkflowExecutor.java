@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.DefaultActionExecutor;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         context.setTransportHandler(createTransportHandler());
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getConfig().getRecordLayerType(), context));
         context.getWorkflowTrace().reset();
-        ActionExecutor actionExecutor = new DefaultActionExecutor(context);
+        ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(), context);
         List<TLSAction> tlsActions = context.getWorkflowTrace().getTLSActions();
         for (TLSAction action : tlsActions) {
             try {

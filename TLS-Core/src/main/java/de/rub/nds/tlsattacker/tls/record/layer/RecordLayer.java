@@ -29,4 +29,6 @@ public abstract class RecordLayer {
     public abstract void updateEncryptionCipher();
 
     public abstract void updateDecryptionCipher();
+
+    public abstract AbstractRecord getFreshRecord();
 }
