@@ -51,7 +51,8 @@ public class SSLActionExecutor extends ActionExecutor {
     /**
      * Sends a list of ProtocolMessage
      *
-     * @param messages Protocolmessages to send
+     * @param messages
+     *            Protocolmessages to send
      * @param records
      * @return
      *
@@ -102,7 +103,8 @@ public class SSLActionExecutor extends ActionExecutor {
      * Chooses the correct handler for the ProtocolMessage and returns the
      * preparedMessage bytes
      *
-     * @param message Message to prepare
+     * @param message
+     *            Message to prepare
      * @return Prepared message bytes for the ProtocolMessage
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
@@ -145,9 +147,12 @@ public class SSLActionExecutor extends ActionExecutor {
      * Sends all messageBytes in the MessageByteCollector with the specified
      * TransportHandler
      *
-     * @param handler TransportHandler to send the Data with
-     * @param messageBytesCollector MessageBytes to send
-     * @throws IOException Thrown if something goes wrong while sending
+     * @param handler
+     *            TransportHandler to send the Data with
+     * @param messageBytesCollector
+     *            MessageBytes to send
+     * @throws IOException
+     *             Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
@@ -158,7 +163,8 @@ public class SSLActionExecutor extends ActionExecutor {
      * Receives messages, and tries to receive the messages specified in
      * messages
      *
-     * @param expectedMessages Messages which should be received
+     * @param expectedMessages
+     *            Messages which should be received
      * @return Actually received Messages
      */
     @Override
@@ -219,8 +225,7 @@ public class SSLActionExecutor extends ActionExecutor {
                 result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
 
             } catch (ParserException | AdjustmentException E) {
-                ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN,
-                        null);
+                ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null);
                 result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
             }
             dataPointer = result.getParserPosition();
@@ -284,7 +289,8 @@ public class SSLActionExecutor extends ActionExecutor {
         for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
             if (record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                context.getRecordLayer().updateDecryptionCipher();// TODO unfortunate
+                context.getRecordLayer().updateDecryptionCipher();// TODO
+                                                                  // unfortunate
             }
         }
     }

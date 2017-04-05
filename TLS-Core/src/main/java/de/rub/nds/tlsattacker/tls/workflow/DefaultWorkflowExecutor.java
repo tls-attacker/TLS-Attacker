@@ -38,7 +38,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         context.setTransportHandler(createTransportHandler());
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getConfig().getRecordLayerType(), context));
         context.getWorkflowTrace().reset();
-        ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(), context);
+        ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(),
+                context);
         List<TLSAction> tlsActions = context.getWorkflowTrace().getTLSActions();
         for (TLSAction action : tlsActions) {
             try {
