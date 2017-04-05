@@ -49,7 +49,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionID().getValue().length;
         length += message.getProtocolVersion().getValue().length;
-        message.setMessageLength(length^0x8000);
+        message.setMessageLength(length ^ 0x8000);
     }
 
 }
