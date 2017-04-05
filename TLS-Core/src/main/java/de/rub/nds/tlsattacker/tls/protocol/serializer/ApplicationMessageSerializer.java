@@ -24,7 +24,7 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
 
     private final ApplicationMessage msg;
 
-     /**
+    /**
      * Constructor for the ApplicationMessageSerializer
      *
      * @param message
@@ -49,7 +49,7 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
      */
     private void writeData(ApplicationMessage msg) {
         appendBytes(msg.getData().getValue());
-        LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));
+        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
     }
 
 }

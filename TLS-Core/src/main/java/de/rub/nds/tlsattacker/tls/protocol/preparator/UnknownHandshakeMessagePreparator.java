@@ -37,7 +37,7 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
 
     private void prepareData(UnknownHandshakeMessage msg) {
         msg.setData(msg.getDataConfig());
-        LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));
+        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
     }
 
 }

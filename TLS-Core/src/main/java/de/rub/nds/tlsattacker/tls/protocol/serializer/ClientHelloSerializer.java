@@ -25,7 +25,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
 
     private ClientHelloMessage msg;
 
-     /**
+    /**
      * Constructor for the ClientHelloSerializer
      *
      * @param message
@@ -59,51 +59,54 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     }
 
     /**
-     * Writes the CihperSuiteLength of the ClientHelloMessage into the final byte[]
+     * Writes the CihperSuiteLength of the ClientHelloMessage into the final
+     * byte[]
      */
     private void writeCipherSuiteLength(ClientHelloMessage msg) {
         appendInt(msg.getCipherSuiteLength().getValue(), HandshakeByteLength.CIPHER_SUITES_LENGTH);
-        LOGGER.debug("CipherSuiteLength: "+ msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: " + msg.getCipherSuiteLength().getValue());
     }
 
-     /**
+    /**
      * Writes the CihperSuites of the ClientHelloMessage into the final byte[]
      */
     private void writeCipherSuites(ClientHelloMessage msg) {
         appendBytes(msg.getCipherSuites().getValue());
-        LOGGER.debug("CipherSuite: "+ Arrays.toString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuite: " + Arrays.toString(msg.getCipherSuites().getValue()));
     }
 
-     /**
-     * Writes the CompressionLength of the ClientHelloMessage into the final byte[]
+    /**
+     * Writes the CompressionLength of the ClientHelloMessage into the final
+     * byte[]
      */
     private void writeCompressionLength(ClientHelloMessage msg) {
         appendInt(msg.getCompressionLength().getValue(), HandshakeByteLength.COMPRESSION_LENGTH);
-        LOGGER.debug("CompressionLength: "+ msg.getCompressionLength().getValue());
+        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
     }
 
-     /**
+    /**
      * Writes the Compressions of the ClientHelloMessage into the final byte[]
      */
     private void writeCompressions(ClientHelloMessage msg) {
         appendBytes(msg.getCompressions().getValue());
-        LOGGER.debug("Compressions: "+ Arrays.toString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: " + Arrays.toString(msg.getCompressions().getValue()));
     }
 
-     /**
-     * Writes the ExtensionLength of the ClientHelloMessage into the final byte[]
+    /**
+     * Writes the ExtensionLength of the ClientHelloMessage into the final
+     * byte[]
      */
     private void writeExtensionLength(ClientHelloMessage msg) {
         appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionLength: "+ msg.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
     }
 
-     /**
+    /**
      * Writes the ExtensionBytes of the ClientHelloMessage into the final byte[]
      */
     private void writeExtensionBytes(ClientHelloMessage msg) {
         appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug("ExtensionBytes: "+ Arrays.toString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: " + Arrays.toString(msg.getExtensionBytes().getValue()));
     }
 
 }

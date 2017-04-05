@@ -25,7 +25,7 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
 
     private final CertificateVerifyMessage msg;
 
-     /**
+    /**
      * Constructor for the CertificateVerifyMessageSerializer
      *
      * @param message
@@ -47,27 +47,30 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
     }
 
     /**
-     * Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into the final byte[]
+     * Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into
+     * the final byte[]
      */
     private void writeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithm().getValue());
-        LOGGER.debug("SignatureHashAlgorithms: "+ Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: " + Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
     }
 
     /**
-     * Writes the SignatureLength of the CertificateVerifyMessage into the final byte[]
+     * Writes the SignatureLength of the CertificateVerifyMessage into the final
+     * byte[]
      */
     private void writeSignatureLength(CertificateVerifyMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
-        LOGGER.debug("SignatureLength: "+ msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 
     /**
-     * Writes the Signature of the CertificateVerifyMessage into the final byte[]
+     * Writes the Signature of the CertificateVerifyMessage into the final
+     * byte[]
      */
     private void writeSignature(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: "+ Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
     }
 
 }

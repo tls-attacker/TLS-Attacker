@@ -24,7 +24,7 @@ public class RetransmitMessageSerializer extends ProtocolMessageSerializer<Retra
 
     private final RetransmitMessage msg;
 
-     /**
+    /**
      * Constructor for the RetransmitMessageSerializer
      *
      * @param message
@@ -44,10 +44,11 @@ public class RetransmitMessageSerializer extends ProtocolMessageSerializer<Retra
     }
 
     /**
-     * Writes the CompleteResultingMessage of the RetransmitMessage into the final byte[]
+     * Writes the CompleteResultingMessage of the RetransmitMessage into the
+     * final byte[]
      */
     private void writeCompleteResultingMessage(RetransmitMessage msg) {
         appendBytes(msg.getCompleteResultingMessage().getValue());
-        LOGGER.debug("CompleteResultingMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultingMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 }

@@ -25,7 +25,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
 
     private final CertificateMessage msg;
 
-     /**
+    /**
      * Constructor for the CertificateMessageSerializer
      *
      * @param message
@@ -46,19 +46,21 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     }
 
     /**
-     * Writes the CertificateLength of the CertificateMessage into the final byte[]
+     * Writes the CertificateLength of the CertificateMessage into the final
+     * byte[]
      */
     private void writeCertificateLength(CertificateMessage msg) {
         appendInt(msg.getCertificatesLength().getValue(), HandshakeByteLength.CERTIFICATES_LENGTH);
-        LOGGER.debug("CertificateLength: "+ msg.getCertificatesLength().getValue());
+        LOGGER.debug("CertificateLength: " + msg.getCertificatesLength().getValue());
     }
 
     /**
-     * Writes the X509Certificate of the CertificateMessage into the final byte[]
+     * Writes the X509Certificate of the CertificateMessage into the final
+     * byte[]
      */
     private void writeX509Certificate(CertificateMessage msg) {
         appendBytes(msg.getX509CertificateBytes().getValue());
-        LOGGER.debug("X509Certificate: "+ Arrays.toString(msg.getX509CertificateBytes().getValue()));
+        LOGGER.debug("X509Certificate: " + Arrays.toString(msg.getX509CertificateBytes().getValue()));
     }
 
 }

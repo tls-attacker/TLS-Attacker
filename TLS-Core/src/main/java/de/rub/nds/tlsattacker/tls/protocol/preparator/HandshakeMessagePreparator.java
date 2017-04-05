@@ -61,17 +61,17 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
 
     private void prepareFragmentLenth(HandshakeMessage msg) {
         msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
-        LOGGER.debug("FragmentLength: "+ msg.getFragmentLength().getValue());
+        LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
 
     private void prepareFragmentOffset(HandshakeMessage msg) {
         msg.setFragmentOffset(0);
-        LOGGER.debug("FragmentOffset: "+ msg.getFragmentOffset().getValue());
+        LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
     }
 
     private void prepareMessageSeq(HandshakeMessage msg) {
         msg.setMessageSeq(context.getSequenceNumber());
-        LOGGER.debug("MessageSeq: "+ msg.getMessageSeq().getValue());
+        LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 
     private boolean isDTLS() {

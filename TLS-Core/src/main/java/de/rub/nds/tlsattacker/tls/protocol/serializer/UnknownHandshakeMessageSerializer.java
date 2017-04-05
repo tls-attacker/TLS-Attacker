@@ -25,7 +25,7 @@ public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerialize
 
     private UnknownHandshakeMessage msg;
 
-     /**
+    /**
      * Constructor for the UnknownHandshakeMessageSerializer
      *
      * @param message
@@ -49,7 +49,7 @@ public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerialize
      */
     private void writeData(UnknownHandshakeMessage msg) {
         appendBytes(msg.getData().getValue());
-        LOGGER.debug("Data: "+ Arrays.toString(msg.getData().getValue()));
+        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
     }
 
 }

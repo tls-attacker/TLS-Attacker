@@ -25,7 +25,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
 
     private final HeartbeatMessage msg;
 
-     /**
+    /**
      * Constructor for the HeartbeatMessageSerializer
      *
      * @param message
@@ -48,11 +48,12 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
     }
 
     /**
-     * Writes the HeartbeatMessageType of the HeartbeatMessage into the final byte[]
+     * Writes the HeartbeatMessageType of the HeartbeatMessage into the final
+     * byte[]
      */
     private void writeHeartbeatMessageType(HeartbeatMessage msg) {
         appendByte(msg.getHeartbeatMessageType().getValue());
-        LOGGER.debug("HeartbeatMessageType: "+ msg.getHeartbeatMessageType().getValue());
+        LOGGER.debug("HeartbeatMessageType: " + msg.getHeartbeatMessageType().getValue());
     }
 
     /**
@@ -60,7 +61,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      */
     private void writePayloadLength(HeartbeatMessage msg) {
         appendInt(msg.getPayloadLength().getValue(), HeartbeatByteLength.PAYLOAD_LENGTH);
-        LOGGER.debug("PayloadLength: "+ msg.getPayloadLength().getValue());
+        LOGGER.debug("PayloadLength: " + msg.getPayloadLength().getValue());
     }
 
     /**
@@ -68,7 +69,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      */
     private void writePayload(HeartbeatMessage msg) {
         appendBytes(msg.getPayload().getValue());
-        LOGGER.debug("Payload: "+ Arrays.toString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: " + Arrays.toString(msg.getPayload().getValue()));
     }
 
     /**
@@ -76,8 +77,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      */
     private void writePadding(HeartbeatMessage msg) {
         appendBytes(msg.getPadding().getValue());
-        LOGGER.debug("Padding: "+ Arrays.toString(msg.getPadding().getValue())
-        );
+        LOGGER.debug("Padding: " + Arrays.toString(msg.getPadding().getValue()));
     }
 
 }

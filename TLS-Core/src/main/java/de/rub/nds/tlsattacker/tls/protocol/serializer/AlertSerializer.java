@@ -23,7 +23,7 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
     private final AlertMessage msg;
 
-     /**
+    /**
      * Constructor for the AlertSerializer
      *
      * @param message
@@ -43,12 +43,12 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
         return getAlreadySerialized();
     }
 
-     /**
+    /**
      * Writes the level of the AlertMessage into the final byte[]
      */
     private void writeLevel(AlertMessage msg) {
         appendByte(msg.getLevel().getValue());
-        LOGGER.debug("Level: "+ msg.getLevel().getValue());
+        LOGGER.debug("Level: " + msg.getLevel().getValue());
     }
 
     /**
@@ -56,7 +56,7 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
      */
     private void writeDescription(AlertMessage msg) {
         appendByte(msg.getDescription().getValue());
-        LOGGER.debug("Description: "+ msg.getDescription().getValue());
+        LOGGER.debug("Description: " + msg.getDescription().getValue());
     }
 
 }

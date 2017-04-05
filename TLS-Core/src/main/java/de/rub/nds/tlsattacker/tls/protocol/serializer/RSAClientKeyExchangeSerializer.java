@@ -25,7 +25,7 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
 
     private final RSAClientKeyExchangeMessage msg;
 
-     /**
+    /**
      * Constructor for the RSAClientKeyExchangeSerializer
      *
      * @param message
@@ -46,19 +46,20 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage into the final byte[]
+     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage
+     * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        appendInt(msg.getSerializedPublicKeyLength().getValue(),
-                HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: "+ msg.getSerializedPublicKeyLength().getValue());
+        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
     }
 
     /**
-     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into the final byte[]
+     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into
+     * the final byte[]
      */
     private void writeSerializedPublickey(RSAClientKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: "+ Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
     }
 }

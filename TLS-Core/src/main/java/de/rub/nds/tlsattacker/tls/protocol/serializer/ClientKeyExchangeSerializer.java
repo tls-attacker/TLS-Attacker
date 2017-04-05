@@ -23,7 +23,7 @@ public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMes
 
     private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
-     /**
+    /**
      * Constructor for the ClientKeyExchangeSerializer
      *
      * @param message

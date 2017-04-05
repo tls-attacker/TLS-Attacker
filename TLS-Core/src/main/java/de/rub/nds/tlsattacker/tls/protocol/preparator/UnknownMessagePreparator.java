@@ -36,7 +36,7 @@ public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownM
 
     private void prepareCompleteResultingMessage(UnknownMessage msg) {
         msg.setCompleteResultingMessage(msg.getDataConfig());
-        LOGGER.debug("CompleteResultinMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultinMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 
 }

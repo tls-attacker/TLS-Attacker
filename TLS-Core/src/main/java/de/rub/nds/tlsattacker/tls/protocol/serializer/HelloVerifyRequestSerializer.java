@@ -24,7 +24,7 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
 
     private HelloVerifyRequestMessage msg;
 
-     /**
+    /**
      * Constructor for the HelloVerifyRequestSerializer
      *
      * @param message
@@ -46,11 +46,12 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
     }
 
     /**
-     * Writes the ProtocolVersion of the HelloVerifyMessage into the final byte[]
+     * Writes the ProtocolVersion of the HelloVerifyMessage into the final
+     * byte[]
      */
     private void writeProtocolVersion(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: "+ Arrays.toString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 
     /**
@@ -58,7 +59,7 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
      */
     private void writeCookieLength(HelloVerifyRequestMessage msg) {
         appendByte(msg.getCookieLength().getValue());
-        LOGGER.debug("CookieLength: "+ msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
     }
 
     /**
@@ -66,7 +67,7 @@ public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<Hel
      */
     private void writeCookie(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getCookie().getValue());
-        LOGGER.debug("Cookie: "+ Arrays.toString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: " + Arrays.toString(msg.getCookie().getValue()));
     }
 
 }

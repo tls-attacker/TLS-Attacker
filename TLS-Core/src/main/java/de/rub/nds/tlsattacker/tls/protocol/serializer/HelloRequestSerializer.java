@@ -23,7 +23,7 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
 
     private final HelloRequestMessage message;
 
-     /**
+    /**
      * Constructor for the HelloRequestSerializer
      *
      * @param message

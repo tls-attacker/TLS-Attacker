@@ -24,7 +24,7 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
 
     private UnknownMessage msg;
 
-     /**
+    /**
      * Constructor for the UnknownMessageSerializer
      *
      * @param message
@@ -44,11 +44,12 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
     }
 
     /**
-     * Writes the CompleteResultingMessage of the UnknownMessage into the final byte[]
+     * Writes the CompleteResultingMessage of the UnknownMessage into the final
+     * byte[]
      */
     private void writeCompleteResultinMessage(UnknownMessage msg) {
         appendBytes(msg.getCompleteResultingMessage().getValue());
-        LOGGER.debug("CompleteResultingMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultingMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 
 }

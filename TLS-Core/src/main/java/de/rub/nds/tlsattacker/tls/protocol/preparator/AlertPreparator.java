@@ -33,7 +33,7 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
         prepareLevel(msg);
         prepareDescription(msg);
     }
-    
+
     private void prepareLevel(AlertMessage msg) {
         msg.setLevel(msg.getConfig()[0]);
         LOGGER.debug("Level: " + msg.getLevel().getValue());

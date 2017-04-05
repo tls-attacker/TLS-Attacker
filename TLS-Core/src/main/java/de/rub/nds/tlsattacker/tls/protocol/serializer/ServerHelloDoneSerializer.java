@@ -23,7 +23,7 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
 
     private final ServerHelloDoneMessage msg;
 
-     /**
+    /**
      * Constructor for the ServerHelloDoneSerializer
      *
      * @param message

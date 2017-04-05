@@ -48,7 +48,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      */
     private void writeType() {
         appendByte(msg.getType().getValue());
-        LOGGER.debug("Type: "+ msg.getType().getValue());
+        LOGGER.debug("Type: " + msg.getType().getValue());
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      */
     private void writeLength() {
         appendInt(msg.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
-        LOGGER.debug("Length: "+ msg.getLength().getValue());
+        LOGGER.debug("Length: " + msg.getLength().getValue());
     }
 
     @Override
@@ -79,7 +79,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      */
     private void writeSequenceNumber() {
         appendInt(msg.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-        LOGGER.debug("SequenceNumber: "+ msg.getMessageSeq().getValue());
+        LOGGER.debug("SequenceNumber: " + msg.getMessageSeq().getValue());
     }
 
     /**
@@ -87,7 +87,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      */
     private void writeFragmentOffset() {
         appendInt(msg.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
-        LOGGER.debug("FragmentOffset: "+ msg.getFragmentOffset().getValue());
+        LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
     }
 
     /**
@@ -95,6 +95,6 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      */
     private void writeFragmentLength() {
         appendInt(msg.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
-        LOGGER.debug("FragmentLength: "+ msg.getFragmentLength().getValue());
+        LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
 }

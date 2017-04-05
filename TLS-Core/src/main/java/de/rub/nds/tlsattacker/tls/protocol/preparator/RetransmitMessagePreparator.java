@@ -36,6 +36,6 @@ public class RetransmitMessagePreparator extends ProtocolMessagePreparator<Retra
 
     private void prepareCompleteResultingMessage(RetransmitMessage msg) {
         msg.setCompleteResultingMessage(msg.getBytesToTransmit());
-        LOGGER.debug("CompleteResultingMessage: "+ Arrays.toString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultingMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 }

@@ -47,7 +47,7 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
      */
     protected void writeSelectedCiphersuite() {
         appendBytes(msg.getSelectedCipherSuite().getValue());
-        LOGGER.debug("SelectedCipherSuite: "+ Arrays.toString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER.debug("SelectedCipherSuite: " + Arrays.toString(msg.getSelectedCipherSuite().getValue()));
     }
 
     /**
@@ -55,7 +55,7 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
      */
     protected void writeSelectedComressionMethod() {
         appendByte(msg.getSelectedCompressionMethod().getValue());
-        LOGGER.debug("SelectedCompressionMethod: "+ msg.getSelectedCompressionMethod().getValue());
+        LOGGER.debug("SelectedCompressionMethod: " + msg.getSelectedCompressionMethod().getValue());
     }
 
     @Override

@@ -24,7 +24,7 @@ public class FinishedMessageSerializer extends HandshakeMessageSerializer<Finish
 
     private final FinishedMessage msg;
 
-     /**
+    /**
      * Constructor for the FinishedMessageSerializer
      *
      * @param message
@@ -44,11 +44,12 @@ public class FinishedMessageSerializer extends HandshakeMessageSerializer<Finish
     }
 
     /**
-     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final byte[]
+     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final
+     * byte[]
      */
     private void writeVerifyData(FinishedMessage msg) {
         appendBytes(msg.getVerifyData().getValue());
-        LOGGER.debug("VerifyData: "+ Arrays.toString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: " + Arrays.toString(msg.getVerifyData().getValue()));
     }
 
 }
