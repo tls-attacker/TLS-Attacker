@@ -55,46 +55,39 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         // fixed DH modulus P and DH generator G
         byte[] pArray = context.getConfig().getFixedDHModulus();
         byte[] gArray = context.getConfig().getFixedDHg();
-        BigInteger p = new BigInteger(1, pArray);
-        BigInteger g = new BigInteger(1, gArray);
+        message.getComputations().setP(new BigInteger(1, pArray));
+        message.getComputations().setG(new BigInteger(1, gArray));
+        BigInteger p = message.getComputations().getP().getValue();
+        BigInteger g = message.getComputations().getG().getValue();
         DHParameters params = new DHParameters(p, g);
-
         KeyGenerationParameters kgp = new DHKeyGenerationParameters(RandomHelper.getBadSecureRandom(), params);
         DHKeyPairGenerator keyGen = new DHKeyPairGenerator();
-        keyGen.init(kgp);
-        AsymmetricCipherKeyPair serverKeyPair = keyGen.generateKeyPair();
-
+        AsymmetricCipherKeyPair serverKeyPair = null;
+        try {
+            keyGen.init(kgp);
+            serverKeyPair = keyGen.generateKeyPair();
+        } catch (IllegalArgumentException E) {
+            throw new PreparationException("Could not generate KeyPair", E);
+        }
         dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
         DHPrivateKeyParameters dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
-
-        message.setG(dhPublic.getParameters().getG());
-        message.setP(dhPublic.getParameters().getP());
+        message.setG(BigIntegers.asUnsignedByteArray(dhPublic.getParameters().getG()));
+        message.setP(BigIntegers.asUnsignedByteArray(dhPublic.getParameters().getP()));
         message.setSerializedPublicKey(dhPublic.getY().toByteArray());
+        message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
         message.getComputations().setPrivateKey(dhPrivate.getX());
         context.setServerDHPrivateKeyParameters(dhPrivate);
-
-        byte[] serializedP = BigIntegers.asUnsignedByteArray(message.getP().getValue());
-        message.getComputations().setSerializedP(serializedP);
-        message.getComputations().setSerializedPLength(message.getComputations().getSerializedP().getValue().length);
-
-        byte[] serializedG = BigIntegers.asUnsignedByteArray(message.getG().getValue());
-        message.getComputations().setSerializedG(serializedG);
-        message.getComputations().setSerializedGLength(message.getComputations().getSerializedG().getValue().length);
-
-        p = new BigInteger(1, serializedP);
-        g = new BigInteger(1, serializedG);
+        message.setpLength(message.getP().getValue().length);
+        message.setgLength(message.getG().getValue().length);
         BigInteger y = new BigInteger(1, message.getSerializedPublicKey().getValue());
-
         ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(y, new DHParameters(p, g)));
         context.setServerDHParameters(publicKeyParameters);
-
         // could be extended to choose the algorithms depending on the
         // certificate
         SignatureAndHashAlgorithm selectedSignatureHashAlgo = context.getConfig()
                 .getSupportedSignatureAndHashAlgorithms().get(0);
         message.setSignatureAlgorithm(selectedSignatureHashAlgo.getSignatureAlgorithm().getValue());
         message.setHashAlgorithm(selectedSignatureHashAlgo.getHashAlgorithm().getValue());
-
         message.getComputations().setClientRandom(context.getClientRandom());
         message.getComputations().setServerRandom(context.getServerRandom());
         byte[] signature = generateSignature(selectedSignatureHashAlgo);
@@ -104,12 +97,11 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     private byte[] generateToBeSigned() {
-        byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(message.getComputations()
-                .getSerializedPLength().getValue(), HandshakeByteLength.DH_P_LENGTH), message.getComputations()
-                .getSerializedP().getValue(), ArrayConverter.intToBytes(message.getComputations()
-                .getSerializedGLength().getValue(), HandshakeByteLength.DH_G_LENGTH), message.getComputations()
-                .getSerializedG().getValue(), ArrayConverter.intToBytes(message.getSerializedPublicKeyLength()
-                .getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH), message.getSerializedPublicKey().getValue());
+        byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(message.getgLength().getValue(),
+                HandshakeByteLength.DH_P_LENGTH), message.getP().getValue(), ArrayConverter.intToBytes(message
+                .getgLength().getValue(), HandshakeByteLength.DH_G_LENGTH), message.getG().getValue(),
+                ArrayConverter.intToBytes(message.getSerializedPublicKeyLength().getValue(),
+                        HandshakeByteLength.DH_PUBLICKEY_LENGTH), message.getSerializedPublicKey().getValue());
         return ArrayConverter.concatenate(message.getComputations().getClientRandom().getValue(), message
                 .getComputations().getServerRandom().getValue(), dhParams);
 

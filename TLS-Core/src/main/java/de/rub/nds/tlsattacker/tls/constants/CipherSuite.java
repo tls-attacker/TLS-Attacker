@@ -434,15 +434,10 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getCiphersuites(byte[] values) {
-        // TODO no stable enough, also add unit tests
         List<CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         if (values.length % 2 != 0) {
-            // TODO not a CipherSuite field
-        	// 1.Version: Discard last Byte
-        	values = Arrays.copyOfRange(values, 0, values.length-1);
-        	// 2. Version: Give an exception
-        	//throw new UnknownCiphersuiteException("Last CipherSuit are unknown!");
+            throw new UnknownCiphersuiteException("Last CipherSuit are unknown!");
         }
         while (pointer < values.length) {
             byte[] suite = new byte[2];

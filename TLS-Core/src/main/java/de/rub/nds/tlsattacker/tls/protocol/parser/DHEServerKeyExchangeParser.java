@@ -33,9 +33,9 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     @Override
     protected void parseHandshakeMessageContent(DHEServerKeyExchangeMessage msg) {
         msg.setpLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
-        msg.setP(parseBigIntField(msg.getpLength().getValue()));
+        msg.setP(parseByteArrayField(msg.getpLength().getValue()));
         msg.setgLength(parseIntField(HandshakeByteLength.DH_G_LENGTH));
-        msg.setG(parseBigIntField(msg.getgLength().getValue()));
+        msg.setG(parseByteArrayField(msg.getgLength().getValue()));
         msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
         if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {

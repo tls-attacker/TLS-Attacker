@@ -33,9 +33,9 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     @Override
     public byte[] serializeHandshakeMessageContent() {
         appendInt(message.getpLength().getValue(), HandshakeByteLength.DH_P_LENGTH);
-        appendBytes(message.getP().getByteArray());
+        appendBytes(message.getP().getValue());
         appendInt(message.getgLength().getValue(), HandshakeByteLength.DH_G_LENGTH);
-        appendBytes(message.getG().getByteArray());
+        appendBytes(message.getG().getValue());
         appendInt(message.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
         appendBytes(message.getSerializedPublicKey().getValue());
         if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {

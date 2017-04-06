@@ -81,9 +81,9 @@ public class DHEServerKeyExchangeSerializerTest {
         msg.setType(type.getValue());
         msg.setLength(length);
         msg.setpLength(pLength);
-        msg.setP(new BigInteger(1, p));
+        msg.setP(p);
         msg.setgLength(gLength);
-        msg.setG(new BigInteger(1, g));
+        msg.setG(g);
         msg.setSerializedPublicKey(serializedKey);
         msg.setSerializedPublicKeyLength(serializedKeyLength);
         msg.setSignature(signature);
