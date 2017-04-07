@@ -21,17 +21,27 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final AlertMessage message;
+    private final AlertMessage msg;
 
     public AlertPreparator(TlsContext context, AlertMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setLevel(message.getConfig()[0]);
-        message.setDescription(message.getConfig()[1]);
+        prepareLevel(msg);
+        prepareDescription(msg);
+    }
+
+    private void prepareLevel(AlertMessage msg) {
+        msg.setLevel(msg.getConfig()[0]);
+        LOGGER.debug("Level: " + msg.getLevel().getValue());
+    }
+
+    private void prepareDescription(AlertMessage msg) {
+        msg.setDescription(msg.getConfig()[1]);
+        LOGGER.debug("Description: " + msg.getDescription().getValue());
     }
 
 }

@@ -43,6 +43,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      *            The byte[] which the HelloMessageParser is supposed to parse
      * @param type
      *            Expected Type value for the Message
+     * @param version
+     *            Version of the Protocol
      */
     public HelloParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version) {
         super(pointer, array, type, version);

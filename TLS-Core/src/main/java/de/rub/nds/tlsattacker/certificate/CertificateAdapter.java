@@ -11,12 +11,8 @@ package de.rub.nds.tlsattacker.certificate;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.security.cert.CertificateFactory;
-import java.util.Collection;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.tls.TlsUtils;
 
 /**
  *

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +23,18 @@ public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition
+     *            Position in the array where the ClientKeyExchangeParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the ClientKeyExchangeParser is supposed to
+     *            parse
+     * @param version
+     *            Version of the Protocol
+     */
     public ClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, HandshakeMessageType.CLIENT_KEY_EXCHANGE, version);
     }

@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,15 +22,20 @@ public class RetransmitMessagePreparator extends ProtocolMessagePreparator<Retra
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final RetransmitMessage message;
+    private final RetransmitMessage msg;
 
     public RetransmitMessagePreparator(TlsContext context, RetransmitMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setCompleteResultingMessage(message.getBytesToTransmit());
+        prepareCompleteResultingMessage(msg);
+    }
+
+    private void prepareCompleteResultingMessage(RetransmitMessage msg) {
+        msg.setCompleteResultingMessage(msg.getBytesToTransmit());
+        LOGGER.debug("CompleteResultingMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
     }
 }

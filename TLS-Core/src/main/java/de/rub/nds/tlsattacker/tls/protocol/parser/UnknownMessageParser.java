@@ -21,6 +21,18 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
 
     private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition
+     *            Position in the array where the ProtocolMessageParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the ProtocolMessageParser is supposed to
+     *            parse
+     * @param version
+     *            Version of the Protocol
+     */
     public UnknownMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
@@ -30,15 +42,15 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
      * fields or the such, so we assume that all data we received in the array
      * is part of this unknown message
      */
-    private void parseCompleteMessage(UnknownMessage message) {
+    private void parseCompleteMessage(UnknownMessage msg) {
         parseByteArrayField(getBytesLeft());
     }
 
     @Override
     protected UnknownMessage parseMessageContent() {
-        UnknownMessage message = new UnknownMessage();
-        parseCompleteMessage(message);
-        return message;
+        UnknownMessage msg = new UnknownMessage();
+        parseCompleteMessage(msg);
+        return msg;
     }
 
 }
