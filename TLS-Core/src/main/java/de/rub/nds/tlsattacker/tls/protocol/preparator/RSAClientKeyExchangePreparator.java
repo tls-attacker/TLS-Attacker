@@ -25,6 +25,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -40,11 +41,16 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final RSAClientKeyExchangeMessage message;
+    private byte[] padding;
+    private byte[] premasterSecret;
+    private byte[] clientRandom;
+    private byte[] masterSecret;
+    private byte[] encrypted;
+    private final RSAClientKeyExchangeMessage msg;
 
     public RSAClientKeyExchangePreparator(TlsContext context, RSAClientKeyExchangeMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
@@ -59,24 +65,22 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         int keyByteLength = publicKey.getModulus().bitLength() / 8;
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
-        byte[] padding = new byte[randomByteLength];
+        padding = new byte[randomByteLength];
         RandomHelper.getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
-        message.getComputations().setPadding(padding);
-        byte[] premasterSecret = generatePremasterSecret();
-        message.getComputations().setPremasterSecret(premasterSecret);
+        preparePadding(msg);
+        premasterSecret = generatePremasterSecret();
+        preparePremasterSecret(msg);
         // TODO what are those magic numbers?
-        message.getComputations().setPlainPaddedPremasterSecret(
-                ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, message
-                        .getComputations().getPremasterSecret().getValue()));
+        preparePlainPaddedPremasterSecret(msg);
 
-        byte[] paddedPremasterSecret = message.getComputations().getPlainPaddedPremasterSecret().getValue();
+        byte[] paddedPremasterSecret = msg.getComputations().getPlainPaddedPremasterSecret().getValue();
 
-        byte[] clientRandom = context.getClientServerRandom();
-        message.getComputations().setClientRandom(clientRandom);
+        clientRandom = context.getClientServerRandom();
+        prepareClientRandom(msg);
 
-        byte[] masterSecret = generateMasterSecret();
-        message.getComputations().setMasterSecret(masterSecret);
+        masterSecret = generateMasterSecret();
+        prepareMasterSecret(msg);
         try {
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -86,15 +90,15 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
                 throw new PreparationException("Trying to encrypt more Data than moduls Size!");
             }
-            byte[] encrypted = null;
+            encrypted = null;
             try {
                 encrypted = cipher.doFinal(paddedPremasterSecret);
             } catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E) {
                 // too much data for RSA block
                 throw new PreparationException("Too much data for RSA-Block", E);
             }
-            message.setSerializedPublicKey(encrypted);
-            message.setSerializedPublicKeyLength(message.getSerializedPublicKey().getValue().length);
+            prepareSerializedPublicKey(msg);
+            prepareSerializedPublicKeyLength(msg);
         } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException
                 | NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new PreparationException("Could not prepare RSAClientKeyExchange Message");
@@ -103,11 +107,11 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private byte[] generatePremasterSecret() {
-        byte[] premasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        RandomHelper.getRandom().nextBytes(premasterSecret);
-        premasterSecret[0] = context.getSelectedProtocolVersion().getMajor();
-        premasterSecret[1] = context.getSelectedProtocolVersion().getMinor();
-        return premasterSecret;
+        byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+        RandomHelper.getRandom().nextBytes(tempPremasterSecret);
+        tempPremasterSecret[0] = context.getSelectedProtocolVersion().getMajor();
+        tempPremasterSecret[1] = context.getSelectedProtocolVersion().getMinor();
+        return tempPremasterSecret;
     }
 
     private byte[] generateMasterSecret() {
@@ -119,8 +123,8 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
                 context.getSelectedCipherSuite());
-        return PseudoRandomFunction.compute(prfAlgorithm, message.getComputations().getPremasterSecret().getValue(),
-                PseudoRandomFunction.MASTER_SECRET_LABEL, message.getComputations().getClientRandom().getValue(),
+        return PseudoRandomFunction.compute(prfAlgorithm, msg.getComputations().getPremasterSecret().getValue(),
+                PseudoRandomFunction.MASTER_SECRET_LABEL, msg.getComputations().getClientRandom().getValue(),
                 HandshakeByteLength.MASTER_SECRET);
     }
 
@@ -133,5 +137,43 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         }
         return (RSAPublicKey) keyGen.genKeyPair().getPublic();
 
+    }
+
+    private void preparePadding(RSAClientKeyExchangeMessage msg) {
+        msg.getComputations().setPadding(padding);
+        LOGGER.debug("Padding: " + Arrays.toString(msg.getComputations().getPadding().getValue()));
+    }
+
+    private void preparePremasterSecret(RSAClientKeyExchangeMessage msg) {
+        msg.getComputations().setPremasterSecret(premasterSecret);
+        LOGGER.debug("PremasterSecret: " + Arrays.toString(msg.getComputations().getPremasterSecret().getValue()));
+    }
+
+    private void preparePlainPaddedPremasterSecret(RSAClientKeyExchangeMessage msg) {
+        msg.getComputations().setPlainPaddedPremasterSecret(
+                ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg
+                        .getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PlainPaddedPremasterSecret: "
+                + Arrays.toString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
+    }
+
+    private void prepareClientRandom(RSAClientKeyExchangeMessage msg) {
+        msg.getComputations().setClientRandom(clientRandom);
+        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+    }
+
+    private void prepareMasterSecret(RSAClientKeyExchangeMessage msg) {
+        msg.getComputations().setMasterSecret(masterSecret);
+        LOGGER.debug("MasterSecret: " + Arrays.toString(msg.getComputations().getMasterSecret().getValue()));
+    }
+
+    private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKey(encrypted);
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+    }
+
+    private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
     }
 }

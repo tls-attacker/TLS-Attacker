@@ -290,31 +290,11 @@ public class TLSActionExecutor extends ActionExecutor {
             dataPointer = result.getParserPosition();
             LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
             receivedMessages.add(result.getMessage());
-            if (receivedFatalAlert(result.getMessage())) {
-                if (!context.getConfig().isFuzzingMode()) {
-                    proceed = false;
-                }
-            }
+        }
+        if (context.isReceivedFatalAlert()) {
+            proceed = false;
         }
         return receivedMessages;
-    }
-
-    /**
-     * Returns true if the protocolMessage in the protocolMessageHandler is a
-     * fatal alert
-     *
-     * @param protocolMessageHandler
-     *            ProtocolmessageHandler to analyze
-     */
-    private boolean receivedFatalAlert(ProtocolMessage msg) {
-        if (msg instanceof AlertMessage) {
-            AlertMessage am = (AlertMessage) msg;
-            if (AlertLevel.getAlertLevel(am.getLevel().getValue()) == AlertLevel.FATAL) {
-                LOGGER.debug("The workflow received a FATAL error");
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

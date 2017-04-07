@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class PaddingOracleCommandConfig extends TLSDelegateConfig {
+public class PaddingOracleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "padding_oracle";
 

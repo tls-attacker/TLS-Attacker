@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
@@ -26,7 +25,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -40,58 +38,22 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
+public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttacker.class);
 
     private final List<ProtocolMessage> lastMessages;
     private final TlsConfig tlsConfig;
 
-    public PaddingOracleAttack(PaddingOracleCommandConfig config) {
-        super(config);
+    public PaddingOracleAttacker(PaddingOracleCommandConfig config) {
+        super(config, false);
         tlsConfig = config.createConfig();
         lastMessages = new LinkedList<>();
     }
 
     @Override
     public void executeAttack() {
-        List<Record> records = new LinkedList<>();
-        records.addAll(createRecordsWithPlainData());
-        records.addAll(createRecordsWithModifiedMac());
-        records.addAll(createRecordsWithModifiedPadding());
-
-        for (Record record : records) {
-            executeAttackRound(record);
-
-        }
-
-        LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
-        LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
-
-        LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
-        for (int i = 0; i < lastMessages.size(); i++) {
-            ProtocolMessage pm = lastMessages.get(i);
-            pmSet.add(pm);
-            Record r = records.get(i);
-            LOGGER.info("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
-            if (r.getPlainRecordBytes() != null) {
-                LOGGER.info("Plain record bytes of the modified record: ");
-                LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
-                LOGGER.info("Last protocol message in the protocol flow");
-            }
-            LOGGER.info(pm.toString());
-        }
-        List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
-
-        if (pmSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
-                    pmSetList);
-            vulnerable = false;
-        } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
-                    tlsConfig.getHost(), pmSetList);
-            vulnerable = true;
-        }
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void executeAttackRound(Record record) {
@@ -112,10 +74,7 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
         }
-
         lastMessages.add(trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1));
-        tlsContexts.add(tlsContext);
-
     }
 
     private List<Record> createRecordsWithPlainData() {
@@ -184,6 +143,45 @@ public class PaddingOracleAttack extends Attacker<PaddingOracleCommandConfig> {
             paddingBytes[i] = (byte) padding;
         }
         return paddingBytes;
+    }
+
+    @Override
+    public Boolean isVulnerable() {
+        List<Record> records = new LinkedList<>();
+        records.addAll(createRecordsWithPlainData());
+        records.addAll(createRecordsWithModifiedMac());
+        records.addAll(createRecordsWithModifiedPadding());
+        for (Record record : records) {
+            executeAttackRound(record);
+
+        }
+        LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
+        LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
+
+        LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
+        for (int i = 0; i < lastMessages.size(); i++) {
+            ProtocolMessage pm = lastMessages.get(i);
+            pmSet.add(pm);
+            Record r = records.get(i);
+            LOGGER.info("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
+            if (r.getPlainRecordBytes() != null) {
+                LOGGER.info("Plain record bytes of the modified record: ");
+                LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
+                LOGGER.info("Last protocol message in the protocol flow");
+            }
+            LOGGER.info(pm.toString());
+        }
+        List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
+
+        if (pmSet.size() == 1) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
+                    pmSetList);
+            return false;
+        } else {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
+                    tlsConfig.getHost(), pmSetList);
+            return true;
+        }
     }
 
 }

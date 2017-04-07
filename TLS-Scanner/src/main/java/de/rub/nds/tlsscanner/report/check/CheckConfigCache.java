@@ -6,38 +6,25 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.report.check;
 
+import de.rub.nds.tlsscanner.config.Language;
 import de.rub.nds.tlsscanner.exception.UnloadableConfigException;
 import java.io.File;
 import java.util.HashMap;
 
 /**
+ * TODO we currently assume that the language does not change while the programm
+ * is running
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CheckConfigCache {
 
-    private File pathToConfig;
-
     private HashMap<CheckType, CheckConfig> cacheMap;
 
     private CheckConfigCache() {
         cacheMap = new HashMap<>();
-        pathToConfig = new File("../resources/scanner/config_en/");
-    }
-
-    public synchronized File getPathToConfig() {
-        return pathToConfig;
-    }
-
-    public synchronized void setPathToConfig(File pathToConfig) {
-        this.pathToConfig = pathToConfig;
     }
 
     public synchronized static CheckConfigCache getInstance() {
@@ -49,14 +36,25 @@ public class CheckConfigCache {
         private static final CheckConfigCache INSTANCE = new CheckConfigCache();
     }
 
-    public synchronized CheckConfig getCheckConfig(CheckType type) {
+    public synchronized CheckConfig getCheckConfig(CheckType type, Language lang) {
         CheckConfig config = cacheMap.get(type);
         if (config == null) {
-            config = CheckConfigSerializer.deserialize(new File(pathToConfig.getAbsolutePath() + "/"
-                    + getConfigFileName(type)));
+            config = CheckConfigSerializer.deserialize(getLanguageFolder(lang) + getConfigFileName(type));
             cacheMap.put(type, config);
         }
         return config;
+    }
+
+    private String getLanguageFolder(Language lang) {
+        switch (lang) {
+            case ENGLISH:
+                return "/lang/en/";
+            case GERMAN:
+                return "/lang/de/";
+            default:
+                throw new UnloadableConfigException("Could not load Language folder, not mappend :" + lang.name());
+        }
+
     }
 
     private String getConfigFileName(CheckType type) {

@@ -6,11 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.report;
 
 import de.rub.nds.tlsscanner.report.check.TLSCheck;
@@ -59,5 +54,29 @@ public class ProbeResult {
 
     public List<TLSCheck> getCheckList() {
         return checkList;
+    }
+
+    public boolean hasFailedCheck() {
+        for (TLSCheck check : checkList) {
+            if (check.isResult()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getFailedReasons() {
+        StringBuilder builder = new StringBuilder();
+        for (TLSCheck check : checkList) {
+            if (check.isResult()) {
+                builder.append(check.getDescription());
+                builder.append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    public String getProbeName() {
+        return probeName;
     }
 }

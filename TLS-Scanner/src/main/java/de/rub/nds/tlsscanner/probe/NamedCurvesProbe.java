@@ -6,13 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.probe;
 
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 
 /**
@@ -21,8 +17,8 @@ import de.rub.nds.tlsscanner.report.ProbeResult;
  */
 public class NamedCurvesProbe extends TLSProbe {
 
-    public NamedCurvesProbe(String serverHost) {
-        super("NamedCurves", serverHost);
+    public NamedCurvesProbe(ScannerConfig config) {
+        super("NamedCurves", config);
     }
 
     @Override

@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,11 +25,11 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final HeartbeatMessage message;
+    private final HeartbeatMessage msg;
 
     public HeartbeatMessagePreparator(TlsContext context, HeartbeatMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     private byte[] generatePayload() {
@@ -54,9 +54,29 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
     @Override
     protected void prepareProtocolMessageContents() {
         // TODO currently only requests supported
-        message.setHeartbeatMessageType(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue());
-        message.setPayload(generatePayload());
-        message.setPayloadLength(message.getPayload().getValue().length);
-        message.setPadding(generatePadding());
+        prepareHeartbeatMessageType(msg);
+        preparePayload(msg);
+        preparePayloadLength(msg);
+        preparePadding(msg);
+    }
+
+    private void prepareHeartbeatMessageType(HeartbeatMessage msg) {
+        msg.setHeartbeatMessageType(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue());
+        LOGGER.debug("HeartbeatMessageType: " + msg.getHeartbeatMessageType().getValue());
+    }
+
+    private void preparePayload(HeartbeatMessage msg) {
+        msg.setPayload(generatePayload());
+        LOGGER.debug("Payload: " + Arrays.toString(msg.getPayload().getValue()));
+    }
+
+    private void preparePayloadLength(HeartbeatMessage msg) {
+        msg.setPayloadLength(msg.getPayload().getValue().length);
+        LOGGER.debug("PayloadLength: " + msg.getPayloadLength().getValue());
+    }
+
+    private void preparePadding(HeartbeatMessage msg) {
+        msg.setPadding(generatePadding());
+        LOGGER.debug("Padding: " + Arrays.toString(msg.getPadding().getValue()));
     }
 }

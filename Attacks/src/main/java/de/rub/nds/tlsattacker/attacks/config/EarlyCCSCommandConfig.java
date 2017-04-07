@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class EarlyCCSCommandConfig extends TLSDelegateConfig {
+public class EarlyCCSCommandConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "early_ccs";
 
     @ParametersDelegate

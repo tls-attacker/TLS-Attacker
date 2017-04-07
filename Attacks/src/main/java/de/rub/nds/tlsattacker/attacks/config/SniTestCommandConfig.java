@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class SniTestCommandConfig extends TLSDelegateConfig {
+public class SniTestCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "sni_test";
     @ParametersDelegate

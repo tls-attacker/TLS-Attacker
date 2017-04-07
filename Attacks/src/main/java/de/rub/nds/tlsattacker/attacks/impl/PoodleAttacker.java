@@ -12,8 +12,7 @@ import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.Attacker;
-
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
@@ -26,8 +25,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,16 +34,22 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class PoodleAttack extends Attacker<PoodleCommandConfig> {
+public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(PoodleAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(PoodleAttacker.class);
 
-    public PoodleAttack(PoodleCommandConfig config) {
-        super(config);
+    public PoodleAttacker(PoodleCommandConfig config) {
+        super(config, false);
     }
 
     @Override
     public void executeAttack() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Boolean isVulnerable() {
+
         TlsConfig tlsConfig = config.createConfig();
 
         TlsContext tlsContext = new TlsContext(tlsConfig);
@@ -65,9 +68,7 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
         Record r = new Record();
         r.setPadding(padding);
         applicationMessage.addRecord(r);
-
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-
         trace.add(new SendAction(applicationMessage));
         trace.add(new ReceiveAction(alertMessage));
 
@@ -75,24 +76,18 @@ public class PoodleAttack extends Attacker<PoodleCommandConfig> {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            return null;
         }
-
-        if (tlsContext.isReceivedFatalAlert()) {
+        System.out.println(trace.toString());
+        if (trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() > 0) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
-            vulnerable = false;
-        } else if (!tlsContext.isReceivedFatalAlert()) { // TODO this does not
-            // work properly atm
+            return false;
+        } else if (!tlsContext.isReceivedFatalAlert()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                     "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
-            vulnerable = true;
-        } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Vulnerable(?). The protocol message flow was incomplete, analyze the message flow");
-            vulnerable = false;
+            return true;
         }
-
-        tlsContexts.add(tlsContext);
-
+        return null;
     }
 }

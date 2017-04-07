@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
+import java.util.Arrays;
+import javax.swing.text.html.parser.DTDConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,17 +29,19 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
     /**
      * The message that should be serialized
      */
-    private final T message;
+    private final T msg;
 
     /**
      * Constructor for the HelloMessageSerializer
      *
      * @param message
      *            Message that should be serialized
+     * @param version
+     *            Version of the protocol
      */
     public HelloMessageSerializer(T message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     /**
@@ -46,14 +50,15 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      * @return True if the message has an ExtensionLength field
      */
     protected boolean hasExtensionLengthField() {
-        return message.getExtensionsLength() != null;
+        return msg.getExtensionsLength() != null;
     }
 
     /**
      * Writes the ExtensionLength field of the message into the final byte[]
      */
     protected void writeExtensionLength() {
-        appendInt(message.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
+        appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
     }
 
     /**
@@ -62,48 +67,54 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      * @return True if the message has Extensions
      */
     protected boolean hasExtensions() {
-        return message.getExtensionBytes() != null;
+        return msg.getExtensionBytes() != null;
     }
 
     /**
      * Writes the ExtensionBytes of the message into the final byte[]
      */
     protected void writeExtensionBytes() {
-        appendBytes(message.getExtensionBytes().getValue());
+        appendBytes(msg.getExtensionBytes().getValue());
+        LOGGER.debug("ExtensionBytes: " + Arrays.toString(msg.getExtensionBytes().getValue()));
     }
 
     /**
      * Writes the ProtocolVersion of the message into the final byte[]
      */
     protected void writeProtocolVersion() {
-        appendBytes(message.getProtocolVersion().getValue());
+        appendBytes(msg.getProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
     }
 
     /**
      * Writes the UnixTime of the message into the final byte[]
      */
     protected void writeUnixtime() {
-        appendBytes(message.getUnixTime().getValue());
+        appendBytes(msg.getUnixTime().getValue());
+        LOGGER.debug("UnixTime: " + Arrays.toString(msg.getUnixTime().getValue()));
     }
 
     /**
      * Writes the Random of the message into the final byte[]
      */
     protected void writeRandom() {
-        appendBytes(message.getRandom().getValue());
+        appendBytes(msg.getRandom().getValue());
+        LOGGER.debug("Random: " + Arrays.toString(msg.getRandom().getValue()));
     }
 
     /**
      * Writes the SessionID length field of the message into the final byte[]
      */
     protected void writeSessionIDLength() {
-        appendInt(message.getSessionIdLength().getValue(), HandshakeByteLength.SESSION_ID_LENGTH);
+        appendInt(msg.getSessionIdLength().getValue(), HandshakeByteLength.SESSION_ID_LENGTH);
+        LOGGER.debug("SessionIDLength: " + msg.getSessionIdLength().getValue());
     }
 
     /**
      * Writes the SessionID of the message into the final byte[]
      */
     protected void writeSessionID() {
-        appendBytes(message.getSessionId().getValue());
+        appendBytes(msg.getSessionId().getValue());
+        LOGGER.debug("SessionID: " + Arrays.toString(msg.getSessionId().getValue()));
     }
 }

@@ -6,13 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner;
 
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsscanner.config.Language;
 import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.SiteReport;
 import de.rub.nds.tlsscanner.probe.CertificateProbe;
@@ -35,30 +33,34 @@ import java.util.concurrent.Future;
 public class TLSScanner {
 
     private final ScanJobExecutor executor;
-    private final String websiteHost;
+    private final ScannerConfig config;
 
-    public TLSScanner(String websiteHost) {
+    public TLSScanner(String websiteHost, Language lang) {
         this.executor = new ScanJobExecutor(1);
-        this.websiteHost = websiteHost;
+        config = new ScannerConfig(new GeneralDelegate());
+        config.setLanguage(lang);
+        ClientDelegate clientDelegate = (ClientDelegate) config.getDelegateList().get(1);
+        clientDelegate.setHost(websiteHost);
     }
 
     public TLSScanner(ScannerConfig config) {
-        this.executor = new ScanJobExecutor(1);
-        this.websiteHost = config.createConfig().getHost();
+        this.executor = new ScanJobExecutor(config.getThreads());
+        this.config = config;
+
     }
 
     public SiteReport scan() {
         List<TLSProbe> testList = new LinkedList<>();
-        testList.add(new CertificateProbe(websiteHost));
-        testList.add(new ProtocolVersionProbe(websiteHost));
-        testList.add(new CiphersuiteProbe(websiteHost));
-        testList.add(new CiphersuiteOrderProbe(websiteHost));
+        testList.add(new CertificateProbe(config));
+        testList.add(new ProtocolVersionProbe(config));
+        testList.add(new CiphersuiteProbe(config));
+        testList.add(new CiphersuiteOrderProbe(config));
         // testList.add(new HeartbleedProbe(websiteHost));
         // testList.add(new NamedCurvesProbe(websiteHost));
         // testList.add(new PaddingOracleProbe(websiteHost));
         // testList.add(new SignatureAndHashAlgorithmProbe(websiteHost));
         ScanJob job = new ScanJob(testList);
-        return executor.execute(websiteHost, job);
+        return executor.execute(config, job);
     }
 
 }

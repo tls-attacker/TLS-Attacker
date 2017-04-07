@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +23,21 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final UnknownHandshakeMessage message;
+    private final UnknownHandshakeMessage msg;
 
     public UnknownHandshakeMessagePreparator(TlsContext context, UnknownHandshakeMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        message.setData(message.getDataConfig());
+        prepareData(msg);
+    }
+
+    private void prepareData(UnknownHandshakeMessage msg) {
+        msg.setData(msg.getDataConfig());
+        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
     }
 
 }

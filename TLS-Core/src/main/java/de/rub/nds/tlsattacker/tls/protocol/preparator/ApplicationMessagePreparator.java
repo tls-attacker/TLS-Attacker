@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +22,21 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
 
     private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
-    private final ApplicationMessage message;
+    private final ApplicationMessage msg;
 
     public ApplicationMessagePreparator(TlsContext context, ApplicationMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
+        prepareData(msg);
+    }
+
+    private void prepareData(ApplicationMessage msg) {
+        msg.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
+        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
     }
 
 }

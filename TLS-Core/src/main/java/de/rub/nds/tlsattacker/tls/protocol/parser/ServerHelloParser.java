@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,22 +42,22 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
     /**
      * Reads the next bytes as a CipherSuite and writes them in the message
      *
-     * @param message
+     * @param msg
      *            Message to write in
      */
-    protected void parseSelectedCiphersuite(ServerHelloMessage message) {
-        message.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
+    protected void parseSelectedCiphersuite(ServerHelloMessage msg) {
+        msg.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
     }
 
     /**
      * Reads the next bytes as a CompressionMethod and writes them in the
      * message
      *
-     * @param message
+     * @param msg
      *            Message to write in
      */
-    protected void parseSelectedComressionMethod(ServerHelloMessage message) {
-        message.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));
+    protected void parseSelectedComressionMethod(ServerHelloMessage msg) {
+        msg.setSelectedCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));
     }
 
     @Override

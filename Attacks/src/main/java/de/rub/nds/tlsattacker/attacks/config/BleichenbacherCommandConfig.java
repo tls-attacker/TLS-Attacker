@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class BleichenbacherCommandConfig extends TLSDelegateConfig {
+public class BleichenbacherCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "bleichenbacher";
 

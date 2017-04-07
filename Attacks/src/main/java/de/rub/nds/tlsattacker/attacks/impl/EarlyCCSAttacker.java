@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
@@ -41,16 +40,21 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
+public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(EarlyCCSAttack.class);
+    public static Logger LOGGER = LogManager.getLogger(EarlyCCSAttacker.class);
 
-    public EarlyCCSAttack(EarlyCCSCommandConfig config) {
-        super(config);
+    public EarlyCCSAttacker(EarlyCCSCommandConfig config) {
+        super(config, false);
     }
 
     @Override
     public void executeAttack() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public Boolean isVulnerable() {
         TlsConfig tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
         TlsContext tlsContext = new TlsContext(tlsConfig);
@@ -108,8 +112,10 @@ public class EarlyCCSAttack extends Attacker<EarlyCCSCommandConfig> {
 
         if (workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Server Finished message found");
+            return false;
         } else {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Server Finished message found");
+            return true;
         }
     }
 }

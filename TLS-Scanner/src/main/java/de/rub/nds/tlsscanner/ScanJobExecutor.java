@@ -6,13 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner;
 
+import de.rub.nds.tlsattacker.tls.config.delegate.ClientDelegate;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 import de.rub.nds.tlsscanner.report.SiteReport;
 import de.rub.nds.tlsscanner.probe.TLSProbe;
@@ -36,7 +33,7 @@ public class ScanJobExecutor {
         executor = Executors.newFixedThreadPool(1);
     }
 
-    public SiteReport execute(String hostname, ScanJob scanJob) {
+    public SiteReport execute(ScannerConfig config, ScanJob scanJob) {
         List<Future<ProbeResult>> futureResults = new LinkedList<>();
         for (TLSProbe probe : scanJob.getProbeList()) {
             futureResults.add(executor.submit(probe));
@@ -50,6 +47,8 @@ public class ScanJobExecutor {
             }
         }
         executor.shutdown();
+        ClientDelegate clientDelegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
+        String hostname = clientDelegate.getHost();
         return new SiteReport(hostname, resultList);
     }
 }

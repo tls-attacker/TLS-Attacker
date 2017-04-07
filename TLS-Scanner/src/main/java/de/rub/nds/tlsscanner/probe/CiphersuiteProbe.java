@@ -6,11 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.tlsscanner.probe;
 
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayExplicitValueModification;
@@ -38,6 +33,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
 import de.rub.nds.tlsscanner.flaw.ConfigurationFlaw;
 import de.rub.nds.tlsscanner.flaw.FlawLevel;
@@ -66,8 +62,8 @@ public class CiphersuiteProbe extends TLSProbe {
 
     private final List<ProtocolVersion> protocolVersions;
 
-    public CiphersuiteProbe(String serverHost) {
-        super("Ciphersuite", serverHost);
+    public CiphersuiteProbe(ScannerConfig config) {
+        super("Ciphersuite", config);
         protocolVersions = new LinkedList<>();
         protocolVersions.add(ProtocolVersion.TLS10);
         protocolVersions.add(ProtocolVersion.TLS11);
@@ -76,15 +72,20 @@ public class CiphersuiteProbe extends TLSProbe {
 
     @Override
     public ProbeResult call() {
+
         LOGGER.info("Starting CiphersuiteProbe");
         Set<CipherSuite> supportedCiphersuites = new HashSet<>();
-
+        Set<CipherSuite> tls10Ciphersuites = new HashSet<>();
         for (ProtocolVersion version : protocolVersions) {
             LOGGER.info("Testing:" + version.name());
             List<CipherSuite> toTestList = new LinkedList<>();
             toTestList.addAll(Arrays.asList(CipherSuite.values()));
             toTestList.remove(CipherSuite.TLS_FALLBACK_SCSV);
-            supportedCiphersuites.addAll(getSupportedCipherSuitesFromList(toTestList, version));
+            List<CipherSuite> versionSupportedSuites = getSupportedCipherSuitesFromList(toTestList, version);
+            supportedCiphersuites.addAll(versionSupportedSuites);
+            if (version == ProtocolVersion.TLS10) {
+                tls10Ciphersuites.addAll(versionSupportedSuites);
+            }
         }
         List<ResultValue> resultList = new LinkedList<>();
         List<TLSCheck> checkList = new LinkedList<>();
@@ -92,7 +93,7 @@ public class CiphersuiteProbe extends TLSProbe {
             resultList.add(new ResultValue("Ciphersuite", suite.name()));
         }
         checkList.add(checkAnonCiphers(supportedCiphersuites));
-        checkList.add(checkCBCCiphers(supportedCiphersuites));
+        checkList.add(checkCBCCiphers(tls10Ciphersuites));
         checkList.add(checkExportCiphers(supportedCiphersuites));
         checkList.add(checkNullCiphers(supportedCiphersuites));
         checkList.add(checkRC4Ciphers(supportedCiphersuites));
@@ -148,27 +149,27 @@ public class CiphersuiteProbe extends TLSProbe {
 
     public TLSCheck checkAnonCiphers(Set<CipherSuite> supportedCiphersuites) {
         boolean result = supportsAnonCiphers(supportedCiphersuites);
-        return new TLSCheck(result, CheckType.CIPHERSUITE_ANON);
+        return new TLSCheck(result, CheckType.CIPHERSUITE_ANON, getConfig().getLanguage());
     }
 
     public TLSCheck checkNullCiphers(Set<CipherSuite> supportedCiphersuites) {
         boolean result = supportsNullCiphers(supportedCiphersuites);
-        return new TLSCheck(result, CheckType.CIPHERSUITE_NULL);
+        return new TLSCheck(result, CheckType.CIPHERSUITE_NULL, getConfig().getLanguage());
     }
 
     public TLSCheck checkCBCCiphers(Set<CipherSuite> supportedCiphersuites) {
         boolean result = supportsCBCCiphers(supportedCiphersuites);
-        return new TLSCheck(result, CheckType.CIPHERSUITE_CBC);
+        return new TLSCheck(result, CheckType.CIPHERSUITE_CBC, getConfig().getLanguage());
     }
 
     public TLSCheck checkRC4Ciphers(Set<CipherSuite> supportedCiphersuites) {
         boolean result = supportsRC4Ciphers(supportedCiphersuites);
-        return new TLSCheck(result, CheckType.CIPHERSUITE_RC4);
+        return new TLSCheck(result, CheckType.CIPHERSUITE_RC4, getConfig().getLanguage());
     }
 
     public TLSCheck checkExportCiphers(Set<CipherSuite> supportedCiphersuites) {
         boolean result = supportsExportCiphers(supportedCiphersuites);
-        return new TLSCheck(result, CheckType.CIPHERSUITE_EXPORT);
+        return new TLSCheck(result, CheckType.CIPHERSUITE_EXPORT, getConfig().getLanguage());
     }
 
     public List<CipherSuite> getSupportedCipherSuitesFromList(List<CipherSuite> toTestList, ProtocolVersion version) {
@@ -177,9 +178,7 @@ public class CiphersuiteProbe extends TLSProbe {
 
         boolean supportsMore = false;
         do {
-            TlsConfig config = new TlsConfig();
-
-            config.setHost(getServerHost());
+            TlsConfig config = getConfig().createConfig();
             config.setSupportedCiphersuites(listWeSupport);
             config.setHighestProtocolVersion(version);
             config.setEnforceSettings(true);
@@ -188,9 +187,7 @@ public class CiphersuiteProbe extends TLSProbe {
             config.setAddEllipticCurveExtension(true);
             config.setAddSignatureAndHashAlgrorithmsExtension(true);
             List<NamedCurve> namedCurves = new LinkedList<>();
-            for (NamedCurve curve : NamedCurve.values()) {
-                namedCurves.add(curve);
-            }
+            namedCurves.addAll(Arrays.asList(NamedCurve.values()));
             config.setNamedCurves(namedCurves);
             WorkflowTrace trace = new WorkflowTrace();
             ClientHelloMessage message = new ClientHelloMessage(config);
@@ -203,7 +200,6 @@ public class CiphersuiteProbe extends TLSProbe {
             try {
                 workflowExecutor.executeWorkflow();
             } catch (WorkflowExecutionException ex) {
-                ex.printStackTrace();
                 supportsMore = false;
             }
             if (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty()) {

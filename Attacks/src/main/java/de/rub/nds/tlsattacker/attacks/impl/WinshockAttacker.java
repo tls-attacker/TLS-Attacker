@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModification
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.tls.Attacker;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -21,7 +20,6 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +30,12 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class WinshockAttack extends Attacker<WinshockCommandConfig> {
+public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(WinshockAttack.class);
+    private static final Logger LOGGER = LogManager.getLogger(WinshockAttacker.class);
 
-    public WinshockAttack(WinshockCommandConfig config) {
-        super(config);
+    public WinshockAttacker(WinshockCommandConfig config) {
+        super(config, false);
     }
 
     @Override
@@ -67,8 +65,10 @@ public class WinshockAttack extends Attacker<WinshockCommandConfig> {
         cvm.setSignatureLength(signatureLength);
 
         workflowExecutor.executeWorkflow();
+    }
 
-        tlsContexts.add(tlsContext);
-
+    @Override
+    public Boolean isVulnerable() {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }
