@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
     private ExtensionMessage message;
 
     public ExtensionSerializer(T message) {

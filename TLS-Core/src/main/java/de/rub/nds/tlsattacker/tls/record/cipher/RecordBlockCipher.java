@@ -42,8 +42,6 @@ import org.apache.logging.log4j.Logger;
  */
 public final class RecordBlockCipher extends RecordCipher {
 
-    private static final Logger LOGGER = LogManager.getLogger(RecordBlockCipher.class);
-
     /**
      * indicates if explicit IV values should be used (as in TLS 1.1 and higher)
      */

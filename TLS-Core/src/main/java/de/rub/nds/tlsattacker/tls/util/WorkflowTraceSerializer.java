@@ -42,7 +42,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class WorkflowTraceSerializer {
 
-    static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializer.class);
+    static final Logger LOGGER = LogManager.getLogger("WorkflowTraceSerializer");
 
     /**
      * context initialization is expensive, we need to do that only once

@@ -209,7 +209,7 @@ public class ClientHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append(super.toString()).append("\n  Protocol Version: ")
                 .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Client Unix Time: ")
@@ -231,10 +231,5 @@ public class ClientHelloMessage extends HelloMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);
-    }
-
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
     }
 }

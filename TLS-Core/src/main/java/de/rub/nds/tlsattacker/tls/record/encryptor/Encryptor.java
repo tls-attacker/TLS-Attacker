@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.record.encryptor;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.tls.record.decryptor.RecordCryptoUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.tls.record.decryptor.RecordCryptoUnit;
  * @param <T>
  */
 public abstract class Encryptor<T extends AbstractRecord> extends RecordCryptoUnit {
+
+    protected static final Logger LOGGER = LogManager.getLogger("Encryptor");
 
     public Encryptor(RecordCipher cipher) {
         super(cipher);

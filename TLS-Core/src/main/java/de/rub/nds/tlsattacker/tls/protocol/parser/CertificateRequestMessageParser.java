@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateRequestMessageParser extends HandshakeMessageParser<CertificateRequestMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the Parser class
@@ -102,7 +101,8 @@ public class CertificateRequestMessageParser extends HandshakeMessageParser<Cert
      */
     private void parseSignatureHashAlgorithms(CertificateRequestMessage message) {
         message.setSignatureHashAlgorithms(parseByteArrayField(message.getSignatureHashAlgorithmsLength().getValue()));
-        LOGGER.debug("SignatureHashAlgorithms: " + Arrays.toString(message.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: "
+                + ArrayConverter.bytesToHexString(message.getSignatureHashAlgorithms().getValue()));
     }
 
     /**
@@ -137,7 +137,7 @@ public class CertificateRequestMessageParser extends HandshakeMessageParser<Cert
      */
     private void parseDistinguishedNames(CertificateRequestMessage msg) {
         msg.setDistinguishedNames(parseByteArrayField(msg.getDistinguishedNamesLength().getValue()));
-        LOGGER.debug("DistinguishedNames: " + Arrays.toString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
 
     }
 

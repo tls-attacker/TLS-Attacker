@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<DHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     private DHEServerKeyExchangeMessage msg;
 
     /**
@@ -105,7 +103,7 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      */
     private void writeSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getSerializedPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
     /**
@@ -149,7 +147,7 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      */
     private void writeSignature(DHEServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
 }

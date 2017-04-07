@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private final ProtocolMessage message;
 
     public ProtocolMessagePreparator(TlsContext context, T message) {

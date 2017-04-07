@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public HelloRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

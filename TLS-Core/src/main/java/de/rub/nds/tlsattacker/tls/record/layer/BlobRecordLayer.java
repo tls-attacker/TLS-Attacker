@@ -36,8 +36,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class BlobRecordLayer extends RecordLayer {
 
-    private static final Logger LOGGER = LogManager.getLogger(BlobRecordLayer.class);
-
     private final TlsContext context;
 
     private RecordCipher cipher;

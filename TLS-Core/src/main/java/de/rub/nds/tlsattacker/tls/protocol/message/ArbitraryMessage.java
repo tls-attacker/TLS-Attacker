@@ -26,12 +26,12 @@ public class ArbitraryMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        return "Arbitrary Protocol Message";
+        return "ARBITRARY PROTOCOL MESSAGE";
     }
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        throw new UnsupportedOperationException("Cannot retrueve Handler this way"); // To
+        throw new UnsupportedOperationException("Cannot retrieve Handler this way"); // To
                                                                                      // change
                                                                                      // body
                                                                                      // of

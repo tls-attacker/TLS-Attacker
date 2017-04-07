@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     private final HeartbeatMessage msg;
 
@@ -67,7 +66,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private void preparePayload(HeartbeatMessage msg) {
         msg.setPayload(generatePayload());
-        LOGGER.debug("Payload: " + Arrays.toString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
     }
 
     private void preparePayloadLength(HeartbeatMessage msg) {
@@ -77,6 +76,6 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private void preparePadding(HeartbeatMessage msg) {
         msg.setPadding(generatePadding());
-        LOGGER.debug("Padding: " + Arrays.toString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
 }

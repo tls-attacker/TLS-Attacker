@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Decryptor<T extends AbstractRecord> extends RecordCryptoUnit {
 
-    private static final Logger LOGGER = LogManager.getLogger("DECRYPTOR");
+    protected static final Logger LOGGER = LogManager.getLogger("Decryptor");
 
     public Decryptor(RecordCipher cipher) {
         super(cipher);

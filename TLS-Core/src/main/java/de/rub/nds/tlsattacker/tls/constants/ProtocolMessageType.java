@@ -33,8 +33,6 @@ public enum ProtocolMessageType {
     APPLICATION_DATA((byte) 23),
     HEARTBEAT((byte) 24);
 
-    private static final Logger LOGGER = LogManager.getLogger(ProtocolMessageType.class);
-
     private byte value;
 
     private static final Map<Byte, ProtocolMessageType> MAP;

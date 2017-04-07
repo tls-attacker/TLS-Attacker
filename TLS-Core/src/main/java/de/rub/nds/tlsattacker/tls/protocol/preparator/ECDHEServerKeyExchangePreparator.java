@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     public ECDHEServerKeyExchangePreparator(TlsContext context, ServerKeyExchangeMessage message) {
         super(context, message);
     }

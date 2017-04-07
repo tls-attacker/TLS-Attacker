@@ -17,13 +17,17 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * todo print configured records
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class SendAction extends MessageAction {
+
+    private static final Logger LOGGER = LogManager.getLogger("SendAction");
 
     public SendAction() {
         super(new LinkedList<ProtocolMessage>());
@@ -43,10 +47,14 @@ public class SendAction extends MessageAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+        String expected = getReadableString(configuredMessages);
+        LOGGER.debug("Expected:" + expected);
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionEnd());
         MessageActionResult result = executor.sendMessages(configuredMessages, configuredRecords);
         actualMessages.addAll(result.getMessageList());
         actualRecords.addAll(result.getRecordList());
+        String received = getReadableString(actualMessages);
+        LOGGER.info("Actual:" + received);
         executed = true;
 
     }

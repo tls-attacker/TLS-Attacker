@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -27,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     private SignatureAndHashAlgorithm algorithm;
     private byte[] signature;
@@ -74,7 +73,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private void prepareSignature(CertificateVerifyMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
     private void prepareSignatureLength(CertificateVerifyMessage msg) {
@@ -84,6 +83,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private void prepareSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         msg.setSignatureHashAlgorithm(algorithm.getByteValue());
-        LOGGER.debug("SignatureHasAlgorithm: " + Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHasAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
     }
 }

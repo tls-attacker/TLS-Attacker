@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public AlertHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -27,8 +27,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(DefaultWorkflowExecutor.class);
-
     public DefaultWorkflowExecutor(TlsContext context) {
         super(ExecutorType.TLS, context);
     }

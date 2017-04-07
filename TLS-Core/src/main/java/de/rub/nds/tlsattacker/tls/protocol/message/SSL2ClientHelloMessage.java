@@ -175,4 +175,10 @@ public class SSL2ClientHelloMessage extends ProtocolMessage {
         this.sessionID = ModifiableVariableFactory.safelySetValue(this.sessionID, sessionID);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        // TODO
+        return sb.toString();
+    }
 }

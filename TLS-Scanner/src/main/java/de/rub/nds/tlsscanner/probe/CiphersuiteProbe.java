@@ -58,8 +58,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CiphersuiteProbe extends TLSProbe {
 
-    private static final Logger LOGGER = LogManager.getLogger(CiphersuiteProbe.class);
-
     private final List<ProtocolVersion> protocolVersions;
 
     public CiphersuiteProbe(ScannerConfig config) {

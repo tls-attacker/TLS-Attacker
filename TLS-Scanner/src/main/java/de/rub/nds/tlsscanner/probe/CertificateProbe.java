@@ -31,8 +31,6 @@ import org.bouncycastle.crypto.tls.Certificate;
  */
 public class CertificateProbe extends TLSProbe {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateProbe.class);
-
     public CertificateProbe(ScannerConfig config) {
         super("Certificate Probe", config);
     }

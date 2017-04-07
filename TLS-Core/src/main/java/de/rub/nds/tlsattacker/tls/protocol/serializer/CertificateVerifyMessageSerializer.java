@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializer<CertificateVerifyMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
     private final CertificateVerifyMessage msg;
 
@@ -52,7 +51,8 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
      */
     private void writeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithm().getValue());
-        LOGGER.debug("SignatureHashAlgorithms: " + Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
     }
 
     /**
@@ -70,7 +70,7 @@ public class CertificateVerifyMessageSerializer extends HandshakeMessageSerializ
      */
     private void writeSignature(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
 }

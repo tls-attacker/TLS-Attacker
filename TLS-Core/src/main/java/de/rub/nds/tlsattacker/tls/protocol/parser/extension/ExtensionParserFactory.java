@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ExtensionParserFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    private static final Logger LOGGER = LogManager.getLogger("ParserFactory");
 
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {

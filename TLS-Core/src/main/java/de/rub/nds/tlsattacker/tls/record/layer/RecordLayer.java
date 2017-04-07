@@ -12,12 +12,17 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public abstract class RecordLayer {
+
+    protected static final Logger LOGGER = LogManager.getLogger("RecordLayer");
+
     public abstract List<AbstractRecord> parseRecords(byte[] rawBytes);
 
     public abstract void decryptRecord(AbstractRecord records);

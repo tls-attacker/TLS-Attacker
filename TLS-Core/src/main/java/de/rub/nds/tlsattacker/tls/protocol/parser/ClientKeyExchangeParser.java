@@ -21,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage> extends HandshakeMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     /**
      * Constructor for the Parser class
      *

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServerKeyExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     private final ProtocolVersion version;
 
@@ -129,7 +128,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      */
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
     /**
@@ -197,6 +196,6 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      */
     private void parseSignature(DHEServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 }

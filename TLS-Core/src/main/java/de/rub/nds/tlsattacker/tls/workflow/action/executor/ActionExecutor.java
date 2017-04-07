@@ -11,13 +11,18 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.workflow.DefaultWorkflowExecutor;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class ActionExecutor {
+
+    protected static final Logger LOGGER = LogManager.getLogger("ActionExecutor");
 
     public abstract MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records);
 

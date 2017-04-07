@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TLSClient {
 
-    private static final Logger LOGGER = LogManager.getLogger(TLSClient.class);
+    private static final Logger LOGGER = LogManager.getLogger("Client");
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
