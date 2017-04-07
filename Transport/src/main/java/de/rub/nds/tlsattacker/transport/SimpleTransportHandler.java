@@ -27,8 +27,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class SimpleTransportHandler extends TransportHandler {
 
-    private static final Logger LOGGER = LogManager.getLogger(SimpleTransportHandler.class);
-
     private Socket socket;
 
     private ServerSocket serverSocket;

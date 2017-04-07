@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDoneMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     /**
      * Constructor for the Parser class
      *

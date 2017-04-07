@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public EllipticCurvesExtensionHandler(TlsContext context) {
         super(context);
     }

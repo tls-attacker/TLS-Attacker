@@ -184,4 +184,16 @@ public abstract class MessageAction extends TLSAction {
         }
         return Objects.equals(this.actualMessages, other.actualMessages);
     }
+
+    public String getReadableString(List<ProtocolMessage> messages) {
+        StringBuilder builder = new StringBuilder();
+        for (ProtocolMessage message : messages) {
+            builder.append(message.toCompactString());
+            if (!message.isRequired()) {
+                builder.append("*");
+            }
+            builder.append(", ");
+        }
+        return builder.toString();
+    }
 }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientKeyExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the Parser class
@@ -71,6 +70,7 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
      */
     private void parseSerializedPublicKey(DHClientKeyExchangeMessage message) {
         message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(message.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: "
+                + ArrayConverter.bytesToHexString(message.getSerializedPublicKey().getValue()));
     }
 }

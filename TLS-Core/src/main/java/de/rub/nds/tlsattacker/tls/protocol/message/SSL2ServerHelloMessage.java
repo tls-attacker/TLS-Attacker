@@ -206,4 +206,11 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     public void setSessionID(byte[] sessionID) {
         this.sessionID = ModifiableVariableFactory.safelySetValue(this.sessionID, sessionID);
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        //TODO
+        return sb.toString();
+    }
 }

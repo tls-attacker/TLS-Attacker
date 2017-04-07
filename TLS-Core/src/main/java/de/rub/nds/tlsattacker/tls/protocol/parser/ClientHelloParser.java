@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the Parser class
@@ -83,7 +82,7 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
      */
     private void parseCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
-        LOGGER.debug("CipherSuites: " + Arrays.toString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     /**
@@ -106,6 +105,6 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
      */
     private void parseCompressions(ClientHelloMessage message) {
         message.setCompressions(parseByteArrayField(message.getCompressionLength().getValue()));
-        LOGGER.debug("Compressions: " + Arrays.toString(message.getCompressions().getValue()));
+        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(message.getCompressions().getValue()));
     }
 }

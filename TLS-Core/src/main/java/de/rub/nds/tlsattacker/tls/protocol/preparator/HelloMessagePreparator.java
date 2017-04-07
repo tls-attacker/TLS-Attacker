@@ -32,8 +32,6 @@ import org.apache.logging.log4j.Logger;
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private final HelloMessage msg;
 
     public HelloMessagePreparator(TlsContext context, HelloMessage message) {
@@ -45,13 +43,13 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         byte[] random = new byte[HandshakeByteLength.RANDOM];
         RandomHelper.getRandom().nextBytes(random);
         msg.setRandom(random);
-        LOGGER.debug("Random: " + Arrays.toString(msg.getRandom().getValue()));
+        LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
     }
 
     protected void prepareUnixTime() {
         final long unixTime = TimeHelper.getTime();
         msg.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
-        LOGGER.debug("UnixTime: " + Arrays.toString(msg.getUnixTime().getValue()));
+        LOGGER.debug("UnixTime: " + ArrayConverter.bytesToHexString(msg.getUnixTime().getValue()));
     }
 
     protected void prepareSessionIDLength() {
@@ -71,7 +69,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
             }
         }
         msg.setExtensionBytes(stream.toByteArray());
-        LOGGER.debug("ExtensionBytes: " + Arrays.toString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
     }
 
     protected void prepareExtensionLength() {

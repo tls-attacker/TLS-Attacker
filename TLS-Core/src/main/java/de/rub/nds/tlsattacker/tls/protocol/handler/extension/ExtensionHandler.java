@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    protected static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     protected final TlsContext context;
 

@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownHandshakeMessageParser extends HandshakeMessageParser<UnknownHandshakeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     /**
      * Constructor for the Parser class
      *
@@ -61,6 +59,6 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
      */
     private void parseData(UnknownHandshakeMessage msg) {
         msg.setData(parseByteArrayField(msg.getLength().getValue()));
-        LOGGER.debug("Data: " + Arrays.toString(msg.getData().getValue()));
+        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
 }

@@ -42,8 +42,6 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private ECPublicKeyParameters ecPublicKey;
     private ECPrivateKeyParameters ecPrivateKey;
     private byte[] serializedPoint;
@@ -163,12 +161,12 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     private void prepareEcPointEncoded(ECDHClientKeyExchangeMessage msg) {
         msg.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
-        LOGGER.debug("EcPointEncoded: " + Arrays.toString(msg.getEcPointEncoded().getValue()));
+        LOGGER.debug("EcPointEncoded: " + ArrayConverter.bytesToHexString(msg.getEcPointEncoded().getValue()));
     }
 
     private void prepareSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(serializedPoint);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
@@ -178,16 +176,19 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     private void preparePremasterSecret(ECDHClientKeyExchangeMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: " + Arrays.toString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void prepareClientRandom(ECDHClientKeyExchangeMessage msg) {
         msg.getComputations().setClientRandom(random);
-        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+        LOGGER.debug("ClientRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareMasterSecret(ECDHClientKeyExchangeMessage msg) {
         msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: " + Arrays.toString(msg.getComputations().getMasterSecret().getValue()));
+        LOGGER.debug("MasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
     }
 }

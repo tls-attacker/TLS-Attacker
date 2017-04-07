@@ -47,8 +47,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ProtocolVersionProbe extends TLSProbe {
 
-    private static final Logger LOGGER = LogManager.getLogger("PROBE");
-
     public ProtocolVersionProbe(ScannerConfig config) {
         super("ProtocolVersion", config);
     }

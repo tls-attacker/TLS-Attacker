@@ -85,9 +85,4 @@ public class CertificateMessage extends HandshakeMessage {
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new CertificateHandler(context);
     }
-
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
-    }
 }

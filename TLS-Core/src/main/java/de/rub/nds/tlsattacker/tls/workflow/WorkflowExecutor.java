@@ -16,11 +16,15 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
 public abstract class WorkflowExecutor {
+
+    protected static final Logger LOGGER = LogManager.getLogger("WorkflowExecutor");
 
     protected final ExecutorType type;
 

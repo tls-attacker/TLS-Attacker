@@ -25,8 +25,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public UnknownExtensionHandler(TlsContext context) {
         super(context);
     }

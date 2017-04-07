@@ -29,8 +29,6 @@ import org.bouncycastle.crypto.tls.TlsFatalAlert;
  */
 public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

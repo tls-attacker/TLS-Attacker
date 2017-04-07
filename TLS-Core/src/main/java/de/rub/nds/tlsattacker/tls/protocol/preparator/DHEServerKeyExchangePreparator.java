@@ -40,8 +40,6 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<DHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private DHPublicKeyParameters dhPublic;
     private DHPrivateKeyParameters dhPrivate;
     private ServerDHParams publicKeyParameters;
@@ -141,7 +139,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private void prepareSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(dhPublic.getY().toByteArray());
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
@@ -188,17 +186,19 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private void prepareClientRandom(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setClientRandom(context.getClientRandom());
-        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+        LOGGER.debug("ClientRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareServerRandom(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setServerRandom(context.getServerRandom());
-        LOGGER.debug("ServerRandom: " + Arrays.toString(msg.getComputations().getServerRandom().getValue()));
+        LOGGER.debug("ServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
     }
 
     private void prepareSignature(DHEServerKeyExchangeMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug("Signatur: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
     private void prepareSignatureLength(DHEServerKeyExchangeMessage msg) {

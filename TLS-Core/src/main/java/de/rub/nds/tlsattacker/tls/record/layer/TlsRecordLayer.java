@@ -39,8 +39,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsRecordLayer extends RecordLayer {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsRecordLayer.class);
-
     protected final TlsContext tlsContext;
 
     private final Decryptor decryptor;

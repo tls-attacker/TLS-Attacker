@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateVerifyMessageSe
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  *
@@ -89,12 +90,18 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new CertificateVerifyHandler(context);
+    public String toString() {
+        StringBuilder builder = new StringBuilder(super.toString());
+        builder.append("  \nSignatureAndHashAlgorithm:").append(ArrayConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
+        builder.append("  \nSignature Length:").append(signatureLength.getValue());
+        builder.append("  \nSignature:").append(ArrayConverter.bytesToHexString(signature.getValue()));
+        return builder.toString();
     }
 
+    
+    
     @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new CertificateVerifyHandler(context);
     }
 }

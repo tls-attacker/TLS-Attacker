@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  *            Type of the HandshakeMessages to parse
  */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     private ProtocolVersion version;
 
@@ -63,6 +62,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
      */
     private void parseCompleteResultingMessage(ProtocolMessage msg) {
         msg.setCompleteResultingMessage(getAlreadyParsed());
-        LOGGER.debug("CompleteResultMessage: " + Arrays.toString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultMessage: "
+                + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 }

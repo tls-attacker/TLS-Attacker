@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +20,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FinishedMessageSerializer extends HandshakeMessageSerializer<FinishedMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
     private final FinishedMessage msg;
 
@@ -49,7 +48,7 @@ public class FinishedMessageSerializer extends HandshakeMessageSerializer<Finish
      */
     private void writeVerifyData(FinishedMessage msg) {
         appendBytes(msg.getVerifyData().getValue());
-        LOGGER.debug("VerifyData: " + Arrays.toString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 
 }

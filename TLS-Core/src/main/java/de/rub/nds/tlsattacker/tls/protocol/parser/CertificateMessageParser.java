@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the Parser class
@@ -72,7 +71,8 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      */
     private void parseX509CertificateBytes(CertificateMessage msg) {
         msg.setX509CertificateBytes(parseByteArrayField(msg.getCertificatesLength().getValue()));
-        LOGGER.debug("X509CertificateBytes: " + Arrays.toString(msg.getX509CertificateBytes().getValue()));
+        LOGGER.debug("X509CertificateBytes: "
+                + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
     }
 
 }

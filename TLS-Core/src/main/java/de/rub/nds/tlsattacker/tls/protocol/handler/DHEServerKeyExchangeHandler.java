@@ -26,8 +26,6 @@ import org.bouncycastle.crypto.tls.ServerDHParams;
  */
 public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

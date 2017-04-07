@@ -16,6 +16,7 @@ import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -29,7 +30,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateReportGenerator {
 
-    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("PROBE");
+    private static final Logger LOGGER = LogManager.getLogger("Probe");
 
     public static List<CertificateReport> generateReports(Certificate certs) {
         List<CertificateReport> reportList = new LinkedList<>();

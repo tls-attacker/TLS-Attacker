@@ -19,8 +19,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     private final HelloRequestMessage message;
 
     /**

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.IOException;
 import java.util.Arrays;
@@ -36,8 +37,6 @@ import org.bouncycastle.util.BigIntegers;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<DHClientKeyExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     private DHPrivateKeyParameters dhPrivate;
     private DHPublicKeyParameters dhPublic;
@@ -162,12 +161,13 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         premasterSecret = calculatePremasterSecret(newDhPrivate, context.getServerDHParameters().getPublicKey());
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
-        LOGGER.debug("PremasterSecret: " + Arrays.toString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void prepareSerializedPublicKey(DHClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(serializedPublicKey);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(DHClientKeyExchangeMessage msg) {
@@ -179,12 +179,14 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         random = context.getClientServerRandom();
         msg.getComputations().setClientRandom(random);
         random = msg.getComputations().getClientRandom().getValue();
-        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+        LOGGER.debug("ClientRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareMasterSecret(DHClientKeyExchangeMessage msg) {
         masterSecret = calculateMasterSecret(random, premasterSecret);
         msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: " + Arrays.toString(msg.getComputations().getMasterSecret().getValue()));
+        LOGGER.debug("MasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
     }
 }

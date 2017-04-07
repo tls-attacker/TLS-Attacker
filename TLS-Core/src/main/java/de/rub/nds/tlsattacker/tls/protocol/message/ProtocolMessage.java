@@ -104,6 +104,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
         return this instanceof HandshakeMessage;
     }
 
+    @Override
+    public String toString() {
+        return toCompactString();
+    }
+    
     public abstract String toCompactString();
 
     public abstract ProtocolMessageHandler getHandler(TlsContext context);

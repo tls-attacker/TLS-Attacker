@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
     private final HeartbeatMessage msg;
 
@@ -69,7 +68,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      */
     private void writePayload(HeartbeatMessage msg) {
         appendBytes(msg.getPayload().getValue());
-        LOGGER.debug("Payload: " + Arrays.toString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
     }
 
     /**
@@ -77,7 +76,7 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      */
     private void writePadding(HeartbeatMessage msg) {
         appendBytes(msg.getPadding().getValue());
-        LOGGER.debug("Padding: " + Arrays.toString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
 
 }

@@ -8,10 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.record.cipher;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public abstract class RecordCipher {
+
+    protected static final Logger LOGGER = LogManager.getLogger("Cipher");
 
     /**
      * minimalRecordLength an encrypted record should have

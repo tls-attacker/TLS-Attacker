@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  *
@@ -50,5 +51,12 @@ public class UnknownMessage extends ProtocolMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new UnknownMessageHandler(context);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("   \nData").append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
+        return sb.toString();
     }
 }

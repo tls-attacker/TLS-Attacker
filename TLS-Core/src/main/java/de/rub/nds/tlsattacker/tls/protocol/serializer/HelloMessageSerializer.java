@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import javax.swing.text.html.parser.DTDConstants;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HelloMessageSerializer<T extends HelloMessage> extends HandshakeMessageSerializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
     /**
      * The message that should be serialized
      */
@@ -75,7 +75,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      */
     protected void writeExtensionBytes() {
         appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug("ExtensionBytes: " + Arrays.toString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      */
     protected void writeProtocolVersion() {
         appendBytes(msg.getProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     /**
@@ -91,7 +91,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      */
     protected void writeUnixtime() {
         appendBytes(msg.getUnixTime().getValue());
-        LOGGER.debug("UnixTime: " + Arrays.toString(msg.getUnixTime().getValue()));
+        LOGGER.debug("UnixTime: " + ArrayConverter.bytesToHexString(msg.getUnixTime().getValue()));
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      */
     protected void writeRandom() {
         appendBytes(msg.getRandom().getValue());
-        LOGGER.debug("Random: " + Arrays.toString(msg.getRandom().getValue()));
+        LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
     }
 
     /**
@@ -115,6 +115,6 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
      */
     protected void writeSessionID() {
         appendBytes(msg.getSessionId().getValue());
-        LOGGER.debug("SessionID: " + Arrays.toString(msg.getSessionId().getValue()));
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 }

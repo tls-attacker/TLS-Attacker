@@ -38,8 +38,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class SSLActionExecutor extends ActionExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(SSLActionExecutor.class);
-
     private boolean proceed = true;
 
     private final TlsContext context;

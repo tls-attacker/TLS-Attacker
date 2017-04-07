@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class TlsMessageDigest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsMessageDigest.class);
+    private static final Logger LOGGER = LogManager.getLogger("MessageDigest");
 
     private MessageDigest hash1;
 

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     private final ClientHelloMessage msg;
 
@@ -93,12 +92,12 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareProtocolVersion(ClientHelloMessage msg) {
         msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
         msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
-        LOGGER.debug("Compressions: " + Arrays.toString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 
     private void prepareCompressionLength(ClientHelloMessage msg) {
@@ -108,7 +107,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
-        LOGGER.debug("CipherSuites: " + Arrays.toString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     private void prepareCipherSuitesLength(ClientHelloMessage msg) {
@@ -122,7 +121,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private void prepareCookie(ClientHelloMessage msg) {
         msg.setCookie(context.getDtlsHandshakeCookie());
-        LOGGER.debug("Cookie: " + Arrays.toString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
     }
 
     private void prepareCookieLength(ClientHelloMessage msg) {
