@@ -26,26 +26,18 @@ public class DHEServerComputations extends KeyExchangeComputations {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
     private ModifiableBigInteger privateKey;
+
     /**
-     * Length of the serialized DH modulus
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedPLength;
-    /**
-     * serialized DH modulus
+     * dh modulus used for computations
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedP;
+    private ModifiableBigInteger p;
+
     /**
-     * Length of the serialized DH generator
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedGLength;
-    /**
-     * serialized DH generator
+     * dh generator used for computations
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedG;
+    private ModifiableBigInteger g;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray serverRandom;
@@ -65,52 +57,28 @@ public class DHEServerComputations extends KeyExchangeComputations {
         this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
-    public ModifiableInteger getSerializedPLength() {
-        return serializedPLength;
+    public ModifiableBigInteger getP() {
+        return p;
     }
 
-    public void setSerializedPLength(ModifiableInteger serializedPLength) {
-        this.serializedPLength = serializedPLength;
+    public void setP(ModifiableBigInteger p) {
+        this.p = p;
     }
 
-    public void setSerializedPLength(Integer pLength) {
-        this.serializedPLength = ModifiableVariableFactory.safelySetValue(this.serializedPLength, pLength);
+    public ModifiableBigInteger getG() {
+        return g;
     }
 
-    public ModifiableByteArray getSerializedP() {
-        return serializedP;
+    public void setG(ModifiableBigInteger g) {
+        this.g = g;
     }
 
-    public void setSerializedP(ModifiableByteArray serializedP) {
-        this.serializedP = serializedP;
+    public void setP(BigInteger p) {
+        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
     }
 
-    public void setSerializedP(byte[] serializedP) {
-        this.serializedP = ModifiableVariableFactory.safelySetValue(this.serializedP, serializedP);
-    }
-
-    public ModifiableInteger getSerializedGLength() {
-        return serializedGLength;
-    }
-
-    public void setSerializedGLength(ModifiableInteger serializedGLength) {
-        this.serializedGLength = serializedGLength;
-    }
-
-    public void setSerializedGLength(Integer gLength) {
-        this.serializedGLength = ModifiableVariableFactory.safelySetValue(this.serializedGLength, gLength);
-    }
-
-    public ModifiableByteArray getSerializedG() {
-        return serializedG;
-    }
-
-    public void setSerializedG(ModifiableByteArray serializedG) {
-        this.serializedG = serializedG;
-    }
-
-    public void setSerializedG(byte[] serializedG) {
-        this.serializedG = ModifiableVariableFactory.safelySetValue(this.serializedG, serializedG);
+    public void setG(BigInteger g) {
+        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
     public ModifiableByteArray getServerRandom() {

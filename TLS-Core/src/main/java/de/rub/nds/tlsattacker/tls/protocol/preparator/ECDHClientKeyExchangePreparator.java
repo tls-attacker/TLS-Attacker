@@ -86,7 +86,8 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         // TODO i guess some of the intermediate calculated values could be
         // inserted into computations
         try {
-            serializedPoint = ECCUtilsBCWrapper.serializeECPoint((ECPointFormat[]) pointFormatList.toArray(), point);
+            ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
+            serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, point);
             prepareEcPointFormat(msg);
             prepareEcPointEncoded(msg);
             prepareSerializedPublicKey(msg);

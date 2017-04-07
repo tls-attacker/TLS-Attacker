@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,8 +69,8 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      * Writes the P of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeP(DHEServerKeyExchangeMessage msg) {
-        appendBytes(msg.getP().getByteArray());
-        LOGGER.debug("P: " + msg.getP().getValue());
+        appendBytes(msg.getP().getValue());
+        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getP().getValue()));
     }
 
     /**
@@ -85,8 +86,8 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      * Writes the G of the DHEServerKeyExchangeMessage into the final byte[]
      */
     private void writeG(DHEServerKeyExchangeMessage msg) {
-        appendBytes(msg.getG().getByteArray());
-        LOGGER.debug("G: " + msg.getG().getValue());
+        appendBytes(msg.getG().getValue());
+        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getG().getValue()));
     }
 
     /**

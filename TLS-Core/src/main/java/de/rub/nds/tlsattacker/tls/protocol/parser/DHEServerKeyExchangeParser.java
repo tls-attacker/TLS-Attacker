@@ -82,7 +82,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
-        msg.setP(parseBigIntField(msg.getpLength().getValue()));
+        msg.setP(parseByteArrayField(msg.getpLength().getValue()));
         LOGGER.debug("P: " + msg.getP().getValue());
     }
 
@@ -104,7 +104,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
-        msg.setG(parseBigIntField(msg.getgLength().getValue()));
+        msg.setG(parseByteArrayField(msg.getgLength().getValue()));
         LOGGER.debug("G: " + msg.getG().getValue());
     }
 

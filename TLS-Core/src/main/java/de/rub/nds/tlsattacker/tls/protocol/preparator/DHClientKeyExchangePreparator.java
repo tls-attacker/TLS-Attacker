@@ -59,9 +59,8 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
     public void prepareHandshakeMessageContents() {
         kp = null;
 
-        if (!hasServerPublicKey()) {
+        if (!isServerPkKnown()) {
             kp = getParamsFromCertificate();
-
         } else {
             kp = generateFreshParams();
         }
@@ -135,8 +134,8 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
     }
 
-    private boolean hasServerPublicKey() {
-        return context.getServerPublicKey() == null;
+    private boolean isServerPkKnown() {
+        return context.getServerDHParameters() != null;
     }
 
     private void prepareG(DHClientKeyExchangeMessage msg) {
