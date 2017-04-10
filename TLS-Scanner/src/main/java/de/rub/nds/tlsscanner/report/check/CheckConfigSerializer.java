@@ -28,7 +28,7 @@ public class CheckConfigSerializer {
     }
 
     public static CheckConfig deserialize(String resourcePath) {
-        LOGGER.info("Loading resource from:" + resourcePath);
+        LOGGER.debug("Loading resource from:" + resourcePath);
         InputStream stream = CheckConfigSerializer.class.getResourceAsStream(resourcePath);
         return JAXB.unmarshal(stream, CheckConfig.class);
     }

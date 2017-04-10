@@ -85,7 +85,7 @@ public class WorkflowTraceSerializerTest {
         os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, wt);
 
-        LOGGER.info(new String(os.toByteArray()));
+        LOGGER.debug(new String(os.toByteArray()));
 
         Assert.assertArrayEquals("The serialized workflows have to be equal", serializedWorkflow.getBytes(),
                 os.toByteArray());

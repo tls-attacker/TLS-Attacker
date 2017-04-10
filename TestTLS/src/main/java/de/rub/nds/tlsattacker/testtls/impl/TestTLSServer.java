@@ -37,7 +37,7 @@ public class TestTLSServer {
         List<TestTLS> tests = new LinkedList<>();
         TlsPeerProperties properties = new TlsPeerProperties();
 
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting TLS Test");
+        LOGGER.info("Starting TLS Test");
 
         ProtocolVersionTest protocolVersionTest = new ProtocolVersionTest(testConfig);
         protocolVersionTest.startTests();
@@ -68,7 +68,7 @@ public class TestTLSServer {
             test.fillTlsPeerProperties(properties);
             sb.append("\n").append(test.getClass().getSimpleName()).append(test.getResult());
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, sb.toString());
+        LOGGER.info(sb.toString());
 
         boolean policyCompliant = true;
         if (testConfig.getPolicy() != null) {
@@ -79,7 +79,7 @@ public class TestTLSServer {
                 policyCompliant = properties.compliesPolicy(configuredProperties);
             } catch (FileNotFoundException ex) {
                 LOGGER.error("Cannot find the provided file " + testConfig.getPolicy());
-                LOGGER.info(ex.getLocalizedMessage(), ex);
+                LOGGER.debug(ex.getLocalizedMessage(), ex);
                 policyCompliant = false;
             }
         }

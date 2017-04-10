@@ -45,7 +45,7 @@ public class CiphersuiteOrderProbe extends TLSProbe {
 
     @Override
     public ProbeResult call() {
-        LOGGER.info("Starting CipherSuiteOrder Test");
+        LOGGER.debug("Starting CipherSuiteOrder Test");
 
         List<CipherSuite> toTestList = new LinkedList<>();
         toTestList.addAll(Arrays.asList(CipherSuite.values()));

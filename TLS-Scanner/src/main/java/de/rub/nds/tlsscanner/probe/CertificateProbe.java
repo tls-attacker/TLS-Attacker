@@ -12,17 +12,13 @@ import de.rub.nds.tlsattacker.tls.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsscanner.config.ScannerConfig;
 import de.rub.nds.tlsscanner.report.ProbeResult;
-import de.rub.nds.tlsscanner.flaw.ConfigurationFlaw;
 import de.rub.nds.tlsscanner.report.ResultValue;
 import de.rub.nds.tlsscanner.probe.certificate.CertificateJudger;
 import de.rub.nds.tlsscanner.probe.certificate.CertificateReport;
 import de.rub.nds.tlsscanner.probe.certificate.CertificateReportGenerator;
-import de.rub.nds.tlsscanner.report.SiteReport;
 import de.rub.nds.tlsscanner.report.check.TLSCheck;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**

@@ -50,7 +50,8 @@ public class ChangeCompressionAction extends TLSAction {
         }
         oldValue = tlsContext.getSelectedCompressionMethod();
         tlsContext.setSelectedCompressionMethod(newValue);
-        LOGGER.info("Changed selected CompressionMethod from " + oldValue.name() + " to " + newValue.name());
+        LOGGER.info("Changed selected CompressionMethod from " + (oldValue == null ? "null" : oldValue.name()) + " to "
+                + newValue.name());
         executed = true;
     }
 

@@ -138,7 +138,7 @@ public class ServerTestSuite extends TestSuite {
             testsuites = new File[0];
         }
         for (File testsuite : testsuites) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting {} Test Suite", testsuite.getName());
+            LOGGER.info("Starting {} Test Suite", testsuite.getName());
             File[] tests = testsuite.listFiles(new DirectoryFilter());
             if (null == tests) {
                 tests = new File[0];
@@ -158,24 +158,22 @@ public class ServerTestSuite extends TestSuite {
                     }
                 }
                 if (successfulTest) {
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{} SUCCESSFUL ", test.getName());
+                    LOGGER.info("{} SUCCESSFUL ", test.getName());
                     successfulTests.add(test.getName());
                 } else {
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{} FAILED ", test.getName());
+                    LOGGER.info("{} FAILED ", test.getName());
                     failedTests.add(test.getName());
                 }
             }
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Summary of successful tests");
+        LOGGER.info("Summary of successful tests (" + successfulTests.size() + ")");
         for (String s : successfulTests) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "  {}", s);
+            LOGGER.info("  {}", s);
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Summary of failed tests");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Summary of failed tests (" + failedTests.size() + ")");
         for (String s : failedTests) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "  {}", s);
+            LOGGER.info("  {}", s);
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Successful tests: {}", successfulTests.size());
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Failed tests: {}", failedTests.size());
     }
 
     private boolean startTestCase(File testFolder) {
@@ -202,17 +200,17 @@ public class ServerTestSuite extends TestSuite {
                         tlsConfig.getExecutorType(), tlsContext);
                 workflowExecutor.executeWorkflow();
                 if (tlsContext.getWorkflowTrace().configuredLooksLikeActual()) {
-                    LOGGER.info("    {} passed", xmlFile.getName());
+                    LOGGER.debug("    {} passed", xmlFile.getName());
                     List<ModifiableVariableField> mvfs = ModifiableVariableAnalyzer
                             .getAllModifiableVariableFieldsRecursively(tlsContext.getWorkflowTrace());
                     for (ModifiableVariableField mvf : mvfs) {
                         ModifiableVariable mv = mvf.getModifiableVariable();
                         if (mv != null && mv.containsAssertion()) {
                             if (mv.validateAssertions()) {
-                                LOGGER.info("    Assertion in {}.{} succesfully validated", mvf.getObject().getClass()
+                                LOGGER.debug("    Assertion in {}.{} succesfully validated", mvf.getObject().getClass()
                                         .getSimpleName(), mvf.getField().getName());
                             } else {
-                                LOGGER.info("    Assertion in {}.{} invalid", mvf.getObject().getClass()
+                                LOGGER.debug("    Assertion in {}.{} invalid", mvf.getObject().getClass()
                                         .getSimpleName(), mvf.getField().getName());
                                 succesful = false;
                             }
@@ -225,7 +223,7 @@ public class ServerTestSuite extends TestSuite {
             } catch (WorkflowExecutionException | ConfigurationException | IllegalArgumentException
                     | IllegalAccessException ex) {
                 LOGGER.info("    {} failed", xmlFile.getName());
-                LOGGER.info(ex);
+                LOGGER.debug(ex);
                 succesful = false;
             }
         }

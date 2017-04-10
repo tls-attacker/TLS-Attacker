@@ -170,9 +170,9 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         }
 
         if (vulnerable) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "VULNERABLE");
+            LOGGER.info("VULNERABLE");
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT VULNERABLE");
+            LOGGER.info("NOT VULNERABLE");
         }
 
         LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");

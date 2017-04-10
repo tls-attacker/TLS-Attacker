@@ -37,7 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class WorkflowTraceSerializer {
@@ -51,7 +51,7 @@ public class WorkflowTraceSerializer {
 
     /**
      * Returns an initialized JaxbContext
-     * 
+     *
      * @return
      * @throws JAXBException
      * @throws IOException
@@ -67,7 +67,7 @@ public class WorkflowTraceSerializer {
 
     /**
      * Writes a WorkflowTrace to a File
-     * 
+     *
      * @param file
      *            File to which the WorkflowTrace should be written
      * @param trace
@@ -88,7 +88,7 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     * 
+     *
      * @param outputStream
      * @param workflowTrace
      * @throws JAXBException
@@ -104,7 +104,7 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     * 
+     *
      * @param inputStream
      * @return
      * @throws JAXBException
@@ -139,7 +139,8 @@ public class WorkflowTraceSerializer {
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.error(ex.getLocalizedMessage(), ex);
+                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
+                    LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
             }
             return list;

@@ -118,20 +118,20 @@ public class ECComputationCorrectness {
             try {
                 ecdhV.doPhase(bpub, true);
                 sunSecret = new BigInteger(1, ecdhV.generateSecret());
-                LOGGER.info("[SUN] Secret " + x + ": 0x" + (sunSecret).toString(16).toUpperCase());
+                LOGGER.debug("[SUN] Secret " + x + ": 0x" + (sunSecret).toString(16).toUpperCase());
             } catch (IllegalStateException | InvalidKeyException e) {
-                LOGGER.info("[SUN] Secret: null");
+                LOGGER.debug("[SUN] Secret: null");
             }
 
             BigInteger cusSecret = null;
             try {
                 Point res = ecc.mul(basePoint, true);
                 cusSecret = res.getX();
-                LOGGER.info("[CUS] Secret " + x + ": 0x" + cusSecret.toString(16).toUpperCase());
+                LOGGER.debug("[CUS] Secret " + x + ": 0x" + cusSecret.toString(16).toUpperCase());
 
                 LOGGER.info("");
             } catch (DivisionException e) {
-                LOGGER.info("[CUS] Secret: null");
+                LOGGER.debug("[CUS] Secret: null");// TODO ugly
             }
 
             if (sunSecret != null && sunSecret.equals(cusSecret)) {
@@ -140,8 +140,8 @@ public class ECComputationCorrectness {
 
         }
 
-        LOGGER.info("Correct Computations: " + correctComputations + " / " + iterations);
-        LOGGER.info("Secret length (bits): " + x.bitLength());
+        LOGGER.debug("Correct Computations: " + correctComputations + " / " + iterations);
+        LOGGER.debug("Secret length (bits): " + x.bitLength());
     }
 
     @Test
@@ -150,15 +150,15 @@ public class ECComputationCorrectness {
         int iter = 10;
         List<ICEPoint> points = ICEPointReader.readPoints(namedCurve);
         for (ICEPoint p : points) {
-            LOGGER.info("-------------------");
-            LOGGER.info(p);
+            LOGGER.debug("-------------------");
+            LOGGER.debug(p);
             BigInteger secretBase = new BigInteger("2");
             int pow = -1;
             boolean identical = true;
             while (identical) {
                 pow += 8;
                 BigInteger secret = secretBase.pow(pow).subtract(new BigInteger("5"));
-                LOGGER.info("Using Secret (" + secret.bitLength() + " bits): " + secret);
+                LOGGER.debug("Using Secret (" + secret.bitLength() + " bits): " + secret);
                 identical = resultsIdentical(namedCurve, p.getX(), p.getY(), secret, iter);
             }
         }
@@ -180,20 +180,20 @@ public class ECComputationCorrectness {
                 }
             }
             if (i % 10 == 0) {
-                LOGGER.info("Running iteration nr " + i);
+                LOGGER.debug("Running iteration nr " + i);
             }
         }
 
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
             double percentage = correctResults[j] / iterations;
-            LOGGER.info("Curve with order " + p.getOrder() + " has success probability of valid computation [%]: "
+            LOGGER.debug("Curve with order " + p.getOrder() + " has success probability of valid computation [%]: "
                     + (percentage * 100.0));
         }
         for (int j = 0; j < points.size(); j++) {
             ICEPoint p = points.get(j);
             double percentage = correctResults[j] / iterations;
-            LOGGER.info(p.getOrder() + " " + (percentage * 100.0));
+            LOGGER.debug(p.getOrder() + " " + (percentage * 100.0));
         }
     }
 

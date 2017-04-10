@@ -41,7 +41,7 @@ public class Manger extends Pkcs1Attack {
     public void attack() throws OracleException {
         BigInteger cc;
 
-        LOGGER.info("Step 0:  Ensuring that m in [0,B)");
+        LOGGER.debug("Step 0:  Ensuring that m in [0,B)");
         BigInteger fx = BigInteger.ONE;
         if (!queryOracle(c0, fx)) {
             BigInteger cx = c0;
@@ -59,7 +59,7 @@ public class Manger extends Pkcs1Attack {
 
         LOGGER.debug("Ciphertext after step 0: {}", ArrayConverter.bytesToHexString(c0.toByteArray()));
 
-        LOGGER.info("Step 1");
+        LOGGER.debug("Step 1");
         BigInteger f1 = new BigInteger("2");
         while (!interrupted) {
             cc = multiply(c0, f1);
@@ -70,7 +70,7 @@ public class Manger extends Pkcs1Attack {
             }
         }
 
-        LOGGER.info("Step 2");
+        LOGGER.debug("Step 2");
         // f2 = int(intfloordiv(N+B,B)*f1/2)
         BigInteger tmp = MathHelper.intfloordiv(publicKey.getModulus().add(bigB), bigB);
         BigInteger f2 = tmp.multiply(f1.shiftRight(1));
@@ -83,7 +83,7 @@ public class Manger extends Pkcs1Attack {
             }
         }
 
-        LOGGER.info("Step 3");
+        LOGGER.debug("Step 3");
         BigInteger mmin = MathHelper.intceildiv(publicKey.getModulus(), f2);
         BigInteger mmax = MathHelper.intfloordiv(publicKey.getModulus().add(bigB), f2);
 
@@ -121,7 +121,7 @@ public class Manger extends Pkcs1Attack {
                 BigInteger inverse = fx.modInverse(publicKey.getModulus());
                 solution = mmin.multiply(inverse).mod(publicKey.getModulus());
             }
-            LOGGER.info("Manger's attack solution (after inverse computation, if any): {}",
+            LOGGER.debug("Manger's attack solution (after inverse computation, if any): {}",
                     ArrayConverter.bytesToHexString(solution.toByteArray()));
         }
     }

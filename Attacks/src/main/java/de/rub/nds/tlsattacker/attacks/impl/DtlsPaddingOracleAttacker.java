@@ -133,7 +133,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
                 fileWriter.close();
             }
         } catch (IOException e) {
-            LOGGER.info(e.getLocalizedMessage());
+            LOGGER.info("Encountered IOException while Executing Attack");
+            LOGGER.debug(e.getLocalizedMessage());
         }
 
         closeDtlsConnectionGracefully();
@@ -197,7 +198,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         } catch (SocketTimeoutException e) {
             LOGGER.info("Received timeout when waiting for heartbeat answer. Train: {}", trainInfo);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.debug(e.getMessage());
         }
         return -1;
     }

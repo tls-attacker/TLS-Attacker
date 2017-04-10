@@ -32,7 +32,7 @@ public class PKCS1VectorGenerator {
 
     private static final int STATIC_VECTOR_SIZE = 11;
 
-    private static final Logger LOG = LogManager.getLogger(PKCS1VectorGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger(PKCS1VectorGenerator.class);
 
     /**
      * Generates different encrypted PKCS1 vectors
@@ -112,7 +112,7 @@ public class PKCS1VectorGenerator {
         key[rsaKeyLength - symmetricKey.length - 1] = 0x00;
         // copy the symmetric key to the field
         System.arraycopy(symmetricKey, 0, key, rsaKeyLength - symmetricKey.length, symmetricKey.length);
-        LOG.info("Generated a PKCS1 padded message a correct key length, but invalid protocol version: {}",
+        LOGGER.debug("Generated a PKCS1 padded message a correct key length, but invalid protocol version: {}",
                 ArrayConverter.bytesToHexString(key));
 
         return key;
@@ -121,14 +121,16 @@ public class PKCS1VectorGenerator {
     private static byte[] getEK_WrongFirstByte(int rsaKeyLength, byte[] symmetricKey) {
         byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
         key[0] = 23;
-        LOG.info("Generated a PKCS1 padded message with a wrong first byte: {}", ArrayConverter.bytesToHexString(key));
+        LOGGER.debug("Generated a PKCS1 padded message with a wrong first byte: {}",
+                ArrayConverter.bytesToHexString(key));
         return key;
     }
 
     private static byte[] getEK_WrongSecondByte(int rsaKeyLength, byte[] symmetricKey) {
         byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
         key[1] = 23;
-        LOG.info("Generated a PKCS1 padded message with a wrong second byte: {}", ArrayConverter.bytesToHexString(key));
+        LOGGER.debug("Generated a PKCS1 padded message with a wrong second byte: {}",
+                ArrayConverter.bytesToHexString(key));
         return key;
     }
 
@@ -139,14 +141,15 @@ public class PKCS1VectorGenerator {
                 key[i] = 0x01;
             }
         }
-        LOG.info("Generated a PKCS1 padded message with no separating byte: {}", ArrayConverter.bytesToHexString(key));
+        LOGGER.debug("Generated a PKCS1 padded message with no separating byte: {}",
+                ArrayConverter.bytesToHexString(key));
         return key;
     }
 
     private static byte[] getEK_NullByteInPkcsPadding(int rsaKeyLength, byte[] symmetricKey) {
         byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
         key[3] = 0x00;
-        LOG.info("Generated a PKCS1 padded message with a 0x00 byte in the PKCS1 padding: {}",
+        LOGGER.debug("Generated a PKCS1 padded message with a 0x00 byte in the PKCS1 padding: {}",
                 ArrayConverter.bytesToHexString(key));
         return key;
     }
@@ -154,7 +157,7 @@ public class PKCS1VectorGenerator {
     private static byte[] getEK_NullByteInPadding(int rsaKeyLength, byte[] symmetricKey) {
         byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
         key[11] = 0x00;
-        LOG.info("Generated a PKCS1 padded message with a 0x00 byte in padding: {}",
+        LOGGER.debug("Generated a PKCS1 padded message with a 0x00 byte in padding: {}",
                 ArrayConverter.bytesToHexString(key));
         return key;
     }
@@ -167,7 +170,8 @@ public class PKCS1VectorGenerator {
             }
         }
         key[rsaKeyLength - size - 1] = 0x00;
-        LOG.info("Generated a PKCS1 padded symmetric key of size {}: {}", size, ArrayConverter.bytesToHexString(key));
+        LOGGER.debug("Generated a PKCS1 padded symmetric key of size {}: {}", size,
+                ArrayConverter.bytesToHexString(key));
         return key;
     }
 
@@ -191,7 +195,7 @@ public class PKCS1VectorGenerator {
             // insert 0x00 to an incorrect position
             result[i - 2][i] = 0x00;
         }
-        LOG.info("Generated PKCS1 vectors with different invalid 0x00 positions");
+        LOGGER.debug("Generated PKCS1 vectors with different invalid 0x00 positions");
 
         return result;
     }

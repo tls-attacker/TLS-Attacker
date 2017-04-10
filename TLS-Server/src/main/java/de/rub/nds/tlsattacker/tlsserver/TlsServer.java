@@ -33,16 +33,15 @@ public class TlsServer {
 
     private static final Logger LOGGER = LogManager.getLogger("TlsServer");
 
+    // TODO rename method
     public void startTlsServer(TlsConfig config) {
         TlsContext tlsContext = new TlsContext(config);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);
-
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
 
@@ -51,15 +50,15 @@ public class TlsServer {
             try {
                 fos = new FileOutputStream(config.getWorkflowOutput());
                 WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
-            } catch (FileNotFoundException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.", ex);
             } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.", ex);
+                LOGGER.info("Could not serialize WorkflowTrace.");
+                LOGGER.debug(ex);
             } finally {
                 try {
                     fos.close();
                 } catch (IOException ex) {
-                    LOGGER.info("Could not serialize WorkflowTrace.", ex);
+                    LOGGER.info("Could not serialize WorkflowTrace.");
+                    LOGGER.debug(ex);
                 }
             }
         }

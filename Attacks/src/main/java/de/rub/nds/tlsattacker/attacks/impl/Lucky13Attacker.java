@@ -65,7 +65,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             paddings[i] = Integer.parseInt(paddingStrings[i]);
         }
         for (int i = 0; i < config.getMeasurements(); i++) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting round {}", i);
+            LOGGER.info("Starting round {}", i);
             for (int p : paddings) {
                 Record record = createRecordWithPadding(p);
                 executeAttackRound(record);
@@ -83,12 +83,12 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         for (int padding : paddings) {
             List<Long> rp = results.get(padding);
             Collections.sort(rp);
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Padding: {}", padding);
+            LOGGER.info("Padding: {}", padding);
             long median = rp.get(rp.size() / 2);
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Median: {}", median);
+            LOGGER.info("Median: {}", median);
             medians.append(median).append(",");
         }
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Medians: {}", medians);
+        LOGGER.info("Medians: {}", medians);
 
         if (config.getMonaFile() != null) {
             StringBuilder commands = new StringBuilder();
@@ -99,12 +99,12 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                     createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
                     String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
                             + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Run mona timing lib with: " + command);
+                    LOGGER.info("Run mona timing lib with: " + command);
                     commands.append(command);
                     commands.append(System.getProperty("line.separator"));
                 }
             }
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "All commands at once: \n{}", commands);
+            LOGGER.info("All commands at once: \n{}", commands);
         }
     }
 
@@ -117,7 +117,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                 fw.write(delimiters[1] + result2.get(i) + System.getProperty("line.separator"));
             }
         } catch (IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.debug(ex);
         }
     }
 
@@ -139,7 +139,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.info("Not possible to finalize the defined workflow.");
+            LOGGER.debug(ex);
         }
         lastResult = tlsContext.getTransportHandler().getLastMeasurement();
 
@@ -177,15 +178,6 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
     }
 
 }

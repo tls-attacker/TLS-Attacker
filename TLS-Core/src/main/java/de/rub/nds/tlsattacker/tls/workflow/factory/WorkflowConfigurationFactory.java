@@ -157,7 +157,7 @@ public class WorkflowConfigurationFactory {
                 messages.add(new DHClientKeyExchangeMessage(config));
                 break;
             default:
-                LOGGER.info("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
                         + ", not adding ClientKeyExchange Message");
                 break;
         }
@@ -180,7 +180,7 @@ public class WorkflowConfigurationFactory {
                 messages.add(new DHEServerKeyExchangeMessage(config));
                 break;
             default:
-                LOGGER.info("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
                         + ", not adding ServerKeyExchange Message");
                 break;
         }

@@ -99,7 +99,7 @@ public class BotanPolicyParser {
                         break;
 
                     default:
-                        LOGGER.info("Currently cannot handle rule " + rule[0]);
+                        LOGGER.debug("Currently cannot handle rule " + rule[0]);
                 }
             }
         }

@@ -54,7 +54,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
         attacker.attack();
         BigInteger result = attacker.getResult();
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Result found: {}", result);
+        LOGGER.info("Result found: {}", result);
     }
 
     @Override

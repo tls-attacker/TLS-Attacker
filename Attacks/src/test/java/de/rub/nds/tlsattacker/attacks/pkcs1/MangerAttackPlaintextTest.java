@@ -72,7 +72,7 @@ public class MangerAttackPlaintextTest {
 
         // test with a message not starting with 0x00
         message = ArrayConverter.concatenate(new byte[] { 1 }, message);
-        LOGGER.info(ArrayConverter.bytesToHexString(message));
+        LOGGER.debug(ArrayConverter.bytesToHexString(message));
         attacker = new Manger(message, oracle);
         attacker.attack();
         solution = attacker.getSolution();
@@ -121,6 +121,6 @@ public class MangerAttackPlaintextTest {
         }
 
         Collections.sort(queries);
-        LOGGER.info(queries);
+        LOGGER.debug(queries);
     }
 }

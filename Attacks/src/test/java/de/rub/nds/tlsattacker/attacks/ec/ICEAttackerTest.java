@@ -39,8 +39,8 @@ public class ICEAttackerTest {
         attacker.attack();
         BigInteger result = attacker.getResult();
 
-        LOGGER.info(result);
-        LOGGER.info(oracle.getComputer().getSecret());
+        LOGGER.debug(result);
+        LOGGER.debug(oracle.getComputer().getSecret());
 
         assertEquals(oracle.getComputer().getSecret(), result);
     }
@@ -56,8 +56,8 @@ public class ICEAttackerTest {
         attacker.attack();
         BigInteger result = attacker.getResult();
 
-        LOGGER.info(result);
-        LOGGER.info(oracle.getComputer().getSecret());
+        LOGGER.debug(result);
+        LOGGER.debug(oracle.getComputer().getSecret());
 
         assertEquals(oracle.getComputer().getSecret(), result);
     }
@@ -71,7 +71,7 @@ public class ICEAttackerTest {
                 + (results * (1 - probability) * Math.pow(probability, results - 1))
                 + (190 * Math.pow(1 - probability, 2) * Math.pow(probability, results - 2))
                 + (1140 * Math.pow(1 - probability, 3) * Math.pow(probability, results - 3));
-        LOGGER.info(result);
+        LOGGER.debug(result);
     }
 
 }

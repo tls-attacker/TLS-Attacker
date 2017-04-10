@@ -70,17 +70,16 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.info("Not possible to finalize the defined workflow");
+            LOGGER.debug(ex);
             return null;
         }
         System.out.println(trace.toString());
         if (trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() > 0) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
+            LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
         } else if (!tlsContext.isReceivedFatalAlert()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
+            LOGGER.info("Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             return true;
         }
         return null;

@@ -45,6 +45,7 @@ public class TLSClient {
             commander.parse(args);
         } catch (Exception E) {
             LOGGER.info("Could not parse provided parameters");
+            LOGGER.debug(E);
             commander.usage();
             ex = E;
         }
@@ -56,7 +57,8 @@ public class TLSClient {
                 TLSClient client = new TLSClient();
                 client.startTlsClient(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.info("Could not initialize Configuration", E);
+                LOGGER.info("Encountered a ConfigurationException aborting.");
+                LOGGER.debug(E);
             }
 
         }
@@ -70,9 +72,8 @@ public class TLSClient {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info(ex.getLocalizedMessage(), ex);
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
 
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
@@ -83,12 +84,13 @@ public class TLSClient {
             } catch (FileNotFoundException ex) {
                 java.util.logging.Logger.getLogger(TLSClient.class.getName()).log(Level.SEVERE, null, ex);
             } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.", ex);
+                LOGGER.info("Could not serialize WorkflowTrace.");
+                LOGGER.debug(ex);
             } finally {
                 try {
                     fos.close();
                 } catch (IOException ex) {
-                    java.util.logging.Logger.getLogger(TLSClient.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.debug(ex);
                 }
             }
         }
