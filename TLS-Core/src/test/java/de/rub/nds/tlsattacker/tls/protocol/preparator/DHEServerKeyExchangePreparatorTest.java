@@ -10,9 +10,10 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -32,6 +33,7 @@ public class DHEServerKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new DHEServerKeyExchangeMessage();
         preparator = new DHEServerKeyExchangePreparator(context, message);
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
