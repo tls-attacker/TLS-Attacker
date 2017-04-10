@@ -49,18 +49,12 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(messageSeq, 0);
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(fragmentOffset, 0);
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(fragmentLength, 0);
     }
 
     public HandshakeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(messageSeq, 0);
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(fragmentOffset, 0);
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(fragmentLength, 0);
     }
 
     public ModifiableByte getType() {

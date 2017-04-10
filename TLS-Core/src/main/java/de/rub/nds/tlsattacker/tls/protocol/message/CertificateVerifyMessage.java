@@ -99,8 +99,6 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         return builder.toString();
     }
 
-    
-    
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new CertificateVerifyHandler(context);

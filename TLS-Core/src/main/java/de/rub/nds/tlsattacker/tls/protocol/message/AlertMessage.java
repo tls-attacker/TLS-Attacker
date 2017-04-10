@@ -111,7 +111,7 @@ public class AlertMessage extends ProtocolMessage {
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
 
         sb.append("ALERT (");
         if (level != null && level.getValue() != null) {
