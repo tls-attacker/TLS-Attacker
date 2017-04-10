@@ -138,16 +138,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\n  Handshake Message Type: ").append(type.getValue());
-        sb.append("\n  Handshake Message Length: ").append(length.getValue());
+        sb.append("\n  Type: ").append(type.getValue());
+        sb.append("\n  Length: ").append(length.getValue());
         if (messageSeq != null && messageSeq.getValue() != null) {
-            sb.append("\n  Handshake Message message_seq: ").append(messageSeq.getValue());
+            sb.append("\n  message_seq: ").append(messageSeq.getValue());
         }
         if (fragmentOffset != null && fragmentOffset.getValue() != null) {
-            sb.append("\n  Handshake Message fragment_offset: ").append(fragmentOffset.getValue());
+            sb.append("\n  fragment_offset: ").append(fragmentOffset.getValue());
         }
         if (fragmentLength != null && fragmentLength.getValue() != null) {
-            sb.append("\n  Handshake Message fragment_length: ").append(fragmentLength.getValue());
+            sb.append("\n  fragment_length: ").append(fragmentLength.getValue());
         }
         return sb.toString();
     }
