@@ -28,8 +28,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class GeneralDelegate extends Delegate {
 
-    static final Logger LOGGER = LogManager.getLogger("Config");
-
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
     private boolean help;
 
