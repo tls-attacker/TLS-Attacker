@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TestTLSServer {
 
-    public static Logger LOGGER = LogManager.getLogger(TestTLSServer.class);
+    public static Logger LOGGER = LogManager.getLogger("TestTlsServer");
 
     private final TestServerConfig testConfig;
 

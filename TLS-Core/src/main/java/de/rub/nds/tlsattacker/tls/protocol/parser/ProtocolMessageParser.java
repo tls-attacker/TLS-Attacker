@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     private ProtocolVersion version;
 
     /**
@@ -38,6 +35,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
      * @param array
      *            The byte[] which the ProtocolMessageParser is supposed to
      *            parse
+     * @param version
+     *            Version of the Protocol
      *
      */
     public ProtocolMessageParser(int pointer, byte[] array, ProtocolVersion version) {
@@ -48,13 +47,22 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
     @Override
     public final T parse() {
         T msg = parseMessageContent();
-        setCompleteResultingMessage(msg);
+        parseCompleteResultingMessage(msg);
         return msg;
     }
 
     protected abstract T parseMessageContent();
 
-    private void setCompleteResultingMessage(ProtocolMessage message) {
-        message.setCompleteResultingMessage(getAlreadyParsed());
+    /**
+     * Reads the next bytes as the CompleteResultingMessage and writes them in
+     * the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseCompleteResultingMessage(ProtocolMessage msg) {
+        msg.setCompleteResultingMessage(getAlreadyParsed());
+        LOGGER.debug("CompleteResultMessage: "
+                + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 }

@@ -35,7 +35,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
+    public String toString() {
+        return super.toString();
     }
 }

@@ -97,9 +97,8 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append("\n  Protocol Version: ")
-                .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Server Unix Time: ")
                 .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
                 .append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
@@ -118,10 +117,5 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
-    }
-
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
     }
 }

@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private final HelloRequestMessage message;
 
     public HelloRequestPreparator(TlsContext context, HelloRequestMessage message) {

@@ -37,8 +37,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class DefaultActionExecutor extends ActionExecutor {
 
-    private static final Logger LOGGER = LogManager.getLogger(DefaultActionExecutor.class);
-
     private final TlsContext context;
 
     private boolean proceed;
@@ -107,7 +105,7 @@ public class DefaultActionExecutor extends ActionExecutor {
      * @return Prepared message bytes for the ProtocolMessage
      */
     private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
-        LOGGER.debug("Preparing the following protocol message to send: {}", message.getClass());
+        LOGGER.debug("Preparing the following protocol message to send: {}", message.toCompactString());
         ProtocolMessageHandler handler = message.getHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;

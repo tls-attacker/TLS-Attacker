@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +19,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     public ECDHEServerKeyExchangePreparator(TlsContext context, ServerKeyExchangeMessage message) {
         super(context, message);

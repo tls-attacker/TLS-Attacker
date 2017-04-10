@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class RecordDecryptor extends Decryptor<Record> {
 
-    private static final Logger LOGGER = LogManager.getLogger("DECRYPTOR");
-
     public RecordDecryptor(RecordCipher recordCipher) {
         super(recordCipher);
     }

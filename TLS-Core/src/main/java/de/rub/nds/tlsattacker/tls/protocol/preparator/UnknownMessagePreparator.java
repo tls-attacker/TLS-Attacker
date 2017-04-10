@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,18 +21,22 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
-    private final UnknownMessage message;
+    private final UnknownMessage msg;
 
     public UnknownMessagePreparator(TlsContext context, UnknownMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setCompleteResultingMessage(message.getDataConfig());
+        prepareCompleteResultingMessage(msg);
+    }
+
+    private void prepareCompleteResultingMessage(UnknownMessage msg) {
+        msg.setCompleteResultingMessage(msg.getDataConfig());
+        LOGGER.debug("CompleteResultinMessage: "
+                + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 
 }

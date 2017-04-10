@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class BotanPolicyParser {
 
-    public static Logger LOGGER = LogManager.getLogger(BotanPolicyParser.class);
+    public static Logger LOGGER = LogManager.getLogger("BotanPolicyParser");
 
     private final String delimiter;
 

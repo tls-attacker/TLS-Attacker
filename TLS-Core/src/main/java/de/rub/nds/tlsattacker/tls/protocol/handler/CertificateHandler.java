@@ -32,8 +32,6 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public CertificateHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

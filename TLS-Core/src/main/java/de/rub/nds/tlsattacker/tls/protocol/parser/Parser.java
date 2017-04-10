@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.math.BigInteger;
@@ -25,6 +24,8 @@ import org.apache.logging.log4j.Logger;
  *            Type of the Object that should be parsed
  */
 public abstract class Parser<T> {
+
+    protected static final Logger LOGGER = LogManager.getLogger("Parser");
 
     /**
      * Current position in the byte array
@@ -192,5 +193,4 @@ public abstract class Parser<T> {
      */
     public abstract T parse();
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 }

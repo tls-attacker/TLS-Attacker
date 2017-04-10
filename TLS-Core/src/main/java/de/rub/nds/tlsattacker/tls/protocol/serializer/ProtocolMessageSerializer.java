@@ -20,10 +20,16 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     protected ProtocolVersion version;
 
+    /**
+     * Constructor for the ProtocolMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ProtocolMessageSerializer(T message, ProtocolVersion version) {
         this.version = version;
     }

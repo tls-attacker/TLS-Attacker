@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloVerifyRequestSerializ
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
@@ -94,7 +95,12 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("   \nProtocolVersion").append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
+        sb.append("   \nCookie Length:").append(cookieLength.getValue());
+        sb.append("   \nCookie:").append(ArrayConverter.bytesToHexString(cookie.getValue()));
+        return sb.toString();
     }
+
 }

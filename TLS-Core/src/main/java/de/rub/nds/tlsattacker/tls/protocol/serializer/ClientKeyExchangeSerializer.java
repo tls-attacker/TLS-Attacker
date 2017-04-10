@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,8 +21,14 @@ import org.apache.logging.log4j.Logger;
 public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMessage> extends
         HandshakeMessageSerializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
+    /**
+     * Constructor for the ClientKeyExchangeSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
     }

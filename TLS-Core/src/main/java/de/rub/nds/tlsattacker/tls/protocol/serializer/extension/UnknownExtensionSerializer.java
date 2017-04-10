@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
     private final UnknownExtensionMessage message;
 
     public UnknownExtensionSerializer(UnknownExtensionMessage message) {

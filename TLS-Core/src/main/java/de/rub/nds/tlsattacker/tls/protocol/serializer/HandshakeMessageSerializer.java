@@ -23,36 +23,38 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     /**
      * The message that should be serialized
      */
-    private final T message;
+    private final T msg;
 
     /**
      * Constructor for the HandshakeMessageSerializer
      *
      * @param message
      *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
      */
     public HandshakeMessageSerializer(T message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     /**
      * Writes the Type of the HandshakeMessage into the final byte[]
      */
     private void writeType() {
-        appendByte(message.getType().getValue());
+        appendByte(msg.getType().getValue());
+        LOGGER.debug("Type: " + msg.getType().getValue());
     }
 
     /**
      * Writes the message length of the HandshakeMessage into the final byte[]
      */
     private void writeLength() {
-        appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+        appendInt(msg.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+        LOGGER.debug("Length: " + msg.getLength().getValue());
     }
 
     @Override
@@ -70,15 +72,27 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
 
     public abstract byte[] serializeHandshakeMessageContent();
 
+    /**
+     * Writes the SequenzNumber of the HandshakeMessage into the final byte[]
+     */
     private void writeSequenceNumber() {
-        appendInt(message.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+        appendInt(msg.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
+        LOGGER.debug("SequenceNumber: " + msg.getMessageSeq().getValue());
     }
 
+    /**
+     * Writes the FragmentOffset of the HandshakeMessage into the final byte[]
+     */
     private void writeFragmentOffset() {
-        appendInt(message.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
+        appendInt(msg.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
+        LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
     }
 
+    /**
+     * Writes the FragmentLength of the HandshakeMessage into the final byte[]
+     */
     private void writeFragmentLength() {
-        appendInt(message.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
+        appendInt(msg.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
+        LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
 }

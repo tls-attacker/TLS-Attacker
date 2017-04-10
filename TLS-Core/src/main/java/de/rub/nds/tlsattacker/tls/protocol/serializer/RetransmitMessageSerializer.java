@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,18 +21,34 @@ import org.apache.logging.log4j.Logger;
  */
 public class RetransmitMessageSerializer extends ProtocolMessageSerializer<RetransmitMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    private final RetransmitMessage msg;
 
-    private final RetransmitMessage message;
-
+    /**
+     * Constructor for the RetransmitMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public RetransmitMessageSerializer(RetransmitMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendBytes(message.getCompleteResultingMessage().getValue());
+        writeCompleteResultingMessage(msg);
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the CompleteResultingMessage of the RetransmitMessage into the
+     * final byte[]
+     */
+    private void writeCompleteResultingMessage(RetransmitMessage msg) {
+        appendBytes(msg.getCompleteResultingMessage().getValue());
+        LOGGER.debug("CompleteResultingMessage: "
+                + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
 }

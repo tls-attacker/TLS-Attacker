@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public RSAClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

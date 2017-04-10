@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
@@ -19,12 +19,9 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHEServerComputations;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.DHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.math.BigInteger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -33,25 +30,25 @@ import java.math.BigInteger;
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /**
-     * DH modulus length
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger pLength;
-    /**
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger p;
+    private ModifiableByteArray p;
+
     /**
-     * DH generator length
+     * DH modulus Length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger gLength;
+    private ModifiableInteger pLength;
+
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger g;
+    private ModifiableByteArray g;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger gLength;
 
     @HoldsModifiableVariable
     protected DHEServerComputations computations;
@@ -66,6 +63,30 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         computations = new DHEServerComputations();
     }
 
+    public ModifiableByteArray getP() {
+        return p;
+    }
+
+    public void setP(ModifiableByteArray p) {
+        this.p = p;
+    }
+
+    public void setP(byte[] p) {
+        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
+    }
+
+    public ModifiableByteArray getG() {
+        return g;
+    }
+
+    public void setG(ModifiableByteArray g) {
+        this.g = g;
+    }
+
+    public void setG(byte[] g) {
+        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
+    }
+
     public ModifiableInteger getpLength() {
         return pLength;
     }
@@ -74,20 +95,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.pLength = pLength;
     }
 
-    public void setpLength(Integer pLength) {
+    public void setpLength(int pLength) {
         this.pLength = ModifiableVariableFactory.safelySetValue(this.pLength, pLength);
-    }
-
-    public ModifiableBigInteger getP() {
-        return p;
-    }
-
-    public void setP(ModifiableBigInteger p) {
-        this.p = p;
-    }
-
-    public void setP(BigInteger p) {
-        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
     }
 
     public ModifiableInteger getgLength() {
@@ -98,20 +107,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.gLength = gLength;
     }
 
-    public void setgLength(Integer gLength) {
+    public void setgLength(int gLength) {
         this.gLength = ModifiableVariableFactory.safelySetValue(this.gLength, gLength);
-    }
-
-    public ModifiableBigInteger getG() {
-        return g;
-    }
-
-    public void setG(ModifiableBigInteger g) {
-        this.g = g;
-    }
-
-    public void setG(BigInteger g) {
-        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
     }
 
     public DHEServerComputations getComputations() {
@@ -120,16 +117,16 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append("\n  Modulus p: ");
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n  Modulus p: ");
         if (p != null) {
-            sb.append(p.getValue().toString(16));
+            sb.append(ArrayConverter.bytesToHexString(p.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
         if (g != null) {
-            sb.append(g.getValue().toString(16));
+            sb.append(ArrayConverter.bytesToHexString(g.getValue()));
         } else {
             sb.append("null");
         }

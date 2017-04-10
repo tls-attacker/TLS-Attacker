@@ -50,8 +50,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerTestSuite extends TestSuite {
 
-    public static Logger LOGGER = LogManager.getLogger(ServerTestSuite.class);
-
     private final ServerTestSuiteConfig testConfig;
 
     public ServerTestSuite(ServerTestSuiteConfig serverTestConfig) {

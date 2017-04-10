@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class RecordEncryptor extends Encryptor<Record> {
 
-    private static final Logger LOGGER = LogManager.getLogger("ENCRYPTOR");
-
     private int sequenceNumber = 0;
 
     public RecordEncryptor(RecordCipher recordCipher) {

@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,21 +21,52 @@ import org.apache.logging.log4j.Logger;
  */
 public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<HelloVerifyRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    private HelloVerifyRequestMessage msg;
 
-    private HelloVerifyRequestMessage message;
-
+    /**
+     * Constructor for the HelloVerifyRequestSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public HelloVerifyRequestSerializer(HelloVerifyRequestMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendBytes(message.getProtocolVersion().getValue());
-        appendByte(message.getCookieLength().getValue());
-        appendBytes(message.getCookie().getValue());
+        writeProtocolVersion(msg);
+        writeCookieLength(msg);
+        writeCookie(msg);
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the ProtocolVersion of the HelloVerifyMessage into the final
+     * byte[]
+     */
+    private void writeProtocolVersion(HelloVerifyRequestMessage msg) {
+        appendBytes(msg.getProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+    }
+
+    /**
+     * Writes the CookieLength of the HelloVerifyMessage into the final byte[]
+     */
+    private void writeCookieLength(HelloVerifyRequestMessage msg) {
+        appendByte(msg.getCookieLength().getValue());
+        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+    }
+
+    /**
+     * Writes the Cookie of the HelloVerifyMessage into the final byte[]
+     */
+    private void writeCookie(HelloVerifyRequestMessage msg) {
+        appendBytes(msg.getCookie().getValue());
+        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
     }
 
 }

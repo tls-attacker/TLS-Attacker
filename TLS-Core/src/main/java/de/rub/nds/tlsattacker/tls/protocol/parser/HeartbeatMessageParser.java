@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.parser;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,20 +22,75 @@ import org.apache.logging.log4j.Logger;
  */
 public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
+    /**
+     * Constructor for the Parser class
+     *
+     * @param startposition
+     *            Position in the array where the ProtocolMessageParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the ProtocolMessageParser is supposed to
+     *            parse
+     * @param version
+     *            Version of the Protocol
+     */
     public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array, version);
     }
 
     @Override
     protected HeartbeatMessage parseMessageContent() {
-        HeartbeatMessage message = new HeartbeatMessage();
-        message.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
-        message.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
-        message.setPayload(parseByteArrayField(message.getPayloadLength().getValue()));
-        message.setPadding(parseByteArrayField(getBytesLeft()));
-        return message;
+        HeartbeatMessage msg = new HeartbeatMessage();
+        parseHeartbeatMessageType(msg);
+        parsePayloadLength(msg);
+        parsePayload(msg);
+        parsePadding(msg);
+        return msg;
+    }
+
+    /**
+     * Reads the next bytes as the HearbeatMessageType and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseHeartbeatMessageType(HeartbeatMessage msg) {
+        msg.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
+        LOGGER.debug("HeartbeatMessageType: " + msg.getHeartbeatMessageType().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the PayloadLength and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parsePayloadLength(HeartbeatMessage msg) {
+        msg.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
+        LOGGER.debug("PayloadLength: " + msg.getPayloadLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the Payload and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parsePayload(HeartbeatMessage msg) {
+        msg.setPayload(parseByteArrayField(msg.getPayloadLength().getValue()));
+        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
+    }
+
+    /**
+     * Reads the next bytes as the Padding and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parsePadding(HeartbeatMessage msg) {
+        msg.setPadding(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
 
 }

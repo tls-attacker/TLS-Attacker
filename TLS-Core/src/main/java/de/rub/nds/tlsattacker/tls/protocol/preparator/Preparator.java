@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Preparator<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
+    protected static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     protected final TlsContext context;
     private final T object;

@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class CheckConfigSerializer {
 
-    private static final Logger LOGGER = LogManager.getLogger(CheckConfigSerializer.class);
+    private static final Logger LOGGER = LogManager.getLogger("CheckConfigSerializer");
 
     public static void serialize(CheckConfig config, File file) {
         JAXB.marshal(config, file);

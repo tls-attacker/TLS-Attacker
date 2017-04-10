@@ -23,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ECDHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

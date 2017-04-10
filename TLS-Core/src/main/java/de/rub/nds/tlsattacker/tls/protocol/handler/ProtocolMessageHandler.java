@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    protected static final Logger LOGGER = LogManager.getLogger("Handler");
 
     /**
      * tls context

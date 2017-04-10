@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.constants;
 import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -432,11 +434,10 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getCiphersuites(byte[] values) {
-        // TODO no stable enough, also add unit tests
         List<CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         if (values.length % 2 != 0) {
-            // TODO not a CipherSuite field
+            throw new UnknownCiphersuiteException("Last CipherSuit are unknown!");
         }
         while (pointer < values.length) {
             byte[] suite = new byte[2];

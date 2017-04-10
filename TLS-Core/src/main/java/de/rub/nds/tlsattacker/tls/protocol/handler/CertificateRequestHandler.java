@@ -29,8 +29,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public CertificateRequestHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

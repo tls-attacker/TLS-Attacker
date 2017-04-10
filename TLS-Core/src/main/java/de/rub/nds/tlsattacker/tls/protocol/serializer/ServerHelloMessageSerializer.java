@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import javax.swing.text.html.parser.DTDConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,36 +23,38 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     /**
      * The message that should be serialized
      */
-    private final ServerHelloMessage message;
+    private final ServerHelloMessage msg;
 
     /**
      * Constructor for the ServerHelloMessageSerializer
      *
      * @param message
      *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
      */
     public ServerHelloMessageSerializer(ServerHelloMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     /**
      * Writes the SelectedCiphersuite of the message into the final byte[]
      */
     protected void writeSelectedCiphersuite() {
-        appendBytes(message.getSelectedCipherSuite().getValue());
+        appendBytes(msg.getSelectedCipherSuite().getValue());
+        LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 
     /**
      * Writes the SelectedCompressionMethod of the message into the final byte[]
      */
     protected void writeSelectedComressionMethod() {
-        appendByte(message.getSelectedCompressionMethod().getValue());
+        appendByte(msg.getSelectedCompressionMethod().getValue());
+        LOGGER.debug("SelectedCompressionMethod: " + msg.getSelectedCompressionMethod().getValue());
     }
 
     @Override
