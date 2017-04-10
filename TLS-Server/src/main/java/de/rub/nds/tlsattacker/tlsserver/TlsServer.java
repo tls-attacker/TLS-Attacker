@@ -33,32 +33,6 @@ public class TlsServer {
 
     private static final Logger LOGGER = LogManager.getLogger("TlsServer");
 
-    public static void main(String args[]) {
-        ServerCommandConfig config = new ServerCommandConfig(new GeneralDelegate());
-        JCommander commander = new JCommander(config);
-        Exception ex = null;
-        try {
-            commander.parse(args);
-        } catch (Exception E) {
-            LOGGER.info("Could not parse provided parameters");
-            commander.usage();
-            ex = E;
-        }
-        if (ex == null) {
-            // Cmd was parsable
-            TlsConfig tlsConfig = null;
-            try {
-                tlsConfig = config.createConfig();
-                TlsServer server = new TlsServer();
-                LOGGER.info("TLS-Server starting on port " + tlsConfig.getServerPort());
-                server.startTlsServer(tlsConfig);
-            } catch (ConfigurationException E) {
-                LOGGER.info("Could not initialize Configuration", E);
-            }
-
-        }
-    }
-
     public void startTlsServer(TlsConfig config) {
         TlsContext tlsContext = new TlsContext(config);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
