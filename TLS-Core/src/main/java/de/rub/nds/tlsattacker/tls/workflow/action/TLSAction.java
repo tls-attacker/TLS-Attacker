@@ -13,12 +13,17 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
 import java.io.Serializable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public abstract class TLSAction implements Serializable {
+
+    protected static final Logger LOGGER = LogManager.getLogger("Action");
+
     protected boolean executed = false;
 
     public boolean isExecuted() {

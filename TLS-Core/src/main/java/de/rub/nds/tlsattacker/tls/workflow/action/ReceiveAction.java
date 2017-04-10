@@ -11,21 +11,17 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import static de.rub.nds.tlsattacker.tls.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ReceiveAction extends MessageAction {
-
-    private static final Logger LOGGER = LogManager.getLogger("ReceiveAction");
 
     public ReceiveAction() {
         super(new LinkedList<ProtocolMessage>());
@@ -45,17 +41,18 @@ public class ReceiveAction extends MessageAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-
-        String expected = getReadableString(configuredMessages);
-        LOGGER.debug("Expected:" + expected);
+        LOGGER.info("Receiving Messages...");
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionPeer());
         MessageActionResult result = executor.receiveMessages(configuredMessages);
         actualRecords.addAll(result.getRecordList());
         actualMessages.addAll(result.getMessageList());
         executed = true;
-        // TODO can imrove performance while not debugging
+
+        String expected = getReadableString(configuredMessages);
+        LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(actualMessages);
-        LOGGER.info("Actual:" + received);
+        LOGGER.debug("Receive Actual:" + received);
+        LOGGER.info("Received Messages:" + received);
     }
 
     @Override

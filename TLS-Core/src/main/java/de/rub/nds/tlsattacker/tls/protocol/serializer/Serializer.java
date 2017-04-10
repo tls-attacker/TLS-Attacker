@@ -86,7 +86,8 @@ public abstract class Serializer<T> {
         try {
             outputStream.write(bytes);
         } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.", ex);
+            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
+            LOGGER.debug(ex);
         }
     }
 

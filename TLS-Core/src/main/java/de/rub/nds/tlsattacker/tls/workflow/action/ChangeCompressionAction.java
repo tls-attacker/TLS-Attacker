@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeCompressionAction extends TLSAction {
@@ -50,6 +50,7 @@ public class ChangeCompressionAction extends TLSAction {
         }
         oldValue = tlsContext.getSelectedCompressionMethod();
         tlsContext.setSelectedCompressionMethod(newValue);
+        LOGGER.info("Changed selected CompressionMethod from " + oldValue.name() + " to " + newValue.name());
         executed = true;
     }
 
@@ -84,5 +85,4 @@ public class ChangeCompressionAction extends TLSAction {
         }
         return this.oldValue == other.oldValue;
     }
-
 }

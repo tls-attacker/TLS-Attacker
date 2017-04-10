@@ -66,7 +66,8 @@ public class CertificateFetcher {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
-            LOGGER.warn("Error while fetching Certificate", E);
+            LOGGER.warn("Could not fetch ServerCertificate");
+            LOGGER.debug(E);
         }
         return context.getServerCertificate();
     }

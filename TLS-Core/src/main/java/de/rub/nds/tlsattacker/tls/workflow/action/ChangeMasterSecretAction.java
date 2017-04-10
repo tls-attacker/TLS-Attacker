@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import static de.rub.nds.tlsattacker.tls.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 
 /**
@@ -49,6 +51,8 @@ public class ChangeMasterSecretAction extends TLSAction {
         }
         oldValue = tlsContext.getMasterSecret();
         tlsContext.setMasterSecret(newValue);
+        LOGGER.info("Changed MasterSecret from " + ArrayConverter.bytesToHexString(oldValue) + " to "
+                + ArrayConverter.bytesToHexString(newValue));
         executed = true;
     }
 

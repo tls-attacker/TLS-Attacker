@@ -184,7 +184,8 @@ public class SSLActionExecutor extends ActionExecutor {
             } while (recievedBytes.length != 0);
 
         } catch (IOException ex) {
-            LOGGER.warn("Received Exception while receiving Messages.", ex);
+            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while receiving Messages.");
+            LOGGER.debug(ex);
         }
         return new MessageActionResult(records, messages);
     }
@@ -242,7 +243,8 @@ public class SSLActionExecutor extends ActionExecutor {
             try {
                 stream.write(record.getCleanProtocolMessageBytes().getValue());
             } catch (IOException ex) {
-                LOGGER.warn("Could not write CleanProtocolMessage bytes to Array", ex);
+                LOGGER.warn("Could not write CleanProtocolMessage bytes to Array");
+                LOGGER.debug(ex.toString());
             }
         }
         return stream.toByteArray();

@@ -31,10 +31,6 @@ public class ChangeClientCertificateAction extends TLSAction {
     @XmlJavaTypeAdapter(CertificateAdapter.class)
     private Certificate oldValue = null;
 
-    // TODO I really like to add a ClientCertificateStructure constructor, but
-    // the
-    // Struct is not in the TLS package, perhaps i should mitigate it here for
-    // now we dont serialize the certs
     public ChangeClientCertificateAction(Certificate newValue) {
         super();
         this.newValue = newValue;
@@ -58,6 +54,7 @@ public class ChangeClientCertificateAction extends TLSAction {
         }
         oldValue = tlsContext.getClientCertificate();
         tlsContext.setClientCertificate(newValue);
+        LOGGER.info("Changed ClientCertificate");
         executed = true;
     }
 

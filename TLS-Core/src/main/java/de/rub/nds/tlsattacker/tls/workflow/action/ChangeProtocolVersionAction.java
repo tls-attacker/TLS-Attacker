@@ -11,7 +11,9 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import static de.rub.nds.tlsattacker.tls.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Objects;
 
 /**
@@ -50,6 +52,7 @@ public class ChangeProtocolVersionAction extends TLSAction {
         }
         oldValue = tlsContext.getSelectedProtocolVersion();
         tlsContext.setSelectedProtocolVersion(newValue);
+        LOGGER.info("Changed ProtocolVersion from " + oldValue.name() + " to " + newValue.name());
         executed = true;
     }
 

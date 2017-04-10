@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeClientRandomAction extends TLSAction {
@@ -49,6 +51,8 @@ public class ChangeClientRandomAction extends TLSAction {
         }
         oldValue = tlsContext.getClientRandom();
         tlsContext.setClientRandom(newValue);
+        LOGGER.info("Changed ClientRandom from " + ArrayConverter.bytesToHexString(oldValue) + " to "
+                + ArrayConverter.bytesToHexString(newValue));
         executed = true;
     }
 

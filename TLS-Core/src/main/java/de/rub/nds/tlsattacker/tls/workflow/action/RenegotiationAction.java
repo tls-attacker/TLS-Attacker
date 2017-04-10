@@ -22,6 +22,7 @@ public class RenegotiationAction extends TLSAction {
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
         tlsContext.getDigest().reset();
+        LOGGER.info("Resetting Digest for Renegotiation");
     }
 
     @Override

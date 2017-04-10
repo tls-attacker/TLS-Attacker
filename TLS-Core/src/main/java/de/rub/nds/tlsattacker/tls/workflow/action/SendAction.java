@@ -27,8 +27,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class SendAction extends MessageAction {
 
-    private static final Logger LOGGER = LogManager.getLogger("SendAction");
-
     public SendAction() {
         super(new LinkedList<ProtocolMessage>());
     }
@@ -47,14 +45,16 @@ public class SendAction extends MessageAction {
         if (executed) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        String expected = getReadableString(configuredMessages);
-        LOGGER.debug("Expected:" + expected);
+        LOGGER.info("Sending " + getReadableString(configuredMessages));
         tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionEnd());
         MessageActionResult result = executor.sendMessages(configuredMessages, configuredRecords);
         actualMessages.addAll(result.getMessageList());
         actualRecords.addAll(result.getRecordList());
+
+        String expected = getReadableString(configuredMessages);
+        LOGGER.debug("Send Expected:" + expected);
         String received = getReadableString(actualMessages);
-        LOGGER.info("Actual:" + received);
+        LOGGER.debug("Send Actual:" + received);
         executed = true;
 
     }

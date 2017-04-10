@@ -116,11 +116,13 @@ public class ProtocolVersionProbe extends TLSProbe {
         List<HandshakeMessage> messages = trace
                 .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO);
         if (messages.isEmpty()) {
-            LOGGER.warn(trace.toString());
+            LOGGER.debug("Did not receive ServerHello Message");
+            LOGGER.debug(trace.toString());
             return false;
         } else {
-            LOGGER.warn(trace.toString());
-            LOGGER.warn("Selected Version:" + tlsContext.getSelectedProtocolVersion().name());
+            LOGGER.debug("Received ServerHelloMessage");
+            LOGGER.debug(trace.toString());
+            LOGGER.debug("Selected Version:" + tlsContext.getSelectedProtocolVersion().name());
             return tlsContext.getSelectedProtocolVersion() == toTest;
         }
     }

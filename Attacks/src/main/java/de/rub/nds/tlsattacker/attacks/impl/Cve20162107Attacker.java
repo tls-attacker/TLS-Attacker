@@ -94,7 +94,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.warn("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.warn("Not possible to finalize the defined workflow");
+            LOGGER.debug(ex.getLocalizedMessage());
         }
         // The Server has to answer to our ClientHello with a ServerHello
         // Message, else he does not support
@@ -162,7 +163,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 try {
                     vulnerable |= executeAttackRound(version, suite);
                 } catch (Throwable t) {
-                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name(), t);
+                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name());
+                    LOGGER.debug(t);
                 }
             }
         }

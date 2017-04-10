@@ -27,6 +27,7 @@ public class DeactivateEncryptionAction extends TLSAction {
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Deactivated Encryption/Decryption");
         executed = true;
     }
 

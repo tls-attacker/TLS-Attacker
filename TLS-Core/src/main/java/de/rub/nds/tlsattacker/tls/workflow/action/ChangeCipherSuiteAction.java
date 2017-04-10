@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import javax.crypto.NoSuchPaddingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -55,12 +57,11 @@ public class ChangeCipherSuiteAction extends TLSAction {
         }
         oldValue = tlsContext.getSelectedCipherSuite();
         tlsContext.setSelectedCipherSuite(newValue);
-        // LOGGER.debug("Setting new Cipher in RecordLayer"); //TODO Action
-        // Logging
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Changed CipherSuite from " + oldValue.name() + " to " + newValue.name());
         executed = true;
     }
 

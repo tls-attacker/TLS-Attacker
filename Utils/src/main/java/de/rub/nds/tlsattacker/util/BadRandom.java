@@ -58,7 +58,7 @@ public class BadRandom extends SecureRandom {
 
     @Override
     public String getAlgorithm() {
-        return "WARNING: We use the default JAVA PRNG. THIS IS NOT A SECURE RANDOM OBJECT. USE FOR FUZZING ONLY";
+        return "WARNING: We use a very insecure PRNG. THIS IS NOT A SECURE RANDOM OBJECT. USE FOR TESTING ONLY";
     }
 
     @Override
