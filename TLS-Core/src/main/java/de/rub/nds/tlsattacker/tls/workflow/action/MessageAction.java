@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.BlobRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import java.util.LinkedList;
 import java.util.List;
@@ -109,11 +110,14 @@ public abstract class MessageAction extends TLSAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
+            @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> configuredRecords;
+
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
+            @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> actualRecords;
 
     public MessageAction(List<ProtocolMessage> messages) {

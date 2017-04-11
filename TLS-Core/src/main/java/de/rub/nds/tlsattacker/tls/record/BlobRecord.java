@@ -30,12 +30,10 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 public class BlobRecord extends AbstractRecord {
 
     public BlobRecord() {
-        setMaxRecordLengthConfig(Integer.MAX_VALUE);
     }
 
     public BlobRecord(TlsConfig config) {
         super(config);
-        setMaxRecordLengthConfig(Integer.MAX_VALUE);
     }
 
     @Override

@@ -38,6 +38,9 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.BlobRecord;
+import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
@@ -135,7 +138,13 @@ public class SerialisationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage());
         messages.add(new ServerHelloMessage());
-        trace.add(new SendAction(messages));
+        SendAction action = new SendAction(messages);
+        List<AbstractRecord> records = new LinkedList<AbstractRecord>();
+        records.add(new BlobRecord());
+        records.add(new Record());
+        action.setConfiguredRecords(records);
+        trace.add(action);
+
         File f = folder.newFile();
         WorkflowTraceSerializer.write(f, trace);
         BufferedReader reader = new BufferedReader(new FileReader(f));
