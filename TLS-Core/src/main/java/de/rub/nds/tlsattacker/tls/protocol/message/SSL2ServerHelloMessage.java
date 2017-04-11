@@ -18,11 +18,13 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
+@XmlRootElement
 public class SSL2ServerHelloMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

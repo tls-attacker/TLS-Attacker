@@ -19,11 +19,13 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownHandshakeMessageSer
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlRootElement
 public class UnknownHandshakeMessage extends HandshakeMessage {
 
     private byte[] dataConfig;

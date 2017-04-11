@@ -29,10 +29,6 @@ public class UnknownExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray extensionData;
 
-    public UnknownExtensionMessage(TlsConfig tlsConfig) {
-        super(ExtensionType.UNKNOWN);
-    }
-
     public UnknownExtensionMessage() {
         super(ExtensionType.UNKNOWN);
     }

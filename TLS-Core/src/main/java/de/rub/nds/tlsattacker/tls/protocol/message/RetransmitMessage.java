@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.handler.RetransmitMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.RetransmitMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  * 
  *         Raw bytes of a previos send message retransmitted
  */
+@XmlRootElement
 public class RetransmitMessage extends ProtocolMessage {
 
     private byte[] bytesToTransmit;

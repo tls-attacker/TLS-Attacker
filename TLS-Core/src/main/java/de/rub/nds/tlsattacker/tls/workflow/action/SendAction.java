@@ -42,7 +42,7 @@ public class SendAction extends MessageAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Sending " + getReadableString(configuredMessages));
@@ -55,8 +55,7 @@ public class SendAction extends MessageAction {
         LOGGER.debug("Send Expected:" + expected);
         String received = getReadableString(actualMessages);
         LOGGER.debug("Send Actual:" + received);
-        executed = true;
-
+        setExecuted(true);
     }
 
     @Override

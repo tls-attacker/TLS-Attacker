@@ -33,11 +33,6 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray maxFragmentLength;
 
-    public MaxFragmentLengthExtensionMessage(TlsConfig tlsConfig) {
-        super(ExtensionType.MAX_FRAGMENT_LENGTH);
-        this.setMaxFragmentLength(tlsConfig.getMaxFragmentLength().getArrayValue());
-    }
-
     public MaxFragmentLengthExtensionMessage() {
         super(ExtensionType.MAX_FRAGMENT_LENGTH);
 

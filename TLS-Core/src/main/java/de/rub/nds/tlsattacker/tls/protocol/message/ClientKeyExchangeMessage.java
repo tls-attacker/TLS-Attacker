@@ -45,6 +45,8 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
     public abstract KeyExchangeComputations getComputations();
 
+    public abstract void prepareComputations();
+
     public ModifiableInteger getSerializedPublicKeyLength() {
         return serializedPublicKeyLength;
     }

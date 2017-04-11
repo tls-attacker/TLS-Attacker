@@ -57,6 +57,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     @Override
     public void prepareHandshakeMessageContents() {
+        msg.prepareComputations();
         AsymmetricCipherKeyPair kp = null;
         ECPublicKeyParameters parameters = context.getServerPublicKeyParameters();
         if (!hasServerPublicKeyParameters()) {

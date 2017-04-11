@@ -64,6 +64,14 @@ public abstract class HelloMessage extends HandshakeMessage {
     /**
      * List of extensions
      */
+    @XmlElementWrapper
+    @XmlElements(value = {
+            @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
+            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
+            @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
+            @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
+            @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions = new LinkedList<>();
 
@@ -165,14 +173,6 @@ public abstract class HelloMessage extends HandshakeMessage {
         this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
-    @XmlElementWrapper
-    @XmlElements(value = {
-            @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
-            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
-            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
-            @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
-            @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
-            @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
     public List<ExtensionMessage> getExtensions() {
         return extensions;
     }

@@ -54,7 +54,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     @Override
     public void prepareHandshakeMessageContents() {
-
+        msg.prepareComputations();
         setComputedG(msg);
         setComputedP(msg);
         BigInteger p = msg.getComputations().getP().getValue();

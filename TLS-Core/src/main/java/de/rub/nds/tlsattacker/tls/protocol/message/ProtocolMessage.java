@@ -19,7 +19,10 @@ import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * TLS Protocol message is the message included in the Record message.
@@ -27,24 +30,29 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author juraj
  * @author Philip Riese <philip.riese@rub.de>
  */
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements Serializable {
 
     /**
      * content type
      */
+    @XmlTransient
     protected ProtocolMessageType protocolMessageType;
 
+    private static final boolean GOING_TO_BE_SENT_DEFAULT = true;
+
+    private static final boolean REQUIRED_DEFAULT = true;
     /**
      * Defines whether this message is necessarily required in the workflow.
      */
-    private boolean required = true;
+    private Boolean required;
     /**
      * Defines if the message should be sent during the workflow. Using this
      * flag it is possible to omit a message is sent during the handshake while
      * it is executed to initialize specific variables.
      */
-    private boolean goingToBeSent = true;
+
+    private Boolean goingToBeSent;
     /**
      * resulting message
      */
@@ -59,6 +67,9 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isRequired() {
+        if (required == null) {
+            return REQUIRED_DEFAULT;
+        }
         return required;
     }
 
@@ -67,6 +78,9 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isGoingToBeSent() {
+        if (goingToBeSent == null) {
+            return GOING_TO_BE_SENT_DEFAULT;
+        }
         return goingToBeSent;
     }
 

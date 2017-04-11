@@ -14,25 +14,27 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public abstract class HandshakeMessage extends ProtocolMessage {
 
+    private static final boolean IS_INCLUDE_IN_DIGEST_DEFAULT = true;
+
+    @XmlTransient
     protected final HandshakeMessageType handshakeMessageType;
 
     /**
      * handshake type
      */
     @ModifiableVariableProperty
-    private ModifiableByte type;
+    private ModifiableByte type = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
+    private ModifiableInteger length = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger messageSeq = null;
@@ -43,7 +45,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
 
-    private boolean includeInDigest = true;
+    private Boolean includeInDigest = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
@@ -62,6 +64,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     public boolean getIncludeInDigest() {
+        if (includeInDigest == null) {
+            return IS_INCLUDE_IN_DIGEST_DEFAULT;
+        }
         return includeInDigest;
     }
 

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ExtensionParserFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger("ParserFactory");
+    private static final Logger LOGGER = LogManager.getLogger("ExtensionParserFactory");
 
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
@@ -102,7 +102,8 @@ public class ExtensionParserFactory {
                 break;
         }
         if (parser == null) {
-            LOGGER.warn("Type: " + type.name() + " not implemented yet, using UnknownExtensionParser instead");
+            LOGGER.debug("The ExtensionParser for the " + type.name()
+                    + " Extension is currently not implemented. Using the UnknownExtensionParser instead");
             parser = new UnknownExtensionParser(pointer, extensionBytes);
         }
         return parser;

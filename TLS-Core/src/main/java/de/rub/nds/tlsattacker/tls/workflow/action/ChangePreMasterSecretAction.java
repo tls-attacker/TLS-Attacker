@@ -13,15 +13,20 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import static de.rub.nds.tlsattacker.tls.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.util.Arrays;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangePreMasterSecretAction extends TLSAction {
-
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] oldValue = null;
 
     public ChangePreMasterSecretAction(byte[] newValue) {
@@ -46,20 +51,20 @@ public class ChangePreMasterSecretAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getPreMasterSecret();
         tlsContext.setPreMasterSecret(newValue);
         LOGGER.info("Changed PreMasterSecret from " + ArrayConverter.bytesToHexString(oldValue) + " to "
                 + ArrayConverter.bytesToHexString(newValue));
-        executed = true;
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
         oldValue = null;
-        executed = false;
+        setExecuted(false);
     }
 
     @Override

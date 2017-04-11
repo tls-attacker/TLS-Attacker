@@ -48,8 +48,10 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     @Override
     protected void adjustTLSContext(DHEServerKeyExchangeMessage message) {
         adjustServerDHParameters(message);
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
     }
 
     private void adjustServerDHParameters(DHEServerKeyExchangeMessage message) {

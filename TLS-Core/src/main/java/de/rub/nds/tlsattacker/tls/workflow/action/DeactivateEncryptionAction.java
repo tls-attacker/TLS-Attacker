@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * 
@@ -24,16 +26,19 @@ public class DeactivateEncryptionAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Deactivated Encryption/Decryption");
-        executed = true;
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
-        executed = false;
+        setExecuted(false);
     }
 
     @Override

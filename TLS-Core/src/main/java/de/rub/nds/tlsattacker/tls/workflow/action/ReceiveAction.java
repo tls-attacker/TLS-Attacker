@@ -38,7 +38,7 @@ public class ReceiveAction extends MessageAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Receiving Messages...");
@@ -46,7 +46,7 @@ public class ReceiveAction extends MessageAction {
         MessageActionResult result = executor.receiveMessages(configuredMessages);
         actualRecords.addAll(result.getRecordList());
         actualMessages.addAll(result.getMessageList());
-        executed = true;
+        setExecuted(true);
 
         String expected = getReadableString(configuredMessages);
         LOGGER.debug("Receive Expected:" + expected);

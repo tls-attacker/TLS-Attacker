@@ -22,20 +22,22 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
+@XmlRootElement
 public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion = null;
+    private ModifiableByteArray protocolVersion = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableByte cookieLength = null;
+    private ModifiableByte cookieLength = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    ModifiableByteArray cookie = null;
+    private ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);

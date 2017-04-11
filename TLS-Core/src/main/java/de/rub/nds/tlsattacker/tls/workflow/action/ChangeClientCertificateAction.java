@@ -24,7 +24,6 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ChangeClientCertificateAction extends TLSAction {
     @XmlJavaTypeAdapter(CertificateAdapter.class)
     private Certificate newValue = null;
@@ -49,19 +48,19 @@ public class ChangeClientCertificateAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getClientCertificate();
         tlsContext.setClientCertificate(newValue);
         LOGGER.info("Changed ClientCertificate");
-        executed = true;
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
         oldValue = null;
-        executed = false;
+        setExecuted(false);
     }
 
     @Override

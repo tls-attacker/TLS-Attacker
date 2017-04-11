@@ -31,10 +31,12 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -46,22 +48,22 @@ public class ServerHelloMessage extends HelloMessage {
     public ServerHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
-            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+            addExtension(new HeartbeatExtensionMessage());
         }
         if (tlsConfig.isAddECPointFormatExtension()) {
-            addExtension(new ECPointFormatExtensionMessage(tlsConfig));
+            addExtension(new ECPointFormatExtensionMessage());
         }
         if (tlsConfig.isAddEllipticCurveExtension()) {
-            addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
+            addExtension(new EllipticCurvesExtensionMessage());
         }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
-            addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));
+            addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {
-            addExtension(new ServerNameIndicationExtensionMessage(tlsConfig));
+            addExtension(new ServerNameIndicationExtensionMessage());
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
-            addExtension(new SignatureAndHashAlgorithmsExtensionMessage(tlsConfig));
+            addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
     }
 

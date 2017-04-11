@@ -46,23 +46,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
+@XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
 
-    /**
-     * List of supported compression methods
-     */
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = CompressionMethod.class, name = "CompressionMethod") })
-    private List<CompressionMethod> supportedCompressionMethods = new LinkedList<>();
-    /**
-     * List of supported CipherSuites
-     */
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = CipherSuite.class, name = "CipherSuite") })
-    private List<CipherSuite> supportedCipherSuites = new LinkedList<>();
     /**
      * compression length
      */
@@ -97,25 +84,25 @@ public class ClientHelloMessage extends HelloMessage {
     public ClientHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
-            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+            addExtension(new HeartbeatExtensionMessage());
         }
         if (tlsConfig.isAddECPointFormatExtension()) {
-            addExtension(new ECPointFormatExtensionMessage(tlsConfig));
+            addExtension(new ECPointFormatExtensionMessage());
         }
         if (tlsConfig.isAddEllipticCurveExtension()) {
-            addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
+            addExtension(new EllipticCurvesExtensionMessage());
         }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
-            addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));
+            addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {
-            ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage(tlsConfig);
+            ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
             pair.setServerNameConfig(tlsConfig.getHost().getBytes());
             addExtension(extension);
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
-            addExtension(new SignatureAndHashAlgorithmsExtensionMessage(tlsConfig));
+            addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
     }
 
@@ -165,22 +152,6 @@ public class ClientHelloMessage extends HelloMessage {
 
     public void setCompressions(byte[] array) {
         this.compressions = ModifiableVariableFactory.safelySetValue(compressions, array);
-    }
-
-    public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {
-        this.supportedCompressionMethods = supportedCompressionMethods;
-    }
-
-    public void setSupportedCipherSuites(List<CipherSuite> supportedCipherSuites) {
-        this.supportedCipherSuites = supportedCipherSuites;
-    }
-
-    public List<CompressionMethod> getSupportedCompressionMethods() {
-        return supportedCompressionMethods;
-    }
-
-    public List<CipherSuite> getSupportedCipherSuites() {
-        return supportedCipherSuites;
     }
 
     public ModifiableByteArray getCookie() {

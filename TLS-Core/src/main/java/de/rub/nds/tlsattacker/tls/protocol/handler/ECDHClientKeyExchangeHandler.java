@@ -44,8 +44,9 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
     }
-
 }

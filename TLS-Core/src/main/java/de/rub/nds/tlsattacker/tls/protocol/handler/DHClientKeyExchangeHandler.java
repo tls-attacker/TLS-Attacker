@@ -49,8 +49,10 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     protected void adjustTLSContext(DHClientKeyExchangeMessage message) {
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
     }
 
 }

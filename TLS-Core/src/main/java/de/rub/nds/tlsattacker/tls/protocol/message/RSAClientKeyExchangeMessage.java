@@ -22,10 +22,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.RSAClientKeyExchangeSerial
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
@@ -33,12 +35,10 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public RSAClientKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig);
-        computations = new RSAClientComputations();
     }
 
     public RSAClientKeyExchangeMessage() {
         super();
-        computations = new RSAClientComputations();
     }
 
     @Override
@@ -61,5 +61,12 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "RSA_CLIENT_KEY_EXCHANGE";
+    }
+
+    @Override
+    public void prepareComputations() {
+        if (computations == null) {
+            computations = new RSAClientComputations();
+        }
     }
 }

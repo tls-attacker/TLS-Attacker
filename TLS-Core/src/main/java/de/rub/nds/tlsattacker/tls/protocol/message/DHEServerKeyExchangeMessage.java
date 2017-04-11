@@ -18,15 +18,18 @@ import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
+@XmlRootElement
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /**
@@ -55,12 +58,10 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public DHEServerKeyExchangeMessage() {
         super();
-        computations = new DHEServerComputations();
     }
 
     public DHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
-        computations = new DHEServerComputations();
     }
 
     public ModifiableByteArray getP() {
@@ -162,5 +163,12 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "DHE_SERVER_KEY_EXCHANGE";
+    }
+
+    @Override
+    public void prepareComputations() {
+        if (getComputations() == null) {
+            computations = new DHEServerComputations();
+        }
     }
 }

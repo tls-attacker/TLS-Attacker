@@ -74,6 +74,7 @@ public class RSAClientKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         RSAClientKeyExchangeMessage message = new RSAClientKeyExchangeMessage();
+        message.prepareComputations();
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
         message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
         handler.adjustTLSContext(message);

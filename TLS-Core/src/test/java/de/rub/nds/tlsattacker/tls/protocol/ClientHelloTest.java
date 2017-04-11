@@ -84,7 +84,11 @@ public class ClientHelloTest {
         cl.setCipherSuiteLength(3);
         // cl.setCipherSuiteLength(new ModifiableInteger());
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
-        m.marshal(cl, writer);
+        try {
+            m.marshal(cl, writer);
+        } catch (Exception E) {
+            E.printStackTrace();
+        }
         String xmlString = writer.toString();
         LOGGER.info(xmlString);
         um = context.createUnmarshaller();

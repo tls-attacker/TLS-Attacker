@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.XmlElements;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+
 public abstract class MessageAction extends TLSAction {
 
     @XmlElementWrapper
@@ -154,7 +154,7 @@ public abstract class MessageAction extends TLSAction {
 
     @Override
     public void reset() {
-        executed = false;
+        setExecuted(false);
         actualMessages = new LinkedList<>();
         actualRecords = new LinkedList<>();
     }

@@ -57,7 +57,7 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
     @Override
     public void prepareHandshakeMessageContents() {
         kp = null;
-
+        msg.prepareComputations();
         if (!isServerPkKnown()) {
             kp = getParamsFromCertificate();
         } else {

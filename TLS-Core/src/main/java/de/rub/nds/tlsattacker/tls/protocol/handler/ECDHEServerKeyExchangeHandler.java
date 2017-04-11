@@ -50,8 +50,10 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
 
     @Override
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
         adjustECParameter(message);
     }
 

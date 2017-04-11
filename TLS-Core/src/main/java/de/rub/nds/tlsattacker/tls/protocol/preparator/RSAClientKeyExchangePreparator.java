@@ -53,6 +53,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     @Override
     public void prepareHandshakeMessageContents() {
+        msg.prepareComputations();
         RSAPublicKey publicKey;
         if (context.getServerPublicKey() == null || !"RSA".equals(context.getServerPublicKey().getAlgorithm())) {
             publicKey = generateFreshKey();
