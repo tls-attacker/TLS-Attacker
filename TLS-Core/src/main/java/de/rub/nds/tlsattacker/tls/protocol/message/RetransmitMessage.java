@@ -34,7 +34,6 @@ public class RetransmitMessage extends ProtocolMessage {
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
-    
     public RetransmitMessage(byte[] bytesToTransmit) {
         super();
         this.bytesToTransmit = bytesToTransmit;

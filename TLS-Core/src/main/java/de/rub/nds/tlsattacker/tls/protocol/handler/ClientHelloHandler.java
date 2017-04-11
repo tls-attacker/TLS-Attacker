@@ -62,8 +62,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             adjustDTLSCookie(message);
         }
         adjustSessionID(message);
-        for (ExtensionMessage extension : message.getExtensions()) {
-            extension.getHandler(tlsContext).adjustTLSContext(extension);
+        if (message.getExtensions() != null) {
+            for (ExtensionMessage extension : message.getExtensions()) {
+                extension.getHandler(tlsContext).adjustTLSContext(extension);
+            }
         }
     }
 

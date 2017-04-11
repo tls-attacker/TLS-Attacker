@@ -110,8 +110,12 @@ public class ServerHelloMessage extends HelloMessage {
                 .append("\n  Selected Compression Method: ")
                 .append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()))
                 .append("\n  Extensions: ");
-        for (ExtensionMessage e : getExtensions()) {
-            sb.append(e.toString());
+        if (getExtensions() == null) {
+            sb.append("null");
+        } else {
+            for (ExtensionMessage e : getExtensions()) {
+                sb.append(e.toString());
+            }
         }
         return sb.toString();
     }

@@ -73,7 +73,7 @@ public abstract class HelloMessage extends HandshakeMessage {
             @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
             @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
     @HoldsModifiableVariable
-    private List<ExtensionMessage> extensions = new LinkedList<>();
+    private List<ExtensionMessage> extensions;
 
     @ModifiableVariableProperty
     private ModifiableByteArray extensionBytes;
@@ -87,6 +87,7 @@ public abstract class HelloMessage extends HandshakeMessage {
 
     public HelloMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
         super(tlsConfig, handshakeMessageType);
+
     }
 
     public ModifiableByteArray getRandom() {
@@ -182,6 +183,9 @@ public abstract class HelloMessage extends HandshakeMessage {
     }
 
     public void addExtension(ExtensionMessage extension) {
+        if (this.extensions == null) {
+            extensions = new LinkedList<>();
+        }
         this.extensions.add(extension);
     }
 

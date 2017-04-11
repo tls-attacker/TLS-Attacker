@@ -59,13 +59,15 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     protected void prepareExtensions() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ExtensionMessage extensionMessage : msg.getExtensions()) {
-            ExtensionHandler handler = extensionMessage.getHandler(context);
-            handler.getPreparator(extensionMessage).prepare();
-            try {
-                stream.write(extensionMessage.getExtensionBytes().getValue());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+        if (msg.getExtensions() != null) {
+            for (ExtensionMessage extensionMessage : msg.getExtensions()) {
+                ExtensionHandler handler = extensionMessage.getHandler(context);
+                handler.getPreparator(extensionMessage).prepare();
+                try {
+                    stream.write(extensionMessage.getExtensionBytes().getValue());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+                }
             }
         }
         msg.setExtensionBytes(stream.toByteArray());

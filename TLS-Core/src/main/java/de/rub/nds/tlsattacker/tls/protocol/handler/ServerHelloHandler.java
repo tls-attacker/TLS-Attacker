@@ -56,8 +56,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustSelectedProtocolVersion(message);
         adjustSelectedSessionID(message);
         adjustServerRandom(message);
-        for (ExtensionMessage extension : message.getExtensions()) {
-            extension.getHandler(tlsContext).adjustTLSContext(extension);
+        if (message.getExtensions() != null) {
+            for (ExtensionMessage extension : message.getExtensions()) {
+                extension.getHandler(tlsContext).adjustTLSContext(extension);
+            }
         }
         adjustMessageDigest(message);
     }
