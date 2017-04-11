@@ -41,12 +41,12 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        this.setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public HelloVerifyRequestMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        this.setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public ModifiableByteArray getProtocolVersion() {

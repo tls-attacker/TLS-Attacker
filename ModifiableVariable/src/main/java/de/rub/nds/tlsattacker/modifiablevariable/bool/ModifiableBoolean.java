@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement
 @XmlSeeAlso({ BooleanExplicitValueModification.class, BooleanExplicitValueModification.class })
-@XmlType(propOrder = { "originalValue", "modification", "assertEquals" })
+@XmlType(propOrder = { "originalValue", "modification", })
 public class ModifiableBoolean extends ModifiableVariable<Boolean> {
 
     private Boolean originalValue;

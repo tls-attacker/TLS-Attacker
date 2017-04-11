@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
@@ -22,7 +23,8 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 public abstract class HandshakeMessage extends ProtocolMessage {
 
-    private static final boolean IS_INCLUDE_IN_DIGEST_DEFAULT = true;
+    @XmlTransient
+    protected boolean IS_INCLUDE_IN_DIGEST_DEFAULT = true;
 
     @XmlTransient
     protected final HandshakeMessageType handshakeMessageType;
@@ -30,7 +32,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     /**
      * handshake type
      */
-    @ModifiableVariableProperty
     private ModifiableByte type = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -45,7 +46,8 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
 
-    private Boolean includeInDigest = null;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean includeInDigest = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
@@ -67,7 +69,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         if (includeInDigest == null) {
             return IS_INCLUDE_IN_DIGEST_DEFAULT;
         }
-        return includeInDigest;
+        return includeInDigest.getValue();
     }
 
     public void setType(ModifiableByte type) {
@@ -131,7 +133,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     public void setIncludeInDigest(boolean includeInDigest) {
-        this.includeInDigest = includeInDigest;
+        this.includeInDigest = ModifiableVariableFactory.safelySetValue(this.includeInDigest, includeInDigest);
     }
 
     @Override

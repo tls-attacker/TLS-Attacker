@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
- * 
+ *
  *         Raw bytes of a previos send message retransmitted
  */
 @XmlRootElement
@@ -30,12 +30,14 @@ public class RetransmitMessage extends ProtocolMessage {
     private byte[] bytesToTransmit = null;
 
     public RetransmitMessage() {
-        this.setRequired(false);
+        REQUIRED_DEFAULT = false;
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
     public RetransmitMessage(byte[] bytesToTransmit) {
         super();
+        REQUIRED_DEFAULT = false;
+        protocolMessageType = ProtocolMessageType.UNKNOWN;
         this.bytesToTransmit = bytesToTransmit;
     }
 

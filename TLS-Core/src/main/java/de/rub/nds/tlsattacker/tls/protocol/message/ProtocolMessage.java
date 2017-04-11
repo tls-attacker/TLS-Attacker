@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
@@ -39,20 +40,23 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     @XmlTransient
     protected ProtocolMessageType protocolMessageType;
 
-    private static final boolean GOING_TO_BE_SENT_DEFAULT = true;
+    @XmlTransient
+    protected boolean GOING_TO_BE_SENT_DEFAULT = true;
 
-    private static final boolean REQUIRED_DEFAULT = true;
+    @XmlTransient
+    protected boolean REQUIRED_DEFAULT = true;
     /**
      * Defines whether this message is necessarily required in the workflow.
      */
-    private Boolean required;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean required;
     /**
      * Defines if the message should be sent during the workflow. Using this
      * flag it is possible to omit a message is sent during the handshake while
      * it is executed to initialize specific variables.
      */
-
-    private Boolean goingToBeSent;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean goingToBeSent;
     /**
      * resulting message
      */
@@ -70,22 +74,22 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
         if (required == null) {
             return REQUIRED_DEFAULT;
         }
-        return required;
+        return required.getValue();
     }
 
     public void setRequired(boolean required) {
-        this.required = required;
+        this.required = ModifiableVariableFactory.safelySetValue(this.required, required);
     }
 
     public boolean isGoingToBeSent() {
         if (goingToBeSent == null) {
             return GOING_TO_BE_SENT_DEFAULT;
         }
-        return goingToBeSent;
+        return goingToBeSent.getValue();
     }
 
     public void setGoingToBeSent(boolean goingToBeSent) {
-        this.goingToBeSent = goingToBeSent;
+        this.goingToBeSent = ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
     }
 
     @Override

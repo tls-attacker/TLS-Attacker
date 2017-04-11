@@ -25,12 +25,12 @@ public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_REQUEST);
-        setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public HelloRequestMessage() {
         super(HandshakeMessageType.HELLO_REQUEST);
-        setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     @Override

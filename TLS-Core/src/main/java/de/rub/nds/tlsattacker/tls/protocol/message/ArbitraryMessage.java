@@ -23,7 +23,11 @@ public class ArbitraryMessage extends ProtocolMessage {
 
     public ArbitraryMessage() {
         super();
-        this.setRequired(false);
+    }
+
+    @Override
+    public boolean isRequired() {
+        return false;
     }
 
     @Override

@@ -40,7 +40,8 @@ public @interface ModifiableVariableProperty {
         PLAIN_PROTOCOL_MESSAGE,
         PLAIN_RECORD,
         COOKIE,
-        NONE
+        NONE,
+        BEHAVIOR_SWITCH
     }
 
     public enum Format {
