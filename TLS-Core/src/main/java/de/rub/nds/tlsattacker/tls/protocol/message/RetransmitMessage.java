@@ -27,12 +27,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RetransmitMessage extends ProtocolMessage {
 
-    private byte[] bytesToTransmit;
+    private byte[] bytesToTransmit = null;
 
-    public RetransmitMessage(byte[] bytesToTransmit) {
-        super();
+    public RetransmitMessage() {
         this.setRequired(false);
         protocolMessageType = ProtocolMessageType.UNKNOWN;
+    }
+
+    
+    public RetransmitMessage(byte[] bytesToTransmit) {
+        super();
         this.bytesToTransmit = bytesToTransmit;
     }
 

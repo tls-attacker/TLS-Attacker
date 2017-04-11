@@ -29,6 +29,11 @@ import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.RetransmitMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import java.util.LinkedList;
@@ -41,10 +46,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
-
 public abstract class MessageAction extends TLSAction {
 
     @XmlElementWrapper
@@ -66,6 +70,11 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = AlertMessage.class, name = "Alert"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+            @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
+            @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
+            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+            @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
+            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     @HoldsModifiableVariable
@@ -89,6 +98,11 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = AlertMessage.class, name = "Alert"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
+            @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
+            @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
+            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+            @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
+            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
     protected List<ProtocolMessage> actualMessages;
@@ -136,7 +150,7 @@ public abstract class MessageAction extends TLSAction {
     /**
      * Checks that every configured message also appears in the actual messages
      * and no additional messages are present
-     * 
+     *
      * @return
      */
     public boolean configuredLooksLikeActual() {
