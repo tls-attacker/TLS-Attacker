@@ -80,7 +80,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization() throws JAXBException {
-        ClientHelloMessage cl = new ClientHelloMessage(new TlsConfig());
+        ClientHelloMessage cl = new ClientHelloMessage(TlsConfig.createConfig());
         cl.setCipherSuiteLength(3);
         // cl.setCipherSuiteLength(new ModifiableInteger());
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
@@ -100,7 +100,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization2() throws Exception {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = cf.createFullWorkflow();
         m.marshal(trace, writer);

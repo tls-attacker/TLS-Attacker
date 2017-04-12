@@ -77,7 +77,7 @@ public class WorkflowInputDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setWorkflowTrace(null);
         args = new String[2];
         args[0] = "-workflow_input";
@@ -94,8 +94,8 @@ public class WorkflowInputDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

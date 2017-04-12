@@ -90,7 +90,7 @@ public class HostnameExtensionDelegateTest {
         args[1] = "its_me";
         args[2] = "-servername_fatal";
         jcommander.parse(args);
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setSniHostname(null);
         config.setSniHostnameFatal(false);
         delegate.applyDelegate(config);
@@ -100,8 +100,8 @@ public class HostnameExtensionDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

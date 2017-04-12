@@ -63,7 +63,7 @@ public class ClientAuthenticationDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setClientAuthentication(false);
         args = new String[1];
         args[0] = "-client_authentication";
@@ -75,8 +75,8 @@ public class ClientAuthenticationDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

@@ -86,7 +86,7 @@ public class CiphersuiteDelegateTest {
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly",
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setSupportedCiphersuites(null);
         delegate.applyDelegate(config);
         assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config.getSupportedCiphersuites()
@@ -98,8 +98,8 @@ public class CiphersuiteDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

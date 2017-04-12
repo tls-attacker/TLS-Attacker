@@ -46,7 +46,7 @@ public class ReceiveActionTest {
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        AlertMessage alert = new AlertMessage(new TlsConfig());
+        AlertMessage alert = new AlertMessage(TlsConfig.createConfig());
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());

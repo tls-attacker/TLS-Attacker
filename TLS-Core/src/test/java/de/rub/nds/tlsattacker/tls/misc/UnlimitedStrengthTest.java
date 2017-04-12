@@ -40,7 +40,7 @@ public class UnlimitedStrengthTest {
     @Test
     public void testAES256() throws Exception {
         try {
-            new GeneralDelegate().applyDelegate(new TlsConfig());
+            new GeneralDelegate().applyDelegate(TlsConfig.createConfig());
 
             Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
             IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);

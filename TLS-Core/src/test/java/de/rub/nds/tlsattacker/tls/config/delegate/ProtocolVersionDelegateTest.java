@@ -76,7 +76,7 @@ public class ProtocolVersionDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
         config.setTransportHandlerType(TransportHandlerType.EAP_TLS);
         args = new String[2];
@@ -90,8 +90,8 @@ public class ProtocolVersionDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

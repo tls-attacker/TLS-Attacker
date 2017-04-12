@@ -166,7 +166,7 @@ public class TlsContext {
 
     public TlsContext() {
         digest = new TlsMessageDigest();
-        config = new TlsConfig();
+        config = TlsConfig.createConfig();
         clientCertificateTypes = new LinkedList<>();
         // init lastRecordVersion for records
         lastRecordVersion = config.getHighestProtocolVersion();

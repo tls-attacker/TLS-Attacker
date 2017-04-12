@@ -33,7 +33,7 @@ public class ModifiableVariableAnalyzerTest {
      */
     @Test
     public void testGetAllModifiableVariableFields() {
-        ClientHelloMessage chm = new ClientHelloMessage(new TlsConfig());
+        ClientHelloMessage chm = new ClientHelloMessage(TlsConfig.createConfig());
         String[] fieldNames = { "compressionLength", "cipherSuiteLength", "cipherSuites", "compressions",
                 "protocolVersion", "unixTime", "random", "sessionIdLength", "sessionId", "type",
                 "completeResultingMessage" };

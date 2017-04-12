@@ -94,7 +94,7 @@ public class SerialisationFullTest {
     @Test
     @Category(IntegrationTest.class)
     public void test() throws JAXBException, IOException {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddHeartbeatExtension(true);

@@ -28,7 +28,7 @@ public class TlsRecordLayerIT {
 
     @Before
     public void setUp() {
-        layer = new TlsRecordLayer(new TlsContext(new TlsConfig()));
+        layer = new TlsRecordLayer(new TlsContext(TlsConfig.createConfig()));
     }
 
     /**

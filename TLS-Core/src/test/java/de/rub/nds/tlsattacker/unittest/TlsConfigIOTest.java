@@ -29,7 +29,7 @@ public class TlsConfigIOTest {
     @Test
     public void test() throws IOException {
         File f = folder.newFile();
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         TlsConfigIO.write(config, f);
         config = TlsConfigIO.read(f);
         assertNotNull(config);

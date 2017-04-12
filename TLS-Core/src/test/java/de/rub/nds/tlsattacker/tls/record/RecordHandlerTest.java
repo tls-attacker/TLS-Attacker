@@ -32,7 +32,7 @@ public class RecordHandlerTest {
 
     public RecordHandlerTest() {
         Security.addProvider(new BouncyCastleProvider());
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createHandshakeWorkflow();
         config.setWorkflowTrace(trace);

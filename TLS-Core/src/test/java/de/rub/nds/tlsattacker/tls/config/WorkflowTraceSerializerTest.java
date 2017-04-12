@@ -59,7 +59,7 @@ public class WorkflowTraceSerializerTest {
     // TODO Test all messages with all modifiable variables
     @Test
     public void testWriteRead() throws Exception {
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(new TlsConfig());
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(TlsConfig.createConfig());
         WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable
@@ -95,7 +95,7 @@ public class WorkflowTraceSerializerTest {
     public void TestWrite() {
         try {
             WorkflowTrace trace = new WorkflowTrace();
-            trace.add(new SendAction(new ClientHelloMessage(new TlsConfig())));
+            trace.add(new SendAction(new ClientHelloMessage(TlsConfig.createConfig())));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());
