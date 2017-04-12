@@ -46,7 +46,7 @@ public class SendAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Sending " + getReadableString(configuredMessages));
-        tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionEnd());
+        tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getConnectionEnd());
         MessageActionResult result = executor.sendMessages(configuredMessages, configuredRecords);
         actualMessages.addAll(result.getMessageList());
         actualRecords.addAll(result.getRecordList());

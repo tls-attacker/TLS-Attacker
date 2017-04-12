@@ -59,7 +59,7 @@ public abstract class WorkflowExecutor {
         String[] hp = context.getConfig().getHost().split(":");
         String host = hp[0];
         int port;
-        if (context.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
             port = context.getConfig().getServerPort();
         } else if (hp.length == 1) {
             port = 443;
@@ -67,7 +67,7 @@ public abstract class WorkflowExecutor {
             port = Integer.parseInt(hp[1]);
         }
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, context.getConfig()
-                .getMyConnectionEnd(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
+                .getConnectionEnd(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
                 .getConfig().getTransportHandlerType());
         try {
 

@@ -11,20 +11,25 @@ package de.rub.nds.tlsattacker.util;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class ByteArrayAdapter extends XmlAdapter<String, byte[]> {
 
     @Override
     public byte[] unmarshal(String value) {
+
         value = value.replaceAll("\\s", "");
         return ArrayConverter.hexStringToByteArray(value);
     }
 
     @Override
     public String marshal(byte[] value) {
-        return ArrayConverter.bytesToHexString(value);
+        boolean usePrettyPrinting = (value.length > 16);
+        if (usePrettyPrinting) {
+            return ArrayConverter.bytesToHexString(value) + "\n";
+        } else {
+            return ArrayConverter.bytesToHexString(value);
+        }
     }
-
 }

@@ -175,7 +175,7 @@ public final class RecordBlockCipher extends RecordCipher {
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
             }
-            if (tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (tlsContext.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
                         decryptIv);
             } else {
@@ -251,7 +251,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 offset += decryptCipher.getBlockSize();
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
             }
-            if (tlsContext.getConfig().getMyConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (tlsContext.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
                 encryptIv = new IvParameterSpec(clientWriteIv);
                 decryptIv = new IvParameterSpec(serverWriteIv);
                 encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
