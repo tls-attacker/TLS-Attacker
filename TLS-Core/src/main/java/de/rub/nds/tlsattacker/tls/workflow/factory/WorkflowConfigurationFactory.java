@@ -137,7 +137,7 @@ public class WorkflowConfigurationFactory {
 
     }
 
-    public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         if (config.isSessionResumption()) {
             return;
         }
@@ -163,7 +163,7 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
