@@ -324,6 +324,10 @@ public final class TlsConfig implements Serializable {
         return TlsConfigIO.read(f);
     }
 
+    public static TlsConfig createConfig(InputStream stream) {
+        return TlsConfigIO.read(stream);
+    }
+
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,

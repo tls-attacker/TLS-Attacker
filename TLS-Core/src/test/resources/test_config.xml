@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tlsConfig>
+    <supportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
+</tlsConfig>
