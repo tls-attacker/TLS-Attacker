@@ -108,7 +108,6 @@ public class WorkflowConfigurationFactory {
         }
         if (config.isClientAuthentication()) {
             CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-            certRequest.setRequired(false);
             messages.add(certRequest);
         }
 

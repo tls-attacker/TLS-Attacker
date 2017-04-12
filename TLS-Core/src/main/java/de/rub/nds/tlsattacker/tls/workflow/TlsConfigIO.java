@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import java.io.File;
+import java.io.InputStream;
 import javax.xml.bind.JAXB;
 
 /**
@@ -22,6 +23,11 @@ public class TlsConfigIO {
 
     public static TlsConfig read(File f) {
         TlsConfig config = JAXB.unmarshal(f, TlsConfig.class);
+        return config;
+    }
+
+    public static TlsConfig read(InputStream stream) {
+        TlsConfig config = JAXB.unmarshal(stream, TlsConfig.class);
         return config;
     }
 }

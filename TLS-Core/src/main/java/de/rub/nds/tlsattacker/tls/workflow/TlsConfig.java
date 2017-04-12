@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -312,6 +313,15 @@ public final class TlsConfig implements Serializable {
      * Which recordLayer should be used
      */
     private RecordLayerType recordLayerType = RecordLayerType.RECORD;
+
+    public static TlsConfig createConfig() {
+        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
+        return TlsConfigIO.read(stream);
+    }
+
+    public static TlsConfig createConfig(File f) {
+        return TlsConfigIO.read(f);
+    }
 
     public TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
