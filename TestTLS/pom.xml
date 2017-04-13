@@ -4,10 +4,10 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>2.0Beta1</version>
+        <version>2.0Beta2</version>
     </parent>
     <artifactId>TestTLS</artifactId>
-    <version>2.0Beta1</version>
+    <version>2.0Beta2</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
