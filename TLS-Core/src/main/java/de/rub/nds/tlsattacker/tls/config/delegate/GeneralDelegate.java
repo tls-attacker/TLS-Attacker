@@ -10,11 +10,8 @@ package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.tls.config.converters.LogLevelConverter;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
@@ -30,8 +27,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class GeneralDelegate extends Delegate {
-
-    static final Logger LOGGER = LogManager.getLogger(GeneralDelegate.class);
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
     private boolean help;

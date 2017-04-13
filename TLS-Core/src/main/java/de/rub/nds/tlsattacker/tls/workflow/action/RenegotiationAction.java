@@ -21,12 +21,17 @@ public class RenegotiationAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
         tlsContext.getDigest().reset();
+        setExecuted(true);
+        LOGGER.info("Resetting Digest for Renegotiation");
     }
 
     @Override
     public void reset() {
-        executed = false;
+        setExecuted(false);
     }
 
 }

@@ -29,10 +29,6 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray supportedCurves;
 
-    public EllipticCurvesExtensionMessage(TlsConfig config) {
-        super(ExtensionType.ELLIPTIC_CURVES);
-    }
-
     public EllipticCurvesExtensionMessage() {
         super(ExtensionType.ELLIPTIC_CURVES);
     }

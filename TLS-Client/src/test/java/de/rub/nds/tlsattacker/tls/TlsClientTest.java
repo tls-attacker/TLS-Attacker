@@ -35,8 +35,6 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -76,8 +74,10 @@ public class TlsClientTest {
     private static final int PORT = 4433;
 
     private static final int TIMEOUT = 2000;
+
     @Rule
     public ErrorCollector collector = new ErrorCollector();
+
     private TLSServer tlsServer;
 
     public TlsClientTest() {
@@ -165,8 +165,10 @@ public class TlsClientTest {
                 config.setSupportedCiphersuites(cslist);
                 config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
-                LOGGER.info("Testing: " + cs.name() + " Succes:" + result);
-                collector.checkThat("" + cs.name() + " failed.", result, is(true));
+                LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
+                        + result);
+                collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
+                        result, is(true));
             }
         }
     }
@@ -183,35 +185,12 @@ public class TlsClientTest {
             E.printStackTrace();
         }
         String workflowString = tlsContext.getWorkflowTrace().toString();
-        boolean result = isWorkflowTraceReasonable(tlsContext.getWorkflowTrace());
+        boolean result = tlsContext.getWorkflowTrace().configuredLooksLikeActual();
         if (!result) {
-            LOGGER.info("PreMasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getPreMasterSecret()));
-            LOGGER.info("MasterSecret:" + ArrayConverter.bytesToHexString(tlsContext.getMasterSecret()));
             LOGGER.info(workflowString);
             return result;
         }
         return result;
-    }
-
-    private boolean isWorkflowTraceReasonable(WorkflowTrace trace) {
-        int counter = 0;
-        for (ProtocolMessage configuredMessage : trace.getAllConfiguredMessages()) {
-            if (counter >= trace.getAllExecutedMessages().size()) {
-                return false;
-            }
-            ProtocolMessage receivedMessage = trace.getAllExecutedMessages().get(counter);
-            if (configuredMessage.getClass().equals(ArbitraryMessage.class)) {
-                break;
-            }
-            if (configuredMessage.getClass() != receivedMessage.getClass()) {
-                if (configuredMessage.isRequired()) {
-                    return false;
-                }
-            } else {
-                counter++;
-            }
-        }
-        return (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
     }
 
     private boolean testCustomWorkflow(int port) {
@@ -243,8 +222,7 @@ public class TlsClientTest {
             return false;
         }
 
-        return !(tlsContext.getWorkflowTrace()
-                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty());
+        return trace.configuredLooksLikeActual();
     }
 
 }

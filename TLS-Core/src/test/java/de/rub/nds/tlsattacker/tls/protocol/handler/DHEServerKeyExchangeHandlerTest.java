@@ -75,6 +75,7 @@ public class DHEServerKeyExchangeHandlerTest {
         message.setP(BigInteger.TEN.toByteArray());
         message.setG(BigInteger.ONE.toByteArray());
         message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        message.prepareComputations();
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
         message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
         handler.adjustTLSContext(message);

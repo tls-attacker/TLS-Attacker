@@ -18,11 +18,14 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.UnknownHandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
+@XmlRootElement
 public class UnknownHandshakeMessage extends HandshakeMessage {
 
     private byte[] dataConfig;
@@ -59,12 +62,15 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toCompactString() {
-        return "UNKNOWN_HANDSHAKE_MESSAGE";
-    }
-
-    @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new UnknownHandshakeMessageHandler(context);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("   \nData:").append(ArrayConverter.bytesToHexString(data.getValue()));
+        return sb.toString();
+    }
+
 }

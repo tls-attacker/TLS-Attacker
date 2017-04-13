@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateRequestMessageSerializer extends HandshakeMessageSerializer<CertificateRequestMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
     private final CertificateRequestMessage msg;
 
@@ -66,7 +65,8 @@ public class CertificateRequestMessageSerializer extends HandshakeMessageSeriali
      */
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
-        LOGGER.debug("ClientCertificateTypes: " + Arrays.toString(msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug("ClientCertificateTypes: "
+                + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
     }
 
     /**
@@ -85,7 +85,8 @@ public class CertificateRequestMessageSerializer extends HandshakeMessageSeriali
      */
     private void writeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithms().getValue());
-        LOGGER.debug("SignatureHashAlgorithms: " + Arrays.toString(msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     /**
@@ -107,7 +108,7 @@ public class CertificateRequestMessageSerializer extends HandshakeMessageSeriali
      */
     private void writeDistinguishedNames(CertificateRequestMessage msg) {
         appendBytes(msg.getDistinguishedNames().getValue());
-        LOGGER.debug("DistinguishedNames: " + Arrays.toString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
     }
 
 }

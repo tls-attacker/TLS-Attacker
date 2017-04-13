@@ -27,8 +27,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private final ServerHelloMessage msg;
 
     public ServerHelloMessagePreparator(TlsContext context, ServerHelloMessage message) {
@@ -65,7 +63,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
-        LOGGER.debug("SelectedCipherSuite: " + Arrays.toString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 
     private void prepareCompressionMethod() {
@@ -94,7 +92,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
             msg.setSessionId(ArrayConverter
                     .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
         }
-        LOGGER.debug("SessionID: " + Arrays.toString(msg.getSessionId().getValue()));
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     private void prepareProtocolVersion() {
@@ -130,6 +128,6 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
                 }
             }
         }
-        LOGGER.debug("ProtocolVersion: " + Arrays.toString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 }

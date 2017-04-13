@@ -9,6 +9,10 @@
 package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -16,44 +20,44 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  */
 public class MessageBytesCollector {
 
-    private byte[] recordBytes;
+    private ByteArrayOutputStream recordBytesStream;
 
-    private byte[] protocolMessageBytes;
+    private ByteArrayOutputStream protocolMessageBytesStream;
 
     public MessageBytesCollector() {
-        this.recordBytes = new byte[0];
-        this.protocolMessageBytes = new byte[0];
+        recordBytesStream = new ByteArrayOutputStream();
+        protocolMessageBytesStream = new ByteArrayOutputStream();
     }
 
     public byte[] getRecordBytes() {
-        return recordBytes;
+        return recordBytesStream.toByteArray();
     }
 
-    public void setRecordBytes(byte[] recordBytes) {
-        this.recordBytes = recordBytes;
-    }
-
-    public byte[] getProtocolMessageBytes() {
-        return protocolMessageBytes;
-    }
-
-    public void setProtocolMessageBytes(byte[] protocolMessageBytes) {
-        this.protocolMessageBytes = protocolMessageBytes;
+    public byte[] getProtocolMessageBytesStream() {
+        return protocolMessageBytesStream.toByteArray();
     }
 
     public void appendRecordBytes(byte[] recordBytes) {
-        this.recordBytes = ArrayConverter.concatenate(this.recordBytes, recordBytes);
+        try {
+            this.recordBytesStream.write(recordBytes);
+        } catch (IOException ex) {
+            // TODO
+        }
     }
 
     public void appendProtocolMessageBytes(byte[] protocolMessageBytes) {
-        this.protocolMessageBytes = ArrayConverter.concatenate(this.protocolMessageBytes, protocolMessageBytes);
+        try {
+            protocolMessageBytesStream.write(protocolMessageBytes);
+        } catch (IOException ex) {
+            // TODO Logger
+        }
     }
 
     public void flushRecordBytes() {
-        this.recordBytes = new byte[0];
+        recordBytesStream = new ByteArrayOutputStream();
     }
 
     public void flushProtocolMessageBytes() {
-        this.protocolMessageBytes = new byte[0];
+        protocolMessageBytesStream = new ByteArrayOutputStream();
     }
 }

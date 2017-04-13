@@ -33,7 +33,7 @@ public class TestECOracle extends ECOracle {
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret) {
         numberOfQueries++;
         if (numberOfQueries % 100 == 0) {
-            LOGGER.info("Number of queries so far: {}", numberOfQueries);
+            LOGGER.debug("Number of queries so far: {}", numberOfQueries);
         }
         Point result;
         try {

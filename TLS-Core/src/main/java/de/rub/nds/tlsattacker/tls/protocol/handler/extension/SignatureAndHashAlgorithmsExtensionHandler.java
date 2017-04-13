@@ -31,8 +31,6 @@ import org.apache.logging.log4j.Logger;
 public class SignatureAndHashAlgorithmsExtensionHandler extends
         ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public SignatureAndHashAlgorithmsExtensionHandler(TlsContext context) {
         super(context);
     }

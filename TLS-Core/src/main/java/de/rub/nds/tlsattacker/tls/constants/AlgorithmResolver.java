@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class AlgorithmResolver {
 
-    private static final Logger LOGGER = LogManager.getLogger(AlgorithmResolver.class);
+    private static final Logger LOGGER = LogManager.getLogger("AlgorithmResolver");
 
     /**
      * Returns a PRF algorithm based on the protocol version and the cipher

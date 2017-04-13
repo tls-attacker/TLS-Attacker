@@ -39,8 +39,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<RSAClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
     private byte[] padding;
     private byte[] premasterSecret;
     private byte[] clientRandom;
@@ -55,6 +53,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     @Override
     public void prepareHandshakeMessageContents() {
+        msg.prepareComputations();
         RSAPublicKey publicKey;
         if (context.getServerPublicKey() == null || !"RSA".equals(context.getServerPublicKey().getAlgorithm())) {
             publicKey = generateFreshKey();
@@ -141,12 +140,13 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private void preparePadding(RSAClientKeyExchangeMessage msg) {
         msg.getComputations().setPadding(padding);
-        LOGGER.debug("Padding: " + Arrays.toString(msg.getComputations().getPadding().getValue()));
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getComputations().getPadding().getValue()));
     }
 
     private void preparePremasterSecret(RSAClientKeyExchangeMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: " + Arrays.toString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
     private void preparePlainPaddedPremasterSecret(RSAClientKeyExchangeMessage msg) {
@@ -154,17 +154,19 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg
                         .getComputations().getPremasterSecret().getValue()));
         LOGGER.debug("PlainPaddedPremasterSecret: "
-                + Arrays.toString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
 
     private void prepareClientRandom(RSAClientKeyExchangeMessage msg) {
         msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: " + Arrays.toString(msg.getComputations().getClientRandom().getValue()));
+        LOGGER.debug("ClientRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareMasterSecret(RSAClientKeyExchangeMessage msg) {
         msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: " + Arrays.toString(msg.getComputations().getMasterSecret().getValue()));
+        LOGGER.debug("MasterSecret: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
     }
 
     private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {

@@ -23,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     /**
      * The message that should be serialized
      */

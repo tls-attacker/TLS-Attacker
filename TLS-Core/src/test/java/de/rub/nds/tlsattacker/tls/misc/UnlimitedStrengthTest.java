@@ -35,20 +35,21 @@ import org.junit.Test;
  */
 public class UnlimitedStrengthTest {
 
-    final Logger logger = LogManager.getLogger(UnlimitedStrengthTest.class);
+    final Logger LOGGER = LogManager.getLogger(UnlimitedStrengthTest.class);
 
     @Test
     public void testAES256() throws Exception {
         try {
-            new GeneralDelegate().applyDelegate(new TlsConfig());
+            new GeneralDelegate().applyDelegate(TlsConfig.createConfig());
 
             Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
             IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
             SecretKey encryptKey = new SecretKeySpec(new byte[32], "AES");
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
         } catch (InvalidKeyException ex) {
-            logger.warn("AES256 is probably not supported, you have to install Java Cryptography "
+            LOGGER.warn("AES256 is probably not supported, you have to install Java Cryptography "
                     + "Extension (JCE) Unlimited Strength Jurisdiction Policy Files.");
+            LOGGER.debug(ex);
             fail();
         }
     }

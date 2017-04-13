@@ -10,17 +10,30 @@ package de.rub.nds.tlsattacker.tls.workflow;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */
 public abstract class WorkflowExecutor {
+
+    protected static final Logger LOGGER = LogManager.getLogger("WorkflowExecutor");
 
     protected final ExecutorType type;
 
@@ -32,22 +45,36 @@ public abstract class WorkflowExecutor {
         initWorkflowTrace();
     }
 
+    /**
+     * Initialization Order: 1. Check WorkflowTrace in Config 2. Check
+     * WorkflowTraceInput in Config 3. Check WorkflowTraceType in Config 4. If
+     * nothing set throw configuration exception
+     */
     private void initWorkflowTrace() {
-
-        if (context.getWorkflowTrace() == null) {
-            context.setWorkflowTrace(context.getConfig().getWorkflowTrace());
-        }
-        if (context.getWorkflowTrace() == null) {
-            if (context.getConfig().getWorkflowTraceType() == null) {
-                context.setWorkflowTrace(new WorkflowConfigurationFactory(context.getConfig())
-                        .createWorkflowTrace(WorkflowTraceType.HANDSHAKE));
-            } else {
-                context.setWorkflowTrace(new WorkflowConfigurationFactory(context.getConfig())
-                        .createWorkflowTrace(context.getConfig().getWorkflowTraceType()));
+        WorkflowTrace trace = null;
+        if (context.getConfig().getWorkflowTrace() != null) {
+            trace = context.getConfig().getWorkflowTrace();
+        } else if (context.getConfig().getWorkflowInput() != null) {
+            try {
+                // Read workflowinput
+                trace = WorkflowTraceSerializer.read(new FileInputStream(new File(context.getConfig()
+                        .getWorkflowInput())));
+            } catch (FileNotFoundException ex) {
+                LOGGER.warn("Could not read WorkflowTrace. File not found.");
+                LOGGER.debug(ex);
+            } catch (JAXBException | IOException | XMLStreamException ex) {
+                LOGGER.warn("Could not read WorkflowTrace.");
+                LOGGER.debug(ex);
             }
+        } else if (context.getConfig().getWorkflowTraceType() != null) {
+            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(context.getConfig());
+            trace = factory.createWorkflowTrace(context.getConfig().getWorkflowTraceType());
         }
-        if (context.getWorkflowTrace() == null) {
+
+        if (trace == null) {
             throw new ConfigurationException("Could not initialize WorkflowTrace in TLSContext");
+        } else {
+            context.setWorkflowTrace(trace);
         }
     }
 
@@ -55,7 +82,7 @@ public abstract class WorkflowExecutor {
         String[] hp = context.getConfig().getHost().split(":");
         String host = hp[0];
         int port;
-        if (context.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
             port = context.getConfig().getServerPort();
         } else if (hp.length == 1) {
             port = 443;
@@ -63,7 +90,7 @@ public abstract class WorkflowExecutor {
             port = Integer.parseInt(hp[1]);
         }
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, context.getConfig()
-                .getMyConnectionEnd(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
+                .getConnectionEnd(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
                 .getConfig().getTransportHandlerType());
         try {
 
@@ -75,6 +102,32 @@ public abstract class WorkflowExecutor {
         } catch (IOException ex) {
             throw new ConfigurationException("Unable to initialize the transport handler with: "
                     + context.getConfig().getHost(), ex);
+        }
+    }
+
+    protected void storeTrace() {
+        TlsConfig config = context.getConfig();
+
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            FileOutputStream fos = null;
+            try {
+                File f = new File(config.getWorkflowOutput());
+                if (f.isDirectory()) {
+                    f = new File(config.getWorkflowOutput() + "trace-" + RandomHelper.getRandom().nextInt());
+                }
+                fos = new FileOutputStream(f);
+                WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
+            } catch (JAXBException | IOException ex) {
+                LOGGER.info("Could not serialize WorkflowTrace.");
+                LOGGER.debug(ex);
+            } finally {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    LOGGER.info("Could not serialize WorkflowTrace.");
+                    LOGGER.debug(ex);
+                }
+            }
         }
     }
 

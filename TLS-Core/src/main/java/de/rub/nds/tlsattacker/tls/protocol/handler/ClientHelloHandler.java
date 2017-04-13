@@ -33,8 +33,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -64,8 +62,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             adjustDTLSCookie(message);
         }
         adjustSessionID(message);
-        for (ExtensionMessage extension : message.getExtensions()) {
-            extension.getHandler(tlsContext).adjustTLSContext(extension);
+        if (message.getExtensions() != null) {
+            for (ExtensionMessage extension : message.getExtensions()) {
+                extension.getHandler(tlsContext).adjustTLSContext(extension);
+            }
         }
     }
 

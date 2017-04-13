@@ -24,7 +24,6 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ChangeServerCertificateAction extends TLSAction {
 
     @XmlJavaTypeAdapter(CertificateAdapter.class)
@@ -32,10 +31,6 @@ public class ChangeServerCertificateAction extends TLSAction {
     @XmlJavaTypeAdapter(CertificateAdapter.class)
     private Certificate oldValue = null;
 
-    // TODO I really like to add a ServerCertificateStructure constructor, but
-    // the
-    // Struct is not in the TLS package, perhaps i should mitigate it here for
-    // now we dont serialize the certs
     public ChangeServerCertificateAction(Certificate newValue) {
         super();
         this.newValue = newValue;
@@ -55,18 +50,19 @@ public class ChangeServerCertificateAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getServerCertificate();
         tlsContext.setServerCertificate(newValue);
-        executed = true;
+        LOGGER.info("Changed ServerCertificate");
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
         oldValue = null;
-        executed = false;
+        setExecuted(false);
     }
 
     @Override

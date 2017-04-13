@@ -30,8 +30,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ServerHelloDoneHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

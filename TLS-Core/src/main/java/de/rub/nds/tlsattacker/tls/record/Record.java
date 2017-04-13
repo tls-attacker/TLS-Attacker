@@ -10,83 +10,111 @@ package de.rub.nds.tlsattacker.tls.record;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.record.encryptor.Encryptor;
+import de.rub.nds.tlsattacker.tls.record.parser.RecordParser;
+import de.rub.nds.tlsattacker.tls.record.preparator.RecordPreparator;
+import de.rub.nds.tlsattacker.tls.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.math.BigInteger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class Record extends ModifiableVariableHolder {
-
-    /**
-     * maximum length configuration for this record
-     */
-    private Integer maxRecordLengthConfig;
+public class Record extends AbstractRecord {
 
     /**
      * total length of the protocol message (handshake, alert..) included in the
      * record layer
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger length;
+    private ModifiableInteger length;
 
     /**
      * Content type
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByte contentType;
+    private ModifiableByte contentType;
 
     /**
      * Record Layer Protocol Version
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion;
-
-    /**
-     * protocol message bytes transported in the record
-     */
-    @ModifiableVariableProperty
-    ModifiableByteArray protocolMessageBytes;
+    private ModifiableByteArray protocolVersion;
 
     /**
      * MAC (message authentication code) for the record (if needed)
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    ModifiableByteArray mac;
+    private ModifiableByteArray mac;
 
     /**
      * Padding
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray padding;
+    private ModifiableByteArray padding;
 
     /**
      * Padding length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableInteger paddingLength;
+    private ModifiableInteger paddingLength;
 
     /**
-     * Plain record bytes (MACed and padded data)
+     * protocol message bytes after decryption
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
-    ModifiableByteArray plainRecordBytes;
+    private ModifiableByteArray plainRecordBytes;
 
     /**
-     * encrypted protocol message bytes (if encryption activated)
+     * protocol message bytes after decryption without padding (if there was
+     * one)
      */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
-    ModifiableByteArray encryptedProtocolMessageBytes;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableByteArray unpaddedRecordBytes;
 
-    /**
-     * It is possible to define a sleep [in milliseconds] after the protocol
-     * message was sent.
-     */
-    private int sleepAfterMessageSent;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableInteger epoch;
 
-    private boolean measuringTiming;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableBigInteger sequenceNumber;
+
+    public Record(TlsConfig config) {
+        super(config);
+    }
+
+    public Record() {
+    }
+
+    public ModifiableInteger getEpoch() {
+        return epoch;
+    }
+
+    public ModifiableBigInteger getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setEpoch(int epoch) {
+        this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
+    }
+
+    public void setEpoch(ModifiableInteger epoch) {
+        this.epoch = epoch;
+    }
+
+    public void setSequenceNumber(BigInteger sequenceNumber) {
+        this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    public void setSequenceNumber(ModifiableBigInteger sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
     public ModifiableInteger getLength() {
         return length;
@@ -106,14 +134,6 @@ public class Record extends ModifiableVariableHolder {
 
     public ModifiableByteArray getPadding() {
         return padding;
-    }
-
-    public ModifiableByteArray getProtocolMessageBytes() {
-        return protocolMessageBytes;
-    }
-
-    public void setProtocolMessageBytes(ModifiableByteArray protocolMessageBytes) {
-        this.protocolMessageBytes = protocolMessageBytes;
     }
 
     public void setLength(ModifiableInteger length) {
@@ -156,10 +176,6 @@ public class Record extends ModifiableVariableHolder {
         this.mac = mac;
     }
 
-    public void setProtocolMessageBytes(byte[] bytes) {
-        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
-    }
-
     public ModifiableInteger getPaddingLength() {
         return paddingLength;
     }
@@ -180,44 +196,35 @@ public class Record extends ModifiableVariableHolder {
         this.plainRecordBytes = plainRecordBytes;
     }
 
-    public void setPlainRecordBytes(byte[] value) {
-        this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, value);
+    public void setPlainRecordBytes(byte[] plainRecordBytes) {
+        this.plainRecordBytes = ModifiableVariableFactory.safelySetValue(this.plainRecordBytes, plainRecordBytes);
     }
 
-    public ModifiableByteArray getEncryptedProtocolMessageBytes() {
-        return encryptedProtocolMessageBytes;
+    public ModifiableByteArray getUnpaddedRecordBytes() {
+        return unpaddedRecordBytes;
     }
 
-    public void setEncryptedProtocolMessageBytes(ModifiableByteArray encryptedProtocolMessageBytes) {
-        this.encryptedProtocolMessageBytes = encryptedProtocolMessageBytes;
+    public void setUnpaddedRecordBytes(ModifiableByteArray unpaddedRecordBytes) {
+        this.unpaddedRecordBytes = unpaddedRecordBytes;
     }
 
-    public void setEncryptedProtocolMessageBytes(byte[] value) {
-        this.encryptedProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(
-                this.encryptedProtocolMessageBytes, value);
+    public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
+        this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes,
+                unpaddedRecordBytes);
     }
 
-    public Integer getMaxRecordLengthConfig() {
-        return maxRecordLengthConfig;
+    @Override
+    public RecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor, ProtocolMessageType type) {
+        return new RecordPreparator(context, this, encryptor, type);
     }
 
-    public void setMaxRecordLengthConfig(Integer maxRecordLengthConfig) {
-        this.maxRecordLengthConfig = maxRecordLengthConfig;
+    @Override
+    public RecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
+        return new RecordParser(0, null, ProtocolVersion.SSL2);
     }
 
-    public void setSleepAfterMessageSent(int sleepAfterMessageSent) {
-        this.sleepAfterMessageSent = sleepAfterMessageSent;
-    }
-
-    public int getSleepAfterMessageSent() {
-        return sleepAfterMessageSent;
-    }
-
-    public boolean isMeasuringTiming() {
-        return measuringTiming;
-    }
-
-    public void setMeasuringTiming(boolean measuringTiming) {
-        this.measuringTiming = measuringTiming;
+    @Override
+    public RecordSerializer getRecordSerializer() {
+        return new RecordSerializer(this);
     }
 }

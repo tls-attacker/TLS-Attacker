@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
     private ClientHelloMessage msg;
 
@@ -72,7 +71,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      */
     private void writeCipherSuites(ClientHelloMessage msg) {
         appendBytes(msg.getCipherSuites().getValue());
-        LOGGER.debug("CipherSuite: " + Arrays.toString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuite: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     /**
@@ -89,7 +88,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      */
     private void writeCompressions(ClientHelloMessage msg) {
         appendBytes(msg.getCompressions().getValue());
-        LOGGER.debug("Compressions: " + Arrays.toString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 
     /**
@@ -106,7 +105,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      */
     private void writeExtensionBytes(ClientHelloMessage msg) {
         appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug("ExtensionBytes: " + Arrays.toString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
     }
 
 }

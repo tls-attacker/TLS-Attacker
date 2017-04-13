@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HandlerFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger("HandlerFactory");
 
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {

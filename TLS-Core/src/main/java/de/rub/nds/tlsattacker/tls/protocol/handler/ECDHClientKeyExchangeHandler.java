@@ -23,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ECDHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -46,8 +44,9 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
     }
-
 }

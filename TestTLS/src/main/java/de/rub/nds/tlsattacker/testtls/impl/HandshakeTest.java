@@ -32,8 +32,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HandshakeTest extends TestTLS {
 
-    static Logger LOGGER = LogManager.getLogger(HandshakeTest.class);
-
     final TestServerConfig serverConfig;
 
     TlsContext lastTlsContext;

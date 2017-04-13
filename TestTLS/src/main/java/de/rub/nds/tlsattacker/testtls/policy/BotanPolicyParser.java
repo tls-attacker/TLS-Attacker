@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class BotanPolicyParser {
 
-    public static Logger LOGGER = LogManager.getLogger(BotanPolicyParser.class);
+    public static Logger LOGGER = LogManager.getLogger("BotanPolicyParser");
 
     private final String delimiter;
 
@@ -99,7 +99,7 @@ public class BotanPolicyParser {
                         break;
 
                     default:
-                        LOGGER.info("Currently cannot handle rule " + rule[0]);
+                        LOGGER.debug("Currently cannot handle rule " + rule[0]);
                 }
             }
         }

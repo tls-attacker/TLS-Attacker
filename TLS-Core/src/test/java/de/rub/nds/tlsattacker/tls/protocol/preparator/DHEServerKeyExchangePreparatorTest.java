@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
-
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -46,9 +45,7 @@ public class DHEServerKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new DHEServerKeyExchangeMessage();
         preparator = new DHEServerKeyExchangePreparator(context, message);
-        new GeneralDelegate().applyDelegate(new TlsConfig()); // Load security
-                                                              // providers
-
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateVerifyMessageParser extends HandshakeMessageParser<CertificateVerifyMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     /**
      * Constructor for the Parser class
@@ -61,7 +60,8 @@ public class CertificateVerifyMessageParser extends HandshakeMessageParser<Certi
      */
     private void parseSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         msg.setSignatureHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
-        LOGGER.debug("SignatureHashAlgorithm: " + Arrays.toString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHashAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
     }
 
     /**
@@ -84,7 +84,7 @@ public class CertificateVerifyMessageParser extends HandshakeMessageParser<Certi
      */
     private void parseSignature(CertificateVerifyMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug("Signatur: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
 }

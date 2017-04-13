@@ -37,7 +37,7 @@ public class ClientDelegate extends Delegate {
         if (host != null) {
             config.setHost(host);
         }
-        config.setMyConnectionEnd(ConnectionEnd.CLIENT);
+        config.setConnectionEnd(ConnectionEnd.CLIENT);
     }
 
 }

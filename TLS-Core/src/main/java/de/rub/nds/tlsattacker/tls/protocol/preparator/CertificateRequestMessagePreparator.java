@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,7 +27,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CertificateRequestMessagePreparator extends HandshakeMessagePreparator<CertificateRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
     private byte[] certTypes;
     private byte[] sigHashAlgos;
     private final CertificateRequestMessage msg;
@@ -78,7 +78,8 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
 
     private void prepareClientCertificateTypes(byte[] certTypes, CertificateRequestMessage msg) {
         msg.setClientCertificateTypes(certTypes);
-        LOGGER.debug("ClientCertificateTypes: " + Arrays.toString(msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug("ClientCertificateTypes: "
+                + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
     }
 
     private void prepareClientCertificateTypesCount(CertificateRequestMessage msg) {
@@ -88,7 +89,7 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
 
     private void prepareDistinguishedNames(CertificateRequestMessage msg) {
         msg.setDistinguishedNames(context.getConfig().getDistinguishedNames());
-        LOGGER.debug("DistinguishedNames: " + Arrays.toString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
     }
 
     private void prepareDistinguishedNamesLength(CertificateRequestMessage msg) {
@@ -98,7 +99,8 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
 
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(sigHashAlgos);
-        LOGGER.debug("SignatureHashAlgorithms: " + Arrays.toString(msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
     }
 
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {

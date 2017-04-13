@@ -49,43 +49,37 @@ public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-
         TlsConfig tlsConfig = config.createConfig();
-
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
-
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
         // if the padding was {0x02, 0x02, 0x02}, it becomes {0x03, 0x02, 0x02}
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
         padding.setModification(modifier);
-
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();
         r.setPadding(padding);
-        applicationMessage.addRecord(r);
+        SendAction sendAction = new SendAction(applicationMessage);
+        sendAction.getConfiguredRecords().add(r);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.add(new SendAction(applicationMessage));
         trace.add(new ReceiveAction(alertMessage));
-
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.info("Not possible to finalize the defined workflow");
+            LOGGER.debug(ex);
             return null;
         }
         System.out.println(trace.toString());
         if (trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() > 0) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
+            LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
         } else if (!tlsContext.isReceivedFatalAlert()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
+            LOGGER.info("Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             return true;
         }
         return null;

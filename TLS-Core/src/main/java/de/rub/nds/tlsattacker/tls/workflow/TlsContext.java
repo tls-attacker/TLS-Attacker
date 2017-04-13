@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
@@ -25,8 +24,8 @@ import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -37,7 +36,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 
@@ -106,7 +104,7 @@ public class TlsContext {
 
     private TlsMessageDigest digest;
 
-    private RecordHandler recordHandler;
+    private RecordLayer recordLayer;
 
     private TransportHandler transportHandler;
 
@@ -168,7 +166,7 @@ public class TlsContext {
 
     public TlsContext() {
         digest = new TlsMessageDigest();
-        config = new TlsConfig();
+        config = TlsConfig.createConfig();
         clientCertificateTypes = new LinkedList<>();
         // init lastRecordVersion for records
         lastRecordVersion = config.getHighestProtocolVersion();
@@ -385,10 +383,6 @@ public class TlsContext {
         return masterSecret;
     }
 
-    public byte[] getServerClientRandom() {
-        return ArrayConverter.concatenate(serverRandom, clientRandom);
-    }
-
     public CipherSuite getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
@@ -505,12 +499,12 @@ public class TlsContext {
         this.transportHandler = transportHandler;
     }
 
-    public RecordHandler getRecordHandler() {
-        return recordHandler;
+    public RecordLayer getRecordLayer() {
+        return recordLayer;
     }
 
-    public void setRecordHandler(RecordHandler recordHandler) {
-        this.recordHandler = recordHandler;
+    public void setRecordLayer(RecordLayer recordLayer) {
+        this.recordLayer = recordLayer;
     }
 
     public PRFAlgorithm getPRFAlgorithm() {

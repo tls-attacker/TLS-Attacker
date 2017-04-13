@@ -15,20 +15,22 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Philip Riese <philip.riese@rub.de>
  */
+@XmlRootElement
 public class HelloRequestMessage extends HandshakeMessage {
 
     public HelloRequestMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_REQUEST);
-        setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public HelloRequestMessage() {
         super(HandshakeMessageType.HELLO_REQUEST);
-        setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class HelloRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
+    public String toString() {
+        return super.toString();
     }
 }

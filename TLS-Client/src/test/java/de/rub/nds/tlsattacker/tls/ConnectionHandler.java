@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ConnectionHandler implements Runnable {
 
-    private final static Logger LOGGER = LogManager.getLogger(ConnectionHandler.class);
+    private final static Logger LOGGER = LogManager.getLogger("ConnectionHandler");
 
     private final Socket applicationSocket;
 

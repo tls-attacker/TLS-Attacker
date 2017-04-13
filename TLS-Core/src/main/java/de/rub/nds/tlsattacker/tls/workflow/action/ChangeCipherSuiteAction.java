@@ -10,14 +10,20 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeCipherSuiteAction extends TLSAction {
@@ -48,25 +54,23 @@ public class ChangeCipherSuiteAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        try {
-            if (executed) {
-                throw new WorkflowExecutionException("Action already executed!");
-            }
-            oldValue = tlsContext.getSelectedCipherSuite();
-            tlsContext.setSelectedCipherSuite(newValue);
-            if (tlsContext.getRecordHandler().getRecordCipher() != null) {
-                tlsContext.getRecordHandler().getRecordCipher().init();
-            }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new UnsupportedOperationException(ex);
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
         }
-        executed = true;
+        oldValue = tlsContext.getSelectedCipherSuite();
+        tlsContext.setSelectedCipherSuite(newValue);
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Changed CipherSuite from " + oldValue.name() + " to " + newValue.name());
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
         oldValue = null;
-        executed = false;
+        setExecuted(false);
     }
 
     @Override

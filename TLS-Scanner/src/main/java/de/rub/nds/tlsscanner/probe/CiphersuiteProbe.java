@@ -58,8 +58,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CiphersuiteProbe extends TLSProbe {
 
-    private static final Logger LOGGER = LogManager.getLogger(CiphersuiteProbe.class);
-
     private final List<ProtocolVersion> protocolVersions;
 
     public CiphersuiteProbe(ScannerConfig config) {
@@ -72,12 +70,11 @@ public class CiphersuiteProbe extends TLSProbe {
 
     @Override
     public ProbeResult call() {
-
-        LOGGER.info("Starting CiphersuiteProbe");
+        LOGGER.debug("Starting CiphersuiteProbe");
         Set<CipherSuite> supportedCiphersuites = new HashSet<>();
         Set<CipherSuite> tls10Ciphersuites = new HashSet<>();
         for (ProtocolVersion version : protocolVersions) {
-            LOGGER.info("Testing:" + version.name());
+            LOGGER.debug("Testing:" + version.name());
             List<CipherSuite> toTestList = new LinkedList<>();
             toTestList.addAll(Arrays.asList(CipherSuite.values()));
             toTestList.remove(CipherSuite.TLS_FALLBACK_SCSV);
@@ -200,26 +197,28 @@ public class CiphersuiteProbe extends TLSProbe {
             try {
                 workflowExecutor.executeWorkflow();
             } catch (WorkflowExecutionException ex) {
+                LOGGER.warn("Encountered exception while executing WorkflowTrace!");
+                LOGGER.debug(ex);
                 supportsMore = false;
             }
             if (!trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty()) {
                 if (tlsContext.getSelectedProtocolVersion() != version) {
-                    LOGGER.info("Server does not support " + version);
+                    LOGGER.debug("Server does not support " + version);
                     return new LinkedList<>();
                 }
-                LOGGER.info("Server chose " + tlsContext.getSelectedCipherSuite().name());
+                LOGGER.debug("Server chose " + tlsContext.getSelectedCipherSuite().name());
                 supportsMore = true;
                 supported.add(tlsContext.getSelectedCipherSuite());
                 listWeSupport.remove(tlsContext.getSelectedCipherSuite());
             } else {
                 supportsMore = false;
-                LOGGER.info("Server did not send ServerHello");
-                LOGGER.info(tlsContext.getWorkflowTrace().toString());
+                LOGGER.debug("Server did not send ServerHello");
+                LOGGER.debug(tlsContext.getWorkflowTrace().toString());
                 if (tlsContext.isReceivedFatalAlert()) {
-                    LOGGER.info("Received Fatal Alert");
+                    LOGGER.debug("Received Fatal Alert");
                     AlertMessage alert = (AlertMessage) tlsContext.getWorkflowTrace()
                             .getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).get(0);
-                    LOGGER.info("Type:" + alert.toString());
+                    LOGGER.debug("Type:" + alert.toString());
 
                 }
             }

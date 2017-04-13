@@ -15,10 +15,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ServerHelloDoneMessage extends HandshakeMessage {
 
     public ServerHelloDoneMessage(TlsConfig tlsConfig) {
@@ -35,7 +37,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
+    public String toString() {
+        return super.toString();
     }
 }

@@ -43,14 +43,14 @@ public class TestECSunOracle extends ECOracle {
         // BigInteger privateKey = new
         // BigInteger("25091756309879652045519159642875354611257005804552159157");
         computer = new ECComputer(curve, privateKey);
-        LOGGER.info("Using the following key: " + privateKey);
+        LOGGER.debug("Using the following key: " + privateKey);
     }
 
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret) {
         numberOfQueries++;
         if (numberOfQueries % 100 == 0) {
-            LOGGER.info("Number of queries so far: {}", numberOfQueries);
+            LOGGER.debug("Number of queries so far: {}", numberOfQueries);
         }
         BigInteger result;
         try {
@@ -60,7 +60,7 @@ public class TestECSunOracle extends ECOracle {
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | InvalidKeySpecException
                 | InvalidKeyException | DivisionException ex) {
             result = null;
-
+            // TODO ugly
         }
 
         if (result == null) {

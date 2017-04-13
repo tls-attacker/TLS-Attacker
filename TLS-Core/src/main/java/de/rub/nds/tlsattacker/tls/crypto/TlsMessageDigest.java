@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class TlsMessageDigest {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsMessageDigest.class);
+    private static final Logger LOGGER = LogManager.getLogger("MessageDigest");
 
     private MessageDigest hash1;
 
@@ -64,7 +64,7 @@ public final class TlsMessageDigest {
      */
     public void initializeDigestAlgorithm(DigestAlgorithm digestAlgorithm) throws NoSuchAlgorithmException {
         if (initialized) {
-            LOGGER.warn("The TLS message digest algorithm has already been set");
+            LOGGER.warn("Cannot Initialize DigestAlgorithm. The TLS message digest algorithm has already been set");
             return;
         }
         if (digestAlgorithm == DigestAlgorithm.LEGACY) {

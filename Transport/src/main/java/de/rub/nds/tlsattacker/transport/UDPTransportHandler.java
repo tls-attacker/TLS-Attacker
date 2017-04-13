@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class UDPTransportHandler extends TransportHandler {
 
-    private static final Logger LOGGER = LogManager.getLogger(UDPTransportHandler.class);
-
     private DatagramSocket datagramSocket;
 
     private final DatagramPacket receivedPacket = new DatagramPacket(new byte[65527], 65527);

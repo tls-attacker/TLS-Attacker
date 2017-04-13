@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Serializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    protected static final Logger LOGGER = LogManager.getLogger("Serializer");
 
     /**
      * The ByteArrayOutputStream with which the byte[] is constructed.
@@ -86,7 +86,8 @@ public abstract class Serializer<T> {
         try {
             outputStream.write(bytes);
         } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.", ex);
+            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
+            LOGGER.debug(ex);
         }
     }
 

@@ -38,7 +38,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class TLSServer extends Thread {
     // TODO should be in core package
     // TODO should be clean
-    private static final Logger LOGGER = LogManager.getLogger(TLSServer.class);
+    private static final Logger LOGGER = LogManager.getLogger("TLSServer");
 
     private static final String PATH_TO_JKS = "eckey192.jks";
 
@@ -62,10 +62,10 @@ public class TLSServer extends Thread {
             Security.removeProvider("SunPKCS11-NSS");
             Security.removeProvider("SunEC");
             Security.insertProviderAt(new BouncyCastleProvider(), 1);
-            LOGGER.info("Using BC provider");
+            LOGGER.debug("Using BC provider");
         }
         for (Provider p : Security.getProviders()) {
-            LOGGER.info(p);
+            LOGGER.debug(p);
         }
         System.setProperty("java.security.debug", "ssl");
         String path;
@@ -136,7 +136,7 @@ public class TLSServer extends Thread {
         }
 
         this.port = port;
-        LOGGER.info("SSL Server successfully initialized!");
+        LOGGER.debug("SSL Server successfully initialized!");
     }
 
     @Override
@@ -164,9 +164,9 @@ public class TLSServer extends Thread {
                     serverSocket = null;
                 }
             } catch (IOException e) {
-
+                LOGGER.debug(e);
             }
-            LOGGER.info("|| shutdown complete");
+            LOGGER.debug("|| shutdown complete");
         }
     }
 
@@ -185,7 +185,7 @@ public class TLSServer extends Thread {
 
     public void shutdown() {
         this.shutdown = true;
-        LOGGER.info("shutdown signal received");
+        LOGGER.debug("shutdown signal received");
     }
 
     public String[] getCipherSuites() {
@@ -195,5 +195,4 @@ public class TLSServer extends Thread {
     public boolean isInitialized() {
         return initialized;
     }
-
 }

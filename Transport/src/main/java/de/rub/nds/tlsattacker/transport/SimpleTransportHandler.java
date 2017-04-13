@@ -18,16 +18,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class SimpleTransportHandler extends TransportHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger(SimpleTransportHandler.class);
 
     private Socket socket;
 
@@ -52,11 +48,14 @@ public class SimpleTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         if (end == ConnectionEnd.SERVER) {
             serverSocket = new ServerSocket(port);
-            socket = serverSocket.accept();
-            LOGGER.debug("Server");
+            LOGGER.info("Starting ServerTransportHandler on Port:" + port);
             isServer = true;
+            socket = serverSocket.accept();
+            LOGGER.info("Acception connection from:" + socket.toString());
         } else {
+            LOGGER.info("Connecting to " + hostname + ":" + port);
             socket = new Socket(hostname, port);
+            LOGGER.info("Connected.");
         }
 
         OutputStream os = socket.getOutputStream();
@@ -68,6 +67,7 @@ public class SimpleTransportHandler extends TransportHandler {
 
     @Override
     public void sendData(byte[] data) throws IOException {
+        LOGGER.debug("Sending data:" + ArrayConverter.bytesToHexString(data));
         bos.write(data);
         try {
             // todo: this must be improved in the future versions, best approach
@@ -122,15 +122,10 @@ public class SimpleTransportHandler extends TransportHandler {
                 }
             }
         }
-        // LOGGER.debug("Accepted new bytes from server: {}",
-        // ArrayConverter.bytesToHexString(response));
         if (isServer) {
             LOGGER.debug("Accepted {} new bytes from client", response.length);
         } else {
             LOGGER.debug("Accepted {} new bytes from server", response.length);
-        }
-        if (response.length < 33) {
-            LOGGER.debug(ArrayConverter.bytesToHexString(response));
         }
         return response;
     }

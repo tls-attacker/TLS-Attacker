@@ -8,26 +8,22 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * TLS Protocol message is the message included in the Record message.
@@ -35,29 +31,32 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author juraj
  * @author Philip Riese <philip.riese@rub.de>
  */
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements Serializable {
 
     /**
      * content type
      */
+    @XmlTransient
     protected ProtocolMessageType protocolMessageType;
 
-    /**
-     * List of preconfigured records for this protocol message
-     */
-    protected List<Record> records;
+    @XmlTransient
+    protected boolean GOING_TO_BE_SENT_DEFAULT = true;
 
+    @XmlTransient
+    protected boolean REQUIRED_DEFAULT = true;
     /**
      * Defines whether this message is necessarily required in the workflow.
      */
-    private boolean required = true;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean required;
     /**
      * Defines if the message should be sent during the workflow. Using this
      * flag it is possible to omit a message is sent during the handshake while
      * it is executed to initialize specific variables.
      */
-    private boolean goingToBeSent = true;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean goingToBeSent;
     /**
      * resulting message
      */
@@ -65,52 +64,37 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     protected ModifiableByteArray completeResultingMessage;
 
     public ProtocolMessage() {
-        records = new LinkedList<>();
     }
 
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
 
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-            @XmlElement(type = DtlsRecord.class, name = "DtlsRecord") })
-    public List<Record> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    public void addRecord(Record record) {
-        this.records.add(record);
-    }
-
     public boolean isRequired() {
-        return required;
+        if (required == null) {
+            return REQUIRED_DEFAULT;
+        }
+        return required.getValue();
     }
 
     public void setRequired(boolean required) {
-        this.required = required;
+        this.required = ModifiableVariableFactory.safelySetValue(this.required, required);
     }
 
     public boolean isGoingToBeSent() {
-        return goingToBeSent;
+        if (goingToBeSent == null) {
+            return GOING_TO_BE_SENT_DEFAULT;
+        }
+        return goingToBeSent.getValue();
     }
 
     public void setGoingToBeSent(boolean goingToBeSent) {
-        this.goingToBeSent = goingToBeSent;
+        this.goingToBeSent = ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
     }
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (records != null) {
-            for (Record r : records) {
-                holders.add(r);
-            }
-        }
         return holders;
     }
 
@@ -136,6 +120,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
+    }
+
+    @Override
+    public String toString() {
+        return toCompactString();
     }
 
     public abstract String toCompactString();

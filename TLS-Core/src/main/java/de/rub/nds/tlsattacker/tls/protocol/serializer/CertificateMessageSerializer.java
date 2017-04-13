@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +21,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateMessageSerializer extends HandshakeMessageSerializer<CertificateMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
 
     private final CertificateMessage msg;
 
@@ -60,7 +59,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
      */
     private void writeX509Certificate(CertificateMessage msg) {
         appendBytes(msg.getX509CertificateBytes().getValue());
-        LOGGER.debug("X509Certificate: " + Arrays.toString(msg.getX509CertificateBytes().getValue()));
+        LOGGER.debug("X509Certificate: " + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
     }
 
 }

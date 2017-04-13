@@ -41,7 +41,7 @@ public class MangerAttackServerTest {
 
         Security.addProvider(new BouncyCastleProvider());
 
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setHost(CONNECT);
         List<CipherSuite> ciphersuites = new LinkedList<>();
         ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

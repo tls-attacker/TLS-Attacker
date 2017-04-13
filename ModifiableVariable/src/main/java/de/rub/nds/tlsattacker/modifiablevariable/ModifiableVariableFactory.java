@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.modifiablevariable;
 
 import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.length.ModifiableLengthField;
@@ -76,6 +77,14 @@ public class ModifiableVariableFactory {
     public static ModifiableLong safelySetValue(ModifiableLong mv, Long value) {
         if (mv == null) {
             mv = new ModifiableLong();
+        }
+        mv.setOriginalValue(value);
+        return mv;
+    }
+
+    public static ModifiableBoolean safelySetValue(ModifiableBoolean mv, Boolean value) {
+        if (mv == null) {
+            mv = new ModifiableBoolean();
         }
         mv.setOriginalValue(value);
         return mv;

@@ -65,7 +65,7 @@ public class ClientDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setHost(null);
         args = new String[2];
         args[0] = "-connect";
@@ -74,13 +74,13 @@ public class ClientDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.getHost().equals("123456"));
-        assertTrue(config.getMyConnectionEnd() == ConnectionEnd.CLIENT);
+        assertTrue(config.getConnectionEnd() == ConnectionEnd.CLIENT);
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         List<String> excludeFields = new LinkedList<>();
         excludeFields.add("keyStore");

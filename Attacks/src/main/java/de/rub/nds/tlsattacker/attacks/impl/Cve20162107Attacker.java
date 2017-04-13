@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -30,6 +31,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -72,11 +74,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
-        FinishedMessage finishedMessage = (FinishedMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.FINISHED);
+        SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
+        // We need two Records, one for the CCS message and one with finished
+        // message with the modified padding
+        List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
-        finishedMessage.addRecord(record);
+        records.add(new Record());
+        records.add(record);
+        sendAction.setConfiguredRecords(records);
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.
@@ -89,7 +94,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.warn("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.warn("Not possible to finalize the defined workflow");
+            LOGGER.debug(ex.getLocalizedMessage());
         }
         // The Server has to answer to our ClientHello with a ServerHello
         // Message, else he does not support
@@ -157,15 +163,16 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 try {
                     vulnerable |= executeAttackRound(version, suite);
                 } catch (Throwable t) {
-                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name(), t);
+                    LOGGER.warn("Problem while testing " + version.name() + " with Ciphersuite " + suite.name());
+                    LOGGER.debug(t);
                 }
             }
         }
 
         if (vulnerable) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "VULNERABLE");
+            LOGGER.info("VULNERABLE");
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "NOT VULNERABLE");
+            LOGGER.info("NOT VULNERABLE");
         }
 
         LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +25,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     private byte[] verifyData;
     private final FinishedMessage msg;
@@ -56,7 +55,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         byte[] masterSecret = context.getMasterSecret();
         byte[] handshakeMessageHash = getDigest().digest();
 
-        if (context.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
             // TODO put this in seperate config option
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
@@ -68,7 +67,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
 
     private void prepareVerifyData(FinishedMessage msg) {
         msg.setVerifyData(verifyData);
-        LOGGER.debug("VerifyData: " + Arrays.toString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 
 }

@@ -39,15 +39,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class CiphersuiteOrderProbe extends TLSProbe {
 
-    private static final Logger LOGGER = LogManager.getLogger(CiphersuiteProbe.class);
-
     public CiphersuiteOrderProbe(ScannerConfig config) {
         super("CiphersuiteOrder", config);
     }
 
     @Override
     public ProbeResult call() {
-        LOGGER.info("Starting CipherSuiteOrder Test");
+        LOGGER.debug("Starting CipherSuiteOrder Test");
 
         List<CipherSuite> toTestList = new LinkedList<>();
         toTestList.addAll(Arrays.asList(CipherSuite.values()));

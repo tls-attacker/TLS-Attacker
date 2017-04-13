@@ -57,7 +57,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Main {
 
-    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger("Main");
 
     public static void main(String[] args) throws Exception {
 

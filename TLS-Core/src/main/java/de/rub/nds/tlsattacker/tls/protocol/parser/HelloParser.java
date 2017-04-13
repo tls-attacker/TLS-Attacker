@@ -31,8 +31,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     /**
      * Constructor for the Parser class
      *
@@ -87,7 +85,7 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      */
     protected void parseProtocolVersion(HelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
-        LOGGER.debug("ProtocolVersion:" + Arrays.toString(message.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion:" + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
     }
 
     /**
@@ -98,7 +96,7 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      */
     protected void parseUnixtime(HelloMessage message) {
         message.setUnixTime(parseByteArrayField(HandshakeByteLength.UNIX_TIME));
-        LOGGER.debug("UnixTime:" + Arrays.toString(message.getUnixTime().getValue()));
+        LOGGER.debug("UnixTime:" + ArrayConverter.bytesToHexString(message.getUnixTime().getValue()));
     }
 
     /**
@@ -109,7 +107,7 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      */
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
-        LOGGER.debug("Random:" + Arrays.toString(message.getRandom().getValue()));
+        LOGGER.debug("Random:" + ArrayConverter.bytesToHexString(message.getRandom().getValue()));
     }
 
     /**
@@ -132,7 +130,7 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      */
     protected void parseSessionID(HelloMessage message) {
         message.setSessionId(parseByteArrayField(message.getSessionIdLength().getOriginalValue()));
-        LOGGER.debug("SessionID:" + Arrays.toString(message.getSessionId().getValue()));
+        LOGGER.debug("SessionID:" + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 
     /**

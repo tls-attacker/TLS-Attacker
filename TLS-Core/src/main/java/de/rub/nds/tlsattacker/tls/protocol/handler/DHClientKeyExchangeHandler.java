@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -51,8 +49,10 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     protected void adjustTLSContext(DHClientKeyExchangeMessage message) {
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
     }
 
 }

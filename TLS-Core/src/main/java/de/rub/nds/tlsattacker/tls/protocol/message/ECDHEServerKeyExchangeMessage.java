@@ -27,10 +27,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -43,12 +45,10 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public ECDHEServerKeyExchangeMessage() {
         super();
-        computations = new ECDHEServerComputations();
     }
 
     public ECDHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
-        computations = new ECDHEServerComputations();
     }
 
     public ModifiableByte getCurveType() {
@@ -77,8 +77,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString());
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Curve Type: ");
         sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
         sb.append("\n  Named Curve: ");
@@ -122,5 +121,12 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "ECDHE_SERVER_KEY_EXCHANGE";
+    }
+
+    @Override
+    public void prepareComputations() {
+        if (computations == null) {
+            computations = new ECDHEServerComputations();
+        }
     }
 }

@@ -21,8 +21,6 @@ import org.apache.logging.log4j.Logger;
 public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMessage> extends
         HandshakeMessageSerializer<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     /**
      * Constructor for the ServerKeyExchangeSerializer
      *

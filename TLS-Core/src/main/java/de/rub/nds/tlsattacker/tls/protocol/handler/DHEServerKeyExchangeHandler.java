@@ -26,8 +26,6 @@ import org.bouncycastle.crypto.tls.ServerDHParams;
  */
 public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -50,8 +48,10 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     @Override
     protected void adjustTLSContext(DHEServerKeyExchangeMessage message) {
         adjustServerDHParameters(message);
-        adjustPremasterSecret(message);
-        adjustMasterSecret(message);
+        if (message.getComputations() != null) {
+            adjustPremasterSecret(message);
+            adjustMasterSecret(message);
+        }
     }
 
     private void adjustServerDHParameters(DHEServerKeyExchangeMessage message) {

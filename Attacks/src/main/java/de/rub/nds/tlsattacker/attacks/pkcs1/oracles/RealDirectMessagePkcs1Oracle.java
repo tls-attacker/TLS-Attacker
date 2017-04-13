@@ -84,7 +84,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         cke.setSerializedPublicKey(pms);
 
         if (numberOfQueries % 100 == 0) {
-            LOGGER.info("Number of queries so far: {}", numberOfQueries);
+            LOGGER.debug("Number of queries so far: {}", numberOfQueries);
         }
 
         boolean valid = true;

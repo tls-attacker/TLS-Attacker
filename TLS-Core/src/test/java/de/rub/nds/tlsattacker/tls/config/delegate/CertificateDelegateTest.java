@@ -141,7 +141,7 @@ public class CertificateDelegateTest {
         assertTrue("Keystore parameter gets not parsed correctly", delegate.getKeystore().equals(args[1]));
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setKeyStore(null);
         config.setAlias(null);
         config.setPassword(null);
@@ -163,7 +163,7 @@ public class CertificateDelegateTest {
         jcommander.parse(args);
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setAlias(null);
         config.setPassword(null);
         config.setOurCertificate(null);
@@ -186,7 +186,7 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "default";
         jcommander.parse(args);
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         delegate.applyDelegate(config);
     }
 
@@ -200,7 +200,7 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "notthecorrectalias";
         jcommander.parse(args);
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         delegate.applyDelegate(config);
     }
 
@@ -214,14 +214,14 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "default";
         jcommander.parse(args);
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         delegate.applyDelegate(config);
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
         // ugly

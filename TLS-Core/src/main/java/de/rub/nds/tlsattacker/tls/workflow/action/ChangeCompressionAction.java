@@ -13,9 +13,11 @@ import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeCompressionAction extends TLSAction {
@@ -45,18 +47,20 @@ public class ChangeCompressionAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getSelectedCompressionMethod();
         tlsContext.setSelectedCompressionMethod(newValue);
-        executed = true;
+        LOGGER.info("Changed selected CompressionMethod from " + (oldValue == null ? "null" : oldValue.name()) + " to "
+                + newValue.name());
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
         oldValue = null;
-        executed = false;
+        setExecuted(false);
     }
 
     @Override
@@ -84,5 +88,4 @@ public class ChangeCompressionAction extends TLSAction {
         }
         return this.oldValue == other.oldValue;
     }
-
 }

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 
     private final ProtocolVersion version;
 
@@ -82,7 +81,7 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
      */
     private void parseNamedCurve(ECDHEServerKeyExchangeMessage msg) {
         msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
-        LOGGER.debug("NamedCurve: " + Arrays.toString(msg.getNamedCurve().getValue()));
+        LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
     }
 
     /**
@@ -106,7 +105,7 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
      */
     private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
         msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
     /**
@@ -174,6 +173,6 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
      */
     private void parseSignature(ECDHEServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + Arrays.toString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 }

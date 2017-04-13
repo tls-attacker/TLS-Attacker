@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     /**
      * Constructor for the ServerHelloMessageParser
      *
@@ -33,7 +31,7 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
      * @param array
      *            The byte[] which the ServerHellorParser is supposed to parse
      * @param version
-     * 
+     *
      */
     public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO, version);

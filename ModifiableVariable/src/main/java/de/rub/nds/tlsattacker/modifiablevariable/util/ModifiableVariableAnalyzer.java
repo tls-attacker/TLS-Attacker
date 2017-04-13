@@ -107,7 +107,7 @@ public class ModifiableVariableAnalyzer {
                     }
                 }
             } catch (IllegalAccessException | IllegalArgumentException ex) {
-                LOGGER.info("Accessing field {} of type {} not possible: {}", f.getName(), f.getType(), ex.toString());
+                LOGGER.debug("Accessing field {} of type {} not possible: {}", f.getName(), f.getType(), ex.toString());
             }
         }
         return holders;
@@ -123,7 +123,7 @@ public class ModifiableVariableAnalyzer {
             if (o != null) {
                 result.addAll(getAllModifiableVariableHoldersRecursively(o));
             } else {
-                LOGGER.info("Found null getAllModifiableVariableHoldersFromList");
+                LOGGER.warn("Found null getAllModifiableVariableHoldersFromList");
             }
         }
         return result;

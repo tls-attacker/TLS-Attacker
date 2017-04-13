@@ -25,6 +25,8 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Parser<T> {
 
+    protected static final Logger LOGGER = LogManager.getLogger("Parser");
+
     /**
      * Current position in the byte array
      */
@@ -51,7 +53,7 @@ public abstract class Parser<T> {
         this.startPoint = startposition;
         this.pointer = startposition;
         this.array = array;
-        if (startposition >= array.length) {
+        if (startposition > array.length) {
             throw new ParserException("Cannot creater parser beyond pointer. Pointer:" + pointer + " ArrayLength:"
                     + array.length);
         }
@@ -172,6 +174,14 @@ public abstract class Parser<T> {
         return getBytesLeft() >= count;
     }
 
+    protected byte[] parseArrayOrTillEnd(int n) {
+        if (n < getBytesLeft()) {
+            return parseByteArrayField(n);
+        } else {
+            return parseByteArrayField(getBytesLeft());
+        }
+    }
+
     protected int getBytesLeft() {
         return array.length - pointer;
     }
@@ -183,5 +193,4 @@ public abstract class Parser<T> {
      */
     public abstract T parse();
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
 }

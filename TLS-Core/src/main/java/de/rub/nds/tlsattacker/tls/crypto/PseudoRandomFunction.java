@@ -24,28 +24,36 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 /**
  * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy
  * castle TlsUtils are used)
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public final class PseudoRandomFunction {
 
-    static final Logger LOGGER = LogManager.getLogger(PseudoRandomFunction.class);
+    static final Logger LOGGER = LogManager.getLogger("PRF");
 
-    /** master secret label */
+    /**
+     * master secret label
+     */
     public static final String MASTER_SECRET_LABEL = "master secret";
 
-    /** client finished label */
+    /**
+     * client finished label
+     */
     public static final String CLIENT_FINISHED_LABEL = "client finished";
 
-    /** server finished label */
+    /**
+     * server finished label
+     */
     public static final String SERVER_FINISHED_LABEL = "server finished";
 
-    /** key expansion label */
+    /**
+     * key expansion label
+     */
     public static final String KEY_EXPANSION_LABEL = "key expansion";
 
     /**
      * Computes PRF output of the provided size using the given mac algorithm
-     * 
+     *
      * @param prfAlgorithm
      * @param secret
      * @param label
@@ -71,7 +79,7 @@ public final class PseudoRandomFunction {
 
     /**
      * PRF computation for TLS 1.2
-     * 
+     *
      * @param secret
      * @param label
      * @param seed
@@ -83,8 +91,9 @@ public final class PseudoRandomFunction {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(), seed);
             SecretKeySpec keySpec = null;
-            try {
-                if (secret == null || secret.length == 0) {
+
+            if (secret == null || secret.length == 0) {
+                try {
                     // empty key, but we still want to try to compute the
                     // SecretKeySpec
                     // Create an object using a fake key and then change that
@@ -96,14 +105,15 @@ public final class PseudoRandomFunction {
                         field.set(keySpec, new byte[0]);
                     } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException
                             | SecurityException ex) {
-                        LOGGER.error(ex.getLocalizedMessage(), ex);
+                        throw new CryptoException("Could not access KeySpec with empty Key", ex);
                     }
-                } else {
-                    keySpec = new SecretKeySpec(secret, macAlgorithm);
+                } catch (java.lang.IllegalArgumentException ex) {
+                    throw new CryptoException("Could not tls12_prf output without Secret", ex);
                 }
-            } catch (java.lang.IllegalArgumentException ex) {
-                LOGGER.error(ex.getLocalizedMessage(), ex);
+            } else {
+                keySpec = new SecretKeySpec(secret, macAlgorithm);
             }
+
             Mac mac = Mac.getInstance(macAlgorithm);
             mac.init(keySpec);
 
