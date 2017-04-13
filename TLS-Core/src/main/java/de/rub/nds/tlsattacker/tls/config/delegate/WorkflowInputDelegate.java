@@ -9,14 +9,8 @@
 package de.rub.nds.tlsattacker.tls.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import java.io.FileInputStream;
-import java.io.IOException;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -46,19 +40,6 @@ public class WorkflowInputDelegate extends Delegate {
         FileInputStream fis = null;
         if (workflowInput != null) {
             config.setWorkflowInput(workflowInput);
-            try {
-                fis = new FileInputStream(workflowInput);
-                WorkflowTrace workflowTrace = WorkflowTraceSerializer.read(fis);
-                config.setWorkflowTrace(workflowTrace);
-            } catch (JAXBException | XMLStreamException | IOException ex) {
-                throw new ConfigurationException("Could not read WorkflowTrace from " + workflowInput, ex);
-            } finally {
-                try {
-                    fis.close();
-                } catch (IOException ex) {
-                    throw new ConfigurationException("Could not read WorkflowTrace from " + workflowInput, ex);
-                }
-            }
         }
     }
 }

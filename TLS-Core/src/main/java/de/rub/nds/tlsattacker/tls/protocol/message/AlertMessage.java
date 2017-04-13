@@ -124,12 +124,9 @@ public class AlertMessage extends ProtocolMessage {
         sb.append(", ");
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
-            if(desc != null)
-            {
+            if (desc != null) {
                 sb.append(desc.toString());
-            }
-            else
-            {
+            } else {
                 sb.append(description.getValue());
             }
         } else {

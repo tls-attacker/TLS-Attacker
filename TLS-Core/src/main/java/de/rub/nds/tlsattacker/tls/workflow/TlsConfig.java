@@ -78,6 +78,7 @@ public final class TlsConfig implements Serializable {
     private KeyStore keyStore = null;
 
     private String keyStoreFile = null;
+
     /**
      * Alias for the used key in the Keystore
      */

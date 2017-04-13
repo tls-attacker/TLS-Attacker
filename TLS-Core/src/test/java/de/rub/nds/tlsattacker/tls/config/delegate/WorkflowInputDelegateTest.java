@@ -78,16 +78,14 @@ public class WorkflowInputDelegateTest {
     @Test
     public void testApplyDelegate() {
         TlsConfig config = TlsConfig.createConfig();
-        config.setWorkflowTrace(null);
+        config.setWorkflowInput(null);
         args = new String[2];
         args[0] = "-workflow_input";
         args[1] = tempFile.getAbsolutePath();
         jcommander.parse(args);
-        assertFalse(config.getWorkflowTrace() != null);
-        assertFalse(tempFile.getAbsolutePath().equals(config.getWorkflowInput()));
+        assertFalse(config.getWorkflowInput() != null);
         delegate.applyDelegate(config);
-        assertTrue(config.getWorkflowTrace() != null);
-        assertTrue(tempFile.getAbsolutePath().equals(config.getWorkflowInput()));
+        assertTrue(config.getWorkflowInput() != null);
     }
 
     // TODO add configurationException test
