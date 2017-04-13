@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.DefaultActionExecutor;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

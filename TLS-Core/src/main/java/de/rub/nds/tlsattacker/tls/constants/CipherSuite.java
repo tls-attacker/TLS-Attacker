@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 
 import java.util.Arrays;
 import java.util.HashMap;

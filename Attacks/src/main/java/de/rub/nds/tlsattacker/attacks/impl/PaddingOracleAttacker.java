@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;

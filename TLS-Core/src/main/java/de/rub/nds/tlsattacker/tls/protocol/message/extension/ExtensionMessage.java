@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 

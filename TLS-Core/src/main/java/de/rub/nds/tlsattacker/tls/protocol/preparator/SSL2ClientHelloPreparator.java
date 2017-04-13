@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 
 /**
  *

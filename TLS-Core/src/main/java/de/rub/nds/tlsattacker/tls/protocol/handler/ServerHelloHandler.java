@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.ServerHelloMessagePreparat
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

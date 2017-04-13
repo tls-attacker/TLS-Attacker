@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.constants;
 
 import static de.rub.nds.tlsattacker.tls.constants.CipherSuite.getCipherSuite;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

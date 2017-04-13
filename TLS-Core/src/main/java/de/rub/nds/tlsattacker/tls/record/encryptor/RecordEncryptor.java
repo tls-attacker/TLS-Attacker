@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;

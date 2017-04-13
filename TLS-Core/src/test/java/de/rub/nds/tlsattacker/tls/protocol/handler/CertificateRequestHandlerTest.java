@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.ApplicationMessagePreparat
 import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateRequestMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateRequestMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

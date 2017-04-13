@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

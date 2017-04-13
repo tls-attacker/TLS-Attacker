@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ByteArrayAdapter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;

@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.tls.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Collections;

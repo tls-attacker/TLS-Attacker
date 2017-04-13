@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.util;
 
+import de.rub.nds.tlsattacker.modifiablevariable.util.BadRandom;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;

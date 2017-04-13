@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
 

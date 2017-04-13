@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.certificate;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;

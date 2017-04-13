@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.ECDHEServerKeyExchangePrep
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

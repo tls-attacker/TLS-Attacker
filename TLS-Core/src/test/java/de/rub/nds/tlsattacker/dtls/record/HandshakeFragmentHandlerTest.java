@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.dtls.record;
 
 import de.rub.nds.tlsattacker.dtls.record.HandshakeFragmentHandler;
 import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;

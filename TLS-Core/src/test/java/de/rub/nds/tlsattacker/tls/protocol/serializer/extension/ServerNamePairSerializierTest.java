@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

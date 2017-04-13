@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.DHClientKeyExchangePrepara
 import de.rub.nds.tlsattacker.tls.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

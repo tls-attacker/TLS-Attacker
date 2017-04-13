@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
-import de.rub.nds.tlsattacker.util.BadRandom;
+import de.rub.nds.tlsattacker.modifiablevariable.util.BadRandom;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;

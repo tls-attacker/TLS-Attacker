@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowContext;
 import de.rub.nds.tlsattacker.unittest.helper.FakeTransportHandler;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

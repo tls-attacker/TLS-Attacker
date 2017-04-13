@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParserFactory;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

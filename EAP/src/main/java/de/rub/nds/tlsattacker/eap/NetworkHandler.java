@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

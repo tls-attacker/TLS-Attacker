@@ -57,7 +57,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

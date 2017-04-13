@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;

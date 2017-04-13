@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 
 /**
  * Construct the a fragmented EAP-Frame with the right TLS-Length.

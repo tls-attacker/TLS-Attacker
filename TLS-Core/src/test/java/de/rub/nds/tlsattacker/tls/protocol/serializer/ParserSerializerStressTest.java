@@ -54,7 +54,7 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.UnknownHandshakeMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.UnknownMessageParser;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

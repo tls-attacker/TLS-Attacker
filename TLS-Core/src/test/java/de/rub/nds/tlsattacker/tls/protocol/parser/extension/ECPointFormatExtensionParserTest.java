@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Before;

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 
 /**
  * Construct the EAP Start Frame with first TLS-Packet and EAP-FLag 0xc0.

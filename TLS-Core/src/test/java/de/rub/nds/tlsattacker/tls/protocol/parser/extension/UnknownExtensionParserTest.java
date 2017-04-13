@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloParserTest;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.LogManager;

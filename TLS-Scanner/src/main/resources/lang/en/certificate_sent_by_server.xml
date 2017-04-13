@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>The Server did send a certificate</successDescription>
-    <successName>Server sent certificate</successName>
-    <transparentIfPassed>true</transparentIfPassed>
-    <unsuccessDescription>The Server did not send a certificate</unsuccessDescription>
-    <unsuccessName>Server did not send a certificate</unsuccessName>
-</checkConfig>

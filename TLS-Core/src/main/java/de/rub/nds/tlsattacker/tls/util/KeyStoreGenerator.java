@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.util;
 
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;

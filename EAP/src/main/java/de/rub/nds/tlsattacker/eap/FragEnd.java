@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.eap;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 
 /**
  * Construct the EAP Frag End Frame with last TLS-Packet and EAP-FLag 0x00.

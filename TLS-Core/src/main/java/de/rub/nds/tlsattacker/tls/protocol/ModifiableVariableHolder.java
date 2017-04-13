@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.tls.protocol;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.util.RandomHelper;
-import de.rub.nds.tlsattacker.util.ReflectionHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ReflectionHelper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;

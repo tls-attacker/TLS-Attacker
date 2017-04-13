@@ -45,17 +45,12 @@
     
     <modules>
         <module>Utils</module>
-        <module>ModifiableVariable</module>
         <module>Transport</module>
         <module>TLS-Core</module>
         <module>TLS-Client</module>
         <module>TLS-Server</module>
         <module>EAP</module>
         <module>Attacks</module>
-        <module>TestSuite</module>
-        <module>Runnable</module>
-        <module>TestTLS</module>
-        <module>TLS-Scanner</module>
     </modules>
 
     <dependencies>

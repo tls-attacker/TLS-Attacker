@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.tls.crypto;
 
 import de.rub.nds.tlsattacker.tls.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;

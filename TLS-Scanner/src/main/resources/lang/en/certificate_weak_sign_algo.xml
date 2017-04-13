@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>The provided certificate uses a strong signature algorithm</successDescription>
-    <successName>Strong signature algorithm used</successName>
-    <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>The provided certificate uses a weak signature algorithm</unsuccessDescription>
-    <unsuccessName>Weak signature algorithm used</unsuccessName>
-</checkConfig>

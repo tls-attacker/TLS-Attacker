@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.tls.record.layer;
 
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;

@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateMessagePreparat
 import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;

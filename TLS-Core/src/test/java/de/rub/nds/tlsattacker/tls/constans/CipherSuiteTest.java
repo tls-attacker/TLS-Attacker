@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.exceptions.UnknownCiphersuiteException;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 
 import java.util.LinkedList;
 import java.util.List;

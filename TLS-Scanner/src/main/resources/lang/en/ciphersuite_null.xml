@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>Vulnerable NULL CipherSuites are not supported</successDescription>
-    <successName>NULL CipherSuites not supported</successName>
-    <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>The server does support vulnerable NULL CipherSuites</unsuccessDescription>
-    <unsuccessName>NULL CipherSuites supported</unsuccessName>
-</checkConfig>

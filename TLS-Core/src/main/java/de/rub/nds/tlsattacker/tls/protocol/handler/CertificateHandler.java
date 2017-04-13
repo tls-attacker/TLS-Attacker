@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateMessageSerializ
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.PublicKey;

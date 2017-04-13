@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import de.rub.nds.tlsattacker.util.RandomHelper;
+import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
