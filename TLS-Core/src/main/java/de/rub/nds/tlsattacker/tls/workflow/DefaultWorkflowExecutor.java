@@ -11,13 +11,20 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.tls.util.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutorFactory;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.DefaultActionExecutor;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +54,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
         context.getTransportHandler().closeConnection();
+        storeTrace();
     }
-
 }

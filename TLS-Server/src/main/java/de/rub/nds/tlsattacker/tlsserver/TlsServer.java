@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,24 +45,6 @@ public class TlsServer {
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
-        }
-
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(config.getWorkflowOutput());
-                WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
-            } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.");
-                LOGGER.debug(ex);
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    LOGGER.info("Could not serialize WorkflowTrace.");
-                    LOGGER.debug(ex);
-                }
-            }
         }
     }
 }

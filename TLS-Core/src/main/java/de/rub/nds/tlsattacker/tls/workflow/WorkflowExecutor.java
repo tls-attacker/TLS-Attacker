@@ -16,9 +16,11 @@ import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import javax.xml.bind.JAXBException;
@@ -100,6 +102,32 @@ public abstract class WorkflowExecutor {
         } catch (IOException ex) {
             throw new ConfigurationException("Unable to initialize the transport handler with: "
                     + context.getConfig().getHost(), ex);
+        }
+    }
+
+    protected void storeTrace() {
+        TlsConfig config = context.getConfig();
+
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            FileOutputStream fos = null;
+            try {
+                File f = new File(config.getWorkflowOutput());
+                if (f.isDirectory()) {
+                    f = new File(config.getWorkflowOutput() + "trace-" + RandomHelper.getRandom().nextInt());
+                }
+                fos = new FileOutputStream(f);
+                WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
+            } catch (JAXBException | IOException ex) {
+                LOGGER.info("Could not serialize WorkflowTrace.");
+                LOGGER.debug(ex);
+            } finally {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    LOGGER.info("Could not serialize WorkflowTrace.");
+                    LOGGER.debug(ex);
+                }
+            }
         }
     }
 
