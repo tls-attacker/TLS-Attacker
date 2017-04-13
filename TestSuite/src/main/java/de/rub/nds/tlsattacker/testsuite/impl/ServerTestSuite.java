@@ -69,7 +69,6 @@ public class ServerTestSuite extends TestSuite {
         BleichenbacherCommandConfig bb = new BleichenbacherCommandConfig(testConfig.getGeneralDelegate());
         setHost(bb);
         attacker = new BleichenbacherAttacker(bb);
-        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(BleichenbacherCommandConfig.ATTACK_COMMAND);
         } else {
@@ -78,7 +77,6 @@ public class ServerTestSuite extends TestSuite {
         InvalidCurveAttackConfig icea = new InvalidCurveAttackConfig(testConfig.getGeneralDelegate());
         setHost(icea);
         attacker = new InvalidCurveAttacker(icea);
-        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(InvalidCurveAttackConfig.ATTACK_COMMAND);
         } else {
@@ -87,7 +85,6 @@ public class ServerTestSuite extends TestSuite {
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(testConfig.getGeneralDelegate());
         setHost(heartbleed);
         attacker = new HeartbleedAttacker(heartbleed);
-        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(HeartbleedCommandConfig.ATTACK_COMMAND);
         } else {
@@ -96,7 +93,6 @@ public class ServerTestSuite extends TestSuite {
         PoodleCommandConfig poodle = new PoodleCommandConfig(testConfig.getGeneralDelegate());
         setHost(poodle);
         attacker = new PoodleAttacker(poodle);
-        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(PoodleCommandConfig.ATTACK_COMMAND);
         } else {
@@ -105,7 +101,6 @@ public class ServerTestSuite extends TestSuite {
         PaddingOracleCommandConfig po = new PaddingOracleCommandConfig(testConfig.getGeneralDelegate());
         setHost(po);
         attacker = new PaddingOracleAttacker(po);
-        attacker.executeAttack();
         if (attacker.isVulnerable()) {
             failedTests.add(PaddingOracleCommandConfig.ATTACK_COMMAND);
         } else {
