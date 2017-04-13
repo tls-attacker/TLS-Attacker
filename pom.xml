@@ -125,7 +125,10 @@
                     <version>2.19.1</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
-                        <!-- Integration tests and slow tests are excluded by default. Fast tests and not annotated tests are executed -->
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                        <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
                         <excludedGroups>de.rub.nds.tlsattacker.tests.SlowTests,de.rub.nds.tlsattacker.tests.IntegrationTests</excludedGroups>
                     </configuration>
                 </plugin>
@@ -143,14 +146,8 @@
                     </configuration>
                     <executions>
                         <execution>
-                            <id>integration-test</id>
                             <goals>
                                 <goal>integration-test</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>verify</id>
-                            <goals>
                                 <goal>verify</goal>
                             </goals>
                         </execution>
