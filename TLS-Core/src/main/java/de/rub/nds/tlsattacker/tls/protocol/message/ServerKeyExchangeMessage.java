@@ -66,6 +66,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     public abstract KeyExchangeComputations getComputations();
 
+    public abstract void prepareComputations();
+
     public ModifiableVariable<Byte> getHashAlgorithm() {
         return hashAlgorithm;
     }

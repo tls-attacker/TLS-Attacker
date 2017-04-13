@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
 import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.unittest.helper.ActionExecutorMock;
@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXB;
 import org.junit.After;
@@ -38,7 +39,6 @@ import static org.junit.Assert.*;
 public class SendActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private SendAction action;
@@ -49,21 +49,17 @@ public class SendActionTest {
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        AlertMessage alert = new AlertMessage(new TlsConfig());
+        AlertMessage alert = new AlertMessage(TlsConfig.createConfig());
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordHandler(new RecordHandler(tlsContext));
-        tlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(tlsContext));
-        dtlsContext = new TlsContext();
-        dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
+        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         action = new SendAction(alert);
-        dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
+        action.setConfiguredRecords(new LinkedList<AbstractRecord>());
     }
 
     @After

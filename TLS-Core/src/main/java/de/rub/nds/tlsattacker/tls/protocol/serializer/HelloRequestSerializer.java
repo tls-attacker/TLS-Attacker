@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,10 +19,16 @@ import org.apache.logging.log4j.Logger;
  */
 public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequestMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
-
     private final HelloRequestMessage message;
 
+    /**
+     * Constructor for the HelloRequestSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public HelloRequestSerializer(HelloRequestMessage message, ProtocolVersion version) {
         super(message, version);
         this.message = message;

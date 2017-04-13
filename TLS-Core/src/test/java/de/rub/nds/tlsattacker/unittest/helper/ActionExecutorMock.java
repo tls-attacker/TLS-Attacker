@@ -9,7 +9,10 @@
 package de.rub.nds.tlsattacker.unittest.helper;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.tls.workflow.action.executor.MessageActionResult;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,12 +25,12 @@ public class ActionExecutorMock extends ActionExecutor {
     }
 
     @Override
-    public List<ProtocolMessage> sendMessages(List<ProtocolMessage> messages) {
-        return messages;
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records) {
+        return new MessageActionResult(records, messages);
     }
 
     @Override
-    public List<ProtocolMessage> receiveMessages(List<ProtocolMessage> messages) {
-        return messages;
+    public MessageActionResult receiveMessages(List<ProtocolMessage> messages) {
+        return new MessageActionResult(new LinkedList<AbstractRecord>(), messages);
     }
 }

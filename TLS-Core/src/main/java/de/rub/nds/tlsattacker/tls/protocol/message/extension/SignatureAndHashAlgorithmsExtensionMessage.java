@@ -29,10 +29,6 @@ public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray signatureAndHashAlgorithms;
 
-    public SignatureAndHashAlgorithmsExtensionMessage(TlsConfig tlsConfig) {
-        super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
-    }
-
     public SignatureAndHashAlgorithmsExtensionMessage() {
         super(ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS);
     }

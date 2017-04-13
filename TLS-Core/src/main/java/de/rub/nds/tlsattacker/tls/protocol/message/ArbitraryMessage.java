@@ -11,27 +11,33 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An arbitrary protocol message
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
+@XmlRootElement
 public class ArbitraryMessage extends ProtocolMessage {
 
     public ArbitraryMessage() {
         super();
-        this.setRequired(false);
+    }
+
+    @Override
+    public boolean isRequired() {
+        return false;
     }
 
     @Override
     public String toCompactString() {
-        return "Arbitrary Protocol Message";
+        return "ARBITRARY PROTOCOL MESSAGE";
     }
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        throw new UnsupportedOperationException("Cannot retrueve Handler this way"); // To
+        throw new UnsupportedOperationException("Cannot retrieve Handler this way"); // To
                                                                                      // change
                                                                                      // body
                                                                                      // of

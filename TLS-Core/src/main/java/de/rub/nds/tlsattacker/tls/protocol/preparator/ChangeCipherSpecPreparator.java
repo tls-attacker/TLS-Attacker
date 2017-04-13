@@ -19,19 +19,22 @@ import org.apache.logging.log4j.Logger;
  */
 public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
-    private final ChangeCipherSpecMessage message;
+    private final ChangeCipherSpecMessage msg;
     private final byte CCS_PROTOCOL_TYPE = 1;
 
     public ChangeCipherSpecPreparator(TlsContext context, ChangeCipherSpecMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setCcsProtocolType(CCS_PROTOCOL_TYPE);
+        prepareCcsProtocolType(msg);
+    }
+
+    private void prepareCcsProtocolType(ChangeCipherSpecMessage msg) {
+        msg.setCcsProtocolType(CCS_PROTOCOL_TYPE);
+        LOGGER.debug("CCSProtocollType: " + msg.getCcsProtocolType().getValue());
     }
 
 }

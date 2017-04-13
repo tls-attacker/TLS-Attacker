@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class AlertMessage extends ProtocolMessage {
 
     /**
@@ -93,7 +95,7 @@ public class AlertMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\nALERT message:\n  Level: ");
         if (level != null) {
             sb.append(AlertLevel.getAlertLevel(level.getValue()));
@@ -121,7 +123,12 @@ public class AlertMessage extends ProtocolMessage {
         }
         sb.append(", ");
         if (description != null && description.getValue() != null) {
-            sb.append(AlertDescription.getAlertDescription(description.getValue()).toString());
+            AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
+            if (desc != null) {
+                sb.append(desc.toString());
+            } else {
+                sb.append(description.getValue());
+            }
         } else {
             sb.append("null");
         }

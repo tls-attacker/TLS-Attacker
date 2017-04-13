@@ -19,20 +19,42 @@ import org.apache.logging.log4j.Logger;
  */
 public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    private final AlertMessage msg;
 
-    private final AlertMessage message;
-
+    /**
+     * Constructor for the AlertSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public AlertSerializer(AlertMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendByte(message.getLevel().getValue());
-        appendByte(message.getDescription().getValue());
+        writeLevel(msg);
+        writeDescription(msg);
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the level of the AlertMessage into the final byte[]
+     */
+    private void writeLevel(AlertMessage msg) {
+        appendByte(msg.getLevel().getValue());
+        LOGGER.debug("Level: " + msg.getLevel().getValue());
+    }
+
+    /**
+     * Writes the description of the AlertMessage into the final byte[]
+     */
+    private void writeDescription(AlertMessage msg) {
+        appendByte(msg.getDescription().getValue());
+        LOGGER.debug("Description: " + msg.getDescription().getValue());
     }
 
 }

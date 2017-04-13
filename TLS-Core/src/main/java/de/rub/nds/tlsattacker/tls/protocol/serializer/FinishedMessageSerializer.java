@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,19 +21,34 @@ import org.apache.logging.log4j.Logger;
  */
 public class FinishedMessageSerializer extends HandshakeMessageSerializer<FinishedMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    private final FinishedMessage msg;
 
-    private final FinishedMessage message;
-
+    /**
+     * Constructor for the FinishedMessageSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public FinishedMessageSerializer(FinishedMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendBytes(message.getVerifyData().getValue());
+        writeVerifyData(msg);
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final
+     * byte[]
+     */
+    private void writeVerifyData(FinishedMessage msg) {
+        appendBytes(msg.getVerifyData().getValue());
+        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 
 }

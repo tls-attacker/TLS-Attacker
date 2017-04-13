@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

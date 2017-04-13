@@ -8,11 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.DHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -75,9 +72,10 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        message.setP(BigInteger.TEN);
-        message.setG(BigInteger.ONE);
+        message.setP(BigInteger.TEN.toByteArray());
+        message.setG(BigInteger.ONE.toByteArray());
         message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        message.prepareComputations();
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
         message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
         handler.adjustTLSContext(message);
@@ -88,8 +86,8 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContextWithoutComputations() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        message.setP(BigInteger.TEN);
-        message.setG(BigInteger.ONE);
+        message.setP(BigInteger.TEN.toByteArray());
+        message.setG(BigInteger.ONE.toByteArray());
         message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
         assertNull(context.getPreMasterSecret());

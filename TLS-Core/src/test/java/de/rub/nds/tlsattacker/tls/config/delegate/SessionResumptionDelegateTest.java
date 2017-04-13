@@ -101,7 +101,7 @@ public class SessionResumptionDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         args = new String[3];
         args[0] = "-session_id";
         args[1] = "00112233445566778899AABBCCDDEEFF";
@@ -118,8 +118,8 @@ public class SessionResumptionDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

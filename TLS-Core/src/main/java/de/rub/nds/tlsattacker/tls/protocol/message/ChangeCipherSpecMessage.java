@@ -18,10 +18,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.ChangeCipherSpecSerializer
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty
@@ -51,9 +53,9 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nChangeCipherSpec message:").append("\n  CCS Protocol Message: ")
-                .append(String.format("%02X ", ccsProtocolType.getValue()));
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n   CCS ProtocolType:");
+        sb.append(String.format("%02X ", ccsProtocolType.getValue()));
         return sb.toString();
     }
 

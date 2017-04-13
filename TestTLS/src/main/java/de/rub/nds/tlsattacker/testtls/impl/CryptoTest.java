@@ -103,22 +103,22 @@ public class CryptoTest extends HandshakeTest {
         try {
             supportedCipherAlgorithms.add(AlgorithmResolver.getCipher(cs));
         } catch (UnsupportedOperationException ex) {
-            LOGGER.info("Could not determine Cipher algorithm of:" + cs.name());
+            LOGGER.debug("Could not determine Cipher algorithm of:" + cs.name());
         }
         try {
             supportedKeyExchangeAlgorithms.add(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         } catch (UnsupportedOperationException ex) {
-            LOGGER.info("Could not determine KeyExchange algorithm of:" + cs.name());
+            LOGGER.debug("Could not determine KeyExchange algorithm of:" + cs.name());
         }
         try {
             supportedMacAlgorithms.add(AlgorithmResolver.getMacAlgorithm(cs));
         } catch (UnsupportedOperationException ex) {
-            LOGGER.info("Could not determine Mac algorithm of:" + cs.name());
+            LOGGER.debug("Could not determine Mac algorithm of:" + cs.name());
         }
         try {
             supportedPRFAlgorithms.add(AlgorithmResolver.getPRFAlgorithm(pv, cs));
         } catch (UnsupportedOperationException ex) {
-            LOGGER.info("Could not determine PRF algorithm of:" + cs.name());
+            LOGGER.debug("Could not determine PRF algorithm of:" + cs.name());
         }
         if (lastTlsContext.getServerDHParameters() != null) {
             LOGGER.debug("DH parameter public key size: {}", lastTlsContext.getServerDHParameters().getPublicKey()

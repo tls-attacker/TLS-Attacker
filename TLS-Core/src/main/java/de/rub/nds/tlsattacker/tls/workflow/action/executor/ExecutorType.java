@@ -14,5 +14,6 @@ package de.rub.nds.tlsattacker.tls.workflow.action.executor;
  */
 public enum ExecutorType {
     TLS,
-    DTLS
+    DTLS,
+    SSL2
 }

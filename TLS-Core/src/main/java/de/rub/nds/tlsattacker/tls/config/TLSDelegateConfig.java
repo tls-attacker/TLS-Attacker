@@ -52,7 +52,7 @@ public abstract class TLSDelegateConfig {
     }
 
     public TlsConfig createConfig() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         for (Delegate delegate : getDelegateList()) {
             delegate.applyDelegate(config);
         }

@@ -30,11 +30,6 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray heartbeatMode;
 
-    public HeartbeatExtensionMessage(TlsConfig tlsConfig) {
-        super(ExtensionType.HEARTBEAT);
-        setHeartbeatMode(tlsConfig.getHeartbeatMode().getArrayValue());
-    }
-
     public HeartbeatExtensionMessage() {
         super(ExtensionType.HEARTBEAT);
     }

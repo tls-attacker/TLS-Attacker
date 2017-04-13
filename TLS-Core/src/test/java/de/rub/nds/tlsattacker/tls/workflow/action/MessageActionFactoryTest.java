@@ -43,7 +43,7 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
                 new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
@@ -64,7 +64,7 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionMultiple() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ArbitraryMessage());
         messages.add(new AlertMessage(config));

@@ -8,23 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ChangeCipherSpecParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ChangeCipherSpecPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  * @author Philip Riese <philip.riese@rub.de>
  */
 public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
 
     public ChangeCipherSpecHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -57,26 +46,12 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     protected void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEnd() == tlsContext.getConfig().getMyConnectionEnd()) {
-            setRecordCipher();
-            LOGGER.debug("Setting RecordHandler to EncryptSending");
-            tlsContext.getRecordHandler().setEncryptSending(true);
-        } else {
-            setRecordCipher();
-            LOGGER.debug("Setting RecordHandler to DecryptReceiving");
-            tlsContext.getRecordHandler().setDecryptReceiving(true);
-        }
+        setRecordCipher();
     }
 
     private void setRecordCipher() {
-        try {
-            LOGGER.debug("Setting new TlsRecordBlockCipher in RecordHandler");
-            TlsRecordBlockCipher tlsRecordBlockCipher = new TlsRecordBlockCipher(tlsContext);
-            tlsContext.getRecordHandler().setRecordCipher(tlsRecordBlockCipher);
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
-                | InvalidAlgorithmParameterException ex) {
-            throw new AdjustmentException("Could not initialize an EncryptionAlgorithm from "
-                    + tlsContext.getSelectedCipherSuite().name() + ".", ex);
-        }
+        LOGGER.debug("Setting new Cipher in RecordLayer");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 }

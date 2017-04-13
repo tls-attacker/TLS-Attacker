@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ECPointFormatExtensionHandler(TlsContext context) {
         super(context);
     }

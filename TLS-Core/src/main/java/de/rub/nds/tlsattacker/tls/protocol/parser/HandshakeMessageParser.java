@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends ProtocolMessageParser<T> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     /**
      * The expected value for the Type field of the Message
      */
@@ -99,13 +97,16 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
 
     private void parseFragmentOffset(T msg) {
         msg.setFragmentOffset(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_OFFSET));
+        LOGGER.debug("FragmentOffset:" + msg.getFragmentOffset().getValue());
     }
 
     private void parseFragmentLength(T msg) {
         msg.setFragmentLength(parseIntField(HandshakeByteLength.DTLS_FRAGMENT_LENGTH));
+        LOGGER.debug("FragmentLength:" + msg.getFragmentLength().getValue());
     }
 
     private void parseMessageSequence(T msg) {
         msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
+        LOGGER.debug("MessageSequence:" + msg.getMessageSeq().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow;
 
-import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
@@ -22,13 +21,18 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.tls.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -37,13 +41,20 @@ import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public final class TlsConfig {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public final class TlsConfig implements Serializable {
 
     /**
      * Default value for PtocolverionFields
@@ -53,18 +64,21 @@ public final class TlsConfig {
     /**
      * Indicates which ConnectionEnd we are
      */
-    private ConnectionEnd myConnectionEnd = ConnectionEnd.CLIENT;
+    private ConnectionEnd connectionEnd = ConnectionEnd.CLIENT;
 
     /**
      * The Workflow Trace that should be executed
      */
-    @HoldsModifiableVariable
     private WorkflowTrace workflowTrace = null;
 
     /**
      * Keystore for storing client / server certificates
      */
+    @XmlTransient
     private KeyStore keyStore = null;
+
+    private String keyStoreFile = null;
+
     /**
      * Alias for the used key in the Keystore
      */
@@ -76,23 +90,20 @@ public final class TlsConfig {
     /**
      * host to connect
      */
+    @XmlTransient
     private String host = "127.0.0.1";
     /**
      * If default generated WorkflowTraces should contain client Authentication
      */
     private boolean clientAuthentication = false;
     /**
-     * SessionResumptionWorkflow
+     * If default generated WorkflowTraces should contain SessionResumption
      */
     private boolean sessionResumption = false;
     /**
-     * RenegotiationWorkflow
+     * If default generated WorkflowTraces should contain Renegotiation
      */
     private boolean renegotiation = false;
-    /**
-     * Man_in_the_Middle_Workflow
-     */
-    private boolean mitm = false;
     /**
      * Which Signature and Hash algorithms we support
      */
@@ -178,7 +189,7 @@ public final class TlsConfig {
      * If the Default generated workflowtrace should contain Application data
      * send by servers
      */
-    private boolean serverSendsApplicationData;
+    private boolean serverSendsApplicationData = false;
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
@@ -204,6 +215,7 @@ public final class TlsConfig {
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
     /**
      * If set to true, timestamps will be updated upon execution of a
@@ -213,16 +225,19 @@ public final class TlsConfig {
     /**
      * The Certificate we initialize CertificateMessages with
      */
+    @XmlTransient
     private Certificate ourCertificate;
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
 
     private boolean enforceSettings = false;
 
-    private boolean doDTLSRetransmits = true;
+    private boolean doDTLSRetransmits = false;
     /**
      * Fixed DH modulus used in Server Key Exchange
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] fixedDHModulus = ArrayConverter
             .hexStringToByteArray("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc"
                     + "74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d"
@@ -234,10 +249,12 @@ public final class TlsConfig {
     /**
      * Fixed DH g value used in Server Key Exchange
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] fixedDHg = { 0x02 };
 
     private String defaultApplicationMessageData = "Test";
 
+    @XmlTransient
     private PrivateKey privateKey;
 
     /**
@@ -264,12 +281,55 @@ public final class TlsConfig {
      */
     private int heartbeatMaxPaddingLength = 256;
 
-    private int DTLSCookieLength = 6;
+    /**
+     * How long should our DTLSCookies be by default
+     */
+    private int defaultDTLSCookieLength = 6;
+
+    /**
+     * How much data we should put into a record by default
+     */
+    private int defaultMaxRecordData = 1048576;
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
 
-    public TlsConfig() {
+    /**
+     * Does not mix messages with different message types in a single record
+     */
+    private boolean flushOnMessageTypeChange = true;
+
+    /**
+     * If there is not enough space in the configured records, new records are
+     * dynamically added if not set, protocolmessage bytes that wont fit are
+     * discarded
+     */
+    private boolean createRecordsDynamically = true;
+    /**
+     * When "Null" records are configured to be send, every message will be sent
+     * in atleast one individual record
+     */
+    private boolean createIndividualRecords = true;
+
+    /**
+     * Which recordLayer should be used
+     */
+    private RecordLayerType recordLayerType = RecordLayerType.RECORD;
+
+    public static TlsConfig createConfig() {
+        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
+        return TlsConfigIO.read(stream);
+    }
+
+    public static TlsConfig createConfig(File f) {
+        return TlsConfigIO.read(f);
+    }
+
+    public static TlsConfig createConfig(InputStream stream) {
+        return TlsConfigIO.read(stream);
+    }
+
+    private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));
@@ -303,7 +363,46 @@ public final class TlsConfig {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+    }
 
+    public RecordLayerType getRecordLayerType() {
+        return recordLayerType;
+    }
+
+    public void setRecordLayerType(RecordLayerType recordLayerType) {
+        this.recordLayerType = recordLayerType;
+    }
+
+    public boolean isFlushOnMessageTypeChange() {
+        return flushOnMessageTypeChange;
+    }
+
+    public void setFlushOnMessageTypeChange(boolean flushOnMessageTypeChange) {
+        this.flushOnMessageTypeChange = flushOnMessageTypeChange;
+    }
+
+    public boolean isCreateRecordsDynamically() {
+        return createRecordsDynamically;
+    }
+
+    public void setCreateRecordsDynamically(boolean createRecordsDynamically) {
+        this.createRecordsDynamically = createRecordsDynamically;
+    }
+
+    public boolean isCreateIndividualRecords() {
+        return createIndividualRecords;
+    }
+
+    public void setCreateIndividualRecords(boolean createIndividualRecords) {
+        this.createIndividualRecords = createIndividualRecords;
+    }
+
+    public int getDefaultMaxRecordData() {
+        return defaultMaxRecordData;
+    }
+
+    public void setDefaultMaxRecordData(int defaultMaxRecordData) {
+        this.defaultMaxRecordData = defaultMaxRecordData;
     }
 
     public ExecutorType getExecutorType() {
@@ -562,16 +661,16 @@ public final class TlsConfig {
         this.supportedCompressionMethods = supportedCompressionMethods;
     }
 
-    public ConnectionEnd getMyConnectionEnd() {
-        return myConnectionEnd;
+    public ConnectionEnd getConnectionEnd() {
+        return connectionEnd;
     }
 
-    public void setMyConnectionEnd(ConnectionEnd myConnectionEnd) {
-        this.myConnectionEnd = myConnectionEnd;
+    public void setConnectionEnd(ConnectionEnd connectionEnd) {
+        this.connectionEnd = connectionEnd;
     }
 
     public ConnectionEnd getMyConnectionPeer() {
-        return myConnectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
+        return connectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
     }
 
     public WorkflowTrace getWorkflowTrace() {
@@ -636,14 +735,6 @@ public final class TlsConfig {
 
     public void setRenegotiation(boolean renegotiation) {
         this.renegotiation = renegotiation;
-    }
-
-    public boolean isMitm() {
-        return mitm;
-    }
-
-    public void setMitm(boolean mitm) {
-        this.mitm = mitm;
     }
 
     public List<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
@@ -743,11 +834,19 @@ public final class TlsConfig {
         this.privateKey = privateKey;
     }
 
-    public int getDTLSCookieLength() {
-        return DTLSCookieLength;
+    public int getDefaultDTLSCookieLength() {
+        return defaultDTLSCookieLength;
     }
 
-    public void setDTLSCookieLength(int DTLSCookieLength) {
-        this.DTLSCookieLength = DTLSCookieLength;
+    public void setDefaultDTLSCookieLength(int defaultDTLSCookieLength) {
+        this.defaultDTLSCookieLength = defaultDTLSCookieLength;
+    }
+
+    public String getKeyStoreFile() {
+        return keyStoreFile;
+    }
+
+    public void setKeyStoreFile(String keyStoreFile) {
+        this.keyStoreFile = keyStoreFile;
     }
 }

@@ -20,7 +20,7 @@ public class ArrayConverter {
     /**
      * Takes a long value and converts it to 8 bytes (needed for example to
      * convert SQN numbers in TLS records)
-     * 
+     *
      * @param l
      * @return
      */
@@ -39,7 +39,7 @@ public class ArrayConverter {
 
     /**
      * Takes a long value and converts it to 4 bytes
-     * 
+     *
      * @param l
      * @return
      */
@@ -54,7 +54,7 @@ public class ArrayConverter {
 
     /**
      * Takes an integer value and stores its last bytes into a byte array
-     * 
+     *
      * @param value
      *            integer value
      * @param size
@@ -77,7 +77,7 @@ public class ArrayConverter {
 
     /**
      * Takes a long value and stores its last bytes into a byte array
-     * 
+     *
      * @param value
      *            long value
      * @param size
@@ -100,7 +100,7 @@ public class ArrayConverter {
 
     /**
      * Converts multiple bytes into one int value
-     * 
+     *
      * @param value
      * @return
      */
@@ -116,7 +116,7 @@ public class ArrayConverter {
 
     /**
      * Converts multiple bytes into one long value
-     * 
+     *
      * @param value
      * @return
      */
@@ -150,21 +150,31 @@ public class ArrayConverter {
     }
 
     public static String bytesToHexString(byte[] array, int byteSize, boolean usePrettyPrinting) {
-        StringBuilder result = new StringBuilder();
-        if (usePrettyPrinting) {
-            result.append("\n  ");
+        if (array == null) {
+            array = new byte[0];
         }
+        return bytesToHexString(array, array.length, usePrettyPrinting, true);
+    }
+
+    public static String bytesToHexString(byte[] array, int byteSize, boolean usePrettyPrinting, boolean initialNewLine) {
+        StringBuilder result = new StringBuilder();
         int bs = (byteSize < array.length) ? byteSize : array.length;
+        if (initialNewLine && usePrettyPrinting) {
+            result.append("\n");
+        }
         for (int i = 0; i < bs; i++) {
             if (usePrettyPrinting && i != 0) {
                 if (i % 16 == 0) {
-                    result.append("\n  ");
+                    result.append("\n");
                 } else if (i % 8 == 0) {
                     result.append(" ");
                 }
             }
+            if (i % 16 != 0) {
+                result.append(" ");
+            }
             byte b = array[i];
-            result.append(String.format("%02X ", b));
+            result.append(String.format("%02X", b));
         }
         return result.toString();
     }
@@ -228,7 +238,7 @@ public class ArrayConverter {
     /**
      * Takes a BigInteger value and returns its byte array representation filled
      * with 0x00 bytes to achieve the block size length.
-     * 
+     *
      * @param value
      * @param blockSize
      * @param removeSignByte
@@ -262,7 +272,7 @@ public class ArrayConverter {
     /**
      * Takes a BigInteger value and returns its byte array representation, if
      * necessary the sign byte is removed.
-     * 
+     *
      * @param value
      * @return
      */
@@ -279,7 +289,7 @@ public class ArrayConverter {
 
     /**
      * Converts a list of BigIntegers to an array
-     * 
+     *
      * @param list
      * @return
      */
@@ -294,7 +304,7 @@ public class ArrayConverter {
     /**
      * Converts a string with an even number of hexadecimal characters to a byte
      * array.
-     * 
+     *
      * @param input
      * @return
      */
@@ -316,7 +326,7 @@ public class ArrayConverter {
      * doesn't fit into the byte array, bits of the BigInteger will simply be
      * truncated, starting with the most significant bit. If the array is larger
      * than the BigInteger, prepending bytes in the array will be 0x00.
-     * 
+     *
      * @param input
      * @param outputSizeInBytes
      * @return

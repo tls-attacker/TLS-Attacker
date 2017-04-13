@@ -38,7 +38,7 @@ public class ServerDelegate extends Delegate {
         if (port != null) {
             config.setServerPort(port);
         }
-        config.setMyConnectionEnd(ConnectionEnd.SERVER);
+        config.setConnectionEnd(ConnectionEnd.SERVER);
     }
 
 }

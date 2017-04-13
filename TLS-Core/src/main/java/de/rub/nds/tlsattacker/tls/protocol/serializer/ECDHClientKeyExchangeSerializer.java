@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,20 +22,44 @@ import org.apache.logging.log4j.Logger;
  */
 public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<ECDHClientKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("SERIALIZER");
+    private final ECDHClientKeyExchangeMessage msg;
 
-    private final ECDHClientKeyExchangeMessage message;
-
+    /**
+     * Constructor for the ECDHClientKeyExchangerSerializer
+     *
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
+     */
     public ECDHClientKeyExchangeSerializer(ECDHClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        appendInt(message.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
-        appendBytes(message.getSerializedPublicKey().getValue());
+        writeSerializedPublicKeyLength(msg);
+        writeSerializedPublicKey(msg);
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the SerializedPublicKeyLength of the ECDHCLientKeyExchangeMessage
+     * into the final byte[]
+     */
+    private void writeSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
+        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    /**
+     * Writes the SerializedPublicKey of the ECDHCLientKeyExchangeMessage into
+     * the final byte[]
+     */
+    private void writeSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
+        appendBytes(msg.getSerializedPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
     }
 
 }

@@ -17,10 +17,13 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.ApplicationMessageSerializ
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ApplicationMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty
@@ -54,13 +57,14 @@ public class ApplicationMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nApplication Data:");
+        sb.append(toCompactString());
+        sb.append("\n  Data:").append(ArrayConverter.bytesToHexString(data.getValue()));
         return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-        return "Application";
+        return "APPLICATION";
     }
 
     @Override

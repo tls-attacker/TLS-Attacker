@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.HeartbeatExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
@@ -31,11 +32,6 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray maxFragmentLength;
-
-    public MaxFragmentLengthExtensionMessage(TlsConfig tlsConfig) {
-        super(ExtensionType.MAX_FRAGMENT_LENGTH);
-        this.setMaxFragmentLength(tlsConfig.getMaxFragmentLength().getArrayValue());
-    }
 
     public MaxFragmentLengthExtensionMessage() {
         super(ExtensionType.MAX_FRAGMENT_LENGTH);
@@ -55,7 +51,7 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public HeartbeatExtensionHandler getHandler(TlsContext context) {
-        return new HeartbeatExtensionHandler(context);
+    public MaxFragmentLengthExtensionHandler getHandler(TlsContext context) {
+        return new MaxFragmentLengthExtensionHandler(context);
     }
 }

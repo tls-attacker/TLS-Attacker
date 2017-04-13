@@ -64,15 +64,17 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        applicationMessage.addRecord(record);
-        trace.add(new SendAction(applicationMessage));
+        SendAction sendAction = new SendAction(applicationMessage);
+        sendAction.getConfiguredRecords().add(record);
+        trace.add(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.add(new ReceiveAction(alertMessage));
 
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow: {}", ex.getLocalizedMessage());
+            LOGGER.info("Not possible to finalize the defined workflow.");
+            LOGGER.debug(ex);
         }
         lastMessages.add(trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1));
     }
@@ -155,31 +157,30 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             executeAttackRound(record);
 
         }
-        LOGGER.info("All the attack runs executed. The following messages arrived at the ends of the connections");
-        LOGGER.info("If there are different messages, this could indicate the server does not process padding correctly");
+        LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
+        LOGGER.debug("If there are different messages, this could indicate the server does not process padding correctly");
 
         LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
         for (int i = 0; i < lastMessages.size(); i++) {
             ProtocolMessage pm = lastMessages.get(i);
             pmSet.add(pm);
             Record r = records.get(i);
-            LOGGER.info("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
+            LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
             if (r.getPlainRecordBytes() != null) {
-                LOGGER.info("Plain record bytes of the modified record: ");
-                LOGGER.info(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
-                LOGGER.info("Last protocol message in the protocol flow");
+                LOGGER.debug("Plain record bytes of the modified record: ");
+                LOGGER.debug(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
+                LOGGER.debug("Last protocol message in the protocol flow");
             }
-            LOGGER.info(pm.toString());
+            LOGGER.debug(pm.toString());
         }
         List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
 
         if (pmSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
-                    pmSetList);
+            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(), pmSetList);
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (?), more messages found, recheck in debug mode: {}",
-                    tlsConfig.getHost(), pmSetList);
+            LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig.getHost(),
+                    pmSetList);
             return true;
         }
     }

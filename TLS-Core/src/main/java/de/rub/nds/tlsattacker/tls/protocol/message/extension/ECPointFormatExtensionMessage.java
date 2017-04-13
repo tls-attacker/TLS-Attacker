@@ -36,16 +36,6 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage {
         super(ExtensionType.EC_POINT_FORMATS);
     }
 
-    public ECPointFormatExtensionMessage(TlsConfig tlsConfig) {
-        super(ExtensionType.EC_POINT_FORMATS);
-        byte[] formats = new byte[0];
-        for (ECPointFormat format : tlsConfig.getPointFormats()) {
-            formats = ArrayConverter.concatenate(format.getArrayValue(), formats);
-        }
-        this.setPointFormats(formats);
-        this.setPointFormatsLength(formats.length);
-    }
-
     public ModifiableByteArray getPointFormats() {
         return pointFormats;
     }

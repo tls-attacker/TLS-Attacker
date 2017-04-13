@@ -26,8 +26,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class ServerNameIndicationExtensionHandler extends ExtensionHandler<ServerNameIndicationExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public ServerNameIndicationExtensionHandler(TlsContext context) {
         super(context);
     }

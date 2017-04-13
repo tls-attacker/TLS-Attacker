@@ -9,12 +9,16 @@
 package de.rub.nds.tlsattacker.testtls.impl;
 
 import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public abstract class TestTLS {
+
+    protected static Logger LOGGER = LogManager.getLogger(HandshakeTest.class);
 
     protected String result;
 

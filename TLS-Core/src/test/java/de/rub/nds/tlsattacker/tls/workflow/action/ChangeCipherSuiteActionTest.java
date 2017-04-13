@@ -8,11 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.crypto.TlsRecordBlockCipher;
-import de.rub.nds.tlsattacker.tls.record.RecordHandler;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.unittest.helper.ActionExecutorMock;
 import java.io.StringReader;
@@ -35,7 +33,6 @@ import org.junit.Test;
 public class ChangeCipherSuiteActionTest {
 
     private TlsContext tlsContext;
-    private TlsContext dtlsContext;
 
     private ActionExecutorMock executor;
     private ChangeCipherSuiteAction action;
@@ -51,14 +48,9 @@ public class ChangeCipherSuiteActionTest {
         executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordHandler(new RecordHandler(tlsContext));
-        tlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(tlsContext));
-        dtlsContext = new TlsContext();
-        dtlsContext.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
-        dtlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        dtlsContext.setRecordHandler(new DtlsRecordHandler(dtlsContext));
+        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
-        dtlsContext.getRecordHandler().setRecordCipher(new TlsRecordBlockCipher(dtlsContext));
     }
 
     /**
@@ -88,10 +80,6 @@ public class ChangeCipherSuiteActionTest {
     public void testGetOldValue() {
         action.execute(tlsContext, executor);
         assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
-        action.execute(dtlsContext, executor);
-        assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-
     }
 
     /**
@@ -101,10 +89,7 @@ public class ChangeCipherSuiteActionTest {
     public void testExecute() {
         action.execute(tlsContext, executor);
         assertEquals(tlsContext.getSelectedCipherSuite(), action.getNewValue());
-        // TODO does not check if recordcipher is reinitialised
-        action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
-        action.execute(dtlsContext, executor);
-        assertEquals(dtlsContext.getSelectedCipherSuite(), action.getNewValue());
+        // TODO check that cipher is reinitialised
         assertTrue(action.isExecuted());
     }
 

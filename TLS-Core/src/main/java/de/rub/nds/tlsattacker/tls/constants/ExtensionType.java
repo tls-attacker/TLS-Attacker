@@ -58,8 +58,6 @@ public enum ExtensionType {
 
     UNKNOWN(new byte[0]);
 
-    private static final Logger LOGGER = LogManager.getLogger(ExtensionType.class);
-
     private byte[] value;
 
     private static final Map<Integer, ExtensionType> MAP;

@@ -33,8 +33,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragmentLengthExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public MaxFragmentLengthExtensionHandler(TlsContext context) {
         super(context);
     }

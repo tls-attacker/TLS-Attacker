@@ -22,7 +22,7 @@ public class WorkflowTraceTest {
     WorkflowTrace trace;
 
     public WorkflowTraceTest() {
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(new TlsConfig());
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(TlsConfig.createConfig());
         trace = factory.createFullWorkflow();
     }
 

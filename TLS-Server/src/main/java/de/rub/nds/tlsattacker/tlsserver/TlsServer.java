@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.util.RandomHelper;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,63 +33,18 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsServer {
 
-    private static final Logger LOGGER = LogManager.getLogger(TlsServer.class);
+    private static final Logger LOGGER = LogManager.getLogger("TlsServer");
 
-    public static void main(String args[]) {
-        ServerCommandConfig config = new ServerCommandConfig(new GeneralDelegate());
-        JCommander commander = new JCommander(config);
-        Exception ex = null;
-        try {
-            commander.parse(args);
-        } catch (Exception E) {
-            LOGGER.info("Could not parse provided parameters");
-            commander.usage();
-            ex = E;
-        }
-        if (ex == null) {
-            // Cmd was parsable
-            TlsConfig tlsConfig = null;
-            try {
-                tlsConfig = config.createConfig();
-                TlsServer server = new TlsServer();
-                LOGGER.info("TLS-Server starting on port " + tlsConfig.getServerPort());
-                server.startTlsServer(tlsConfig);
-            } catch (ConfigurationException E) {
-                LOGGER.info("Could not initialize Configuration", E);
-            }
-
-        }
-    }
-
+    // TODO rename method
     public void startTlsServer(TlsConfig config) {
         TlsContext tlsContext = new TlsContext(config);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);
-
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
-        }
-
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(config.getWorkflowOutput());
-                WorkflowTraceSerializer.write(fos, tlsContext.getWorkflowTrace());
-            } catch (FileNotFoundException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.", ex);
-            } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.", ex);
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    LOGGER.info("Could not serialize WorkflowTrace.", ex);
-                }
-            }
         }
     }
 }

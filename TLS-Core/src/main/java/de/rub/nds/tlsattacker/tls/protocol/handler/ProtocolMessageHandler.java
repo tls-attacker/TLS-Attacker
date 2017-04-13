@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    protected static final Logger LOGGER = LogManager.getLogger("Handler");
 
     /**
      * tls context
@@ -65,7 +65,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         try {
             adjustTLSContext(message);
         } catch (AdjustmentException E) {
-            LOGGER.warn("Could not adjust TLSContext", E);
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(E);
         }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
@@ -93,7 +94,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         try {
             adjustTLSContext(parsedMessage);
         } catch (AdjustmentException E) {
-            LOGGER.warn("Could not adjust TLSContext", E);
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(E);
         }
         if (parsedMessage instanceof HandshakeMessage) {
             if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {

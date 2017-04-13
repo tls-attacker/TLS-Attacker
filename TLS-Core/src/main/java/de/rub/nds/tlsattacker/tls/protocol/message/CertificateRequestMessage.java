@@ -22,23 +22,15 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateRequestMessageS
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  */
+@XmlRootElement
 public class CertificateRequestMessage extends HandshakeMessage {
 
-    /**
-     * List of supported Client Certificate Types
-     *
-     * @XmlElementWrapper
-     * @XmlElements(value = {
-     * @XmlElement(type = ClientCertificateType.class, name =
-     *                  "ClientCertificateTypes") }) private
-     *                  List<ClientCertificateType>
-     *                  supportedClientCertificateTypes = new LinkedList<>();
-     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger clientCertificateTypesCount;
 
@@ -142,18 +134,6 @@ public class CertificateRequestMessage extends HandshakeMessage {
         this.distinguishedNames = ModifiableVariableFactory.safelySetValue(this.distinguishedNames, distinguishedNames);
     }
 
-    /**
-     * public void
-     * setSupportedClientCertificateTypes(List<ClientCertificateType>
-     * supportedClientCertificateTypes) { this.supportedClientCertificateTypes =
-     * supportedClientCertificateTypes; }
-     */
-    /**
-     * public List<ClientCertificateType> getSupportedClientCertificateTypes() {
-     * return supportedClientCertificateTypes; }
-     * 
-     * @return
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -200,8 +180,4 @@ public class CertificateRequestMessage extends HandshakeMessage {
         return new CertificateRequestHandler(context);
     }
 
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
-    }
 }

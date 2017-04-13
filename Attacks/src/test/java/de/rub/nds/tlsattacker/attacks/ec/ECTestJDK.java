@@ -47,7 +47,7 @@ public class ECTestJDK {
     public void testGeneration() throws Exception {
         KeyPairGenerator kpg;
         kpg = KeyPairGenerator.getInstance("EC");
-        LOGGER.info(kpg.getProvider());
+        LOGGER.debug(kpg.getProvider());
         ECGenParameterSpec ecsp;
         ecsp = new ECGenParameterSpec("secp256r1");
         kpg.initialize(ecsp);
@@ -56,8 +56,8 @@ public class ECTestJDK {
         PrivateKey privKey = kp.getPrivate();
         PublicKey pubKey = kp.getPublic();
 
-        LOGGER.info(privKey.toString());
-        LOGGER.info(pubKey.toString());
+        LOGGER.debug(privKey.toString());
+        LOGGER.debug(pubKey.toString());
     }
 
     @Test
@@ -74,23 +74,24 @@ public class ECTestJDK {
 
         PrivateKey privKeyU = kpU.getPrivate();
         PublicKey pubKeyU = kpU.getPublic();
-        LOGGER.info("User U: " + privKeyU.toString());
-        LOGGER.info("User U: " + pubKeyU.toString());
+        LOGGER.debug("User U: " + privKeyU.toString());
+        LOGGER.debug("User U: " + pubKeyU.toString());
         KeyPair kpV = kpg.genKeyPair();
         PrivateKey privKeyV = kpV.getPrivate();
         PublicKey pubKeyV = kpV.getPublic();
-        LOGGER.info("User V: " + privKeyV.toString());
-        LOGGER.info("User V: " + pubKeyV.toString());
+        LOGGER.debug("User V: " + privKeyV.toString());
+        LOGGER.debug("User V: " + pubKeyV.toString());
         KeyAgreement ecdhU = KeyAgreement.getInstance("ECDH");
         ecdhU.init(privKeyU);
         ecdhU.doPhase(pubKeyV, true);
         KeyAgreement ecdhV = KeyAgreement.getInstance("ECDH");
         ecdhV.init(privKeyV);
         ecdhV.doPhase(pubKeyU, true);
-        LOGGER.info("Secret computed by U: 0x"
+        LOGGER.debug("Secret computed by U: 0x"
                 + (new BigInteger(1, ecdhU.generateSecret("TlsPremasterSecret").getEncoded()).toString(16))
                         .toUpperCase());
-        LOGGER.info("Secret computed by V: 0x" + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
+        LOGGER.debug("Secret computed by V: 0x"
+                + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
     }
 
     @Test
@@ -127,10 +128,11 @@ public class ECTestJDK {
 
             try {
                 ecdhV.doPhase(bpub, true);
-                LOGGER.info("Secret " + x + ": 0x"
+                LOGGER.debug("Secret " + x + ": 0x"
                         + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
             } catch (IllegalStateException | InvalidKeyException e) {
-                LOGGER.info("Secret: null");
+                LOGGER.debug("Secret: null");
+                // TODO UGLY
             }
         }
     }
@@ -171,10 +173,11 @@ public class ECTestJDK {
 
             try {
                 ecdhV.doPhase(bpub, true);
-                LOGGER.info("Secret " + x + ": 0x"
+                LOGGER.debug("Secret " + x + ": 0x"
                         + (new BigInteger(1, ecdhV.generateSecret()).toString(16)).toUpperCase());
             } catch (InvalidKeyException | IllegalStateException e) {
-                LOGGER.info("Secret: null");
+                LOGGER.debug("Secret: null");
+                // TODO ugly
             }
         }
     }

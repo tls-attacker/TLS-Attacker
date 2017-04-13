@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,11 +16,10 @@ import org.apache.logging.log4j.Logger;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @param <T>
  */
 public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage> extends
         HandshakeMessagePreparator<ClientKeyExchangeMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
 
     public ClientKeyExchangePreparator(TlsContext context, ClientKeyExchangeMessage message) {
         super(context, message);

@@ -18,9 +18,7 @@ public class WorkflowExecutorFactory {
     public static WorkflowExecutor createWorkflowExecutor(ExecutorType type, TlsContext tlsContext) {
         switch (type) {
             case TLS:
-                return new TLSWorkflowExecutor(tlsContext);
-            case DTLS:
-                return new DtlsWorkflowExecutor(tlsContext);
+                return new DefaultWorkflowExecutor(tlsContext);
             default:
                 throw new UnsupportedOperationException(tlsContext.getConfig().getHighestProtocolVersion().name()
                         + " not yet implemented");

@@ -36,7 +36,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateFetcher {
 
-    private static final Logger LOGGER = LogManager.getLogger(CertificateFetcher.class);
+    private static final Logger LOGGER = LogManager.getLogger("CertificateFetcher");
 
     public static PublicKey fetchServerPublicKey(TlsConfig config) {
         X509CertificateObject cert;
@@ -66,7 +66,8 @@ public class CertificateFetcher {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
-            LOGGER.warn("Error while Fetching Certificate", E);
+            LOGGER.warn("Could not fetch ServerCertificate");
+            LOGGER.debug(E);
         }
         return context.getServerCertificate();
     }

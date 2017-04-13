@@ -10,8 +10,14 @@ package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import static de.rub.nds.tlsattacker.tls.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.util.ByteArrayAdapter;
 import java.util.Arrays;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * 
@@ -19,7 +25,9 @@ import java.util.Arrays;
  */
 public class ChangeServerRandomAction extends TLSAction {
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] oldValue = null;
 
     public ChangeServerRandomAction(byte[] newValue) {
@@ -44,18 +52,20 @@ public class ChangeServerRandomAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
-        if (executed) {
+        if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getServerRandom();
         tlsContext.setServerRandom(newValue);
-        executed = true;
+        LOGGER.info("Changed ServerRandom from " + ArrayConverter.bytesToHexString(oldValue) + " to "
+                + ArrayConverter.bytesToHexString(newValue));
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
         oldValue = null;
-        executed = false;
+        setExecuted(false);
     }
 
     @Override

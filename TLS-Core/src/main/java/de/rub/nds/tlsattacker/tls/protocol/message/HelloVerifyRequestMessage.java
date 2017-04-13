@@ -21,35 +21,32 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.HelloVerifyRequestSerializ
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
+@XmlRootElement
 public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    ModifiableByteArray protocolVersion = null;
+    private ModifiableByteArray protocolVersion = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    ModifiableByte cookieLength = null;
+    private ModifiableByte cookieLength = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
-    ModifiableByteArray cookie = null;
+    private ModifiableByteArray cookie = null;
 
     public HelloVerifyRequestMessage() {
         super(HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
-        cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
-        cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
-        this.setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public HelloVerifyRequestMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        protocolVersion = ModifiableVariableFactory.safelySetValue(protocolVersion, ProtocolVersion.DTLS12.getValue());
-        cookieLength = ModifiableVariableFactory.safelySetValue(cookieLength, (byte) 0);
-        cookie = ModifiableVariableFactory.safelySetValue(cookie, new byte[0]);
-        this.setIncludeInDigest(false);
+        IS_INCLUDE_IN_DIGEST_DEFAULT = false;
     }
 
     public ModifiableByteArray getProtocolVersion() {
@@ -94,7 +91,12 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("   \nProtocolVersion").append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
+        sb.append("   \nCookie Length:").append(cookieLength.getValue());
+        sb.append("   \nCookie:").append(ArrayConverter.bytesToHexString(cookie.getValue()));
+        return sb.toString();
     }
+
 }

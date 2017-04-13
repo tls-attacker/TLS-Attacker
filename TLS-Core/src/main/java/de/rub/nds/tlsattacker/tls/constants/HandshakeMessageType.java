@@ -36,8 +36,6 @@ public enum HandshakeMessageType {
 
     private int value;
 
-    private ConnectionEnd messageSender;
-
     private static final Map<Byte, HandshakeMessageType> MAP;
 
     private HandshakeMessageType(byte value) {

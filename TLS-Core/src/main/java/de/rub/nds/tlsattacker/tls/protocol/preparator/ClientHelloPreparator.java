@@ -16,8 +16,10 @@ import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,39 +30,37 @@ import org.apache.logging.log4j.Logger;
  */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
-    private final ClientHelloMessage message;
+    private final ClientHelloMessage msg;
 
     public ClientHelloPreparator(TlsContext context, ClientHelloMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        message.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        prepareProtocolVersion(msg);
         prepareUnixTime();
         prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
-        message.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
-        message.setCompressionLength(message.getCompressions().getValue().length);
-        message.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
-        message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
-        if (context.getDtlsHandshakeCookie() != null) {
-            message.setCookie(context.getDtlsHandshakeCookie());
-            message.setCookieLength((byte) message.getCookie().getValue().length);
+        prepareCompressions(msg);
+        prepareCompressionLength(msg);
+        prepareCipherSuites(msg);
+        prepareCipherSuitesLength(msg);
+        if (hasHandshakeCookie()) {
+            prepareCookie(msg);
+            prepareCookieLength(msg);
         }
         prepareExtensions();
         prepareExtensionLength();
     }
 
     private void prepareSessionID() {
-        if (context.getSessionID() == null) {
-            message.setSessionId(context.getConfig().getSessionId());
+        if (hasSessionID()) {
+            msg.setSessionId(context.getConfig().getSessionId());
         } else {
-            message.setSessionId(context.getSessionID());
+            msg.setSessionId(context.getSessionID());
         }
     }
 
@@ -88,6 +88,49 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
             }
         }
         return stream.toByteArray();
+    }
+
+    private void prepareProtocolVersion(ClientHelloMessage msg) {
+        msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+    }
+
+    private void prepareCompressions(ClientHelloMessage msg) {
+        msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
+        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
+    }
+
+    private void prepareCompressionLength(ClientHelloMessage msg) {
+        msg.setCompressionLength(msg.getCompressions().getValue().length);
+        LOGGER.debug("CompressionLength: " + msg.getCompressionLength().getValue());
+    }
+
+    private void prepareCipherSuites(ClientHelloMessage msg) {
+        msg.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+    }
+
+    private void prepareCipherSuitesLength(ClientHelloMessage msg) {
+        msg.setCipherSuiteLength(msg.getCipherSuites().getValue().length);
+        LOGGER.debug("CipherSuitesLength: " + msg.getCipherSuiteLength().getValue());
+    }
+
+    private boolean hasHandshakeCookie() {
+        return context.getDtlsHandshakeCookie() != null;
+    }
+
+    private void prepareCookie(ClientHelloMessage msg) {
+        msg.setCookie(context.getDtlsHandshakeCookie());
+        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+    }
+
+    private void prepareCookieLength(ClientHelloMessage msg) {
+        msg.setCookieLength((byte) msg.getCookie().getValue().length);
+        LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+    }
+
+    private boolean hasSessionID() {
+        return context.getSessionID() == null;
     }
 
 }

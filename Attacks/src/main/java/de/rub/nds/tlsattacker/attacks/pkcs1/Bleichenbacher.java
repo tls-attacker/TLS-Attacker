@@ -44,9 +44,9 @@ public class Bleichenbacher extends Pkcs1Attack {
         int i = 0;
         boolean solutionFound = false;
 
-        LOGGER.info("Step 1: Blinding");
+        LOGGER.debug("Step 1: Blinding");
         if (this.msgIsPKCS) {
-            LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
+            LOGGER.debug("Step skipped --> " + "Message is considered as PKCS compliant.");
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
             m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
@@ -93,7 +93,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
                 (BigInteger.valueOf(3).multiply(bigB)).subtract(BigInteger.ONE)) };
 
-        LOGGER.info(" Found s0 : " + si);
+        LOGGER.debug(" Found s0 : " + si);
     }
 
     protected void stepTwo(final int i) throws OracleException {
@@ -115,7 +115,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         boolean pkcsConform;
         BigInteger n = publicKey.getModulus();
 
-        LOGGER.info("Step 2a: Starting the search");
+        LOGGER.debug("Step 2a: Starting the search");
         // si = ceil(n/(3B))
         BigInteger tmp[] = n.divideAndRemainder(BigInteger.valueOf(3).multiply(bigB));
         if (BigInteger.ZERO.compareTo(tmp[1]) != 0) {
@@ -139,7 +139,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     private void stepTwoB() throws OracleException {
         byte[] send;
         boolean pkcsConform;
-        LOGGER.info("Step 2b: Searching with more than" + " one interval left");
+        LOGGER.debug("Step 2b: Searching with more than" + " one interval left");
 
         do {
             si = si.add(BigInteger.ONE);
@@ -155,7 +155,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         boolean pkcsConform;
         BigInteger n = publicKey.getModulus();
 
-        LOGGER.info("Step 2c: Searching with one interval left");
+        LOGGER.debug("Step 2c: Searching with one interval left");
 
         // initial ri computation - ri = 2(b*(si-1)-2*B)/n
         BigInteger ri = si.multiply(m[0].upper);
@@ -238,7 +238,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             }
         }
 
-        LOGGER.info(" # of intervals for M" + i + ": " + ms.size());
+        LOGGER.debug(" # of intervals for M" + i + ": " + ms.size());
         m = ms.toArray(new Interval[ms.size()]);
     }
 
@@ -249,7 +249,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             solution = s0.modInverse(publicKey.getModulus());
             solution = solution.multiply(m[0].upper).mod(publicKey.getModulus());
 
-            LOGGER.info("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
+            LOGGER.debug("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
 
             result = true;
         }

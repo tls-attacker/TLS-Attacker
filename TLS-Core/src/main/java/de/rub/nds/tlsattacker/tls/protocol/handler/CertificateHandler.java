@@ -32,8 +32,6 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public CertificateHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
@@ -79,7 +77,8 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             X509CertificateObject certObj = new X509CertificateObject(cert.getCertificateAt(0));
             return certObj.getPublicKey();
         } catch (CertificateParsingException ex) {
-            LOGGER.warn("Could extract public Key from Certificate!", ex);
+            LOGGER.warn("Could extract public Key from Certificate!");
+            LOGGER.debug(ex);
             return null;
         }
     }

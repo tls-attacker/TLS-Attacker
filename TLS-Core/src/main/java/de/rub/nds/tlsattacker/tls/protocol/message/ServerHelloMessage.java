@@ -31,10 +31,12 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -46,22 +48,22 @@ public class ServerHelloMessage extends HelloMessage {
     public ServerHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
-            addExtension(new HeartbeatExtensionMessage(tlsConfig));
+            addExtension(new HeartbeatExtensionMessage());
         }
         if (tlsConfig.isAddECPointFormatExtension()) {
-            addExtension(new ECPointFormatExtensionMessage(tlsConfig));
+            addExtension(new ECPointFormatExtensionMessage());
         }
         if (tlsConfig.isAddEllipticCurveExtension()) {
-            addExtension(new EllipticCurvesExtensionMessage(tlsConfig));
+            addExtension(new EllipticCurvesExtensionMessage());
         }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
-            addExtension(new MaxFragmentLengthExtensionMessage(tlsConfig));
+            addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {
-            addExtension(new ServerNameIndicationExtensionMessage(tlsConfig));
+            addExtension(new ServerNameIndicationExtensionMessage());
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
-            addExtension(new SignatureAndHashAlgorithmsExtensionMessage(tlsConfig));
+            addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
     }
 
@@ -97,9 +99,8 @@ public class ServerHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append("\n  Protocol Version: ")
-                .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Server Unix Time: ")
                 .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
                 .append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
@@ -109,8 +110,12 @@ public class ServerHelloMessage extends HelloMessage {
                 .append("\n  Selected Compression Method: ")
                 .append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()))
                 .append("\n  Extensions: ");
-        for (ExtensionMessage e : getExtensions()) {
-            sb.append(e.toString());
+        if (getExtensions() == null) {
+            sb.append("null");
+        } else {
+            for (ExtensionMessage e : getExtensions()) {
+                sb.append(e.toString());
+            }
         }
         return sb.toString();
     }
@@ -118,10 +123,5 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);
-    }
-
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
     }
 }

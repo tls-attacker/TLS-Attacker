@@ -61,7 +61,7 @@ public class RenegotiationDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
         config.setRenegotiation(false);
         args = new String[1];
         args[0] = "-legacy_renegotiation";
@@ -72,8 +72,8 @@ public class RenegotiationDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = new TlsConfig();
-        TlsConfig config2 = new TlsConfig();
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
                                                                                 // ugly

@@ -13,9 +13,10 @@ import de.rub.nds.tlsattacker.tls.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.*;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,20 +26,19 @@ import org.apache.logging.log4j.Logger;
  */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PREPARATOR");
-
-    private final FinishedMessage message;
+    private byte[] verifyData;
+    private final FinishedMessage msg;
 
     public FinishedMessagePreparator(TlsContext context, FinishedMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        byte[] verifyData = computeVerifyData();
+        verifyData = computeVerifyData();
 
-        message.setVerifyData(verifyData);
+        prepareVerifyData(msg);
     }
 
     private TlsMessageDigest getDigest() {
@@ -55,7 +55,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         byte[] masterSecret = context.getMasterSecret();
         byte[] handshakeMessageHash = getDigest().digest();
 
-        if (context.getConfig().getMyConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
             // TODO put this in seperate config option
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
@@ -63,6 +63,11 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.CLIENT_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
         }
+    }
+
+    private void prepareVerifyData(FinishedMessage msg) {
+        msg.setVerifyData(verifyData);
+        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 
 }

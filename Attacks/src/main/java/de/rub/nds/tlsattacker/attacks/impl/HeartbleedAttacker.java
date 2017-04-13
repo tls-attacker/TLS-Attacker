@@ -71,26 +71,21 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info(
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.",
-                    ex);
+            LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.debug(ex);
         }
 
         if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                    "Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
+            LOGGER.info("Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
             return null;
         } else {
             ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(
                     trace.getAllActuallyReceivedMessages().size() - 1);
             if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
-                LOGGER.log(
-                        LogLevel.CONSOLE_OUTPUT,
-                        "Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
+                LOGGER.info("Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
                 return true;
             } else {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                        "(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
+                LOGGER.info("(Most probably) Not vulnerable. The server does not respond with a heartbeat message, it is not vulnerable");
                 return false;
             }
         }

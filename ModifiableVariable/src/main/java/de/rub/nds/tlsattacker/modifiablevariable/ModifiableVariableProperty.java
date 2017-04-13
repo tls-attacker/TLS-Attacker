@@ -38,8 +38,10 @@ public @interface ModifiableVariableProperty {
         CERTIFICATE,
         /** plain protocol message, always in a decrypted state */
         PLAIN_PROTOCOL_MESSAGE,
+        PLAIN_RECORD,
         COOKIE,
-        NONE
+        NONE,
+        BEHAVIOR_SWITCH
     }
 
     public enum Format {

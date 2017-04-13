@@ -19,10 +19,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class FinishedMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
@@ -50,9 +52,7 @@ public class FinishedMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nFinished message:");
-        sb.append(super.toString());
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Verify Data: ");
         if (verifyData.getOriginalValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(verifyData.getValue()));
@@ -63,10 +63,5 @@ public class FinishedMessage extends HandshakeMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new FinishedHandler(context);
-    }
-
-    @Override
-    public String toCompactString() {
-        return handshakeMessageType.getName();
     }
 }

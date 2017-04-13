@@ -10,29 +10,32 @@ package de.rub.nds.tlsattacker.tls.protocol.message;
 
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.tlsattacker.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public abstract class HandshakeMessage extends ProtocolMessage {
 
+    @XmlTransient
+    protected boolean IS_INCLUDE_IN_DIGEST_DEFAULT = true;
+
+    @XmlTransient
     protected final HandshakeMessageType handshakeMessageType;
 
     /**
      * handshake type
      */
-    @ModifiableVariableProperty
-    private ModifiableByte type;
+    private ModifiableByte type = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger length = ModifiableVariableFactory.createIntegerModifiableVariable();
+    private ModifiableInteger length = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger messageSeq = null;
@@ -43,24 +46,19 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
 
-    private boolean includeInDigest = true;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean includeInDigest = null;
 
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(messageSeq, 0);
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(fragmentOffset, 0);
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(fragmentLength, 0);
     }
 
     public HandshakeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(messageSeq, 0);
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(fragmentOffset, 0);
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(fragmentLength, 0);
     }
 
     public ModifiableByte getType() {
@@ -68,7 +66,10 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     public boolean getIncludeInDigest() {
-        return includeInDigest;
+        if (includeInDigest == null) {
+            return IS_INCLUDE_IN_DIGEST_DEFAULT;
+        }
+        return includeInDigest.getValue();
     }
 
     public void setType(ModifiableByte type) {
@@ -132,18 +133,28 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     public void setIncludeInDigest(boolean includeInDigest) {
-        this.includeInDigest = includeInDigest;
+        this.includeInDigest = ModifiableVariableFactory.safelySetValue(this.includeInDigest, includeInDigest);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("\n" + handshakeMessageType.getName());
-        sb.append("\n  Handshake Message Length: ").append(length.getValue());
-        if (messageSeq != null && messageSeq.getValue() != null && messageSeq.getValue() != 0) {
-            sb.append("\n  Handshake Message message_seq: ").append(messageSeq.getValue());
-            sb.append("\n  Handshake Message fragment_offset: ").append(fragmentOffset.getValue());
-            sb.append("\n  Handshake Message fragment_length: ").append(fragmentLength.getValue());
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append("\n  Type: ").append(type.getValue());
+        sb.append("\n  Length: ").append(length.getValue());
+        if (messageSeq != null && messageSeq.getValue() != null) {
+            sb.append("\n  message_seq: ").append(messageSeq.getValue());
+        }
+        if (fragmentOffset != null && fragmentOffset.getValue() != null) {
+            sb.append("\n  fragment_offset: ").append(fragmentOffset.getValue());
+        }
+        if (fragmentLength != null && fragmentLength.getValue() != null) {
+            sb.append("\n  fragment_length: ").append(fragmentLength.getValue());
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        return handshakeMessageType.getName();
     }
 }

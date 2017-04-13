@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,10 +24,20 @@ import org.apache.logging.log4j.Logger;
  */
 public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     private final ProtocolVersion version;
 
+    /**
+     * Constructor for the Parser class
+     *
+     * @param pointer
+     *            Position in the array where the ServerKeyExchangeParser is
+     *            supposed to start parsing
+     * @param array
+     *            The byte[] which the ServerKeyExchangeParser is supposed to
+     *            parse
+     * @param version
+     *            Version of the Protocol
+     */
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
         this.version = version;
@@ -33,16 +45,16 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
 
     @Override
     protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
-        msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
-        msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12) {
-            msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
-            msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        parseCurveType(msg);
+        parseNamedCurve(msg);
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+        if (isTLS12() || isDTLS12()) {
+            parseHashAlgorithm(msg);
+            parseSignatureAlgorithm(msg);
         }
-        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
+        parseSignatureLength(msg);
+        parseSignature(msg);
     }
 
     @Override
@@ -50,4 +62,117 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
         return new ECDHEServerKeyExchangeMessage();
     }
 
+    /**
+     * Reads the next bytes as the CurveType and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseCurveType(ECDHEServerKeyExchangeMessage msg) {
+        msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
+        LOGGER.debug("CurveType: " + msg.getCurveType().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the Curve and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseNamedCurve(ECDHEServerKeyExchangeMessage msg) {
+        msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
+        LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
+    }
+
+    /**
+     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
+     * the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the SerializedPublicKey and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+    }
+
+    /**
+     * Checks if the version is TLS12
+     *
+     * @param message
+     *            Message to check
+     * @return True if the used version is TLS12
+     */
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    /**
+     * Checks if the version is DTLS12
+     *
+     * @param message
+     *            Message to check
+     * @return True if the used version is DTLS12
+     */
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
+
+    /**
+     * Reads the next bytes as the HashAlgorithm and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
+        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the SignatureAlgorithm and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
+        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the SignatureLength and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSignatureLength(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
+        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the Signature and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSignature(ECDHEServerKeyExchangeMessage msg) {
+        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
+        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+    }
 }

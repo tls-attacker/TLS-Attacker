@@ -23,10 +23,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class HeartbeatMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -102,7 +104,7 @@ public class HeartbeatMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\nHeartbeat message:\n  Type: ");
         sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
         sb.append("\n  Payload Length: ");

@@ -78,8 +78,7 @@ public class WorkflowConfigurationFactory {
         }
         messages.add(clientHello);
 
-        workflowTrace
-                .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT, messages));
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
 
@@ -88,12 +87,12 @@ public class WorkflowConfigurationFactory {
             messages = new LinkedList<>();
 
             messages.add(helloVerifyRequestMessage);
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
             clientHello = new ClientHelloMessage(config);
             messages = new LinkedList<>();
             messages.add(clientHello);
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         }
         return workflowTrace;
@@ -104,20 +103,18 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));
-        if (config.getSupportedCiphersuites().get(0).isEphemeral() && !config.isSessionResumption()) {
+        if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
             addServerKeyExchangeMessage(messages);
         }
-        if (config.isClientAuthentication() && !config.isSessionResumption()) {
+        if (config.isClientAuthentication()) {
             CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-            certRequest.setRequired(false);
             messages.add(certRequest);
         }
 
         messages.add(new ServerHelloDoneMessage(config));
-        workflowTrace
-                .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
         messages = new LinkedList<>();
-        if (config.isClientAuthentication() && !config.isSessionResumption()) {
+        if (config.isClientAuthentication()) {
             messages.add(new CertificateMessage(config));
             addClientKeyExchangeMessage(messages);
             messages.add(new CertificateVerifyMessage(config));
@@ -126,21 +123,16 @@ public class WorkflowConfigurationFactory {
         }
         messages.add(new ChangeCipherSpecMessage(config));
         messages.add(new FinishedMessage(config));
-        workflowTrace
-                .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT, messages));
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(config));
         messages.add(new FinishedMessage(config));
-        workflowTrace
-                .add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
         return workflowTrace;
 
     }
 
-    public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        if (config.isSessionResumption()) {
-            return;
-        }
+    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
@@ -157,13 +149,13 @@ public class WorkflowConfigurationFactory {
                 messages.add(new DHClientKeyExchangeMessage(config));
                 break;
             default:
-                LOGGER.info("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
                         + ", not adding ClientKeyExchange Message");
                 break;
         }
     }
 
-    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
@@ -180,7 +172,7 @@ public class WorkflowConfigurationFactory {
                 messages.add(new DHEServerKeyExchangeMessage(config));
                 break;
             default:
-                LOGGER.info("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
                         + ", not adding ServerKeyExchange Message");
                 break;
         }
@@ -197,7 +189,7 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.isServerSendsApplicationData()) {
             messages.add(new ApplicationMessage(config));
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
             messages = new LinkedList<>();
         }
@@ -205,14 +197,14 @@ public class WorkflowConfigurationFactory {
 
         if (config.getHeartbeatMode() != null) {
             messages.add(new HeartbeatMessage(config));
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
             messages = new LinkedList<>();
             messages.add(new HeartbeatMessage(config));
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.SERVER,
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
                     messages));
         } else {
-            workflowTrace.add(MessageActionFactory.createAction(config.getMyConnectionEnd(), ConnectionEnd.CLIENT,
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         }
         return workflowTrace;

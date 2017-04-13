@@ -23,10 +23,12 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.math.BigInteger;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@XmlRootElement
 public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     /**
@@ -60,12 +62,10 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public ECDHClientKeyExchangeMessage() {
         super();
-        computations = new ECDHClientComputations();
     }
 
     public ECDHClientKeyExchangeMessage(TlsConfig tlsConfig) {
         super(tlsConfig);
-        computations = new ECDHClientComputations();
     }
 
     public ModifiableBigInteger getPublicKeyBaseX() {
@@ -148,5 +148,12 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "ECDH_CLIENT_KEY_EXCHANGE";
+    }
+
+    @Override
+    public void prepareComputations() {
+        if (computations == null) {
+            computations = new ECDHClientComputations();
+        }
     }
 }

@@ -38,8 +38,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("HANDLER");
-
     public CertificateVerifyHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

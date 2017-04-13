@@ -58,7 +58,7 @@ public class SniAttacker extends Attacker<SniTestCommandConfig> {
                 tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         List<TLSAction> actions = trace.getTLSActions();
-        ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage(tlsConfig);
+        ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
         ServerNamePair pair = new ServerNamePair();
         pair.setServerNameConfig(config.getServerName2().getBytes());
         pair.setServerNameTypeConfig(NameType.HOST_NAME.getValue());
