@@ -57,7 +57,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 public final class TlsConfig implements Serializable {
 
     /**
-     * Default value for PtocolverionFields
+     * Default value for ProtocolVerionFields
      */
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 

@@ -132,6 +132,12 @@ public class TlsContext {
     private MaxFragmentLength maxFragmentLength;
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
+    
+    /**
+     * This is the length of the padding as used in the 
+     * padding extension.
+     */
+    private int PaddingExtensionLength;
 
     private PublicKey clientPublicKey;
 
@@ -300,6 +306,14 @@ public class TlsContext {
 
     public void setHeartbeatMode(HeartbeatMode heartbeatMode) {
         this.heartbeatMode = heartbeatMode;
+    }
+
+    public int getPaddingExtensionLength() {
+        return PaddingExtensionLength;
+    }
+
+    public void setPaddingExtensionLength(int PaddingExtensionLength) {
+        this.PaddingExtensionLength = PaddingExtensionLength;
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {

@@ -76,6 +76,7 @@ public class ExtensionParserFactory {
             case EXTENDED_MASTER_SECRET:
                 break;
             case PADDING:
+                parser = new PaddingExtensionParser(pointer, typeBytes);
                 break;
             case RENEGOTIATION_INFO:
                 break;
