@@ -8,7 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *

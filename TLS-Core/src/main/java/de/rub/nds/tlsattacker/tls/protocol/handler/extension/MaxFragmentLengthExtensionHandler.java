@@ -8,14 +8,25 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.MaxFragmentLengthExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

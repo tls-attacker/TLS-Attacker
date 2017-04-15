@@ -9,8 +9,11 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.tls.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
