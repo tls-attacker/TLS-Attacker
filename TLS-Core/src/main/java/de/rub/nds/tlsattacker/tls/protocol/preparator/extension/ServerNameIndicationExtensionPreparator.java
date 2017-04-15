@@ -15,8 +15,6 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ServerNamePairSe
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

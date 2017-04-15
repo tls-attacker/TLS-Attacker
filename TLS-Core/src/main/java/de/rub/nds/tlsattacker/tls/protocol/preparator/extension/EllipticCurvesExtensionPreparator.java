@@ -9,14 +9,11 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
-import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

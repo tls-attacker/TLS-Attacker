@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
