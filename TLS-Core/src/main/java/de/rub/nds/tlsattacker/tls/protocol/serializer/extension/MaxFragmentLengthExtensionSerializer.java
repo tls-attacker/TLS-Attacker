@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.*;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 
 /**

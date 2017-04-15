@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.UnknownExtensionMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
