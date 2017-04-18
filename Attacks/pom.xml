@@ -24,35 +24,44 @@
     <build>
         <plugins>
             <plugin>
-                <!-- Build an executable JAR -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>Attacks-${project.version}</finalName> 
+                    <finalName>TLS-Attacker-${project.version}</finalName> 
+                    <outputDirectory>${project.parent.basedir}</outputDirectory>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>de.rub.nds.tlsattacker.attacks.Main</mainClass>
                         </manifest>
                     </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
-            </plugin>
-            <plugin> 
-                <artifactId>maven-dependency-plugin</artifactId> 
-                <executions> 
-                    <execution> 
-                        <goals> 
-                            <goal>copy-dependencies</goal> 
-                        </goals> 
-                        <configuration> 
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <!--Ensures only runnable dependencies are included-->
-                            <includeScope>compile</includeScope> 
-                        </configuration> 
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
                     </execution>
-                </executions> 
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.parent.basedir}</directory>
+                            <includes>
+                                <include>TLS-Attacker-${project.version}.jar</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
