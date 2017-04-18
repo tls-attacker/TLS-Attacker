@@ -115,6 +115,11 @@
             <version>3.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>de.rub.nds.modifiablevariable</groupId>
+            <artifactId>ModifiableVariable</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
     <build>
