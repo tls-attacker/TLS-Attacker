@@ -8,3 +8,7 @@ release.properties
 /TLS-Core/nbproject/
 /Attacks/nbproject/
 *.jar
+nbactions.xml
+TLS-Client/nbactions.xml
+TLS-Server/nbactions.xml
+Attacks/nbactions.xml
