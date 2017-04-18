@@ -116,7 +116,7 @@ public class KeyStoreGenerator {
             case "EC":
                 return "SHA256withECDSA";
             case "DH":
-                return "SHa256withDSA";
+                return "SHA256withDSA";
             default:
                 throw new UnsupportedOperationException("Algorithm " + keyPair.getPublic().getAlgorithm()
                         + " not supported");
