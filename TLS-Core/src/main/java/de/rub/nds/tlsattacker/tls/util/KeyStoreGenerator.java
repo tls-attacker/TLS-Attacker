@@ -48,8 +48,6 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  */
 public class KeyStoreGenerator {
 
-    private static final Date BEFORE = new Date(System.currentTimeMillis() - 5000);
-    private static final Date AFTER = new Date(System.currentTimeMillis() + 600000);
     public static final String PASSWORD = "password";
     public static final String ALIAS = "alias";
 
@@ -77,8 +75,9 @@ public class KeyStoreGenerator {
         X500Name subjectName = issuerName;
 
         BigInteger serial = BigInteger.valueOf(RandomHelper.getBadSecureRandom().nextInt());
-
-        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, BEFORE, AFTER,
+        Date before = new Date(System.currentTimeMillis() - 5000);
+        Date after = new Date(System.currentTimeMillis() + 600000);
+        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, before, after,
                 subjectName, publicKey);
         builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 
