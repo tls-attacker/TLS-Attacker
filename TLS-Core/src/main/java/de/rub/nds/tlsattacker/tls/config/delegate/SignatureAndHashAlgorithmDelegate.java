@@ -41,6 +41,7 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         if (signatureAndHashAlgorithms != null) {
+            config.setAddSignatureAndHashAlgrorithmsExtension(true);
             config.setSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
         }
     }
