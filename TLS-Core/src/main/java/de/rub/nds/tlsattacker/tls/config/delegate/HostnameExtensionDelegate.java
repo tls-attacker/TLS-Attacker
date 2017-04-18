@@ -19,9 +19,6 @@ public class HostnameExtensionDelegate extends Delegate {
 
     @Parameter(names = "-server_name", description = "Servername for HostName TLS extension.")
     private String sniHostname = null;
-    @Parameter(names = "-servername_fatal", description = "On mismatch in the server name the server sends a fatal "
-            + "alert")
-    private Boolean serverNameFatal = null;
 
     public HostnameExtensionDelegate() {
     }
@@ -34,21 +31,11 @@ public class HostnameExtensionDelegate extends Delegate {
         this.sniHostname = sniHostname;
     }
 
-    public Boolean isServerNameFatal() {
-        return serverNameFatal;
-    }
-
-    public void setServerNameFatal(boolean serverNameFatal) {
-        this.serverNameFatal = serverNameFatal;
-    }
-
     @Override
     public void applyDelegate(TlsConfig config) {
         if (sniHostname != null) {
+            config.setAddServerNameIndicationExtension(true);
             config.setSniHostname(sniHostname);
-        }
-        if (serverNameFatal != null) {
-            config.setSniHostnameFatal(serverNameFatal);
         }
     }
 }
