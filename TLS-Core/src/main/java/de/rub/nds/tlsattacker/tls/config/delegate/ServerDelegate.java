@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
  */
 public class ServerDelegate extends Delegate {
 
-    @Parameter(names = "-port", description = "ServerPort")
+    @Parameter(names = "-port", required = true, description = "ServerPort")
     // TODO validator
     protected Integer port = null;
 
