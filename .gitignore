@@ -7,3 +7,4 @@ release.properties
 /EvolutionaryFuzzer/nbproject/
 /TLS-Core/nbproject/
 /Attacks/nbproject/
+*.jar

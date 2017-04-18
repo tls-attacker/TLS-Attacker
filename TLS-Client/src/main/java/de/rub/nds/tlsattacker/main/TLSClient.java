@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.main;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
@@ -35,13 +36,6 @@ public class TLSClient {
         Exception ex = null;
         try {
             commander.parse(args);
-        } catch (Exception E) {
-            LOGGER.info("Could not parse provided parameters");
-            LOGGER.debug(E);
-            commander.usage();
-            ex = E;
-        }
-        if (ex == null) {
             // Cmd was parsable
             TlsConfig tlsConfig = null;
             try {
@@ -52,6 +46,11 @@ public class TLSClient {
                 LOGGER.info("Encountered a ConfigurationException aborting.");
                 LOGGER.debug(E);
             }
+        } catch (ParameterException E) {
+            LOGGER.info("Could not parse provided parameters");
+            LOGGER.debug(E);
+            commander.usage();
+            ex = E;
         }
     }
 

@@ -6,54 +6,54 @@
         <artifactId>TLS-Attacker</artifactId>
         <version>2.0Beta2</version>
     </parent>
+    <name>TLS-Client</name>
     <artifactId>TLS-Client</artifactId>
     <packaging>jar</packaging>
-    
     <build>
         <plugins>
             <plugin>
-                <!-- Build an executable JAR -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
+                    <finalName>TLS-Client-${project.version}</finalName> 
+                    <outputDirectory>${project.parent.basedir}</outputDirectory>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>de.rub.nds.tlsattacker.main.TLSClient</mainClass>
                         </manifest>
                     </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
-            <plugin> 
-                <artifactId>maven-dependency-plugin</artifactId> 
-                <executions> 
-                    <execution> 
-                        <goals> 
-                            <goal>copy-dependencies</goal> 
-                        </goals> 
-                        <configuration> 
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <!--Ensures only runnable dependencies are included-->
-                            <includeScope>compile</includeScope> 
-                        </configuration> 
-                    </execution> 
-                </executions> 
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.parent.basedir}</directory>
+                            <includes>
+                                <include>TLS-Client-${project.version}</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>Utils</artifactId>
@@ -70,5 +70,4 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
-    <name>TLS-Client</name>
 </project>
