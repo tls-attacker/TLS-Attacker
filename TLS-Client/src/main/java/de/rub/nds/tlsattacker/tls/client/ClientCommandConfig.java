@@ -24,10 +24,8 @@ import de.rub.nds.tlsattacker.tls.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.tls.config.delegate.WorkflowTypeDelegate;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
-import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 
 /**
  *
@@ -105,5 +103,4 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         }
         return config;
     }
-
 }
