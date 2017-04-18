@@ -36,6 +36,7 @@ public class MaxFragmentLengthDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         if (maxFragmentLength != null) {
+            config.setAddMaxFragmentLengthExtenstion(true);
             config.setMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue())); // TODO
         } // Converter
     }
