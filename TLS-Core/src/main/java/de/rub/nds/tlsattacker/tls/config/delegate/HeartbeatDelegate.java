@@ -37,6 +37,7 @@ public class HeartbeatDelegate extends Delegate {
     public void applyDelegate(TlsConfig config) {
         if (heartbeatMode != null) {
             config.setHeartbeatMode(heartbeatMode);
+            config.setAddHeartbeatExtension(true);
         }
     }
 
