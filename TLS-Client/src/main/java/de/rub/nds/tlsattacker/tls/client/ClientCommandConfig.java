@@ -38,6 +38,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
+    private final GeneralDelegate generalDelegate;
+    @ParametersDelegate
     private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private final HostnameExtensionDelegate hostnameExtensionDelegate;
@@ -66,6 +68,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
+        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.hostnameExtensionDelegate = new HostnameExtensionDelegate();

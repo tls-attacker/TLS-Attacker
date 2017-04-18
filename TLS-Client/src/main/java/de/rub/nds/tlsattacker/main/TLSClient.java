@@ -36,6 +36,10 @@ public class TLSClient {
         Exception ex = null;
         try {
             commander.parse(args);
+            if (config.getGeneralDelegate().isHelp()) {
+                commander.usage();
+                return;
+            }
             // Cmd was parsable
             TlsConfig tlsConfig = null;
             try {

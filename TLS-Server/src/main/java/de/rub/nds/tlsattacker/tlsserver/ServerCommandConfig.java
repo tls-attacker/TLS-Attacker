@@ -35,6 +35,9 @@ import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
 public class ServerCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "server";
+
+    @ParametersDelegate
+    private final GeneralDelegate generalDelegate;
     @ParametersDelegate
     private final CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
@@ -62,6 +65,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
+        this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.ellipticCurveDelegate = new EllipticCurveDelegate();
@@ -93,7 +97,6 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         TlsConfig config = super.createConfig();
         if (config.getWorkflowTraceType() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.FULL);
-            config.setWorkflowTrace(new WorkflowConfigurationFactory(config).createHandshakeWorkflow());
         }
         return config;
     }

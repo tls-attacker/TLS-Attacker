@@ -34,6 +34,10 @@ public class Main {
         JCommander commander = new JCommander(config);
         try {
             commander.parse(args);
+            if (config.getGeneralDelegate().isHelp()) {
+                commander.usage();
+                return;
+            }
             TlsConfig tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
