@@ -46,10 +46,10 @@
     <modules>
         <module>Utils</module>
         <module>Transport</module>
+        <module>EAP</module>
         <module>TLS-Core</module>
         <module>TLS-Client</module>
         <module>TLS-Server</module>
-        <module>EAP</module>
         <module>Attacks</module>
     </modules>
 
