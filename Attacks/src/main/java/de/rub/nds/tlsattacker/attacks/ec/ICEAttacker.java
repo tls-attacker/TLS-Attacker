@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ICEAttacker {
 
-    Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
+    private static Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
 
     private final ServerType server;
 
