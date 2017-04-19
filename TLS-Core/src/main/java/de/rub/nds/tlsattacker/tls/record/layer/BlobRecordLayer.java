@@ -100,7 +100,7 @@ public class BlobRecordLayer extends RecordLayer {
 
     @Override
     public AbstractRecord getFreshRecord() {
-        return new BlobRecord();
+        return new BlobRecord(context.getConfig());
     }
 
 }
