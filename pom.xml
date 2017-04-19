@@ -9,7 +9,6 @@
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
     <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/) and the Hackmanit GmbH (http://hackmanit.de/). </description>
-    
     <developers>
         <developer>
             <id>jsomorovsky</id>
@@ -43,7 +42,6 @@
         <module>TLS-Server</module>
         <module>Attacks</module>
     </modules>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -112,7 +110,6 @@
             <version>2.0Beta2</version>
         </dependency>
     </dependencies>
-    
     <build>
         <pluginManagement>
             <plugins>
@@ -224,7 +221,6 @@
             </plugin>
         </plugins>
     </build>
-
     <reporting>
         <plugins>
             <plugin>
