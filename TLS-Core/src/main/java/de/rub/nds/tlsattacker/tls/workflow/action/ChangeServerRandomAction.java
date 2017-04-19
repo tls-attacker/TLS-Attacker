@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeServerRandomAction extends TLSAction {
@@ -65,7 +65,7 @@ public class ChangeServerRandomAction extends TLSAction {
     @Override
     public void reset() {
         oldValue = null;
-        setExecuted(false);
+        setExecuted(null);
     }
 
     @Override

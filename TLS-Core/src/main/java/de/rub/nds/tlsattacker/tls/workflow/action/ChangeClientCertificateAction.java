@@ -9,16 +9,12 @@
 package de.rub.nds.tlsattacker.tls.workflow.action;
 
 import de.rub.nds.tlsattacker.certificate.CertificateAdapter;
-import de.rub.nds.tlsattacker.certificate.X509CertificateObjectAdapter;
 import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  * 
@@ -60,7 +56,7 @@ public class ChangeClientCertificateAction extends TLSAction {
     @Override
     public void reset() {
         oldValue = null;
-        setExecuted(false);
+        setExecuted(null);
     }
 
     @Override

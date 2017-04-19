@@ -39,6 +39,7 @@ public class DeactivateEncryptionAction extends TLSAction {
     @Override
     public void reset() {
         setExecuted(false);
+        setExecuted(null);
     }
 
     @Override

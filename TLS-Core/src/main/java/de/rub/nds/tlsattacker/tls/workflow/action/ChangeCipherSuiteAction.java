@@ -14,13 +14,7 @@ import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.tls.workflow.action.executor.ActionExecutor;
-import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -70,7 +64,7 @@ public class ChangeCipherSuiteAction extends TLSAction {
     @Override
     public void reset() {
         oldValue = null;
-        setExecuted(false);
+        setExecuted(null);
     }
 
     @Override

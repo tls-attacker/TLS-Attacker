@@ -31,7 +31,7 @@ public class RenegotiationAction extends TLSAction {
 
     @Override
     public void reset() {
-        setExecuted(false);
+        setExecuted(null);
     }
 
 }

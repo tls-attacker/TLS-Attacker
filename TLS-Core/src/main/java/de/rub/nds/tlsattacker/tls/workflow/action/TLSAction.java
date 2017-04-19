@@ -38,7 +38,7 @@ public abstract class TLSAction implements Serializable {
         return executed;
     }
 
-    public void setExecuted(boolean executed) {
+    public void setExecuted(Boolean executed) {
         this.executed = executed;
     }
 

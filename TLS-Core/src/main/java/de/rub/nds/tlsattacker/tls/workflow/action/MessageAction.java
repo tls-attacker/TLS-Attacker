@@ -172,7 +172,7 @@ public abstract class MessageAction extends TLSAction {
 
     @Override
     public void reset() {
-        setExecuted(false);
+        setExecuted(null);
         actualMessages = new LinkedList<>();
         actualRecords = new LinkedList<>();
     }
