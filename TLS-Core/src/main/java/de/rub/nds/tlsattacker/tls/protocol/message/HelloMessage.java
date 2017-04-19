@@ -203,7 +203,7 @@ public abstract class HelloMessage extends HandshakeMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (extensions != null) {
             for (ExtensionMessage em : extensions) {
-                holders.add(em);
+                holders.addAll(em.getAllModifiableVariableHolders());
             }
         }
         return holders;

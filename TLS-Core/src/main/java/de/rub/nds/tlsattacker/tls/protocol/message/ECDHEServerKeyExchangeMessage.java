@@ -27,6 +27,8 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -128,5 +130,14 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         if (computations == null) {
             computations = new ECDHEServerComputations();
         }
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (computations != null) {
+            holders.add(computations);
+        }
+        return holders;
     }
 }

@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.NameType;
+import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
@@ -83,5 +84,16 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
     @Override
     public ServerNameIndicationExtensionHandler getHandler(TlsContext context) {
         return new ServerNameIndicationExtensionHandler(context);
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (serverNameList != null) {
+            for (ServerNamePair pair : serverNameList) {
+                holders.addAll(pair.getAllModifiableVariableHolders());
+            }
+        }
+        return holders;
     }
 }

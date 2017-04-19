@@ -23,6 +23,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.computations.DHEServerComputa
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -170,5 +172,14 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         if (getComputations() == null) {
             computations = new DHEServerComputations();
         }
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (computations != null) {
+            holders.add(computations);
+        }
+        return holders;
     }
 }
