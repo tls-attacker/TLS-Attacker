@@ -14,13 +14,6 @@
             <artifactId>TLS-Core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>4.12</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
