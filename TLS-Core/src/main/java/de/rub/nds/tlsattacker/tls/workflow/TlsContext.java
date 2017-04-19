@@ -137,7 +137,7 @@ public class TlsContext {
      * This is the length of the padding as used in the 
      * padding extension.
      */
-    private int PaddingExtensionLength;
+    private int paddingExtensionLength;
 
     private PublicKey clientPublicKey;
 
@@ -309,11 +309,11 @@ public class TlsContext {
     }
 
     public int getPaddingExtensionLength() {
-        return PaddingExtensionLength;
+        return paddingExtensionLength;
     }
 
     public void setPaddingExtensionLength(int PaddingExtensionLength) {
-        this.PaddingExtensionLength = PaddingExtensionLength;
+        this.paddingExtensionLength = PaddingExtensionLength;
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {

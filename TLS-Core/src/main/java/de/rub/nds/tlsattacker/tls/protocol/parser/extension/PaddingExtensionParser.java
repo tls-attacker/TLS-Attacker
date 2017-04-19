@@ -23,7 +23,6 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
 
     @Override
     public void parseExtensionMessageContent(PaddingExtensionMessage msg) {
-        msg.setExtensionLength(parseIntField(ExtensionByteLength.PADDING_LENGTH));
         msg.setExtensionBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
     }
 
