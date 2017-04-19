@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.PaddingExtensionPreparator;
@@ -42,9 +41,10 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     @Override
     public void adjustTLSContext(PaddingExtensionMessage message) {
-        if (message.getPaddingLength().getValue() > 65535) {
-            throw new AdjustmentException("Cannot set PaddingExtensionMode to a resonable Value");
+        if (message.getPaddingLength().getValue() <= 65535) {
+            context.setPaddingExtensionLength(message.getPaddingLength().getValue());
         } else {
+            LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
             context.setPaddingExtensionLength(message.getPaddingLength().getValue());
         }
     }
