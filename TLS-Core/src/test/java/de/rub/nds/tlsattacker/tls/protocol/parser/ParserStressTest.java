@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
-import de.rub.nds.tlsattacker.tests.IntegrationTest;
+import de.rub.nds.tlsattacker.tests.SlowTests;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
-import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
 import java.util.Random;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -27,7 +26,7 @@ import org.junit.experimental.categories.Category;
 public class ParserStressTest {
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(SlowTests.class)
     public void testParser() {
         for (int i = 0; i < 100000; i++) {
             Random r = new Random(i);

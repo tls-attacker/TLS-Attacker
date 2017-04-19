@@ -24,6 +24,9 @@
         <goals>
             <goal>install</goal>
         </goals>
+        <properties>
+                <skipITs>true</skipITs>
+            </properties>
     </action>
     <action>
         <actionName>rebuild</actionName>
@@ -34,5 +37,8 @@
             <goal>clean</goal>
             <goal>install</goal>
         </goals>
+        <properties>
+                <skipITs>true</skipITs>
+            </properties>
     </action>
 </actions>
