@@ -36,7 +36,7 @@ public class BleichenbacherAttackPlaintextTest {
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         RandomHelper.getBadSecureRandom().setSeed(0);
-        keyPairGenerator.initialize(2048,RandomHelper.getBadSecureRandom());
+        keyPairGenerator.initialize(2048, RandomHelper.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
         SecureRandom sr = new SecureRandom();
