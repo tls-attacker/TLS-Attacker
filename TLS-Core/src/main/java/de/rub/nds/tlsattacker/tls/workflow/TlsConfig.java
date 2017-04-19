@@ -316,6 +316,13 @@ public final class TlsConfig implements Serializable {
      */
     private RecordLayerType recordLayerType = RecordLayerType.RECORD;
 
+    /**
+     * If this value is set the default workflowExecutor will remove all runtime
+     * values from the workflow trace and will only keep the relevant
+     * information
+     */
+    private boolean stripWorkflowtracesBeforeSaving = false;
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);
@@ -363,6 +370,14 @@ public final class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+    }
+
+    public boolean isStripWorkflowtracesBeforeSaving() {
+        return stripWorkflowtracesBeforeSaving;
+    }
+
+    public void setStripWorkflowtracesBeforeSaving(boolean stripWorkflowtracesBeforeSaving) {
+        this.stripWorkflowtracesBeforeSaving = stripWorkflowtracesBeforeSaving;
     }
 
     public RecordLayerType getRecordLayerType() {

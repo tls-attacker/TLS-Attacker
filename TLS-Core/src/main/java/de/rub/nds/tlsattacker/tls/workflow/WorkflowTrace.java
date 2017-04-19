@@ -11,9 +11,10 @@ package de.rub.nds.tlsattacker.tls.workflow;
 import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.ChangeClientRandomAction;
@@ -30,6 +31,7 @@ import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.RenegotiationAction;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +40,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A wrapper class over a list of protocol configuredMessages maintained in the
@@ -49,6 +53,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WorkflowTrace implements Serializable {
 
+    private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
     /**
      * Workflow
      */
@@ -90,6 +95,36 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
+    /**
+     * Removes runtime values for more compact storage. This keeps only the
+     * relevant information to reexecute a WorkflowTrace
+     */
+    public void strip() {
+        this.reset();
+        List<MessageAction> messageActions = getMessageActions();
+        List<ModifiableVariableHolder> holders = new LinkedList<>();
+        for (MessageAction action : messageActions) {
+            for (ProtocolMessage message : action.getActualMessages()) {
+                holders.addAll(message.getAllModifiableVariableHolders());
+            }
+            for (ProtocolMessage message : action.getConfiguredMessages()) {
+                holders.addAll(message.getAllModifiableVariableHolders());
+            }
+        }
+
+        for (ModifiableVariableHolder holder : holders) {
+            List<Field> fields = holder.getAllModifiableVariableFields();
+            for (Field f : fields) {
+                f.setAccessible(true);
+                try {
+                    f.set(holder, null);
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    LOGGER.debug("Could not strip field:" + f.getName());
+                }
+            }
+        }
+    }
+
     public void reset() {
         for (TLSAction action : getTLSActions()) {
             action.reset();
@@ -122,6 +157,16 @@ public class WorkflowTrace implements Serializable {
 
     public void setTLSActions(List<TLSAction> tlsActions) {
         this.tlsActions = tlsActions;
+    }
+
+    public List<MessageAction> getMessageActions() {
+        List<MessageAction> messageActions = new LinkedList<>();
+        for (TLSAction action : tlsActions) {
+            if (action instanceof MessageAction) {
+                messageActions.add((MessageAction) action);
+            }
+        }
+        return messageActions;
     }
 
     public List<ReceiveAction> getReceiveActions() {
