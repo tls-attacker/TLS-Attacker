@@ -19,7 +19,7 @@ public class TransportHandlerFactory {
             case TCP:
                 return new SimpleTransportHandler(hostname, port, end, socketTimeout, tlsTimeout);
             case EAP_TLS:
-                return new EAPTLSTransportHandler(hostname, port, end, tlsTimeout);
+                throw new UnsupportedOperationException("EAP_TLS is currently not supported");
             case UDP:
                 return new UDPTransportHandler(hostname, port, end, tlsTimeout);
             default:
