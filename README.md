@@ -108,55 +108,33 @@ I know many of you hate Java. Therefore, you can also use an XML structure and r
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
-    <protocolMessages>
+    <SendAction>
         <ClientHello>
-            <messageIssuer>CLIENT</messageIssuer>
             <extensions>
-                <EllipticCurves>
-                    <supportedCurvesConfig>SECP192R1</supportedCurvesConfig>
-                    <supportedCurvesConfig>SECP256R1</supportedCurvesConfig>
-                </EllipticCurves>
-                <ECPointFormat>
-                    <pointFormatsConfig>UNCOMPRESSED</pointFormatsConfig>
-                </ECPointFormat>
+                <HeartbeatExtension/>
+                <ECPointFormat/>
+                <EllipticCurves/>
             </extensions>
-            <supportedCompressionMethods>
-                <CompressionMethod>NULL</CompressionMethod>
-            </supportedCompressionMethods>
-            <supportedCipherSuites>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
-            </supportedCipherSuites>
         </ClientHello>
+    </SendAction>
+    <ReceiveAction>
         <ServerHello>
-            <messageIssuer>SERVER</messageIssuer>
+            <extensions>
+                <HeartbeatExtension/>
+                <ECPointFormat/>
+                <EllipticCurves/>
+            </extensions>
         </ServerHello>
-        <Certificate>
-            <messageIssuer>SERVER</messageIssuer>
-        </Certificate>
-        <ECDHEServerKeyExchange>
-            <messageIssuer>SERVER</messageIssuer>
-        </ECDHEServerKeyExchange>
-        <ServerHelloDone>
-            <messageIssuer>SERVER</messageIssuer>
-        </ServerHelloDone>
-        <ECDHClientKeyExchange>
-            <messageIssuer>CLIENT</messageIssuer>
-        </ECDHClientKeyExchange>
-        <ChangeCipherSpec>
-            <messageIssuer>CLIENT</messageIssuer>
-        </ChangeCipherSpec>
-        <Finished>
-            <messageIssuer>CLIENT</messageIssuer>
-        </Finished>
-        <ChangeCipherSpec>
-            <messageIssuer>SERVER</messageIssuer>
-        </ChangeCipherSpec>
-        <Finished>
-            <messageIssuer>SERVER</messageIssuer>
-        </Finished>
-    </protocolMessages>
+        <Certificate/>
+        <ServerHelloDone/>
+    </ReceiveAction>
+    <SendAction>
+        <Finished/>
+    </SendAction>
+    <ReceiveAction>
+        <ChangeCipherSpec/>
+        <Finished/>
+    </ReceiveAction>
 </workflowTrace>
 ```
 Given this XML structure is located in config.xml, you would just need to execute:
