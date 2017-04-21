@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
@@ -35,6 +36,7 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -116,10 +118,23 @@ public class WorkflowTrace implements Serializable {
             List<Field> fields = holder.getAllModifiableVariableFields();
             for (Field f : fields) {
                 f.setAccessible(true);
+
+                ModifiableVariable mv = null;
                 try {
-                    f.set(holder, null);
+                    mv = (ModifiableVariable) f.get(holder);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.debug("Could not strip field:" + f.getName());
+                    LOGGER.warn("Could not retrieve ModifiableVariables");
+                }
+                if (mv != null) {
+                    if (mv.getModification() != null) {
+                        mv.setOriginalValue(null);
+                    } else {
+                        try {
+                            f.set(holder, null);
+                        } catch (IllegalArgumentException | IllegalAccessException ex) {
+                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
+                        }
+                    }
                 }
             }
         }
