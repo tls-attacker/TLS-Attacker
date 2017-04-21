@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -58,6 +59,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // of the known servers close the connection after an invalid handshake
         TlsConfig tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
@@ -66,6 +68,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setSerializedPublicKey(epms);
+        tlsConfig.setWorkflowTrace(trace);
         workflowExecutor.executeWorkflow();
         return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);
     }
