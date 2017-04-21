@@ -47,6 +47,7 @@ TLS-Attacker consists of several (maven) projects:
 - TLS-Server: The server example Application
 - Attacks: Implementation of some well-known attacks and vulnerability Tests.
 
+//TODO exchange graphic with the updated version
 ![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
 You can find more information about these modules in the Wiki.
@@ -58,7 +59,7 @@ Currently, the following features are supported:
 - SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
 - AES CBC cipher suites
-- Extensions: EC, EC point format, Heartbeat, Max fragment length, Server name, Signature and Hash algorithms
+- Extensions: EC, EC point format, Heartbeat, Max fragment length, SNI, Signature and Hash algorithms
 - TLS client and server
 
 ## Usage
@@ -73,48 +74,35 @@ This command starts a TLS server on a port 4433.
 
 If you want to connect to a server, you can use this command:
 ```bash
-$ cd TLS-Attacker/Runnable/target
-$ java -jar target/TLS-Attacker-1.2.jar client -connect localhost:4433
+$ java -jar TLS-Client-2.0Beta2.jar -connect  -connect localhost:4433
 ```
 
 You can use a different cipher suite, TLS version, or connect to a different port with the following parameters:
 ```bash
-$ java -jar TLS-Attacker-1.2.jar client -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
+$ java -jar TLS-Client-2.0Beta2.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
 ```
 
 The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
-$ java -jar TLS-Attacker-1.2.jar padding_oracle 
+$ java -jar TLS-Attacks-2.0Beta2.jar padding_oracle -connect localhost:4433 
 ```
 
-In case you are a more experienced developer, you can create your own TLS message flow. For example:
+In case you are a more experienced developer, you can create your own TLS message flow. By writing Java code. For example:
 ```java
-GeneralConfig generalConfig = new GeneralConfig();
-ConfigHandler configHandler = ConfigHandlerFactory.createConfigHandler("client");
-configHandler.initialize(generalConfig);
+TLSConfig config = TlsConfig.createConfig();
+WorkflowTrace trace = new WorkflowTrace();
+trace.add(new SendAction(new ClientHelloMessage()));
+trace.add(new ReceiveAction(messages.add(new ServerHelloMessage())));
+trace.add(new ReceiveAction(messages.add(new ServerHelloDoneMessage()));
+trace.add(new SendAction(new FinishedMessage()));
+config.setWorkflowTrace(trace);
+TlsContext context = new TlsContext(tlsConfig);
+DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
 
-ClientCommandConfig config = new ClientCommandConfig();
-config.setConnect("localhost:" + PORT);
-config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
-        
-TransportHandler transportHandler = configHandler.initializeTransportHandler(config);
-TlsContext tlsContext = configHandler.initializeTlsContext(config);
-	
-WorkflowTrace trace = tlsContext.getWorkflowTrace();
-trace.add(new ServerHelloMessage(ConnectionEnd.SERVER));
-trace.add(new CertificateMessage(ConnectionEnd.SERVER));
-trace.add(new ServerHelloDoneMessage(ConnectionEnd.SERVER));
-trace.add(new RSAClientKeyExchangeMessage(ConnectionEnd.CLIENT));
-trace.add(new ChangeCipherSpecMessage(ConnectionEnd.CLIENT));
-trace.add(new FinishedMessage(ConnectionEnd.CLIENT));
-trace.add(new ChangeCipherSpecMessage(ConnectionEnd.SERVER));
-trace.add(new FinishedMessage(ConnectionEnd.SERVER));
-        
-WorkflowExecutor workflowExecutor = configHandler.initializeWorkflowExecutor(transportHandler, tlsContext);
-workflowExecutor.executeWorkflow();
-
-transportHandler.closeConnection();
 ```
+TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a List of Actions which are then executed one after the other.
+Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the Framework does not stop here and implements alot of different other Actions
+which can be used to execute even more Arbitrary message flows. A list of currently implemented Actions with explanations can be found //TODO ADD REFERENCE.
 
 I know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
 ```xml
@@ -176,11 +164,14 @@ Given this XML structure is located in config.xml, you would just need to execut
 $ java -jar TLS-Attacker-1.2.jar client -workflow_input config.xml
 ```
 
+Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a client hello message, it needs to know which values to
+put into the message like which ciphersuites or which protocol version to put. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
+Values which are determined at runtime are stored in the TlsContext. You can specify your own config file from command line. Note that if you dont explicitly define a default value in the config file, TLS-Attacker fills
+this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found here.//TODO ADD REFERENCE
+
 
 ## Modifiable Variables
-TLS-Attacker relies on a concept of modifiable variables. Modifiable variables allow you to set modifications to basic types, e.g. Integers, and modify their values by executing the getter methods.
-
-The best way to present the functionality of this concept is by means of a simple example:
+TLS-Attacker uses the concept of Modifiable variables to allow runtime Modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found here. //TODO add ref
 
 ```java
 ModifiableInteger i = new ModifiableInteger();
@@ -188,81 +179,67 @@ i.setOriginalValue(30);
 i.setModification(new AddModification(20));
 System.out.println(i.getValue());  // 50
 ```
-
 In this example, we defined a new ModifiableInteger and set its value to 30. Next, we defined a new modification AddModification which simply returns a sum of two integers. We set its value to 20. If we execute the above program, the result 50 is printed. 
 
 We can of course use this concept by constructing our TLS workflows. Imagine you want to test a server for a heartbleed vulnerability. For this purpose, you need to increase the payload length in the heartbeat request. With TLS-Attacker, you can do this as follows:
 
 ```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
-    <protocolMessages>
+    <SendAction>
         <ClientHello>
-            <messageIssuer>CLIENT</messageIssuer>
             <extensions>
-                <HeartbeatExtension>
-                    <heartbeatModeConfig>PEER_ALLOWED_TO_SEND</heartbeatModeConfig>
-                </HeartbeatExtension>
+                <HeartbeatExtension/>
+                <ECPointFormat/>
+                <EllipticCurves/>
             </extensions>
-            <supportedCompressionMethods>
-                <CompressionMethod>NULL</CompressionMethod>
-            </supportedCompressionMethods>
-            <supportedCipherSuites>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</CipherSuite>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</CipherSuite>
-                <CipherSuite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</CipherSuite>
-            </supportedCipherSuites>
         </ClientHello>
+    </SendAction>
+    <ReceiveAction>
         <ServerHello>
-            <messageIssuer>SERVER</messageIssuer>
+            <extensions>
+                <HeartbeatExtension/>
+                <ECPointFormat/>
+                <EllipticCurves/>
+            </extensions>
         </ServerHello>
-        <Certificate>
-            <messageIssuer>SERVER</messageIssuer>
-        </Certificate>
-        <ECDHEServerKeyExchange>
-            <messageIssuer>SERVER</messageIssuer>
-        </ECDHEServerKeyExchange>
-        <ServerHelloDone>
-            <messageIssuer>SERVER</messageIssuer>
-        </ServerHelloDone>
-        <ECDHClientKeyExchange>
-            <messageIssuer>CLIENT</messageIssuer>
-        </ECDHClientKeyExchange>
-        <ChangeCipherSpec>
-            <messageIssuer>CLIENT</messageIssuer>
-        </ChangeCipherSpec>
-        <Finished>
-            <messageIssuer>CLIENT</messageIssuer>
-        </Finished>
-        <ChangeCipherSpec>
-            <messageIssuer>SERVER</messageIssuer>
-        </ChangeCipherSpec>
-        <Finished>
-            <messageIssuer>SERVER</messageIssuer>
-        </Finished>
-        <Heartbeat>
-            <messageIssuer>CLIENT</messageIssuer>
+        <Certificate/>
+        <ServerHelloDone/>
+    </ReceiveAction>
+    <SendAction>
+		<RSAClientKeyExchange/>
+		<ChangeCipherSpec/>
+        <Finished/>
+    </SendAction>
+    <ReceiveAction>
+        <ChangeCipherSpec/>
+        <Finished/>
+    </ReceiveAction>
+    <SendAction>
+        <Application/>
+        <Heartbeat/>
+    </SendAction>
+    <ReceiveAction>
+		<Heartbeat>
             <payloadLength>
-                <integerAddModification>
-                    <summand>2000</summand>
-                </integerAddModification>
+                <integerExplicitValueModification>
+                    <explicitValue>20000</explicitValue>
+                </integerExplicitValueModification>
             </payloadLength>
         </Heartbeat>
-        <Heartbeat>
-            <messageIssuer>SERVER</messageIssuer>
-        </Heartbeat>
-    </protocolMessages>
+    </ReceiveAction>
 </workflowTrace>
 ```
 As you can see, we explicitly increased the payload length of the Heartbeat message by 2000.
 If you run the attack against the vulnerable server (e.g., OpenSSL 1.0.1f), you should see a valid Heartbeat response.
 
-Further examples on attacks and fuzzing are in the Wiki.
+Further examples on attacks and further explanations on TLS-Attacker can be found in the Wiki.
 
 ## Acknowledgements
 The following people have contributed code to the TLS-Attacker Project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
-- Philip Riese: Server implementation, TLS Man-in-the-Middle handling
+- Philip Riese: Server implementation, TLS Man-in-the-Middle handling //TODO mitm is no longer in here
 - Christian Mainka: Design support and many implementation suggestions.
 
 Further contributions pull requests are welcome.
