@@ -128,7 +128,7 @@
                                 <goal>test</goal>
                             </goals>
                             <configuration>
-                                <excludedGroups>de.rub.nds.tlsattacker.tests.IntegrationTest</excludedGroups>
+                                <excludedGroups>de.rub.nds.modifiablevariable.util.tests.IntegrationTest</excludedGroups>
                             </configuration>
                         </execution>
                     </executions>
