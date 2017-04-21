@@ -19,7 +19,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.rub.nds.tlsattacker.server.Main</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.tlsserver.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
