@@ -21,7 +21,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <finalName>TLS-Attacker-${project.version}</finalName> 
+                    <finalName>Attacks</finalName> 
                     <outputDirectory>${project.parent.basedir}</outputDirectory>
                     <archive>
                         <manifest>
@@ -52,7 +52,7 @@
                         <fileset>
                             <directory>${project.parent.basedir}</directory>
                             <includes>
-                                <include>TLS-Attacker-${project.version}.jar</include>
+                                <include>Attacks.jar</include>
                             </includes>
                         </fileset>
                     </filesets>

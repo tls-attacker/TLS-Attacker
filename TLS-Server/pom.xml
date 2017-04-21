@@ -14,7 +14,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <finalName>TLS-Server-${project.version}</finalName> 
+                    <finalName>TLS-Server</finalName> 
                     <outputDirectory>${project.parent.basedir}</outputDirectory>
                     <archive>
                         <manifest>
@@ -46,7 +46,7 @@
                         <fileset>
                             <directory>${project.parent.basedir}</directory>
                             <includes>
-                                <include>TLS-Server-${project.version}</include>
+                                <include>TLS-Server.jar</include>
                             </includes>
                         </fileset>
                     </filesets>
