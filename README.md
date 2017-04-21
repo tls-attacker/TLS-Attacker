@@ -1,12 +1,12 @@
 # TLS-Attacker
 
-[![release](https://img.shields.io/badge/Release-v1.2-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
+[![release](https://img.shields.io/badge/Release-v2.0beta2-blue.svg)](https://github.com/RUB-NDS/TLS-Attacker/releases)
 ![licence](https://img.shields.io/badge/License-Apachev2-brightgreen.svg)
 [![travis](https://travis-ci.org/RUB-NDS/TLS-Attacker.svg?branch=master)](https://travis-ci.org/RUB-NDS/TLS-Attacker)
 
 TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an opportunity to easily define a custom TLS protocol flow and test it against his TLS library.
 
-**Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights. It is the first version and can contain some bugs.*
+**Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights. It is the second version and can contain some bugs.*
 
 ## Compiling and Running
 In order to compile and use TLS-Attacker, you need to have Java installed. Run the maven command from the TLS-Attacker directory:
@@ -19,18 +19,33 @@ Alternatively, if you are in hurry, you can skip the tests by using:
 $ ./mvnw clean package -DskipTests=true
 ```
 
-You can then run the client from the `Runnable/target` directory:
+TLS-Attacker ships with three Demo Applications which allow you easy access to TLS-Attackers functionality.
+
+You can run TLS-Attacker as a client with the following command:
 ```bash
-$ java -jar TLS-Attacker-1.2.jar client -connect [host:port]
+$ java -jar TLS-Client-2.0Beta2.jar -connect [host:port]
 ```
+or as a server with:
+
+```bash
+$ java -jar TLS-Server-2.0Beta2.jar -connect [host:port]
+```
+
+TLS-Attacker also ships with some example Attacks on TLS to show you how easy it is to implement an Attack with TLS-Attacker.
+You can run those examples with the following command:
+```bash
+$ java -jar TLS-Attacker-2.0Beta2.jar -connect [host:port]
+```
+Although these example Applications are very powerful in itself, TLS-Attacker unleashes its full potential when used as a programming library.
 
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
 - Transport: Transport utilities for TCP and UDP.
-- ModifiableVariable: Contains modifiable variables that allow one to execute (specific as well as random) variable modifications during the protocol flow. ModifiableVariables are used in the protocol messages.
-- TLS: Protocol implementation, currently (D)TLS1.2 compatible. 
-- Attacks: Implementation of some well-known attacks and tests for these attacks.
-- Fuzzer: Fuzzing framework implemented on top of the TLS-Attacker functionality.
+- TLS-Core: The protocol stack and heart of TLS-Attacker
+- Utils: A collection of utility classes
+- TLS-Client: The client example Application
+- TLS-Server: The server example Application
+- Attacks: Implementation of some well-known attacks and vulnerability Tests.
 
 ![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
@@ -40,6 +55,7 @@ You can find more information about these modules in the Wiki.
 Currently, the following features are supported:
 - TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346) and 1.2 (RFC-5246)
 - DTLS 1.2 (RFC-6347)
+- SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
 - AES CBC cipher suites
 - Extensions: EC, EC point format, Heartbeat, Max fragment length, Server name, Signature and Hash algorithms

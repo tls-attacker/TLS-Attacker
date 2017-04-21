@@ -11,13 +11,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.rub.nds.tlsattacker.tlsserver;
+package de.rub.nds.tlsattacker.server;
 
+import de.rub.nds.tlsattacker.server.config.ServerCommandConfig;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Attack;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
-import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
-import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
+import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;

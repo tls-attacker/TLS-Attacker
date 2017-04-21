@@ -30,9 +30,9 @@ import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
-import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

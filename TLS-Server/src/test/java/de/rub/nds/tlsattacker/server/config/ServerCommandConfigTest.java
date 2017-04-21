@@ -6,12 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tlsserver;
+package de.rub.nds.tlsattacker.server.config;
 
-import de.rub.nds.tlsattacker.tlsserver.ServerCommandConfig;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import org.junit.Test;
 
 /**

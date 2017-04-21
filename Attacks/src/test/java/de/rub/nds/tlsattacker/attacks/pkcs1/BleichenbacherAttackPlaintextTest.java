@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
-import de.rub.nds.tlsattacker.modifiablevariable.util.RandomHelper;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
-import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
