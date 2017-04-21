@@ -23,7 +23,7 @@ TLS-Attacker ships with three Demo Applications which allow you easy access to T
 
 You can run TLS-Attacker as a client with the following command:
 ```bash
-$ java -jar TLS-Client-2.0Beta2.jar -connect [host:port]
+$ java -jar TLS-Client.jar -connect [host:port]
 ```
 or as a server with:
 
@@ -34,7 +34,7 @@ $ java -jar TLS-Server-2.0Beta2.jar -connect [host:port]
 TLS-Attacker also ships with some example Attacks on TLS to show you how easy it is to implement an Attack with TLS-Attacker.
 You can run those examples with the following command:
 ```bash
-$ java -jar TLS-Attacker-2.0Beta2.jar -connect [host:port]
+$ java -jar Attacks [Attack] -connect [host:port]
 ```
 Although these example Applications are very powerful in itself, TLS-Attacker unleashes its full potential when used as a programming library.
 
@@ -74,17 +74,17 @@ This command starts a TLS server on a port 4433.
 
 If you want to connect to a server, you can use this command:
 ```bash
-$ java -jar TLS-Client-2.0Beta2.jar -connect  -connect localhost:4433
+$ java -jar TLS-Client.jar -connect localhost:4433
 ```
 
 You can use a different cipher suite, TLS version, or connect to a different port with the following parameters:
 ```bash
-$ java -jar TLS-Client-2.0Beta2.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
+$ java -jar TLS-Client.jar -connect localhost:4433 -cipher TLS_RSA_WITH_AES_256_CBC_SHA -version TLS11
 ```
 
 The Attacks module contains some attacks, you can for example test for the padding oracle vulnerabilities:
 ```bash
-$ java -jar TLS-Attacks-2.0Beta2.jar padding_oracle -connect localhost:4433 
+$ java -jar Attacks.jar padding_oracle -connect localhost:4433 
 ```
 
 In case you are a more experienced developer, you can create your own TLS message flow. By writing Java code. For example:
@@ -139,7 +139,7 @@ I know many of you hate Java. Therefore, you can also use an XML structure and r
 ```
 Given this XML structure is located in config.xml, you would just need to execute:
 ```bash
-$ java -jar TLS-Attacker-1.2.jar client -workflow_input config.xml
+$ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input config.xml
 ```
 
 Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a client hello message, it needs to know which values to
