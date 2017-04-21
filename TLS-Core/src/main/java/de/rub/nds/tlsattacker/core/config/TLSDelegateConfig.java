@@ -1,0 +1,62 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.core.config;
+
+import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ *
+ * @author Robert Merget - robert.merget@rub.de
+ */
+public abstract class TLSDelegateConfig {
+
+    private final List<Delegate> delegateList;
+    private final GeneralDelegate generalDelegate;
+
+    public TLSDelegateConfig(GeneralDelegate delegate) {
+        delegateList = new LinkedList<>();
+        this.generalDelegate = delegate;
+        delegateList.add(generalDelegate);
+    }
+
+    public void addDelegate(Delegate delegate) {
+        delegateList.add(delegate);
+    }
+
+    public Delegate getDelegate(Class<? extends Delegate> delegateClass) {
+        for (Delegate delegate : getDelegateList()) {
+            if (delegate.getClass().equals(delegateClass)) {
+                return delegate;
+            }
+        }
+        return null;
+    }
+
+    public List<Delegate> getDelegateList() {
+        return Collections.unmodifiableList(delegateList);
+    }
+
+    public GeneralDelegate getGeneralDelegate() {
+        return generalDelegate;
+    }
+
+    public TlsConfig createConfig() {
+        TlsConfig config = TlsConfig.createConfig();
+        for (Delegate delegate : getDelegateList()) {
+            delegate.applyDelegate(config);
+        }
+        return config;
+    }
+
+}
