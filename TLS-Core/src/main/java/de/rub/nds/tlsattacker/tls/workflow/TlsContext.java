@@ -163,7 +163,12 @@ public class TlsContext {
     private List<SNIEntry> clientSNIEntryList;
 
     private int sequenceNumber = 0;
-
+    
+    /**
+     * supported protocol versions
+     */
+    private List<ProtocolVersion> clientSupportedProtocolVersions;
+    
     public TlsContext() {
         digest = new TlsMessageDigest();
         config = TlsConfig.createConfig();
@@ -181,6 +186,15 @@ public class TlsContext {
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
+    public List<ProtocolVersion> getClientSupportedProtocolVersions() {
+        return clientSupportedProtocolVersions;
+    }
+
+    public void setClientSupportedProtocolVersions(List<ProtocolVersion> clientSupportedProtocolVersions) {
+        this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
+    }
+    
+    
     public List<NamedCurve> getClientNamedCurvesList() {
         return clientNamedCurvesList;
     }

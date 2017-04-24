@@ -133,6 +133,10 @@ public final class TlsConfig implements Serializable {
      * Supported namedCurves by default
      */
     private List<NamedCurve> namedCurves;
+     /**
+     * Supported ProtocolVersions by default
+     */
+    private List<ProtocolVersion> supportedVersions;
     /**
      * Which heartBeat mode we are in
      */
@@ -768,6 +772,14 @@ public final class TlsConfig implements Serializable {
 
     public void setNamedCurves(List<NamedCurve> namedCurves) {
         this.namedCurves = namedCurves;
+    }
+    
+    public List<ProtocolVersion> getSupportedVersions() {
+        return Collections.unmodifiableList(supportedVersions);
+    }
+
+    public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
+        this.supportedVersions = supportedVersions;
     }
 
     public HeartbeatMode getHeartbeatMode() {
