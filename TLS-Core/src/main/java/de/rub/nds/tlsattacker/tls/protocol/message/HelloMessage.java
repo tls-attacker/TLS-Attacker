@@ -61,25 +61,6 @@ public abstract class HelloMessage extends HandshakeMessage {
      */
     @ModifiableVariableProperty
     private ModifiableByteArray sessionId;
-    /**
-     * List of extensions
-     */
-    @XmlElementWrapper
-    @XmlElements(value = {
-            @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
-            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
-            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
-            @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
-            @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
-            @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
-    @HoldsModifiableVariable
-    private List<ExtensionMessage> extensions;
-
-    @ModifiableVariableProperty
-    private ModifiableByteArray extensionBytes;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger extensionsLength;
 
     public HelloMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
@@ -118,18 +99,6 @@ public abstract class HelloMessage extends HandshakeMessage {
         this.random = random;
     }
 
-    public ModifiableInteger getExtensionsLength() {
-        return extensionsLength;
-    }
-
-    public void setExtensionsLength(ModifiableInteger extensionsLength) {
-        this.extensionsLength = extensionsLength;
-    }
-
-    public void setExtensionsLength(int extensionsLength) {
-        this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
-    }
-
     public ModifiableInteger getSessionIdLength() {
         return sessionIdLength;
     }
@@ -150,18 +119,6 @@ public abstract class HelloMessage extends HandshakeMessage {
         this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionId);
     }
 
-    public void setExtensionBytes(byte[] extensionBytes) {
-        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
-    }
-
-    public ModifiableByteArray getExtensionBytes() {
-        return extensionBytes;
-    }
-
-    public void setExtensionBytes(ModifiableByteArray extensionBytes) {
-        this.extensionBytes = extensionBytes;
-    }
-
     public void setUnixTime(byte[] unixTime) {
         this.unixTime = ModifiableVariableFactory.safelySetValue(this.unixTime, unixTime);
     }
@@ -174,38 +131,4 @@ public abstract class HelloMessage extends HandshakeMessage {
         this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
-    public List<ExtensionMessage> getExtensions() {
-        return extensions;
-    }
-
-    public void setExtensions(List<ExtensionMessage> extensions) {
-        this.extensions = extensions;
-    }
-
-    public void addExtension(ExtensionMessage extension) {
-        if (this.extensions == null) {
-            extensions = new LinkedList<>();
-        }
-        this.extensions.add(extension);
-    }
-
-    public boolean containsExtension(ExtensionType extensionType) {
-        for (ExtensionMessage e : extensions) {
-            if (e.getExtensionTypeConstant() == extensionType) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (extensions != null) {
-            for (ExtensionMessage em : extensions) {
-                holders.add(em);
-            }
-        }
-        return holders;
-    }
 }

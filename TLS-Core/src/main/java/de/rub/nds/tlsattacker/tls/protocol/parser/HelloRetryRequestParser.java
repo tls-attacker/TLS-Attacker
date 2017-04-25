@@ -54,33 +54,5 @@ public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRe
         msg.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
         LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
-    
-    protected void parseExtensionLength(HelloRetryRequestMessage message) {
-        message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
-        LOGGER.debug("ExtensionLength:" + message.getExtensionsLength().getValue());
-    }
-    
-    protected void parseExtensionBytes(HelloRetryRequestMessage message) {
-        byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
-        message.setExtensionBytes(extensionBytes);
-        LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
-        List<ExtensionMessage> extensionMessages = new LinkedList<>();
-        int pointer = 0;
-        while (pointer < extensionBytes.length) {
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer);
-            extensionMessages.add(parser.parse());
-            pointer = parser.getPointer();
-        }
-        message.setExtensions(extensionMessages);
-    }
-    
-    protected boolean hasExtensionLengthField(HelloRetryRequestMessage message) {
-        return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
-                + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
-    }
 
-
-    protected boolean hasExtensions(HelloRetryRequestMessage message) {
-        return message.getExtensionsLength().getValue() > 0;
-    }
 }

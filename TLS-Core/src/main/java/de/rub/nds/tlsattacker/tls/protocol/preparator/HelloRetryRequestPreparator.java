@@ -70,25 +70,4 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
         LOGGER.debug("CipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
     
-    protected void prepareExtensions() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (msg.getExtensions() != null) {
-            for (ExtensionMessage extensionMessage : msg.getExtensions()) {
-                ExtensionHandler handler = extensionMessage.getHandler(context);
-                handler.getPreparator(extensionMessage).prepare();
-                try {
-                    stream.write(extensionMessage.getExtensionBytes().getValue());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
-                }
-            }
-        }
-        msg.setExtensionBytes(stream.toByteArray());
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
-    }
-
-    protected void prepareExtensionLength() {
-        msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
-        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
-    }
 }

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import static de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer.LOGGER;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -95,4 +97,39 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
         appendInt(msg.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
         LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
+    
+     /**
+     * Checks if the message has an ExtensionsLength field
+     * 
+     * @return True if the message has an ExtensionLength field
+     */
+    protected boolean hasExtensionLengthField() {
+        return msg.getExtensionsLength() != null;
+    }
+
+    /**
+     * Writes the ExtensionLength field of the message into the final byte[]
+     */
+    protected void writeExtensionLength() {
+        appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
+    }
+
+    /**
+     * Checks if the message has Extensions
+     * 
+     * @return True if the message has Extensions
+     */
+    protected boolean hasExtensions() {
+        return msg.getExtensionBytes() != null;
+    }
+
+    /**
+     * Writes the ExtensionBytes of the message into the final byte[]
+     */
+    protected void writeExtensionBytes() {
+        appendBytes(msg.getExtensionBytes().getValue());
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+    }
+
 }

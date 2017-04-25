@@ -36,15 +36,6 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
     
-    @HoldsModifiableVariable
-    private List<ExtensionMessage> extensions;
-
-    @ModifiableVariableProperty
-    private ModifiableByteArray extensionBytes;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger extensionsLength;
-    
     public HelloRetryRequestMessage() {
         super(HandshakeMessageType.HELLO_RETRY_REQUEST);
     }
@@ -77,54 +68,6 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
         this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
     }
     
-    public ModifiableInteger getExtensionsLength() {
-        return extensionsLength;
-    }
-
-    public void setExtensionsLength(ModifiableInteger extensionsLength) {
-        this.extensionsLength = extensionsLength;
-    }
-
-    public void setExtensionsLength(int extensionsLength) {
-        this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
-    }
-    
-    public ModifiableByteArray getExtensionBytes() {
-        return extensionBytes;
-    }
-    
-    public void setExtensionBytes(byte[] extensionBytes) {
-        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
-    }
-    
-    public void setExtensionBytes(ModifiableByteArray extensionBytes) {
-        this.extensionBytes = extensionBytes;
-    }
-        
-    public List<ExtensionMessage> getExtensions() {
-        return extensions;
-    }
-
-    public void setExtensions(List<ExtensionMessage> extensions) {
-        this.extensions = extensions;
-    }
-
-    public void addExtension(ExtensionMessage extension) {
-        if (this.extensions == null) {
-            extensions = new LinkedList<>();
-        }
-        this.extensions.add(extension);
-    }
-
-    public boolean containsExtension(ExtensionType extensionType) {
-        for (ExtensionMessage e : extensions) {
-            if (e.getExtensionTypeConstant() == extensionType) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -132,10 +75,10 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
                 .append("\n  Selected Cipher Suite: ")
                 .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()))
                 .append("\n  Extensions: ");
-        if (extensions == null) {
+        if (getExtensions() == null) {
             sb.append("null");
         } else {
-            for (ExtensionMessage e : extensions) {
+            for (ExtensionMessage e : getExtensions()) {
                 sb.append(e.toString());
             }
         }

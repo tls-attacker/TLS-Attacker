@@ -8,14 +8,30 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.message;
 
+import de.rub.nds.tlsattacker.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bool.ModifiableBoolean;
+import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
+import java.util.LinkedList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -49,6 +65,26 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean includeInDigest = null;
 
+    /**
+     * List of extensions
+     */
+    @XmlElementWrapper
+    @XmlElements(value = {
+            @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
+            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
+            @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
+            @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
+            @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
+    @HoldsModifiableVariable
+    private List<ExtensionMessage> extensions;
+
+    @ModifiableVariableProperty
+    private ModifiableByteArray extensionBytes;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger extensionsLength;
+    
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
@@ -61,6 +97,54 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.handshakeMessageType = handshakeMessageType;
     }
 
+    public List<ExtensionMessage> getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(List<ExtensionMessage> extensions) {
+        this.extensions = extensions;
+    }
+
+    public void addExtension(ExtensionMessage extension) {
+        if (this.extensions == null) {
+            extensions = new LinkedList<>();
+        }
+        this.extensions.add(extension);
+    }
+
+    public boolean containsExtension(ExtensionType extensionType) {
+        for (ExtensionMessage e : extensions) {
+            if (e.getExtensionTypeConstant() == extensionType) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void setExtensionBytes(byte[] extensionBytes) {
+        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
+    }
+
+    public ModifiableByteArray getExtensionBytes() {
+        return extensionBytes;
+    }
+
+    public void setExtensionBytes(ModifiableByteArray extensionBytes) {
+        this.extensionBytes = extensionBytes;
+    }
+    
+    public ModifiableInteger getExtensionsLength() {
+        return extensionsLength;
+    }
+
+    public void setExtensionsLength(ModifiableInteger extensionsLength) {
+        this.extensionsLength = extensionsLength;
+    }
+
+    public void setExtensionsLength(int extensionsLength) {
+        this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
+    }
+    
     public ModifiableByte getType() {
         return type;
     }
@@ -156,5 +240,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         return handshakeMessageType.getName();
+    }
+    
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (getExtensions() != null) {
+            for (ExtensionMessage em : getExtensions()) {
+                holders.add(em);
+            }
+        }
+        return holders;
     }
 }

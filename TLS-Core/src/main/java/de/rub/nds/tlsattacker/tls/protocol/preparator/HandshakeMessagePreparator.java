@@ -9,9 +9,16 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import static de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -75,4 +82,27 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     private boolean isDTLS() {
         return context.getSelectedProtocolVersion().isDTLS();
     }
+    
+    protected void prepareExtensions() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (msg.getExtensions() != null) {
+            for (ExtensionMessage extensionMessage : msg.getExtensions()) {
+                ExtensionHandler handler = extensionMessage.getHandler(context);
+                handler.getPreparator(extensionMessage).prepare();
+                try {
+                    stream.write(extensionMessage.getExtensionBytes().getValue());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+                }
+            }
+        }
+        msg.setExtensionBytes(stream.toByteArray());
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+    }
+
+    protected void prepareExtensionLength() {
+        msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
+    }
+
 }

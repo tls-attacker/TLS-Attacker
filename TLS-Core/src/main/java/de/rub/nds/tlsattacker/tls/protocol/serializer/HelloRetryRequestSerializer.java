@@ -47,23 +47,5 @@ public class HelloRetryRequestSerializer extends HandshakeMessageSerializer<Hell
         appendBytes(msg.getSelectedCipherSuite().getValue());
         LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
-    
-    protected void writeExtensionLength() {
-        appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
-    }
-    
-    protected void writeExtensionBytes() {
-        appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
-    }
-    
-    protected boolean hasExtensionLengthField() {
-        return msg.getExtensionsLength() != null;
-    }
-    
-    protected boolean hasExtensions() {
-        return msg.getExtensionBytes() != null;
-    }
 
 }
