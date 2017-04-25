@@ -8,9 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
+import de.rub.nds.tlsattacker.tls.exceptions.UnknownProtocolVersionException;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,7 +64,27 @@ public enum ProtocolVersion {
         }
         return MAP.get(i);
     }
-
+    
+    public static List<ProtocolVersion> getProtocolVersions(byte[] values) {
+        List<ProtocolVersion> versions = new LinkedList<>();
+        if (values.length % 2 != 0) {
+            throw new UnknownProtocolVersionException("Last ProtocolVersion are unknown!");
+        }
+        int pointer = 0;
+        while (pointer < values.length) {
+            byte[] version = new byte[2];
+            version[0] = values[pointer];
+            version[1] = values[pointer + 1];
+            if (version == null) {
+                throw new UnknownProtocolVersionException("Unknown ProtocolVersion!");
+            } else {
+                versions.add(getProtocolVersion(version));
+            }
+            pointer += 2;
+        }
+        return versions;
+    }
+    
     public static ProtocolVersion getRandom() {
         ProtocolVersion c = null;
         while (c == null) {

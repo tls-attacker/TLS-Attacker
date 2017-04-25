@@ -54,16 +54,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
         if (versionBytes.length % HandshakeByteLength.VERSION != 0) {
             throw new AdjustmentException("Could not create resonable ProtocolVersions from VersionBytes");
         }
-        List<ProtocolVersion> versionList = new LinkedList<>();
-        for (int i = 0; i < versionBytes.length; i = i + HandshakeByteLength.VERSION) {
-            byte[] version = Arrays.copyOfRange(versionBytes, i, i + HandshakeByteLength.VERSION);
-            ProtocolVersion protocolVersion = ProtocolVersion.getProtocolVersion(version);
-            if (protocolVersion == null) {
-                LOGGER.warn("Unknown ProtocolVersion:" + ArrayConverter.bytesToHexString(version));
-            } else {
-                versionList.add(protocolVersion);
-            }
-        }
+        List<ProtocolVersion> versionList = ProtocolVersion.getProtocolVersions(versionBytes);
         context.setClientSupportedProtocolVersions(versionList);
     }
     
