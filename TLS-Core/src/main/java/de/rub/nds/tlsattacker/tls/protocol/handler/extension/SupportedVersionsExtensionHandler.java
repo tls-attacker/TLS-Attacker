@@ -12,16 +12,10 @@ import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SupportedVersionsExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SupportedVersionsExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -34,17 +28,17 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public SupportedVersionsExtensionParser getParser(byte[] message, int pointer) {
         return new SupportedVersionsExtensionParser(pointer, message);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(SupportedVersionsExtensionMessage message) {
+    public SupportedVersionsExtensionPreparator getPreparator(SupportedVersionsExtensionMessage message) {
         return new SupportedVersionsExtensionPreparator(context, message);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(SupportedVersionsExtensionMessage message) {
+    public SupportedVersionsExtensionSerializer getSerializer(SupportedVersionsExtensionMessage message) {
         return new SupportedVersionsExtensionSerializer(message);
     }
 
