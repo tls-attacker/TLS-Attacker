@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**
@@ -22,22 +23,12 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class PaddingExtensionMessage extends ExtensionMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger paddingLength;
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
+    /**
+     * Contains the padding bytes of the padding extension.
+     * The bytes shall be empty.
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray paddingBytes;
-
-    public ModifiableInteger getPaddingLength() {
-        return paddingLength;
-    }
-
-    public void setPaddingLength(ModifiableInteger paddingLength) {
-        this.paddingLength = paddingLength;
-    }
-
-    public void setPaddingLength(int paddingLength) {
-        this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
-    }
 
     public ModifiableByteArray getPaddingBytes() {
         return paddingBytes;
@@ -57,8 +48,7 @@ public class PaddingExtensionMessage extends ExtensionMessage {
 
     @Override
     public ExtensionHandler getHandler(TlsContext context) {
-        //TODO Return correct handler
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new PaddingExtensionHandler(context);
     }
 
 }

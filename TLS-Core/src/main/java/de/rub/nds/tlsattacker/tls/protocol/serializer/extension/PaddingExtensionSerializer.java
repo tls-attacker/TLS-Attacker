@@ -8,15 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExtensionMessage>{
-    
+public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExtensionMessage> {
+
     private final PaddingExtensionMessage message;
 
     public PaddingExtensionSerializer(PaddingExtensionMessage message) {
@@ -26,10 +25,10 @@ public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExten
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getPaddingLength().getValue(), ExtensionByteLength.PADDING_LENGTH);
         appendBytes(message.getPaddingBytes().getValue());
+        LOGGER.debug("Serialized PaddingExtension with "
+                + message.getPaddingBytes().getValue() + " padding bytes.");
         return getAlreadySerialized();
     }
-    
-    
+
 }

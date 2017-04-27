@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *

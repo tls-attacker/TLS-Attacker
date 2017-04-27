@@ -6,14 +6,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
+package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializerTest;
 import java.util.Collection;
+import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -23,7 +24,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionSerializerTest {
+public class PaddingExtensionParserTest {
 
     /**
      * Parameterized set up of the test vector.
@@ -33,10 +34,7 @@ public class PaddingExtensionSerializerTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][]{{ExtensionType.PADDING, 6,
-            new byte[]{0, 0, 0, 0, 0, 0},
-            ArrayConverter.hexStringToByteArray("00150006000000000000"), 0}});
+        return PaddingExtensionSerializerTest.generateData();
     }
 
     private final ExtensionType extensionType;
@@ -45,7 +43,7 @@ public class PaddingExtensionSerializerTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public PaddingExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+    public PaddingExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
@@ -53,22 +51,15 @@ public class PaddingExtensionSerializerTest {
         this.startParsing = startParsing;
     }
 
-
-
-    /**
-     * Tests the serializer of the padding extension.
-     */
     @Test
-    public void testSerializeExtensionContent() {
-        PaddingExtensionMessage msg = new PaddingExtensionMessage();
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setPaddingBytes(extensionPayload);
+    public void testparseExtensionMessageContent() {
 
-        PaddingExtensionSerializer serializer = new PaddingExtensionSerializer(msg);
+        PaddingExtensionParser parser = new PaddingExtensionParser(startParsing, expectedBytes);
+        PaddingExtensionMessage message = parser.parse();
 
-        assertArrayEquals(expectedBytes, serializer.serialize());
-
+        assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
+        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
     }
 
 }

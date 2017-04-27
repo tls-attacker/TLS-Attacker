@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMessage>{
+public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMessage> {
 
     public PaddingExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -23,13 +22,12 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
 
     @Override
     public void parseExtensionMessageContent(PaddingExtensionMessage msg) {
-        msg.setExtensionBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
+        msg.setPaddingBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
     }
 
     @Override
     protected PaddingExtensionMessage createExtensionMessage() {
         return new PaddingExtensionMessage();
     }
-    
-    
+
 }

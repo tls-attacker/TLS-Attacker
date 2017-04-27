@@ -8,17 +8,14 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,6 +31,9 @@ public class PaddingExtensionHandlerTest {
     public PaddingExtensionHandlerTest() {
     }
 
+    /**
+     * Some initial set up.
+     */
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -41,18 +41,18 @@ public class PaddingExtensionHandlerTest {
     }
 
     /**
-     * Test of adjustTLSContext method, of class HeartbeatExtensionHandler.
+     * Test of adjustTLSContext method, of class PaddingExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
-        msg.setPaddingLength(6);
+        msg.setPaddingBytes(new byte[6]);
         handler.adjustTLSContext(msg);
         assertEquals(context.getPaddingExtensionLength(), 6);
     }
 
     /**
-     * Test of getParser method, of class HeartbeatExtensionHandler.
+     * Test of getParser method, of class PaddingExtensionHandler.
      */
     @Test
     public void testGetParser() {
@@ -60,7 +60,7 @@ public class PaddingExtensionHandlerTest {
     }
 
     /**
-     * Test of getPreparator method, of class HeartbeatExtensionHandler.
+     * Test of getPreparator method, of class PaddingExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
@@ -68,7 +68,7 @@ public class PaddingExtensionHandlerTest {
     }
 
     /**
-     * Test of getSerializer method, of class HeartbeatExtensionHandler.
+     * Test of getSerializer method, of class PaddingExtensionHandler.
      */
     @Test
     public void testGetSerializer() {

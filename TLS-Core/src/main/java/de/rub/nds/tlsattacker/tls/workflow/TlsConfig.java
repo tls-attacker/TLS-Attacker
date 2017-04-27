@@ -214,6 +214,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
+    /**
+     * If we generate ClientHello with the Padding extension
+     */
+    private boolean addPaddingExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -250,7 +254,7 @@ public final class TlsConfig implements Serializable {
      * Fixed DH g value used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] fixedDHg = { 0x02 };
+    private byte[] fixedDHg = {0x02};
 
     private String defaultApplicationMessageData = "Test";
 
@@ -290,6 +294,11 @@ public final class TlsConfig implements Serializable {
      * How much data we should put into a record by default
      */
     private int defaultMaxRecordData = 1048576;
+
+    /**
+     * How much padding bytes should be send by default
+     */
+    private int defaultPaddingExtensionLength = 6;
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
@@ -443,6 +452,22 @@ public final class TlsConfig implements Serializable {
 
     public void setHeartbeatMaxPaddingLength(int heartbeatMaxPaddingLength) {
         this.heartbeatMaxPaddingLength = heartbeatMaxPaddingLength;
+    }
+
+    public boolean isAddPaddingExtension() {
+        return addPaddingExtension;
+    }
+
+    public void setAddPaddingExtension(boolean addPaddingExtension) {
+        this.addPaddingExtension = addPaddingExtension;
+    }
+
+    public int getDefaultPaddingExtensionLength() {
+        return defaultPaddingExtensionLength;
+    }
+
+    public void setDefaultPaddingExtensionLength(int defaultPaddingExtensionLength) {
+        this.defaultPaddingExtensionLength = defaultPaddingExtensionLength;
     }
 
     public List<ClientCertificateType> getClientCertificateTypes() {

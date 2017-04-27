@@ -8,19 +8,8 @@
  */
 package de.rub.nds.tlsattacker.tls.constants;
 
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ECPointFormatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.HeartbeatExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ServerNameIndicationExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.UnknownExtensionHandler;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
