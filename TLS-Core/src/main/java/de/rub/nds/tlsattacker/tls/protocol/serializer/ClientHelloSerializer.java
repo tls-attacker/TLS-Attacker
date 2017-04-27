@@ -40,10 +40,14 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     @Override
     public byte[] serializeHandshakeMessageContent() {
         writeProtocolVersion();
-        writeUnixtime();
+        if(version != ProtocolVersion.TLS13) {
+            writeUnixtime();
+        }
         writeRandom();
         writeSessionIDLength();
-        writeSessionID();
+        if(version != ProtocolVersion.TLS13) {
+            writeSessionID();
+        }
         writeCipherSuiteLength(msg);
         writeCipherSuites(msg);
         writeCompressionLength(msg);

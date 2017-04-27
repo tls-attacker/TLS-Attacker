@@ -37,12 +37,18 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     @Override
     public void prepareHandshakeMessageContents() {
         prepareProtocolVersion();
-        prepareUnixTime();
+        if(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+            prepareUnixTime();
+        }
         prepareRandom();
-        prepareSessionID();
-        prepareSessionIDLength();
+        if(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+            prepareSessionID();
+            prepareSessionIDLength();
+        }
         prepareCipherSuite();
-        prepareCompressionMethod();
+        if(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+            prepareCompressionMethod();
+        }
         prepareExtensions();
         prepareExtensionLength();
     }

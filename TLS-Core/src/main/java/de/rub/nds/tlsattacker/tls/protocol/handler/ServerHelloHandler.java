@@ -51,10 +51,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     protected void adjustTLSContext(ServerHelloMessage message) {
+        if(ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+            adjustSelectedCompression(message);
+            adjustSelectedSessionID(message);
+        }
         adjustSelectedCiphersuite(message);
-        adjustSelectedCompression(message);
         adjustSelectedProtocolVersion(message);
-        adjustSelectedSessionID(message);
         adjustServerRandom(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {

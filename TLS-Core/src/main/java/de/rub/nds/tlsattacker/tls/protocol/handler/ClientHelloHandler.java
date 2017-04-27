@@ -61,7 +61,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        adjustSessionID(message);
+        // Use the right Protocol Version ?
+        if(tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            adjustSessionID(message);
+        }
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
@@ -98,7 +101,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustProtocolVersion(ClientHelloMessage message) {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        ProtocolVersion version;
+        // Use the right Protocol Version ?
+        if(tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        } else {
+            version = ProtocolVersion.TLS13;
+        } 
         tlsContext.setHighestClientProtocolVersion(version);
         LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
     }

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
@@ -40,10 +41,17 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     @Override
     public void prepareHandshakeMessageContents() {
         prepareProtocolVersion(msg);
-        prepareUnixTime();
+        if(context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            prepareUnixTime();
+        }
         prepareRandom();
-        prepareSessionID();
-        prepareSessionIDLength();
+        if(context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            prepareSessionID();
+            prepareSessionIDLength();
+        } else {
+            msg.setSessionIdLength(0);
+            LOGGER.debug("SessionIdLength: " + msg.getSessionIdLength().getValue());
+        }
         prepareCompressions(msg);
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
@@ -91,12 +99,21 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareProtocolVersion(ClientHelloMessage msg) {
+        if(context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        } else {
+            msg.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        }
         msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
-        msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
+        if(context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
+        } else {
+            msg.setCompressions(CompressionMethod.NULL.getArrayValue());
+        }
         LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 
