@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -67,6 +68,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction sendAction = new SendAction(applicationMessage);
+        sendAction.setConfiguredRecords(new LinkedList<AbstractRecord>());
         sendAction.getConfiguredRecords().add(record);
         trace.add(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
