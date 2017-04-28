@@ -4,10 +4,9 @@ pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
 release.properties
-/EvolutionaryFuzzer/nbproject/
 /TLS-Core/nbproject/
 /Attacks/nbproject/
-*.jar
+/apps/
 nbactions.xml
 TLS-Client/nbactions.xml
 TLS-Server/nbactions.xml

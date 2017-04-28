@@ -10,33 +10,22 @@
     <artifactId>TLS-Client</artifactId>
     <packaging>jar</packaging>
     <build>
+        <finalName>TLS-Client</finalName>              
         <plugins>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <finalName>TLS-Client</finalName> 
-                    <outputDirectory>${project.parent.basedir}</outputDirectory>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>de.rub.nds.tlsattacker.client.main.TLSClient</mainClass>
                         </manifest>
                     </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- bind to the packaging phase -->
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -44,13 +33,14 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${project.parent.basedir}</directory>
-                            <includes>
-                                <include>TLS-Client.jar</include>
-                            </includes>
+                            <directory>${main.basedir}/apps</directory>
                         </fileset>
                     </filesets>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
