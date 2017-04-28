@@ -30,6 +30,9 @@ import java.util.Random;
 import javax.crypto.KeyAgreement;
 
 /**
+ * This class is here only to test some results from our invalid curve paper,
+ * the oracle should not work anymore because the SUN implementation has been
+ * patched.
  * 
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */

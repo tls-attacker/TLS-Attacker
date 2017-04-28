@@ -10,12 +10,14 @@ package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECOracle;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECSunOracle;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -31,8 +33,8 @@ public class ICEAttackerTest {
     /**
      * Test of attack method, of class ICEAttacker.
      */
-    @Ignore("Takes too long")
     @Test()
+    @Category(SlowTests.class)
     public void testAttack() {
         TestECOracle oracle = new TestECOracle("secp256r1");
         ICEAttacker attacker = new ICEAttacker(oracle);
@@ -48,7 +50,7 @@ public class ICEAttackerTest {
     /**
      * Test of attack method, of class ICEAttacker.
      */
-    @Ignore("Takes too long")
+    @Ignore("This attack test would work only against an old vulnerable SUN implementation")
     @Test
     public void testSunAttack() {
         TestECSunOracle oracle = new TestECSunOracle("secp256r1");
@@ -60,18 +62,6 @@ public class ICEAttackerTest {
         LOGGER.debug(oracle.getComputer().getSecret());
 
         assertEquals(oracle.getComputer().getSecret(), result);
-    }
-
-    // @Ignore("Just a probability computation for our paper")
-    @Test
-    public void computeProbability() {
-        double probability = 0.98;
-        int results = 53;
-        double result = Math.pow(probability, results)
-                + (results * (1 - probability) * Math.pow(probability, results - 1))
-                + (190 * Math.pow(1 - probability, 2) * Math.pow(probability, results - 2))
-                + (1140 * Math.pow(1 - probability, 3) * Math.pow(probability, results - 3));
-        LOGGER.debug(result);
     }
 
 }

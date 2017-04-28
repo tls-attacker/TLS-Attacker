@@ -8,17 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.modifiablevariable.util.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
@@ -35,7 +31,7 @@ public class UnknownMessageParserStressTest {
      * Test of parse method, of class UnknownMessageParser.
      */
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTests.class)
     public void testParse() {
         Random r = new Random(10);
         for (int i = 0; i < 100; i++) {

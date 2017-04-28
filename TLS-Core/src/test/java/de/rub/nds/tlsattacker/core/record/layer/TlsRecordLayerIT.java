@@ -12,9 +12,11 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  *
@@ -36,6 +38,7 @@ public class TlsRecordLayerIT {
      * Test of parseRecords method, of class TlsRecordLayer.
      */
     @Test
+    @Category(IntegrationTests.class)
     public void testParseRecords() {
         Random r = RandomHelper.getRandom();
         for (int i = 0; i < 1000000; i++) {

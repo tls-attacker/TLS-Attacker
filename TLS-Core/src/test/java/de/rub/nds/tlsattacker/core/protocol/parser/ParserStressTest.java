@@ -8,31 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
-import de.rub.nds.modifiablevariable.util.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,7 +26,7 @@ import org.junit.experimental.categories.Category;
 public class ParserStressTest {
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTests.class)
     public void testParser() {
         for (int i = 0; i < 100000; i++) {
             Random r = new Random(i);

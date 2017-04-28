@@ -8,21 +8,17 @@
  */
 package de.rub.nds.tlsattacker.client;
 
-import de.rub.nds.modifiablevariable.util.tests.IntegrationTest;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -34,6 +30,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -85,7 +82,7 @@ public class TlsClientTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTests.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
@@ -106,7 +103,7 @@ public class TlsClientTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTests.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256);

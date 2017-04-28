@@ -153,37 +153,32 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.18</version>
+                    <version>2.19.1</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                        <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
+                        <excludedGroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</excludedGroups>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>default-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <configuration>
-                                <excludedGroups>de.rub.nds.modifiablevariable.util.tests.IntegrationTest</excludedGroups>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
+                    <configuration>
+                        <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                        <!-- Integration tests and slow tests are started -->
+                        <groups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</groups>
+                    </configuration>
                     <executions>
                         <execution>
-                            <id>integration-test</id>
                             <goals>
                                 <goal>integration-test</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>verify</id>
-                            <goals>
                                 <goal>verify</goal>
                             </goals>
                         </execution>
