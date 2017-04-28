@@ -81,7 +81,7 @@ public class ParserSerializerStressTest {
     @Category(IntegrationTests.class)
     public void testParser() {
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Random r = new Random(i);
             int random = r.nextInt(20);
             ProtocolMessage message = null;

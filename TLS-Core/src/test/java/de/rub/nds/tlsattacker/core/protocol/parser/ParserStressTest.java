@@ -28,7 +28,7 @@ public class ParserStressTest {
     @Test
     @Category(IntegrationTests.class)
     public void testParser() {
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Random r = new Random(i);
             try {
                 int length = r.nextInt(10000);
