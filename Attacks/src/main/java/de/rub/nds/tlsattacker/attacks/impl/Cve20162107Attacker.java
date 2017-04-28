@@ -32,6 +32,8 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -68,7 +70,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
-
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
