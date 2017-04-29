@@ -53,6 +53,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -106,6 +107,7 @@ public class SerialisationFullTest {
         trace.add(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
         trace.add(new ChangePreMasterSecretAction(new byte[] { 0x33, 0x66, 0x55, 0x44, }));
         trace.add(new WaitingAction(10000));
+        trace.add(new ResetConnectionAction());
         trace.add(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
         trace.add(new ChangeServerCertificateAction(Certificate.EMPTY_CHAIN));
         trace.add(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));

@@ -12,45 +12,28 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class WaitingAction extends TLSAction {
+public class ResetConnectionAction extends TLSAction {
 
-    private long time;
-
-    public WaitingAction(long time) {
-        this.time = time;
-    }
-
-    public WaitingAction() {
+    public ResetConnectionAction() {
     }
 
     @Override
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
-        LOGGER.info("Wating " + time + "ms...");
-        try {
-            Thread.currentThread().sleep(time);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.setExecuted(Boolean.TRUE);
+        LOGGER.info("Terminating Connection");
+        tlsContext.getTransportHandler().closeConnection();
+        LOGGER.info("Reopening Connection");
+        tlsContext.getTransportHandler().initialize();
+        setExecuted(true);
     }
 
     @Override
     public void reset() {
-        this.setExecuted(false);
+        setExecuted(false);
     }
 
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
 }
