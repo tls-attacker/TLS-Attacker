@@ -36,7 +36,8 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public PaddingExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+    public PaddingExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
@@ -73,6 +74,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of getParser method, of class PaddingExtensionHandler.
      */
+    @Override
     @Test
     public void testGetParser() {
         assertTrue(handler.getParser(expectedBytes, startParsing) instanceof PaddingExtensionParser);

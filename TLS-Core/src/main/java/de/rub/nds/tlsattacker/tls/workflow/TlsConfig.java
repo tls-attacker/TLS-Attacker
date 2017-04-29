@@ -258,7 +258,7 @@ public final class TlsConfig implements Serializable {
      * Fixed DH g value used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] fixedDHg = {0x02};
+    private byte[] fixedDHg = { 0x02 };
 
     private String defaultApplicationMessageData = "Test";
 

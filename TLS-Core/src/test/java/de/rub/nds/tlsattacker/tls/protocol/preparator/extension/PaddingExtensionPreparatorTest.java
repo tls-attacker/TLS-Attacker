@@ -33,7 +33,8 @@ public class PaddingExtensionPreparatorTest extends ExtensionPreparatorTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public PaddingExtensionPreparatorTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+    public PaddingExtensionPreparatorTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;

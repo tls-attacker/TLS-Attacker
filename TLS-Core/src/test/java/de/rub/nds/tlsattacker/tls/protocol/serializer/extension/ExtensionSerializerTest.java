@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
  */
 public abstract class ExtensionSerializerTest {
     protected ExtensionMessage message;
-    
+
     public abstract void testSerializeExtensionContent();
-    
+
 }

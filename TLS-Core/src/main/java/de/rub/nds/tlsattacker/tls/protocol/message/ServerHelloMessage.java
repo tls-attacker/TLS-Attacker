@@ -37,13 +37,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
-    
+
     public ServerHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
@@ -68,37 +68,37 @@ public class ServerHelloMessage extends HelloMessage {
             addExtension(new ExtendedMasterSecretExtensionMessage());
         }
     }
-    
+
     public ServerHelloMessage() {
         super(HandshakeMessageType.SERVER_HELLO);
-        
+
     }
-    
+
     public ModifiableByteArray getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
-    
+
     public void setSelectedCipherSuite(ModifiableByteArray selectedCipherSuite) {
         this.selectedCipherSuite = selectedCipherSuite;
     }
-    
+
     public void setSelectedCipherSuite(byte[] value) {
         this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
     }
-    
+
     public ModifiableByte getSelectedCompressionMethod() {
         return selectedCompressionMethod;
     }
-    
+
     public void setSelectedCompressionMethod(ModifiableByte selectedCompressionMethod) {
         this.selectedCompressionMethod = selectedCompressionMethod;
     }
-    
+
     public void setSelectedCompressionMethod(byte value) {
         this.selectedCompressionMethod = ModifiableVariableFactory
                 .safelySetValue(this.selectedCompressionMethod, value);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -121,7 +121,7 @@ public class ServerHelloMessage extends HelloMessage {
         }
         return sb.toString();
     }
-    
+
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);

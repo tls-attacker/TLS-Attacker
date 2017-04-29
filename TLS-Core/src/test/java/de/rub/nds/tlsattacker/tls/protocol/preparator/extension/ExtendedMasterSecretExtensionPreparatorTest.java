@@ -31,7 +31,8 @@ public class ExtendedMasterSecretExtensionPreparatorTest extends ExtensionPrepar
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public ExtendedMasterSecretExtensionPreparatorTest(ExtensionType extensionType, int extensionLength, byte[] expectedBytes, int startParsing) {
+    public ExtendedMasterSecretExtensionPreparatorTest(ExtensionType extensionType, int extensionLength,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;
@@ -48,7 +49,8 @@ public class ExtendedMasterSecretExtensionPreparatorTest extends ExtensionPrepar
     public void testPreparator() {
         context = new TlsContext();
         message = new ExtendedMasterSecretExtensionMessage();
-        preparator = new ExtendedMasterSecretExtensionPreparator(context, (ExtendedMasterSecretExtensionMessage) message);
+        preparator = new ExtendedMasterSecretExtensionPreparator(context,
+                (ExtendedMasterSecretExtensionMessage) message);
 
         context.setIsExtendedMasterSecret(true);
         preparator.prepare();

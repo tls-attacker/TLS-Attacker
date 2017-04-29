@@ -30,12 +30,9 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
     @Override
     public void parseExtensionMessageContent(ExtendedMasterSecretExtensionMessage msg) {
         byte[] auxData = parseByteArrayField(msg.getExtensionLength().getValue());
-        if (auxData.length > 0)
-        {
-            LOGGER.warn("There shouldn't be any data in the body of"
-                    + " the extended master secret extension."
-                    + "Data send by server: "
-                    + ArrayConverter.bytesToHexString(auxData));
+        if (auxData.length > 0) {
+            LOGGER.warn("There shouldn't be any data in the body of" + " the extended master secret extension."
+                    + "Data send by server: " + ArrayConverter.bytesToHexString(auxData));
         }
     }
 

@@ -58,10 +58,9 @@ public class ExtensionByteLength {
      * SignatureAndHashAlgorithms Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
-    
+
     /**
-     * Length of the Padding Length field of the
-     * Padding Extension
+     * Length of the Padding Length field of the Padding Extension
      */
     public static final int PADDING_LENGTH = 2;
 }

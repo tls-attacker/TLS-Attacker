@@ -27,8 +27,8 @@ public class ExtendedMasterSecretExtensionSerializerTest extends ExtensionSerial
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{{ExtensionType.EXTENDED_MASTER_SECRET,
-            0, ArrayConverter.hexStringToByteArray("00170000"), 0}});
+        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_MASTER_SECRET, 0,
+                ArrayConverter.hexStringToByteArray("00170000"), 0 } });
     }
 
     private final ExtensionType extensionType;
@@ -36,8 +36,8 @@ public class ExtendedMasterSecretExtensionSerializerTest extends ExtensionSerial
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType,
-            int extensionLength, byte[] expectedBytes, int startParsing) {
+    public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;
@@ -51,7 +51,8 @@ public class ExtendedMasterSecretExtensionSerializerTest extends ExtensionSerial
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
 
-        ExtendedMasterSecretExtensionSerializer serializer = new ExtendedMasterSecretExtensionSerializer((ExtendedMasterSecretExtensionMessage) message);
+        ExtendedMasterSecretExtensionSerializer serializer = new ExtendedMasterSecretExtensionSerializer(
+                (ExtendedMasterSecretExtensionMessage) message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

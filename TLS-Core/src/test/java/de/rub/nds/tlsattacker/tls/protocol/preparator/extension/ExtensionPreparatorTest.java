@@ -16,11 +16,11 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public abstract class ExtensionPreparatorTest {
-    
+
     protected TlsContext context;
     protected ExtensionMessage message;
     protected ExtensionPreparator preparator;
-    
+
     public abstract void testPreparator();
-    
+
 }

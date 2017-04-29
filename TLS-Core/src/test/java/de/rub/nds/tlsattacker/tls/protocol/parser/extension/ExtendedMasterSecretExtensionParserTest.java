@@ -29,7 +29,8 @@ public class ExtendedMasterSecretExtensionParserTest extends ExtensionParserTest
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public ExtendedMasterSecretExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] expectedBytes, int startParsing) {
+    public ExtendedMasterSecretExtensionParserTest(ExtensionType extensionType, int extensionLength,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;

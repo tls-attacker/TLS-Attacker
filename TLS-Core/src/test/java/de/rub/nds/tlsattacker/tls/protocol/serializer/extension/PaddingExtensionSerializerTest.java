@@ -33,10 +33,8 @@ public class PaddingExtensionSerializerTest extends ExtensionSerializerTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][]{{ExtensionType.PADDING, 6,
-            new byte[]{0, 0, 0, 0, 0, 0},
-            ArrayConverter.hexStringToByteArray("00150006000000000000"), 0}});
+        return Arrays.asList(new Object[][] { { ExtensionType.PADDING, 6, new byte[] { 0, 0, 0, 0, 0, 0 },
+                ArrayConverter.hexStringToByteArray("00150006000000000000"), 0 } });
     }
 
     private final ExtensionType extensionType;
@@ -45,7 +43,8 @@ public class PaddingExtensionSerializerTest extends ExtensionSerializerTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public PaddingExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+    public PaddingExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;

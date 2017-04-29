@@ -31,8 +31,8 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
     @Override
     public void prepareExtensionContent() {
         message.setPaddingBytes(new byte[context.getConfig().getDefaultPaddingExtensionLength()]);
-        LOGGER.debug("Prepared PaddingExtension with "
-                + context.getConfig().getDefaultPaddingExtensionLength() + " padding bytes.");
+        LOGGER.debug("Prepared PaddingExtension with " + context.getConfig().getDefaultPaddingExtensionLength()
+                + " padding bytes.");
     }
 
 }

@@ -29,8 +29,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtensionParser getParser(byte[] message, int pointer) {
-        LOGGER.debug("The extended master secret handler returned the extended "
-                + "master secret extension parser.");
+        LOGGER.debug("The extended master secret handler returned the extended " + "master secret extension parser.");
         return new ExtendedMasterSecretExtensionParser(pointer, message);
     }
 
