@@ -70,18 +70,21 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
-        // We need two Records, one for the CCS message and one with finished
-        // message with the modified padding
+        // We need 2-3 Records,one for every message, while the last one will
+        // have the modified padding
         List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
-        records.add(new Record());
+        records.add(new Record(tlsConfig));
+        if (sendAction.getConfiguredMessages().size() > 2) {
+            records.add(new Record(tlsConfig));
+        }
         records.add(record);
         sendAction.setConfiguredRecords(records);
 
