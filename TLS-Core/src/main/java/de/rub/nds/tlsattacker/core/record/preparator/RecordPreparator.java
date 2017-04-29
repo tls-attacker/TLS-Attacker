@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import java.math.BigInteger;
 
 /**
  * The cleanrecordbytes should be set when the record preparator received the
@@ -34,6 +35,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     public void prepare() {
         record.setContentType(type.getValue());
         record.setProtocolVersion(context.getSelectedProtocolVersion().getValue());
+        record.setSequenceNumber(BigInteger.valueOf(context.getSequenceNumber()));
         encryptor.encrypt(record);
         record.setLength(record.getProtocolMessageBytes().getValue().length);
     }

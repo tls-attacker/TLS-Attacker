@@ -128,6 +128,9 @@ public class DefaultActionExecutor extends ActionExecutor {
             }
             AbstractRecord record = records.get(position);
             toFillList.add(record);
+            if (record.getMaxRecordLengthConfig() == null) {
+                record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+            }
             recordLength += record.getMaxRecordLengthConfig();
             position++;
         }

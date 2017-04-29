@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -24,10 +25,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class RecordEncryptor extends Encryptor<Record> {
 
-    private int sequenceNumber = 0;
+    private TlsContext context;
 
-    public RecordEncryptor(RecordCipher recordCipher) {
+    public RecordEncryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
+        this.context = context;
     }
 
     @Override
@@ -37,19 +39,19 @@ public class RecordEncryptor extends Encryptor<Record> {
             byte[] toBeMaced = new byte[0];
             try {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                stream.write(ArrayConverter.intToBytes(sequenceNumber, RecordByteLength.SEQUENCE_NUMBER));
-                stream.write(record.getContentMessageType().getValue());
+                stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));
+                stream.write(record.getContentType().getValue());
                 stream.write(record.getProtocolVersion().getValue());
                 stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
                         RecordByteLength.RECORD_LENGTH)); // TODO
                 stream.write(record.getCleanProtocolMessageBytes().getValue());
                 toBeMaced = stream.toByteArray();
-                sequenceNumber++;
             } catch (IOException E) {
                 throw new CryptoException("Could not create ToBeMaced Data", E);
             }
             byte[] mac = recordCipher.calculateMac(toBeMaced);
             record.setMac(mac);
+            context.setSequenceNumber(context.getSequenceNumber() + 1);
         } else {
             record.setMac(new byte[0]);
         }

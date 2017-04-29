@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class RecordDecryptor extends Decryptor<Record> {
 
-    public RecordDecryptor(RecordCipher recordCipher) {
+    private TlsContext context;
+
+    public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
+        this.context = context;
     }
 
     @Override

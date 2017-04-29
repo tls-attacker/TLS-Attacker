@@ -49,8 +49,8 @@ public class TlsRecordLayer extends RecordLayer {
     public TlsRecordLayer(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
         cipher = new RecordNullCipher();
-        encryptor = new RecordEncryptor(cipher);
-        decryptor = new RecordDecryptor(cipher);
+        encryptor = new RecordEncryptor(cipher, tlsContext);
+        decryptor = new RecordDecryptor(cipher, tlsContext);
     }
 
     /**
