@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.util.List;
 

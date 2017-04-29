@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
