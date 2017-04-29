@@ -323,6 +323,12 @@ public final class TlsConfig implements Serializable {
      */
     private boolean stripWorkflowtracesBeforeSaving = false;
 
+    /**
+     * TLS-Attacker will not try to receive additional messages after the
+     * configured number of messages has been received
+     */
+    private boolean quickReceive = true;
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);
@@ -370,6 +376,14 @@ public final class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+    }
+
+    public boolean isQuickReceive() {
+        return quickReceive;
+    }
+
+    public void setQuickReceive(boolean quickReceive) {
+        this.quickReceive = quickReceive;
     }
 
     public boolean isStripWorkflowtracesBeforeSaving() {
