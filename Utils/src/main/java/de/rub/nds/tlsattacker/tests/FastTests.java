@@ -9,9 +9,10 @@
 package de.rub.nds.tlsattacker.tests;
 
 /**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * JUnit test category. Default tests executed with every mvn test.
+ *
+ * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public interface IntegrationTest {
+public interface FastTests {
 
 }

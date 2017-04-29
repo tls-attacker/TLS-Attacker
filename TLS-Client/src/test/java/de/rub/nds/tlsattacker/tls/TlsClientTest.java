@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls;
 
-import de.rub.nds.tlsattacker.tests.IntegrationTest;
+import de.rub.nds.tlsattacker.tests.IntegrationTests;
 import de.rub.nds.tlsattacker.tls.client.ClientCommandConfig;
 import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.tls.constants.AlgorithmResolver;
@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
 import de.rub.nds.tlsattacker.tls.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -67,6 +68,7 @@ import org.junit.rules.ErrorCollector;
  *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
+@Category(IntegrationTests.class)
 public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
@@ -85,7 +87,6 @@ public class TlsClientTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
@@ -106,7 +107,6 @@ public class TlsClientTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256);

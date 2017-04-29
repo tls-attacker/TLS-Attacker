@@ -8,8 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser;
 
-import de.rub.nds.tlsattacker.tests.IntegrationTest;
-import de.rub.nds.tlsattacker.tls.config.WorkflowTraceSerializerTest;
+import de.rub.nds.tlsattacker.tests.IntegrationTests;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
@@ -57,7 +56,6 @@ import de.rub.nds.tlsattacker.tls.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.tls.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,7 +63,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
@@ -92,7 +89,7 @@ public class SerialisationFullTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTests.class)
     public void test() throws JAXBException, IOException {
         TlsConfig config = TlsConfig.createConfig();
         config.setAddECPointFormatExtension(true);

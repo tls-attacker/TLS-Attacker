@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer;
 
-import de.rub.nds.tlsattacker.tests.IntegrationTest;
+import de.rub.nds.tlsattacker.tests.SlowTests;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.ParserException;
 import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
@@ -47,7 +47,6 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.HelloVerifyRequestParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.tls.protocol.parser.ServerHelloDoneParser;
@@ -79,7 +78,7 @@ public class ParserSerializerStressTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(SlowTests.class)
     public void testParser() {
 
         for (int i = 0; i < 100000; i++) {

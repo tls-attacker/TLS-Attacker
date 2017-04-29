@@ -20,6 +20,8 @@ public class ICEPointReaderTest {
 
     /**
      * Test of readPoints method, of class ICEPointReader.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testReadPoints() throws Exception {
