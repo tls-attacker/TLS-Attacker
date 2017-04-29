@@ -17,16 +17,15 @@ import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -38,13 +37,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
-
+    
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
-
+    
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
-
+    
     public ServerHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
@@ -65,38 +64,41 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
+        if (tlsConfig.isAddExtendedMasterSecret()) {
+            addExtension(new ExtendedMasterSecretExtensionMessage());
+        }
     }
-
+    
     public ServerHelloMessage() {
         super(HandshakeMessageType.SERVER_HELLO);
-
+        
     }
-
+    
     public ModifiableByteArray getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
-
+    
     public void setSelectedCipherSuite(ModifiableByteArray selectedCipherSuite) {
         this.selectedCipherSuite = selectedCipherSuite;
     }
-
+    
     public void setSelectedCipherSuite(byte[] value) {
         this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
     }
-
+    
     public ModifiableByte getSelectedCompressionMethod() {
         return selectedCompressionMethod;
     }
-
+    
     public void setSelectedCompressionMethod(ModifiableByte selectedCompressionMethod) {
         this.selectedCompressionMethod = selectedCompressionMethod;
     }
-
+    
     public void setSelectedCompressionMethod(byte value) {
         this.selectedCompressionMethod = ModifiableVariableFactory
                 .safelySetValue(this.selectedCompressionMethod, value);
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -119,7 +121,7 @@ public class ServerHelloMessage extends HelloMessage {
         }
         return sb.toString();
     }
-
+    
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ServerHelloHandler(context);

@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.tls.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -132,12 +131,16 @@ public class TlsContext {
     private MaxFragmentLength maxFragmentLength;
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
-    
+
     /**
-     * This is the length of the padding as used in the 
-     * padding extension.
+     * This is the length of the padding as used in the padding extension.
      */
     private int paddingExtensionLength;
+
+    /**
+     * Is the extended master secret extension present?
+     */
+    private boolean isExtendedMasterSecret;
 
     private PublicKey clientPublicKey;
 
@@ -310,6 +313,14 @@ public class TlsContext {
 
     public int getPaddingExtensionLength() {
         return paddingExtensionLength;
+    }
+
+    public boolean isExtendedMasterSecret() {
+        return isExtendedMasterSecret;
+    }
+
+    public void setIsExtendedMasterSecret(boolean isExtendedMasterSecret) {
+        this.isExtendedMasterSecret = isExtendedMasterSecret;
     }
 
     public void setPaddingExtensionLength(int PaddingExtensionLength) {

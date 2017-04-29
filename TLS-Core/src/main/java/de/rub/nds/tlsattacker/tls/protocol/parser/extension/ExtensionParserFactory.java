@@ -71,6 +71,7 @@ public class ExtensionParserFactory {
             case ENCRYPT_THEN_MAC:
                 break;
             case EXTENDED_MASTER_SECRET:
+                parser = new ExtendedMasterSecretExtensionParser(pointer, typeBytes);
                 break;
             case PADDING:
                 parser = new PaddingExtensionParser(pointer, typeBytes);

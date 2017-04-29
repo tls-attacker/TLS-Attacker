@@ -13,32 +13,22 @@ import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -70,17 +60,17 @@ public class ClientHelloMessage extends HelloMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
-
+    
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     private ModifiableByteArray cookie = null;
-
+    
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableByte cookieLength = null;
-
+    
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
     }
-
+    
     public ClientHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
@@ -104,80 +94,83 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
+        if (tlsConfig.isAddExtendedMasterSecret()) {
+            addExtension(new ExtendedMasterSecretExtensionMessage());
+        }
     }
-
+    
     public ModifiableInteger getCompressionLength() {
         return compressionLength;
     }
-
+    
     public ModifiableInteger getCipherSuiteLength() {
         return cipherSuiteLength;
     }
-
+    
     public ModifiableByteArray getCipherSuites() {
         return cipherSuites;
     }
-
+    
     public ModifiableByteArray getCompressions() {
         return compressions;
     }
-
+    
     public void setCompressionLength(ModifiableInteger compressionLength) {
         this.compressionLength = compressionLength;
     }
-
+    
     public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
         this.cipherSuiteLength = cipherSuiteLength;
     }
-
+    
     public void setCipherSuites(ModifiableByteArray cipherSuites) {
         this.cipherSuites = cipherSuites;
     }
-
+    
     public void setCompressions(ModifiableByteArray compressions) {
         this.compressions = compressions;
     }
-
+    
     public void setCompressionLength(int compressionLength) {
         this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
-
+    
     public void setCipherSuiteLength(int cipherSuiteLength) {
         this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
-
+    
     public void setCipherSuites(byte[] array) {
         this.cipherSuites = ModifiableVariableFactory.safelySetValue(cipherSuites, array);
     }
-
+    
     public void setCompressions(byte[] array) {
         this.compressions = ModifiableVariableFactory.safelySetValue(compressions, array);
     }
-
+    
     public ModifiableByteArray getCookie() {
         return cookie;
     }
-
+    
     public ModifiableByte getCookieLength() {
         return cookieLength;
     }
-
+    
     public void setCookie(byte[] cookie) {
         this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
     }
-
+    
     public void setCookie(ModifiableByteArray cookie) {
         this.cookie = cookie;
     }
-
+    
     public void setCookieLength(byte cookieLength) {
         this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
-
+    
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -198,7 +191,7 @@ public class ClientHelloMessage extends HelloMessage {
          */
         return sb.toString();
     }
-
+    
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);

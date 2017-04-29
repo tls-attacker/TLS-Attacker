@@ -218,6 +218,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with the Padding extension
      */
     private boolean addPaddingExtension = false;
+    /**
+     * If we generate ClientHello with the ExtendedMasterSecret extension
+     */
+    private boolean addExtendedMasterSecret = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -460,6 +464,14 @@ public final class TlsConfig implements Serializable {
 
     public void setAddPaddingExtension(boolean addPaddingExtension) {
         this.addPaddingExtension = addPaddingExtension;
+    }
+
+    public boolean isAddExtendedMasterSecret() {
+        return addExtendedMasterSecret;
+    }
+
+    public void setAddExtendedMasterSecret(boolean addExtendedMasterSecret) {
+        this.addExtendedMasterSecret = addExtendedMasterSecret;
     }
 
     public int getDefaultPaddingExtensionLength() {
