@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializerTest;
 import java.util.Collection;
-import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionParserTest {
+public class PaddingExtensionParserTest extends ExtensionParserTest {
 
     /**
      * Parameterized set up of the test vector.
@@ -52,14 +51,15 @@ public class PaddingExtensionParserTest {
     }
 
     @Test
-    public void testparseExtensionMessageContent() {
+    @Override
+    public void testParseExtensionMessageContent() {
 
-        PaddingExtensionParser parser = new PaddingExtensionParser(startParsing, expectedBytes);
-        PaddingExtensionMessage message = parser.parse();
+        parser = new PaddingExtensionParser(startParsing, expectedBytes);
+        message = parser.parse();
 
         assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
+        assertArrayEquals(extensionPayload, ((PaddingExtensionMessage) message).getPaddingBytes().getValue());
     }
 
 }

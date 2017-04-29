@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionSerializerTest {
+public class PaddingExtensionSerializerTest extends ExtensionSerializerTest {
 
     /**
      * Parameterized set up of the test vector.
@@ -53,19 +53,18 @@ public class PaddingExtensionSerializerTest {
         this.startParsing = startParsing;
     }
 
-
-
     /**
      * Tests the serializer of the padding extension.
      */
+    @Override
     @Test
     public void testSerializeExtensionContent() {
-        PaddingExtensionMessage msg = new PaddingExtensionMessage();
-        msg.setExtensionType(extensionType.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setPaddingBytes(extensionPayload);
+        message = new PaddingExtensionMessage();
+        message.setExtensionType(extensionType.getValue());
+        message.setExtensionLength(extensionLength);
+        ((PaddingExtensionMessage) message).setPaddingBytes(extensionPayload);
 
-        PaddingExtensionSerializer serializer = new PaddingExtensionSerializer(msg);
+        PaddingExtensionSerializer serializer = new PaddingExtensionSerializer((PaddingExtensionMessage) message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
 

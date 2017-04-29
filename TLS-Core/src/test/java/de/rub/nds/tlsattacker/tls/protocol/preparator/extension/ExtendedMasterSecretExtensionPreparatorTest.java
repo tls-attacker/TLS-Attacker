@@ -43,6 +43,7 @@ public class ExtendedMasterSecretExtensionPreparatorTest extends ExtensionPrepar
         return ExtendedMasterSecretExtensionSerializerTest.generateData();
     }
 
+    @Override
     @Test
     public void testPreparator() {
         context = new TlsContext();

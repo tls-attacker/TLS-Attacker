@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.tls.protocol.message.extension;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.PaddingExtensionHandler;

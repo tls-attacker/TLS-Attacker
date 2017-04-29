@@ -8,27 +8,45 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializer;
+import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializerTest;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class PaddingExtensionHandlerTest {
+@RunWith(Parameterized.class)
+public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
 
-    private PaddingExtensionHandler handler;
+    private final ExtensionType extensionType;
+    private final int extensionLength;
+    private final byte[] extensionPayload;
+    private final byte[] expectedBytes;
+    private final int startParsing;
 
-    private TlsContext context;
+    public PaddingExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+        this.extensionType = extensionType;
+        this.extensionLength = extensionLength;
+        this.extensionPayload = extensionPayload;
+        this.expectedBytes = expectedBytes;
+        this.startParsing = startParsing;
+    }
 
-    public PaddingExtensionHandlerTest() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return PaddingExtensionSerializerTest.generateData();
     }
 
     /**
@@ -43,12 +61,13 @@ public class PaddingExtensionHandlerTest {
     /**
      * Test of adjustTLSContext method, of class PaddingExtensionHandler.
      */
+    @Override
     @Test
     public void testAdjustTLSContext() {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
-        msg.setPaddingBytes(new byte[6]);
+        msg.setPaddingBytes(extensionPayload);
         handler.adjustTLSContext(msg);
-        assertEquals(context.getPaddingExtensionLength(), 6);
+        assertEquals(context.getPaddingExtensionLength(), extensionLength);
     }
 
     /**
@@ -56,7 +75,7 @@ public class PaddingExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[]{0, 15, 0, 6, 0, 0, 0, 0, 0, 0}, 0) instanceof PaddingExtensionParser);
+        assertTrue(handler.getParser(expectedBytes, startParsing) instanceof PaddingExtensionParser);
     }
 
     /**

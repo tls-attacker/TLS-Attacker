@@ -21,4 +21,6 @@ public abstract class ExtensionPreparatorTest {
     protected ExtensionMessage message;
     protected ExtensionPreparator preparator;
     
+    public abstract void testPreparator();
+    
 }
