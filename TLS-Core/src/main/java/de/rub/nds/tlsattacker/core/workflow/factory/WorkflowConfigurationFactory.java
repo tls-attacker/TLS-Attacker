@@ -54,8 +54,8 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createWorkflowTrace(WorkflowTraceType type) {
         switch (type) {
-            case CLIENT_HELLO:
-                return createClientHelloWorkflow();
+            case HELLO:
+                return createHelloWorkflow();
             case FULL:
                 return createFullWorkflow();
             case HANDSHAKE:
@@ -64,7 +64,7 @@ public class WorkflowConfigurationFactory {
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
 
-    public WorkflowTrace createClientHelloWorkflow() {
+    public WorkflowTrace createHelloWorkflow() {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
@@ -94,12 +94,7 @@ public class WorkflowConfigurationFactory {
             workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         }
-        return workflowTrace;
-    }
-
-    public WorkflowTrace createHandshakeWorkflow() {
-        WorkflowTrace workflowTrace = this.createClientHelloWorkflow();
-        List<ProtocolMessage> messages = new LinkedList<>();
+        messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));
         if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
@@ -112,7 +107,12 @@ public class WorkflowConfigurationFactory {
 
         messages.add(new ServerHelloDoneMessage(config));
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
-        messages = new LinkedList<>();
+        return workflowTrace;
+    }
+
+    public WorkflowTrace createHandshakeWorkflow() {
+        WorkflowTrace workflowTrace = this.createHelloWorkflow();
+        List<ProtocolMessage> messages = new LinkedList<>();
         if (config.isClientAuthentication()) {
             messages.add(new CertificateMessage(config));
             addClientKeyExchangeMessage(messages);

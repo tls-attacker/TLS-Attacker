@@ -195,7 +195,7 @@ public class TlsClientTest {
         TlsConfig config = clientCommandConfig.createConfig();
         config.setHost("localhost:" + port);
         config.setTlsTimeout(TIMEOUT);
-        config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
+        config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         TlsContext tlsContext = new TlsContext(config);
         config.setWorkflowTrace(new WorkflowTrace());

@@ -31,6 +31,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -69,6 +71,8 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
             @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
             @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
+            @XmlElement(type = WaitingAction.class, name = "Wait"),
+            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
             @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
