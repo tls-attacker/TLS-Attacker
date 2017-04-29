@@ -51,8 +51,8 @@ public class WorkflowTypeDelegate extends Delegate {
                 case HANDSHAKE:
                     trace = factory.createHandshakeWorkflow();
                     break;
-                case CLIENT_HELLO:
-                    trace = factory.createClientHelloWorkflow();
+                case HELLO:
+                    trace = factory.createHelloWorkflow();
                     break;
                 default:
                     throw new ConfigurationException("not supported workflow type: " + config.getWorkflowTraceType());

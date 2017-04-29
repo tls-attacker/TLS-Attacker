@@ -49,7 +49,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         this.publicKey = (RSAPublicKey) pubKey;
         this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
         this.config = config;
-        this.config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
+        this.config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration ctxConfig = ctx.getConfiguration();
