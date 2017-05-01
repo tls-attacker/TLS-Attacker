@@ -26,7 +26,8 @@ public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<Ses
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(message.getTicket().getValue());
-        LOGGER.debug("Serialized PaddingExtension with SessionTicket of length " + message.getTicket().getValue().length);
+        LOGGER.debug("Serialized PaddingExtension with SessionTicket of length "
+                + message.getTicket().getValue().length);
         return getAlreadySerialized();
     }
 

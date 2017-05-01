@@ -20,5 +20,6 @@ public abstract class ExtensionParserTest {
     protected ExtensionMessage message;
 
     public abstract void setUp();
+
     public abstract void testParseExtensionMessageContent();
 }

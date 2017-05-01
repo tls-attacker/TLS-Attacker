@@ -21,7 +21,7 @@ public abstract class ExtensionHandlerTest {
     protected ExtensionHandler handler;
 
     protected TlsContext context;
-    
+
     @Before
     public abstract void setUp();
 

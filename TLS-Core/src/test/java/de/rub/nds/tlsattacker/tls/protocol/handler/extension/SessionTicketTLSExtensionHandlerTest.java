@@ -36,7 +36,8 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public SessionTicketTLSExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
+    public SessionTicketTLSExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
@@ -52,8 +53,8 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{{ExtensionType.SESSION_TICKET, 0, new byte[0],
-            ArrayConverter.hexStringToByteArray("00230000"), 0}});
+        return Arrays.asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0],
+                ArrayConverter.hexStringToByteArray("00230000"), 0 } });
     }
 
     /**

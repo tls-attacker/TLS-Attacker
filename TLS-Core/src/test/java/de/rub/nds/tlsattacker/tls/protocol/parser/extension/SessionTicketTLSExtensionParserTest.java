@@ -33,7 +33,8 @@ public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
+    public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
+            byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;

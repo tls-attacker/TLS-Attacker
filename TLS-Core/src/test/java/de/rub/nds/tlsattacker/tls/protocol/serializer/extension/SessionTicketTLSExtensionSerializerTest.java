@@ -30,7 +30,8 @@ public class SessionTicketTLSExtensionSerializerTest extends ExtensionSerializer
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
+    public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
+            byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
@@ -51,7 +52,8 @@ public class SessionTicketTLSExtensionSerializerTest extends ExtensionSerializer
         message.setExtensionLength(extensionLength);
         ((SessionTicketTLSExtensionMessage) message).setTicket(sessionTicket);
 
-        SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer((SessionTicketTLSExtensionMessage) message);
+        SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer(
+                (SessionTicketTLSExtensionMessage) message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

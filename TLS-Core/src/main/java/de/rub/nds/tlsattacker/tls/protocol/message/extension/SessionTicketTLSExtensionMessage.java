@@ -39,8 +39,8 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
     public void setTicket(ModifiableByteArray ticket) {
         this.ticket = ticket;
     }
-    
-        public void setTicket(byte [] array) {
+
+    public void setTicket(byte[] array) {
         this.ticket = ModifiableVariableFactory.safelySetValue(ticket, array);
     }
 

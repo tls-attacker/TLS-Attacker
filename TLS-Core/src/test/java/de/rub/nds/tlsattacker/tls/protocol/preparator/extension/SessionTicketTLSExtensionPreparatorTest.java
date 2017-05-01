@@ -34,7 +34,8 @@ public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparator
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public SessionTicketTLSExtensionPreparatorTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+    public SessionTicketTLSExtensionPreparatorTest(ExtensionType extensionType, int extensionLength,
+            byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
