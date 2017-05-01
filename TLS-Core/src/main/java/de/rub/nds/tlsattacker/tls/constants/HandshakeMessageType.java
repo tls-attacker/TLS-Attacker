@@ -27,6 +27,7 @@ public enum HandshakeMessageType {
     HELLO_VERIFY_REQUEST((byte) 3),
     NEW_SESSION_TICKET((byte) 4),
     HELLO_RETRY_REQUEST((byte) 6),
+    ENCRYPTED_EXTENSIONS((byte) 8),
     CERTIFICATE((byte) 11),
     SERVER_KEY_EXCHANGE((byte) 12),
     CERTIFICATE_REQUEST((byte) 13),
