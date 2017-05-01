@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.CertificateHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -79,6 +80,15 @@ public class CertificateMessage extends HandshakeMessage {
         if (x509CertificateBytes != null) {
             sb.append("\n  Certificate:\n");
             sb.append(ArrayConverter.bytesToHexString(x509CertificateBytes.getValue()));
+        }
+        // Ohne TLS Version Abfrage ?
+        if (getExtensions() == null) {
+            sb.append("\n  Extensions: null");
+        } else {
+            sb.append("\n  Extensions: ");
+            for (ExtensionMessage e : getExtensions()) {
+                sb.append(e.toString());
+            }
         }
         return sb.toString();
     }

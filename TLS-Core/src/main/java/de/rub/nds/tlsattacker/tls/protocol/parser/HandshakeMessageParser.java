@@ -173,4 +173,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     protected boolean hasExtensions(T message) {
         return message.getExtensionsLength().getValue() > 0;
     }
+    
+    protected ProtocolVersion getVersion() {
+        return version;
+    }
 }

@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
@@ -68,6 +70,13 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             if (cert != null) {
                 LOGGER.debug("Setting ServerPublicKey in Context");
                 tlsContext.setServerPublicKey(parsePublicKey(cert));
+            }
+        }
+        if(tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            if (message.getExtensions() != null) {
+                for (ExtensionMessage extension : message.getExtensions()) {
+                    extension.getHandler(tlsContext).adjustTLSContext(extension);
+                }
             }
         }
     }

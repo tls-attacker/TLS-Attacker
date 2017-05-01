@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -38,6 +39,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         byte[] encodedCert = encodeCert(cert);
         msg.setX509CertificateBytes(encodedCert);
         msg.setCertificatesLength(msg.getX509CertificateBytes().getValue().length);
+        if(context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            prepareExtensions();
+            prepareExtensionLength();
+        }
     }
 
     private Certificate chooseCert() {
