@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.HeartbeatExtensionM
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -96,6 +97,9 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddExtendedMasterSecret()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
+        }
+        if (tlsConfig.isAddSessionTicketTLSExtension()) {
+            addExtension(new SessionTicketTLSExtensionMessage());
         }
     }
 

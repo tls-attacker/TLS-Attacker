@@ -138,6 +138,11 @@ public class TlsContext {
     private int paddingExtensionLength;
 
     /**
+     * This is the session ticket of the SessionTicketTLS extension.
+     */
+    private byte[] sessionTicketTLS;
+
+    /**
      * Is the extended master secret extension present?
      */
     private boolean isExtendedMasterSecret;
@@ -535,4 +540,13 @@ public class TlsContext {
     public PRFAlgorithm getPRFAlgorithm() {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
+
+    public byte[] getSessionTicketTLS() {
+        return sessionTicketTLS;
+    }
+
+    public void setSessionTicketTLS(byte[] sessionTicketTLS) {
+        this.sessionTicketTLS = sessionTicketTLS;
+    }
+
 }

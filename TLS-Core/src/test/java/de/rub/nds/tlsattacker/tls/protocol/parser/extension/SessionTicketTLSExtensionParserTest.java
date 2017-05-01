@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializerTest;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -24,49 +25,40 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionParserTest extends ExtensionParserTest {
-
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PaddingExtensionSerializerTest.generateData();
-    }
+public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
-    private final byte[] extensionPayload;
+    private final byte[] sessionTicket;
     private final byte[] expectedBytes;
     private final int startParsing;
 
-    public PaddingExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-            byte[] expectedBytes, int startParsing) {
+    public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
-        this.extensionPayload = extensionPayload;
+        this.sessionTicket = sessionTicket;
         this.expectedBytes = expectedBytes;
         this.startParsing = startParsing;
     }
 
-    @Before
-    @Override
-    public void setUp() {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return SessionTicketTLSExtensionHandlerTest.generateData();
+    }
 
-        parser = new PaddingExtensionParser(startParsing, expectedBytes);
+    @Override
+    @Before
+    public void setUp() {
+        parser = new SessionTicketTLSExtensionParser(startParsing, expectedBytes);
         message = parser.parse();
     }
 
-    @Test
     @Override
+    @Test
     public void testParseExtensionMessageContent() {
-
-        assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
+        assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, ((PaddingExtensionMessage) message).getPaddingBytes().getValue());
+        assertArrayEquals(sessionTicket, ((SessionTicketTLSExtensionMessage) message).getTicket().getValue());
     }
 
 }

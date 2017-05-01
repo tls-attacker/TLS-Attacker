@@ -53,6 +53,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Some initial set up.
      */
+    @Override
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -83,6 +84,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of getPreparator method, of class PaddingExtensionHandler.
      */
+    @Override
     @Test
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new PaddingExtensionMessage()) instanceof PaddingExtensionPreparator);
@@ -91,6 +93,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of getSerializer method, of class PaddingExtensionHandler.
      */
+    @Override
     @Test
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new PaddingExtensionMessage()) instanceof PaddingExtensionSerializer);

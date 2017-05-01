@@ -83,6 +83,7 @@ public class ExtensionParserFactory {
             case SERVER_CERTIFICATE_TYPE:
                 break;
             case SESSION_TICKET:
+                parser = new SessionTicketTLSExtensionParser(pointer, typeBytes);
                 break;
             case SIGNED_CERTIFICATE_TIMESTAMP:
                 break;

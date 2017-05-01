@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -20,6 +21,9 @@ public abstract class ExtensionHandlerTest {
     protected ExtensionHandler handler;
 
     protected TlsContext context;
+    
+    @Before
+    public abstract void setUp();
 
     @Test
     public abstract void testAdjustTLSContext();

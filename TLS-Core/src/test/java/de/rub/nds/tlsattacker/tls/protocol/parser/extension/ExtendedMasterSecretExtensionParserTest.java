@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtendedMasterSe
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -42,13 +43,16 @@ public class ExtendedMasterSecretExtensionParserTest extends ExtensionParserTest
         return ExtendedMasterSecretExtensionSerializerTest.generateData();
     }
 
+    @Before
+    @Override
+    public void setUp() {
+        parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes);
+        message = parser.parse();
+    }
+
     @Test
     @Override
     public void testParseExtensionMessageContent() {
-
-        parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes);
-        message = parser.parse();
-
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
     }
