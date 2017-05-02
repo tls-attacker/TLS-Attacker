@@ -42,6 +42,7 @@ import org.bouncycastle.crypto.tls.ServerDHParams;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class TlsContext {
 
@@ -146,6 +147,11 @@ public class TlsContext {
      * Is the extended master secret extension present?
      */
     private boolean isExtendedMasterSecret;
+
+    /**
+     * This is the timestamp of the SignedCertificateTimestamp extension
+     */
+    private byte[] signedCertificateTimestamp;
 
     private PublicKey clientPublicKey;
 
@@ -547,6 +553,14 @@ public class TlsContext {
 
     public void setSessionTicketTLS(byte[] sessionTicketTLS) {
         this.sessionTicketTLS = sessionTicketTLS;
+    }
+
+    public byte[] getSignedCertificateTimestamp() {
+        return signedCertificateTimestamp;
+    }
+
+    public void setSignedCertificateTimestamp(byte[] signedCertificateTimestamp) {
+        this.signedCertificateTimestamp = signedCertificateTimestamp;
     }
 
 }

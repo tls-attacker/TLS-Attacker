@@ -51,6 +51,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -163,6 +164,11 @@ public final class TlsConfig implements Serializable {
      */
     private byte[] sessionTLSTicket = new byte[0];
     /**
+     * SignedCertificateTimestamp for the SignedCertificateTimestampExtensin.
+     * It's an emty timestamp, since the server sends it.
+     */
+    private byte[] signedCertificateTimestamp = new byte[0];
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -231,7 +237,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with the SessionTicketTLS extension
      */
     private boolean addSessionTicketTLSExtension = false;
-
+    /**
+     * If we generate ClientHello with SignedCertificateTimestamp extension
+     */
+    private boolean addSignedCertificateTimestampExtension = false;
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
     /**
@@ -910,6 +919,22 @@ public final class TlsConfig implements Serializable {
 
     public void setSessionTLSTicket(byte[] sessionTLSTicket) {
         this.sessionTLSTicket = sessionTLSTicket;
+    }
+
+    public byte[] getSignedCertificateTimestamp() {
+        return signedCertificateTimestamp;
+    }
+
+    public void setSignedCertificateTimestamp(byte[] signedCertificateTimestamp) {
+        this.signedCertificateTimestamp = signedCertificateTimestamp;
+    }
+
+    public boolean isAddSignedCertificateTimestampExtension() {
+        return addSignedCertificateTimestampExtension;
+    }
+
+    public void setAddSignedCertificateTimestampExtension(boolean addSignedCertificateTimestampExtension) {
+        this.addSignedCertificateTimestampExtension = addSignedCertificateTimestampExtension;
     }
 
 }

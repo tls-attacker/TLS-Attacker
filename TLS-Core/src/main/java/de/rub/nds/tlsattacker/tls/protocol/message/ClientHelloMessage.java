@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
@@ -100,6 +101,9 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddSessionTicketTLSExtension()) {
             addExtension(new SessionTicketTLSExtensionMessage());
+        }
+        if (tlsConfig.isAddSignedCertificateTimestampExtension()) {
+            addExtension(new SignedCertificateTimestampExtensionMessage());
         }
     }
 
