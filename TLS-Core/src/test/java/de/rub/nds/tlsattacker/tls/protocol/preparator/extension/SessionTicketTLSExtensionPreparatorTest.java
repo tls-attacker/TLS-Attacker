@@ -77,7 +77,7 @@ public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparator
     @Test
     @Override
     public void testPreparator() {
-        context.getConfig().setSessionTLSTicket(new byte [0]);
+        context.getConfig().setSessionTLSTicket(new byte[0]);
         preparator.prepare();
 
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
