@@ -63,8 +63,7 @@ public class PaddingExtensionPreparatorTest extends ExtensionPreparatorTest {
     @Override
     @Test
     public void testPreparator() {
-
-        context.setPaddingExtensionLength(extensionLength);
+        context.getConfig().setDefaultPaddingExtensionLength(extensionLength);
         preparator.prepare();
 
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());

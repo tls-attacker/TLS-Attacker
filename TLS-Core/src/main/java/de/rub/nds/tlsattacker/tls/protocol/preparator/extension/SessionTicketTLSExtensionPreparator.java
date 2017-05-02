@@ -33,7 +33,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
     }
 
     /**
-     * Parses the content of a SessionTicketTLSExtensionMessage to the
+     * Parses the content of a SessionTicketTLSExtensionMessage of the
      * TLSContext
      */
     @Override
