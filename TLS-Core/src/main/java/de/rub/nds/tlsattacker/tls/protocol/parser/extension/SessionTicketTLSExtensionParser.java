@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
 
 /**
@@ -17,10 +16,25 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExt
  */
 public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTicketTLSExtensionMessage> {
 
+    /**
+     * Constructor
+     * 
+     * @param startposition
+     *            Start of the extension in the byte array
+     * @param array
+     *            Array which holds the extensions
+     */
     public SessionTicketTLSExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
+    /**
+     * Parses the content of the given byte array to a
+     * SessionTicketTLSExtensionMessage
+     * 
+     * @param msg
+     *            Message, which will hold the parsed extension
+     */
     @Override
     public void parseExtensionMessageContent(SessionTicketTLSExtensionMessage msg) {
         if (msg.getExtensionLength().getValue() > 65535) {
@@ -30,6 +44,11 @@ public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTick
         msg.setTicket(parseByteArrayField(msg.getExtensionLength().getValue()));
     }
 
+    /**
+     * Creates a new SessionTicketTLSExtensionMessage
+     * 
+     * @return An empty SessionTicketTLSExtensionMessage
+     */
     @Override
     protected SessionTicketTLSExtensionMessage createExtensionMessage() {
         return new SessionTicketTLSExtensionMessage();

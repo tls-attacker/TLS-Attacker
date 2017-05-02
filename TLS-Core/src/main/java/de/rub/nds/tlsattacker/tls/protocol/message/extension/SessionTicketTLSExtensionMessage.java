@@ -23,23 +23,48 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
 
     private ModifiableByteArray ticket;
 
+    /**
+     * Constructor
+     */
     public SessionTicketTLSExtensionMessage() {
         super(ExtensionType.SESSION_TICKET);
     }
 
+    /**
+     * Returns a new SessionTicketTLSExtensionHandler
+     *
+     * @param context
+     *            A TLSContext
+     * @return A new SessionTicketTLSExtensionHandler
+     */
     @Override
     public ExtensionHandler getHandler(TlsContext context) {
         return new SessionTicketTLSExtensionHandler(context);
     }
 
+    /**
+     * Returns the saved SessionTicket
+     *
+     * @return
+     */
     public ModifiableByteArray getTicket() {
         return ticket;
     }
 
+    /**
+     * Sets the SessionTicket
+     *
+     * @param ticket
+     */
     public void setTicket(ModifiableByteArray ticket) {
         this.ticket = ticket;
     }
 
+    /**
+     * Sets the SessionTicket
+     *
+     * @param array
+     */
     public void setTicket(byte[] array) {
         this.ticket = ModifiableVariableFactory.safelySetValue(ticket, array);
     }

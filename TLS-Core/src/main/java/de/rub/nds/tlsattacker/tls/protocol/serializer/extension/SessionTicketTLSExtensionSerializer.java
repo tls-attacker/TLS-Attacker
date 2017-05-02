@@ -18,11 +18,22 @@ public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<Ses
 
     private final SessionTicketTLSExtensionMessage message;
 
+    /**
+     * Default constructor
+     * 
+     * @param message
+     *            A SessionTicketTLSExtensionMessage
+     */
     public SessionTicketTLSExtensionSerializer(SessionTicketTLSExtensionMessage message) {
         super(message);
         this.message = message;
     }
 
+    /**
+     * Serializes the content of a SessionTicketTLSExtensionMessage
+     * 
+     * @return The serialized bytes of the message
+     */
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(message.getTicket().getValue());

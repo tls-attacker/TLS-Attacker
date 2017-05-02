@@ -23,25 +23,55 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  */
 public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
 
+    /**
+     * Constructor
+     *
+     * @param context
+     */
     public SessionTicketTLSExtensionHandler(TlsContext context) {
         super(context);
     }
 
+    /**
+     * Returns a new SessionTicketTLSExtensionParser
+     *
+     * @param message
+     * @param pointer
+     * @return
+     */
     @Override
     public ExtensionParser getParser(byte[] message, int pointer) {
         return new SessionTicketTLSExtensionParser(pointer, message);
     }
 
+    /**
+     * Returns a new SessionTicketTLSExtensionPreparator
+     *
+     * @param message
+     * @return
+     */
     @Override
     public ExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
         return new SessionTicketTLSExtensionPreparator(context, message);
     }
 
+    /**
+     * Returns a new SessionTicketTLSExtensionSerializer
+     *
+     * @param message
+     * @return
+     */
     @Override
     public ExtensionSerializer getSerializer(SessionTicketTLSExtensionMessage message) {
         return new SessionTicketTLSExtensionSerializer(message);
     }
 
+    /**
+     * Parses the content of a SessionTicketTLSExtensionMessage to the actual
+     * TLSContext
+     *
+     * @param message
+     */
     @Override
     public void adjustTLSContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
