@@ -36,6 +36,15 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
+    /**
+     * Constructor for parameterized setup.
+     *
+     * @param extensionType
+     * @param extensionLength
+     * @param sessionTicket
+     * @param expectedBytes
+     * @param startParsing
+     */
     public SessionTicketTLSExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
             byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
@@ -67,6 +76,9 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
         handler = new SessionTicketTLSExtensionHandler(context);
     }
 
+    /**
+     * Tests the adjustTLSContext of the SessionTicketTLSExtensionHandler class
+     */
     @Override
     public void testAdjustTLSContext() {
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
@@ -78,16 +90,25 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
         assertArrayEquals(sessionTicket, context.getSessionTicketTLS());
     }
 
+    /**
+     * Tests the getParser of the SessionTicketTLSExtensionHandler class
+     */
     @Override
     public void testGetParser() {
         assertTrue(handler.getParser(expectedBytes, startParsing) instanceof SessionTicketTLSExtensionParser);
     }
 
+    /**
+     * Tests the getPreparator of the SessionTicketTLSExtensionHandler class
+     */
     @Override
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionPreparator);
     }
 
+    /**
+     * Tests the getSerializer of the SessionTicketTLSExtensionHandler class
+     */
     @Override
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionSerializer);

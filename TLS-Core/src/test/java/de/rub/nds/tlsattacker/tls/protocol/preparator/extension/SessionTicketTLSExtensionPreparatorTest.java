@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Collection;
@@ -34,6 +33,15 @@ public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparator
     private final byte[] expectedBytes;
     private final int startParsing;
 
+    /**
+     * Constructor for parameterized setup.
+     *
+     * @param extensionType
+     * @param extensionLength
+     * @param extensionPayload
+     * @param expectedBytes
+     * @param startParsing
+     */
     public SessionTicketTLSExtensionPreparatorTest(ExtensionType extensionType, int extensionLength,
             byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
@@ -43,11 +51,19 @@ public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparator
         this.startParsing = startParsing;
     }
 
+    /**
+     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
+     *
+     * @return Collection of the parameters
+     */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return SessionTicketTLSExtensionHandlerTest.generateData();
     }
 
+    /**
+     * Some initial setup.
+     */
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -55,6 +71,9 @@ public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparator
         preparator = new SessionTicketTLSExtensionPreparator(context, (SessionTicketTLSExtensionMessage) message);
     }
 
+    /**
+     * Tests the preparator of the SessionTicketTLSExtensionPreparator.
+     */
     @Test
     @Override
     public void testPreparator() {

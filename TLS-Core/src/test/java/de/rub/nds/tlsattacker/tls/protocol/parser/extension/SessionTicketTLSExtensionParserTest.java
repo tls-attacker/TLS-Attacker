@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -33,6 +32,15 @@ public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
     private final byte[] expectedBytes;
     private final int startParsing;
 
+    /**
+     * Constructor for parameterized setup.
+     *
+     * @param extensionType
+     * @param extensionLength
+     * @param sessionTicket
+     * @param expectedBytes
+     * @param startParsing
+     */
     public SessionTicketTLSExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
             byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
@@ -42,11 +50,19 @@ public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
         this.startParsing = startParsing;
     }
 
+    /**
+     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
+     *
+     * @return Collection of the parameters
+     */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return SessionTicketTLSExtensionHandlerTest.generateData();
     }
 
+    /**
+     * Some initial setup.
+     */
     @Override
     @Before
     public void setUp() {
@@ -54,6 +70,10 @@ public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
         message = parser.parse();
     }
 
+    /**
+     * Tests the parseExtensionMessageContent method of the
+     * SessionTicketTLSExtensionParser.
+     */
     @Override
     @Test
     public void testParseExtensionMessageContent() {

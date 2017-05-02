@@ -30,6 +30,15 @@ public class SessionTicketTLSExtensionSerializerTest extends ExtensionSerializer
     private final byte[] expectedBytes;
     private final int startParsing;
 
+    /**
+     * Constructor for parameterized setup.
+     *
+     * @param extensionType
+     * @param extensionLength
+     * @param sessionTicket
+     * @param expectedBytes
+     * @param startParsing
+     */
     public SessionTicketTLSExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
             byte[] sessionTicket, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
@@ -39,11 +48,20 @@ public class SessionTicketTLSExtensionSerializerTest extends ExtensionSerializer
         this.startParsing = startParsing;
     }
 
+    /**
+     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
+     *
+     * @return Collection of the parameters
+     */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return SessionTicketTLSExtensionHandlerTest.generateData();
     }
 
+    /**
+     * Tests the serializeExtensionContent method of the
+     * SessionTicketTLSExtensionSerializer class
+     */
     @Test
     @Override
     public void testSerializeExtensionContent() {
