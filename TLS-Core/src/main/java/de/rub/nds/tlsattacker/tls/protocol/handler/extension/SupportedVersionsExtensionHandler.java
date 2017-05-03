@@ -51,5 +51,5 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
         List<ProtocolVersion> versionList = ProtocolVersion.getProtocolVersions(versionBytes);
         context.setClientSupportedProtocolVersions(versionList);
     }
-    
+
 }

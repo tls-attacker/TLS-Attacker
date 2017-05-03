@@ -26,7 +26,7 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public KeyShareExtensionMessage() {
         super(ExtensionType.KEY_SHARE);
     }
-    
+
     public ModifiableByteArray getKeyShareEntrys() {
         return keyShareEntrys;
     }
@@ -34,14 +34,14 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public void setKeyShareEntrys(byte[] array) {
         this.keyShareEntrys = ModifiableVariableFactory.safelySetValue(this.keyShareEntrys, array);
     }
-    
+
     public void setKeyShareEntrys(ModifiableByteArray keyShareEntrys) {
         this.keyShareEntrys = keyShareEntrys;
     }
-    
+
     @Override
     public KeyShareExtensionHandler getHandler(TlsContext context) {
         return new KeyShareExtensionHandler(context);
     }
-    
+
 }

@@ -25,7 +25,8 @@ public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<Su
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getSupportedVersionsLength().getValue(), ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
+        appendInt(message.getSupportedVersionsLength().getValue(),
+                ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
         appendBytes(message.getSupportedVersions().getValue());
         return getAlreadySerialized();
     }

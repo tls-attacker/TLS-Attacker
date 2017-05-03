@@ -17,9 +17,9 @@ import de.rub.nds.tlsattacker.util.ArrayConverter;
  * @author Nurullah Erinola
  */
 public class HelloRetryRequestSerializer extends HandshakeMessageSerializer<HelloRetryRequestMessage> {
-    
+
     private final HelloRetryRequestMessage msg;
-    
+
     public HelloRetryRequestSerializer(HelloRetryRequestMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
@@ -37,12 +37,12 @@ public class HelloRetryRequestSerializer extends HandshakeMessageSerializer<Hell
         }
         return getAlreadySerialized();
     }
-    
+
     protected void writeProtocolVersion() {
         appendBytes(msg.getProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
-    
+
     protected void writeSelectedCiphersuite() {
         appendBytes(msg.getSelectedCipherSuite().getValue());
         LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));

@@ -115,8 +115,8 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
         LOGGER.debug("MessageSequence:" + msg.getMessageSeq().getValue());
     }
-    
-     /**
+
+    /**
      * Reads the next bytes as the ExtensionLength and writes them in the
      * message
      *
@@ -148,7 +148,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
         }
         message.setExtensions(extensionMessages);
     }
-    
+
     /**
      * Checks if the message has an ExtensionLength field, by checking if the
      * value specified in the length field is big enough to allow it.
@@ -173,7 +173,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     protected boolean hasExtensions(T message) {
         return message.getExtensionsLength().getValue() > 0;
     }
-    
+
     protected ProtocolVersion getVersion() {
         return version;
     }

@@ -61,15 +61,14 @@ public class HandshakeByteLength {
     public static final int MESSAGE_LENGTH_FIELD = 3;
 
     /**
-     * random length 
+     * random length
      */
     public static final int RANDOM = 28;
-    
+
     /**
      * random length for TLS 1.3
      */
     public static final int RANDOM_TLS13 = 32;
-
 
     /**
      * length of the session id length field indicating the session id length

@@ -84,7 +84,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionsLength;
-    
+
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
@@ -120,7 +120,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         }
         return false;
     }
-    
+
     public void setExtensionBytes(byte[] extensionBytes) {
         this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
     }
@@ -132,7 +132,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public void setExtensionBytes(ModifiableByteArray extensionBytes) {
         this.extensionBytes = extensionBytes;
     }
-    
+
     public ModifiableInteger getExtensionsLength() {
         return extensionsLength;
     }
@@ -144,7 +144,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public void setExtensionsLength(int extensionsLength) {
         this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
     }
-    
+
     public ModifiableByte getType() {
         return type;
     }
@@ -241,7 +241,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     public String toCompactString() {
         return handshakeMessageType.getName();
     }
-    
+
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();

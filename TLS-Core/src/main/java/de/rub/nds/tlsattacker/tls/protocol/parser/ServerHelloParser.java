@@ -61,16 +61,16 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
     @Override
     protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
         parseProtocolVersion(msg);
-        if(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
             parseUnixtime(msg);
         }
         parseRandom(msg);
-        if(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
             parseSessionIDLength(msg);
             parseSessionID(msg);
         }
         parseSelectedCiphersuite(msg);
-        if(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
             parseSelectedComressionMethod(msg);
         }
         if (hasExtensionLengthField(msg)) {

@@ -97,8 +97,8 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
         appendInt(msg.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
         LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
-    
-     /**
+
+    /**
      * Checks if the message has an ExtensionsLength field
      * 
      * @return True if the message has an ExtensionLength field

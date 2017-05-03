@@ -49,6 +49,14 @@ public class TlsContext {
     // Default values
     private TlsConfig config;
     /**
+     * early secret established during the handshake
+     */
+    private byte[] earlySecret;
+    /**
+     * handshake secret established during the handshake
+     */
+    private byte[] handshakeSecret;
+    /**
      * master secret established during the handshake
      */
     private byte[] masterSecret;
@@ -163,12 +171,12 @@ public class TlsContext {
     private List<SNIEntry> clientSNIEntryList;
 
     private int sequenceNumber = 0;
-    
+
     /**
      * supported protocol versions
      */
     private List<ProtocolVersion> clientSupportedProtocolVersions;
-    
+
     public TlsContext() {
         digest = new TlsMessageDigest();
         config = TlsConfig.createConfig();
@@ -193,8 +201,7 @@ public class TlsContext {
     public void setClientSupportedProtocolVersions(List<ProtocolVersion> clientSupportedProtocolVersions) {
         this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
     }
-    
-    
+
     public List<NamedCurve> getClientNamedCurvesList() {
         return clientNamedCurvesList;
     }

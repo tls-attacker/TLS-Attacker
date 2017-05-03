@@ -23,15 +23,15 @@ import java.util.List;
  * @author Nurullah Erinola
  */
 public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRequestMessage> {
-    
+
     public HelloRetryRequestParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.HELLO_RETRY_REQUEST, version);
     }
 
     @Override
     protected void parseHandshakeMessageContent(HelloRetryRequestMessage msg) {
-         parseProtocolVersion(msg);
-         parseSelectedCiphersuite(msg);
+        parseProtocolVersion(msg);
+        parseSelectedCiphersuite(msg);
         if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
@@ -44,12 +44,12 @@ public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRe
     protected HelloRetryRequestMessage createHandshakeMessage() {
         return new HelloRetryRequestMessage();
     }
-    
+
     protected void parseProtocolVersion(HelloRetryRequestMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
         LOGGER.debug("ProtocolVersion:" + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
     }
-    
+
     protected void parseSelectedCiphersuite(HelloRetryRequestMessage msg) {
         msg.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
         LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));

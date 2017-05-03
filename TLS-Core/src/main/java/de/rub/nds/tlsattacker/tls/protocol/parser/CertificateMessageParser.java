@@ -43,7 +43,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     protected void parseHandshakeMessageContent(CertificateMessage msg) {
         parseCertificatesLength(msg);
         parseX509CertificateBytes(msg);
-        if(getVersion() == ProtocolVersion.TLS13) {
+        if (getVersion() == ProtocolVersion.TLS13) {
             if (hasExtensionLengthField(msg)) {
                 parseExtensionLength(msg);
                 if (hasExtensions(msg)) {

@@ -82,7 +82,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     private boolean isDTLS() {
         return context.getSelectedProtocolVersion().isDTLS();
     }
-    
+
     protected void prepareExtensions() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (msg.getExtensions() != null) {

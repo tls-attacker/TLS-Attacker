@@ -28,5 +28,5 @@ public class EncryptedExtensionsPreparator extends HandshakeMessagePreparator<En
         prepareExtensions();
         prepareExtensionLength();
     }
-    
+
 }

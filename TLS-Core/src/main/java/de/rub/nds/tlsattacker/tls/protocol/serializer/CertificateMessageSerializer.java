@@ -41,7 +41,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     public byte[] serializeHandshakeMessageContent() {
         writeCertificateLength(msg);
         writeX509Certificate(msg);
-        if(version == ProtocolVersion.TLS13) {
+        if (version == ProtocolVersion.TLS13) {
             if (hasExtensionLengthField()) {
                 writeExtensionLength();
                 if (hasExtensions()) {

@@ -221,6 +221,17 @@ public class AlgorithmResolver {
         }
     }
 
+    public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
+        HKDFAlgorithm result;
+        if (cipherSuite.name().endsWith("SHA384")) {
+            result = HKDFAlgorithm.TLS_HKDF_SHA384;
+        } else {
+            result = HKDFAlgorithm.TLS_HKDF_SHA256;
+        }
+        LOGGER.debug("Using the following HKDF Algorithm: {}", result);
+        return result;
+    }
+
     private AlgorithmResolver() {
 
     }

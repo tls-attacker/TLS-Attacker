@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.EncryptedExtensionsMessage;
  * @author Nurullah Erinola
  */
 public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedExtensionsMessage> {
-   
+
     public EncryptedExtensionsParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version);
     }
@@ -35,5 +35,5 @@ public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedE
     protected EncryptedExtensionsMessage createHandshakeMessage() {
         return new EncryptedExtensionsMessage();
     }
-    
+
 }

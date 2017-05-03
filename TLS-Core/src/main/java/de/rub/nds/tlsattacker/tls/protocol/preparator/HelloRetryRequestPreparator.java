@@ -40,7 +40,7 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
         prepareExtensionLength();
         prepareExtensions();
     }
-    
+
     private void prepareProtocolVersion() {
         ProtocolVersion ourVersion = context.getConfig().getHighestProtocolVersion();
         if (context.getConfig().isEnforceSettings()) {
@@ -50,7 +50,7 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
-    
+
     private void prepareCipherSuite() {
         if (context.getConfig().isEnforceSettings()) {
             msg.setSelectedCipherSuite(context.getConfig().getSupportedCiphersuites().get(0).getByteValue());
@@ -69,5 +69,5 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
         }
         LOGGER.debug("CipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
-    
+
 }

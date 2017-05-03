@@ -58,9 +58,9 @@ public class ExtensionByteLength {
      * SignatureAndHashAlgorithms Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
-     /**
-     * Supported Protocol Versions length field of the SupportedVersionsExtension
-     * message
+    /**
+     * Supported Protocol Versions length field of the
+     * SupportedVersionsExtension message
      */
     public static final int SUPPORTED_PROTOCOL_VERSIONS_LENGTH = 1;
 }

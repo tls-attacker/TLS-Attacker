@@ -26,7 +26,7 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray supportedVersions;
-    
+
     public SupportedVersionsExtensionMessage() {
         super(ExtensionType.SUPPORTED_VERSIONS);
     }
@@ -38,11 +38,11 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage {
     public void setSupportedVersionsLength(int length) {
         this.supportedVersionsLength = ModifiableVariableFactory.safelySetValue(this.supportedVersionsLength, length);
     }
-    
+
     public void setSupportedVersionsLength(ModifiableInteger supportedVersionsLength) {
         this.supportedVersionsLength = supportedVersionsLength;
     }
-    
+
     public ModifiableByteArray getSupportedVersions() {
         return supportedVersions;
     }

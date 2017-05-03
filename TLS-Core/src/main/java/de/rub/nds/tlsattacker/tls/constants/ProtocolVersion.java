@@ -64,7 +64,7 @@ public enum ProtocolVersion {
         }
         return MAP.get(i);
     }
-    
+
     public static List<ProtocolVersion> getProtocolVersions(byte[] values) {
         List<ProtocolVersion> versions = new LinkedList<>();
         if (values.length % 2 != 0) {
@@ -84,7 +84,7 @@ public enum ProtocolVersion {
         }
         return versions;
     }
-    
+
     public static ProtocolVersion getRandom() {
         ProtocolVersion c = null;
         while (c == null) {

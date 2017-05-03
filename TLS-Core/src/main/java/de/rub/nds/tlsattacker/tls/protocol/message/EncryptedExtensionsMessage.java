@@ -18,15 +18,15 @@ import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
  * @author Nurullah Erinola
  */
 public class EncryptedExtensionsMessage extends HandshakeMessage {
-    
+
     public EncryptedExtensionsMessage() {
         super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
     }
-    
+
     public EncryptedExtensionsMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -40,10 +40,10 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
         }
         return sb.toString();
     }
-    
+
     @Override
     public EncryptedExtensionsHandler getHandler(TlsContext context) {
         return new EncryptedExtensionsHandler(context);
     }
-    
+
 }

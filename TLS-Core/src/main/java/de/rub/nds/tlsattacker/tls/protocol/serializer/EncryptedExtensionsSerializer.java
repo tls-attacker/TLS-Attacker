@@ -15,9 +15,9 @@ import de.rub.nds.tlsattacker.tls.protocol.message.EncryptedExtensionsMessage;
  * @author Nurullah Erinola
  */
 public class EncryptedExtensionsSerializer extends HandshakeMessageSerializer<EncryptedExtensionsMessage> {
-    
+
     private final EncryptedExtensionsMessage msg;
-    
+
     public EncryptedExtensionsSerializer(EncryptedExtensionsMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;

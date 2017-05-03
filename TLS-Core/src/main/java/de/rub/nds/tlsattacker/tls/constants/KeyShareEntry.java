@@ -17,30 +17,29 @@ import org.bouncycastle.util.BigIntegers;
  * @author Nurullah Erinola
  */
 public class KeyShareEntry implements Serializable {
-    
+
     private NamedCurve group;
-    
+
     private int keyExchangeLength;
-    
+
     private byte[] serializedPublicKey;
-    
+
     public KeyShareEntry() {
 
     }
-    
+
     public KeyShareEntry(NamedCurve group, int keyExchangeLength, byte[] serializedPublicKey) {
         this.group = group;
         this.keyExchangeLength = keyExchangeLength;
         this.serializedPublicKey = serializedPublicKey;
     }
-    
+
     public byte[] getByteValue() {
-        byte[] result = ArrayConverter.concatenate(group.getValue(), 
-                BigIntegers.asUnsignedByteArray(BigInteger.valueOf(keyExchangeLength)),
-                serializedPublicKey);
+        byte[] result = ArrayConverter.concatenate(group.getValue(),
+                BigIntegers.asUnsignedByteArray(BigInteger.valueOf(keyExchangeLength)), serializedPublicKey);
         return result;
-    }   
-    
+    }
+
     public NamedCurve getGroup() {
         return group;
     }
@@ -48,7 +47,7 @@ public class KeyShareEntry implements Serializable {
     public void setGroup(NamedCurve group) {
         this.group = group;
     }
-    
+
     public int getKeyExchangeLength() {
         return keyExchangeLength;
     }
@@ -56,7 +55,7 @@ public class KeyShareEntry implements Serializable {
     public void setKeyExchangeLength(int keyExchangeLength) {
         this.keyExchangeLength = keyExchangeLength;
     }
-    
+
     public byte[] getSerializedPublicKey() {
         return serializedPublicKey;
     }
@@ -64,7 +63,5 @@ public class KeyShareEntry implements Serializable {
     public void setSerializedPublicKey(byte[] serializedPublicKey) {
         this.serializedPublicKey = serializedPublicKey;
     }
-    
-    
-    
+
 }
