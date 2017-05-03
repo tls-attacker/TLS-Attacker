@@ -54,6 +54,18 @@ public class ExtensionByteLength {
      */
     public static final int SERVER_NAME_LIST_LENGTH = 2;
     /**
+     * KeyShareType length in the KeySahreExtension
+     */
+    public static final int KEY_SHARE_TYPE = 2;
+    /**
+     * KeyShare length in the KeySahreExtension
+     */
+    public static final int KEY_SAHRE_LENGTH = 2;
+     /**
+     * KeyShareListLength in the KeySahreExtension
+     */
+    public static final int KEY_SHARE_LIST_LENGTH = 2;
+    /**
      * Length of the Signature and HashAlgorithm Length field of the
      * SignatureAndHashAlgorithms Extension
      */

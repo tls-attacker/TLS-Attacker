@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.tls.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.tls.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.tls.record.layer.TlsRecordLayer;
@@ -169,6 +170,8 @@ public class TlsContext {
     private ProtocolVersion lastRecordVersion;
 
     private List<SNIEntry> clientSNIEntryList;
+    
+    private List<KSEntry> clientKSEntryList;
 
     private int sequenceNumber = 0;
 
@@ -233,6 +236,14 @@ public class TlsContext {
 
     public void setClientSNIEntryList(List<SNIEntry> clientSNIEntryList) {
         this.clientSNIEntryList = clientSNIEntryList;
+    }
+    
+    public List<KSEntry> getClientKSEntryList() {
+        return clientKSEntryList;
+    }
+
+    public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
+        this.clientKSEntryList = clientKSEntryList;
     }
 
     public ProtocolVersion getLastRecordVersion() {

@@ -133,10 +133,10 @@ public final class TlsConfig implements Serializable {
      * Supported namedCurves by default
      */
     private List<NamedCurve> namedCurves;
-     /**
+    /**
      * Supported ProtocolVersions by default
      */
-    private List<ProtocolVersion> supportedVersions;
+    private List<ProtocolVersion> supportedVersions;  
     /**
      * Which heartBeat mode we are in
      */
@@ -218,6 +218,14 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
+    /**
+     * If we generate ClientHello with the SupportedVersion extension
+     */
+    private boolean addSupportedVersionsExtension = false;
+    /**
+     * If we generate ClientHello with the KeyShare extension
+     */
+    private boolean addKeyShareExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -773,7 +781,7 @@ public final class TlsConfig implements Serializable {
     public void setNamedCurves(List<NamedCurve> namedCurves) {
         this.namedCurves = namedCurves;
     }
-    
+
     public List<ProtocolVersion> getSupportedVersions() {
         return Collections.unmodifiableList(supportedVersions);
     }
@@ -838,6 +846,22 @@ public final class TlsConfig implements Serializable {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 
+    public boolean isAddSupportedVersionsExtension() {
+        return addSupportedVersionsExtension;
+    }
+
+    public void setAddSupportedVersionsExtension(boolean addSupportedVersionsExtension) {
+        this.addSupportedVersionsExtension = addSupportedVersionsExtension;
+    }
+    
+    public boolean isAddKeyShareExtension() {
+        return addKeyShareExtension;
+    }
+
+    public void setAddKeyShareExtension(boolean addKeyShareExtension) {
+        this.addKeyShareExtension = addKeyShareExtension;
+    }
+    
     public PrivateKey getPrivateKey() {
         return privateKey;
     }
