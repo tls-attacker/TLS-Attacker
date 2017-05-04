@@ -84,6 +84,7 @@ public class ClientDelegateTest {
         TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         List<String> excludeFields = new LinkedList<>();
+        excludeFields.add("ourCertificate");
         excludeFields.add("keyStore");
         excludeFields.add("myConnectionEnd"); // If the client delegate is
                                               // chosen

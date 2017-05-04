@@ -84,6 +84,7 @@ public class ServerDelegateTest {
         delegate.applyDelegate(config);
         List<String> excludeFields = new LinkedList<>();
         excludeFields.add("keyStore");
+        excludeFields.add("ourCertificate");
         excludeFields.add("connectionEnd"); // If the server delegate is
                                             // chosen
                                             // we change the conntection end

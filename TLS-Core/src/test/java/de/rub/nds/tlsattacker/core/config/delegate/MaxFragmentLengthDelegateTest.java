@@ -93,7 +93,7 @@ public class MaxFragmentLengthDelegateTest {
         TlsConfig config = TlsConfig.createConfig();
         TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
-                                                                                // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        // ugly
     }
 }

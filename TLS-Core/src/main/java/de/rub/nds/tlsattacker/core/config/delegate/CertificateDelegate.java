@@ -16,7 +16,11 @@ import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -72,10 +76,15 @@ public class CertificateDelegate extends Delegate {
             if (keystore != null) {
                 config.setKeyStore(KeystoreHandler.loadKeyStore(keystore, config.getPassword()));
                 config.setOurCertificate(JKSLoader.loadTLSCertificate(config.getKeyStore(), alias));
+                try {
+                    config.setPrivateKey((PrivateKey) config.getKeyStore().getKey(config.getAlias(),
+                            config.getAlias().toCharArray()));
+                } catch (UnrecoverableKeyException ex) {
+                    LOGGER.warn("Could not load private Key from Keystore", ex);
+                }
             }
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load Keystore at: " + keystore, ex);
         }
     }
-
 }
