@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.misc;
 
-import java.lang.reflect.Field;
+import de.rub.nds.tlsattacker.tls.util.UnlimitedStrengthHelper;
 import java.security.InvalidKeyException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -36,11 +36,7 @@ public class UnlimitedStrengthTest {
     @Test
     public void testAES256() throws Exception {
 	try {
-	    Field field = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-	    field.setAccessible(true);
-	    if (field.getBoolean(null)) {
-	        field.set(null, java.lang.Boolean.FALSE);
-	    }
+	    UnlimitedStrengthHelper.removeCryptoStrengthRestriction();
 
 	    Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
 	    IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);

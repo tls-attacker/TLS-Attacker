@@ -24,7 +24,7 @@
             </roles>
         </developer>
     </developers>
-     
+    
     <repositories>
         <repository>
             <id>libs</id>
