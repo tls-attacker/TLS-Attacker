@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SignedCertificateTimestampExtensionHandlerTest;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import java.util.Collection;
 import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;

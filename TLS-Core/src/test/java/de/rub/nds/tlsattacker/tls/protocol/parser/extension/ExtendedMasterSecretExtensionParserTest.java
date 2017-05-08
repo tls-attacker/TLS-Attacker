@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializerTest;
 import java.util.Collection;

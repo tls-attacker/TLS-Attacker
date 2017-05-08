@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SessionTicketTLSExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;

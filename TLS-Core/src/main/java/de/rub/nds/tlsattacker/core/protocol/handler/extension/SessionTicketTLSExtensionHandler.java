@@ -6,15 +6,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
+package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SessionTicketTLSExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**

@@ -6,12 +6,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
+package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.PaddingExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.PaddingExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 
 /**

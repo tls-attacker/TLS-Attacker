@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.PaddingExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.PaddingExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializerTest;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Collection;

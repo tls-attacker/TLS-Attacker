@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.PaddingExtensionSerializerTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;

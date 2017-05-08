@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;

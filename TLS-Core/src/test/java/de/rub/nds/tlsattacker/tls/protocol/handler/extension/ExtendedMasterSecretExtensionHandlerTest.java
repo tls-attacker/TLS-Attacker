@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.tls.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
-import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializerTest;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import java.util.Collection;
