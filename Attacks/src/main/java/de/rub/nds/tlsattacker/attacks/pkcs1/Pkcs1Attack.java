@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;

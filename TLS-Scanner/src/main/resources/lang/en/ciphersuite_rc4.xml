@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>Vulnerable RC4 CipherSuites are not supported</successDescription>
-    <successName>RC4 CipherSuites not supported</successName>
-    <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>The server does support vulnerable RC4 CipherSuites</unsuccessDescription>
-    <unsuccessName>RC4 CipherSuites supported</unsuccessName>
-</checkConfig>

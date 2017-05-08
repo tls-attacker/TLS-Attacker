@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>Vulnerable export CipherSuites are not supported</successDescription>
-    <successName>Export CipherSuites not supported</successName>
-    <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>The server does support vulnerable export CipherSuites</unsuccessDescription>
-    <unsuccessName>Export CipherSuites supported</unsuccessName>
-</checkConfig>
