@@ -136,7 +136,7 @@ public final class TlsConfig implements Serializable {
     /**
      * Supported ProtocolVersions by default
      */
-    private List<ProtocolVersion> supportedVersions;  
+    private List<ProtocolVersion> supportedVersions;
     /**
      * Which heartBeat mode we are in
      */
@@ -188,7 +188,7 @@ public final class TlsConfig implements Serializable {
     /**
      * The Type of workflow trace that should be generated
      */
-    private WorkflowTraceType workflowTraceType;
+    private WorkflowTraceType workflowTraceType = WorkflowTraceType.CLIENT_HELLO;
     /**
      * If the Default generated workflowtrace should contain Application data
      * send by servers
@@ -217,15 +217,15 @@ public final class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private boolean addSignatureAndHashAlgrorithmsExtension = false;
+    private boolean addSignatureAndHashAlgrorithmsExtension = true;
     /**
      * If we generate ClientHello with the SupportedVersion extension
      */
-    private boolean addSupportedVersionsExtension = false;
+    private boolean addSupportedVersionsExtension = true;
     /**
      * If we generate ClientHello with the KeyShare extension
      */
-    private boolean addKeyShareExtension = false;
+    private boolean addKeyShareExtension = true;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -355,15 +355,24 @@ public final class TlsConfig implements Serializable {
                 HashAlgorithm.SHA1));
         supportedSignatureAndHashAlgorithms
                 .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA256));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA384));
         supportedCompressionMethods = new LinkedList<>();
         supportedCompressionMethods.add(CompressionMethod.NULL);
+        supportedCompressionMethods.add(CompressionMethod.DEFLATE);
         supportedCiphersuites = new LinkedList<>();
+        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_256);
+        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_384);
         supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
+        namedCurves.add(NamedCurve.ECDH_X25519);
         namedCurves.add(NamedCurve.SECP192R1);
         namedCurves.add(NamedCurve.SECP256R1);
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
+        namedCurves.add(NamedCurve.FFDHE2048);
         pointFormats = new LinkedList<>();
         pointFormats.add(ECPointFormat.UNCOMPRESSED);
         try {
@@ -375,6 +384,11 @@ public final class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+        supportedVersions = new LinkedList<>();
+        supportedVersions.add(ProtocolVersion.TLS13);
+        supportedVersions.add(ProtocolVersion.TLS12);
+        supportedVersions.add(ProtocolVersion.TLS11);
+        supportedVersions.add(ProtocolVersion.TLS10);
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -853,7 +867,7 @@ public final class TlsConfig implements Serializable {
     public void setAddSupportedVersionsExtension(boolean addSupportedVersionsExtension) {
         this.addSupportedVersionsExtension = addSupportedVersionsExtension;
     }
-    
+
     public boolean isAddKeyShareExtension() {
         return addKeyShareExtension;
     }
@@ -861,7 +875,7 @@ public final class TlsConfig implements Serializable {
     public void setAddKeyShareExtension(boolean addKeyShareExtension) {
         this.addKeyShareExtension = addKeyShareExtension;
     }
-    
+
     public PrivateKey getPrivateKey() {
         return privateKey;
     }

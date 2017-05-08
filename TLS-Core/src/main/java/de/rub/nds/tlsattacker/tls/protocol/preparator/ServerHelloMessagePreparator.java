@@ -40,7 +40,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
         if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
             prepareUnixTime();
         }
-        prepareRandom();
+        prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
         if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
             prepareSessionID();
             prepareSessionIDLength();

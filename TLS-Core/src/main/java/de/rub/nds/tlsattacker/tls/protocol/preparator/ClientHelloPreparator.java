@@ -44,7 +44,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             prepareUnixTime();
         }
-        prepareRandom();
+        prepareRandom(context.getConfig().getHighestProtocolVersion());
         if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             prepareSessionID();
             prepareSessionIDLength();
@@ -102,9 +102,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
         } else {
-            msg.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+            msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         }
-        msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 

@@ -170,8 +170,10 @@ public class TlsContext {
     private ProtocolVersion lastRecordVersion;
 
     private List<SNIEntry> clientSNIEntryList;
-    
+
     private List<KSEntry> clientKSEntryList;
+
+    private KSEntry serverKSEntry;
 
     private int sequenceNumber = 0;
 
@@ -237,13 +239,21 @@ public class TlsContext {
     public void setClientSNIEntryList(List<SNIEntry> clientSNIEntryList) {
         this.clientSNIEntryList = clientSNIEntryList;
     }
-    
+
     public List<KSEntry> getClientKSEntryList() {
         return clientKSEntryList;
     }
 
     public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
         this.clientKSEntryList = clientKSEntryList;
+    }
+
+    public KSEntry getServerKSEntry() {
+        return serverKSEntry;
+    }
+
+    public void setServerKSEntry(KSEntry serverKSEntry) {
+        this.serverKSEntry = serverKSEntry;
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -541,5 +551,21 @@ public class TlsContext {
 
     public PRFAlgorithm getPRFAlgorithm() {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
+    }
+
+    public byte[] getHandshakeSecret() {
+        return handshakeSecret;
+    }
+
+    public void setHandshakeSecret(byte[] handshakeSecret) {
+        this.handshakeSecret = handshakeSecret;
+    }
+
+    public byte[] getEarlySecret() {
+        return earlySecret;
+    }
+
+    public void getEarlySecret(byte[] v) {
+        this.earlySecret = earlySecret;
     }
 }

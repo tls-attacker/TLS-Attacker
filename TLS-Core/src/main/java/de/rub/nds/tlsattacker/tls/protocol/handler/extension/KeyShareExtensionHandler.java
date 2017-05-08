@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.tls.protocol.parser.extension.KeyShareExtensionPar
 import de.rub.nds.tlsattacker.tls.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     public KeyShareExtensionParser getParser(byte[] message, int pointer) {
         return new KeyShareExtensionParser(pointer, message);
     }
-    
+
     @Override
     public KeyShareExtensionPreparator getPreparator(KeyShareExtensionMessage message) {
         return new KeyShareExtensionPreparator(context, message);
@@ -56,7 +57,12 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getKeyShareType().getValue()));
             }
         }
-        context.setClientKSEntryList(ksEntryList);
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
+            // The server has only one key
+            context.setServerKSEntry(ksEntryList.get(0));
+        } else {
+            context.setClientKSEntryList(ksEntryList);
+        }
     }
-    
+
 }

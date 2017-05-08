@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.constants;
 
 import de.rub.nds.tlsattacker.tls.exceptions.UnknownProtocolVersionException;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.RandomHelper;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public enum ProtocolVersion {
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
     TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
-    TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
+    TLS13(new byte[] { (byte) 0x7F, (byte) 0x12 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
@@ -124,6 +125,22 @@ public enum ProtocolVersion {
         }
         throw new IllegalArgumentException("Value " + protocolVersion + " cannot be converted to a protocol version. "
                 + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
+    }
+
+    /**
+     * Return the highest protcol version.
+     * 
+     * @param list
+     * @return
+     */
+    public static ProtocolVersion gethighestProtocolVersion(List<ProtocolVersion> list) {
+        ProtocolVersion highestProtocolVersion = list.get(0);
+        for (ProtocolVersion pv : list) {
+            if (ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
+                highestProtocolVersion = pv;
+            }
+        }
+        return highestProtocolVersion;
     }
 
 }

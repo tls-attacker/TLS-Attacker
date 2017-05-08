@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.record.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.record.Record;
 import de.rub.nds.tlsattacker.tls.record.encryptor.Encryptor;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
@@ -33,7 +34,11 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     @Override
     public void prepare() {
         record.setContentType(type.getValue());
-        record.setProtocolVersion(context.getSelectedProtocolVersion().getValue());
+        if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            record.setProtocolVersion(context.getSelectedProtocolVersion().getValue());
+        } else {
+            record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
+        }
         encryptor.encrypt(record);
         record.setLength(record.getProtocolMessageBytes().getValue().length);
     }

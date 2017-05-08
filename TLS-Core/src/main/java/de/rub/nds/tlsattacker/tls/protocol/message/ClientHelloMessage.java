@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
 import de.rub.nds.tlsattacker.tls.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
 import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ECPointFormatExtensionMessage;
@@ -25,7 +26,11 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthEx
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ClientHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -98,11 +103,26 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddServerNameIndicationExtension()) {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getHost().getBytes());
+            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
+            pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
+            extension.getServerNameList().add(pair);
             addExtension(extension);
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+        }
+        if (tlsConfig.isAddSupportedVersionsExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+            addExtension(new SupportedVersionsExtensionMessage());
+        }
+        if (tlsConfig.isAddKeyShareExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+            // Nicht finale Version, dient zum testen
+            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
+            KeySharePair pair = new KeySharePair();
+            pair.setKeyShareConfig(ArrayConverter
+                    .hexStringToByteArray("c28576b238f3a381db6dff52234cb5a579bbd7bd543ca0211b3552962fcd580c"));
+            pair.setKeyShareTypeConfig(NamedCurve.ECDH_X25519.getValue());
+            extension.getKeyShareList().add(pair);
+            addExtension(extension);
         }
     }
 
@@ -181,6 +201,7 @@ public class ClientHelloMessage extends HelloMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
+        // Compare which parameter for TLS 1.3 ?
         sb.append(super.toString()).append("\n  Protocol Version: ")
                 .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Client Unix Time: ")
@@ -191,11 +212,14 @@ public class ClientHelloMessage extends HelloMessage {
                 .append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()))
                 .append("\n  Supported Compression Methods: ")
                 .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
-        // Some ExtensionsTypes are not supported yet, so avoiding the
-        // NULLPointerException needs to be done
-        /**
-         * for (ExtensionMessage e : extensions) { sb.append(e.toString()); }
-         */
+        sb.append("\n  Extensions: ");
+        if (getExtensions() == null) {
+            sb.append("null");
+        } else {
+            for (ExtensionMessage e : getExtensions()) {
+                sb.append(e.toString());
+            }
+        }
         return sb.toString();
     }
 

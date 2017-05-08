@@ -25,6 +25,8 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.MaxFragmentLengthEx
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.handler.ServerHelloHandler;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
@@ -64,6 +66,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+        }
+        if (tlsConfig.isAddKeyShareExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+            addExtension(new KeyShareExtensionMessage());
         }
     }
 

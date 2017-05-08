@@ -51,12 +51,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     protected void adjustTLSContext(ServerHelloMessage message) {
-        if(ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        // Use the right Protocol Version ?
+        adjustSelectedProtocolVersion(message);
+        if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             adjustSelectedCompression(message);
             adjustSelectedSessionID(message);
         }
         adjustSelectedCiphersuite(message);
-        adjustSelectedProtocolVersion(message);
         adjustServerRandom(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
@@ -73,9 +74,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustServerRandom(ServerHelloMessage message) {
-        byte[] random = ArrayConverter.concatenate(message.getUnixTime().getValue(), message.getRandom().getValue());
-        tlsContext.setServerRandom(random);
-        LOGGER.debug("Set ServerRandom in Context to " + ArrayConverter.bytesToHexString(random));
+        // Use the right Protocol Version ?
+        if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            setServerRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        } else {
+            tlsContext.setServerRandom(message.getRandom().getValue());
+        }
+        LOGGER.debug("Set ServerRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getServerRandom()));
+    }
+
+    private void setServerRandomContext(byte[] unixTime, byte[] random) {
+        tlsContext.setServerRandom(ArrayConverter.concatenate(unixTime, random));
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {

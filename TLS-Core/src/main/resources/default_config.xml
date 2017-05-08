@@ -2,6 +2,7 @@
 <tlsConfig>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <connectionEnd>CLIENT</connectionEnd>
+    <WorkflowTraceType>CLIENT_HELLO</WorkflowTraceType>
     <alias>default</alias>
     <password>password</password>
     <clientAuthentication>false</clientAuthentication>
@@ -31,7 +32,17 @@
         <hashAlgorithm>MD5</hashAlgorithm>
         <signatureAlgorithm>RSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA256</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA384</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
     <fuzzingMode>false</fuzzingMode>
+    <supportedCiphersuites>TLS_AES_128_GCM_SHA_256</supportedCiphersuites>
+    <supportedCiphersuites>TLS_AES_128_GCM_SHA_384</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</supportedCiphersuites>
@@ -65,12 +76,15 @@
     <supportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</supportedCiphersuites>
     <supportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</supportedCiphersuites>
     <supportedCompressionMethods>NULL</supportedCompressionMethods>
+    <supportedCompressionMethods>DEFLATE</supportedCompressionMethods>
     <dynamicWorkflow>false</dynamicWorkflow>
     <pointFormats>UNCOMPRESSED</pointFormats>
+    <namedCurves>ECDH_X25519</namedCurves>	
     <namedCurves>SECP192R1</namedCurves>
     <namedCurves>SECP256R1</namedCurves>
     <namedCurves>SECP384R1</namedCurves>
     <namedCurves>SECP521R1</namedCurves>
+    <namedCurves>FFDHE2048</namedCurves>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <sniHostname>localhost</sniHostname>
     <sniType>HOST_NAME</sniType>
@@ -87,7 +101,9 @@
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
-    <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
+    <addSignatureAndHashAlgrorithmsExtension>true</addSignatureAndHashAlgrorithmsExtension>
+    <addSupportedVersionsExtension>true</addSupportedVersionsExtension>
+    <addKeyShareExtension>true</addKeyShareExtension>
     <sessionId></sessionId>
     <updateTimestamps>true</updateTimestamps>
     <distinguishedNames></distinguishedNames>

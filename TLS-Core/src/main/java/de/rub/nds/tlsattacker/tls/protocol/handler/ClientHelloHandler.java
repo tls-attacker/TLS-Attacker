@@ -101,19 +101,18 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustProtocolVersion(ClientHelloMessage message) {
-        ProtocolVersion version;
-        // Use the right Protocol Version ?
-        if(tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        } else {
-            version = ProtocolVersion.TLS13;
-        } 
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setHighestClientProtocolVersion(version);
         LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        // Use the right Protocol Version ?
+        if (tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        } else {
+            tlsContext.setClientRandom(message.getRandom().getValue());
+        }
         LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
     }
 

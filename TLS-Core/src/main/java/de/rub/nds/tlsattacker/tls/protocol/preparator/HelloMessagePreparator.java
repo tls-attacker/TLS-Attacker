@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.tls.protocol.preparator;
 
 import de.rub.nds.tlsattacker.tls.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.ExtensionMessage;
@@ -39,8 +40,14 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         this.msg = message;
     }
 
-    protected void prepareRandom() {
-        byte[] random = new byte[HandshakeByteLength.RANDOM];
+    protected void prepareRandom(ProtocolVersion version) {
+        byte[] random;
+        // Use the right Version ?
+        if (version != ProtocolVersion.TLS13) {
+            random = new byte[HandshakeByteLength.RANDOM];
+        } else {
+            random = new byte[HandshakeByteLength.RANDOM_TLS13];
+        }
         RandomHelper.getRandom().nextBytes(random);
         msg.setRandom(random);
         LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));

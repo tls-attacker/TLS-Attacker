@@ -41,10 +41,14 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     @Override
     protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         parseProtocolVersion(msg);
-        parseUnixtime(msg);
+        if (getVersion() != ProtocolVersion.TLS13) {
+            parseUnixtime(msg);
+        }
         parseRandom(msg);
         parseSessionIDLength(msg);
-        parseSessionID(msg);
+        if (getVersion() != ProtocolVersion.TLS13) {
+            parseSessionID(msg);
+        }
         parseCipherSuiteLength(msg);
         parseCipherSuites(msg);
         parseCompressionLength(msg);
