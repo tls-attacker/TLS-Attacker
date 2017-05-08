@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
+import java.io.ByteArrayOutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -73,9 +74,6 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         ECPublicKeyParameters pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
         ECPrivateKeyParameters privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();
 
-        LOGGER.debug("ecPublicKey Q: " + pubEcParams.getQ());
-        LOGGER.debug("ecPrivateKey d: " + privEcParams.getD());
-
         prepareSerializedPublicKey(msg, pubEcParams.getQ());
         prepareSerializedPublicKeyLength(msg);
 
@@ -89,7 +87,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareSignatureAlgorithm(msg, signHashAlgo);
         prepareHashAlgorithm(msg, signHashAlgo);
 
-        byte[] signature = generateSignature(signHashAlgo);
+        byte[] signature = generateSignature(msg, signHashAlgo);
         prepareSignature(msg, signature);
         prepareSignatureLength(msg);
 
@@ -123,21 +121,42 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         msg.getComputations().setMasterSecret(masterSecret);
     }
 
-    private byte[] generateSignatureContents() {
-        // TODO: concatenate correct values (this is a dummy)
-        byte[] ecParams = ArrayConverter.concatenate(msg.getNamedCurve().getValue(), msg.getSerializedPublicKey()
-                .getValue());
+    private byte[] generateSignatureContents(ECDHEServerKeyExchangeMessage msg) {
+        // TODO: Add signature for explicit curves
+        EllipticCurveType curveType = EllipticCurveType.getCurveType(msg.getCurveType().getValue());
+
+        ByteArrayOutputStream ecParams = new ByteArrayOutputStream();
+        switch (curveType) {
+            case EXPLICIT_PRIME:
+            case EXPLICIT_CHAR2:
+                throw new UnsupportedOperationException("Signing of explicit curves not implemented yet.");
+            case NAMED_CURVE:
+                ecParams.write(curveType.getValue());
+                try {
+                    ecParams.write(msg.getNamedCurve().getValue());
+                } catch (IOException ex) {
+                    throw new PreparationException("Failed to add namedCurve to ECDHEServerKeyExchange signature.");
+                }
+        }
+
+        ecParams.write(msg.getSerializedPublicKeyLength().getValue());
+        try {
+            ecParams.write(msg.getSerializedPublicKey().getValue());
+        } catch (IOException ex) {
+            throw new PreparationException("Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.");
+        }
+
         return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
-                .getServerRandom().getValue(), ecParams);
+                .getServerRandom().getValue(), ecParams.toByteArray());
 
     }
 
-    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
+    private byte[] generateSignature(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm algorithm) {
         try {
             PrivateKey key = context.getConfig().getPrivateKey();
             Signature instance = Signature.getInstance(algorithm.getJavaName());
             instance.initSign(key);
-            instance.update(generateSignatureContents());
+            instance.update(generateSignatureContents(msg));
             return instance.sign();
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException ex) {
             throw new PreparationException("Could not generate Signature for ServerKeyExchange Message.", ex);
