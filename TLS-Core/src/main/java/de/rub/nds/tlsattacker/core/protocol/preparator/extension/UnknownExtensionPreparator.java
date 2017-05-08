@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;

@@ -6,11 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.parser.extension;
+package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializerTest;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializerTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

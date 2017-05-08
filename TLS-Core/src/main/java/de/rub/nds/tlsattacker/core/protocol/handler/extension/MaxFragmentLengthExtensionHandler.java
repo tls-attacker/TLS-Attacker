@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -28,7 +27,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

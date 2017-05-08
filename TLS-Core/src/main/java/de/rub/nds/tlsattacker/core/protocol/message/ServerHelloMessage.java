@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -31,7 +30,11 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSeriali
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -79,6 +82,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddSignedCertificateTimestampExtension()) {
             addExtension(new SignedCertificateTimestampExtensionMessage());
+        }
+        if (tlsConfig.isAddPaddingExtension()) {
+            addExtension(new PaddingExtensionMessage());
         }
     }
 

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;

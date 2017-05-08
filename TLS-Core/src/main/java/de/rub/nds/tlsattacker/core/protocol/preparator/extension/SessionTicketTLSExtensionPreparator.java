@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  *

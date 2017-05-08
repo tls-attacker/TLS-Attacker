@@ -6,15 +6,16 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
+package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SignedCertificateTimestampExtensionHandlerTest;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.Collection;
-import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,7 +25,8 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SignedCertificateTimestampExtensionSerializerTest extends ExtensionSerializerTest {
+public class SignedCertificateTimestampExtensionPreparatorTest extends ExtensionPreparatorTest {
+
     private final ExtensionType extensionType;
     private final int lengthFirstPackage;
     private final byte[] firstTimestamp;
@@ -34,7 +36,7 @@ public class SignedCertificateTimestampExtensionSerializerTest extends Extension
     private final int lengthSecondPackage;
     private final int startPosition;
 
-    public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int lengthFirstPackage,
+    public SignedCertificateTimestampExtensionPreparatorTest(ExtensionType extensionType, int lengthFirstPackage,
             byte[] firstTimestamp, byte[] firstExpectedBytes, byte[] secondTimestamp, byte[] secondExpectedBytes,
             int lengthSecondPackage, int startPosition) {
         this.extensionType = extensionType;
@@ -52,21 +54,22 @@ public class SignedCertificateTimestampExtensionSerializerTest extends Extension
         return SignedCertificateTimestampExtensionHandlerTest.generateData();
     }
 
+    @Before
+    public void setUp() {
+        context = new TlsContext();
+        message = new SignedCertificateTimestampExtensionMessage();
+        preparator = new SignedCertificateTimestampExtensionPreparator(context,
+                (SignedCertificateTimestampExtensionMessage) message);
+    }
+
     @Test
     @Override
-    public void testSerializeExtensionContent() {
-        message = new SignedCertificateTimestampExtensionMessage();
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(lengthFirstPackage);
-        ((SignedCertificateTimestampExtensionMessage) message).setSignedTimestamp(firstTimestamp);
+    public void testPreparator() {
+        context.getConfig().setSignedCertificateTimestamp(secondTimestamp);
+        preparator.prepare();
 
-        SignedCertificateTimestampExtensionSerializer serializer = new SignedCertificateTimestampExtensionSerializer(
-                (SignedCertificateTimestampExtensionMessage) message);
-        assertArrayEquals(firstExpectedBytes, serializer.serialize());
-
-        message.setExtensionLength(lengthSecondPackage);
-        ((SignedCertificateTimestampExtensionMessage) message).setSignedTimestamp(secondTimestamp);
-        assertArrayEquals(secondExpectedBytes, serializer.serialize());
-
+        assertEquals(lengthSecondPackage, (int) message.getExtensionLength().getValue());
+        assertArrayEquals(secondTimestamp, ((SignedCertificateTimestampExtensionMessage) message).getSignedTimestamp()
+                .getValue());
     }
 }

@@ -6,13 +6,12 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.preparator.extension;
+package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
-import de.rub.nds.tlsattacker.tls.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

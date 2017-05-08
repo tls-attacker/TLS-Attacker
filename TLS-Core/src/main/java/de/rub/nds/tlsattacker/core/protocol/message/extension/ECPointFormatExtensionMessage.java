@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;

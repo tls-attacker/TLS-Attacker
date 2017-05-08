@@ -32,7 +32,10 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
->>>>>>> origin/master:TLS-Core/src/main/java/de/rub/nds/tlsattacker/core/protocol/message/ClientHelloMessage.java
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -108,6 +111,9 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddSignedCertificateTimestampExtension()) {
             addExtension(new SignedCertificateTimestampExtensionMessage());
+        }
+        if (tlsConfig.isAddPaddingExtension()) {
+            addExtension(new PaddingExtensionMessage());
         }
     }
 

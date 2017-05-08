@@ -9,7 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
@@ -20,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensio
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  *

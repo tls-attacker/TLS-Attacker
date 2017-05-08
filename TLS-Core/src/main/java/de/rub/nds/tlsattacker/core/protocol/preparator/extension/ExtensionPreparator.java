@@ -8,13 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author Robert Merget - robert.merget@rub.de

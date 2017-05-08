@@ -6,12 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
+package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
-import de.rub.nds.tlsattacker.tls.constants.ExtensionType;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
