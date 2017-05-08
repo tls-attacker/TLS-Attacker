@@ -111,7 +111,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public KeyExchangeComputations getComputations() {
+    public ECDHEServerComputations getComputations() {
         return computations;
     }
 
