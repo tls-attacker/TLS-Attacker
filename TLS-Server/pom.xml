@@ -8,8 +8,8 @@
     </parent>
     <artifactId>TLS-Server</artifactId>
     <packaging>jar</packaging>
-    
     <build>
+        <finalName>TLS-Server</finalName>              
         <plugins>
             <plugin>
                 <!-- Build an executable JAR -->
@@ -21,61 +21,30 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.tlsserver.TLSServer</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.server.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-            <plugin> 
-                <artifactId>maven-dependency-plugin</artifactId> 
-                <executions> 
-                    <execution> 
-                        <goals> 
-                            <goal>copy-dependencies</goal> 
-                        </goals> 
-                        <configuration> 
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <!--Ensures only runnable dependencies are included-->
-                            <includeScope>compile</includeScope> 
-                        </configuration> 
-                    </execution> 
-                </executions> 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.54</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>TLS-Core</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>EAP</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>ModifiableVariable</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.rub.nds.tlsattacker</groupId>
-                    <artifactId>Utils</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

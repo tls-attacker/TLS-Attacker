@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>Vulnerable anonymous CipherSuites are not supported</successDescription>
-    <successName>Anonymous CipherSuites not supported</successName>
-    <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>The server does support vulnerable anonymous CipherSuites</unsuccessDescription>
-    <unsuccessName>Anonymous CipherSuites supported</unsuccessName>
-</checkConfig>

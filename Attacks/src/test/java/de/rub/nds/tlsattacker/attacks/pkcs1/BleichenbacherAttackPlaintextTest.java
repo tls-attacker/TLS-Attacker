@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,7 +35,8 @@ public class BleichenbacherAttackPlaintextTest {
 
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        RandomHelper.getBadSecureRandom().setSeed(0);
+        keyPairGenerator.initialize(2048, RandomHelper.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
         SecureRandom sr = new SecureRandom();
