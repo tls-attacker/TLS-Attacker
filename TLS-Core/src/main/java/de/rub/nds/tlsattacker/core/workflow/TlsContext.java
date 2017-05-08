@@ -150,6 +150,10 @@ public class TlsContext {
     private boolean isExtendedMasterSecret;
 
     /**
+     * This is the renegotiation info of the RenegotiationInfo extension.
+     */
+    private byte[] renegotiationInfo;
+    /**
      * This is the timestamp of the SignedCertificateTimestamp extension
      */
     private byte[] signedCertificateTimestamp;
@@ -562,6 +566,14 @@ public class TlsContext {
 
     public void setSignedCertificateTimestamp(byte[] signedCertificateTimestamp) {
         this.signedCertificateTimestamp = signedCertificateTimestamp;
+    }
+
+    public byte[] getRenegotiationInfo() {
+        return renegotiationInfo;
+    }
+
+    public void setRenegotiationInfo(byte[] renegotiationInfo) {
+        this.renegotiationInfo = renegotiationInfo;
     }
 
 }

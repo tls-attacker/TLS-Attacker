@@ -80,6 +80,7 @@ public class ExtensionParserFactory {
                 parser = new PaddingExtensionParser(pointer, typeBytes);
                 break;
             case RENEGOTIATION_INFO:
+                parser = new RenegotiationInfoExtensionParser(pointer, typeBytes);
                 break;
             case SERVER_AUTHZ:
                 break;

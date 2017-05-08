@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
@@ -85,6 +86,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddPaddingExtension()) {
             addExtension(new PaddingExtensionMessage());
+        }
+        if (tlsConfig.isAddRenegotiationInfoExtension()) {
+            addExtension(new RenegotiationInfoExtensionMessage());
         }
     }
 

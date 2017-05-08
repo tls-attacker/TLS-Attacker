@@ -159,10 +159,15 @@ public final class TlsConfig implements Serializable {
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
     /**
-     * SessionTLSTicket for the SessionTLSTicketExtension. It's an emty session
+     * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session
      * ticket since we initiate a new connection.
      */
     private byte[] sessionTLSTicket = new byte[0];
+    /**
+     * Renegotiation info for the RenegotiationInfo extension. It's an empty
+     * info sonce we initiate a new connection.
+     */
+    private byte[] renegotiationInfo = new byte[0];
     /**
      * SignedCertificateTimestamp for the SignedCertificateTimestampExtensin.
      * It's an emty timestamp, since the server sends it.
@@ -241,6 +246,11 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with SignedCertificateTimestamp extension
      */
     private boolean addSignedCertificateTimestampExtension = false;
+    /**
+     * If we generate ClientHello with RenegotiationInfo extension
+     */
+    private boolean addRenegotiationInfoExtension = false;
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
     /**
@@ -276,7 +286,7 @@ public final class TlsConfig implements Serializable {
      * Fixed DH g value used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] fixedDHg = { 0x02 };
+    private byte[] fixedDHg = {0x02};
 
     private String defaultApplicationMessageData = "Test";
 
@@ -964,6 +974,22 @@ public final class TlsConfig implements Serializable {
 
     public void setAddSignedCertificateTimestampExtension(boolean addSignedCertificateTimestampExtension) {
         this.addSignedCertificateTimestampExtension = addSignedCertificateTimestampExtension;
+    }
+
+    public byte[] getRenegotiationInfo() {
+        return renegotiationInfo;
+    }
+
+    public void setRenegotiationInfo(byte[] renegotiationInfo) {
+        this.renegotiationInfo = renegotiationInfo;
+    }
+
+    public boolean isAddRenegotiationInfoExtension() {
+        return addRenegotiationInfoExtension;
+    }
+
+    public void setAddRenegotiationInfoExtension(boolean addRenegotiationInfoExtension) {
+        this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
     }
 
 }
