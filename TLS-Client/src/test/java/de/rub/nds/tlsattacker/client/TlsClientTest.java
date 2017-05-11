@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -57,7 +56,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
 /**
@@ -82,7 +80,7 @@ public class TlsClientTest {
     }
 
     @Test
-    @Category(IntegrationTests.class)
+    // @Category(IntegrationTests.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
@@ -103,7 +101,7 @@ public class TlsClientTest {
     }
 
     @Test
-    @Category(IntegrationTests.class)
+    // @Category(IntegrationTests.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256);
