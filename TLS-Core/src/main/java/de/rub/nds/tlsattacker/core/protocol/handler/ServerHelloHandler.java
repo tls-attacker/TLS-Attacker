@@ -61,7 +61,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
         }
-        adjustMessageDigest(message);
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
@@ -94,10 +93,5 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
-    }
-
-    private void adjustMessageDigest(ServerHelloMessage message) {
-        tlsContext.initiliazeTlsMessageDigest();
-        LOGGER.debug("Initializing TLS Message Digest");
     }
 }
