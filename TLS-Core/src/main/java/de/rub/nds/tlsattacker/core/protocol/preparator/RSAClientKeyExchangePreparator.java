@@ -13,24 +13,15 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -79,29 +70,17 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
         masterSecret = generateMasterSecret();
         prepareMasterSecret(msg);
-        try {
-            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            if (paddedPremasterSecret.length == 0) {
-                paddedPremasterSecret = new byte[] { 0 };
-            }
-            if (new BigInteger(paddedPremasterSecret).compareTo(publicKey.getModulus()) == 1) {
-                throw new PreparationException("Trying to encrypt more Data than moduls Size!");
-            }
-            encrypted = null;
-            try {
-                encrypted = cipher.doFinal(paddedPremasterSecret);
-            } catch (org.bouncycastle.crypto.DataLengthException | ArrayIndexOutOfBoundsException E) {
-                // too much data for RSA block
-                throw new PreparationException("Too much data for RSA-Block", E);
-            }
-            prepareSerializedPublicKey(msg);
-            prepareSerializedPublicKeyLength(msg);
-        } catch (BadPaddingException | IllegalBlockSizeException | NoSuchProviderException | InvalidKeyException
-                | NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new PreparationException("Could not prepare RSAClientKeyExchange Message");
+        if (paddedPremasterSecret.length == 0) {
+            paddedPremasterSecret = new byte[] { 0 };
         }
-
+        BigInteger biPaddedPremasterSecret = new BigInteger(paddedPremasterSecret);
+        if (biPaddedPremasterSecret.compareTo(publicKey.getModulus()) == 1) {
+            throw new PreparationException("Trying to encrypt more Data than moduls Size!");
+        }
+        BigInteger biEncrypted = biPaddedPremasterSecret.modPow(publicKey.getPublicExponent(), publicKey.getModulus());
+        encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted, publicKey.getModulus().bitLength() / 8, true);
+        prepareSerializedPublicKey(msg);
+        prepareSerializedPublicKeyLength(msg);
     }
 
     private byte[] generatePremasterSecret() {
@@ -129,8 +108,8 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private RSAPublicKey generateFreshKey() {
         KeyPairGenerator keyGen = null;
         try {
-            keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-        } catch (NoSuchAlgorithmException | NoSuchProviderException ex) {
+            keyGen = KeyPairGenerator.getInstance("RSA");
+        } catch (NoSuchAlgorithmException ex) {
             throw new PreparationException("Could not generate a new Key", ex);
         }
         return (RSAPublicKey) keyGen.genKeyPair().getPublic();

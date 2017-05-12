@@ -38,6 +38,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class TLSServer extends Thread {
     // TODO should be in core package
     // TODO should be clean
+    // TODO contains the BouncyCastle provider and will probably not work as a
+    // standalone
+    // server once moved to core
     private static final Logger LOGGER = LogManager.getLogger("TLSServer");
 
     private static final String PATH_TO_JKS = "eckey192.jks";

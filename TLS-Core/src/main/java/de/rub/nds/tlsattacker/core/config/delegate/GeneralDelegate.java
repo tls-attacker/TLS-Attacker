@@ -16,11 +16,9 @@ import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  *
@@ -92,8 +90,7 @@ public class GeneralDelegate extends Delegate {
         }
         // TODO this should probably not be here?
         // ECC does not work properly in the NSS provider
-        Security.removeProvider("SunPKCS11-NSS");
-        Security.addProvider(new BouncyCastleProvider());
+        // Security.removeProvider("SunPKCS11-NSS");
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
