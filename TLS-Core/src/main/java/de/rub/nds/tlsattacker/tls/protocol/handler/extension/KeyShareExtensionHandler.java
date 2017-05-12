@@ -33,7 +33,11 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionParser getParser(byte[] message, int pointer) {
-        return new KeyShareExtensionParser(pointer, message);
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
+            return new KeyShareExtensionParser(pointer, message, true);
+        } else {
+            return new KeyShareExtensionParser(pointer, message, false);
+        }
     }
 
     @Override
@@ -43,7 +47,11 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message);
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
+            return new KeyShareExtensionSerializer(message, true);
+        } else {
+            return new KeyShareExtensionSerializer(message, false);
+        }
     }
 
     @Override

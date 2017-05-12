@@ -17,15 +17,19 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.KeyShareExtensionMe
 public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExtensionMessage> {
 
     private final KeyShareExtensionMessage message;
+    private final boolean isServer;
 
-    public KeyShareExtensionSerializer(KeyShareExtensionMessage message) {
+    public KeyShareExtensionSerializer(KeyShareExtensionMessage message, boolean isServer) {
         super(message);
         this.message = message;
+        this.isServer = isServer;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getKeyShareListLength().getValue(), ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+        if (isServer != true) {
+            appendInt(message.getKeyShareListLength().getValue(), ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+        }
         appendBytes(message.getKeyShareListBytes().getValue());
         return getAlreadySerialized();
     }

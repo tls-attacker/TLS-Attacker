@@ -41,8 +41,6 @@
         <signatureAlgorithm>ECDSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
     <fuzzingMode>false</fuzzingMode>
-    <supportedCiphersuites>TLS_AES_128_GCM_SHA_256</supportedCiphersuites>
-    <supportedCiphersuites>TLS_AES_128_GCM_SHA_384</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</supportedCiphersuites>

@@ -50,13 +50,9 @@ public class TlsContext {
     // Default values
     private TlsConfig config;
     /**
-     * early secret established during the handshake
+     * shared key established during the handshake
      */
-    private byte[] earlySecret;
-    /**
-     * handshake secret established during the handshake
-     */
-    private byte[] handshakeSecret;
+    private byte[] sharedKey;
     /**
      * master secret established during the handshake
      */
@@ -553,19 +549,11 @@ public class TlsContext {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
 
-    public byte[] getHandshakeSecret() {
-        return handshakeSecret;
+    public byte[] getSharedKey() {
+        return sharedKey;
     }
 
-    public void setHandshakeSecret(byte[] handshakeSecret) {
-        this.handshakeSecret = handshakeSecret;
-    }
-
-    public byte[] getEarlySecret() {
-        return earlySecret;
-    }
-
-    public void getEarlySecret(byte[] v) {
-        this.earlySecret = earlySecret;
+    public void setSharedKey(byte[] sharedKey) {
+        this.sharedKey = sharedKey;
     }
 }

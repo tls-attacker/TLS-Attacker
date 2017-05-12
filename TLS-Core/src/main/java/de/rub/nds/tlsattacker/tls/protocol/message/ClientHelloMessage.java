@@ -115,12 +115,10 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new SupportedVersionsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-            // Nicht finale Version, dient zum testen
             KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
             KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(ArrayConverter
-                    .hexStringToByteArray("c28576b238f3a381db6dff52234cb5a579bbd7bd543ca0211b3552962fcd580c"));
-            pair.setKeyShareTypeConfig(NamedCurve.ECDH_X25519.getValue());
+            pair.setKeyShareConfig(tlsConfig.getKeyShare());
+            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
             extension.getKeyShareList().add(pair);
             addExtension(extension);
         }

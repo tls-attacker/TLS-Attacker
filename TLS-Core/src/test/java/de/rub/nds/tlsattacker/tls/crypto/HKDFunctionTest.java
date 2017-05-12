@@ -20,47 +20,45 @@ import org.junit.Test;
  */
 public class HKDFunctionTest {
 
-    private HKDFunction hkdFunction;
-
     public HKDFunctionTest() {
 
     }
 
     @Before
     public void setUp() {
-        this.hkdFunction = new HKDFunction();
     }
 
     @Test
-    public void testHkdfExtractExpand() {
+    public void testExtractNoSalt() {
         String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
-        byte[] salt = ArrayConverter.hexStringToByteArray("000102030405060708090a0b0c");
-        byte[] ikm = ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
-        int outLen = 42;
-        byte[] info = ArrayConverter.hexStringToByteArray("f0f1f2f3f4f5f6f7f8f9");
-        byte[] prk = ArrayConverter
-                .hexStringToByteArray("077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3122ec844ad7c2b3e5");
-        byte[] okm = ArrayConverter
-                .hexStringToByteArray("3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865");
+        byte[] salt = {};
+        byte[] ikm = ArrayConverter.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
 
-        String labelIn = "test";
-        byte[] hashValue = ArrayConverter
-                .hexStringToByteArray("f9a54250131c827542664bcad131b87c09cdd92f0d5f84db3680ee4c0c0f8ed6");
-        byte[] hkdfEncodedLabel = ArrayConverter
-                .hexStringToByteArray("002a0d544c5320312e332c207465737420f9a54250131c827542664bcad131b87c09cdd92f0d5f84db3680ee4c0c0f8ed6");
-        byte[] hkdfExpandLabel = ArrayConverter
-                .hexStringToByteArray("474de877d26b9e14ba50d91657bdf8bdb0fb7152f0ef8d908bb68eb697bb64c6bf2f2d81fa987e86bc32");
+        byte[] result = HKDFunction.extract(macAlgorithm, salt, ikm);
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
+        assertArrayEquals(result, resultCorrect);
+    }
 
-        byte[] result1 = hkdFunction.hkdfExtract(macAlgorithm, salt, ikm);
-        byte[] result2 = hkdFunction.hkdfExpand(macAlgorithm, result1, info, outLen);
-        byte[] result3 = hkdFunction.hkdfLabelEncoder(hashValue, labelIn, outLen);
-        byte[] result4 = hkdFunction.hkdfExpand(macAlgorithm, salt, result3, outLen);
-        byte[] result5 = hkdFunction.hkdfExpandLabel(macAlgorithm, salt, hashValue, labelIn, outLen);
+    @Test
+    public void testExtractWithSalt() {
+        String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
+        byte[] salt = ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
+        byte[] ikm = ArrayConverter.hexStringToByteArray("c08acc73ba101d7fea86d223de32d9fc4948e145493680594b83b0a109f83649");
 
-        assertArrayEquals(result1, prk);
-        assertArrayEquals(result2, okm);
-        assertArrayEquals(result3, hkdfEncodedLabel);
-        assertArrayEquals(result4, hkdfExpandLabel);
-        assertArrayEquals(result5, hkdfExpandLabel);
+        byte[] result = HKDFunction.extract(macAlgorithm, salt, ikm);
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
+        assertArrayEquals(result, resultCorrect);
+    }
+
+    @Test
+    public void testDeriveSecret() {
+        String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
+        byte[] prk = ArrayConverter.hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
+        byte[] hashValue = ArrayConverter.hexStringToByteArray("52c04472bdfe929772c98b91cf425f78f47659be9d4a7d68b9e29d162935e9b9");
+        String labelIn = "client handshake traffic secret";
+
+        byte[] result = HKDFunction.deriveSecret(macAlgorithm, prk, labelIn, hashValue);
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("6c6f274b1eae09b8bbd2039b7eb56147201a5e19288a3fd504fa52b1178a6e93");
+        assertArrayEquals(result, resultCorrect);
     }
 }

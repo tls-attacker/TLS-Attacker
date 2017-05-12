@@ -222,14 +222,19 @@ public class AlgorithmResolver {
     }
 
     public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
-        HKDFAlgorithm result;
+        HKDFAlgorithm result = null;
         if (cipherSuite.name().endsWith("SHA384")) {
             result = HKDFAlgorithm.TLS_HKDF_SHA384;
-        } else {
+        } else if (cipherSuite.name().endsWith("SHA256")) {
             result = HKDFAlgorithm.TLS_HKDF_SHA256;
         }
-        LOGGER.debug("Using the following HKDF Algorithm: {}", result);
-        return result;
+        if (result != null) {
+            LOGGER.debug("Using the following HKDF Algorithm: {}", result);
+            return result;
+        } else {
+            throw new UnsupportedOperationException("The HKDF algorithm for cipher suite " + cipherSuite
+                    + " is not supported yet");
+        }
     }
 
     private AlgorithmResolver() {

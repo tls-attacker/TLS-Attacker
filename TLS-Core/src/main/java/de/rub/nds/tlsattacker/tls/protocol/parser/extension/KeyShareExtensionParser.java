@@ -19,14 +19,21 @@ import java.util.List;
  */
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
-    public KeyShareExtensionParser(int startposition, byte[] array) {
+    private final boolean isServer;
+
+    public KeyShareExtensionParser(int startposition, byte[] array, boolean isServer) {
         super(startposition, array);
+        this.isServer = isServer;
     }
 
     @Override
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
-        msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
-        msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
+        if (isServer != true) {
+            msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
+            msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
+        } else {
+            msg.setKeyShareListBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
+        }
         int position = 0;
         List<KeySharePair> pairList = new LinkedList<>();
         while (position < msg.getKeyShareListLength().getValue()) {

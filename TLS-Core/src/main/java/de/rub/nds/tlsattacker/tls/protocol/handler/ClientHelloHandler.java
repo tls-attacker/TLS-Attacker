@@ -70,6 +70,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
         }
+        adjustLastRecordVersion(message);
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {
@@ -153,5 +154,11 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             }
         }
         return list;
+    }
+
+    private void adjustLastRecordVersion(ClientHelloMessage message) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        tlsContext.setLastRecordVersion(version);
+        LOGGER.debug("Set LastRecordVersion in Context to " + version.name());
     }
 }

@@ -24,7 +24,7 @@ public class HKDFunction {
     public static final String DERIVED = "derived";
 
     public static final String BINDER_KEY_EXT = "ext binder";
-    
+
     public static final String BINDER_KEY_RES = "res binder";
 
     public static final String CLIENT_EARLY_TRAFFIC_SECRET = "c e traffic";
@@ -47,7 +47,7 @@ public class HKDFunction {
 
     }
 
-    public byte[] hkdfExtract(String macAlgorithm, byte[] salt, byte[] ikm) {
+    public static byte[] extract(String macAlgorithm, byte[] salt, byte[] ikm) {
         try {
             Mac mac = Mac.getInstance(macAlgorithm);
             if (salt == null || salt.length == 0) {
@@ -64,7 +64,7 @@ public class HKDFunction {
         }
     }
 
-    public byte[] hkdfExpand(String macAlgorithm, byte[] prk, byte[] info, int outLen) {
+    public static byte[] expand(String macAlgorithm, byte[] prk, byte[] info, int outLen) {
         try {
             Mac mac = Mac.getInstance(macAlgorithm);
             SecretKeySpec keySpec = new SecretKeySpec(prk, macAlgorithm);
@@ -74,7 +74,6 @@ public class HKDFunction {
             int i = 1;
             while (out.length < outLen) {
                 mac.update(ti);
-                // mac.update(info.getBytes());
                 mac.update(info);
                 if (Integer.toHexString(i).length() % 2 != 0) {
                     mac.update(ArrayConverter.hexStringToByteArray("0" + Integer.toHexString(i)));
@@ -85,16 +84,17 @@ public class HKDFunction {
                 out = ArrayConverter.concatenate(out, ti);
                 i++;
             }
-
             return Arrays.copyOfRange(out, 0, outLen);
         } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
     }
 
-    public byte[] hkdfLabelEncoder(byte[] hashValue, String labelIn, int outLen) {
-        // Not Right
+    private static byte[] labelEncoder(byte[] hashValue, String labelIn, int outLen) {
+        // Not Right, but for the Tests
         String label = "TLS 1.3, " + labelIn;
+        // Right
+        // String label = "tls13 " + labelIn;
         int labelLength = label.getBytes().length;
         int hashValueLength = hashValue.length;
 
@@ -104,10 +104,15 @@ public class HKDFunction {
         return result;
     }
 
-    public byte[] hkdfExpandLabel(String macAlgorithm, byte[] prk, byte[] hashValue, String labelIn, int outLen) {
-        byte[] info = hkdfLabelEncoder(hashValue, labelIn, outLen);
-        byte[] result = hkdfExpand(macAlgorithm, prk, info, outLen);
-        return result;
+    public static byte[] deriveSecret(String macAlgorithm, byte[] prk, String labelIn, byte[] hashValue) {
+        try {
+            int outLen = Mac.getInstance(macAlgorithm).getMacLength();
+            byte[] info = labelEncoder(hashValue, labelIn, outLen);
+            byte[] result = expand(macAlgorithm, prk, info, outLen);
+            return result;
+        } catch (NoSuchAlgorithmException ex) {
+            throw new CryptoException("Could not initialize HKDF", ex);
+        }
     }
 
 }

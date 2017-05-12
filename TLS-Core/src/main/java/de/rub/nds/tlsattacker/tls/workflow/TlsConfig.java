@@ -142,6 +142,15 @@ public final class TlsConfig implements Serializable {
      */
     private HeartbeatMode heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
     /**
+     * KeyShare Client
+     */
+    private byte[] keyShare = ArrayConverter
+            .hexStringToByteArray("c28576b238f3a381db6dff52234cb5a579bbd7bd543ca0211b3552962fcd580c");
+    /**
+     * KeyShare Client Type
+     */
+    private NamedCurve keyShareType = NamedCurve.FFDHE2048;
+    /**
      * Hostname in SNI Extension
      */
     private String sniHostname = "localhost";
@@ -248,6 +257,7 @@ public final class TlsConfig implements Serializable {
     private boolean doDTLSRetransmits = false;
     /**
      * Fixed DH modulus used in Server Key Exchange
+     * OR KeyShare Extension in ClientHello/ServerHello
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] fixedDHModulus = ArrayConverter
@@ -260,6 +270,7 @@ public final class TlsConfig implements Serializable {
                     + "5817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff");
     /**
      * Fixed DH g value used in Server Key Exchange
+     * OR KeyShare Extension in ClientHello/ServerHello
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] fixedDHg = { 0x02 };
@@ -363,8 +374,8 @@ public final class TlsConfig implements Serializable {
         supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCompressionMethods.add(CompressionMethod.DEFLATE);
         supportedCiphersuites = new LinkedList<>();
-        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_256);
-        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_384);
+        // supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_256);
+        // supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_384);
         supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.ECDH_X25519);
@@ -661,6 +672,22 @@ public final class TlsConfig implements Serializable {
 
     public void setSniHostname(String SniHostname) {
         this.sniHostname = SniHostname;
+    }
+
+    public NamedCurve getKeyShareType() {
+        return keyShareType;
+    }
+
+    public void setKeyShareType(NamedCurve keyShareType) {
+        this.keyShareType = keyShareType;
+    }
+
+    public byte[] getKeyShare() {
+        return keyShare;
+    }
+
+    public void setkeyShare(byte[] keyShare) {
+        this.keyShare = keyShare;
     }
 
     public boolean isDynamicWorkflow() {

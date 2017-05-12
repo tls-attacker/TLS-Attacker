@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.tls.protocol.serializer.ServerHelloMessageSerializer;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.tls.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
 import de.rub.nds.tlsattacker.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
@@ -65,6 +67,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             }
         }
         adjustMessageDigest(message);
+        adjustLastRecordVersion(message);
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            setRecordCipher();
+        }
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
@@ -110,5 +116,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private void adjustMessageDigest(ServerHelloMessage message) {
         tlsContext.initiliazeTlsMessageDigest();
         LOGGER.debug("Initializing TLS Message Digest");
+    }
+
+    private void adjustLastRecordVersion(ServerHelloMessage message) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        tlsContext.setLastRecordVersion(version);
+        LOGGER.debug("Set LastRecordVersion in Context to " + version.name());
+    }
+
+    private void setRecordCipher() {
+        LOGGER.debug("Setting new Cipher in RecordLayer");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 }

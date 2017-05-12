@@ -55,6 +55,12 @@ public class ExtensionParserFactory {
             case SIGNATURE_AND_HASH_ALGORITHMS:
                 parser = new SignatureAndHashAlgorithmsExtensionParser(pointer, extensionBytes);
                 break;
+            case SUPPORTED_VERSIONS:
+                parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
+                break;
+            case KEY_SHARE:
+                // parser = new KeyShareExtensionParser(pointer, extensionBytes);
+                break;
             case STATUS_REQUEST:
                 break;
             case TRUNCATED_HMAC:
