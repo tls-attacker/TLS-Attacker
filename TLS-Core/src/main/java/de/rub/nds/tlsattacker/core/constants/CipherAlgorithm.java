@@ -31,7 +31,9 @@ public enum CipherAlgorithm {
     AES_128_CCM(16, 4, 8, "AES/CCM/NoPadding"),
     AES_256_CCM(32, 4, 8, "AES/CCM/NoPadding"),
     ChaCha20Poly1305(32, 12, 0, "ChaCha"),
-    DES40_CBC(5, 5, 0, "DES/CBC/NoPadding"); // TODO THIS IS NOT VERIFIED
+    DES40_CBC(8, 5, 0, "DES/CBC/NoPadding"), // currently uses des 56bit
+    ARIA_128_CBC(16, 16, 0, "ARIA/CBC/NoPadding"), // not tested yet
+    FORTEZZA_CBC(0, 0, 0, "");
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, String javaName) {
         this.keySize = keySize;

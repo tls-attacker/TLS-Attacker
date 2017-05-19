@@ -99,19 +99,19 @@ public enum CipherSuite {
     UNOFFICIAL_TLS_ECDH_ECDSA_WITH_RC4_128_SHA(0x48),
     UNOFFICIAL_TLS_ECDH_ECDSA_WITH_DES_CBC_SHA(0X49),
     UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA(0X4A),
-    UNOFFICIAL_TLS_ECDH_ECNRA_NULL_SHA(0x4B),
+    UNOFFICIAL_TLS_ECDH_ECNRA_WITH_NULL_SHA(0x4B),
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_RC4_128_SHA(0x4C),
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_DES_CBC_SHA(0x4D),
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_3DES_EDE_CBC_SHA(0x4E),
-    UNOFFICIAL_TLS_ECMQV_ECDSA_NULL_SHA(0x4F),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_NULL_SHA(0x4F),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_RC4_128_SHA(0x50),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_DES_CBC_SHA(0x51),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_3DES_EDE_CBC_SHA(0x52),
-    UNOFFICIAL_TLS_ECMQV_ECNRA_NULL_SHA(0x53),
+    UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_NULL_SHA(0x53),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_RC4_128_SHA(0x54),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_DES_CBC_SHA(0x55),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_3DES_EDE_CBC_SHA(0x56),
-    UNOFFICIAL_TLS_ECDH_anon_NULL_WITH_SHA(0x57),
+    UNOFFICIAL_TLS_ECDH_anon_WITH_NULL_SHA(0x57),
     UNOFFICIAL_TLS_ECDH_anon_WITH_RC4_128_SHA(0x58),
     UNOFFICIAL_TLS_ECDH_anon_WITH_DES_CBC_SHA(0x59),
     UNOFFICIAL_TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA(0x5A),
@@ -479,6 +479,10 @@ public enum CipherSuite {
         return this.name().contains("DHE_");
     }
 
+    public boolean isExport() {
+        return this.name().contains("EXPORT");
+    }
+
     /**
      * Returns true in case the cipher suite is an AEAD cipher suite.
      *
@@ -495,6 +499,10 @@ public enum CipherSuite {
      */
     public boolean isCBC() {
         return (this.name().contains("_CBC"));
+    }
+
+    public boolean isSCSV() {
+        return (this.name().contains("SCSV"));
     }
 
     /**
@@ -547,6 +555,11 @@ public enum CipherSuite {
         list.add(TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
         list.add(TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384);
         list.add(TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_DHE_RSA_WITH_AES_256_CBC_SHA256);
+        list.add(TLS_DHE_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
         return list;
     }
 }
