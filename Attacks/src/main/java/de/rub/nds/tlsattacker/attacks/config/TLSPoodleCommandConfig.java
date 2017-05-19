@@ -25,9 +25,9 @@ import java.util.List;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class PoodleCommandConfig extends AttackConfig {
+public class TLSPoodleCommandConfig extends AttackConfig {
 
-    public static final String ATTACK_COMMAND = "poodle";
+    public static final String ATTACK_COMMAND = "tls_poodle";
     @ParametersDelegate
     private final ClientDelegate clientDelegate;
     @ParametersDelegate
@@ -37,7 +37,7 @@ public class PoodleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private final ProtocolVersionDelegate protocolVersionDelegate;
 
-    public PoodleCommandConfig(GeneralDelegate delegate) {
+    public TLSPoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();

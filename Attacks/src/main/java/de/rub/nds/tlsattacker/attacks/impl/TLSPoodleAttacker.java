@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -34,11 +34,11 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
-public class PoodleAttacker extends Attacker<PoodleCommandConfig> {
+public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(PoodleAttacker.class);
+    private static final Logger LOGGER = LogManager.getLogger(TLSPoodleAttacker.class);
 
-    public PoodleAttacker(PoodleCommandConfig config) {
+    public TLSPoodleAttacker(TLSPoodleCommandConfig config) {
         super(config, false);
     }
 
