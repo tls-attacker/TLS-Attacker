@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -21,15 +20,12 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.TlsMessageDigest;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -103,7 +99,7 @@ public class TlsContext {
     @HoldsModifiableVariable
     private WorkflowTrace workflowTrace;
 
-    private TlsMessageDigest digest;
+    private MessageDigestCollector digest;
 
     private RecordLayer recordLayer;
 
@@ -190,18 +186,14 @@ public class TlsContext {
     private int sequenceNumber = 0;
 
     public TlsContext() {
-        digest = new TlsMessageDigest();
-        config = TlsConfig.createConfig();
-        clientCertificateTypes = new LinkedList<>();
-        // init lastRecordVersion for records
-        lastRecordVersion = config.getHighestProtocolVersion();
-        selectedProtocolVersion = config.getHighestProtocolVersion();
+        this(TlsConfig.createConfig());
     }
 
     public TlsContext(TlsConfig config) {
-        digest = new TlsMessageDigest();
+        digest = new MessageDigestCollector();
         this.config = config;
         // init lastRecordVersion for records
+        clientCertificateTypes = new LinkedList<>();
         lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
@@ -410,16 +402,6 @@ public class TlsContext {
         return config;
     }
 
-    public void initiliazeTlsMessageDigest() {
-        try {
-            DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(getSelectedProtocolVersion(),
-                    selectedCipherSuite);
-            digest.initializeDigestAlgorithm(algorithm);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException(ex);
-        }
-    }
-
     public byte[] getMasterSecret() {
         return masterSecret;
     }
@@ -520,7 +502,7 @@ public class TlsContext {
         this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
     }
 
-    public TlsMessageDigest getDigest() {
+    public MessageDigestCollector getDigest() {
         return digest;
     }
 
