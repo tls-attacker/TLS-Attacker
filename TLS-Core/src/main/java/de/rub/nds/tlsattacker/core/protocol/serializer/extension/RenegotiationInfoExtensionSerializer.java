@@ -14,10 +14,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoE
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class RenegotiationInfoExtensionSerializer extends ExtensionSerializer<RenegotiationInfoExtensionMessage>{
+public class RenegotiationInfoExtensionSerializer extends ExtensionSerializer<RenegotiationInfoExtensionMessage> {
 
     private final RenegotiationInfoExtensionMessage message;
-    
+
     public RenegotiationInfoExtensionSerializer(RenegotiationInfoExtensionMessage message) {
         super(message);
         this.message = message;
@@ -25,10 +25,10 @@ public class RenegotiationInfoExtensionSerializer extends ExtensionSerializer<Re
 
     @Override
     public byte[] serializeExtensionContent() {
-                appendBytes(message.getRenegotiationInfo().getValue());
+        appendBytes(message.getRenegotiationInfo().getValue());
         LOGGER.debug("Serialized RenegotiationInfo extension with info of length "
                 + message.getRenegotiationInfo().getValue().length);
         return getAlreadySerialized();
     }
-    
+
 }

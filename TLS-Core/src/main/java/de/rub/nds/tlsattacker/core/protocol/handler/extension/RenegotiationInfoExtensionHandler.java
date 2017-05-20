@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class RenegotiationInfoExtensionHandler extends ExtensionHandler<RenegotiationInfoExtensionMessage>{
+public class RenegotiationInfoExtensionHandler extends ExtensionHandler<RenegotiationInfoExtensionMessage> {
 
     public RenegotiationInfoExtensionHandler(TlsContext context) {
         super(context);
@@ -44,11 +44,11 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
 
     @Override
     public void adjustTLSContext(RenegotiationInfoExtensionMessage message) {
-                if (message.getExtensionLength().getValue() > 65535) {
+        if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
     }
-    
+
 }

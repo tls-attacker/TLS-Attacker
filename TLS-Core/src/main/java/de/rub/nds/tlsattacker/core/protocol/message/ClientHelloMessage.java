@@ -68,17 +68,17 @@ public class ClientHelloMessage extends HelloMessage {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COOKIE)
     private ModifiableByteArray cookie = null;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableByte cookieLength = null;
-    
+
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
     }
-    
+
     public ClientHelloMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
@@ -117,81 +117,81 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddRenegotiationInfoExtension()) {
             addExtension(new RenegotiationInfoExtensionMessage());
-        }        
+        }
     }
-    
+
     public ModifiableInteger getCompressionLength() {
         return compressionLength;
     }
-    
+
     public ModifiableInteger getCipherSuiteLength() {
         return cipherSuiteLength;
     }
-    
+
     public ModifiableByteArray getCipherSuites() {
         return cipherSuites;
     }
-    
+
     public ModifiableByteArray getCompressions() {
         return compressions;
     }
-    
+
     public void setCompressionLength(ModifiableInteger compressionLength) {
         this.compressionLength = compressionLength;
     }
-    
+
     public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
         this.cipherSuiteLength = cipherSuiteLength;
     }
-    
+
     public void setCipherSuites(ModifiableByteArray cipherSuites) {
         this.cipherSuites = cipherSuites;
     }
-    
+
     public void setCompressions(ModifiableByteArray compressions) {
         this.compressions = compressions;
     }
-    
+
     public void setCompressionLength(int compressionLength) {
         this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
-    
+
     public void setCipherSuiteLength(int cipherSuiteLength) {
         this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
-    
+
     public void setCipherSuites(byte[] array) {
         this.cipherSuites = ModifiableVariableFactory.safelySetValue(cipherSuites, array);
     }
-    
+
     public void setCompressions(byte[] array) {
         this.compressions = ModifiableVariableFactory.safelySetValue(compressions, array);
     }
-    
+
     public ModifiableByteArray getCookie() {
         return cookie;
     }
-    
+
     public ModifiableByte getCookieLength() {
         return cookieLength;
     }
-    
+
     public void setCookie(byte[] cookie) {
         this.cookie = ModifiableVariableFactory.safelySetValue(this.cookie, cookie);
     }
-    
+
     public void setCookie(ModifiableByteArray cookie) {
         this.cookie = cookie;
     }
-    
+
     public void setCookieLength(byte cookieLength) {
         this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
-    
+
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -212,7 +212,7 @@ public class ClientHelloMessage extends HelloMessage {
          */
         return sb.toString();
     }
-    
+
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);

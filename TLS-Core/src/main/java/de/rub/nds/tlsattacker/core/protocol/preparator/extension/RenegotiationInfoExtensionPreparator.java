@@ -16,10 +16,16 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<RenegotiationInfoExtensionMessage>{
+public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<RenegotiationInfoExtensionMessage> {
 
     private final RenegotiationInfoExtensionMessage message;
-    
+
+    /**
+     * Constructor
+     *
+     * @param context
+     * @param message
+     */
     public RenegotiationInfoExtensionPreparator(TlsContext context, RenegotiationInfoExtensionMessage message) {
         super(context, message);
         this.message = message;
@@ -28,8 +34,8 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     @Override
     public void prepareExtensionContent() {
         message.setRenegotiationInfo(context.getConfig().getRenegotiationInfo());
-        LOGGER.debug("Prepared the RenegotiationInfo extension with info " 
-        + ArrayConverter.bytesToHexString(context.getConfig().getRenegotiationInfo()));
+        LOGGER.debug("Prepared the RenegotiationInfo extension with info "
+                + ArrayConverter.bytesToHexString(context.getConfig().getRenegotiationInfo()));
     }
-    
+
 }

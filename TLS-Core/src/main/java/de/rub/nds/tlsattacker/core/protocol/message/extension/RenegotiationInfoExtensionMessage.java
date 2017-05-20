@@ -41,8 +41,8 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
     public void setRenegotiationInfo(ModifiableByteArray renegotiationInfo) {
         this.renegotiationInfo = renegotiationInfo;
     }
-    
-    public void setRenegotiationInfo(byte [] renegotiationInfo) {
+
+    public void setRenegotiationInfo(byte[] renegotiationInfo) {
         this.renegotiationInfo = ModifiableVariableFactory.safelySetValue(this.renegotiationInfo, renegotiationInfo);
     }
 
