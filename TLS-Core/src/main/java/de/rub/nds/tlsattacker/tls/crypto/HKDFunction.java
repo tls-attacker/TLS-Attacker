@@ -21,6 +21,12 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class HKDFunction {
 
+    public static final String KEY = "key";
+
+    public static final String IV = "iv";
+
+    public static final String FINISHED = "finished";
+
     public static final String DERIVED = "derived";
 
     public static final String BINDER_KEY_EXT = "ext binder";
@@ -113,6 +119,12 @@ public class HKDFunction {
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not initialize HKDF", ex);
         }
+    }
+
+    public static byte[] expandLabel(String macAlgorithm, byte[] prk, String labelIn, byte[] hashValue, int outLen) {
+        byte[] info = labelEncoder(hashValue, labelIn, outLen);
+        byte[] result = expand(macAlgorithm, prk, info, outLen);
+        return result;
     }
 
 }

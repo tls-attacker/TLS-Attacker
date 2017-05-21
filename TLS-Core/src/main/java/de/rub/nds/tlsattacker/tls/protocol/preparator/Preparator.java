@@ -34,4 +34,9 @@ public abstract class Preparator<T> {
     }
 
     public abstract void prepare();
+
+    public T getObject() {
+        return object;
+    }
+
 }

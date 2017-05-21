@@ -62,12 +62,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public byte[] prepareMessage(Message message) {
         Preparator preparator = getPreparator(message);
         preparator.prepare();
-        try {
-            adjustTLSContext(message);
-        } catch (AdjustmentException E) {
-            LOGGER.warn("Could not adjust TLSContext");
-            LOGGER.debug(E);
-        }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);
@@ -75,6 +69,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
             if (((HandshakeMessage) message).getIncludeInDigest()) {
                 tlsContext.getDigest().update(message.getCompleteResultingMessage().getValue());
             }
+        }
+        try {
+            adjustTLSContext(message);
+        } catch (AdjustmentException E) {
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(E);
         }
         return message.getCompleteResultingMessage().getValue();
     }
@@ -91,16 +91,16 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
+        if (parsedMessage instanceof HandshakeMessage) {
+            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
+                tlsContext.getDigest().update(parsedMessage.getCompleteResultingMessage().getValue());
+            }
+        }
         try {
             adjustTLSContext(parsedMessage);
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
-        }
-        if (parsedMessage instanceof HandshakeMessage) {
-            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                tlsContext.getDigest().update(parsedMessage.getCompleteResultingMessage().getValue());
-            }
         }
         return new ParserResult(parsedMessage, parser.getPointer());
     }

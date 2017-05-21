@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.tls.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.tls.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.tls.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 
 /**
  * @author Nurullah Erinola
@@ -17,17 +18,17 @@ import de.rub.nds.tlsattacker.tls.protocol.message.extension.KeyShareExtensionMe
 public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExtensionMessage> {
 
     private final KeyShareExtensionMessage message;
-    private final boolean isServer;
+    private final ConnectionEnd connection;
 
-    public KeyShareExtensionSerializer(KeyShareExtensionMessage message, boolean isServer) {
+    public KeyShareExtensionSerializer(KeyShareExtensionMessage message, ConnectionEnd connection) {
         super(message);
         this.message = message;
-        this.isServer = isServer;
+        this.connection = connection;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        if (isServer != true) {
+        if (connection == ConnectionEnd.CLIENT) {
             appendInt(message.getKeyShareListLength().getValue(), ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         }
         appendBytes(message.getKeyShareListBytes().getValue());

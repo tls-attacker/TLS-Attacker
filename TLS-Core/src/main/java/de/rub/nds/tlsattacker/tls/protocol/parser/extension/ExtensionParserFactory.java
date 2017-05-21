@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.tls.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ECPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.tls.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +26,7 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("ExtensionParserFactory");
 
+    // Add ConnectionEnd and use them
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new PreparationException("Could not retrieve Parser for ExtensionBytes");

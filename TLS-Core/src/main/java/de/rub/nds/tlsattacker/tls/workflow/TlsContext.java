@@ -52,7 +52,23 @@ public class TlsContext {
     /**
      * shared key established during the handshake
      */
-    private byte[] sharedKey;
+    private byte[] handshakeSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientHandshakeTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverHandshakeTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientApplicationTrafficSecret0;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverApplicationTrafficSecret0;
     /**
      * master secret established during the handshake
      */
@@ -549,11 +565,43 @@ public class TlsContext {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
 
-    public byte[] getSharedKey() {
-        return sharedKey;
+    public byte[] getClientHandshakeTrafficSecret() {
+        return clientHandshakeTrafficSecret;
     }
 
-    public void setSharedKey(byte[] sharedKey) {
-        this.sharedKey = sharedKey;
+    public void setClientHandshakeTrafficSecret(byte[] clientHandshakeTrafficSecret) {
+        this.clientHandshakeTrafficSecret = clientHandshakeTrafficSecret;
+    }
+
+    public byte[] getServerHandshakeTrafficSecret() {
+        return serverHandshakeTrafficSecret;
+    }
+
+    public void setServerHandshakeTrafficSecret(byte[] serverHandshakeTrafficSecret) {
+        this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
+    }
+
+    public byte[] getClientApplicationTrafficSecret0() {
+        return clientApplicationTrafficSecret0;
+    }
+
+    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
+        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    }
+
+    public byte[] getServerApplicationTrafficSecret0() {
+        return serverApplicationTrafficSecret0;
+    }
+
+    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
+        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    }
+
+    public byte[] getHandshakeSecret() {
+        return handshakeSecret;
+    }
+
+    public void setHandshakeSecret(byte[] handshakeSecret) {
+        this.handshakeSecret = handshakeSecret;
     }
 }

@@ -223,10 +223,11 @@ public class AlgorithmResolver {
 
     public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
         HKDFAlgorithm result = null;
-        if (cipherSuite.name().endsWith("SHA384")) {
-            result = HKDFAlgorithm.TLS_HKDF_SHA384;
-        } else if (cipherSuite.name().endsWith("SHA256")) {
+        String cipher = cipherSuite.toString();
+        if (cipher.endsWith("SHA256")) {
             result = HKDFAlgorithm.TLS_HKDF_SHA256;
+        } else if (cipher.endsWith("SHA384")) {
+            result = HKDFAlgorithm.TLS_HKDF_SHA384;
         }
         if (result != null) {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);

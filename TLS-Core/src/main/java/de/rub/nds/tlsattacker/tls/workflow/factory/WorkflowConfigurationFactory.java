@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.tls.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.tls.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
@@ -103,31 +104,50 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));
-        if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
-            addServerKeyExchangeMessage(messages);
+        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
+                addServerKeyExchangeMessage(messages);
+            }
+            if (config.isClientAuthentication()) {
+                CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                messages.add(certRequest);
+            }
+            messages.add(new ServerHelloDoneMessage(config));
+        } else {
+            messages.add(new EncryptedExtensionsMessage(config));
+            if (config.isClientAuthentication()) {
+                CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                messages.add(certRequest);
+            }
+            messages.add(new CertificateMessage(config));
+            messages.add(new CertificateVerifyMessage(config));
         }
-        if (config.isClientAuthentication()) {
-            CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-            messages.add(certRequest);
-        }
-
-        messages.add(new ServerHelloDoneMessage(config));
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
         messages = new LinkedList<>();
-        if (config.isClientAuthentication()) {
-            messages.add(new CertificateMessage(config));
-            addClientKeyExchangeMessage(messages);
-            messages.add(new CertificateVerifyMessage(config));
+        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            if (config.isClientAuthentication()) {
+                messages.add(new CertificateMessage(config));
+                addClientKeyExchangeMessage(messages);
+                messages.add(new CertificateVerifyMessage(config));
+            } else {
+                addClientKeyExchangeMessage(messages);
+            }
+            messages.add(new ChangeCipherSpecMessage(config));
         } else {
-            addClientKeyExchangeMessage(messages);
+            if (config.isClientAuthentication()) {
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+            }
         }
-        messages.add(new ChangeCipherSpecMessage(config));
         messages.add(new FinishedMessage(config));
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT, messages));
-        messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage(config));
-        messages.add(new FinishedMessage(config));
-        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
+        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            messages = new LinkedList<>();
+            messages.add(new ChangeCipherSpecMessage(config));
+            messages.add(new FinishedMessage(config));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
+                    messages));
+        }
         return workflowTrace;
 
     }

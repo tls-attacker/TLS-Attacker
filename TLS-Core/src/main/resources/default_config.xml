@@ -2,7 +2,7 @@
 <tlsConfig>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <connectionEnd>CLIENT</connectionEnd>
-    <WorkflowTraceType>CLIENT_HELLO</WorkflowTraceType>
+    <WorkflowTraceType>HANDSHAKE</WorkflowTraceType>
     <alias>default</alias>
     <password>password</password>
     <clientAuthentication>false</clientAuthentication>

@@ -25,7 +25,7 @@ public class RecordSerializer extends AbstractRecordSerializer<Record> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendByte(record.getContentMessageType().getValue());
+        appendByte(record.getContentType().getValue());
         appendBytes(record.getProtocolVersion().getValue());
         appendInt(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
         appendBytes(record.getProtocolMessageBytes().getValue());

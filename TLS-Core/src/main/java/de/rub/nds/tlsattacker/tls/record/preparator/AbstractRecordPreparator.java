@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.tls.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
 import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
+import de.rub.nds.tlsattacker.util.ArrayConverter;
 
 /**
  *
@@ -25,6 +26,10 @@ public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends
     public AbstractRecordPreparator(TlsContext context, T object, ProtocolMessageType type) {
         super(context, object);
         this.type = type;
-        object.setContentMessageType(type);
+    }
+
+    protected void prepareConentMessageType(ProtocolMessageType tpye) {
+        getObject().setContentMessageType(type);
+        LOGGER.debug("ContentMessageType: " + ArrayConverter.bytesToHexString(tpye.getArrayValue()));
     }
 }
