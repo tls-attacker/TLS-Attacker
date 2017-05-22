@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -169,6 +166,84 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetCipher() {
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_NULL_WITH_NULL_NULL) == CipherAlgorithm.NULL);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_IDEA_CBC_SHA) == CipherAlgorithm.IDEA_128);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5) == CipherAlgorithm.RC2_128);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_RC4_128_SHA) == CipherAlgorithm.RC4_128);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA) == CipherAlgorithm.DES_EDE_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA) == CipherAlgorithm.AES_128_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA) == CipherAlgorithm.AES_256_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_AES_128_CCM) == CipherAlgorithm.AES_128_CCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_AES_256_CCM) == CipherAlgorithm.AES_256_CCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256) == CipherAlgorithm.AES_128_GCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DH_anon_WITH_AES_256_GCM_SHA384) == CipherAlgorithm.AES_256_GCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA256) == CipherAlgorithm.CAMELLIA_128_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_CAMELLIA_128_GCM_SHA256) == CipherAlgorithm.CAMELLIA_128_GCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384) == CipherAlgorithm.CAMELLIA_256_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DHE_RSA_WITH_CAMELLIA_256_GCM_SHA384) == CipherAlgorithm.CAMELLIA_256_GCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_SEED_CBC_SHA) == CipherAlgorithm.SEED_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA) == CipherAlgorithm.DES40_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_DES_CBC_SHA) == CipherAlgorithm.DES_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == CipherAlgorithm.FORTEZZA_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_ARIA_128_CBC_SHA256) == CipherAlgorithm.ARIA_128_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_ARIA_128_GCM_SHA256) == CipherAlgorithm.ARIA_128_GCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherAlgorithm.ARIA_256_CBC);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherAlgorithm.ARIA_256_GCM);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherAlgorithm.GOST_28147);
+        assertTrue(AlgorithmResolver.getCipher(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherAlgorithm.ChaCha20Poly1305);
+    }
+
+    @Test
+    public void testGetAllCipher() {
+        //Test that we can retrieve a Cipher for every Ciphersuite
+        for (CipherSuite suite : CipherSuite.values()) {
+            try {
+                AlgorithmResolver.getCipher(suite);
+            } catch (IllegalArgumentException E) {
+            }
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableCipherUnknown() {
+        AlgorithmResolver.getCipher(CipherSuite.TLS_UNKNOWN_CIPHER);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableCipherReno() {
+        AlgorithmResolver.getCipher(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableCipherFallback() {
+        AlgorithmResolver.getCipher(CipherSuite.TLS_FALLBACK_SCSV);
+    }
+
+    //Test that we can receive a cipher type for every ciphersuite
+    @Test
+    public void testGetAllCipherTypes() {
+        //Test that we can retrieve a Cipher for every Ciphersuite
+        for (CipherSuite suite : CipherSuite.values()) {
+            try {
+                AlgorithmResolver.getCipherType(suite);
+            } catch (IllegalArgumentException E) {
+            }
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableCipherTypeUnknown() {
+        AlgorithmResolver.getCipherType(CipherSuite.TLS_UNKNOWN_CIPHER);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableCipherTypeReno() {
+        AlgorithmResolver.getCipherType(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableCipherTypeFallback() {
+        AlgorithmResolver.getCipherType(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     /**
@@ -176,6 +251,31 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetCipherType() {
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_NULL_WITH_NULL_NULL) == CipherType.STREAM);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_IDEA_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_RC4_128_SHA) == CipherType.STREAM);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_AES_128_CCM) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_AES_256_CCM) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_anon_WITH_AES_256_GCM_SHA384) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA256) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_CAMELLIA_128_GCM_SHA256) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DHE_RSA_WITH_CAMELLIA_256_GCM_SHA384) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_SEED_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_DES_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_128_CBC_SHA256) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_128_GCM_SHA256) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherType.BLOCK);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherType.AEAD);
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.BLOCK); //?
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.STREAM);
     }
 
     /**
@@ -183,6 +283,36 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetMacAlgorithm() {
+        
+    }
+    //Test get Mac algorithm for all ciphersuites
+    @Test
+    public void getAllMacAlgorithms()
+    {
+        for(CipherSuite suite : CipherSuite.values())
+        {
+            try
+            {
+                AlgorithmResolver.getMacAlgorithm(suite);
+            }
+            catch(IllegalArgumentException E)
+            {
+                
+            }
+        }
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableMACUnknown() {
+        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableMACReno() {
+        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnresolvableMACFallback() {
+        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
+    }
 }
